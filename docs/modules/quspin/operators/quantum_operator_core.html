@@ -1,0 +1,1552 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><script type="text/javascript">
+
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-110543543-1']);
+      _gaq.push(['_trackPageview']);
+
+      (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+    </script>
+    <title>quspin.operators.quantum_operator_core &#8212; QuSpin 0.3.2 documentation</title>
+    <link rel="stylesheet" href="../../../static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../../../static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../../static/jquery.js"></script>
+    <script type="text/javascript" src="../../../static/underscore.js"></script>
+    <script type="text/javascript" src="../../../static/doctools.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">QuSpin 0.3.2 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for quspin.operators.quantum_operator_core</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">print_function</span><span class="p">,</span> <span class="n">division</span><span class="p">,</span> <span class="n">absolute_import</span>
+
+<span class="kn">from</span> <span class="nn">..basis</span> <span class="k">import</span> <span class="n">spin_basis_1d</span> <span class="k">as</span> <span class="n">_default_basis</span>
+<span class="kn">from</span> <span class="nn">..basis</span> <span class="k">import</span> <span class="n">isbasis</span> <span class="k">as</span> <span class="n">_isbasis</span>
+
+<span class="kn">from</span> <span class="nn">._oputils</span> <span class="k">import</span> <span class="n">_get_matvec_function</span><span class="p">,</span> <span class="n">matvec</span> <span class="k">as</span> <span class="n">_matvec</span>
+<span class="kn">from</span> <span class="nn">._make_hamiltonian</span> <span class="k">import</span> <span class="n">make_static</span>
+<span class="kn">from</span> <span class="nn">._make_hamiltonian</span> <span class="k">import</span> <span class="n">_check_almost_zero</span>
+
+<span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">hamiltonian_core</span>
+
+<span class="c1"># need linear algebra packages</span>
+<span class="kn">import</span> <span class="nn">scipy.sparse.linalg</span> <span class="k">as</span> <span class="nn">_sla</span>
+<span class="kn">import</span> <span class="nn">scipy.linalg</span> <span class="k">as</span> <span class="nn">_la</span>
+<span class="kn">import</span> <span class="nn">scipy.sparse</span> <span class="k">as</span> <span class="nn">_sp</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">_np</span>
+
+<span class="kn">import</span> <span class="nn">functools</span>
+<span class="kn">from</span> <span class="nn">six</span> <span class="k">import</span> <span class="n">iteritems</span><span class="p">,</span><span class="n">itervalues</span><span class="p">,</span><span class="n">viewkeys</span>
+
+<span class="n">__all__</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;quantum_operator&quot;</span><span class="p">,</span><span class="s2">&quot;isquantum_operator&quot;</span><span class="p">]</span>
+		
+<span class="c1"># function used to create Linearquantum_operator with fixed set of parameters. </span>
+<span class="k">def</span> <span class="nf">_quantum_operator_dot</span><span class="p">(</span><span class="n">op</span><span class="p">,</span><span class="n">pars</span><span class="p">,</span><span class="n">v</span><span class="p">):</span>
+	<span class="k">return</span> <span class="n">op</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">v</span><span class="p">,</span><span class="n">pars</span><span class="o">=</span><span class="n">pars</span><span class="p">,</span><span class="n">check</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+<div class="viewcode-block" id="quantum_operator"><a class="viewcode-back" href="../../../generated/quspin.operators.quantum_operator.html#quspin.operators.quantum_operator">[docs]</a><span class="k">class</span> <span class="nc">quantum_operator</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+	<span class="sd">&quot;&quot;&quot;Constructs parameter-dependent (hermitian and nonhermitian) operators.</span>
+
+<span class="sd">		The `quantum_operator` class maps quantum operators to keys of a dictionary. When calling various methods</span>
+<span class="sd">		of `quantum_operator`, it allows one to &#39;dynamically&#39; specify the pre-factors of these operators.</span>
+
+<span class="sd">		Examples</span>
+<span class="sd">		---------</span>
+
+<span class="sd">		It is often required to be able to handle a parameter-dependent Hamiltonian :math:`H(\\lambda)=H_1 + \\lambda H_2`, e.g.</span>
+
+<span class="sd">		.. math::</span>
+<span class="sd">			H_1=\sum_j J_{zz}S^z_jS^z_{j+1} + h_xS^x_j, \\qquad H_2=\\sum_j S^z_j</span>
+
+<span class="sd">		The following code snippet shows how to use the `quantum_operator` class to vary the parameter :math:`\\lambda`</span>
+<span class="sd">		without having to re-build the Hamiltonian every time.</span>
+
+<span class="sd">		.. literalinclude:: ../../doc_examples/quantum_operator-example.py</span>
+<span class="sd">			:linenos:</span>
+<span class="sd">			:language: python</span>
+<span class="sd">			:lines: 7-</span>
+
+<span class="sd">	&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="quantum_operator.__init__"><a class="viewcode-back" href="../../../generated/quspin.operators.quantum_operator.html#quspin.operators.quantum_operator.__init__">[docs]</a>	<span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">input_dict</span><span class="p">,</span><span class="n">N</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">basis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">shape</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">copy</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">check_symm</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">check_herm</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">check_pcon</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">matrix_formats</span><span class="o">=</span><span class="p">{},</span><span class="n">dtype</span><span class="o">=</span><span class="n">_np</span><span class="o">.</span><span class="n">complex128</span><span class="p">,</span><span class="o">**</span><span class="n">basis_args</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;Intializes the `quantum_operator` object (parameter dependent quantum quantum_operators).</span>
+
+<span class="sd">		Parameters</span>
+<span class="sd">		-----------</span>
+<span class="sd">		input_dict : dict</span>
+<span class="sd">			The `values` of this dictionary contain quantum_operator lists, in the same format as the `static_list` </span>
+<span class="sd">			argument of the `hamiltonian` class.</span>
+
+<span class="sd">			The `keys` of this dictionary correspond to the parameter values, e.g. :math:`J_{zz},h_x`, and are </span>
+<span class="sd">			used to specify the coupling strength during calls of the `quantum_operator` class methods.</span>
+
+<span class="sd">			&gt;&gt;&gt; # use &quot;Jzz&quot; and &quot;hx&quot; keys to specify the zz and x coupling strengths, respectively</span>
+<span class="sd">			&gt;&gt;&gt; input_dict = { &quot;Jzz&quot;: [[&quot;zz&quot;,Jzz_bonds]], &quot;hx&quot; : [[&quot;x&quot; ,hx_site ]] } </span>
+
+<span class="sd">		N : int, optional</span>
+<span class="sd">			Number of lattice sites for the `hamiltonian` object.</span>
+<span class="sd">		dtype : &#39;type&#39;</span>
+<span class="sd">			Data type (e.g. numpy.float64) to construct the quantum_operator with.</span>
+<span class="sd">		shape : tuple, optional</span>
+<span class="sd">			Shape to create the `hamiltonian` object with. Default is `shape = None`.</span>
+<span class="sd">		copy: bool, optional</span>
+<span class="sd">			If set to `True`, this option creates a copy of the input array. </span>
+<span class="sd">		check_symm : bool, optional </span>
+<span class="sd">			Enable/Disable symmetry check on `static_list` and `dynamic_list`.</span>
+<span class="sd">		check_herm : bool, optional</span>
+<span class="sd">			Enable/Disable hermiticity check on `static_list` and `dynamic_list`.</span>
+<span class="sd">		check_pcon : bool, optional</span>
+<span class="sd">			Enable/Disable particle conservation check on `static_list` and `dynamic_list`.</span>
+<span class="sd">		matrix_formats: dict, optional</span>
+<span class="sd">			Dictionary of key,value pairs which, given a key associated with an operator in `input_dict`, the value of this key</span>
+<span class="sd">			specifies the sparse matrix format {&quot;csr&quot;,&quot;csc&quot;,&quot;dia&quot;,&quot;dense&quot;}.</span>
+<span class="sd">		kw_args : dict</span>
+<span class="sd">			Optional additional arguments to pass to the `basis` class, if not already using a `basis` object</span>
+<span class="sd">			to create the quantum_operator.		</span>
+<span class="sd">			</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">_is_dense</span> <span class="o">=</span> <span class="kc">False</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">_ndim</span> <span class="o">=</span> <span class="mi">2</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">_basis</span> <span class="o">=</span> <span class="n">basis</span>
+
+
+
+		<span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">dtype</span> <span class="ow">in</span> <span class="n">hamiltonian_core</span><span class="o">.</span><span class="n">supported_dtypes</span><span class="p">):</span>
+			<span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;hamiltonian does not support type: &#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">dtype</span><span class="p">))</span>
+		<span class="k">else</span><span class="p">:</span>
+			<span class="bp">self</span><span class="o">.</span><span class="n">_dtype</span><span class="o">=</span><span class="n">dtype</span>
+		
+		<span class="n">opstr_dict</span> <span class="o">=</span> <span class="p">{}</span>
+		<span class="n">other_dict</span> <span class="o">=</span> <span class="p">{}</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">_quantum_operator</span> <span class="o">=</span> <span class="p">{}</span>
+		<span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">input_dict</span><span class="p">,</span><span class="nb">dict</span><span class="p">):</span>
+			<span class="k">for</span> <span class="n">key</span><span class="p">,</span><span class="n">op</span> <span class="ow">in</span> <span class="n">iteritems</span><span class="p">(</span><span class="n">input_dict</span><span class="p">):</span>
+				<span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">key</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="nb">str</span><span class="p">:</span>
+					<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;keys to input_dict must be strings.&quot;</span><span class="p">)</span>
+					
+				<span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">op</span><span class="p">)</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="nb">list</span><span class="p">,</span><span class="nb">tuple</span><span class="p">]:</span>
+					<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;input_dict must contain values which are lists/tuples.&quot;</span><span class="p">)</span>
+
+				<span class="n">opstr_list</span> <span class="o">=</span> <span class="p">[]</span>
+				<span class="n">other_list</span> <span class="o">=</span> <span class="p">[]</span>
+				<span class="k">for</span> <span class="n">ele</span> <span class="ow">in</span> <span class="n">op</span><span class="p">:</span>
+					<span class="k">if</span> <span class="n">hamiltonian_core</span><span class="o">.</span><span class="n">_check_static</span><span class="p">(</span><span class="n">ele</span><span class="p">):</span>
+						<span class="n">opstr_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ele</span><span class="p">)</span>
+					<span class="k">else</span><span class="p">:</span>
+						<span class="n">other_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ele</span><span class="p">)</span>
+
+				<span class="k">if</span> <span class="n">opstr_list</span><span class="p">:</span>
+					<span class="n">opstr_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">opstr_list</span>
+				<span class="k">if</span> <span class="n">other_list</span><span class="p">:</span>
+					<span class="n">other_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">other_list</span>
+		<span class="k">else</span><span class="p">:</span>
+			<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;input_dict must be dictionary or another quantum_operator quantum_operators&quot;</span><span class="p">)</span>
+			
+		<span class="k">if</span> <span class="n">opstr_dict</span><span class="p">:</span>
+			<span class="c1"># check if user input basis</span>
+
+			<span class="k">if</span> <span class="n">basis</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+				<span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">basis_args</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+					<span class="n">wrong_keys</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">basis_args</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+					<span class="n">temp</span> <span class="o">=</span> <span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">wrong_keys</span><span class="p">])</span>
+					<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">((</span><span class="s2">&quot;unexpected optional argument(s): &quot;</span><span class="o">+</span><span class="n">temp</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">*</span><span class="n">wrong_keys</span><span class="p">))</span>
+
+			<span class="c1"># if not</span>
+			<span class="k">if</span> <span class="n">basis</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span> 
+				<span class="k">if</span> <span class="n">N</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span> <span class="c1"># if L is missing </span>
+					<span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;if opstrs in use, argument N needed for basis class&#39;</span><span class="p">)</span>
+
+				<span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">N</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="nb">int</span><span class="p">:</span> <span class="c1"># if L is not int</span>
+					<span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;argument N must be integer&#39;</span><span class="p">)</span>
+
+				<span class="n">basis</span><span class="o">=</span><span class="n">_default_basis</span><span class="p">(</span><span class="n">N</span><span class="p">,</span><span class="o">**</span><span class="n">basis_args</span><span class="p">)</span>
+
+			<span class="k">elif</span> <span class="ow">not</span> <span class="n">_isbasis</span><span class="p">(</span><span class="n">basis</span><span class="p">):</span>
+				<span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;expecting instance of basis class for argument: basis&#39;</span><span class="p">)</span>
+
+
+			<span class="n">static_opstr_list</span> <span class="o">=</span> <span class="p">[]</span>
+			<span class="k">for</span> <span class="n">key</span><span class="p">,</span><span class="n">opstr_list</span> <span class="ow">in</span> <span class="n">iteritems</span><span class="p">(</span><span class="n">opstr_dict</span><span class="p">):</span>
+				<span class="n">static_opstr_list</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">opstr_list</span><span class="p">)</span>
+
+			<span class="k">if</span> <span class="n">check_herm</span><span class="p">:</span>
+				<span class="n">basis</span><span class="o">.</span><span class="n">check_hermitian</span><span class="p">(</span><span class="n">static_opstr_list</span><span class="p">,</span> <span class="p">[])</span>
+
+			<span class="k">if</span> <span class="n">check_symm</span><span class="p">:</span>
+				<span class="n">basis</span><span class="o">.</span><span class="n">check_symm</span><span class="p">(</span><span class="n">static_opstr_list</span><span class="p">,[])</span>
+
+			<span class="k">if</span> <span class="n">check_pcon</span><span class="p">:</span>
+				<span class="n">basis</span><span class="o">.</span><span class="n">check_pcon</span><span class="p">(</span><span class="n">static_opstr_list</span><span class="p">,[])</span>
+
+			<span class="bp">self</span><span class="o">.</span><span class="n">_shape</span><span class="o">=</span><span class="p">(</span><span class="n">basis</span><span class="o">.</span><span class="n">Ns</span><span class="p">,</span><span class="n">basis</span><span class="o">.</span><span class="n">Ns</span><span class="p">)</span>
+
+			<span class="k">for</span> <span class="n">key</span><span class="p">,</span><span class="n">opstr_list</span> <span class="ow">in</span> <span class="n">iteritems</span><span class="p">(</span><span class="n">opstr_dict</span><span class="p">):</span>
+				<span class="n">O</span> <span class="o">=</span> <span class="n">make_static</span><span class="p">(</span><span class="n">basis</span><span class="p">,</span><span class="n">opstr_list</span><span class="p">,</span><span class="n">dtype</span><span class="p">)</span>
+				<span class="bp">self</span><span class="o">.</span><span class="n">_quantum_operator</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">O</span>
+
+
+		<span class="k">if</span> <span class="n">other_dict</span><span class="p">:</span>
+			<span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="s2">&quot;_shape&quot;</span><span class="p">):</span>
+				<span class="n">found</span> <span class="o">=</span> <span class="kc">False</span>
+				<span class="k">if</span> <span class="n">shape</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span> <span class="c1"># if no shape argument found, search to see if the inputs have shapes.</span>
+					<span class="k">for</span> <span class="n">key</span><span class="p">,</span><span class="n">O_list</span> <span class="ow">in</span> <span class="n">iteritems</span><span class="p">(</span><span class="n">other_dict</span><span class="p">):</span>
+						<span class="k">for</span> <span class="n">O</span> <span class="ow">in</span> <span class="n">O_list</span><span class="p">:</span>
+							<span class="k">try</span><span class="p">:</span> <span class="c1"># take the first shape found</span>
+								<span class="n">shape</span> <span class="o">=</span> <span class="n">O</span><span class="o">.</span><span class="n">shape</span>
+								<span class="n">found</span> <span class="o">=</span> <span class="kc">True</span>
+								<span class="k">break</span>
+							<span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span> 
+								<span class="k">continue</span>
+				<span class="k">else</span><span class="p">:</span>
+					<span class="n">found</span> <span class="o">=</span> <span class="kc">True</span>
+
+				<span class="k">if</span> <span class="ow">not</span> <span class="n">found</span><span class="p">:</span>
+					<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;no dictionary entries have shape attribute.&#39;</span><span class="p">)</span>
+				<span class="k">if</span> <span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+					<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;quantum_operator must be square matrix&#39;</span><span class="p">)</span>
+
+				<span class="bp">self</span><span class="o">.</span><span class="n">_shape</span><span class="o">=</span><span class="n">shape</span>
+
+
+
+			<span class="k">for</span> <span class="n">key</span><span class="p">,</span><span class="n">O_list</span> <span class="ow">in</span> <span class="n">iteritems</span><span class="p">(</span><span class="n">other_dict</span><span class="p">):</span>
+				<span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">O</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">O_list</span><span class="p">):</span>
+					<span class="k">if</span> <span class="n">_sp</span><span class="o">.</span><span class="n">issparse</span><span class="p">(</span><span class="n">O</span><span class="p">):</span>
+						<span class="bp">self</span><span class="o">.</span><span class="n">_mat_checks</span><span class="p">(</span><span class="n">O</span><span class="p">)</span>
+						<span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+							<span class="bp">self</span><span class="o">.</span><span class="n">_quantum_operator</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">O</span>
+						<span class="k">else</span><span class="p">:</span>
+							<span class="k">try</span><span class="p">:</span>
+								<span class="bp">self</span><span class="o">.</span><span class="n">_quantum_operator</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">+=</span> <span class="n">O</span>
+							<span class="k">except</span> <span class="ne">NotImplementedError</span><span class="p">:</span>
+								<span class="bp">self</span><span class="o">.</span><span class="n">_quantum_operator</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_quantum_operator</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">+</span> <span class="n">O</span>
+
+					<span class="k">elif</span> <span class="n">O</span><span class="o">.</span><span class="vm">__class__</span> <span class="ow">is</span> <span class="n">_np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+						<span class="bp">self</span><span class="o">.</span><span class="n">_mat_checks</span><span class="p">(</span><span class="n">O</span><span class="p">)</span>
+						<span class="bp">self</span><span class="o">.</span><span class="n">_is_dense</span><span class="o">=</span><span class="kc">True</span>
+						<span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+							<span class="bp">self</span><span class="o">.</span><span class="n">_quantum_operator</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">O</span>
+						<span class="k">else</span><span class="p">:</span>
+							<span class="k">try</span><span class="p">:</span>
+								<span class="bp">self</span><span class="o">.</span><span class="n">_quantum_operator</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">+=</span> <span class="n">O</span>
+							<span class="k">except</span> <span class="ne">NotImplementedError</span><span class="p">:</span>
+								<span class="bp">self</span><span class="o">.</span><span class="n">_quantum_operator</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_quantum_operator</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">+</span> <span class="n">O</span>
+
+					<span class="k">elif</span> <span class="n">O</span><span class="o">.</span><span class="vm">__class__</span> <span class="ow">is</span> <span class="n">_np</span><span class="o">.</span><span class="n">matrix</span><span class="p">:</span>
+						<span class="bp">self</span><span class="o">.</span><span class="n">_mat_checks</span><span class="p">(</span><span class="n">O</span><span class="p">)</span>
+						<span class="bp">self</span><span class="o">.</span><span class="n">_is_dense</span><span class="o">=</span><span class="kc">True</span>
+						<span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+							<span class="bp">self</span><span class="o">.</span><span class="n">_quantum_operator</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">O</span>
+						<span class="k">else</span><span class="p">:</span>
+							<span class="k">try</span><span class="p">:</span>
+								<span class="bp">self</span><span class="o">.</span><span class="n">_quantum_operator</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">+=</span> <span class="n">O</span>
+							<span class="k">except</span> <span class="ne">NotImplementedError</span><span class="p">:</span>
+								<span class="bp">self</span><span class="o">.</span><span class="n">_quantum_operator</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_quantum_operator</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">+</span> <span class="n">O</span>
+
+					<span class="k">else</span><span class="p">:</span>
+						<span class="n">O</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">asanyarray</span><span class="p">(</span><span class="n">O</span><span class="p">)</span>
+						<span class="bp">self</span><span class="o">.</span><span class="n">_mat_checks</span><span class="p">(</span><span class="n">O</span><span class="p">)</span>
+						<span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+							<span class="bp">self</span><span class="o">.</span><span class="n">_quantum_operator</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">O</span>
+						<span class="k">else</span><span class="p">:</span>
+							<span class="k">try</span><span class="p">:</span>
+								<span class="bp">self</span><span class="o">.</span><span class="n">_quantum_operator</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">+=</span> <span class="n">O</span>
+							<span class="k">except</span> <span class="ne">NotImplementedError</span><span class="p">:</span>
+								<span class="bp">self</span><span class="o">.</span><span class="n">_quantum_operator</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_quantum_operator</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">+</span> <span class="n">O</span>
+
+					
+
+		<span class="k">else</span><span class="p">:</span>
+			<span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="s2">&quot;_shape&quot;</span><span class="p">):</span>
+				<span class="k">if</span> <span class="n">shape</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+					<span class="c1"># check if user input basis</span>
+					<span class="n">basis</span><span class="o">=</span><span class="n">basis_args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;basis&#39;</span><span class="p">)</span>	
+
+					<span class="c1"># if not</span>
+					<span class="k">if</span> <span class="n">basis</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span> 
+						<span class="k">if</span> <span class="n">N</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span> <span class="c1"># if N is missing </span>
+							<span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;argument N or shape needed to create empty quantum_operator&quot;</span><span class="p">)</span>
+
+						<span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">N</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="nb">int</span><span class="p">:</span> <span class="c1"># if L is not int</span>
+							<span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;argument N must be integer&#39;</span><span class="p">)</span>
+
+						<span class="n">basis</span><span class="o">=</span><span class="n">_default_basis</span><span class="p">(</span><span class="n">N</span><span class="p">,</span><span class="o">**</span><span class="n">basis_args</span><span class="p">)</span>
+
+					<span class="k">elif</span> <span class="ow">not</span> <span class="n">_isbasis</span><span class="p">(</span><span class="n">basis</span><span class="p">):</span>
+						<span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;expecting instance of basis class for argument: basis&#39;</span><span class="p">)</span>
+
+					<span class="n">shape</span> <span class="o">=</span> <span class="p">(</span><span class="n">basis</span><span class="o">.</span><span class="n">Ns</span><span class="p">,</span><span class="n">basis</span><span class="o">.</span><span class="n">Ns</span><span class="p">)</span>
+
+				<span class="k">else</span><span class="p">:</span>
+					<span class="n">basis</span><span class="o">=</span><span class="n">basis_args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;basis&#39;</span><span class="p">)</span>	
+					<span class="k">if</span> <span class="ow">not</span> <span class="n">basis</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span> 
+						<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;empty hamiltonian only accepts basis or shape, not both&quot;</span><span class="p">)</span>
+
+				<span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">shape</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">:</span>
+					<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;expecting ndim = 2&#39;</span><span class="p">)</span>
+				<span class="k">if</span> <span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+					<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;hamiltonian must be square matrix&#39;</span><span class="p">)</span>
+
+				<span class="bp">self</span><span class="o">.</span><span class="n">_shape</span><span class="o">=</span><span class="n">shape</span>
+
+		<span class="k">if</span> <span class="n">basis</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+			<span class="bp">self</span><span class="o">.</span><span class="n">_basis</span> <span class="o">=</span> <span class="n">basis</span>
+
+		<span class="bp">self</span><span class="o">.</span><span class="n">_Ns</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+		<span class="n">keys</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_quantum_operator</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+		<span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">keys</span><span class="p">:</span>
+			<span class="k">if</span> <span class="n">_check_almost_zero</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_quantum_operator</span><span class="p">[</span><span class="n">key</span><span class="p">]):</span>
+				<span class="bp">self</span><span class="o">.</span><span class="n">_quantum_operator</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+
+		<span class="bp">self</span><span class="o">.</span><span class="n">update_matrix_formats</span><span class="p">(</span><span class="n">matrix_formats</span><span class="p">)</span></div>
+
+	<span class="nd">@property</span>
+	<span class="k">def</span> <span class="nf">get_operators</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">key</span><span class="p">):</span>
+		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_quantum_operator</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+	
+	<span class="nd">@property</span>
+	<span class="k">def</span> <span class="nf">shape</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_shape</span>
+	
+
+	<span class="nd">@property</span>
+	<span class="k">def</span> <span class="nf">basis</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;:obj:`basis`: basis used to build the `hamiltonian` object. Defaults to `None` if quantum_operator has </span>
+<span class="sd">		no basis (i.e. was created externally and passed as a precalculated array).</span>
+
+<span class="sd">		&quot;&quot;&quot;</span>
+		<span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_basis</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+			<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_basis</span>
+		<span class="k">else</span><span class="p">:</span>
+			<span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="s2">&quot;object has no attribute &#39;basis&#39;&quot;</span><span class="p">)</span>
+
+	<span class="nd">@property</span>
+	<span class="k">def</span> <span class="nf">ndim</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;int: number of dimensions, always equal to 2. &quot;&quot;&quot;</span>
+		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ndim</span>
+	
+	<span class="nd">@property</span>
+	<span class="k">def</span> <span class="nf">Ns</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;int: number of states in the (symmetry-reduced) Hilbert space spanned by `basis`.&quot;&quot;&quot;</span>
+		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Ns</span>
+
+	<span class="nd">@property</span>
+	<span class="k">def</span> <span class="nf">get_shape</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;tuple: shape of the `quantum_operator` object, always equal to `(Ns,Ns)`.&quot;&quot;&quot;</span>
+		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_shape</span>
+
+	<span class="nd">@property</span>
+	<span class="k">def</span> <span class="nf">is_dense</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;bool: `True` if the quantum_operator contains a dense matrix as a componnent of either </span>
+<span class="sd">		the static or dynamic lists.</span>
+
+<span class="sd">		&quot;&quot;&quot;</span>
+		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_dense</span>
+
+	<span class="nd">@property</span>
+	<span class="k">def</span> <span class="nf">dtype</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;type: data type of `quantum_operator` object.&quot;&quot;&quot;</span>
+		<span class="k">return</span> <span class="n">_np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dtype</span><span class="p">)</span><span class="o">.</span><span class="n">name</span>
+
+	<span class="nd">@property</span>
+	<span class="k">def</span> <span class="nf">T</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;:obj:`quantum_operator`: transposes the operator matrix: :math:`H_{ij}\\mapsto H_{ji}`.&quot;&quot;&quot;</span>
+		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">transpose</span><span class="p">()</span>
+
+	<span class="nd">@property</span>
+	<span class="k">def</span> <span class="nf">H</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;:obj:`quantum_operator`: transposes and conjugates the operator matrix: :math:`H_{ij}\\mapsto H_{ji}^*`.&quot;&quot;&quot;</span>
+		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">getH</span><span class="p">()</span>
+
+
+
+
+	<span class="c1">### state manipulation/observable routines</span>
+
+<div class="viewcode-block" id="quantum_operator.matvec"><a class="viewcode-back" href="../../../generated/quspin.operators.quantum_operator.html#quspin.operators.quantum_operator.matvec">[docs]</a>	<span class="k">def</span> <span class="nf">matvec</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">x</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;Matrix-vector multiplication.</span>
+
+<span class="sd">		Performs the operation y=A*x where A is an MxN linear operator and x is a column vector or 1-d array.</span>
+
+<span class="sd">		Notes</span>
+<span class="sd">		-----</span>
+<span class="sd">		This matvec wraps the user-specified matvec routine or overridden _matvec method to ensure that y has the correct shape and type.</span>
+<span class="sd">	</span>
+<span class="sd">		Parameters</span>
+<span class="sd">		----------</span>
+<span class="sd">		x : {matrix, ndarray}</span>
+<span class="sd">			An array with shape (N,) or (N,1).</span>
+
+<span class="sd">		Returns</span>
+<span class="sd">		-------</span>
+<span class="sd">		y : {matrix, ndarray}</span>
+<span class="sd">			A matrix or ndarray with shape (M,) or (M,1) depending on the type and shape of the x argument.</span>
+
+<span class="sd">		&quot;&quot;&quot;</span>
+
+		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">x</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="quantum_operator.rmatvec"><a class="viewcode-back" href="../../../generated/quspin.operators.quantum_operator.html#quspin.operators.quantum_operator.rmatvec">[docs]</a>	<span class="k">def</span> <span class="nf">rmatvec</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">x</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;Adjoint matrix-vector multiplication.</span>
+
+<span class="sd">		Performs the operation y = A^H * x where A is an MxN linear operator and x is a column vector or 1-d array.</span>
+
+<span class="sd">		Notes</span>
+<span class="sd">		-----</span>
+<span class="sd">		This rmatvec wraps the user-specified rmatvec routine or overridden _rmatvec method to ensure that y has the correct shape and type.</span>
+
+<span class="sd">		Parameters</span>
+<span class="sd">		----------</span>
+<span class="sd">		x : {matrix, ndarray}</span>
+<span class="sd">			An array with shape (M,) or (M,1).</span>
+<span class="sd">		</span>
+<span class="sd">		Returns</span>
+<span class="sd">		-------</span>
+<span class="sd">		y : {matrix, ndarray}</span>
+<span class="sd">			A matrix or ndarray with shape (N,) or (N,1) depending on the type and shape of the x argument.</span>
+
+<span class="sd">		&quot;&quot;&quot;</span>
+		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">H</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">x</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="quantum_operator.matmat"><a class="viewcode-back" href="../../../generated/quspin.operators.quantum_operator.html#quspin.operators.quantum_operator.matmat">[docs]</a>	<span class="k">def</span> <span class="nf">matmat</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">X</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;Matrix-matrix multiplication.</span>
+
+<span class="sd">		Performs the operation y=A*X where A is an MxN linear operator and X dense N*K matrix or ndarray.</span>
+
+<span class="sd">		Notes</span>
+<span class="sd">		-----</span>
+<span class="sd">		This matmat wraps any user-specified matmat routine or overridden _matmat method to ensure that y has the correct type.</span>
+
+<span class="sd">		Parameters</span>
+<span class="sd">		----------</span>
+<span class="sd">		X : {matrix, ndarray}</span>
+<span class="sd">			An array with shape (N,K).</span>
+
+<span class="sd">		Returns</span>
+<span class="sd">		-------</span>
+<span class="sd">		Y : {matrix, ndarray}</span>
+<span class="sd">			A matrix or ndarray with shape (M,K) depending on the type of the X argument.</span>
+
+<span class="sd">		&quot;&quot;&quot;</span>
+		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">X</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="quantum_operator.dot"><a class="viewcode-back" href="../../../generated/quspin.operators.quantum_operator.html#quspin.operators.quantum_operator.dot">[docs]</a>	<span class="k">def</span> <span class="nf">dot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">V</span><span class="p">,</span><span class="n">pars</span><span class="o">=</span><span class="p">{},</span><span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">out</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">overwrite_out</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;Matrix-vector multiplication of `quantum_operator` quantum_operator for parameters `pars`, with state `V`.</span>
+
+<span class="sd">		.. math::</span>
+<span class="sd">			H(t=\\lambda)|V\\rangle</span>
+
+<span class="sd">		Notes</span>
+<span class="sd">		-----</span>
+
+<span class="sd">		Parameters</span>
+<span class="sd">		-----------</span>
+<span class="sd">		V : numpy.ndarray</span>
+<span class="sd">			Vector (quantums tate) to multiply the `quantum_operator` quantum_operator with.</span>
+<span class="sd">		pars : dict, optional</span>
+<span class="sd">			Dictionary with same `keys` as `input_dict` and coupling strengths as `values`. Any missing `keys`</span>
+<span class="sd">			are assumed to be set to unity.</span>
+<span class="sd">		check : bool, optional</span>
+<span class="sd">			Whether or not to do checks for shape compatibility.</span>
+<span class="sd">		out : array_like, optional</span>
+<span class="sd">			specify the output array for the the result. This is not supported of `V` is a sparse matrix or if `times` is an array. </span>
+<span class="sd">		overwrite_out : bool, optional</span>
+<span class="sd">			flag used to toggle between two different ways to treat `out`. If set to `True` all values in `out` will be overwritten with the result of the dot product. </span>
+<span class="sd">			If `False` the result of the dot product will be added to the values of `out`. 			</span>
+
+<span class="sd">		Returns</span>
+<span class="sd">		--------</span>
+<span class="sd">		numpy.ndarray</span>
+<span class="sd">			Vector corresponding to the `quantum_operator` quantum_operator applied on the state `V`.</span>
+
+<span class="sd">		Examples</span>
+<span class="sd">		---------</span>
+<span class="sd">		&gt;&gt;&gt; B = H.dot(A,pars=pars,check=True)</span>
+
+<span class="sd">		corresponds to :math:`B = HA`. </span>
+<span class="sd">	</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+
+		
+		<span class="n">pars</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_check_scalar_pars</span><span class="p">(</span><span class="n">pars</span><span class="p">)</span>
+
+
+		<span class="k">if</span> <span class="n">check</span><span class="p">:</span>
+			<span class="k">try</span><span class="p">:</span>
+				<span class="n">shape</span> <span class="o">=</span> <span class="n">V</span><span class="o">.</span><span class="n">shape</span>
+			<span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+				<span class="n">V</span> <span class="o">=</span><span class="n">_np</span><span class="o">.</span><span class="n">asanyarray</span><span class="p">(</span><span class="n">V</span><span class="p">)</span>
+				<span class="n">shape</span> <span class="o">=</span> <span class="n">V</span><span class="o">.</span><span class="n">shape</span>
+
+			<span class="k">if</span> <span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+				<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;matrix dimension mismatch with shapes: </span><span class="si">{0}</span><span class="s2"> and </span><span class="si">{1}</span><span class="s2">.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">V</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">_shape</span><span class="p">))</span>
+
+			<span class="k">if</span> <span class="n">V</span><span class="o">.</span><span class="n">ndim</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">]:</span>
+				<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Expecting  0&lt; V.ndim &lt; 3.&quot;</span><span class="p">)</span>
+
+		<span class="n">result_dtype</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">result_type</span><span class="p">(</span><span class="n">V</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">_dtype</span><span class="p">)</span>
+
+		<span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">result_dtype</span> <span class="ow">in</span> <span class="n">hamiltonian_core</span><span class="o">.</span><span class="n">supported_dtypes</span><span class="p">):</span>
+			<span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;hamiltonian does not support type: &#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">dtype</span><span class="p">))</span>
+
+		<span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">Ns</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+			<span class="k">return</span> <span class="n">_np</span><span class="o">.</span><span class="n">asarray</span><span class="p">([],</span><span class="n">dtype</span><span class="o">=</span><span class="n">result_dtype</span><span class="p">)</span>
+
+		<span class="k">if</span> <span class="n">_sp</span><span class="o">.</span><span class="n">issparse</span><span class="p">(</span><span class="n">V</span><span class="p">):</span>
+			<span class="k">if</span> <span class="n">out</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+				<span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;&#39;out&#39; option does not apply for sparse inputs.&quot;</span><span class="p">)</span>
+
+			<span class="n">sparse_constuctor</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">_sp</span><span class="p">,</span><span class="n">V</span><span class="o">.</span><span class="n">get_format</span><span class="p">()</span><span class="o">+</span><span class="s2">&quot;_matrix&quot;</span><span class="p">)</span>
+			<span class="n">out</span> <span class="o">=</span> <span class="n">sparse_constuctor</span><span class="p">(</span><span class="n">V</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="n">result_dtype</span><span class="p">)</span>
+			<span class="k">for</span> <span class="n">key</span><span class="p">,</span><span class="n">J</span> <span class="ow">in</span> <span class="n">pars</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+				<span class="n">out</span> <span class="o">=</span> <span class="n">out</span> <span class="o">+</span> <span class="n">J</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">_quantum_operator</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">V</span><span class="p">)</span>
+
+		<span class="k">else</span><span class="p">:</span>
+			<span class="k">if</span> <span class="n">out</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+				<span class="k">try</span><span class="p">:</span>
+					<span class="k">if</span> <span class="n">out</span><span class="o">.</span><span class="n">dtype</span> <span class="o">!=</span> <span class="n">result_dtype</span><span class="p">:</span>
+						<span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;&#39;out&#39; must be array with correct dtype and dimensions for output array.&quot;</span><span class="p">)</span>
+					<span class="k">if</span> <span class="n">out</span><span class="o">.</span><span class="n">shape</span> <span class="o">!=</span> <span class="n">V</span><span class="o">.</span><span class="n">shape</span><span class="p">:</span>
+						<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;&#39;out&#39; must be array with correct dtype and dimensions for output array.&quot;</span><span class="p">)</span>
+				<span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+					<span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;&#39;out&#39; must be C-contiguous array with correct dtype and dimensions for output array.&quot;</span><span class="p">)</span>
+
+				<span class="k">if</span> <span class="n">overwrite_out</span><span class="p">:</span>
+					<span class="n">out</span><span class="p">[</span><span class="o">...</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+			<span class="k">else</span><span class="p">:</span>
+				<span class="n">out</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">V</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="n">result_dtype</span><span class="p">)</span>
+
+			<span class="n">eps</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">finfo</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span><span class="o">.</span><span class="n">eps</span>
+			<span class="n">V</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">V</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="n">result_dtype</span><span class="p">)</span>
+			<span class="k">for</span> <span class="n">key</span><span class="p">,</span><span class="n">J</span> <span class="ow">in</span> <span class="n">pars</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+				<span class="k">if</span> <span class="n">_np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">J</span><span class="p">)</span><span class="o">&gt;</span><span class="n">eps</span><span class="p">:</span>
+					<span class="bp">self</span><span class="o">.</span><span class="n">_matvec_functions</span><span class="p">[</span><span class="n">key</span><span class="p">](</span><span class="bp">self</span><span class="o">.</span><span class="n">_quantum_operator</span><span class="p">[</span><span class="n">key</span><span class="p">],</span><span class="n">V</span><span class="p">,</span><span class="n">overwrite_out</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">a</span><span class="o">=</span><span class="n">J</span><span class="p">,</span><span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span>
+
+
+		<span class="k">return</span> <span class="n">out</span></div>
+
+<div class="viewcode-block" id="quantum_operator.rdot"><a class="viewcode-back" href="../../../generated/quspin.operators.quantum_operator.html#quspin.operators.quantum_operator.rdot">[docs]</a>	<span class="k">def</span> <span class="nf">rdot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">V</span><span class="p">,</span><span class="n">pars</span><span class="o">=</span><span class="p">{},</span><span class="n">check</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;Vector-matrix multiplication of `quantum_operator` quantum_operator for parameters `pars`, with state `V`.</span>
+
+<span class="sd">		.. math::</span>
+<span class="sd">			\\langle V]H(t=\\lambda)</span>
+
+<span class="sd">		</span>
+<span class="sd">		Parameters</span>
+<span class="sd">		-----------</span>
+<span class="sd">		V : numpy.ndarray</span>
+<span class="sd">			Vector (quantums tate) to multiply the `quantum_operator` quantum_operator with.</span>
+<span class="sd">		pars : dict, optional</span>
+<span class="sd">			Dictionary with same `keys` as `input_dict` and coupling strengths as `values`. Any missing `keys`</span>
+<span class="sd">			are assumed to be set to unity.</span>
+<span class="sd">		check : bool, optional</span>
+<span class="sd">			Whether or not to do checks for shape compatibility.</span>
+<span class="sd">			</span>
+
+<span class="sd">		Returns</span>
+<span class="sd">		--------</span>
+<span class="sd">		numpy.ndarray</span>
+<span class="sd">			Vector corresponding to the `quantum_operator` quantum_operator applied on the state `V`.</span>
+
+<span class="sd">		Examples</span>
+<span class="sd">		---------</span>
+<span class="sd">		&gt;&gt;&gt; B = H.dot(A,pars=pars,check=True)</span>
+
+<span class="sd">		corresponds to :math:`B = AH`. </span>
+<span class="sd">	</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		<span class="k">try</span><span class="p">:</span>
+			<span class="n">V</span> <span class="o">=</span> <span class="n">V</span><span class="o">.</span><span class="n">transpose</span><span class="p">()</span>
+		<span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+			<span class="n">V</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">asanyarray</span><span class="p">(</span><span class="n">V</span><span class="p">)</span>
+			<span class="n">V</span> <span class="o">=</span> <span class="n">V</span><span class="o">.</span><span class="n">transpose</span><span class="p">()</span>
+		<span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">transpose</span><span class="p">()</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">V</span><span class="p">,</span><span class="n">pars</span><span class="o">=</span><span class="n">pars</span><span class="p">,</span><span class="n">check</span><span class="o">=</span><span class="n">check</span><span class="p">))</span><span class="o">.</span><span class="n">transpose</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="quantum_operator.quant_fluct"><a class="viewcode-back" href="../../../generated/quspin.operators.quantum_operator.html#quspin.operators.quantum_operator.quant_fluct">[docs]</a>	<span class="k">def</span> <span class="nf">quant_fluct</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">V</span><span class="p">,</span><span class="n">pars</span><span class="o">=</span><span class="p">{},</span><span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">enforce_pure</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;Calculates the quantum fluctuations (variance) of `hamiltonian` operator at time `time`, in state `V`.</span>
+
+<span class="sd">		.. math::</span>
+<span class="sd">			\\langle V|H^2(t=\\texttt{time})|V\\rangle - \\langle V|H(t=\\texttt{time})|V\\rangle^2</span>
+
+<span class="sd">		Parameters</span>
+<span class="sd">		-----------</span>
+<span class="sd">		V : numpy.ndarray</span>
+<span class="sd">			Depending on the shape, can be a single state or a collection of pure or mixed states</span>
+<span class="sd">			[see `enforce_pure`].</span>
+<span class="sd">		pars : dict, optional</span>
+<span class="sd">			Dictionary with same `keys` as `input_dict` and coupling strengths as `values`. Any missing `keys`</span>
+<span class="sd">			are assumed to be set to unity.</span>
+
+<span class="sd">		enforce_pure : bool, optional</span>
+<span class="sd">			Flag to enforce pure expectation value of `V` is a square matrix with multiple pure states</span>
+<span class="sd">			in the columns.</span>
+<span class="sd">		check : bool, optional</span>
+<span class="sd">			</span>
+<span class="sd">		Returns</span>
+<span class="sd">		--------</span>
+<span class="sd">		float</span>
+<span class="sd">			Quantum fluctuations of `hamiltonian` operator in state `V`.</span>
+
+<span class="sd">		Examples</span>
+<span class="sd">		---------</span>
+<span class="sd">		&gt;&gt;&gt; H_fluct = H.quant_fluct(V,time=0,diagonal=False,check=True)</span>
+
+<span class="sd">		corresponds to :math:`\\Delta H = \\sqrt{ \\langle V|H^2(t=\\texttt{time})|V\\rangle - \\langle V|H(t=\\texttt{time})|V\\rangle^2 }`. </span>
+<span class="sd">			 </span>
+<span class="sd">		&quot;&quot;&quot;</span>
+
+		<span class="kn">from</span> <span class="nn">.exp_op_core</span> <span class="k">import</span> <span class="n">isexp_op</span>
+
+		<span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">Ns</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+			<span class="k">return</span> <span class="n">_np</span><span class="o">.</span><span class="n">asarray</span><span class="p">([])</span>
+
+		<span class="k">if</span> <span class="n">ishamiltonian</span><span class="p">(</span><span class="n">V</span><span class="p">):</span>
+			<span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Can&#39;t take expectation value of hamiltonian&quot;</span><span class="p">)</span>
+
+		<span class="k">if</span> <span class="n">isexp_op</span><span class="p">(</span><span class="n">V</span><span class="p">):</span>
+			<span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Can&#39;t take expectation value of exp_op&quot;</span><span class="p">)</span>
+
+		<span class="c1"># fluctuations =  expctH2 - expctH^2</span>
+		<span class="n">kwargs</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">enforce_pure</span><span class="o">=</span><span class="n">enforce_pure</span><span class="p">)</span>
+		<span class="n">V_dot</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">V</span><span class="p">,</span><span class="n">pars</span><span class="o">=</span><span class="n">pars</span><span class="p">,</span><span class="n">check</span><span class="o">=</span><span class="n">check</span><span class="p">)</span>
+		<span class="n">expt_value_sq</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_expt_value_core</span><span class="p">(</span><span class="n">V</span><span class="p">,</span><span class="n">V_dot</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span>
+
+		<span class="k">if</span> <span class="n">V</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="n">V</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="ow">or</span> <span class="n">enforce_pure</span><span class="p">:</span>
+			<span class="n">sq_expt_value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_expt_value_core</span><span class="p">(</span><span class="n">V_dot</span><span class="p">,</span><span class="n">V_dot</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+		<span class="k">else</span><span class="p">:</span>
+			<span class="n">V_dot</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">V_dot</span><span class="p">,</span><span class="n">time</span><span class="o">=</span><span class="n">time</span><span class="p">,</span><span class="n">check</span><span class="o">=</span><span class="n">check</span><span class="p">)</span>
+			<span class="n">sq_expt_value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_expt_value_core</span><span class="p">(</span><span class="n">V</span><span class="p">,</span><span class="n">V_dot</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+		<span class="k">return</span> <span class="n">sq_expt_value</span> <span class="o">-</span> <span class="n">expt_value_sq</span></div>
+
+<div class="viewcode-block" id="quantum_operator.expt_value"><a class="viewcode-back" href="../../../generated/quspin.operators.quantum_operator.html#quspin.operators.quantum_operator.expt_value">[docs]</a>	<span class="k">def</span> <span class="nf">expt_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">V</span><span class="p">,</span><span class="n">pars</span><span class="o">=</span><span class="p">{},</span><span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">enforce_pure</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;Calculates expectation value of `hamiltonian` operator at time `time`, in state `V`.</span>
+
+<span class="sd">		.. math::</span>
+<span class="sd">			\\langle V|H(t=\\texttt{time})|V\\rangle</span>
+
+<span class="sd">		Parameters</span>
+<span class="sd">		-----------</span>
+<span class="sd">		V : numpy.ndarray</span>
+<span class="sd">			Depending on the shape, can be a single state or a collection of pure or mixed states</span>
+<span class="sd">			[see `enforce_pure` argument of `basis.ent_entropy`].</span>
+<span class="sd">		pars : dict, optional</span>
+<span class="sd">			Dictionary with same `keys` as `input_dict` and coupling strengths as `values`. Any missing `keys`</span>
+<span class="sd">			are assumed to be set to unity.</span>
+<span class="sd">		enforce_pure : bool, optional</span>
+<span class="sd">			Flag to enforce pure expectation value of `V` is a square matrix with multiple pure states</span>
+<span class="sd">			in the columns.</span>
+<span class="sd">		check : bool, optional</span>
+<span class="sd">			</span>
+<span class="sd">		Returns</span>
+<span class="sd">		--------</span>
+<span class="sd">		float</span>
+<span class="sd">			Expectation value of `hamiltonian` operator in state `V`.</span>
+
+<span class="sd">		Examples</span>
+<span class="sd">		---------</span>
+<span class="sd">		&gt;&gt;&gt; H_expt = H.expt_value(V,time=0,diagonal=False,check=True)</span>
+
+<span class="sd">		corresponds to :math:`H_{expt} = \\langle V|H(t=0)|V\\rangle`. </span>
+<span class="sd">			 </span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		<span class="kn">from</span> <span class="nn">.exp_op_core</span> <span class="k">import</span> <span class="n">isexp_op</span>
+
+		<span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">Ns</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+			<span class="k">return</span> <span class="n">_np</span><span class="o">.</span><span class="n">asarray</span><span class="p">([])</span>
+
+		<span class="k">if</span> <span class="n">ishamiltonian</span><span class="p">(</span><span class="n">V</span><span class="p">):</span>
+			<span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Can&#39;t take expectation value of hamiltonian&quot;</span><span class="p">)</span>
+
+		<span class="k">if</span> <span class="n">isexp_op</span><span class="p">(</span><span class="n">V</span><span class="p">):</span>
+			<span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Can&#39;t take expectation value of exp_op&quot;</span><span class="p">)</span>
+
+		
+		<span class="n">V_dot</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">V</span><span class="p">,</span><span class="n">time</span><span class="o">=</span><span class="n">time</span><span class="p">,</span><span class="n">check</span><span class="o">=</span><span class="n">check</span><span class="p">)</span>
+		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_expt_value_core</span><span class="p">(</span><span class="n">V</span><span class="p">,</span><span class="n">V_dot</span><span class="p">,</span><span class="n">enforce_pure</span><span class="o">=</span><span class="n">enforce_pure</span><span class="p">)</span></div>
+
+	<span class="k">def</span> <span class="nf">_expt_value_core</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">V_left</span><span class="p">,</span><span class="n">V_right</span><span class="p">,</span><span class="n">enforce_pure</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+		<span class="k">if</span> <span class="n">_sp</span><span class="o">.</span><span class="n">issparse</span><span class="p">(</span><span class="n">V_right</span><span class="p">):</span>
+			<span class="k">if</span> <span class="n">V_left</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="n">V_left</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="ow">or</span> <span class="n">enforce_pure</span><span class="p">:</span> <span class="c1"># pure states</span>
+				<span class="k">return</span> <span class="n">_np</span><span class="o">.</span><span class="n">asscalar</span><span class="p">((</span><span class="n">V_left</span><span class="o">.</span><span class="n">H</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">V_right</span><span class="p">))</span><span class="o">.</span><span class="n">toarray</span><span class="p">())</span>
+			<span class="k">else</span><span class="p">:</span> <span class="c1"># density matrix</span>
+				<span class="k">return</span> <span class="n">V_right</span><span class="o">.</span><span class="n">diagonal</span><span class="p">()</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+		<span class="k">else</span><span class="p">:</span>
+			<span class="n">V_right</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">V_right</span><span class="p">)</span><span class="o">.</span><span class="n">squeeze</span><span class="p">()</span>
+			<span class="k">if</span> <span class="n">V_right</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span> <span class="c1"># pure state</span>
+				<span class="k">return</span> <span class="n">_np</span><span class="o">.</span><span class="n">vdot</span><span class="p">(</span><span class="n">V_left</span><span class="p">,</span><span class="n">V_right</span><span class="p">)</span>
+			<span class="k">elif</span> <span class="n">V_left</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="n">V_left</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="ow">or</span> <span class="n">enforce_pure</span><span class="p">:</span> <span class="c1"># multiple pure states</span>
+				<span class="k">return</span> <span class="n">_np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s2">&quot;ij,ij-&gt;j&quot;</span><span class="p">,</span><span class="n">V_left</span><span class="o">.</span><span class="n">conj</span><span class="p">(),</span><span class="n">V_right</span><span class="p">)</span>
+			<span class="k">else</span><span class="p">:</span> <span class="c1"># density matrix</span>
+				<span class="k">return</span> <span class="n">V_right</span><span class="o">.</span><span class="n">trace</span><span class="p">()</span>
+
+<div class="viewcode-block" id="quantum_operator.matrix_ele"><a class="viewcode-back" href="../../../generated/quspin.operators.quantum_operator.html#quspin.operators.quantum_operator.matrix_ele">[docs]</a>	<span class="k">def</span> <span class="nf">matrix_ele</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">Vl</span><span class="p">,</span><span class="n">Vr</span><span class="p">,</span><span class="n">pars</span><span class="o">=</span><span class="p">{},</span><span class="n">diagonal</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;Calculates matrix element of `quantum_operator` quantum_operator for parameters `pars` in states `Vl` and `Vr`.</span>
+
+<span class="sd">		.. math::</span>
+<span class="sd">			\\langle V_l|H(\\lambda)|V_r\\rangle</span>
+
+<span class="sd">		Notes</span>
+<span class="sd">		-----</span>
+<span class="sd">		Taking the conjugate or transpose of the state `Vl` is done automatically.  </span>
+
+<span class="sd">		Parameters</span>
+<span class="sd">		-----------</span>
+<span class="sd">		Vl : numpy.ndarray</span>
+<span class="sd">			Vector(s)/state(s) to multiple with on left side.</span>
+<span class="sd">		Vl : numpy.ndarray</span>
+<span class="sd">			Vector(s)/state(s) to multiple with on right side.</span>
+<span class="sd">		pars : dict, optional</span>
+<span class="sd">			Dictionary with same `keys` as `input_dict` and coupling strengths as `values`. Any missing `keys`</span>
+<span class="sd">			are assumed to be set to unity.</span>
+<span class="sd">		diagonal : bool, optional</span>
+<span class="sd">			When set to `True`, returs only diagonal part of expectation value. Default is `diagonal = False`.</span>
+<span class="sd">		check : bool,</span>
+
+<span class="sd">		Returns</span>
+<span class="sd">		--------</span>
+<span class="sd">		float</span>
+<span class="sd">			Matrix element of `quantum_operator` quantum_operator between the states `Vl` and `Vr`.</span>
+
+<span class="sd">		Examples</span>
+<span class="sd">		---------</span>
+<span class="sd">		&gt;&gt;&gt; H_lr = H.expt_value(Vl,Vr,pars=pars,diagonal=False,check=True)</span>
+
+<span class="sd">		corresponds to :math:`H_{lr} = \\langle V_l|H(\\lambda=0)|V_r\\rangle`. </span>
+
+<span class="sd">		&quot;&quot;&quot;</span>
+		<span class="n">Vr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">Vr</span><span class="p">,</span><span class="n">pars</span><span class="o">=</span><span class="n">pars</span><span class="p">,</span><span class="n">check</span><span class="o">=</span><span class="n">check</span><span class="p">)</span>
+
+		<span class="k">if</span> <span class="n">check</span><span class="p">:</span>
+			<span class="k">try</span><span class="p">:</span>
+				<span class="n">shape</span> <span class="o">=</span> <span class="n">Vl</span><span class="o">.</span><span class="n">shape</span>
+			<span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+				<span class="n">Vl</span> <span class="o">=</span><span class="n">_np</span><span class="o">.</span><span class="n">asanyarray</span><span class="p">(</span><span class="n">Vl</span><span class="p">)</span>
+				<span class="n">shape</span> <span class="o">=</span> <span class="n">Vl</span><span class="o">.</span><span class="n">shape</span>
+
+			<span class="k">if</span> <span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+				<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;matrix dimension mismatch with shapes: </span><span class="si">{0}</span><span class="s2"> and </span><span class="si">{1}</span><span class="s2">.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">V</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">_shape</span><span class="p">))</span>
+
+			<span class="k">if</span> <span class="n">Vl</span><span class="o">.</span><span class="n">ndim</span> <span class="o">&gt;</span> <span class="mi">2</span><span class="p">:</span>
+				<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Expecting  0&lt; V.ndim &lt; 3.&quot;</span><span class="p">)</span>
+
+		<span class="k">if</span> <span class="n">_sp</span><span class="o">.</span><span class="n">issparse</span><span class="p">(</span><span class="n">Vl</span><span class="p">):</span>
+			<span class="k">if</span> <span class="n">diagonal</span><span class="p">:</span>
+				<span class="k">return</span> <span class="n">Vl</span><span class="o">.</span><span class="n">H</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">Vr</span><span class="p">)</span><span class="o">.</span><span class="n">diagonal</span><span class="p">()</span>
+			<span class="k">else</span><span class="p">:</span>
+				<span class="k">return</span> <span class="n">Vl</span><span class="o">.</span><span class="n">H</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">Vr</span><span class="p">)</span>
+		<span class="k">else</span><span class="p">:</span>
+			<span class="k">if</span> <span class="n">diagonal</span><span class="p">:</span>
+				<span class="k">return</span> <span class="n">_np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s2">&quot;ij,ij-&gt;j&quot;</span><span class="p">,</span><span class="n">Vl</span><span class="o">.</span><span class="n">conj</span><span class="p">(),</span><span class="n">Vr</span><span class="p">)</span>
+			<span class="k">else</span><span class="p">:</span>
+				<span class="k">return</span> <span class="n">Vl</span><span class="o">.</span><span class="n">T</span><span class="o">.</span><span class="n">conj</span><span class="p">()</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">Vr</span><span class="p">)</span></div>
+
+	<span class="c1">### Diagonalisation routines</span>
+
+<div class="viewcode-block" id="quantum_operator.eigsh"><a class="viewcode-back" href="../../../generated/quspin.operators.quantum_operator.html#quspin.operators.quantum_operator.eigsh">[docs]</a>	<span class="k">def</span> <span class="nf">eigsh</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">pars</span><span class="o">=</span><span class="p">{},</span><span class="o">**</span><span class="n">eigsh_args</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;Computes SOME eigenvalues and eigenvectors of hermitian `quantum_operator` quantum_operator using SPARSE hermitian methods.</span>
+
+<span class="sd">		This function method solves for eigenvalues and eigenvectors, but can only solve for a few of them accurately.</span>
+<span class="sd">		It calls `scipy.sparse.linalg.eigsh &lt;https://docs.scipy.org/doc/scipy/reference/generated/generated/scipy.sparse.linalg.eigsh.html&gt;`_, which is a wrapper for ARPACK.</span>
+
+<span class="sd">		Notes</span>
+<span class="sd">		-----</span>
+<span class="sd">		Assumes the quantum_operator is hermitian! If the flat `check_hermiticity = False` is used, we advise the user</span>
+<span class="sd">		to reassure themselves of the hermiticity properties before use. </span>
+
+<span class="sd">		Parameters</span>
+<span class="sd">		-----------</span>
+<span class="sd">		pars : dict, optional</span>
+<span class="sd">			Dictionary with same `keys` as `input_dict` and coupling strengths as `values`. Any missing `keys`</span>
+<span class="sd">			are assumed to be set to unity.</span>
+<span class="sd">		eigsh_args : </span>
+<span class="sd">			For all additional arguments see documentation of `scipy.sparse.linalg.eigsh &lt;https://docs.scipy.org/doc/scipy/reference/generated/generated/scipy.sparse.linalg.eigsh.html&gt;`_.</span>
+<span class="sd">			</span>
+<span class="sd">		Returns</span>
+<span class="sd">		--------</span>
+<span class="sd">		tuple</span>
+<span class="sd">			Tuple containing the `(eigenvalues, eigenvectors)` of the `quantum_operator` quantum_operator.</span>
+
+<span class="sd">		Examples</span>
+<span class="sd">		---------</span>
+<span class="sd">		&gt;&gt;&gt; eigenvalues,eigenvectors = H.eigsh(pars=pars,**eigsh_args)</span>
+
+<span class="sd">		&quot;&quot;&quot;</span>
+		<span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">Ns</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+			<span class="k">return</span> <span class="n">_np</span><span class="o">.</span><span class="n">array</span><span class="p">([]),</span><span class="n">_np</span><span class="o">.</span><span class="n">array</span><span class="p">([[]])</span>
+
+		<span class="k">return</span> <span class="n">_sla</span><span class="o">.</span><span class="n">eigsh</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tocsr</span><span class="p">(</span><span class="n">pars</span><span class="p">),</span><span class="o">**</span><span class="n">eigsh_args</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="quantum_operator.eigh"><a class="viewcode-back" href="../../../generated/quspin.operators.quantum_operator.html#quspin.operators.quantum_operator.eigh">[docs]</a>	<span class="k">def</span> <span class="nf">eigh</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">pars</span><span class="o">=</span><span class="p">{},</span><span class="o">**</span><span class="n">eigh_args</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;Computes COMPLETE eigensystem of hermitian `quantum_operator` quantum_operator using DENSE hermitian methods.</span>
+
+<span class="sd">		This function method solves for all eigenvalues and eigenvectors. It calls </span>
+<span class="sd">		`numpy.linalg.eigh &lt;https://docs.scipy.org/doc/numpy-1.10.1/reference/generated/numpy.linalg.eigh.html&gt;`_, </span>
+<span class="sd">		and uses wrapped LAPACK functions which are contained in the module py_lapack.</span>
+
+<span class="sd">		Notes</span>
+<span class="sd">		-----</span>
+<span class="sd">		Assumes the quantum_operator is hermitian! If the flat `check_hermiticity = False` is used, we advise the user</span>
+<span class="sd">		to reassure themselves of the hermiticity properties before use. </span>
+
+<span class="sd">		Parameters</span>
+<span class="sd">		-----------</span>
+<span class="sd">		pars : dict, optional</span>
+<span class="sd">			Dictionary with same `keys` as `input_dict` and coupling strengths as `values`. Any missing `keys`</span>
+<span class="sd">			are assumed to be set to unity.</span>
+<span class="sd">		eigh_args : </span>
+<span class="sd">			For all additional arguments see documentation of `numpy.linalg.eigh &lt;https://docs.scipy.org/doc/numpy-1.10.1/reference/generated/numpy.linalg.eigh.html&gt;`_.</span>
+<span class="sd">			</span>
+<span class="sd">		Returns</span>
+<span class="sd">		--------</span>
+<span class="sd">		tuple</span>
+<span class="sd">			Tuple containing the `(eigenvalues, eigenvectors)` of the `quantum_operator` quantum_operator.</span>
+
+<span class="sd">		Examples</span>
+<span class="sd">		---------</span>
+<span class="sd">		&gt;&gt;&gt; eigenvalues,eigenvectors = H.eigh(pars=pars,**eigh_args)</span>
+
+<span class="sd">		&quot;&quot;&quot;</span>
+		<span class="n">eigh_args</span><span class="p">[</span><span class="s2">&quot;overwrite_a&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+		
+		<span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">Ns</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+			<span class="k">return</span> <span class="n">_np</span><span class="o">.</span><span class="n">asarray</span><span class="p">([]),</span><span class="n">_np</span><span class="o">.</span><span class="n">asarray</span><span class="p">([[]])</span>
+
+		<span class="c1"># fill dense array with hamiltonian</span>
+		<span class="n">H_dense</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">todense</span><span class="p">(</span><span class="n">pars</span><span class="o">=</span><span class="n">pars</span><span class="p">)</span>		
+		<span class="c1"># calculate eigh</span>
+		<span class="n">E</span><span class="p">,</span><span class="n">H_dense</span> <span class="o">=</span> <span class="n">_la</span><span class="o">.</span><span class="n">eigh</span><span class="p">(</span><span class="n">H_dense</span><span class="p">,</span><span class="o">**</span><span class="n">eigh_args</span><span class="p">)</span>
+		<span class="k">return</span> <span class="n">E</span><span class="p">,</span><span class="n">H_dense</span></div>
+
+<div class="viewcode-block" id="quantum_operator.eigvalsh"><a class="viewcode-back" href="../../../generated/quspin.operators.quantum_operator.html#quspin.operators.quantum_operator.eigvalsh">[docs]</a>	<span class="k">def</span> <span class="nf">eigvalsh</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">pars</span><span class="o">=</span><span class="p">{},</span><span class="o">**</span><span class="n">eigvalsh_args</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;Computes ALL eigenvalues of hermitian `quantum_operator` quantum_operator using DENSE hermitian methods.</span>
+
+<span class="sd">		This function method solves for all eigenvalues. It calls </span>
+<span class="sd">		`numpy.linalg.eigvalsh &lt;https://docs.scipy.org/doc/numpy-1.10.1/reference/generated/numpy.linalg.eigvalsh.html#numpy.linalg.eigvalsh&gt;`_, </span>
+<span class="sd">		and uses wrapped LAPACK functions which are contained in the module py_lapack.</span>
+
+<span class="sd">		Notes</span>
+<span class="sd">		-----</span>
+<span class="sd">		Assumes the quantum_operator is hermitian! If the flat `check_hermiticity = False` is used, we advise the user</span>
+<span class="sd">		to reassure themselves of the hermiticity properties before use. </span>
+
+<span class="sd">		Parameters</span>
+<span class="sd">		-----------</span>
+<span class="sd">		pars : dict, optional</span>
+<span class="sd">			Dictionary with same `keys` as `input_dict` and coupling strengths as `values`. Any missing `keys`</span>
+<span class="sd">			are assumed to be set to unity.</span>
+<span class="sd">		eigvalsh_args : </span>
+<span class="sd">			For all additional arguments see documentation of `numpy.linalg.eigvalsh &lt;https://docs.scipy.org/doc/numpy-1.10.1/reference/generated/numpy.linalg.eigvalsh.html#numpy.linalg.eigvalsh&gt;`_.</span>
+<span class="sd">			</span>
+<span class="sd">		Returns</span>
+<span class="sd">		--------</span>
+<span class="sd">		numpy.ndarray</span>
+<span class="sd">			Eigenvalues of the `quantum_operator` quantum_operator.</span>
+
+<span class="sd">		Examples</span>
+<span class="sd">		---------</span>
+<span class="sd">		&gt;&gt;&gt; eigenvalues = H.eigvalsh(pars=pars,**eigvalsh_args)</span>
+
+<span class="sd">		&quot;&quot;&quot;</span>
+
+		<span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">Ns</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+			<span class="k">return</span> <span class="n">_np</span><span class="o">.</span><span class="n">asarray</span><span class="p">([])</span>
+
+		<span class="n">H_dense</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">todense</span><span class="p">(</span><span class="n">pars</span><span class="o">=</span><span class="n">pars</span><span class="p">)</span>
+		<span class="n">E</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">eigvalsh</span><span class="p">(</span><span class="n">H_dense</span><span class="p">,</span><span class="o">**</span><span class="n">eigvalsh_args</span><span class="p">)</span>
+		<span class="c1">#eigvalsh_args[&quot;overwrite_a&quot;] = True</span>
+		<span class="c1">#E = _la.eigvalsh(H_dense,**eigvalsh_args)</span>
+		<span class="k">return</span> <span class="n">E</span></div>
+
+
+	<span class="c1">### routines to change object type	</span>
+
+<div class="viewcode-block" id="quantum_operator.tocsr"><a class="viewcode-back" href="../../../generated/quspin.operators.quantum_operator.html#quspin.operators.quantum_operator.tocsr">[docs]</a>	<span class="k">def</span> <span class="nf">tocsr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">pars</span><span class="o">=</span><span class="p">{}):</span>
+		<span class="sd">&quot;&quot;&quot;Returns copy of a `quantum_operator` object for parameters `pars` as a `scipy.sparse.csr_matrix`.</span>
+
+<span class="sd">		Casts the `quantum_operator` object as a</span>
+<span class="sd">		`scipy.sparse.csr_matrix &lt;https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html&gt;`_</span>
+<span class="sd">		object.</span>
+
+<span class="sd">		Parameters</span>
+<span class="sd">		-----------</span>
+<span class="sd">		pars : dict, optional</span>
+<span class="sd">			Dictionary with same `keys` as `input_dict` and coupling strengths as `values`. Any missing `keys`</span>
+<span class="sd">			are assumed to be set to unity. </span>
+
+<span class="sd">		Returns</span>
+<span class="sd">		--------</span>
+<span class="sd">		:obj:`scipy.sparse.csr_matrix`</span>
+
+<span class="sd">		Examples</span>
+<span class="sd">		---------</span>
+<span class="sd">		&gt;&gt;&gt; H_csr=H.tocsr(pars=pars)</span>
+
+<span class="sd">		&quot;&quot;&quot;</span>
+		<span class="n">pars</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_check_scalar_pars</span><span class="p">(</span><span class="n">pars</span><span class="p">)</span>
+
+		<span class="n">H</span> <span class="o">=</span> <span class="n">_sp</span><span class="o">.</span><span class="n">csr_matrix</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_shape</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_dtype</span><span class="p">)</span>
+
+		<span class="k">for</span> <span class="n">key</span><span class="p">,</span><span class="n">J</span> <span class="ow">in</span> <span class="n">pars</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+			<span class="k">try</span><span class="p">:</span>
+				<span class="n">H</span> <span class="o">+=</span> <span class="n">J</span><span class="o">*</span><span class="n">_sp</span><span class="o">.</span><span class="n">csr_matrix</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_quantum_operator</span><span class="p">[</span><span class="n">key</span><span class="p">])</span>
+			<span class="k">except</span><span class="p">:</span>
+				<span class="n">H</span> <span class="o">=</span> <span class="n">H</span> <span class="o">+</span> <span class="n">J</span><span class="o">*</span><span class="n">_sp</span><span class="o">.</span><span class="n">csr_matrix</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_quantum_operator</span><span class="p">[</span><span class="n">key</span><span class="p">])</span>
+
+		<span class="k">return</span> <span class="n">H</span></div>
+
+<div class="viewcode-block" id="quantum_operator.tocsc"><a class="viewcode-back" href="../../../generated/quspin.operators.quantum_operator.html#quspin.operators.quantum_operator.tocsc">[docs]</a>	<span class="k">def</span> <span class="nf">tocsc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">pars</span><span class="o">=</span><span class="p">{}):</span>
+		<span class="sd">&quot;&quot;&quot;Returns copy of a `quantum_operator` object for parameters `pars` as a `scipy.sparse.csc_matrix`.</span>
+
+<span class="sd">		Casts the `quantum_operator` object as a</span>
+<span class="sd">		`scipy.sparse.csc_matrix &lt;https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csc_matrix.html&gt;`_</span>
+<span class="sd">		object.</span>
+
+<span class="sd">		Parameters</span>
+<span class="sd">		-----------</span>
+<span class="sd">		pars : dict, optional</span>
+<span class="sd">			Dictionary with same `keys` as `input_dict` and coupling strengths as `values`. Any missing `keys`</span>
+<span class="sd">			are assumed to be set to unity.</span>
+
+<span class="sd">		Returns</span>
+<span class="sd">		--------</span>
+<span class="sd">		:obj:`scipy.sparse.csc_matrix`</span>
+
+<span class="sd">		Examples</span>
+<span class="sd">		---------</span>
+<span class="sd">		&gt;&gt;&gt; H_csc=H.tocsc(pars=pars)</span>
+
+<span class="sd">		&quot;&quot;&quot;</span>
+		<span class="n">pars</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_check_scalar_pars</span><span class="p">(</span><span class="n">pars</span><span class="p">)</span>
+
+		<span class="n">H</span> <span class="o">=</span> <span class="n">_sp</span><span class="o">.</span><span class="n">csc_matrix</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_shape</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_dtype</span><span class="p">)</span>
+
+		<span class="k">for</span> <span class="n">key</span><span class="p">,</span><span class="n">J</span> <span class="ow">in</span> <span class="n">pars</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+			<span class="k">try</span><span class="p">:</span>
+				<span class="n">H</span> <span class="o">+=</span> <span class="n">J</span><span class="o">*</span><span class="n">_sp</span><span class="o">.</span><span class="n">csc_matrix</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_quantum_operator</span><span class="p">[</span><span class="n">key</span><span class="p">])</span>
+			<span class="k">except</span><span class="p">:</span>
+				<span class="n">H</span> <span class="o">=</span> <span class="n">H</span> <span class="o">+</span> <span class="n">J</span><span class="o">*</span><span class="n">_sp</span><span class="o">.</span><span class="n">csc_matrix</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_quantum_operator</span><span class="p">[</span><span class="n">key</span><span class="p">])</span>
+
+		<span class="k">return</span> <span class="n">H</span></div>
+
+<div class="viewcode-block" id="quantum_operator.todense"><a class="viewcode-back" href="../../../generated/quspin.operators.quantum_operator.html#quspin.operators.quantum_operator.todense">[docs]</a>	<span class="k">def</span> <span class="nf">todense</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">pars</span><span class="o">=</span><span class="p">{},</span><span class="n">out</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;Returns copy of a `quantum_operator` object for parameters `pars` as a dense array.</span>
+
+<span class="sd">		This function can overflow memory if not used carefully!</span>
+
+<span class="sd">		Notes</span>
+<span class="sd">		-----</span>
+<span class="sd">		If the array dimension is too large, scipy may choose to cast the `quantum_operator` quantum_operator as a</span>
+<span class="sd">		`numpy.matrix` instead of a `numpy.ndarray`. In such a case, one can use the `quantum_operator.toarray()`</span>
+<span class="sd">		method.</span>
+
+<span class="sd">		Parameters</span>
+<span class="sd">		-----------</span>
+<span class="sd">		pars : dict, optional</span>
+<span class="sd">			Dictionary with same `keys` as `input_dict` and coupling strengths as `values`. Any missing `keys`</span>
+<span class="sd">			are assumed to be set to unity.</span>
+<span class="sd">		out : numpy.ndarray</span>
+<span class="sd">			Array to fill in with the output.</span>
+<span class="sd">		</span>
+<span class="sd">		Returns</span>
+<span class="sd">		--------</span>
+<span class="sd">		obj</span>
+<span class="sd">			Depending of size of array, can be either one of</span>
+
+<span class="sd">			* `numpy.ndarray`.</span>
+<span class="sd">			* `numpy.matrix`.</span>
+
+<span class="sd">		Examples</span>
+<span class="sd">		---------</span>
+<span class="sd">		&gt;&gt;&gt; H_dense=H.todense(pars=pars)</span>
+
+<span class="sd">		&quot;&quot;&quot;</span>
+		<span class="n">pars</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_check_scalar_pars</span><span class="p">(</span><span class="n">pars</span><span class="p">)</span>
+
+		<span class="k">if</span> <span class="n">out</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+			<span class="n">out</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_shape</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
+			<span class="n">out</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">asmatrix</span><span class="p">(</span><span class="n">out</span><span class="p">)</span>
+
+		<span class="k">for</span> <span class="n">key</span><span class="p">,</span><span class="n">J</span> <span class="ow">in</span> <span class="n">pars</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+			<span class="n">out</span> <span class="o">+=</span> <span class="n">J</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_quantum_operator</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+		
+		<span class="k">return</span> <span class="n">out</span></div>
+
+<div class="viewcode-block" id="quantum_operator.toarray"><a class="viewcode-back" href="../../../generated/quspin.operators.quantum_operator.html#quspin.operators.quantum_operator.toarray">[docs]</a>	<span class="k">def</span> <span class="nf">toarray</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">pars</span><span class="o">=</span><span class="p">{},</span><span class="n">out</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;Returns copy of a `quantum_operator` object for parameters `pars` as a dense array.</span>
+
+<span class="sd">		This function can overflow memory if not used carefully!</span>
+
+
+<span class="sd">		Parameters</span>
+<span class="sd">		-----------</span>
+<span class="sd">		pars : dict, optional</span>
+<span class="sd">			Dictionary with same `keys` as `input_dict` and coupling strengths as `values`. Any missing `keys`</span>
+<span class="sd">			are assumed to be set to unity.</span>
+<span class="sd">		out : numpy.ndarray</span>
+<span class="sd">			Array to fill in with the output.</span>
+<span class="sd">		</span>
+<span class="sd">		Returns</span>
+<span class="sd">		--------</span>
+<span class="sd">		numpy.ndarray</span>
+<span class="sd">			Dense array.</span>
+
+<span class="sd">		Examples</span>
+<span class="sd">		---------</span>
+<span class="sd">		&gt;&gt;&gt; H_dense=H.toarray(pars=pars)</span>
+
+<span class="sd">		&quot;&quot;&quot;</span>
+
+		<span class="n">pars</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_check_scalar_pars</span><span class="p">(</span><span class="n">pars</span><span class="p">)</span>
+
+		<span class="k">if</span> <span class="n">out</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+			<span class="n">out</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_shape</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
+
+		<span class="k">for</span> <span class="n">key</span><span class="p">,</span><span class="n">J</span> <span class="ow">in</span> <span class="n">pars</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+			<span class="n">out</span> <span class="o">+=</span> <span class="n">J</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_quantum_operator</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+		
+		<span class="k">return</span> <span class="n">out</span></div>
+
+<div class="viewcode-block" id="quantum_operator.aslinearoperator"><a class="viewcode-back" href="../../../generated/quspin.operators.quantum_operator.html#quspin.operators.quantum_operator.aslinearoperator">[docs]</a>	<span class="k">def</span> <span class="nf">aslinearoperator</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">pars</span><span class="o">=</span><span class="p">{}):</span>
+		<span class="sd">&quot;&quot;&quot;Returns copy of a `quantum_operator` object for parameters `pars` as a `scipy.sparse.linalg.Linearquantum_operator`.</span>
+
+<span class="sd">		Casts the `quantum_operator` object as a</span>
+<span class="sd">		`scipy.sparse.linalg.Linearquantum_operator &lt;https://docs.scipy.org/doc/scipy-0.16.0/reference/generated/scipy.sparse.linalg.Linearquantum_operator.html&gt;`_</span>
+<span class="sd">		object.</span>
+
+<span class="sd">		Parameters</span>
+<span class="sd">		-----------</span>
+<span class="sd">		pars : dict, optional</span>
+<span class="sd">			Dictionary with same `keys` as `input_dict` and coupling strengths as `values`. Any missing `keys`</span>
+<span class="sd">			are assumed to be set to unity.</span>
+
+<span class="sd">		Returns</span>
+<span class="sd">		--------</span>
+<span class="sd">		:obj:`scipy.sparse.linalg.Linearquantum_operator`</span>
+
+<span class="sd">		Examples</span>
+<span class="sd">		---------</span>
+<span class="sd">		&gt;&gt;&gt; H_aslinop=H.aslinearquantum_operator(pars=pars)</span>
+
+<span class="sd">		&quot;&quot;&quot;</span>
+		<span class="n">pars</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_check_scalar_pars</span><span class="p">(</span><span class="n">pars</span><span class="p">)</span>
+		<span class="n">matvec</span> <span class="o">=</span> <span class="n">functools</span><span class="o">.</span><span class="n">partial</span><span class="p">(</span><span class="n">_quantum_operator_dot</span><span class="p">,</span><span class="bp">self</span><span class="p">,</span><span class="n">pars</span><span class="p">)</span>
+		<span class="n">rmatvec</span> <span class="o">=</span> <span class="n">functools</span><span class="o">.</span><span class="n">partial</span><span class="p">(</span><span class="n">_quantum_operator_dot</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">H</span><span class="p">,</span><span class="n">pars</span><span class="p">)</span>
+		<span class="k">return</span> <span class="n">_sla</span><span class="o">.</span><span class="n">LinearOperator</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_shape</span><span class="p">,</span><span class="n">matvec</span><span class="p">,</span><span class="n">rmatvec</span><span class="o">=</span><span class="n">rmatvec</span><span class="p">,</span><span class="n">matmat</span><span class="o">=</span><span class="n">matvec</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_dtype</span><span class="p">)</span>		</div>
+
+<div class="viewcode-block" id="quantum_operator.tohamiltonian"><a class="viewcode-back" href="../../../generated/quspin.operators.quantum_operator.html#quspin.operators.quantum_operator.tohamiltonian">[docs]</a>	<span class="k">def</span> <span class="nf">tohamiltonian</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">pars</span><span class="o">=</span><span class="p">{}):</span>
+		<span class="sd">&quot;&quot;&quot;Returns copy of a `quantum_operator` object for parameters `pars` as a `hamiltonian` object.</span>
+
+<span class="sd">		Parameters</span>
+<span class="sd">		-----------</span>
+<span class="sd">		pars : dict, optional</span>
+<span class="sd">			Dictionary with same `keys` as `input_dict` and coupling strengths as `values`. Any missing `keys`</span>
+<span class="sd">			are assumed to be set to unity.</span>
+
+<span class="sd">		Returns</span>
+<span class="sd">		--------</span>
+<span class="sd">		:obj:`hamiltonian`</span>
+
+<span class="sd">		Examples</span>
+<span class="sd">		---------</span>
+<span class="sd">		&gt;&gt;&gt; H_aslinop=H.tohamiltonian(pars=pars)</span>
+
+<span class="sd">		&quot;&quot;&quot;</span>
+		<span class="n">pars</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_check_hamiltonian_pars</span><span class="p">(</span><span class="n">pars</span><span class="p">)</span>
+
+		<span class="n">static</span><span class="o">=</span><span class="p">[]</span>
+		<span class="n">dynamic</span><span class="o">=</span><span class="p">[]</span>
+
+		<span class="k">for</span> <span class="n">key</span><span class="p">,</span><span class="n">J</span> <span class="ow">in</span> <span class="n">pars</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+			<span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">J</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">tuple</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">J</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+				<span class="n">dynamic</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">_quantum_operator</span><span class="p">[</span><span class="n">key</span><span class="p">],</span><span class="n">J</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">J</span><span class="p">[</span><span class="mi">1</span><span class="p">]])</span>
+			<span class="k">else</span><span class="p">:</span>
+				<span class="k">if</span> <span class="n">J</span> <span class="o">==</span> <span class="mf">1.0</span><span class="p">:</span>
+					<span class="n">static</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_quantum_operator</span><span class="p">[</span><span class="n">key</span><span class="p">])</span>
+				<span class="k">else</span><span class="p">:</span>
+					<span class="n">static</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">J</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">_quantum_operator</span><span class="p">[</span><span class="n">key</span><span class="p">])</span>
+
+		<span class="k">return</span> <span class="n">hamiltonian_core</span><span class="o">.</span><span class="n">hamiltonian</span><span class="p">(</span><span class="n">static</span><span class="p">,</span><span class="n">dynamic</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_dtype</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="quantum_operator.update_matrix_formats"><a class="viewcode-back" href="../../../generated/quspin.operators.quantum_operator.html#quspin.operators.quantum_operator.update_matrix_formats">[docs]</a>	<span class="k">def</span> <span class="nf">update_matrix_formats</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">matrix_formats</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;Change the internal structure of the matrices in-place.</span>
+
+<span class="sd">		Parameters</span>
+<span class="sd">		-----------</span>
+<span class="sd">		matrix_formats: dict, optional</span>
+<span class="sd">			Dictionary of key,value pairs which, given a key associated with an operator in `input_dict`, the value of this key</span>
+<span class="sd">			specifies the sparse matrix format {&quot;csr&quot;,&quot;csc&quot;,&quot;dia&quot;,&quot;dense&quot;}.</span>
+
+<span class="sd">		Examples</span>
+<span class="sd">		---------</span>
+<span class="sd">		Given `O` which has two operators defined by strings: &#39;Hx&#39; for transverse field, and &#39;Hising&#39; is the Ising part. The Ising part must be diagonal</span>
+<span class="sd">		therefore it is useful to cast it to a DIA matrix format, while the transverse field is not diagonal so it is most efficient to use CSR matrix format.</span>
+<span class="sd">		This can be accomplished by the following:</span>
+
+<span class="sd">		&gt;&gt;&gt; O.update_matrix_formats(dict(Hx=&quot;csr&quot;,Hising=&quot;dia&quot;))</span>
+
+<span class="sd">		&quot;&quot;&quot;</span>
+		<span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">matrix_formats</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="nb">dict</span><span class="p">:</span>
+			<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;matrix_formats must be a dictionary with the formats of the matrices being values and keys being the operator keys.&quot;</span><span class="p">)</span>
+
+		<span class="n">extra</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">matrix_formats</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span> <span class="o">-</span> <span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_quantum_operator</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+		<span class="k">if</span> <span class="n">extra</span><span class="p">:</span>
+			<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;unexpected couplings: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">extra</span><span class="p">))</span>
+
+		<span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_quantum_operator</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+			<span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">matrix_formats</span><span class="p">:</span>
+				<span class="n">fmt</span> <span class="o">=</span> <span class="n">matrix_formats</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+				<span class="k">if</span> <span class="n">fmt</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;dia&quot;</span><span class="p">,</span><span class="s2">&quot;csr&quot;</span><span class="p">,</span><span class="s2">&quot;csc&quot;</span><span class="p">,</span><span class="s2">&quot;dense&quot;</span><span class="p">]:</span>
+					<span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;sparse formats must be either &#39;csr&#39;,&#39;csc&#39;, &#39;dia&#39; or &#39;dense&#39;.&quot;</span><span class="p">)</span>
+
+				<span class="k">if</span> <span class="n">fmt</span> <span class="o">==</span> <span class="s2">&quot;dense&quot;</span><span class="p">:</span>
+					<span class="n">O</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_quantum_operator</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+					<span class="k">try</span><span class="p">:</span>
+						<span class="bp">self</span><span class="o">.</span><span class="n">_quantum_operator</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">O</span><span class="o">.</span><span class="n">toarray</span><span class="p">()</span>
+					<span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+						<span class="bp">self</span><span class="o">.</span><span class="n">_quantum_operator</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">ascontiguousarray</span><span class="p">(</span><span class="n">O</span><span class="p">)</span>
+				<span class="k">else</span><span class="p">:</span>
+					<span class="n">sparse_constuctor</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">_sp</span><span class="p">,</span><span class="n">fmt</span><span class="o">+</span><span class="s2">&quot;_matrix&quot;</span><span class="p">)</span>
+					<span class="n">O</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_quantum_operator</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+					<span class="k">if</span> <span class="n">_sp</span><span class="o">.</span><span class="n">issparse</span><span class="p">(</span><span class="n">O</span><span class="p">):</span>
+						<span class="bp">self</span><span class="o">.</span><span class="n">_quantum_operator</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">sparse_constuctor</span><span class="p">(</span><span class="n">O</span><span class="p">)</span>	
+
+		<span class="bp">self</span><span class="o">.</span><span class="n">_update_matvecs</span><span class="p">()</span>	</div>
+
+	<span class="c1">### algebra operations</span>
+
+<div class="viewcode-block" id="quantum_operator.transpose"><a class="viewcode-back" href="../../../generated/quspin.operators.quantum_operator.html#quspin.operators.quantum_operator.transpose">[docs]</a>	<span class="k">def</span> <span class="nf">transpose</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">copy</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;Transposes `quantum_operator` quantum_operator.</span>
+
+<span class="sd">		Notes</span>
+<span class="sd">		-----</span>
+<span class="sd">		This function does NOT conjugate the quantum_operator.</span>
+
+<span class="sd">		Returns</span>
+<span class="sd">		--------</span>
+<span class="sd">		:obj:`quantum_operator`</span>
+<span class="sd">			:math:`H_{ij}\\mapsto H_{ji}`</span>
+
+<span class="sd">		Examples</span>
+<span class="sd">		---------</span>
+
+<span class="sd">		&gt;&gt;&gt; H_tran = H.transpose()</span>
+
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="n">new_dict</span> <span class="o">=</span> <span class="p">{</span><span class="n">key</span><span class="p">:[</span><span class="n">op</span><span class="o">.</span><span class="n">transpose</span><span class="p">()]</span> <span class="k">for</span> <span class="n">key</span><span class="p">,</span><span class="n">op</span> <span class="ow">in</span> <span class="n">iteritems</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_quantum_operator</span><span class="p">)}</span>
+		<span class="k">return</span> <span class="n">quantum_operator</span><span class="p">(</span><span class="n">new_dict</span><span class="p">,</span><span class="n">basis</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_basis</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_dtype</span><span class="p">,</span><span class="n">shape</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_shape</span><span class="p">,</span><span class="n">copy</span><span class="o">=</span><span class="n">copy</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="quantum_operator.conjugate"><a class="viewcode-back" href="../../../generated/quspin.operators.quantum_operator.html#quspin.operators.quantum_operator.conjugate">[docs]</a>	<span class="k">def</span> <span class="nf">conjugate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;Conjugates `quantum_operator` quantum_operator.</span>
+
+<span class="sd">		Notes</span>
+<span class="sd">		-----</span>
+<span class="sd">		This function does NOT transpose the quantum_operator.</span>
+
+<span class="sd">		Returns</span>
+<span class="sd">		--------</span>
+<span class="sd">		:obj:`quantum_operator`</span>
+<span class="sd">			:math:`H_{ij}\\mapsto H_{ij}^*`</span>
+
+<span class="sd">		Examples</span>
+<span class="sd">		---------</span>
+
+<span class="sd">		&gt;&gt;&gt; H_conj = H.conj()</span>
+
+<span class="sd">		&quot;&quot;&quot;</span>
+		<span class="n">new_dict</span> <span class="o">=</span> <span class="p">{</span><span class="n">key</span><span class="p">:[</span><span class="n">op</span><span class="o">.</span><span class="n">conjugate</span><span class="p">()]</span> <span class="k">for</span> <span class="n">key</span><span class="p">,</span><span class="n">op</span> <span class="ow">in</span> <span class="n">iteritems</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_quantum_operator</span><span class="p">)}</span>
+		<span class="k">return</span> <span class="n">quantum_operator</span><span class="p">(</span><span class="n">new_dict</span><span class="p">,</span><span class="n">basis</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_basis</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_dtype</span><span class="p">,</span><span class="n">shape</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_shape</span><span class="p">,</span><span class="n">copy</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="quantum_operator.conj"><a class="viewcode-back" href="../../../generated/quspin.operators.quantum_operator.html#quspin.operators.quantum_operator.conj">[docs]</a>	<span class="k">def</span> <span class="nf">conj</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;Conjugates `quantum_operator` quantum_operator.</span>
+
+<span class="sd">		Notes</span>
+<span class="sd">		-----</span>
+<span class="sd">		This function does NOT transpose the quantum_operator.</span>
+
+<span class="sd">		Returns</span>
+<span class="sd">		--------</span>
+<span class="sd">		:obj:`quantum_operator`</span>
+<span class="sd">			:math:`H_{ij}\\mapsto H_{ij}^*`</span>
+
+<span class="sd">		Examples</span>
+<span class="sd">		---------</span>
+
+<span class="sd">		&gt;&gt;&gt; H_conj = H.conj()</span>
+
+<span class="sd">		&quot;&quot;&quot;</span>
+		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">conjugate</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="quantum_operator.getH"><a class="viewcode-back" href="../../../generated/quspin.operators.quantum_operator.html#quspin.operators.quantum_operator.getH">[docs]</a>	<span class="k">def</span> <span class="nf">getH</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">copy</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;Calculates hermitian conjugate of `quantum_operator` quantum_operator.</span>
+
+<span class="sd">		Parameters</span>
+<span class="sd">		-----------</span>
+<span class="sd">		copy : bool, optional</span>
+<span class="sd">			Whether to return a deep copy of the original object. Default is `copy = False`.</span>
+
+<span class="sd">		Returns</span>
+<span class="sd">		--------</span>
+<span class="sd">		:obj:`quantum_operator`</span>
+<span class="sd">			:math:`H_{ij}\\mapsto H_{ij}^*`</span>
+
+<span class="sd">		Examples</span>
+<span class="sd">		---------</span>
+
+<span class="sd">		&gt;&gt;&gt; H_herm = H.getH()</span>
+
+<span class="sd">		&quot;&quot;&quot;</span>
+		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">conjugate</span><span class="p">()</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">copy</span><span class="o">=</span><span class="n">copy</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="quantum_operator.copy"><a class="viewcode-back" href="../../../generated/quspin.operators.quantum_operator.html#quspin.operators.quantum_operator.copy">[docs]</a>	<span class="k">def</span> <span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;Returns a deep copy of `quantum_operator` object.&quot;&quot;&quot;</span>
+		<span class="n">new_dict</span> <span class="o">=</span> <span class="p">{</span><span class="n">key</span><span class="p">:[</span><span class="n">op</span><span class="p">]</span> <span class="k">for</span> <span class="n">key</span><span class="p">,</span><span class="n">op</span> <span class="ow">in</span> <span class="n">iteritems</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_quantum_operator</span><span class="p">)}</span>
+		<span class="k">return</span> <span class="n">quantum_operator</span><span class="p">(</span><span class="n">new_dict</span><span class="p">,</span><span class="n">basis</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_basis</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_dtype</span><span class="p">,</span><span class="n">shape</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_shape</span><span class="p">,</span><span class="n">copy</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="quantum_operator.astype"><a class="viewcode-back" href="../../../generated/quspin.operators.quantum_operator.html#quspin.operators.quantum_operator.astype">[docs]</a>	<span class="k">def</span> <span class="nf">astype</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">dtype</span><span class="p">,</span><span class="n">copy</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot; Changes data type of `quantum_operator` object.</span>
+
+<span class="sd">		Parameters</span>
+<span class="sd">		-----------</span>
+<span class="sd">		dtype : &#39;type&#39;</span>
+<span class="sd">			The data type (e.g. numpy.float64) to cast the Hamiltonian with.</span>
+
+<span class="sd">		Returns</span>
+<span class="sd">		`quantum_operator`</span>
+<span class="sd">			quantum_operator with altered data type.</span>
+
+<span class="sd">		Examples</span>
+<span class="sd">		---------</span>
+<span class="sd">		&gt;&gt;&gt; H_cpx=H.astype(np.complex128)</span>
+
+<span class="sd">		&quot;&quot;&quot;</span>
+		<span class="k">if</span> <span class="n">dtype</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">hamiltonian_core</span><span class="o">.</span><span class="n">supported_dtypes</span><span class="p">:</span>
+			<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;quantum_operator can only be cast to floating point types&quot;</span><span class="p">)</span>
+
+		<span class="n">new_dict</span> <span class="o">=</span> <span class="p">{</span><span class="n">key</span><span class="p">:[</span><span class="n">op</span><span class="p">]</span> <span class="k">for</span> <span class="n">key</span><span class="p">,</span><span class="n">op</span> <span class="ow">in</span> <span class="n">iteritems</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_quantum_operator</span><span class="p">)}</span>
+
+		<span class="k">if</span> <span class="n">dtype</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dtype</span><span class="p">:</span>
+			<span class="k">return</span> <span class="n">quantum_operator</span><span class="p">(</span><span class="n">new_dict</span><span class="p">,</span><span class="n">basis</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_basis</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">,</span><span class="n">shape</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_shape</span><span class="p">,</span><span class="n">copy</span><span class="o">=</span><span class="n">copy</span><span class="p">)</span>
+		<span class="k">else</span><span class="p">:</span>
+			<span class="k">return</span> <span class="n">quantum_operator</span><span class="p">(</span><span class="n">new_dict</span><span class="p">,</span><span class="n">basis</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_basis</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">,</span><span class="n">shape</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_shape</span><span class="p">,</span><span class="n">copy</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+
+	<span class="c1">### lin-alg operations</span>
+
+<div class="viewcode-block" id="quantum_operator.diagonal"><a class="viewcode-back" href="../../../generated/quspin.operators.quantum_operator.html#quspin.operators.quantum_operator.diagonal">[docs]</a>	<span class="k">def</span> <span class="nf">diagonal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">pars</span><span class="o">=</span><span class="p">{}):</span>
+		<span class="sd">&quot;&quot;&quot; Returns diagonal of `quantum_operator` quantum_operator for parameters `pars`.</span>
+
+<span class="sd">		Parameters</span>
+<span class="sd">		-----------</span>
+<span class="sd">		pars : dict, optional</span>
+<span class="sd">			Dictionary with same `keys` as `input_dict` and coupling strengths as `values`. Any missing `keys`</span>
+<span class="sd">			are assumed to be set to unity.</span>
+
+<span class="sd">		Returns</span>
+<span class="sd">		--------</span>
+<span class="sd">		numpy.ndarray</span>
+<span class="sd">			array containing the diagonal part of the operator :math:`diag_j = H_{jj}(\\lambda)`.</span>
+
+<span class="sd">		Examples</span>
+<span class="sd">		---------</span>
+
+<span class="sd">		&gt;&gt;&gt; H_diagonal = H.diagonal(pars=pars)</span>
+
+<span class="sd">		&quot;&quot;&quot;</span>
+		<span class="n">pars</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_check_scalar_pars</span><span class="p">(</span><span class="n">pars</span><span class="p">)</span>
+		<span class="n">diag</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Ns</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_dtype</span><span class="p">)</span>
+		<span class="k">for</span> <span class="n">key</span><span class="p">,</span><span class="n">value</span> <span class="ow">in</span> <span class="n">iteritems</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_quantum_operator</span><span class="p">):</span>
+			<span class="n">diag</span> <span class="o">+=</span> <span class="n">pars</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">*</span> <span class="n">value</span><span class="o">.</span><span class="n">diagonal</span><span class="p">()</span>
+		<span class="k">return</span> <span class="n">diag</span></div>
+
+<div class="viewcode-block" id="quantum_operator.trace"><a class="viewcode-back" href="../../../generated/quspin.operators.quantum_operator.html#quspin.operators.quantum_operator.trace">[docs]</a>	<span class="k">def</span> <span class="nf">trace</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">pars</span><span class="o">=</span><span class="p">{}):</span>
+		<span class="sd">&quot;&quot;&quot; Calculates trace of `quantum_operator` quantum_operator for parameters `pars`.</span>
+
+<span class="sd">		Parameters</span>
+<span class="sd">		-----------</span>
+<span class="sd">		pars : dict, optional</span>
+<span class="sd">			Dictionary with same `keys` as `input_dict` and coupling strengths as `values`. Any missing `keys`</span>
+<span class="sd">			are assumed to be set to unity.</span>
+
+<span class="sd">		Returns</span>
+<span class="sd">		--------</span>
+<span class="sd">		float</span>
+<span class="sd">			Trace of quantum_operator :math:`\\sum_{j=1}^{Ns} H_{jj}(\\lambda)`.</span>
+
+<span class="sd">		Examples</span>
+<span class="sd">		---------</span>
+
+<span class="sd">		&gt;&gt;&gt; H_tr = H.trace(pars=pars)</span>
+
+<span class="sd">		&quot;&quot;&quot;</span>
+		<span class="n">pars</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_check_scalar_pars</span><span class="p">(</span><span class="n">pars</span><span class="p">)</span>
+		<span class="n">tr</span> <span class="o">=</span> <span class="mf">0.0</span>
+		<span class="k">for</span> <span class="n">key</span><span class="p">,</span><span class="n">value</span> <span class="ow">in</span> <span class="n">iteritems</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_quantum_operator</span><span class="p">):</span>
+			<span class="k">try</span><span class="p">:</span>
+				<span class="n">tr</span> <span class="o">+=</span> <span class="n">pars</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">*</span> <span class="n">value</span><span class="o">.</span><span class="n">trace</span><span class="p">()</span>
+			<span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+				<span class="n">tr</span> <span class="o">+=</span> <span class="n">pars</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">*</span> <span class="n">value</span><span class="o">.</span><span class="n">diagonal</span><span class="p">()</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+		<span class="k">return</span> <span class="n">tr</span></div>
+
+	<span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="n">s</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+		<span class="k">for</span> <span class="n">key</span><span class="p">,</span><span class="n">op</span> <span class="ow">in</span> <span class="n">iteritems</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_quantum_operator</span><span class="p">):</span>
+			<span class="n">s</span> <span class="o">=</span> <span class="n">s</span> <span class="o">+</span> <span class="p">(</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2">:</span><span class="se">\n</span><span class="si">{}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">key</span><span class="p">,</span><span class="n">op</span><span class="p">))</span>
+
+		<span class="k">return</span> <span class="n">s</span>
+
+	<span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="k">return</span> <span class="s2">&quot;&lt;</span><span class="si">{}</span><span class="s2"> x </span><span class="si">{}</span><span class="s2"> quspin.operator.quantum_operator with </span><span class="si">{}</span><span class="s2"> operator(s)&gt;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_quantum_operator</span><span class="p">))</span>
+
+	<span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="o">**</span><span class="n">pars</span><span class="p">):</span>
+		<span class="n">pars</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_check_scalar_pars</span><span class="p">(</span><span class="n">pars</span><span class="p">)</span>
+		<span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_dense</span><span class="p">:</span>
+			<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">todense</span><span class="p">(</span><span class="n">pars</span><span class="p">)</span>
+		<span class="k">else</span><span class="p">:</span>
+			<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">tocsr</span><span class="p">(</span><span class="n">pars</span><span class="p">)</span>
+
+	<span class="k">def</span> <span class="nf">__neg__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="fm">__imul__</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+
+	<span class="k">def</span> <span class="nf">__iadd__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">other</span><span class="p">):</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">_is_dense</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_dense</span> <span class="ow">or</span> <span class="n">other</span><span class="o">.</span><span class="n">_is_dense</span>
+		<span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span><span class="n">quantum_operator</span><span class="p">):</span>
+			<span class="k">for</span> <span class="n">key</span><span class="p">,</span><span class="n">value</span> <span class="ow">in</span> <span class="n">iteritems</span><span class="p">(</span><span class="n">other</span><span class="o">.</span><span class="n">_quantum_operator</span><span class="p">):</span>
+				<span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_quantum_operator</span><span class="p">:</span>
+					<span class="bp">self</span><span class="o">.</span><span class="n">_quantum_operator</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_quantum_operator</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">+</span> <span class="n">value</span>
+				<span class="k">else</span><span class="p">:</span>
+					<span class="bp">self</span><span class="o">.</span><span class="n">_quantum_operator</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+
+				<span class="k">if</span> <span class="n">_check_almost_zero</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_quantum_operator</span><span class="p">[</span><span class="n">key</span><span class="p">]):</span>
+					<span class="bp">self</span><span class="o">.</span><span class="n">_quantum_operator</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+
+			<span class="bp">self</span><span class="o">.</span><span class="n">_update_matvecs</span><span class="p">()</span>
+			<span class="k">return</span> <span class="bp">self</span>
+		<span class="k">elif</span> <span class="n">other</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+			<span class="k">return</span> <span class="bp">self</span>
+		<span class="k">else</span><span class="p">:</span>
+			<span class="k">return</span> <span class="bp">NotImplemented</span>
+
+	<span class="k">def</span> <span class="nf">__add__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">other</span><span class="p">):</span>
+		<span class="n">result_dtype</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">result_type</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dtype</span><span class="p">,</span> <span class="n">other</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
+		<span class="n">new</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">result_dtype</span><span class="p">,</span><span class="n">copy</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+		<span class="n">new</span> <span class="o">+=</span> <span class="n">other</span>
+		<span class="k">return</span> <span class="n">new</span>
+
+	<span class="k">def</span> <span class="nf">__isub__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">other</span><span class="p">):</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">_is_dense</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_dense</span> <span class="ow">or</span> <span class="n">other</span><span class="o">.</span><span class="n">_is_dense</span>
+		<span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span><span class="n">quantum_operator</span><span class="p">):</span>
+			<span class="k">for</span> <span class="n">key</span><span class="p">,</span><span class="n">value</span> <span class="ow">in</span> <span class="n">iteritems</span><span class="p">(</span><span class="n">other</span><span class="o">.</span><span class="n">_quantum_operator</span><span class="p">):</span>
+				<span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_quantum_operator</span><span class="p">:</span>
+					<span class="bp">self</span><span class="o">.</span><span class="n">_quantum_operator</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_quantum_operator</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">-</span> <span class="n">value</span>
+				<span class="k">else</span><span class="p">:</span>
+					<span class="bp">self</span><span class="o">.</span><span class="n">_quantum_operator</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="n">value</span>
+
+				<span class="k">if</span> <span class="n">_check_almost_zero</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_quantum_operator</span><span class="p">[</span><span class="n">key</span><span class="p">]):</span>
+					<span class="bp">self</span><span class="o">.</span><span class="n">_quantum_operator</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+
+			<span class="bp">self</span><span class="o">.</span><span class="n">_update_matvecs</span><span class="p">()</span>
+			<span class="k">return</span> <span class="bp">self</span>
+		<span class="k">elif</span> <span class="n">other</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+			<span class="k">return</span> <span class="bp">self</span>
+		<span class="k">else</span><span class="p">:</span>
+			<span class="k">return</span> <span class="bp">NotImplemented</span>
+
+	<span class="k">def</span> <span class="nf">__sub__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">other</span><span class="p">):</span>
+		<span class="n">result_dtype</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">result_type</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dtype</span><span class="p">,</span> <span class="n">other</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
+		<span class="n">new</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">result_dtype</span><span class="p">,</span><span class="n">copy</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+		<span class="n">new</span> <span class="o">-=</span> <span class="n">other</span>
+		<span class="k">return</span> <span class="n">new</span>		
+
+	<span class="k">def</span> <span class="nf">__imul__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">other</span><span class="p">):</span>
+		<span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span><span class="n">quantum_operator</span><span class="p">):</span>
+			<span class="k">return</span> <span class="bp">NotImplemented</span>
+		<span class="k">elif</span> <span class="ow">not</span> <span class="n">_np</span><span class="o">.</span><span class="n">isscalar</span><span class="p">(</span><span class="n">other</span><span class="p">):</span>
+			<span class="k">return</span> <span class="bp">NotImplemented</span>
+		<span class="k">else</span><span class="p">:</span>
+			<span class="k">for</span> <span class="n">op</span> <span class="ow">in</span> <span class="n">itervalues</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_quantum_operator</span><span class="p">):</span>
+				<span class="n">op</span> <span class="o">*=</span> <span class="n">other</span>
+
+			<span class="bp">self</span><span class="o">.</span><span class="n">_update_matvecs</span><span class="p">()</span>
+			<span class="k">return</span> <span class="bp">self</span>
+
+	<span class="k">def</span> <span class="nf">__mul__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">other</span><span class="p">):</span>
+		<span class="n">result_dtype</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">result_type</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dtype</span><span class="p">,</span> <span class="n">other</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
+		<span class="n">new</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">result_dtype</span><span class="p">,</span><span class="n">copy</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+		<span class="n">new</span> <span class="o">*=</span> <span class="n">other</span>
+		<span class="k">return</span> <span class="n">new</span>
+
+	<span class="k">def</span> <span class="nf">__idiv__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">other</span><span class="p">):</span>
+		<span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span><span class="n">quantum_operator</span><span class="p">):</span>
+			<span class="k">return</span> <span class="bp">NotImplemented</span>
+		<span class="k">elif</span> <span class="ow">not</span> <span class="n">_np</span><span class="o">.</span><span class="n">isscalar</span><span class="p">(</span><span class="n">other</span><span class="p">):</span>
+			<span class="k">return</span> <span class="bp">NotImplemented</span>
+		<span class="k">else</span><span class="p">:</span>
+			<span class="k">for</span> <span class="n">op</span> <span class="ow">in</span> <span class="n">itervalues</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_quantum_operator</span><span class="p">):</span>
+				<span class="n">op</span> <span class="o">/=</span> <span class="n">other</span>
+			<span class="bp">self</span><span class="o">.</span><span class="n">_update_matvecs</span><span class="p">()</span>
+			<span class="k">return</span> <span class="bp">self</span>
+
+	<span class="k">def</span> <span class="nf">__div__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">other</span><span class="p">):</span>
+		<span class="n">result_dtype</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">result_type</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dtype</span><span class="p">,</span> <span class="n">other</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
+		<span class="n">new</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">result_dtype</span><span class="p">,</span><span class="n">copy</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+		<span class="n">new</span> <span class="o">/=</span> <span class="n">other</span>
+		<span class="k">return</span> <span class="n">new</span>
+
+
+
+
+	<span class="k">def</span> <span class="nf">_check_hamiltonian_pars</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">pars</span><span class="p">):</span>
+
+		<span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">pars</span><span class="p">,</span><span class="nb">dict</span><span class="p">):</span>
+			<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;expecing dictionary for parameters.&quot;</span><span class="p">)</span>
+
+		<span class="n">extra</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">pars</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span> <span class="o">-</span> <span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_quantum_operator</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+		<span class="k">if</span> <span class="n">extra</span><span class="p">:</span>
+			<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;unexpected couplings: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">extra</span><span class="p">))</span>
+
+		<span class="n">missing</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_quantum_operator</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span> <span class="o">-</span> <span class="nb">set</span><span class="p">(</span><span class="n">pars</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+		<span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">missing</span><span class="p">:</span>
+			<span class="n">pars</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="n">_np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
+
+
+		<span class="k">for</span> <span class="n">key</span><span class="p">,</span><span class="n">J</span> <span class="ow">in</span> <span class="n">pars</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+			<span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">J</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">tuple</span><span class="p">:</span>
+				<span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">J</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">:</span>
+					<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;expecting parameters to be either scalar or tuple of function and arguements of function.&quot;</span><span class="p">)</span>
+			<span class="k">else</span><span class="p">:</span>
+				<span class="n">J</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">J</span><span class="p">)</span>				
+				<span class="k">if</span> <span class="n">J</span><span class="o">.</span><span class="n">ndim</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+					<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;expecting parameters to be either scalar or tuple of function and arguements of function.&quot;</span><span class="p">)</span>
+
+		<span class="k">return</span> <span class="n">pars</span>
+
+	<span class="k">def</span> <span class="nf">_check_scalar_pars</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">pars</span><span class="p">):</span>
+
+		<span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">pars</span><span class="p">,</span><span class="nb">dict</span><span class="p">):</span>
+			<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;expecing dictionary for parameters.&quot;</span><span class="p">)</span>
+
+		<span class="n">extra</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">pars</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span> <span class="o">-</span> <span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_quantum_operator</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+		<span class="k">if</span> <span class="n">extra</span><span class="p">:</span>
+			<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;unexpected couplings: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">extra</span><span class="p">))</span>
+
+		<span class="n">missing</span> <span class="o">=</span>  <span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_quantum_operator</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span> <span class="o">-</span> <span class="nb">set</span><span class="p">(</span><span class="n">pars</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+		<span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">missing</span><span class="p">:</span>
+			<span class="n">pars</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.0</span>
+
+		<span class="k">return</span> <span class="n">pars</span>
+
+	<span class="c1"># checks</span>
+	<span class="k">def</span> <span class="nf">_mat_checks</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">other</span><span class="p">,</span><span class="n">casting</span><span class="o">=</span><span class="s2">&quot;same_kind&quot;</span><span class="p">):</span>
+		<span class="k">try</span><span class="p">:</span>
+			<span class="k">if</span> <span class="n">other</span><span class="o">.</span><span class="n">shape</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_shape</span><span class="p">:</span> <span class="c1"># only accepts square matricies </span>
+				<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;shapes do not match&#39;</span><span class="p">)</span>
+			<span class="k">if</span> <span class="ow">not</span> <span class="n">_np</span><span class="o">.</span><span class="n">can_cast</span><span class="p">(</span><span class="n">other</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">_dtype</span><span class="p">,</span><span class="n">casting</span><span class="o">=</span><span class="n">casting</span><span class="p">):</span>
+				<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;cannot cast types&#39;</span><span class="p">)</span>
+		<span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+			<span class="k">if</span> <span class="n">other</span><span class="o">.</span><span class="n">_shape</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_shape</span><span class="p">:</span> <span class="c1"># only accepts square matricies </span>
+				<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;shapes do not match&#39;</span><span class="p">)</span>
+			<span class="k">if</span> <span class="ow">not</span> <span class="n">_np</span><span class="o">.</span><span class="n">can_cast</span><span class="p">(</span><span class="n">other</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">_dtype</span><span class="p">,</span><span class="n">casting</span><span class="o">=</span><span class="n">casting</span><span class="p">):</span>
+				<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;cannot cast types&#39;</span><span class="p">)</span>	
+
+	<span class="k">def</span> <span class="nf">_update_matvecs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">_matvec_functions</span> <span class="o">=</span> <span class="p">{}</span>
+
+		<span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_quantum_operator</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+			<span class="bp">self</span><span class="o">.</span><span class="n">_matvec_functions</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">_get_matvec_function</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_quantum_operator</span><span class="p">[</span><span class="n">key</span><span class="p">])</span></div>
+
+<div class="viewcode-block" id="isquantum_operator"><a class="viewcode-back" href="../../../generated/quspin.operators.isquantum_operator.html#quspin.operators.isquantum_operator">[docs]</a><span class="k">def</span> <span class="nf">isquantum_operator</span><span class="p">(</span><span class="n">obj</span><span class="p">):</span>
+	<span class="sd">&quot;&quot;&quot;Checks if instance is object of `quantum_operator` class.</span>
+
+<span class="sd">	Parameters</span>
+<span class="sd">	-----------</span>
+<span class="sd">	obj : </span>
+<span class="sd">		Arbitraty python object.</span>
+
+<span class="sd">	Returns</span>
+<span class="sd">	--------</span>
+<span class="sd">	bool</span>
+<span class="sd">		Can be either of the following:</span>
+
+<span class="sd">		* `True`: `obj` is an instance of `quantum_operator` class.</span>
+<span class="sd">		* `False`: `obj` is NOT an instance of `quantum_operator` class.</span>
+
+<span class="sd">	&quot;&quot;&quot;</span>
+	<span class="k">return</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span><span class="n">quantum_operator</span><span class="p">)</span></div>
+
+	
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">QuSpin 0.3.2 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2016, Phillip Weinberg and Marin Bukov.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.2.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,160 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><script type="text/javascript">
+
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-110543543-1']);
+      _gaq.push(['_trackPageview']);
+
+      (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+    </script>
+    <title>quspin.basis.get_basis_type &#8212; QuSpin 0.3.2 documentation</title>
+    <link rel="stylesheet" href="../static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../static/documentation_options.js"></script>
+    <script type="text/javascript" src="../static/jquery.js"></script>
+    <script type="text/javascript" src="../static/underscore.js"></script>
+    <script type="text/javascript" src="../static/doctools.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="quspin.basis.python_int_to_basis_int" href="quspin.basis.python_int_to_basis_int.html" />
+    <link rel="prev" title="quspin.basis.basis_zeros" href="quspin.basis.basis_zeros.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="quspin.basis.python_int_to_basis_int.html" title="quspin.basis.python_int_to_basis_int"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="quspin.basis.basis_zeros.html" title="quspin.basis.basis_zeros"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.2 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../basis.html" accesskey="U">Basis module (<code class="docutils literal notranslate"><span class="pre">quspin.basis</span></code>)</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="quspin-basis-get-basis-type">
+<h1>quspin.basis.get_basis_type<a class="headerlink" href="#quspin-basis-get-basis-type" title="Permalink to this headline">¶</a></h1>
+<dl class="function">
+<dt id="quspin.basis.get_basis_type">
+<code class="descclassname">quspin.basis.</code><code class="descname">get_basis_type</code><span class="sig-paren">(</span><em>N</em>, <em>Np</em>, <em>sps</em><span class="sig-paren">)</span><a class="headerlink" href="#quspin.basis.get_basis_type" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns minimum dtype to represent manybody state.</p>
+<p>Given the system size, number of particles and states per site this function calculates the minimum type required to represent those states.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>N</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
+<dd><p class="first last">total number of sites on lattice</p>
+</dd>
+<dt><strong>Np</strong> <span class="classifier-delimiter">:</span> <span class="classifier">None, int, or list of ints</span></dt>
+<dd><p class="first last">number of particles on the lattice. For a list, the largest particle sector is chosen for the representation.</p>
+</dd>
+<dt><strong>sps: int</strong></dt>
+<dd><p class="first last">number of possible states allowed per site. e.g. spin-1/2 has 2 possible states per site.</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>numpy.dtype object</strong></dt>
+<dd><p class="first last">the appropriate dtype size to represent the system. will be one of:  <cite>uint32</cite>,`uint64`,`uint256`,`uint1024`,`uint4096`, or <cite>uint16384</cite>.</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Examples</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">dtype</span> <span class="o">=</span> <span class="n">get_basis_type</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>  
+</pre></div>
+</div>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="quspin.basis.basis_zeros.html"
+                        title="previous chapter">quspin.basis.basis_zeros</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="quspin.basis.python_int_to_basis_int.html"
+                        title="next chapter">quspin.basis.python_int_to_basis_int</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../sources/generated/quspin.basis.get_basis_type.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="quspin.basis.python_int_to_basis_int.html" title="quspin.basis.python_int_to_basis_int"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="quspin.basis.basis_zeros.html" title="quspin.basis.basis_zeros"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.2 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../basis.html" >Basis module (<code class="docutils literal notranslate"><span class="pre">quspin.basis</span></code>)</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2016, Phillip Weinberg and Marin Bukov.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.2.
+    </div>
+  </body>
+</html>

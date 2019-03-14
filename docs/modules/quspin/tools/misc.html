@@ -1,0 +1,317 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><script type="text/javascript">
+
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-110543543-1']);
+      _gaq.push(['_trackPageview']);
+
+      (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+    </script>
+    <title>quspin.tools.misc &#8212; QuSpin 0.3.2 documentation</title>
+    <link rel="stylesheet" href="../../../static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../../../static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../../static/jquery.js"></script>
+    <script type="text/javascript" src="../../../static/underscore.js"></script>
+    <script type="text/javascript" src="../../../static/doctools.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">QuSpin 0.3.2 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for quspin.tools.misc</h1><div class="highlight"><pre>
+<span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">print_function</span><span class="p">,</span> <span class="n">division</span>
+
+<span class="c1"># need linear algebra packages</span>
+<span class="kn">import</span> <span class="nn">scipy.sparse</span> <span class="k">as</span> <span class="nn">_sp</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">_np</span>
+
+
+<span class="kn">from</span> <span class="nn">.expm_multiply_parallel_core</span> <span class="k">import</span> <span class="n">csr_matvec</span>
+
+<span class="kn">import</span> <span class="nn">warnings</span>
+
+<span class="n">__all__</span> <span class="o">=</span>  <span class="p">[</span><span class="s2">&quot;project_op&quot;</span><span class="p">,</span> 
+			<span class="s2">&quot;KL_div&quot;</span><span class="p">,</span>
+			<span class="s2">&quot;mean_level_spacing&quot;</span>
+			<span class="p">]</span>
+
+<div class="viewcode-block" id="project_op"><a class="viewcode-back" href="../../../generated/quspin.tools.misc.project_op.html#quspin.tools.misc.project_op">[docs]</a><span class="k">def</span> <span class="nf">project_op</span><span class="p">(</span><span class="n">Obs</span><span class="p">,</span><span class="n">proj</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="n">_np</span><span class="o">.</span><span class="n">complex128</span><span class="p">):</span>
+	<span class="sd">&quot;&quot;&quot;Projects observable onto symmetry-reduced subspace.</span>
+
+<span class="sd">	This function takes an observable `Obs` and a reduced basis or a projector `proj`, and projects `Obs`</span>
+<span class="sd">	onto that reduced basis.</span>
+
+<span class="sd">	Examples</span>
+<span class="sd">	--------</span>
+
+<span class="sd">	The following example shows how to project an operator :math:`H_1=\\sum_j hS^x_j + g S^z_j` from the</span>
+<span class="sd">	symmetry-reduced basis to the full basis.</span>
+<span class="sd">	</span>
+<span class="sd">	.. literalinclude:: ../../doc_examples/project_op-example.py</span>
+<span class="sd">		:linenos:</span>
+<span class="sd">		:language: python</span>
+<span class="sd">		:lines: 7-</span>
+
+<span class="sd">	Parameters</span>
+<span class="sd">	-----------</span>
+<span class="sd">	Obs : :obj:</span>
+<span class="sd">		Operator to be projected, either a `numpy.ndarray` or a `hamiltonian` object.</span>
+<span class="sd">	proj : :obj:</span>
+<span class="sd">		Either one of the following:</span>
+
+<span class="sd">		* `basis` object with the basis of the Hilbert space after the projection.</span>
+<span class="sd">		* numpy.ndarray: a matrix which contains the projector.</span>
+
+<span class="sd">		Projectors can be calculated conveniently using the function method `basis.get_proj()`.</span>
+<span class="sd">	dtype : type, optional</span>
+<span class="sd">		Data type of output. Default is `numpy.complex128`.</span>
+
+<span class="sd">	Returns</span>
+<span class="sd">	-------- </span>
+<span class="sd">	dict</span>
+<span class="sd">		Dictionary with keys</span>
+
+<span class="sd">		* &quot;Proj_Obs&quot;: projected observable `Obs`.</span>
+
+<span class="sd">	&quot;&quot;&quot;</span>
+	
+	<span class="c1"># needed for isinstance only</span>
+	<span class="kn">from</span> <span class="nn">..operators</span> <span class="k">import</span> <span class="n">ishamiltonian</span>
+	<span class="kn">from</span> <span class="nn">..basis</span> <span class="k">import</span> <span class="n">isbasis</span>
+
+	<span class="n">variables</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Proj_Obs&quot;</span><span class="p">]</span>
+
+	<span class="k">if</span> <span class="n">isbasis</span><span class="p">(</span><span class="n">proj</span><span class="p">):</span>
+		<span class="n">proj</span> <span class="o">=</span> <span class="n">proj</span><span class="o">.</span><span class="n">get_proj</span><span class="p">(</span><span class="n">dtype</span><span class="p">)</span>
+	<span class="k">elif</span> <span class="p">(</span><span class="n">proj</span><span class="o">.</span><span class="vm">__class__</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="n">_np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span><span class="n">_np</span><span class="o">.</span><span class="n">matrix</span><span class="p">])</span> <span class="ow">and</span> <span class="p">(</span><span class="ow">not</span> <span class="n">_sp</span><span class="o">.</span><span class="n">issparse</span><span class="p">(</span><span class="n">proj</span><span class="p">)):</span>
+		<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Expecting either matrix/array or basis object for proj argument.&quot;</span><span class="p">)</span>
+
+	<span class="k">if</span> <span class="n">ishamiltonian</span><span class="p">(</span><span class="n">Obs</span><span class="p">):</span>
+
+		<span class="k">if</span> <span class="n">Obs</span><span class="o">.</span><span class="n">Ns</span> <span class="o">!=</span> <span class="n">proj</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+			<span class="k">if</span> <span class="n">Obs</span><span class="o">.</span><span class="n">Ns</span> <span class="o">!=</span> <span class="n">proj</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+				<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Dimension mismatch Obs:</span><span class="si">{0}</span><span class="s2"> proj</span><span class="si">{1}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">Obs</span><span class="o">.</span><span class="n">get_shape</span><span class="p">,</span><span class="n">proj</span><span class="o">.</span><span class="n">shape</span><span class="p">))</span>
+			<span class="k">else</span><span class="p">:</span>
+				<span class="c1"># projecting from a smaller to larger H-space</span>
+				<span class="n">proj_down</span><span class="o">=</span><span class="kc">False</span>
+		<span class="k">else</span><span class="p">:</span>
+			<span class="c1"># projecting from larger to smaller H-space</span>
+			<span class="n">proj_down</span><span class="o">=</span><span class="kc">True</span>
+
+		<span class="k">if</span> <span class="n">proj_down</span><span class="p">:</span>
+			<span class="n">Proj_Obs</span> <span class="o">=</span> <span class="n">Obs</span><span class="o">.</span><span class="n">project_to</span><span class="p">(</span><span class="n">proj</span><span class="p">)</span>		
+		<span class="k">else</span><span class="p">:</span>
+			<span class="n">Proj_Obs</span> <span class="o">=</span> <span class="n">Obs</span><span class="o">.</span><span class="n">project_to</span><span class="p">(</span><span class="n">proj</span><span class="o">.</span><span class="n">T</span><span class="o">.</span><span class="n">conj</span><span class="p">())</span>
+
+	<span class="k">else</span><span class="p">:</span>
+
+		<span class="k">if</span> <span class="n">Obs</span><span class="o">.</span><span class="n">ndim</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">:</span>
+			<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Expecting Obs to be a 2 dimensional array.&quot;</span><span class="p">)</span>
+
+		<span class="k">if</span> <span class="n">Obs</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="n">Obs</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+			<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Expecting Obs to be a square array.&quot;</span><span class="p">)</span>
+
+		<span class="k">if</span> <span class="n">Obs</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="n">proj</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+			<span class="k">if</span> <span class="n">Obs</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="n">proj</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+				<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Dimension mismatch Obs:</span><span class="si">{0}</span><span class="s2"> proj</span><span class="si">{1}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">Obs</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span><span class="n">proj</span><span class="o">.</span><span class="n">shape</span><span class="p">))</span>
+			<span class="k">else</span><span class="p">:</span>
+				<span class="n">proj_down</span><span class="o">=</span><span class="kc">False</span>
+		<span class="k">else</span><span class="p">:</span>
+			<span class="n">proj_down</span><span class="o">=</span><span class="kc">True</span>
+
+		<span class="k">if</span> <span class="n">proj_down</span><span class="p">:</span>
+			<span class="n">Proj_Obs</span> <span class="o">=</span> <span class="n">proj</span><span class="o">.</span><span class="n">T</span><span class="o">.</span><span class="n">conj</span><span class="p">()</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">Obs</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">proj</span><span class="p">))</span>
+		<span class="k">else</span><span class="p">:</span>
+			<span class="n">Proj_Obs</span> <span class="o">=</span> <span class="n">proj</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">Obs</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">proj</span><span class="o">.</span><span class="n">T</span><span class="o">.</span><span class="n">conj</span><span class="p">()))</span>
+
+	<span class="c1"># define dictionary with outputs</span>
+	<span class="n">return_dict</span> <span class="o">=</span> <span class="p">{}</span>
+	<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">variables</span><span class="p">)):</span>
+		<span class="n">return_dict</span><span class="p">[</span><span class="n">variables</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span> <span class="o">=</span> <span class="nb">locals</span><span class="p">()[</span><span class="n">variables</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span>
+
+	<span class="k">return</span> <span class="n">return_dict</span></div>
+
+<div class="viewcode-block" id="KL_div"><a class="viewcode-back" href="../../../generated/quspin.tools.misc.KL_div.html#quspin.tools.misc.KL_div">[docs]</a><span class="k">def</span> <span class="nf">KL_div</span><span class="p">(</span><span class="n">p1</span><span class="p">,</span><span class="n">p2</span><span class="p">):</span>
+	<span class="sd">&quot;&quot;&quot;Calculates Kullback-Leibler divergence of two discrete probability distributions.</span>
+
+<span class="sd">	.. math::</span>
+<span class="sd">		\\mathrm{KL}(p_1||p_2) = \\sum_n p_1(n)\\log\\frac{p_1(n)}{p_2(n)}</span>
+
+<span class="sd">	Parameters</span>
+<span class="sd">	----------- </span>
+<span class="sd">	p1 : numpy.ndarray</span>
+<span class="sd">		Dscrete probability distribution.</span>
+<span class="sd">	p2 : numpy.ndarray</span>
+<span class="sd">		Discrete probability distribution.</span>
+
+<span class="sd">	Returns</span>
+<span class="sd">	--------</span>
+<span class="sd">	numpy.ndarray</span>
+<span class="sd">		Kullback-Leibler divergence of `p1` and `p2`.</span>
+
+<span class="sd">	&quot;&quot;&quot;</span>
+	<span class="n">p1</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">p1</span><span class="p">)</span>
+	<span class="n">p2</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">p2</span><span class="p">)</span>
+
+
+	<span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">p1</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">p2</span><span class="p">):</span>
+		<span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Expecting the probability distributions &#39;p1&#39; and &#39;p2&#39; to have same size!&quot;</span><span class="p">)</span>
+	<span class="k">if</span> <span class="n">p1</span><span class="o">.</span><span class="n">ndim</span> <span class="o">!=</span> <span class="mi">1</span> <span class="ow">or</span> <span class="n">p2</span><span class="o">.</span><span class="n">ndim</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
+		<span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Expecting the probability distributions &#39;p1&#39; and &#39;p2&#39; to have linear dimension!&quot;</span><span class="p">)</span>
+
+
+	<span class="k">if</span> <span class="n">_np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">p1</span><span class="o">&lt;=</span><span class="mf">0.0</span><span class="p">)</span> <span class="ow">or</span> <span class="n">_np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">p2</span><span class="o">&lt;=</span><span class="mf">0.0</span><span class="p">):</span>
+		<span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Expecting all entries of the probability distributions &#39;p1&#39; and &#39;p2&#39; to be non-negative!&quot;</span><span class="p">)</span>
+	
+	<span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="nb">sum</span><span class="p">(</span><span class="n">p1</span><span class="p">)</span><span class="o">-</span><span class="mf">1.0</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mf">1E-13</span><span class="p">:</span>
+		<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Expecting &#39;p1&#39; to be normalised!&quot;</span><span class="p">)</span>
+
+	<span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="nb">sum</span><span class="p">(</span><span class="n">p2</span><span class="p">)</span><span class="o">-</span><span class="mf">1.0</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mf">1E-13</span><span class="p">:</span>
+		<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Expecting &#39;p2&#39; to be normalised!&quot;</span><span class="p">)</span>
+
+	<span class="k">if</span> <span class="n">_np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">p1</span><span class="o">==</span><span class="mf">0.0</span><span class="p">):</span>
+
+		<span class="n">inds</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">p1</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span>
+
+		<span class="n">p1</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">p1</span><span class="p">,</span><span class="n">inds</span><span class="p">)</span>
+		<span class="n">p2</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">p2</span><span class="p">,</span><span class="n">inds</span><span class="p">)</span>
+
+	<span class="k">return</span> <span class="n">_np</span><span class="o">.</span><span class="n">multiply</span><span class="p">(</span> <span class="n">p1</span><span class="p">,</span> <span class="n">_np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span> <span class="n">_np</span><span class="o">.</span><span class="n">divide</span><span class="p">(</span><span class="n">p1</span><span class="p">,</span><span class="n">p2</span><span class="p">)</span> <span class="p">)</span> <span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="mean_level_spacing"><a class="viewcode-back" href="../../../generated/quspin.tools.misc.mean_level_spacing.html#quspin.tools.misc.mean_level_spacing">[docs]</a><span class="k">def</span> <span class="nf">mean_level_spacing</span><span class="p">(</span><span class="n">E</span><span class="p">,</span><span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+	<span class="sd">&quot;&quot;&quot;Calculates the mean-level spacing of an energy spectrum.</span>
+
+<span class="sd">	See mean level spacing, :math:`\\langle\\tilde r_\mathrm{W}\\rangle`, in </span>
+<span class="sd">	`arXiv:1212.5611 &lt;https://arxiv.org/pdf/1212.5611.pdf&gt;`_ for more details.</span>
+
+<span class="sd">	For Wigner-Dyson statistics, we have :math:`\\langle\\tilde r_\mathrm{W}\\rangle\\approx 0.53`, while</span>
+<span class="sd">	for Poisson statistics: :math:`\\langle\\tilde r_\mathrm{W}\\rangle\\approx 0.38`.</span>
+
+<span class="sd">	Examples</span>
+<span class="sd">	--------</span>
+
+<span class="sd">	The following example shows how to calculate the mean level spacing :math:`\\langle\\tilde r_\mathrm{W}\\rangle` for the</span>
+<span class="sd">	spectrum of the ergodic Hamiltonian :math:`H_1=\\sum_jJ S^z_{j+1}S^z + hS^x_j + g S^z_j`.</span>
+<span class="sd">	</span>
+<span class="sd">	.. literalinclude:: ../../doc_examples/mean_level_spacing-example.py</span>
+<span class="sd">		:linenos:</span>
+<span class="sd">		:language: python</span>
+<span class="sd">		:lines: 7-</span>
+
+<span class="sd">	Parameters</span>
+<span class="sd">	-----------</span>
+<span class="sd">	E : numpy.ndarray</span>
+<span class="sd">			Ordered list of ascending, NONdegenerate energies. If `E` contains a repeating value, the function returns `nan`.</span>
+<span class="sd">	verbose : bool, optional</span>
+<span class="sd">		Toggles warning message about degeneracies of the spectrum `E`.</span>
+
+<span class="sd">	Returns</span>
+<span class="sd">	-------- </span>
+<span class="sd">	float</span>
+<span class="sd">		mean-level spacing.</span>
+<span class="sd">	nan</span>
+<span class="sd">		if spectrum `E` has degeneracies.</span>
+
+<span class="sd">	&quot;&quot;&quot;</span>
+
+	<span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">E</span><span class="p">,</span><span class="n">_np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+		<span class="n">E</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">E</span><span class="p">)</span>
+
+	<span class="k">if</span> <span class="n">_np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">_np</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">E</span><span class="p">)</span><span class="o">!=</span><span class="n">E</span><span class="p">):</span>
+		<span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Expecting a sorted list of ascending, nondegenerate eigenenergies &#39;E&#39;.&quot;</span><span class="p">)</span>
+
+	<span class="c1"># check for degeneracies</span>
+	<span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">_np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">E</span><span class="p">))</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">E</span><span class="p">):</span>
+		<span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+			<span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;Degeneracies found in spectrum &#39;E&#39;!&quot;</span><span class="p">)</span>
+		<span class="k">return</span> <span class="n">_np</span><span class="o">.</span><span class="n">nan</span>
+	<span class="k">else</span><span class="p">:</span>
+		<span class="c1"># compute consecutive E-differences</span>
+		<span class="n">sn</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">E</span><span class="p">)</span>
+		
+		<span class="c1"># calculate the ratios of consecutive spacings</span>
+		<span class="n">aux</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">E</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">),</span><span class="n">dtype</span><span class="o">=</span><span class="n">_np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+
+		<span class="n">aux</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">sn</span>
+		<span class="n">aux</span><span class="p">[:,</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">roll</span><span class="p">(</span><span class="n">sn</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+
+		<span class="k">return</span> <span class="n">_np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">_np</span><span class="o">.</span><span class="n">divide</span><span class="p">(</span> <span class="n">aux</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span> <span class="n">aux</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="p">)[</span><span class="mi">0</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="p">)</span></div>
+
+	
+
+
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">QuSpin 0.3.2 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2016, Phillip Weinberg and Marin Bukov.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.2.
+    </div>
+  </body>
+</html>
