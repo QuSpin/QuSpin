@@ -17,7 +17,7 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-    <title>Tools module (quspin.tools) &#8212; QuSpin 0.3.2 documentation</title>
+    <title>&lt;no title&gt; &#8212; QuSpin 0.3.2 documentation</title>
     <link rel="stylesheet" href="static/classic.css" type="text/css" />
     <link rel="stylesheet" href="static/pygments.css" type="text/css" />
     
@@ -29,8 +29,8 @@
     
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="quspin.tools.evolution.ED_state_vs_time" href="generated/quspin.tools.evolution.ED_state_vs_time.html" />
-    <link rel="prev" title="quspin.operators.isquantum_LinearOperator" href="generated/quspin.operators.isquantum_LinearOperator.html" /> 
+    <link rel="next" title="Installation" href="Installation.html" />
+    <link rel="prev" title="&lt;no title&gt;" href="operators.html" /> 
   </head><body>
     <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
@@ -39,13 +39,10 @@
           <a href="genindex.html" title="General Index"
              accesskey="I">index</a></li>
         <li class="right" >
-          <a href="py-modindex.html" title="Python Module Index"
-             >modules</a> |</li>
-        <li class="right" >
-          <a href="generated/quspin.tools.evolution.ED_state_vs_time.html" title="quspin.tools.evolution.ED_state_vs_time"
+          <a href="Installation.html" title="Installation"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="generated/quspin.operators.isquantum_LinearOperator.html" title="quspin.operators.isquantum_LinearOperator"
+          <a href="operators.html" title="&lt;no title&gt;"
              accesskey="P">previous</a> |</li>
         <li class="nav-item nav-item-0"><a href="index.html">QuSpin 0.3.2 documentation</a> &#187;</li> 
       </ul>
@@ -56,132 +53,19 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <span class="target" id="module-quspin.tools"></span><div class="section" id="tools-module-quspin-tools">
-<h1>Tools module (<a class="reference internal" href="#module-quspin.tools" title="quspin.tools"><code class="xref py py-mod docutils literal notranslate"><span class="pre">quspin.tools</span></code></a>)<a class="headerlink" href="#tools-module-quspin-tools" title="Permalink to this headline">¶</a></h1>
-<p>Classes and functions to manipulate quantum states and do calculations.</p>
-<div class="section" id="evolution">
-<h2>evolution<a class="headerlink" href="#evolution" title="Permalink to this headline">¶</a></h2>
-<table border="1" class="longtable docutils">
-<colgroup>
-<col width="10%" />
-<col width="90%" />
-</colgroup>
-<tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="generated/quspin.tools.evolution.ED_state_vs_time.html#quspin.tools.evolution.ED_state_vs_time" title="quspin.tools.evolution.ED_state_vs_time"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ED_state_vs_time</span></code></a>(psi,&nbsp;E,&nbsp;V,&nbsp;times[,&nbsp;iterate])</td>
-<td>Calculates the time evolution of initial state using a complete eigenbasis.</td>
-</tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/quspin.tools.evolution.evolve.html#quspin.tools.evolution.evolve" title="quspin.tools.evolution.evolve"><code class="xref py py-obj docutils literal notranslate"><span class="pre">evolve</span></code></a>(v0,&nbsp;t0,&nbsp;times,&nbsp;f[,&nbsp;solver_name,&nbsp;…])</td>
-<td>Implements (imaginary) time evolution for a user-defined first-order ODE.</td>
-</tr>
-<tr class="row-odd"><td><a class="reference internal" href="generated/quspin.tools.evolution.expm_multiply_parallel.html#quspin.tools.evolution.expm_multiply_parallel" title="quspin.tools.evolution.expm_multiply_parallel"><code class="xref py py-obj docutils literal notranslate"><span class="pre">expm_multiply_parallel</span></code></a>(A[,&nbsp;a])</td>
-<td>Implements <cite>scipy.sparse.linalg.expm_multiply()</cite> for <em>openmp</em>.</td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="section" id="floquet">
-<h2>Floquet<a class="headerlink" href="#floquet" title="Permalink to this headline">¶</a></h2>
-<table border="1" class="longtable docutils">
-<colgroup>
-<col width="10%" />
-<col width="90%" />
-</colgroup>
-<tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="generated/quspin.tools.Floquet.Floquet.html#quspin.tools.Floquet.Floquet" title="quspin.tools.Floquet.Floquet"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Floquet</span></code></a>(evo_dict[,&nbsp;HF,&nbsp;UF,&nbsp;thetaF,&nbsp;VF,&nbsp;n_jobs])</td>
-<td>Calculates the Floquet spectrum, Floquet Hamiltonian and Floquet states.</td>
-</tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/quspin.tools.Floquet.Floquet_t_vec.html#quspin.tools.Floquet.Floquet_t_vec" title="quspin.tools.Floquet.Floquet_t_vec"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Floquet_t_vec</span></code></a>(Omega,&nbsp;N_const[,&nbsp;len_T,&nbsp;N_up,&nbsp;…])</td>
-<td>Creates a Floquet time vector with fixed number of points per period.</td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="section" id="measurements">
-<h2>measurements<a class="headerlink" href="#measurements" title="Permalink to this headline">¶</a></h2>
-<table border="1" class="longtable docutils">
-<colgroup>
-<col width="10%" />
-<col width="90%" />
-</colgroup>
-<tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="generated/quspin.tools.measurements.ent_entropy.html#quspin.tools.measurements.ent_entropy" title="quspin.tools.measurements.ent_entropy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ent_entropy</span></code></a>(system_state,&nbsp;basis[,&nbsp;…])</td>
-<td>Calculates entanglement entropy of a subsystem using Singular Value Decomposition (svd).</td>
-</tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/quspin.tools.measurements.diag_ensemble.html#quspin.tools.measurements.diag_ensemble" title="quspin.tools.measurements.diag_ensemble"><code class="xref py py-obj docutils literal notranslate"><span class="pre">diag_ensemble</span></code></a>(N,&nbsp;system_state,&nbsp;E2,&nbsp;V2[,&nbsp;…])</td>
-<td>Calculates expectation values in the Diagonal ensemble of the initial state.</td>
-</tr>
-<tr class="row-odd"><td><a class="reference internal" href="generated/quspin.tools.measurements.obs_vs_time.html#quspin.tools.measurements.obs_vs_time" title="quspin.tools.measurements.obs_vs_time"><code class="xref py py-obj docutils literal notranslate"><span class="pre">obs_vs_time</span></code></a>(psi_t,&nbsp;times,&nbsp;Obs_dict[,&nbsp;…])</td>
-<td>Calculates expectation value of observable(s) as a function of time in a time-dependent state.</td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="section" id="block-tools">
-<h2>block_tools<a class="headerlink" href="#block-tools" title="Permalink to this headline">¶</a></h2>
-<table border="1" class="longtable docutils">
-<colgroup>
-<col width="10%" />
-<col width="90%" />
-</colgroup>
-<tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="generated/quspin.tools.block_tools.block_ops.html#quspin.tools.block_tools.block_ops" title="quspin.tools.block_tools.block_ops"><code class="xref py py-obj docutils literal notranslate"><span class="pre">block_ops</span></code></a>(blocks,&nbsp;static,&nbsp;dynamic,&nbsp;…[,&nbsp;…])</td>
-<td>Splits up the dynamics of a state over various symmetry sectors.</td>
-</tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/quspin.tools.block_tools.block_diag_hamiltonian.html#quspin.tools.block_tools.block_diag_hamiltonian" title="quspin.tools.block_tools.block_diag_hamiltonian"><code class="xref py py-obj docutils literal notranslate"><span class="pre">block_diag_hamiltonian</span></code></a>(blocks,&nbsp;static,&nbsp;…)</td>
-<td>Block-diagonalises a Hamiltonian obeying a symmetry.</td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="section" id="misc">
-<h2>misc<a class="headerlink" href="#misc" title="Permalink to this headline">¶</a></h2>
-<table border="1" class="longtable docutils">
-<colgroup>
-<col width="10%" />
-<col width="90%" />
-</colgroup>
-<tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="generated/quspin.tools.misc.csr_matvec.html#quspin.tools.misc.csr_matvec" title="quspin.tools.misc.csr_matvec"><code class="xref py py-obj docutils literal notranslate"><span class="pre">csr_matvec</span></code></a>(A,&nbsp;v[,&nbsp;a,&nbsp;out,&nbsp;overwrite_out])</td>
-<td>Calculates matrix vector products <span class="math notranslate nohighlight">\(x += a A y\)</span> or <span class="math notranslate nohighlight">\(x = a A y\)</span> with csr matrix.</td>
-</tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/quspin.tools.misc.project_op.html#quspin.tools.misc.project_op" title="quspin.tools.misc.project_op"><code class="xref py py-obj docutils literal notranslate"><span class="pre">project_op</span></code></a>(Obs,&nbsp;proj[,&nbsp;dtype])</td>
-<td>Projects observable onto symmetry-reduced subspace.</td>
-</tr>
-<tr class="row-odd"><td><a class="reference internal" href="generated/quspin.tools.misc.KL_div.html#quspin.tools.misc.KL_div" title="quspin.tools.misc.KL_div"><code class="xref py py-obj docutils literal notranslate"><span class="pre">KL_div</span></code></a>(p1,&nbsp;p2)</td>
-<td>Calculates Kullback-Leibler divergence of two discrete probability distributions.</td>
-</tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/quspin.tools.misc.mean_level_spacing.html#quspin.tools.misc.mean_level_spacing" title="quspin.tools.misc.mean_level_spacing"><code class="xref py py-obj docutils literal notranslate"><span class="pre">mean_level_spacing</span></code></a>(E[,&nbsp;verbose])</td>
-<td>Calculates the mean-level spacing of an energy spectrum.</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-
+  
 
           </div>
         </div>
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
-  <h3><a href="index.html">Table of Contents</a></h3>
-  <ul>
-<li><a class="reference internal" href="#">Tools module (<code class="docutils literal notranslate"><span class="pre">quspin.tools</span></code>)</a><ul>
-<li><a class="reference internal" href="#evolution">evolution</a></li>
-<li><a class="reference internal" href="#floquet">Floquet</a></li>
-<li><a class="reference internal" href="#measurements">measurements</a></li>
-<li><a class="reference internal" href="#block-tools">block_tools</a></li>
-<li><a class="reference internal" href="#misc">misc</a></li>
-</ul>
-</li>
-</ul>
-
   <h4>Previous topic</h4>
-  <p class="topless"><a href="generated/quspin.operators.isquantum_LinearOperator.html"
-                        title="previous chapter">quspin.operators.isquantum_LinearOperator</a></p>
+  <p class="topless"><a href="operators.html"
+                        title="previous chapter">&lt;no title&gt;</a></p>
   <h4>Next topic</h4>
-  <p class="topless"><a href="generated/quspin.tools.evolution.ED_state_vs_time.html"
-                        title="next chapter">quspin.tools.evolution.ED_state_vs_time</a></p>
+  <p class="topless"><a href="Installation.html"
+                        title="next chapter">Installation</a></p>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
@@ -212,13 +96,10 @@
           <a href="genindex.html" title="General Index"
              >index</a></li>
         <li class="right" >
-          <a href="py-modindex.html" title="Python Module Index"
-             >modules</a> |</li>
-        <li class="right" >
-          <a href="generated/quspin.tools.evolution.ED_state_vs_time.html" title="quspin.tools.evolution.ED_state_vs_time"
+          <a href="Installation.html" title="Installation"
              >next</a> |</li>
         <li class="right" >
-          <a href="generated/quspin.operators.isquantum_LinearOperator.html" title="quspin.operators.isquantum_LinearOperator"
+          <a href="operators.html" title="&lt;no title&gt;"
              >previous</a> |</li>
         <li class="nav-item nav-item-0"><a href="index.html">QuSpin 0.3.2 documentation</a> &#187;</li> 
       </ul>
