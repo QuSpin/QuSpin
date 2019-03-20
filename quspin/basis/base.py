@@ -212,6 +212,15 @@ class basis(object):
 		"""
 		return self._Op(opstr,indx,J,dtype)
 
+	def _make_matrix(self,op_list,dtype):
+		""" takes list of operator strings and couplings to create matrix, this is the old niave way """
+		matrix = _sp.dia_matrix((self.Ns,self.Ns),dtype=dtype)
+		for opstr,indx,J in op_list:
+			ME,row,col = self.Op(opstr,indx,J,dtype)
+			matrix=matrix+_sp.csr_matrix((ME,(row,col)),shape=(self.Ns,self.Ns),dtype=dtype) 
+
+		return matrix
+
 
 	def partial_trace(self,state,sub_sys_A=None,subsys_ordering=True,return_rdm="A",enforce_pure=False,sparse=False):
 		"""Calculates reduced density matrix, through a partial trace of a quantum state in a lattice `basis`.

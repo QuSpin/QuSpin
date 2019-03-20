@@ -5,6 +5,7 @@ import scipy.sparse as _sp
 import warnings
 import numpy as _np
 from ._functions import function
+from six import iteritems
 
 
 
@@ -64,11 +65,15 @@ def _consolidate_dynamic(dynamic_list):
 				dynamic_dict[(opstr,f,f_args)][indx] = J
 
 
-	dynamic_list = []
+	dynamic_list = {}
 	for (opstr,f,f_args),opstr_dict in dynamic_dict.items():
-		for indx,J in opstr_dict.items():
-			if _np.abs(J) > eps:
-				dynamic_list.append((opstr,indx,J,f,f_args))
+		func = (f,f_args)
+
+		if func not in dynamic_list:
+			dynamic_list[func] = []
+
+		dynamic_list[func].extend([(opstr,indx,J) for indx,J in iteritems(opstr_dict) if _np.abs(J) > eps])
+
 
 
 	return dynamic_list
@@ -102,15 +107,8 @@ def make_static(basis,static_list,dtype):
 		sorted or even unique) and creates a coo_matrix from the scipy.sparse library. It then converts this coo_matrix
 		to a csr_matrix class which has optimal sparse matrix vector multiplication.
 	"""
-	Ns=basis.Ns
-	H = _sp.dia_matrix((Ns,Ns),dtype=dtype)
 	static_list = _consolidate_static(static_list)
-	for opstr,indx,J in static_list:
-		
-		ME,row,col = basis.Op(opstr,indx,J,dtype)
-		H=H+_sp.csr_matrix((ME,(row,col)),shape=(Ns,Ns),dtype=dtype) 
-
-	return H 
+	return basis._make_matrix(static_list,dtype)
 
 
 
@@ -137,41 +135,14 @@ def make_dynamic(basis,dynamic_list,dtype):
 	Ns=basis.Ns
 	dynamic={}
 	dynamic_list = _consolidate_dynamic(dynamic_list)
-	for opstr,indx,J,f,f_args in dynamic_list:
+	for (f,f_args),ops_list in iteritems(dynamic_list):
 		if _np.isscalar(f_args): raise TypeError("function arguments must be array type")
 		test_function(f,f_args,dtype)
 
-		#indx = _np.asarray(indx,_np.int32)
-		ME,row,col = basis.Op(opstr,indx,J,dtype)
-		Ht =_sp.csr_matrix((ME,(row,col)),shape=(Ns,Ns),dtype=dtype) 
-
-		func = function(f,tuple(f_args))
-		if func in dynamic:
-			try:
-				dynamic[func] += Ht
-			except:
-				dynamic[func] = dynamic[func] + Ht
-		else:
-			dynamic[func] = Ht
-
-		if _check_almost_zero(dynamic[func]):
-			dynamic.pop(func)
-
+		func = function(f,f_args)
+		Hd = basis._make_matrix(ops_list,dtype)
+		if not _check_almost_zero(Hd):
+			dynamic[func] = Hd
 
 	return dynamic
 
-
-
-
-
-def make_op(basis,opstr,bonds,dtype):
-	Ns=basis.Ns
-	H=_sp.csr_matrix(([],([],[])),shape=(Ns,Ns),dtype=dtype)
-	for bond in bonds:
-		J=bond[0]
-		indx=bond[1:]
-		ME,row,col = basis.Op(opstr,indx,J,dtype)
-		H=H+_sp.csr_matrix((ME,(row,col)),shape=(Ns,Ns),dtype=dtype) 
-
-	
-	return H
