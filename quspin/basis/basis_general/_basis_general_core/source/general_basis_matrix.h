@@ -4,9 +4,10 @@
 #include <iostream>
 #include <complex>
 #include <algorithm>
-#include <map>
+#include <unordered_map>
 #include <limits>
 #include "general_basis_core.h"
+#include "general_basis_op.h"
 #include "numpy/ndarraytypes.h"
 #include "misc.h"
 #include "openmp.h"
@@ -15,69 +16,43 @@
 namespace basis_general {
 
 
-
-template<class T>
-int inline check_imag(std::complex<double> m,std::complex<T> *M){
-	M[0].real(m.real());
-	M[0].imag(m.imag());
-	return 0;
-}
-
-template<class T>
-int inline check_imag(std::complex<double> m,T *M){
-	if(std::abs(m.imag())>1.1e-15){
-		return 1;
-	}
-	else{
-		M[0] = m.real();
-		return 0;
-	}
-}
-
-
-
 template<class I, class J, class K, class T>
 int general_make_matrix(general_basis_core<I> *B,
 						  const int n_ops,
-						  const std::vector<std::string> opstrs,
-						  const std::vector<std::vector<int>> indxs,
-						  const std::vector<std::complex<double>> Js,
+						  const std::vector<std::string> &opstrs,
+						  const std::vector<std::vector<int>> &indxs,
+						  const std::vector<T> &Js,
 						  const bool full_basis,
 						  const npy_intp Ns,
 						  const I basis[],
 						  const J n[],
-								std::vector<I> indptr,
-								std::vector<I> indices,
-								std::vector<T> data
+						  		std::vector<std::vector<K>> &indices_vec,
+							    std::vector<std::vector<T>> &data_vec
 						  )
 {
-	indptr.resize(Ns+1);
-	indices.resize(0);
-	data.resize(0);
+	const int nt = B->get_nt();
+	int g[__GENERAL_BASIS_CORE__max_nt];
 
-	std::fill(indptr.begin(),indptr.end(),(I)0);
-	npy_intp nnz = 0;
-	npy_intp row_size_avg = 0;
+	indices_vec.resize(Ns);
+	data_vec.resize(Ns);
 	int err = 0;
-	std::map<I,T> row_data;
+	for(npy_intp i=0;i<Ns && err==0;i++){
+		indices_vec[i].reserve(n_ops);
+		data_vec[i].reserve(n_ops);
+	}
 
-	for(npy_intp i=0;i<Ns && err==0;j++){
-		row_data.clear();	
+	for(npy_intp i=0;i<Ns && err==0;i++){
 
-		for(int iop=0;iop<n_ops && err==0;j++){
+		for(int iop=0;iop<n_ops && err==0;iop++){
 			std::string opstr = opstrs[iop];
 			std::vector<int> indx = indxs[iop];
 			const int n_op = indx.size();
-			std::reverse(indx.begin(),indx.end());
-			std::reverse(opstr.begin(),opstr.end());
 
 			I r = basis[i];
 			K j = i;
 
 			std::complex<double> m = Js[iop];
 			err = B->op(r,m,n_op,opstr.c_str(),&indx[0]);
-
-
 
 			int sign = 1;
 
@@ -105,48 +80,22 @@ int general_make_matrix(general_basis_core<I> *B,
 					m *= std::exp(std::complex<double>(0,-q));
 				}
 
-				m *= sign * std::sqrt(double(n[i])/double(n[j]));
+				m *= sign * std::sqrt(double(n[j])/double(n[i]));
 
 				err = check_imag(m,&M);
 
-				if(row_data.count(j)){ // if column element exists add to matrix element
-					row_data[j] += M;
+
+				typename std::vector<K>::iterator ind_pos = std::lower_bound(indices_vec[j].begin(),indices_vec[j].end(),i);
+				typename std::vector<T>::iterator dat_pos = (npy_intp)(ind_pos - indices_vec[j].begin()) + data_vec[j].begin();
+
+				if(!(ind_pos==indices_vec[j].end()) && !(i < *ind_pos)){
+					*dat_pos += M;
 				}
-				else{ // else create new column entry
-					row_data[j] = M;
+				else{
+					indices_vec[j].insert(ind_pos,i);
+					data_vec[j].insert(dat_pos,M);
 				}
 			}
-		}
-
-		// add matrix elements to csr data.
-		const int row_size = row_data.size();
-		const npy_intp capacity = indices.capacity();
-
-		// running average of row_size
-		if(i>0){
-			row_size_avg = row_size_avg + (npy_intp)((row_size_avg - row_size)/(i+1));
-		}else{
-			row_size_avg = row_size;
-		}
-		
-
-		nnz += row_size;
-		indptr[i+1] = nnz;
-
-		// use running average of row_size to allocate more memory. 
-		if(nnz > capacity){
-			npy_intp new_capacity = nnz + std::max((Ns*row_size_avg/100),(npy_intp)1);
-			indices.reserve(new_capacity);
-			data.reserve(new_capacity);
-		}
-
-		// add column indices and data to arrays
-		std::map<I,T>::iterator it = row_data.begin();
-
-		for(I j=indptr[i];j<indptr[i+1];++j){
-			indices.push_back(it->first);
-			data[j].push_back(it->second);
-			++it;
 		}
 	}
 
@@ -155,7 +104,5 @@ int general_make_matrix(general_basis_core<I> *B,
 
 
 }
-
-
 
 #endif
