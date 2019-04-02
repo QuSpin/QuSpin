@@ -31,14 +31,44 @@ ctypedef fused T3:
 	double
 	double complex
 
-cdef extern from "csr_trace.h":
+cdef extern from "csr_utils.h":
 	T csr_trace[I,T](const I,const I,const I[],const I[],const T[]) nogil
+	realT csr_1_norm[I,T,realT](const I,const I,const I[],const I[],const T[]) nogil
+	void csr_shift_diag[I,T](const T,const I,const I,const I[],const I[],T[]) nogil
 
 
 @cython.boundscheck(False)
 def _wrapper_csr_trace(indtype[:] Ap, indtype[:] Aj, T1[:] Ax):
 	cdef indtype n_row = Ap.shape[0] - 1
 	return csr_trace(n_row,n_row,&Ap[0],&Aj[0],&Ax[0])
+
+@cython.boundscheck(False)
+def _wrapper_csr_shift_diag(indtype[:] Ap, indtype[:] Aj, T1[:] Ax,shift):
+	cdef T1 shiftc = shift
+	cdef indtype n_row = Ap.shape[0] - 1
+	csr_shift_diag(shiftc,n_row,n_row,&Ap[0],&Aj[0],&Ax[0])
+
+@cython.boundscheck(False)
+def _wrapper_csr_1_norm(indtype[:] Ap, indtype[:] Aj, T1[:] Ax):
+	cdef indtype n_row = Ap.shape[0] - 1
+	if indtype is _np.int32_t:
+		if T1 is doublecomplex:
+			return csr_1_norm[_np.int32_t,doublecomplex,double](n_row,n_row,&Ap[0],&Aj[0],&Ax[0])
+		elif T1 is double:
+			return csr_1_norm[_np.int32_t,double,double](n_row,n_row,&Ap[0],&Aj[0],&Ax[0])
+		elif T1 is floatcomplex:
+			return csr_1_norm[_np.int32_t,floatcomplex,float](n_row,n_row,&Ap[0],&Aj[0],&Ax[0])
+		else:
+			return csr_1_norm[_np.int32_t,float,float](n_row,n_row,&Ap[0],&Aj[0],&Ax[0])
+	else:
+		if T1 is doublecomplex:
+			return csr_1_norm[_np.int64_t,doublecomplex,double](n_row,n_row,&Ap[0],&Aj[0],&Ax[0])
+		elif T1 is double:
+			return csr_1_norm[_np.int64_t,double,double](n_row,n_row,&Ap[0],&Aj[0],&Ax[0])
+		elif T1 is floatcomplex:
+			return csr_1_norm[_np.int64_t,floatcomplex,float](n_row,n_row,&Ap[0],&Aj[0],&Ax[0])
+		else:
+			return csr_1_norm[_np.int64_t,float,float](n_row,n_row,&Ap[0],&Aj[0],&Ax[0])		
 
 cdef extern from "expm_multiply_parallel_impl.h":
 	int get_switch_expm_multiply(PyArray_Descr*,PyArray_Descr*,PyArray_Descr*,PyArray_Descr*)

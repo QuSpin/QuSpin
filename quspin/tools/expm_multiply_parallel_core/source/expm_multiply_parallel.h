@@ -3,6 +3,7 @@
 #define _EXPM_MULTIPLY_H
 
 #include "complex_ops.h"
+#include <stdio.h>
 
 #include "openmp.h"
 #if defined(_OPENMP)
@@ -81,7 +82,7 @@ void expm_multiply(const I n,
 		const I begin = items_per_thread * threadn;
 		I end0 = items_per_thread * ( threadn + 1 );
 		if(threadn == nthread-1){
-			end0 += n%nthread;
+			end0 = n;
 		}
 		const I end = end0;
 
@@ -89,27 +90,26 @@ void expm_multiply(const I n,
 
 		for(I k=begin;k<end;k++){ 
 			B1[k] = F[k];
-			B2[k] = 0;
 		}
 		for(int i=0;i<s;i++){
 
 			T2 c1_thread = math_functions::inf_norm(B1,begin,end);
 
-			#pragma omp single
+			#pragma omp single // implied barrier
 			{
 				c1 = 0;
 				flag = false;
 			}
 
-			#pragma omp critical
+			#pragma omp critical 
 			{
 				c1 = std::max(c1,c1_thread);
-			}	
+			}
 
 			for(int j=1;j<m_star+1 && !flag;j++){
 
 				#if defined(_OPENMP)
-				csrmv_merge<I,T1,T3,T3>(true,n,Ap,Aj,Ax,a/T2(j*s),B1,rco,vco,B2);
+				csrmv_merge<I,T1,T3,T3>(true,n,Ap,Aj,Ax,a/T2(j*s),B1,rco,vco,B2); // implied barrier
 				#else
 				csr_matvec<I,T1,T3,T3>(true,n,Ap,Aj,Ax,a/T2(j*s),B1,rco,vco,B2);
 				#endif
@@ -121,7 +121,7 @@ void expm_multiply(const I n,
 				T2 c2_thread = math_functions::inf_norm(B2,begin,end);
 				T2 c3_thread = math_functions::inf_norm(F,begin,end);
 
-				#pragma omp single
+				#pragma omp single // implied barrier
 				{
 					c2 = c3 = 0;
 				}
@@ -132,7 +132,7 @@ void expm_multiply(const I n,
 					c3 = std::max(c3,c3_thread);
 				}	
 
-				#pragma omp barrier
+				#pragma omp barrier 
 
 				#pragma omp single
 				{
@@ -148,8 +148,6 @@ void expm_multiply(const I n,
 				F[k] *= eta;
 				B1[k] = F[k];
 			}
-
-			#pragma omp barrier
 		}
 	}
 }

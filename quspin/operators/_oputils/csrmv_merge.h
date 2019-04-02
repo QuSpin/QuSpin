@@ -112,7 +112,6 @@ void csrmv_merge(const bool overwrite_y,
 		if (row_carry_out[tid] < num_rows)
 		y[row_carry_out[tid]] += alpha * value_carry_out[tid];
 	}
-
 }
 
 
@@ -181,7 +180,6 @@ void csrmv_merge_strided(const bool overwrite_y,
 		if (row_carry_out[tid] < num_rows)
 		y[row_carry_out[tid] * stride_y] += alpha * value_carry_out[tid];
 	}
-
 }
 
 
