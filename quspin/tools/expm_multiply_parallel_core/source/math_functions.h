@@ -48,44 +48,6 @@ inline float exp(const float value){
 	return std::exp(value);
 }
 
-// infinite norm 
-
-template<typename I>
-float inf_norm(const float * A,const I begin,const I end){
-	float max = 0;
-	for(I i=begin;i<end;i++){
-		max = std::max(max,abs(A[i]));
-	}
-	return max;
-}
-
-template<typename I>
-double inf_norm(const double * A,const I begin,const I end){
-	double max = 0;
-	for(I i=begin;i<end;i++){
-		max = std::max(max,abs(A[i]));
-	}
-	return max;
-}
-
-template<typename I>
-float inf_norm(const npy_cfloat_wrapper * A,const I begin,const I end){
-	float max = 0;
-	for(I i=begin;i<end;i++){
-		max = std::max(max,abs(A[i]));
-	}
-	return max;
-}
-
-template<typename I>
-double inf_norm(const npy_cdouble_wrapper * A,const I begin,const I end){
-	double max = 0;
-	for(I i=begin;i<end;i++){
-		max = std::max(max,abs(A[i]));
-	}
-	return max;
-}
-
 }
 
 #endif

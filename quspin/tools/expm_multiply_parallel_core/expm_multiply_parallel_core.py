@@ -1,6 +1,6 @@
 from scipy.sparse.linalg import LinearOperator,onenormest,aslinearoperator
 from .expm_multiply_parallel_wrapper import (_wrapper_expm_multiply,
-	_wrapper_csr_trace,_wrapper_csr_shift_diag,_wrapper_csr_1_norm)
+	_wrapper_csr_trace,_wrapper_csr_1_norm)
 from scipy.sparse.construct import eye
 from scipy.sparse.linalg._expm_multiply import _fragment_3_1,_exact_1_norm
 import scipy.sparse as _sp
@@ -43,8 +43,8 @@ class expm_multiply_parallel(object):
         else:
             raise ValueError("a must be scalar value.")
 
-        # self._A = _sp.csr_matrix(A,copy=False)
-        self._A = _sp.csr_matrix(A,copy=True)
+        self._A = _sp.csr_matrix(A,copy=False)
+        # self._A = _sp.csr_matrix(A,copy=True)
 
         if A.shape[0] != A.shape[1]:
             raise ValueError("A must be a square matrix.")
@@ -56,15 +56,10 @@ class expm_multiply_parallel(object):
         mu = _wrapper_csr_trace(self._A.indptr,self._A.indices,self._A.data)/self._A.shape[0]
         self._mu = _np.array(mu,dtype=A.dtype)
 
-        # implement low level functions to do this calculation as it is quite memory intensive.
-        _wrapper_csr_shift_diag(self._A.indptr,self._A.indices,self._A.data,-self._mu)
+        shift = eye(A.shape[0],format="csr",dtype=A.dtype)
+        shift.data *= mu
+        self._A = self._A - shift
         self._A_1_norm = _wrapper_csr_1_norm(self._A.indptr,self._A.indices,self._A.data)
-
-        # shift = eye(A.shape[0], A.shape[1],dtype=A.dtype, format="csr")
-        # shift.data *= self._mu
-
-        # self._A = self._A - shift
-        # self._A_1_norm = _np.max(_np.abs(self._A).sum(axis=0))
 
         self._calculate_partition()
 
