@@ -45,8 +45,7 @@ void csr_matvec(const bool overwrite_y,
 #include <algorithm>
 #include <vector>
 #include "math_functions.h"
-
-
+#include <valarray>     // std::valarray, std::slice
 
 template<typename I, typename T1,typename T2,typename T3>
 void expm_multiply(const I n,
@@ -93,6 +92,10 @@ void expm_multiply(const I n,
 
 		const T3 eta = math_functions::exp(a*mu/T2(s));
 		T2 c1_thread=0,c2_thread=0,c3_thread=0;
+		c1_threads[threadn] = 0;
+		c2_threads[threadn] = 0;
+		c3_threads[threadn] = 0;
+
 
 		for(I k=begin;k<end;k++){ 
 			T3 f = F[k];
@@ -110,6 +113,7 @@ void expm_multiply(const I n,
 			}
 
 			for(int j=1;j<m_star+1;j++){
+
 				#if defined(_OPENMP)
 				csrmv_merge<I,T1,T3,T3>(true,n,Ap,Aj,Ax,a/T2(j*s),B1,rco,vco,B2); // implied barrier
 				#else
