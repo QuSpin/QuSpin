@@ -103,7 +103,6 @@ cdef class boson_basis_core_wrap(general_basis_core_wrap):
         cdef int Ns_1 = 0
         cdef int Ns_2 = 0
         cdef int Ns_3 = 0
-        cdef uint8_t np = 0
         cdef npy_intp i = 0
         cdef mem_MAX = basis.shape[0]
 

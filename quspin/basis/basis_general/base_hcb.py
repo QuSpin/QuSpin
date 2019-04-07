@@ -62,7 +62,7 @@ class hcb_basis_general(basis_general):
 		
 
 		# make the basis; make() is function method of base_general
-		if _make_basis:		
+		if _make_basis:	
 			self.make()
 		else:
 			self._Ns=1
