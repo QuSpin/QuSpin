@@ -195,7 +195,7 @@ class spinful_fermion_basis_1d(spinless_fermion_basis_1d,basis_1d):
 		:lines: 7-
 
 	"""	
-	def __init__(self,L,Nf=None,nf=None,**blocks):
+	def __init__(self,L,Nf=None,nf=None,double_occupy=True,**blocks):
 		"""Intializes the `fermion_basis_1d` object (basis for fermionic operators).
 
 		Parameters
@@ -357,8 +357,9 @@ class spinful_fermion_basis_1d(spinless_fermion_basis_1d,basis_1d):
 					raise ValueError("fermion spin inversion symmetry only reduces the half-filled particle sector")
 
 
+		double_occupy = bool(double_occupy)
 		Imax = (1<<L)-1
-		pars = [L,Imax,0,0] # sign to be calculated
+		pars = [L,Imax,0,0,int(double_occupy)] # sign to be calculated
 		self._operators = ("availible operators for fermion_basis_1d:"+
 							"\n\tI: identity "+
 							"\n\t+: raising operator"+

@@ -2,7 +2,6 @@
 
 def get_state(L,Nup=None):
     s = 0
-    
     if Nup is None:
          MAX = (<object>1 << L)
     else:
@@ -12,20 +11,30 @@ def get_state(L,Nup=None):
        
     return s,MAX
 
+cdef inline bool CheckState_nosymm(basis_type s,basis_type[:] pars):
+    return True
+
+def basis(int L,basis_type[:] pars, basis_type[:] basis):
+    cdef basis_type s
+    cdef npy_intp MAX
+    s,MAX = get_state(L)
+    return make_basis_template[basis_type](next_state_inc_1,pars,MAX,s,basis)
 
 # magnetization 
 def n_basis(int L, object Nup_list, basis_type[:] pars,basis_type[:] basis,NP_INT8_t[:] Np_list=None):
     cdef basis_type s
-    cdef npy_intp MAX
+    cdef npy_intp MAX,Ns
     cdef npy_intp Ns_tot = 0
     for Nup in Nup_list:
         s,MAX = get_state(L,Nup)
-        make_n_basis_template[basis_type](next_state_pcon_hcp,pars,MAX,s,basis[Ns_tot:])
+        Ns = make_basis_template[basis_type](next_state_pcon_hcp,pars,MAX,s,basis[Ns_tot:])
 
         if Np_list is not None:
-            Np_list[Ns_tot:Ns_tot+MAX] = Nup
+            Np_list[Ns_tot:Ns_tot+Ns] = Nup
             
-        Ns_tot += MAX
+        Ns_tot += Ns
+
+    return Ns_tot
 
 # parity 
 def n_p_basis(int L, object Nup_list,int pblock,basis_type[:] pars,N_type[:] N,basis_type[:] basis,NP_INT8_t[:] Np_list=None):
