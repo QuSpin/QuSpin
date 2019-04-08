@@ -98,7 +98,7 @@ double spinful_fermion_basis_core<I>::check_state(I s){
 		return std::numeric_limits<double>::quiet_NaN();
 	}
 	else{
-		return check_state_core_unrolled<I>(this,s,general_basis_core<I>::nt);;
+		return check_state_core_unrolled<I>(this,s,general_basis_core<I>::nt);
 	}
 }
 

@@ -107,6 +107,7 @@ class basis_1d(lattice_basis):
 		self._pars = _np.asarray(pars,dtype=self._basis_type)
 		self._bitops = bitops(basis_module,**blocks)
 		self._check_pcon = False
+		self._check_herm = True
 		if Np is None:
 			self._conserved = ""
 			self._Ns_pcon = None

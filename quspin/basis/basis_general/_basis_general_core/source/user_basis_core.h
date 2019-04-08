@@ -28,17 +28,22 @@ class user_basis_core : public general_basis_core<I>
 	typedef I (*next_state_type)(I,I,I*);
 	typedef int (*op_func_type)(op_results<I>*,char,int,int);
 	typedef void (*count_particles_type)(I,int*);
+	typedef bool (*check_state_nosymm_type)(I,I,I*);
+
 	public:
 		map_type * map_funcs;
 		next_state_type next_state_func;
 		op_func_type op_func;
 		count_particles_type count_particles_func;
+		check_state_nosymm_type check_state_nosymm;
 		const int n_sectors;
-		I *ns_args;
+		I *ns_args,*csns_args;
 
-		user_basis_core(const int _N,const int _nt,void * _map_funcs, \
+
+		user_basis_core(const int _N,const int _nt,void * _map_funcs, 
 			const int _pers[], const int _qs[], const int _n_sectors,
-			size_t _next_state,I *_ns_args,size_t _count_particles,size_t _op_func) : \
+			size_t _next_state,I *_ns_args,size_t _check_state_nosymm,
+			I* _csns_args,size_t _count_particles,size_t _op_func) : \
 		general_basis_core<I>::general_basis_core(_N,_nt,NULL,_pers,_qs), n_sectors(_n_sectors)
 		{
 			map_funcs = (map_type*)_map_funcs;
@@ -46,6 +51,8 @@ class user_basis_core : public general_basis_core<I>
 			count_particles_func = (count_particles_type)_count_particles;
 			op_func = (op_func_type)_op_func;
 			ns_args = _ns_args;
+			check_state_nosymm = (check_state_nosymm_type)_check_state_nosymm;
+			csns_args = _csns_args;
 		}
 
 		~user_basis_core() {}
@@ -79,6 +86,20 @@ class user_basis_core : public general_basis_core<I>
 
 		I inline next_state_pcon(const I s){
 			return (*next_state_func)(s,(I)general_basis_core<I>::N,ns_args);
+		}
+
+		double check_state(I s){
+
+			bool ns_check=true;
+			if(check_state_nosymm!=0){
+				ns_check = (*check_state_nosymm)(s,(I)general_basis_core<I>::N,csns_args);
+			}			
+			if(ns_check){
+				return check_state_core_unrolled<I>(this,s,general_basis_core<I>::nt);
+			}
+			else{
+				return std::numeric_limits<double>::quiet_NaN();
+			}
 		}
 
 		int op(I &r,std::complex<double> &m,const int n_op,const char opstr[],const int indx[]){

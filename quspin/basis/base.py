@@ -31,6 +31,7 @@ class basis(object):
 		self._unique_me = True
 		self._check_symm = None
 		self._check_pcon = None
+		self._check_herm = None
 		if self.__class__.__name__ == 'basis':
 			raise ValueError("This class is not intended"
 							 " to be instantiated directly.")
@@ -409,6 +410,10 @@ class basis(object):
 		---------
 
 		"""
+		if self._check_herm is None:
+			warnings.warn("Test for hermiticity not implemented for {0}, to turn off this warning set check_symm=False in hamiltonian".format(type(self)),UserWarning,stacklevel=3)
+			return
+
 		static_list,dynamic_list = self._get_local_lists(static,dynamic)
 		static_expand,static_expand_hc,dynamic_expand,dynamic_expand_hc = self._get_hc_local_lists(static_list,dynamic_list)
 		# calculate non-hermitian elements

@@ -1,7 +1,7 @@
 from .base_general import basis_general
 from ._basis_general_core import user_core_wrap
 import numpy as _np
-from numba import cfunc, types
+from numba import cfunc, types, njit
 from numba.ccallback import CFunc
 
 map_sig_32 = types.uint32(types.uint32,types.intc,types.CPointer(types.intc))
@@ -9,6 +9,9 @@ map_sig_64 = types.uint64(types.uint64,types.intc,types.CPointer(types.intc))
 
 next_state_sig_32 = types.uint32(types.uint32,types.uint32,types.CPointer(types.uint32))
 next_state_sig_64 = types.uint64(types.uint64,types.uint64,types.CPointer(types.uint64))
+
+check_state_nosymm_sig_32 = types.uint32(types.uint32,types.uint32,types.CPointer(types.uint32))
+check_state_nosymm_sig_64 = types.uint64(types.uint64,types.uint64,types.CPointer(types.uint64))
 
 op_results_32 = types.Record.make_c_struct([
    ('matrix_ele', types.complex128),('state', types.uint32),
@@ -35,20 +38,30 @@ count_particles_sig_64 = types.void(types.uint64,
 __all__ = ["map_sig_32","map_sig_64","next_state_sig_32",
 	"next_state_sig_64","op_func_sig_32","op_func_sig_64","user_basis"]
 
+@njit
+def is_sorted_decending(a):
+	for i in range(a.size-1):
+		if(a[i]<a[i+1]):
+			return False
+
+	return True
+
 def _process_user_blocks(use_32bit,blocks_dict,block_order):
 
 	if any((type(v) is not tuple) and (len(v)!=3) for v in blocks_dict.values()):
 		raise ValueError
 
 	if not all(isinstance(f,CFunc) for f,_,_ in blocks_dict.values()):
-		raise ValueError
+		raise ValueError("map_func must be instance of numba.CFunc.")
 
 	if use_32bit:
 		if not all(f._sig==map_sig_32 for f,_,_ in blocks_dict.values()):
-			raise ValueError
+			raise ValueError("map_func does not have the correct signature, \
+					try using map_sig_32 from quspin.basis.user module.")
 	else:
 		if not all(f._sig==map_sig_64 for f,_,_ in blocks_dict.values()):
-			raise ValueError
+			raise ValueError("map_func does not have the correct signature, \
+					try using map_sig_64 from quspin.basis.user module.")
 
 	if block_order is None: # sort by periodicies largest to smallest
 		sorted_items = sorted(blocks_dict.items(),key=lambda x:x[1][1])
@@ -81,7 +94,7 @@ def _process_user_blocks(use_32bit,blocks_dict,block_order):
 
 
 class user_basis(basis_general):
-	"""Constructs basis for spin operators for USER-DEFINED symmetries.
+	"""Constructs basis for USER-DEFINED functionality for a basis.
 
 	Any unitary symmetry transformation :math:`Q` of multiplicity :math:`m_Q` (:math:`Q^{m_Q}=1`) has
 	eigenvalues :math:`\\exp(-2\\pi i q/m_Q)`, labelled by an ingeter :math:`q\\in\\{0,1,\\dots,m_Q-1\\}`.
@@ -90,64 +103,95 @@ class user_basis(basis_general):
 	For instance, if :math:`Q=P` is parity (reflection), then :math:`q=0,1`. If :math:`Q=T` is translation by one lattice site,
 	then :math:`q` labels the mometum blocks in the same fashion as for the `..._basis_1d` classes. 
 
-	User-defined symmetries with the `spin_basis_general` class can be programmed as follows. Suppose we have a system of
-	L sites, enumerated :math:`s=(s_0,s_1,\\dots,s_{L-1})`. There are two types of operations one can perform on the sites:
-		* exchange the labels of two sites: :math:`s_i \\leftrightarrow s_j` (e.g., translation, parity)
-		* invert the population on a given site: :math:`s_i\\leftrightarrow -(s_j+1)` (e.g., spin inversion)
+	User-defined symmetries with the `user_basis` class can be programmed as follows. 
 
-	These two operations already comprise a variety of symmetries, including translation, parity (reflection) and 
-	spin inversion. For a specific example, see below.
-
-	The supported operator strings for `spin_basis_general` are:
-
-	.. math::
-		\\begin{array}{cccc}
-			\\texttt{basis}/\\texttt{opstr}   &   \\texttt{"I"}   &   \\texttt{"+"}   &   \\texttt{"-"}  &	 \\texttt{"z"}   &   \\texttt{"x"}   &   \\texttt{"y"}  \\newline	
-			\\texttt{spin_basis_general} &   \\hat{1}		&   \\hat\\sigma^+	   &   \\hat\\sigma^-	  &	 \\hat\\sigma^z	   &   (\\hat\\sigma^x)	 &   (\\hat\\sigma^y)  \\  \\newline
-		\\end{array}
-
-	**Notes:** 
-		* The relation between spin and Pauli matrices is :math:`\\vec S = \\vec \\sigma/2`.
-		* The default operators for spin-1/2 are the Pauli matrices, NOT the spin operators. To change this, see the argument `pauli` of the `spin_basis` class. Higher spins can only be defined using the spin operators, and do NOT support the operator strings "x" and "y". 
-		* QuSpin raises a warning to alert the reader when non-commuting symmetries are passed. In such cases, we recommend the user to manually check the combined usage of symmetries by, e.g., comparing the eigenvalues.
-
- 		
 	Examples
 	--------
 
-	The code snippet below shows how to construct the two-dimensional transverse-field Ising model.
-	
-	.. math::
-		H = J \\sum_{\\langle ij\\rangle} \\sigma^z_{i}\\sigma^z_j+ g\\sum_j\\sigma^x_j 
 
-	Moreover, it demonstrates how to pass user-defined symmetries to the `spin_basis_general` constructor. In particular,
-	we do translation invariance and parity (reflection) (along each lattice direction), and spin inversion. Note that parity 
-	(reflection) and translation invariance are non-commuting symmetries, and QuSpin raises a warning when constructing the basis. 
-	However, they do commute in the zero-momentum (also in the pi-momentum) symmetry sector; hence, one can ignore the warning and
-	use the two symemtries together to reduce the Hilbert space dimension.
-
-
-	.. literalinclude:: ../../doc_examples/spin_basis_general-example.py
+	.. literalinclude:: ../../doc_examples/user_basis_general-example.py
 		:linenos:
 		:language: python
 		:lines: 7-
 
 	"""
-	def __init__(self,basis_dtype,N,Ns_full,op_func,allowed_ops=None,sps=None,pcon_args=None,
-		Ns_block_est=None,_make_basis=True,block_order=None,_Np=None,sort_basis=False,**blocks):
+	def __init__(self,basis_dtype,N,Ns_full,op_func,pcon_args=None,check_state_nosymm=None,allowed_ops=None,sps=None,
+		Ns_block_est=None,_make_basis=True,block_order=None,_Np=None,**blocks):
 		"""Intializes the `user_basis_general` object (basis for user defined ED calculations).
 
 		Parameters
 		-----------
+		basis_dtype: numpy.dtype object
+			the data type used to represent the states in the basis: must be either uint32 or uint64.
 		N: int
-			number of sites.
-		
+			Number of sites.
+		Ns_full: int
+			The size of the full hilbert space with no symmetries, e.g. 2^N for spin-1/2 system.
+		op_func: numba.CFunc object
+			This is a compiled function which calculates the matrix elements given a state and a character which
+			represent the operator and an integer specifying the site of that local operator. Note that this functionality
+			will not support branching, e.g. O|state> = me|new_state> and can't be a linear combination of multiple
+			states in the basis, e.g. O|state> = me1|new_state_1> + me2|new_state_2> + ... see the above example for how
+			one would use this for spin-1/2 system.
+		pcon_args: dict, optional
+			This dictionary contains the following items which are required to use particle conservation in this basis:
+				minimum requirements:
+					* "Np"			: list of tuple/int or a single tuple/int which specify the particle sector(s). 
+					* "next_state"  : CFunc which, given an integer, generates the next lexigraphically ordered particle conservation state.
+					* "get_Ns_pcon" : python function which being called as get_Ns_pcon(N,Np) returns the size of the 
+									  non-symmeterized particle conservation basis.
+					* "get_s0_pcon" : python function which being called as get_s0_pcon(N,Np) returns the starting state to generate the whole 
+									  particle conservation basis by repeatidly calling next_sate(s).
+				advanced requirements to use Op_bra_ket functionality (on top of the minimum):
+					* "n_sectors"       : the number of integers which parameterized the particle sectors, e.g. with spinful fermions 
+										  there is a particle number for both the up and the down sectors, so this number would be 2. 
+					* "count_particles" : CFunc which counts the number of particles in each sector and places them into a pointer passed
+										  into the CFunc. The pointer provided will have `n_sector` of memory allocated. the order of the number
+										  should be kept the same as the ordering of `Np`.
+		check_state_nosymm: CFunc or tuple(CFunc,ndarray(C-contiguous,dtype=basis_dtype)), optional
+			This allows the user to specify a boolean function which checks a state before checking if a state is a 
+			representative state. This allows the user to do things like,  enforce a local hilbert space constraint, 
+			e.g. for spinful fermions never having a doubly occupied site. The ndarray are extra arguments which are 
+			passed into this function.
+		allowed_ops: list/set, optional
+			A list of allowed charactors which can be passed in to the op_func. This will be used in the error handling
+			so that python will throw a more detailed error message when the wrong operator string is passed into the basis.
+		sps: int, optional
+			The number of states per site, this is not required for the main functionality for this basis, however it is required
+			for doing entanglement entropy calculations. 
+		Ns_block_est: int, optional
+			An estimate for the size of the symmetry reduced block, QuSpin does a simple estimate which is not always correct. 
+		block_order: tuple/list, optional
+			An ordered list which contains the order for which the symmetries will be applied on the state. 
+		**blocks: optional
+			keyword arguments which pass the symmetry generator arrays. For instance:
+
+			>>> basis(...,kxblock=(QFunc,Tq,q),...)
+
+			The keys of the symmetry sector, e.g. `kxblock`, can be defined arbitrarily by the user. The
+			values are tuples where the first entry contains the numba.CFunc which generates the symmetry transformation :math:`Q` 
+			acting on the state (see class example), the second entry is an integer :math:`Tq` which gives the periodicity
+			of the symmetry sector, and q is the quantum number for the given sector. Note that if the periodicity is wrong
+			the basis will give undefined behavior. 
 		"""
+
+		# photon basis not supported hence this flag is always False.
+		self._count_particles = False
 		if _Np is not None:
 			raise ValueError("cannot use photon basis with user_basis_general.")
 
+		# disable checks for this basis.
+		self._check_herm = None
 		self._check_pcon = None
-		self._count_particles = False
+		self._check_symm = None
+
+		# this basis only supports unique matrix elements.
+		self._unique_me = True
+
+		# no particle conservation basis created at this point.
+		self._basis_pcon = None
+		self._get_proj_pcon = False
+		self._made_basis = False # keeps track of whether the basis has been made
 
 		self._N = N
 		if basis_dtype not in [_np.uint32,_np.uint64]:
@@ -156,14 +200,16 @@ class user_basis(basis_general):
 		use_32bit = (basis_dtype == _np.uint32)
 
 		if not isinstance(op_func,CFunc):
-			raise ValueError
+			raise ValueError("op_func must be a numba.CFunc object.")
 
 		if use_32bit:
 			if op_func._sig != op_sig_32:
-				raise ValueError
+				raise ValueError("op_func does not have the correct signature, \
+					try using op_sig_32 from quspin.basis.user module.")
 		else:
 			if op_func._sig != op_sig_64:
-				raise ValueError
+				raise ValueError("op_func does not have the correct signature, \
+					try using op_sig_64 from quspin.basis.user module.")
 
 
 		if pcon_args is not None:
@@ -172,13 +218,13 @@ class user_basis(basis_general):
 				next_state_args = pcon_args.get("next_state_args")
 				if next_state_args is not None:
 					if not isinstance(next_state_args,_np.ndarray):
-						raise ValueError("next_state_args must be a C-contiguous numpy\
+						raise ValueError("next_state_args must be a C-contiguous numpy \
 							array with dtype {}".format(basis_dtype))
 					if not next_state_args.flags["CARRAY"]:
-						raise ValueError("next_state_args must be a C-contiguous numpy\
+						raise ValueError("next_state_args must be a C-contiguous numpy \
 							array with dtype {}".format(basis_dtype))
 					if next_state_args.dtype != basis_dtype:
-						raise ValueError("next_state_args must be a C-contiguous numpy\
+						raise ValueError("next_state_args must be a C-contiguous numpy \
 							array with dtype {}".format(basis_dtype))
 
 					pcon_args.pop("next_state_args")
@@ -188,7 +234,7 @@ class user_basis(basis_general):
 					next_state = pcon_args["next_state"]
 					get_Ns_pcon = pcon_args["get_Ns_pcon"]
 					get_s0_pcon = pcon_args["get_s0_pcon"]
-					n_sectors = 0
+					n_sectors = None
 					count_particles = None
 
 				elif len(pcon_args) == 6:
@@ -207,6 +253,25 @@ class user_basis(basis_general):
 			if Np is None:
 				Ns = Ns_full
 			elif type(Np) is tuple or type(Np) is int:
+				self._get_proj_pcon = True
+				if n_sectors is not None:
+					if type(Np) is int and n_sectors!=1:
+						raise ValueError("n_sectors is {} when the size \
+							of the particle sector is 1".format(n_sectors))
+					elif type(Np) is tuple and n_sectors!=len(Np):
+						raise ValueError("n_sectors is {} when the size \
+							of the particle sector is {}".format(n_sectors,len(np)))
+					else:
+						raise ValueError("Np must be tuple, int, or a list of tuples/integers.")
+				else:
+					if type(Np) is int:
+						n_sectors=1
+					elif type(Np) is tuple:
+						n_sectors=len(np)
+					else:
+						raise ValueError("Np must be tuple, int, or a list of tuples/integers.")
+
+
 				Ns = get_Ns_pcon(N,Np)
 			else:
 				try:
@@ -215,10 +280,30 @@ class user_basis(basis_general):
 					raise TypeError("Np must be integer or iteratable object.")
 
 				Np = list(Np)
+				
+				for np in Np:
+					if n_sectors is not None:
+						if type(np) is int and n_sectors!=1:
+							raise ValueError("n_sectors is {} when the size \
+								of the particle sector is 1".format(n_sectors))
+						elif type(np) is tuple and n_sectors!=len(np):
+							raise ValueError("n_sectors is {} when the size \
+								of the particle sector is {}".format(n_sectors,len(np)))
+						else:
+							raise ValueError("Np must be tuple, int, or a list of tuples/integers.")
+					else:
+						if type(np) is int:
+							n_sectors=1
+						elif type(np) is tuple:
+							n_sectors=len(np)
+						else:
+							raise ValueError("Np must be tuple, int, or a list of tuples/integers.")
+
 				Ns = sum(get_Ns_pcon(N,np) for np in Np)
 
 
 		else:
+			self._get_proj_pcon = False
 			Ns = Ns_full
 			Np = None
 			next_state_args = None
@@ -226,29 +311,67 @@ class user_basis(basis_general):
 			count_particles = None
 			get_s0_pcon = None
 			get_Ns_pcon = None
-			n_sectors = 0
+			n_sectors = -1
+
+		# check_state function BEFORE symmetry checks
+		# this can be used to impose local hilbert space constraints.
+		if check_state_nosymm is not None:
+			try:
+				check_state_nosymm,check_state_nosymm_args = check_state_nosymm
+			except TypeError:
+				check_state_nosymm_args = None
+
+			if not isinstance(check_state_nosymm,CFunc):
+				raise ValueError("check_state_nosymm must be a numba.CFunc object.")
+
+			if use_32bit:
+				if check_state_nosymm._sig != check_state_nosymm_sig_32:
+					raise ValueError("check_state_nosymm does not have the correct signature, \
+					try using check_state_nosymm_sig_32 from quspin.basis.user module.")
+			else:
+				if check_state_nosymm._sig != check_state_nosymm_sig_64:
+					raise ValueError("check_state_nosymm does not have the correct signature, \
+					try using check_state_nosymm_sig_64 from quspin.basis.user module.")
+
+
+			if check_state_nosymm_args is not None:
+				if not isinstance(check_state_nosymm_args,_np.ndarray):
+					raise ValueError("next_state_args must be a C-contiguous numpy \
+						array with dtype {}".format(basis_dtype))
+				if not check_state_nosymm_args.flags["CARRAY"]:
+					raise ValueError("next_state_args must be a C-contiguous numpy \
+						array with dtype {}".format(basis_dtype))
+				if check_state_nosymm_args.dtype != basis_dtype:
+					raise ValueError("next_state_args must be a C-contiguous numpy \
+						array with dtype {}".format(basis_dtype))
+		else:
+			check_state_nosymm,check_state_nosymm_args = None,None
 
 		if next_state is not None:
 			if not isinstance(next_state,CFunc):
-				raise ValueError
+				raise ValueError("next_state must be a numba.CFunc object.")
 
 			if use_32bit:
 				if next_state._sig != next_state_sig_32:
-					raise ValueError
+					raise ValueError("next_state does not have the correct signature, \
+					try using next_state_sig_32 from quspin.basis.user module.")
 			else:
 				if next_state._sig != next_state_sig_64:
-					raise ValueError
+					raise ValueError("next_state does not have the correct signature, \
+					try using next_state_sig_64 from quspin.basis.user module.")
 
 		if count_particles is not None:
 			if not isinstance(count_particles,CFunc):
-				raise ValueError
+				raise ValueError("next_state must be a numba.CFunc object.")
 
 			if use_32bit:
 				if count_particles._sig != count_particles_sig_32:
-					raise ValueError
+					raise ValueError("count_particles does not have the correct signature, \
+					try using count_particles_sig_64 from quspin.basis.user module.")
 			else:
 				if count_particles._sig != count_particles_sig_64:
-					raise ValueError
+					raise ValueError("count_particles does not have the correct signature, \
+					try using count_particles_sig_64 from quspin.basis.user module.")
 
 		self._blocks,map_funcs,pers,qs = _process_user_blocks(use_32bit,blocks,block_order)
 
@@ -269,7 +392,8 @@ class user_basis(basis_general):
 		self._basis_dtype = basis_dtype
 		self._core = user_core_wrap(Ns_full, basis_dtype, N, map_funcs, pers, qs,
 								n_sectors, get_Ns_pcon, get_s0_pcon, next_state,
-								next_state_args,count_particles, op_func, sps)
+								next_state_args,check_state_nosymm,check_state_nosymm_args,
+								count_particles, op_func, sps)
 
 		self._N = N
 		self._Ns = Ns
@@ -279,11 +403,17 @@ class user_basis(basis_general):
 		self._n_dtype = _np.min_scalar_type(nmax)
 
 		if _make_basis:	
-			self.make(sort_basis=sort_basis)
+			self.make()
 		else:
 			self._Ns=1
 			self._basis=basis_zeros(self._Ns,dtype=self._basis_dtype)
 			self._n=_np.zeros(self._Ns,dtype=self._n_dtype)
+
+		if not is_sorted_decending(self._basis):
+			ind = _np.argsort(self._basis,kind="heapsort")[::-1]
+			self._basis = basis[ind].copy()
+			self._n = n[ind].copy()
+
 
 		if allowed_ops is None:
 			allowed_ops = set([chr(i) for i in range(256)]) # all characters allowed.
@@ -295,137 +425,12 @@ class user_basis(basis_general):
 
 
 	def __type__(self):
-		return "<type 'qspin.basis.general_hcb'>"
+		return "<type 'qspin.basis.user.user_basis'>"
 
 	def __repr__(self):
-		return "< instance of 'qspin.basis.general_hcb' with {0} states >".format(self._Ns)
+		return "< instance of 'qspin.basis.user.user_basis' with {0} states >".format(self._Ns)
 
 	def __name__(self):
-		return "<type 'qspin.basis.general_hcb'>"
+		return "<type 'qspin.basis.user.user_basis'>"
 
-	# functions called in base class:
 
-	def _sort_opstr(self,op):
-		if op[0].count("|") > 0:
-			raise ValueError("'|' character found in op: {0},{1}".format(op[0],op[1]))
-		if len(op[0]) != len(op[1]):
-			raise ValueError("number of operators in opstr: {0} not equal to length of indx {1}".format(op[0],op[1]))
-
-		op = list(op)
-		zipstr = list(zip(op[0],op[1]))
-		if zipstr:
-			zipstr.sort(key = lambda x:x[1])
-			op1,op2 = zip(*zipstr)
-			op[0] = "".join(op1)
-			op[1] = tuple(op2)
-		return tuple(op)
-
-	def _non_zero(self,op):
-		opstr = _np.array(list(op[0]))
-		indx = _np.array(op[1])
-		if _np.any(indx):
-			indx_p = indx[opstr == "+"].tolist()
-			p = not any(indx_p.count(x) > 1 for x in indx_p)
-			indx_p = indx[opstr == "-"].tolist()
-			m = not any(indx_p.count(x) > 1 for x in indx_p)
-			return (p and m)
-		else:
-			return True
-		
-	def _hc_opstr(self,op):
-		op = list(op)
-		# take h.c. + <--> - , reverse operator order , and conjugate coupling
-		op[0] = list(op[0].replace("+","%").replace("-","+").replace("%","-"))
-		op[0].reverse()
-		op[0] = "".join(op[0])
-		op[1] = list(op[1])
-		op[1].reverse()
-		op[1] = tuple(op[1])
-		op[2] = op[2].conjugate()
-		return self._sort_opstr(op) # return the sorted op.
-
-	def _expand_opstr(self,op,num):
-		opstr = str(op[0])
-		indx = list(op[1])
-		J = op[2]
- 
-		if len(opstr) <= 1:
-			if opstr == "x":
-				op1 = list(op)
-				op1[0] = op1[0].replace("x","+")
-				if self._pauli in [0,1]:
-					op1[2] *= 0.5
-				op1.append(num)
-
-				op2 = list(op)
-				op2[0] = op2[0].replace("x","-")
-				if self._pauli in [0,1]:
-					op2[2] *= 0.5
-				op2.append(num)
-
-				return (tuple(op1),tuple(op2))
-			elif opstr == "y":
-				op1 = list(op)
-				op1[0] = op1[0].replace("y","+")
-				if self._pauli in [0,1]:
-					op1[2] *= -0.5j
-				else:
-					op1[2] *= -1j
-				op1.append(num)
-
-				op2 = list(op)
-				op2[0] = op2[0].replace("y","-")
-				if self._pauli in [0,1]:
-					op2[2] *= 0.5j
-				else:
-					op2[2] *= 1j
-				op2.append(num)
-
-				return (tuple(op1),tuple(op2))
-			else:
-				op = list(op)
-				op.append(num)
-				return [tuple(op)]	
-		else:
-	 
-			i = len(opstr)//2
-			op1 = list(op)
-			op1[0] = opstr[:i]
-			op1[1] = tuple(indx[:i])
-			op1[2] = complex(J)
-			op1 = tuple(op1)
-
-			op2 = list(op)
-			op2[0] = opstr[i:]
-			op2[1] = tuple(indx[i:])
-			op2[2] = complex(1)
-			op2 = tuple(op2)
-
-			l1 = self._expand_opstr(op1,num)
-			l2 = self._expand_opstr(op2,num)
-
-			l = []
-			for op1 in l1:
-				for op2 in l2:
-					op = list(op1)
-					op[0] += op2[0]
-					op[1] += op2[1]
-					op[2] *= op2[2]
-					l.append(tuple(op))
-
-			return tuple(l)
-
-	def Op_bra_ket(self,opstr,indx,J,dtype,ket_states,reduce_output=True):
-
-		if self._S == "1/2":
-			ME,bra,ket = hcb_basis_general.Op_bra_ket(self,opstr,indx,J,dtype,ket_states,reduce_output=reduce_output)
-			if self._pauli==1:
-				n = len(opstr.replace("I",""))
-				ME *= (1<<n)
-			elif self._pauli==-1:
-				n = len(opstr.replace("I","").replace("+","").replace("-",""))
-				ME *= (1<<n)
-		else:
-			return higher_spin_basis_general.Op_bra_ket(self,opstr,indx,J,dtype,ket_states)
-
-		return ME,bra,ket

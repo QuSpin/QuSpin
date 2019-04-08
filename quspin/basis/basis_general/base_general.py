@@ -5,9 +5,9 @@ from ._basis_general_core.general_basis_utils import basis_int_to_python_int,_ge
 from ..lattice import lattice_basis
 import warnings
 
+
 class GeneralBasisWarning(Warning):
 	pass
-
 
 def process_map(map,q):
 	map = _np.asarray(map,dtype=_np.int32)
@@ -78,8 +78,11 @@ def check_symmetry_maps(item1,item2):
 class basis_general(lattice_basis):
 	def __init__(self,N,block_order=None,**kwargs):
 		self._unique_me = True
+		self._check_herm = True
+
 		self._check_pcon = None
 		self._basis_pcon = None
+
 		self._get_proj_pcon = False
 		self._made_basis = False # keeps track of whether the basis has been made
 
@@ -458,7 +461,7 @@ class basis_general(lattice_basis):
 		return static_blocks,dynamic_blocks
 
 
-	def make(self,Ns_block_est=None,sort_basis=False):
+	def make(self,Ns_block_est=None):
 		"""Creates the entire basis by calling the basis constructor.
 
 		Parameters
@@ -512,6 +515,8 @@ class basis_general(lattice_basis):
 				self._basis = _np.array([],dtype=basis.dtype)
 				self._n = _np.array([],dtype=n.dtype)
 				if Np_list is not None: self._Np_list = _np.array([],dtype=Np_list.dtype)
+
+			sort_basis = False
 		else:
 			sort_basis = True
 
