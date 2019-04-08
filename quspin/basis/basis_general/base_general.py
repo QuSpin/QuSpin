@@ -458,7 +458,7 @@ class basis_general(lattice_basis):
 		return static_blocks,dynamic_blocks
 
 
-	def make(self,Ns_block_est=None):
+	def make(self,Ns_block_est=None,sort_basis=False):
 		"""Creates the entire basis by calling the basis constructor.
 
 		Parameters
@@ -513,6 +513,9 @@ class basis_general(lattice_basis):
 				self._n = _np.array([],dtype=n.dtype)
 				if Np_list is not None: self._Np_list = _np.array([],dtype=Np_list.dtype)
 		else:
+			sort_basis = True
+
+		if sort_basis:
 			ind = _np.argsort(basis[:Ns],kind="heapsort")[::-1]
 			self._basis = basis[ind].copy()
 			self._n = n[ind].copy()

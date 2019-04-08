@@ -13,14 +13,18 @@ namespace basis_general {
 template<class I>
 class spinful_fermion_basis_core : public spinless_fermion_basis_core<I>
 {
-	int N_sys;
+	const int N_sys;
+	const bool dble_occ;
+
 	public:
-		spinful_fermion_basis_core(const int _N) : \
-		spinless_fermion_basis_core<I>::spinless_fermion_basis_core(2*_N), N_sys(_N) {}
+		spinful_fermion_basis_core(const int _N,const bool _dble_occ) : \
+		spinless_fermion_basis_core<I>::spinless_fermion_basis_core(2*_N), 
+		N_sys(_N), dble_occ(_dble_occ) {}
 
 		spinful_fermion_basis_core(const int _N,const int _nt,const int _maps[], \
-								   const int _pers[], const int _qs[]) : \
-		spinless_fermion_basis_core<I>::spinless_fermion_basis_core(2*_N,_nt,_maps,_pers,_qs), N_sys(_N)  {}
+								   const int _pers[], const int _qs[],const bool _dble_occ) : \
+		spinless_fermion_basis_core<I>::spinless_fermion_basis_core(2*_N,_nt,_maps,_pers,_qs), 
+		N_sys(_N), dble_occ(_dble_occ)  {}
 
 		~spinful_fermion_basis_core() {}
 
@@ -70,6 +74,7 @@ class spinful_fermion_basis_core : public spinless_fermion_basis_core<I>
 			split_state(s,s_left,s_right);
 			get_right_min_max(s_right,min_right,max_right);
 
+
 			if(s_right<max_right){
 				s_right = next_state_pcon_side(s_right);
 			}
@@ -80,7 +85,25 @@ class spinful_fermion_basis_core : public spinless_fermion_basis_core<I>
 
 			return comb_state(s_left,s_right);
 		}
+
+		double check_state(I s);
+
 };
+
+template<class I>
+double spinful_fermion_basis_core<I>::check_state(I s){
+	I s_left  = 0,s_right = 0;
+	double norm = check_state_core_unrolled<I>(this,s,general_basis_core<I>::nt);
+	split_state(s,s_left,s_right);
+	if(!dble_occ && (s_left&s_right)!=0){
+		return std::numeric_limits<double>::quiet_NaN();
+	}
+	else{
+		return norm;
+	}
+
+}
+
 
 }
 

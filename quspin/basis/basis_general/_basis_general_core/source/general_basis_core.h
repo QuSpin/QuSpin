@@ -36,7 +36,7 @@ class general_basis_core{
 		~general_basis_core() {}
 
 		bool check_pcon(const I,const std::set<std::vector<int>>&);
-		double check_state(I);
+		virtual double check_state(I);
 		I ref_state(I,int[],int&);
 		virtual I next_state_pcon(I) = 0;
 		virtual int op(I&,std::complex<double>&,const int,const char[],const int[]) = 0;

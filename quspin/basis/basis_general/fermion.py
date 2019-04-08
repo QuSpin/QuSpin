@@ -325,7 +325,7 @@ class spinful_fermion_basis_general(spinless_fermion_basis_general):
 		:lines: 7-
 
 	"""
-	def __init__(self,N,Nf=None,nf=None,Ns_block_est=None,simple_symm=True,make_basis=True,block_order=None,**blocks):
+	def __init__(self,N,Nf=None,nf=None,Ns_block_est=None,simple_symm=True,make_basis=True,block_order=None,double_occupy=True,**blocks):
 		"""Intializes the `spinful_fermion_basis_general` object (basis for fermionic operators).
 
 		Parameters
@@ -470,7 +470,7 @@ class spinful_fermion_basis_general(spinless_fermion_basis_general):
 				Ns = Ns_block_est
 
 		self._basis_dtype = get_basis_type(2*N,None,2)
-		self._core = spinful_fermion_basis_core_wrap(self._basis_dtype,N,self._maps,self._pers,self._qs)
+		self._core = spinful_fermion_basis_core_wrap(self._basis_dtype,N,self._maps,self._pers,self._qs,double_occupy)
 
 		self._sps = 2
 		self._N = 2*N

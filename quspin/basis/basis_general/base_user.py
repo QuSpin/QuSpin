@@ -4,8 +4,8 @@ import numpy as _np
 from numba import cfunc, types
 from numba.ccallback import CFunc
 
-map_func_sig_32 = types.uint32(types.uint32,types.intc,types.CPointer(types.intc))
-map_func_sig_64 = types.uint64(types.uint64,types.intc,types.CPointer(types.intc))
+map_sig_32 = types.uint32(types.uint32,types.intc,types.CPointer(types.intc))
+map_sig_64 = types.uint64(types.uint64,types.intc,types.CPointer(types.intc))
 
 next_state_sig_32 = types.uint32(types.uint32,types.uint32,types.CPointer(types.uint32))
 next_state_sig_64 = types.uint64(types.uint64,types.uint64,types.CPointer(types.uint64))
@@ -18,10 +18,10 @@ op_results_64 = types.Record.make_c_struct([
    ('matrix_ele', types.complex128),('state', types.uint64)
 ])
 
-op_func_sig_32 = types.intc(types.CPointer(op_results_32),
+op_sig_32 = types.intc(types.CPointer(op_results_32),
 								types.char,
 								types.intc)
-op_func_sig_64 = types.intc(types.CPointer(op_results_64),
+op_sig_64 = types.intc(types.CPointer(op_results_64),
 								types.char,
 								types.intc)
 
@@ -30,13 +30,10 @@ count_particles_sig_32 = types.void(types.uint32,
 count_particles_sig_64 = types.void(types.uint64,
 							types.CPointer(types.intc))
 
-def process_map_func(nopython,use_32bit,map_func,per,q):
-	if use_32bit:
-		return cfunc(map_func_sig_32,nopython=nopython)(map_func),per,q
-	else:
-		return cfunc(map_func_sig_64)(map_func),per,q
+__all__ = ["map_sig_32","map_sig_64","next_state_sig_32",
+	"next_state_sig_64","op_func_sig_32","op_func_sig_64","user_basis"]
 
-def process_user_blocks(nopython,use_32bit,blocks_dict,block_order):
+def _process_user_blocks(use_32bit,blocks_dict,block_order):
 
 	if any((type(v) is not tuple) and (len(v)!=3) for v in blocks_dict.values()):
 		raise ValueError
@@ -45,10 +42,10 @@ def process_user_blocks(nopython,use_32bit,blocks_dict,block_order):
 		raise ValueError
 
 	if use_32bit:
-		if not all(f._sig==map_func_sig_32 for f,_,_ in blocks_dict.values()):
+		if not all(f._sig==map_sig_32 for f,_,_ in blocks_dict.values()):
 			raise ValueError
 	else:
-		if not all(f._sig==map_func_sig_64 for f,_,_ in blocks_dict.values()):
+		if not all(f._sig==map_sig_64 for f,_,_ in blocks_dict.values()):
 			raise ValueError
 
 	if block_order is None: # sort by periodicies largest to smallest
@@ -81,7 +78,7 @@ def process_user_blocks(nopython,use_32bit,blocks_dict,block_order):
 
 
 
-class user_basis_general(basis_general):
+class user_basis(basis_general):
 	"""Constructs basis for spin operators for USER-DEFINED symmetries.
 
 	Any unitary symmetry transformation :math:`Q` of multiplicity :math:`m_Q` (:math:`Q^{m_Q}=1`) has
@@ -135,7 +132,7 @@ class user_basis_general(basis_general):
 
 	"""
 	def __init__(self,basis_dtype,N,Ns_full,op_func,allowed_ops=None,sps=None,pcon_args=None,
-		Ns_block_est=None,_make_basis=True,block_order=None,_Np=None,nopython=True,**blocks):
+		Ns_block_est=None,_make_basis=True,block_order=None,_Np=None,sort_basis=False,**blocks):
 		"""Intializes the `user_basis_general` object (basis for user defined ED calculations).
 
 		Parameters
@@ -160,10 +157,10 @@ class user_basis_general(basis_general):
 			raise ValueError
 
 		if use_32bit:
-			if op_func._sig != op_func_sig_32:
+			if op_func._sig != op_sig_32:
 				raise ValueError
 		else:
-			if op_func._sig != op_func_sig_64:
+			if op_func._sig != op_sig_64:
 				raise ValueError
 
 
@@ -206,7 +203,7 @@ class user_basis_general(basis_general):
 
 
 			if Np is None:
-				Ns = get_Ns_pcon(None)
+				Ns = Ns_full
 			elif type(Np) is tuple or type(Np) is int:
 				Ns = get_Ns_pcon(N,Np)
 			else:
@@ -251,7 +248,7 @@ class user_basis_general(basis_general):
 				if count_particles._sig != count_particles_sig_64:
 					raise ValueError
 
-		self._blocks,map_funcs,pers,qs = process_user_blocks(nopython,use_32bit,blocks,block_order)
+		self._blocks,map_funcs,pers,qs = _process_user_blocks(use_32bit,blocks,block_order)
 
 		self.map_funcs = map_funcs
 		self._pers = _np.array(pers,dtype=_np.int)
@@ -280,7 +277,7 @@ class user_basis_general(basis_general):
 		self._n_dtype = _np.min_scalar_type(nmax)
 
 		if _make_basis:	
-			self.make()
+			self.make(sort_basis=sort_basis)
 		else:
 			self._Ns=1
 			self._basis=basis_zeros(self._Ns,dtype=self._basis_dtype)
