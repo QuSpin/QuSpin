@@ -14,7 +14,7 @@ template<class I>
 class spinful_fermion_basis_core : public spinless_fermion_basis_core<I>
 {
 	const int N_sys;
-	const bool dble_occ;
+	const bool not_dble_occ;
 
 	public:
 		spinful_fermion_basis_core(const int _N,const bool _dble_occ) : \
@@ -24,7 +24,7 @@ class spinful_fermion_basis_core : public spinless_fermion_basis_core<I>
 		spinful_fermion_basis_core(const int _N,const int _nt,const int _maps[], \
 								   const int _pers[], const int _qs[],const bool _dble_occ) : \
 		spinless_fermion_basis_core<I>::spinless_fermion_basis_core(2*_N,_nt,_maps,_pers,_qs), 
-		N_sys(_N), dble_occ(_dble_occ)  {}
+		N_sys(_N), not_dble_occ(!_dble_occ)  {}
 
 		~spinful_fermion_basis_core() {}
 
@@ -93,15 +93,13 @@ class spinful_fermion_basis_core : public spinless_fermion_basis_core<I>
 template<class I>
 double spinful_fermion_basis_core<I>::check_state(I s){
 	I s_left  = 0,s_right = 0;
-	double norm = check_state_core_unrolled<I>(this,s,general_basis_core<I>::nt);
 	split_state(s,s_left,s_right);
-	if(!dble_occ && (s_left&s_right)!=0){
+	if(not_dble_occ && (s_left&s_right)){
 		return std::numeric_limits<double>::quiet_NaN();
 	}
 	else{
-		return norm;
+		return check_state_core_unrolled<I>(this,s,general_basis_core<I>::nt);;
 	}
-
 }
 
 
