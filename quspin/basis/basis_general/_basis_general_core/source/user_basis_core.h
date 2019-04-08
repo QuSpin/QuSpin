@@ -26,7 +26,7 @@ class user_basis_core : public general_basis_core<I>
 {
 	typedef I (*map_type)(I,int,int*);
 	typedef I (*next_state_type)(I,I,I*);
-	typedef int (*op_func_type)(op_results<I>*,char,int);
+	typedef int (*op_func_type)(op_results<I>*,char,int,int);
 	typedef void (*count_particles_type)(I,int*);
 	public:
 		map_type * map_funcs;
@@ -85,7 +85,7 @@ class user_basis_core : public general_basis_core<I>
 			I s = r;
 			op_results<I> res(m,r);
 			for(int j=n_op-1;j>=0;j--){
-				int err = (*op_func)(&res,opstr[j],indx[j]);
+				int err = (*op_func)(&res,opstr[j],indx[j],general_basis_core<I>::N);
 				if(err!=0){
 					return err;
 				}

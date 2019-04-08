@@ -20,9 +20,11 @@ op_results_64 = types.Record.make_c_struct([
 
 op_sig_32 = types.intc(types.CPointer(op_results_32),
 								types.char,
+								types.intc,
 								types.intc)
 op_sig_64 = types.intc(types.CPointer(op_results_64),
 								types.char,
+								types.intc,
 								types.intc)
 
 count_particles_sig_32 = types.void(types.uint32,

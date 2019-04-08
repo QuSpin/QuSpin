@@ -19,7 +19,7 @@ class spinful_fermion_basis_core : public spinless_fermion_basis_core<I>
 	public:
 		spinful_fermion_basis_core(const int _N,const bool _dble_occ) : \
 		spinless_fermion_basis_core<I>::spinless_fermion_basis_core(2*_N), 
-		N_sys(_N), dble_occ(_dble_occ) {}
+		N_sys(_N), not_dble_occ(!_dble_occ) {}
 
 		spinful_fermion_basis_core(const int _N,const int _nt,const int _maps[], \
 								   const int _pers[], const int _qs[],const bool _dble_occ) : \
