@@ -16,6 +16,12 @@
 namespace basis_general {
 
 
+template<class I, class J>
+struct compare_elements : std::binary_function<std::pair<I,J>,std::pair<I,J>,bool>
+{
+	bool operator()(std::pair<I,J> a, std::pair<I,J> b){return a.first < b.first;}
+};
+
 template<class I, class J, class K, class T>
 int general_make_matrix(general_basis_core<I> *B,
 						  const int n_ops,
@@ -33,13 +39,17 @@ int general_make_matrix(general_basis_core<I> *B,
 	const int nt = B->get_nt();
 	int g[__GENERAL_BASIS_CORE__max_nt];
 
+	indices_vec.reserve(Ns);
+	data_vec.reserve(Ns);
+
 	indices_vec.resize(Ns);
 	data_vec.resize(Ns);
+
+
 	int err = 0;
-	for(npy_intp i=0;i<Ns && err==0;i++){
-		indices_vec[i].reserve(n_ops);
-		data_vec[i].reserve(n_ops);
-	}
+
+	std::vector<std::pair<K,T>> elements;
+	elements.reserve(n_ops);
 
 	for(npy_intp i=0;i<Ns && err==0;i++){
 
@@ -84,25 +94,93 @@ int general_make_matrix(general_basis_core<I> *B,
 
 				err = check_imag(m,&M);
 
-
-				typename std::vector<K>::iterator ind_pos = std::lower_bound(indices_vec[j].begin(),indices_vec[j].end(),i);
-				typename std::vector<T>::iterator dat_pos = (npy_intp)(ind_pos - indices_vec[j].begin()) + data_vec[j].begin();
-
-				if(!(ind_pos==indices_vec[j].end()) && !(i < *ind_pos)){
-					*dat_pos += M;
-				}
-				else{
-					indices_vec[j].insert(ind_pos,i);
-					data_vec[j].insert(dat_pos,M);
-				}
+				elements.push_back(std::make_pair(j,M));
 			}
 		}
-	}
+		std::sort(elements.begin(), elements.end(), compare_elements<K,T>());
 
+		size_t jj = 0;
+		size_t col_end = elements.size();
+		size_t nnz = 0;
+
+		while(jj<col_end){
+			K j = elements[jj].first;
+			T x = elements[jj].second;
+			while(jj<col_end && elements[jj].first == j){
+				x += elements[jj].second;
+				++jj;
+			}
+			elements[nnz].first = j;
+			elements[nnz].second = x;
+			++nnz;
+		}
+
+		indices_vec[i].reserve(nnz);
+		data_vec[i].reserve(nnz);
+		for(jj=0;jj<nnz;++jj){
+			indices_vec[i].push_back(elements[jj].first);
+			data_vec[i].push_back(elements[jj].second);
+		}
+		std::erase(elements.begin(),elements.end());
+	}
 	return err;
 }
 
 
 }
+
+
+template <class I, class T>
+void data_tocsr(const I n_row,
+                const I n_col,
+                const I nnz,
+                std::vector<std::vector<I>> &indices_vec,
+                std::vector<std::vector<T>> &data_vec,
+                      I Bp[],
+                      I Bj[],
+                      T Bx[])
+{
+	typedef ind_iter std::vector<I>::iterator;
+	typedef dat_iter std::vector<T>::iterator;
+
+    //compute number of non-zero entries per column of A
+    std::fill(Bp, Bp + n_row, 0);
+
+    for(I col = 0; col < n_col; col++){
+    	ind_iter ind_it=indices_vec[col].begin();
+    	while(ind_it!=indices_vec.end()){
+    		Bp[*ind_it++]++;
+    	}
+    }
+
+    //cumsum the nnz per column to get Bp[]
+    for(I row = 0, cumsum = 0; row < n_row; row++){
+        I temp  = Bp[row];
+        Bp[row] = cumsum;
+        cumsum += temp;
+    }
+    Bp[n_row] = nnz;
+
+    for(I col = 0; col < n_col; col++){
+    	
+    	ind_iter ind_it = indices_vec[col].begin();
+    	dat_iter dat_it = data_vec[col].begin();
+
+    	while(ind_it!=indices_vec[col].end()){
+    		I row = *ind_it++;
+    		I dest = Bp[row];
+
+    		Bj[dest] = col;
+    		Bx[dest] = *dat_it++;
+
+    		Bp[row]++;
+    	}
+    }
+
+    for(I row = 0, last = 0; row <= n_row; row++){
+        I temp  = Bp[row];
+        Bp[row] = last;
+        last    = temp;
+    }
 
 #endif

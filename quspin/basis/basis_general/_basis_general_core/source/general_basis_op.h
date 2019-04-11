@@ -157,47 +157,45 @@ int general_inplace_op(general_basis_core<I> *B,
 						  		K v_out[])
 {
 	int err = 0;
-	#pragma omp parallel
-	{
-		const int nt = B->get_nt();
-		int g[__GENERAL_BASIS_CORE__max_nt];
-		
-		#pragma omp for schedule(static)
-		for(npy_intp i=0;i<Ns;i++){
-			if(err != 0){
-				continue;
-			}
-
-			I r = basis[i];
-			std::complex<double> m = A;
-			int local_err = B->op(r,m,n_op,opstr,indx);
-
-			if(local_err == 0){
-				int sign = 1;
-
-				npy_intp j = i;
-				if(r != basis[i]){
-					I rr = B->ref_state(r,g,sign);
-					if(full_basis){
-						j = Ns - (npy_intp)rr - 1;
-					}
-					else{
-						j = binary_search(Ns,basis,rr);
-					}
-					
-				}
-
-				if(j >= 0){
-					for(int k=0;k<nt;k++){
-						double q = (2.0*M_PI*B->qs[k]*g[k])/B->pers[k];
-						m *= std::exp(std::complex<double>(0,-q));
+	if(transpose){
+		if(conjugate){
+			#pragma omp parallel
+			{
+				const int nt = B->get_nt();
+				int g[__GENERAL_BASIS_CORE__max_nt];
+				
+				#pragma omp for schedule(static)
+				for(npy_intp i=0;i<Ns;i++){
+					if(err != 0){
+						continue;
 					}
 
-					m *= sign * std::sqrt(double(n[j])/double(n[i]));
-					if(transpose){
-						const K * v_in_col  = v_in  + j * nvecs;
-							  K * v_out_row = v_out + i * nvecs;
-						if(conjugate){
+					I r = basis[i];
+					std::complex<double> m = A;
+					int local_err = B->op(r,m,n_op,opstr,indx);
+
+					if(local_err == 0){
+						int sign = 1;
+						npy_intp j = i;
+						if(r != basis[i]){
+							I rr = B->ref_state(r,g,sign);
+							if(full_basis){
+								j = Ns - (npy_intp)rr - 1;
+							}
+							else{
+								j = binary_search(Ns,basis,rr);
+							}
+						}
+						if(j >= 0){
+							for(int k=0;k<nt;k++){
+								double q = (2.0*M_PI*B->qs[k]*g[k])/B->pers[k];
+								m *= std::exp(std::complex<double>(0,-q));
+							}
+
+							m *= sign * std::sqrt(double(n[j])/double(n[i]));
+							const K * v_in_col  = v_in  + j * nvecs;
+								  K * v_out_row = v_out + i * nvecs;
+
 							for(int k=0;k<nvecs;k++){
 								const std::complex<double> ME = std::complex<double>(v_in_col[k]) * std::conj(m);
 								local_err = atomic_add(ME,&v_out_row[k]);
@@ -206,52 +204,190 @@ int general_inplace_op(general_basis_core<I> *B,
 								}
 							}
 						}
-						else{
-							for(int k=0;k<nvecs;k++){
-								const std::complex<double> ME = std::complex<double>(v_in_col[k]) * m;
-								local_err = atomic_add(ME,&v_out_row[k]);
-								if(local_err){
-									break;
-								}
-							}
-						}
 					}
-					else{
-						const K * v_in_col  = v_in  + i * nvecs;
-							  K * v_out_row = v_out + j * nvecs;
-						if(conjugate){
-							for(int k=0;k<nvecs;k++){
-								const std::complex<double> ME = std::complex<double>(v_in_col[k]) * std::conj(m);
-								local_err = atomic_add(ME,&v_out_row[k]);
-								if(local_err){
-									break;
-								}
-							}
-						}
-						else{
-							for(int k=0;k<nvecs;k++){
-								const std::complex<double> ME = std::complex<double>(v_in_col[k]) * m;
-								local_err = atomic_add(ME,&v_out_row[k]);
-								if(local_err){
-									break;
-								}
-							}
-						}				
+					if(local_err != 0){
+						#pragma omp critical
+						err = local_err;
 					}
-
-
-
 				}
-			}
-
-			if(local_err != 0){
-				#pragma omp critical
-				err = local_err;
 			}
 		}
+		else{
+			#pragma omp parallel
+			{
+				const int nt = B->get_nt();
+				int g[__GENERAL_BASIS_CORE__max_nt];
+				
+				#pragma omp for schedule(static)
+				for(npy_intp i=0;i<Ns;i++){
+					if(err != 0){
+						continue;
+					}
 
-		
+					I r = basis[i];
+					std::complex<double> m = A;
+					int local_err = B->op(r,m,n_op,opstr,indx);
+
+					if(local_err == 0){
+						int sign = 1;
+
+						npy_intp j = i;
+						if(r != basis[i]){
+							I rr = B->ref_state(r,g,sign);
+							if(full_basis){
+								j = Ns - (npy_intp)rr - 1;
+							}
+							else{
+								j = binary_search(Ns,basis,rr);
+							}
+							
+						}
+
+						if(j >= 0){
+							for(int k=0;k<nt;k++){
+								double q = (2.0*M_PI*B->qs[k]*g[k])/B->pers[k];
+								m *= std::exp(std::complex<double>(0,-q));
+							}
+
+							m *= sign * std::sqrt(double(n[j])/double(n[i]));
+
+							const K * v_in_col  = v_in  + j * nvecs;
+								  K * v_out_row = v_out + i * nvecs;
+							for(int k=0;k<nvecs;k++){
+								const std::complex<double> ME = std::complex<double>(v_in_col[k]) * m;
+								local_err = atomic_add(ME,&v_out_row[k]);
+								if(local_err){
+									break;
+								}
+							}
+						}
+					}
+					if(local_err != 0){
+						#pragma omp critical
+						err = local_err;
+					}
+				}
+			}
+		}
 	}
+	else{
+		if(conjugate){
+			#pragma omp parallel
+			{
+				const int nt = B->get_nt();
+				int g[__GENERAL_BASIS_CORE__max_nt];
+				
+				#pragma omp for schedule(static)
+				for(npy_intp i=0;i<Ns;i++){
+					if(err != 0){
+						continue;
+					}
+
+					I r = basis[i];
+					std::complex<double> m = A;
+					int local_err = B->op(r,m,n_op,opstr,indx);
+
+					if(local_err == 0){
+						int sign = 1;
+
+						npy_intp j = i;
+						if(r != basis[i]){
+							I rr = B->ref_state(r,g,sign);
+							if(full_basis){
+								j = Ns - (npy_intp)rr - 1;
+							}
+							else{
+								j = binary_search(Ns,basis,rr);
+							}
+							
+						}
+
+						if(j >= 0){
+							for(int k=0;k<nt;k++){
+								double q = (2.0*M_PI*B->qs[k]*g[k])/B->pers[k];
+								m *= std::exp(std::complex<double>(0,-q));
+							}
+
+							m *= sign * std::sqrt(double(n[j])/double(n[i]));
+
+							const K * v_in_col  = v_in  + i * nvecs;
+								  K * v_out_row = v_out + j * nvecs;
+							for(int k=0;k<nvecs;k++){
+								const std::complex<double> ME = std::complex<double>(v_in_col[k]) * std::conj(m);
+								local_err = atomic_add(ME,&v_out_row[k]);
+								if(local_err){
+									break;
+								}
+							}
+						}
+					}
+					if(local_err != 0){
+						#pragma omp critical
+						err = local_err;
+					}
+				}
+			}
+		}
+		else{
+			#pragma omp parallel
+			{
+				const int nt = B->get_nt();
+				int g[__GENERAL_BASIS_CORE__max_nt];
+				
+				#pragma omp for schedule(static)
+				for(npy_intp i=0;i<Ns;i++){
+					if(err != 0){
+						continue;
+					}
+
+					I r = basis[i];
+					std::complex<double> m = A;
+					int local_err = B->op(r,m,n_op,opstr,indx);
+
+					if(local_err == 0){
+						int sign = 1;
+
+						npy_intp j = i;
+						if(r != basis[i]){
+							I rr = B->ref_state(r,g,sign);
+							if(full_basis){
+								j = Ns - (npy_intp)rr - 1;
+							}
+							else{
+								j = binary_search(Ns,basis,rr);
+							}
+							
+						}
+
+						if(j >= 0){
+							for(int k=0;k<nt;k++){
+								double q = (2.0*M_PI*B->qs[k]*g[k])/B->pers[k];
+								m *= std::exp(std::complex<double>(0,-q));
+							}
+
+							m *= sign * std::sqrt(double(n[j])/double(n[i]));
+
+							const K * v_in_col  = v_in  + i * nvecs;
+								  K * v_out_row = v_out + j * nvecs;
+
+							for(int k=0;k<nvecs;k++){
+								const std::complex<double> ME = std::complex<double>(v_in_col[k]) * m;
+								local_err = atomic_add(ME,&v_out_row[k]);
+								if(local_err){
+									break;
+								}
+							}
+						}
+					}
+					if(local_err != 0){
+						#pragma omp critical
+						err = local_err;
+					}
+				}
+			}			
+		}
+	}
+
 	return err;
 }
 

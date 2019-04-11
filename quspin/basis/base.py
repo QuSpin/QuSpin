@@ -27,18 +27,6 @@ def _update_diag(diag,ind,ME):
 	for i in range(ind.size):
 		diag[ind[i]] += ME[i]
 
-@numba.njit
-def _diag_tocsr(diag,indptr,indices,data):
-	n = diag.size
-	for i in range(n):
-		indptr[i] = i
-		indices[i] = i
-		data[i] = diag[i]
-
-	indptr[n] = n
-
-
-
 MAXPRINT = 50
 # this file stores the base class for all basis classes
 
@@ -242,16 +230,21 @@ class basis(object):
 
 		for opstr,indx,J in op_list:
 			ME,row,col = self.Op(opstr,indx,J,dtype)
-			if _is_diagonal(row,col):
-				if diag is None:
-					diag = _np.zeros(self.Ns,dtype=dtype)
+			if(len(ME)>0):
+				imax = max(row.max(),col.max())
+				index_type = _np.result_type(_np.int32,_np.min_scalar_type(imax))
+				row = row.astype(index_type)
+				col = col.astype(index_type)
+				if _is_diagonal(row,col):
+					if diag is None:
+						diag = _np.zeros(self.Ns,dtype=dtype)
 
-				_update_diag(diag,row,ME)
-			else:
-				if off_diag is None:
-					off_diag = _sp.csr_matrix((ME,(row,col)),shape=(self.Ns,self.Ns),dtype=dtype) 
+					_update_diag(diag,row,ME)
 				else:
-					off_diag = off_diag + _sp.csr_matrix((ME,(row,col)),shape=(self.Ns,self.Ns),dtype=dtype) 
+					if off_diag is None:
+						off_diag = _sp.csr_matrix((ME,(row,col)),shape=(self.Ns,self.Ns),dtype=dtype) 
+					else:
+						off_diag = off_diag + _sp.csr_matrix((ME,(row,col)),shape=(self.Ns,self.Ns),dtype=dtype) 
 
 		if diag is not None and off_diag is not None:
 			indptr = _np.arange(self.Ns+1)
@@ -263,7 +256,6 @@ class basis(object):
 			return _sp.dia_matrix((_np.atleast_2d(diag),[0]),shape=(self.Ns,self.Ns),dtype=dtype)
 		else:
 			return _sp.dia_matrix((self.Ns,self.Ns),dtype=dtype)
-
 
 	def partial_trace(self,state,sub_sys_A=None,subsys_ordering=True,return_rdm="A",enforce_pure=False,sparse=False):
 		"""Calculates reduced density matrix, through a partial trace of a quantum state in a lattice `basis`.
@@ -385,7 +377,6 @@ class basis(object):
 								subsys_ordering=subsys_ordering,return_rdm=return_rdm,
 								enforce_pure=enforce_pure,return_rdm_EVs=return_rdm_EVs,
 								sparse=sparse,alpha=alpha,sparse_diag=sparse_diag,maxiter=maxiter)
-
 
 	def expanded_form(self,static=[],dynamic=[]):
 		"""Splits up operator strings containing "x" and "y" into operator combinations of "+" and "-". This function is useful for higher spin hamiltonians where "x" and "y" operators are not appropriate operators. 
