@@ -3,6 +3,7 @@
 #define _EXPM_MULTIPLY_H
 
 #include "complex_ops.h"
+#include <stdio.h>
 
 #include "openmp.h"
 #if defined(_OPENMP)
@@ -44,8 +45,7 @@ void csr_matvec(const bool overwrite_y,
 #include <algorithm>
 #include <vector>
 #include "math_functions.h"
-
-
+#include <valarray>     // std::valarray, std::slice
 
 template<typename I, typename T1,typename T2,typename T3>
 void expm_multiply(const I n,
@@ -63,93 +63,102 @@ void expm_multiply(const I n,
 {
 
 	T2  c1,c2,c3;
-	bool flag=false;
 
 	const int nthread = omp_get_max_threads();
 	std::vector<I> rco_vec(nthread);
 	std::vector<T3> vco_vec(nthread);
+	std::vector<T2> c1_threads_vec(nthread);
+	std::vector<T2> c2_threads_vec(nthread);
+	std::vector<T2> c3_threads_vec(nthread);
 
 	T3 * B1 = work;
 	T3 * B2 = work + n;
 	I * rco = &rco_vec[0];
 	T3 * vco = &vco_vec[0];
+	T2 * c1_threads = &c1_threads_vec[0];
+	T2 * c2_threads = &c2_threads_vec[0];
+	T2 * c3_threads = &c3_threads_vec[0];
 	
-	#pragma omp parallel shared(c1,c2,c3,flag,F,B1,B2,rco,vco) firstprivate(nthread)
+	#pragma omp parallel shared(c1,c1_threads,c2,c2_threads,c3,c3_threads,F,B1,B2,rco,vco) firstprivate(nthread)
 	{
 		const int threadn = omp_get_thread_num();
-		const I items_per_thread = n/nthread;
+		const I items_per_thread = (n+(nthread-1))/nthread;
 		const I begin = items_per_thread * threadn;
 		I end0 = items_per_thread * ( threadn + 1 );
 		if(threadn == nthread-1){
-			end0 += n%nthread;
+			end0 = n;
 		}
 		const I end = end0;
 
 		const T3 eta = math_functions::exp(a*mu/T2(s));
+		T2 c1_thread=0,c2_thread=0,c3_thread=0;
+		c1_threads[threadn] = 0;
+		c2_threads[threadn] = 0;
+		c3_threads[threadn] = 0;
+
 
 		for(I k=begin;k<end;k++){ 
-			B1[k] = F[k];
-			B2[k] = 0;
+			T3 f = F[k];
+			B1[k] = f;
+			c1_thread = std::max(c1_thread,math_functions::abs(f));
 		}
+		c1_threads[threadn] = c1_thread;
 		for(int i=0;i<s;i++){
 
-			T2 c1_thread = math_functions::inf_norm(B1,begin,end);
+			#pragma omp barrier 
 
-			#pragma omp single
-			{
-				c1 = 0;
-				flag = false;
+			if(threadn==0){
+				c2 = c3 = 0;
+				c1 = *std::max_element(c1_threads,c1_threads+nthread);
 			}
 
-			#pragma omp critical
-			{
-				c1 = std::max(c1,c1_thread);
-			}	
-
-			for(int j=1;j<m_star+1 && !flag;j++){
+			for(int j=1;j<m_star+1;j++){
 
 				#if defined(_OPENMP)
-				csrmv_merge<I,T1,T3,T3>(true,n,Ap,Aj,Ax,a/T2(j*s),B1,rco,vco,B2);
+				csrmv_merge<I,T1,T3,T3>(true,n,Ap,Aj,Ax,a/T2(j*s),B1,rco,vco,B2); // implied barrier
 				#else
 				csr_matvec<I,T1,T3,T3>(true,n,Ap,Aj,Ax,a/T2(j*s),B1,rco,vco,B2);
 				#endif
 
+				c2_thread = c3_thread = 0;
 				for(I k=begin;k<end;k++){
-					F[k] += B1[k] = B2[k];
+					T3 b2 = B2[k];
+					T3 f  = F[k] += b2;
+					B1[k] = b2;
+					// used cached values to compute comparisons for infinite norm
+					c2_thread = std::max(c2_thread,math_functions::abs(b2));
+					c3_thread = std::max(c3_thread,math_functions::abs(f));
+				}
+				c2_threads[threadn] = c2_thread;
+				c3_threads[threadn] = c3_thread;
+
+				#pragma omp barrier 
+
+				if(threadn==0){
+					c2 = *std::max_element(c2_threads,c2_threads+nthread);
+					c3 = *std::max_element(c3_threads,c3_threads+nthread);
 				}
 
-				T2 c2_thread = math_functions::inf_norm(B2,begin,end);
-				T2 c3_thread = math_functions::inf_norm(F,begin,end);
+				#pragma omp barrier 
 
-				#pragma omp single
-				{
-					c2 = c3 = 0;
+				if((c1+c2)<=(tol*c3)){
+					break;
 				}
 
-				#pragma omp critical
-				{
-					c2 = std::max(c2,c2_thread);
-					c3 = std::max(c3,c3_thread);
-				}	
-
-				#pragma omp barrier
-
-				#pragma omp single
-				{
-					if((c1+c2)<=(tol*c3)){
-						flag=true;
-					}
+				if(threadn==0){
 					c1 = c2;
+					c2 = c3 = 0;			
 				}
-
 			}
 
+			c1_thread = 0;
 			for(I k=begin;k<end;k++){
-				F[k] *= eta;
-				B1[k] = F[k];
+				T3 f = F[k] *= eta;
+				B1[k] = f;
+				// used cached values to compute comparisons for infinite norm
+				c1_thread = std::max(c1_thread,math_functions::abs(f));
 			}
 
-			#pragma omp barrier
 		}
 	}
 }

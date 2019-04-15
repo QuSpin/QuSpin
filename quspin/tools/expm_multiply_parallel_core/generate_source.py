@@ -43,7 +43,7 @@ def generate_get_switch_num():
         for T1 in T_types:
             for T2 in T_types:
                 for T3 in T_types:
-                    if np.can_cast(T1,T3) and T2 == real_dtypes[T3]:
+                    if np.can_cast(T1,T3) and T2 == real_dtypes[T1]:
                         expm_multiply_body = expm_multiply_body + "\t\telse if(T1=={} && T2=={} && T3=={}){{return {};}}\n".format(numpy_numtypes[T1],numpy_numtypes[T2],numpy_numtypes[T3],switch_num)
                         switch_num += 1
 

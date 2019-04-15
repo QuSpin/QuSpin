@@ -3,7 +3,6 @@ import numpy as _np
 import scipy.sparse as _sp
 import warnings,numba
 
-
 @numba.njit
 def _coo_dot(v_in,v_out,row,col,ME):
 	n = row.shape[0]
@@ -15,6 +14,18 @@ def _coo_dot(v_in,v_out,row,col,ME):
 		for j in range(m):
 			v_out[r,j] += me * v_in[c,j]
 
+@numba.njit
+def _is_diagonal(row,col):
+	for i in range(row.size):
+		if row[i] != col[i]:
+			return False
+
+	return True
+
+@numba.njit
+def _update_diag(diag,ind,ME):
+	for i in range(ind.size):
+		diag[ind[i]] += ME[i]
 
 MAXPRINT = 50
 # this file stores the base class for all basis classes
@@ -212,6 +223,39 @@ class basis(object):
 		"""
 		return self._Op(opstr,indx,J,dtype)
 
+	def _make_matrix(self,op_list,dtype):
+		""" takes list of operator strings and couplings to create matrix."""
+		off_diag = None
+		diag = None
+
+		for opstr,indx,J in op_list:
+			ME,row,col = self.Op(opstr,indx,J,dtype)
+			if(len(ME)>0):
+				imax = max(row.max(),col.max())
+				index_type = _np.result_type(_np.int32,_np.min_scalar_type(imax))
+				row = row.astype(index_type)
+				col = col.astype(index_type)
+				if _is_diagonal(row,col):
+					if diag is None:
+						diag = _np.zeros(self.Ns,dtype=dtype)
+
+					_update_diag(diag,row,ME)
+				else:
+					if off_diag is None:
+						off_diag = _sp.csr_matrix((ME,(row,col)),shape=(self.Ns,self.Ns),dtype=dtype) 
+					else:
+						off_diag = off_diag + _sp.csr_matrix((ME,(row,col)),shape=(self.Ns,self.Ns),dtype=dtype) 
+
+		if diag is not None and off_diag is not None:
+			indptr = _np.arange(self.Ns+1)
+			return off_diag + _sp.csr_matrix((diag,indptr[:self.Ns],indptr),shape=(self.Ns,self.Ns),dtype=dtype)
+
+		elif off_diag is not None:
+			return off_diag
+		elif diag is not None:
+			return _sp.dia_matrix((_np.atleast_2d(diag),[0]),shape=(self.Ns,self.Ns),dtype=dtype)
+		else:
+			return _sp.dia_matrix((self.Ns,self.Ns),dtype=dtype)
 
 	def partial_trace(self,state,sub_sys_A=None,subsys_ordering=True,return_rdm="A",enforce_pure=False,sparse=False):
 		"""Calculates reduced density matrix, through a partial trace of a quantum state in a lattice `basis`.
@@ -333,7 +377,6 @@ class basis(object):
 								subsys_ordering=subsys_ordering,return_rdm=return_rdm,
 								enforce_pure=enforce_pure,return_rdm_EVs=return_rdm_EVs,
 								sparse=sparse,alpha=alpha,sparse_diag=sparse_diag,maxiter=maxiter)
-
 
 	def expanded_form(self,static=[],dynamic=[]):
 		"""Splits up operator strings containing "x" and "y" into operator combinations of "+" and "-". This function is useful for higher spin hamiltonians where "x" and "y" operators are not appropriate operators. 
