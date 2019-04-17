@@ -6,6 +6,7 @@
 #include "general_basis_core.h"
 #include "numpy/ndarraytypes.h"
 #include "misc.h"
+#include "openmp.h"
 
 
 namespace basis_general {
@@ -31,6 +32,7 @@ bool inline update_out_dense(std::complex<double> c, int sign, npy_intp n_vec,co
 		return true;
 	}
 }
+
 
 
 template<class I,class T>
@@ -194,6 +196,68 @@ bool get_vec_general_dense(general_basis_core<I> *B,
 }
 
 }
+
+
+template<class I>
+void get_ampl_rep(general_basis_core<I> *B,
+							 const int nt,
+								   I s, // start out with representative state and iterate over all transofmrations. 
+							 const I r[], // target states to find amplitude
+							 const npy_intp nr,
+							 std::complex<double> phase[],
+							 double k,
+								   int &sign,
+							 const int depth)
+{
+
+	if(nt<=0){
+		phase = 1.0;	
+		return;
+	}
+
+	if(depth==0){
+		for(npy_intp i=0;i<nr;i++){
+			phase[i] = 0.0;
+		}
+	}
+
+	const int per = B->pers[depth];
+	const double q = (2.0*M_PI*B->qs[depth])/per;
+
+	if(depth < nt-1){
+		for(int j=0;j<per;j++){
+			get_ampl(B,s,r,nt,phase,k,sign,depth+1);
+			k += q;
+			s = B->map_state(s,depth,sign);
+		}
+	}
+	else{
+		for(int j=0;j<per;j++){
+
+			bool calc=false;
+			std::complex<double> phi;
+			
+			for(npy_intp i=0;i<nr;i++){
+				if(s==r[i]){
+					if(!calc){ // only calculate phase if needed. 
+						phi = sign*std::exp(std::complex<double>(0,-k));
+						calc = true;
+					}
+					atomic_add(phi,&phase[i]);
+				}
+			}
+
+			k += q;
+			s = B->map_state(s,depth,sign);
+		}
+	}
+}
+
+
+
+
+
+
 
 
 #endif
