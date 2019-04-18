@@ -32,6 +32,13 @@ cdef extern from "general_basis_get_vec.h" namespace "basis_general":
     bool get_vec_general_pcon_dense[I,J,T](general_basis_core[I] *B,const I[],const J[],const npy_intp,
                                     const npy_intp,const npy_intp,const I[],const T[],T[]) nogil
 
+
+
+cdef extern from "general_basis_get_amp.h" namespace "basis_general":
+    int get_amp_general[I,J](general_basis_core[I] *B, const I [], J [], I [],const J [], const int ) nogil
+
+
+
 cdef extern from "misc.h" namespace "basis_general":
     K binary_search[K,I](const K,const I[],const I) nogil
     void map_state_wrapper(void*,void*,npy_intp,int,uint8_t*) nogil

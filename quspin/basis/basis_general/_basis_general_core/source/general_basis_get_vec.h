@@ -1,8 +1,6 @@
 #ifndef _GENERAL_BASIS_GET_VEC_H
 #define _GENERAL_BASIS_GET_VEC_H
 
-
-
 #include "general_basis_core.h"
 #include "numpy/ndarraytypes.h"
 #include "misc.h"
@@ -194,66 +192,6 @@ bool get_vec_general_dense(general_basis_core<I> *B,
 
 	return err;
 }
-
-}
-
-
-template<class I>
-std::complex<double> get_ampl_rep(general_basis_core<I> *B,
-							 const int nt,
-								   I s, // start out with representative state and iterate over all transofmrations. 
-							 const I r, // target states to find amplitude
-							       double k,
-								   int &sign,
-							 const int depth)
-{
-	if(nt<=0){
-		return 1.0;
-	}
-
-	std::complex<double> phase_factor = 0.0;
-	const int per = B->pers[depth];
-	const double q = (2.0*M_PI*B->qs[depth])/per;
-
-	if(depth < nt-1){
-		for(int j=0;j<per;j++){
-			phase_factor += get_ampl(B,s,r,nt,k,sign,depth+1);
-			k += q;
-			s = B->map_state(s,depth,sign);
-		}
-	}
-	else{
-		for(int j=0;j<per;j++){
-			if(s==r){
-				phase_factor += sign*std::exp(std::complex<double>(0,-k));
-			}
-			k += q;
-			s = B->map_state(s,depth,sign);
-		}
-	}
-	return phase
-}
-
-
-void get_ampl(...)
-
-{
-
-	double norm = 1.0;
-
-	for(int i=0;i<nt;i++){
-		norm *= B->pers[i];
-	}
-
-	for(npy_intp i=0;i<nr;i++){
-		I s = B->ref_state(r[i]);
-		double norm_s = B->check_state(s);
-		int sign = 1;
-		std::complex<double> phase_factor = get_ampt_rep(B,nt,s,r,0.0,sign,0);
-		std::complex<double> m = std::sqrt(1.0/(norm_s*norm))*phase_factor;
-		bool err = check_imag(m,amp[i]);
-	}
-
 
 }
 

@@ -672,4 +672,43 @@ cdef class general_basis_core_wrap:
             raise TypeError("normalization values exceeds given data type. Increase data type of signed integer for normalizations array.") 
 
 
+    @cython.boundscheck(False)
+    def get_amp(self,_np.ndarray states,dtype [::1] state_amps, _np.ndarray rep_states, dtype [::1] rep_state_amps):
+        cdef npy_intp Ns = states.shape[0]
+        cdef void * B = self._basis_core
+        cdef void * states_ptr = _np.PyArray_GETPTR1(states,0)
+        cdef void * rep_states_ptr = _np.PyArray_GETPTR1(rep_states,0)
+        #cdef double complex * amps_s = &state_amps[0]
+        #cdef double complex * amps_r = &rep_state_amps[0]
+
+        if not states.flags["C_CONTIGUOUS"]:
+            raise ValueError("states arrays must be C-contiguous")
+
+        if states.dtype == uint32:
+            with nogil:
+                err = get_amp_general(<general_basis_core[uint32_t]*>B,<uint32_t*>states_ptr,&state_amps[0],<uint32_t*>rep_states_ptr,&rep_state_amps[0],Ns)
+        elif states.dtype == uint64:
+            with nogil:
+                err = get_amp_general(<general_basis_core[uint64_t]*>B,<uint64_t*>states_ptr,&state_amps[0],<uint64_t*>rep_states_ptr,&rep_state_amps[0],Ns)
+        elif states.dtype == uint256:
+            with nogil:
+                err = get_amp_general(<general_basis_core[uint256_t]*>B,<uint256_t*>states_ptr,&state_amps[0],<uint256_t*>rep_states_ptr,&rep_state_amps[0],Ns)
+        elif states.dtype == uint1024:
+            with nogil:
+                err = get_amp_general(<general_basis_core[uint1024_t]*>B,<uint1024_t*>states_ptr,&state_amps[0],<uint1024_t*>rep_states_ptr,&rep_state_amps[0],Ns)
+        elif states.dtype == uint4096:
+            with nogil:
+                err = get_amp_general(<general_basis_core[uint4096_t]*>B,<uint4096_t*>states_ptr,&state_amps[0],<uint4096_t*>rep_states_ptr,&rep_state_amps[0],Ns)
+        elif states.dtype == uint16384:
+            with nogil:
+                err = get_amp_general(<general_basis_core[uint16384_t]*>B,<uint16384_t*>states_ptr,&state_amps[0],<uint16384_t*>rep_states_ptr,&rep_state_amps[0],Ns)
+        else:
+            raise TypeError("basis dtype {} not recognized.".format(states.dtype))
+
+        if err > 0:
+            raise TypeError("attemping to use real type for complex matrix elements.")
+
+
+
+
 
