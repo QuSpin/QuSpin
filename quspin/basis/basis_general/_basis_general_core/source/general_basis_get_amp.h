@@ -52,60 +52,58 @@ std::complex<double> get_amp_rep(general_basis_core<I> *B,
 
 template<class I,class J>
 int get_amp_general(general_basis_core<I> *B,
-					const I s[],                  // input states in the full basis
-					      J amp_s[], // state amplitudes of state s (full basis)
-					      I r[],                  // variable to fill-in the resulting representatives
-					const J amp_r[], // state amplitudes of representative r (symmetry-rediced basis)
-					const int Ns                  // length of above arrays (should be the same)			
+						  I s[],   // input states in the full basis
+					      J out[], // state amplitudes of state s (full basis)
+					const int Ns   // length of above arrays (should be the same)			
 
 	)
 
 {
 	int err=0;
-	double cyclicity_factor = 1.0;
-	int q_sum = 0; // sum of quantum numbers
+	int per_factor = 1.0;
+	//int q_sum = 0; // sum of quantum numbers
 	int g[__GENERAL_BASIS_CORE__max_nt];
 	const int nt = B->get_nt();
-	std::complex<double> phase_factor, state_amp;
+	std::complex<double> phase_factor, out_tmp;
 	//double k=0.0;
 
 	for(int i=0;i<nt;i++){
-		cyclicity_factor *= B->pers[i];
-		q_sum += std::abs(B->qs[i]);
+		per_factor *= B->pers[i];
+		//q_sum += std::abs(B->qs[i]);
 	}
 
 
-	if(q_sum > 0 || B->fermionic){   // a non-zero quantum number, or fermionic basis => need a nontrivial phase_factor
+	//if(q_sum > 0 || B->fermionic){   // a non-zero quantum number, or fermionic basis => need a nontrivial phase_factor
 
-		for(npy_intp i=0;i<Ns;i++){
+	for(npy_intp i=0;i<Ns;i++){
 
-			if(err == 0){
+		if(err == 0){
 
-				int sign=1;
+			int sign=1;
+			I ss=s[i];
 
-				I rr = B->ref_state(s[i],g,sign);
-				double norm_rr = B->check_state(rr);
+			I r = B->ref_state(ss,g,sign);
+			double norm_r = B->check_state(r);
 
+			s[i] = r; // update state with representative
 
-				if(!check_nan(norm_rr) && norm_rr > 0){ // ref_state is a representative
+			if(!check_nan(norm_r) && norm_r > 0){ // ref_state is a representative
 
-					phase_factor = get_amp_rep(B,nt,rr,s[i],0.0,sign,0);
-					state_amp = (std::complex<double>)amp_r[i] * std::sqrt(1.0/(norm_rr * cyclicity_factor)) * phase_factor;
-				}
-				else{
-					state_amp = 0.0;
-				}
-
-				err = check_imag(state_amp, &amp_s[i]); // compute and assign amplitude in full basis
-				r[i] = rr;
-
-				
-			
+				phase_factor = get_amp_rep(B,nt,r,ss,0.0,sign,0);
+				out_tmp = phase_factor/std::sqrt(norm_r * per_factor);
 			}
-			
-		}
+			else{
+				out_tmp = 0.0;
+			}
 
+			err = check_imag(out_tmp, &out[i]); // compute and assign amplitude in full basis
+			 		
+		
+		}
+		
 	}
+
+	//}
 
 
 	return err;

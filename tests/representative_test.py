@@ -39,7 +39,6 @@ basis_boson = boson_basis_general(N_2d, make_basis=False,
 									kxblock=(T_x,0),kyblock=(T_y,0),
 									rblock=(R,0),
 									pxblock=(P_x,0),pyblock=(P_y,0),
-						#			zblock=(Z,0)
 								)
 
 basis_boson_full = boson_basis_general(N_2d, make_basis=True,

@@ -349,7 +349,7 @@ class basis_general(lattice_basis):
 
 		Notes
 		-----
-		Particularly useful when a given operation canot be carried away in the symmetry-reduced basis
+		Particularly useful when a given operation cannot be carried away in the symmetry-reduced basis
 		in a straightforward manner.
 
 		Supports parallelisation to multiple states listed in the columns.
@@ -704,8 +704,8 @@ class basis_general(lattice_basis):
 		-----------
 		states : array_like(int)
 			Fock-basis (z-basis) states to find the normalizations of. States are stored in integer representations.
-		out : numpy.ndarray(signe int), optional
-			variable to store the normalizations of the states in. Must be a `numpy.ndarray` of datatype `signe int` (e.g. `numpy.uint16`), and same shape as `states`. 
+		out : numpy.ndarray(unsigned int), optional
+			variable to store the normalizations of the states in. Must be a `numpy.ndarray` of datatype `unsigned int` (e.g. `numpy.uint16`), and same shape as `states`. 
 	
 		Returns
 		--------
@@ -749,6 +749,107 @@ class basis_general(lattice_basis):
 			out_dtype = _np.min_scalar_type(out.max())
 			out = out.astype(out_dtype)
 		
+
+	def get_amp(self,states,out=None,amps=None,mode='representative'):
+		"""Computes the rescale factor of state amplitudes between the symmetry-reduced and full basis.
+
+		Given a quantum state :math:`s` and a state amplitude in the full basis :math:`\\psi_s`, its representative (under the symemtries) 
+		:math:`r(s)` with a corresponding amplitude :math:`\\psi^\\text{sym}_r`, the function computes the ratio :math:`C`, defined as
+		..math::
+			\\psi_s = C\\psi_r^\\text{sym} 
+
+		Notes
+		------
+			* Particularly useful when a given operation cannot be carried away in the symmetry-reduced basis in a straightforward manner.
+			* To transform an entire state from a symmetry-reduced basis to the full (symmetry-free) basis, use the `basis.get_vec()` function.
+			* Returns zero, if the state passed to the function is not part of the symmetry-reduced basis.
+			* If `amps` is passed, the user has to make sure that the input data in `amps` correspond to the `states`.
+			* The function assumes that `states` comply with the particle conservation symmetry the `basis` was constructed with.
+
+		Parameters
+		-----------
+		states : array_like(int)
+			Fock-basis (z-basis) states to find the amplitude rescale factor :math:`C` of. States are stored in integer representations. 
+		out : numpy.ndarray(float), optional
+			variable to store the rescale factors :math:`C` of the states in. Must be a real or complex-valued `numpy.ndarray` of the same shape as `states`. 
+		amps : numpy.ndarray(float), optional
+			array of amplitudes to rescale by the amplitude factor :math:`C` (see `mode`). Updated in-place. Must be a real or complex-valued `numpy.ndarray` of the same shape as `states`. 
+		mode : string, optional
+			* if `mode=representative` (default), then the function assumes that
+				(i) `states` already contains representatives (i.e. states in the symmetry-reduced basis);
+				(ii) `amps` (if passed) are amplitudes in the symmetry-reduced basis (:math:`\\psi_r^\\text{symm}`). The function will update `amps` in-place to :math:`\\psi_s`.
+			* if `mode=full_basis`, then the function assumes that
+				(i) `states` contains full-basis states (the funciton will compute the corresponding representatives);
+				(ii) `amps` (if passed) are amplitudes in the full basis (:math:`\\psi_s`). The function will update `amps` in-place to :math:`\\psi_r^\\text{symm}`.
+				*Note*: the function will update the variable `states` in place with the corresponding representatives.
+
+		Returns
+		--------
+		array_like(float)
+			amplitude rescale factor :math:`C` (see expression above).
+		
+		Examples
+		--------
+		
+		>>> basis=spin_basis_general(N,Nup=Nup,make_basis=False)
+		>>> s = 17
+		>>> norm_s = basis.normalization(s)
+		>>> print(s,norm_s)
+
+		"""
+
+		states = _np.asarray(states,order="C",dtype=self._basis.dtype)
+		states = _np.atleast_1d(states)
+
+		Ns=states.shape
+
+			
+		if out is not None:
+			if Ns!=out.shape:
+				raise TypeError('states and out must have same shape.')
+			if out.dtype not in [_np.float32, _np.float64, _np.complex64, _np.complex128]:
+				raise TypeError('out must have datatype numpy.float32, numpy.float64, numpy.complex64, or numpy.complex128.')
+			if not out.flags["CARRAY"]:
+				raise ValueError("out must be C-contiguous array.")
+		elif amps is not None:
+			out=_np.zeros(Ns,dtype=amps.dtype)
+		else:
+			out=_np.zeros(Ns,dtype=_np.complex128)
+
+
+		q_sum=_np.abs(self._qs).sum()
+		if True: #q_sum>0: # at least one nonzero quantum number
+			self._core.get_amp(states,out)
+		else:
+			out_dtype=out.dtype
+			out=_np.zeros(Ns,dtype=self._basis_dtype)
+			self._core.normalization(states,out)
+			out=out.astype(out_dtype)
+			
+			per_factor=self._pers.prod()
+			out=_np.sqrt(out/per_factor)
+
+		out_dtype = _np.min_scalar_type(out.max())
+		out = out.astype(out_dtype)
+	
+		if amps is not None:
+			if states.shape!=amps.shape:
+				raise TypeError('states and amps must have same shape.')
+			
+			#amps=amps.astype(out.dtype)
+
+			if mode=='representative':
+				amps*=out # compute amplitudes in full basis
+			elif mode=='full_basis':
+				amps=amps/out # compute amplitudes in symmetery-rduced basis
+			else:
+				raise ValueError("mode accepts only the values 'representative' and 'full_basis'.")
+
+
+		return out.squeeze()
+
+
+
 
 def _check_symm_map(map,sort_opstr,operator_list):
 	missing_ops=[]
