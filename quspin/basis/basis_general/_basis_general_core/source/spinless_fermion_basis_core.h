@@ -63,8 +63,8 @@ void getf_count(I nums[],I work[], I left, I right, bool &f_count){
 
 
 
-template<class I>
-I inline spinless_fermion_map_bits(I s,const int map[],const int N,int &sign){
+template<class I,class P>
+I inline spinless_fermion_map_bits(I s,const int map[],const int N,P &sign){
 	I ss = 0;
 	int np = 0;
 	int pos_list[bit_info<I>::bits];
@@ -91,8 +91,8 @@ I inline spinless_fermion_map_bits(I s,const int map[],const int N,int &sign){
 	return ss;
 }
 
-template<class I>
-void get_map_sign(I s,I inv,int &sign){
+template<class I,class P>
+void get_map_sign(I s,I inv,P &sign){
 	typename bit_info<I>::bit_index_type pos_list[bit_info<I>::bits];
 	bool f_count = 0;
 
@@ -104,8 +104,8 @@ void get_map_sign(I s,I inv,int &sign){
 }
 
 
-template<class I>
-class spinless_fermion_basis_core : public hcb_basis_core<I>
+template<class I,class P=signed char>
+class spinless_fermion_basis_core : public hcb_basis_core<I,P>
 {
 
 	public:
@@ -120,7 +120,7 @@ class spinless_fermion_basis_core : public hcb_basis_core<I>
 
 
 		// I map_state(I s,int n_map,int &sign){
-		// 	if(general_basis_core<I>::nt<=0){
+		// 	if(general_basis_core<I,P>::nt<=0){
 		// 		return s;
 		// 	}
 		// 	get_map_sign<I>(s,hcb_basis_core<I>::invs[n_map],sign);
@@ -129,7 +129,7 @@ class spinless_fermion_basis_core : public hcb_basis_core<I>
 		// }
 
 		// void map_state(I s[],npy_intp M,int n_map,signed char sign[]){
-		// 	if(general_basis_core<I>::nt<=0){
+		// 	if(general_basis_core<I,P>::nt<=0){
 		// 		return;
 		// 	}
 		// 	const tr_benes<I> * benes_map = &hcb_basis_core<I>::benes_maps[n_map];
@@ -143,26 +143,24 @@ class spinless_fermion_basis_core : public hcb_basis_core<I>
 		// 	}
 		// }
 
-		I map_state(I s,int n_map,int &sign){
-			if(general_basis_core<I>::nt<=0){
+		I map_state(I s,int n_map,P &sign){
+			if(general_basis_core<I,P>::nt<=0){
 				return s;
 			}
-			const int n = general_basis_core<I>::N;
-			return spinless_fermion_map_bits(s,&general_basis_core<I>::maps[n_map*n],n,sign);
+			const int n = general_basis_core<I,P>::N;
+			return spinless_fermion_map_bits(s,&general_basis_core<I,P>::maps[n_map*n],n,sign);
 			
 		}
 
-		void map_state(I s[],npy_intp M,int n_map,signed char sign[]){
-			if(general_basis_core<I>::nt<=0){
+		void map_state(I s[],npy_intp M,int n_map,P sign[]){
+			if(general_basis_core<I,P>::nt<=0){
 				return;
 			}
-			const int n = general_basis_core<I>::N;
-			const int * map = &general_basis_core<I>::maps[n_map*n];
+			const int n = general_basis_core<I,P>::N;
+			const int * map = &general_basis_core<I,P>::maps[n_map*n];
 			#pragma omp for schedule(static)
 			for(npy_intp i=0;i<M;i++){
-				int temp_sign = sign[i];
-				s[i] = spinless_fermion_map_bits(s[i],map,n,temp_sign);
-				sign[i] = temp_sign;
+				s[i] = spinless_fermion_map_bits(s[i],map,n,sign[i]);
 			}
 		}
 
@@ -172,7 +170,7 @@ class spinless_fermion_basis_core : public hcb_basis_core<I>
 			const I one = 1;
 
 			for(int j=n_op-1;j>-1;j--){
-				const int ind = general_basis_core<I>::N-indx[j]-1;
+				const int ind = general_basis_core<I,P>::N-indx[j]-1;
 				I f_count = bit_count(r,ind);
 				double sign = ((f_count&1)?-1:1);
 				const I b = (one << ind);

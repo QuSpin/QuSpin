@@ -10,20 +10,20 @@
 
 namespace basis_general {
 
-template<class I>
-class spinful_fermion_basis_core : public spinless_fermion_basis_core<I>
+template<class I,class P=signed char>
+class spinful_fermion_basis_core : public spinless_fermion_basis_core<I,P>
 {
 	const int N_sys;
 	const bool not_dble_occ;
 
 	public:
 		spinful_fermion_basis_core(const int _N,const bool _dble_occ) : \
-		spinless_fermion_basis_core<I>::spinless_fermion_basis_core(2*_N), 
+		spinless_fermion_basis_core<I,P>::spinless_fermion_basis_core(2*_N), 
 		N_sys(_N), not_dble_occ(!_dble_occ) {}
 
 		spinful_fermion_basis_core(const int _N,const int _nt,const int _maps[], \
 								   const int _pers[], const int _qs[],const bool _dble_occ) : \
-		spinless_fermion_basis_core<I>::spinless_fermion_basis_core(2*_N,_nt,_maps,_pers,_qs), 
+		spinless_fermion_basis_core<I,P>::spinless_fermion_basis_core(2*_N,_nt,_maps,_pers,_qs), 
 		N_sys(_N), not_dble_occ(!_dble_occ)  {}
 
 		~spinful_fermion_basis_core() {}
@@ -65,7 +65,7 @@ class spinful_fermion_basis_core : public spinless_fermion_basis_core<I>
 			return t | ((((t & (0-t)) / (s & (0-s))) >> 1) - 1);
 		}
 
-		I next_state_pcon(const I s){
+		I next_state_pcon(const I s,const I nns){
 
 			I s_left  = 0;
 			I s_right = 0;
@@ -86,21 +86,21 @@ class spinful_fermion_basis_core : public spinless_fermion_basis_core<I>
 			return comb_state(s_left,s_right);
 		}
 
-		double check_state(I s);
+		double check_state(I s){
+			I s_left  = 0,s_right = 0;
+			split_state(s,s_left,s_right);
+			if(not_dble_occ && (s_left&s_right)){
+				return std::numeric_limits<double>::quiet_NaN();
+			}
+			else{
+				return check_state_core_unrolled<I,P>(this,s,general_basis_core<I,P>::nt);
+			}
+		}
 
 };
 
-template<class I>
-double spinful_fermion_basis_core<I>::check_state(I s){
-	I s_left  = 0,s_right = 0;
-	split_state(s,s_left,s_right);
-	if(not_dble_occ && (s_left&s_right)){
-		return std::numeric_limits<double>::quiet_NaN();
-	}
-	else{
-		return check_state_core_unrolled<I>(this,s,general_basis_core<I>::nt);
-	}
-}
+
+
 
 
 }

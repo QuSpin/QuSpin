@@ -7,11 +7,15 @@ from numba.ccallback import CFunc
 map_sig_32 = types.uint32(types.uint32,types.intc,types.CPointer(types.intc))
 map_sig_64 = types.uint64(types.uint64,types.intc,types.CPointer(types.intc))
 
-next_state_sig_32 = types.uint32(types.uint32,types.uint32,types.CPointer(types.uint32))
-next_state_sig_64 = types.uint64(types.uint64,types.uint64,types.CPointer(types.uint64))
+next_state_sig_32 = types.uint32(types.uint32,types.uint32,
+	types.uint32,types.CPointer(types.uint32))
+next_state_sig_64 = types.uint64(types.uint64,types.uint64,
+	types.uint64,types.CPointer(types.uint64))
 
-check_state_nosymm_sig_32 = types.uint32(types.uint32,types.uint32,types.CPointer(types.uint32))
-check_state_nosymm_sig_64 = types.uint64(types.uint64,types.uint64,types.CPointer(types.uint64))
+check_state_nosymm_sig_32 = types.uint32(types.uint32,
+	types.uint32,types.CPointer(types.uint32))
+check_state_nosymm_sig_64 = types.uint64(types.uint64,
+	types.uint64,types.CPointer(types.uint64))
 
 op_results_32 = types.Record.make_c_struct([
    ('matrix_ele', types.complex128),('state', types.uint32),
