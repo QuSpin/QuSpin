@@ -17,9 +17,9 @@ std::complex<double> get_amp_rep(general_basis_core<I> *B,
 								 const int nt,
 									   I r, // start out with representative state and iterate over all transofmrations. 
 								 const I s, // target states to find amplitude of
-								       double k,
-									   int &sign,
-								 const int depth
+								       double k = 0.0,
+									   int sign = 1,
+								 const int depth = 0
 								)
 {
 	if(nt<=0){
@@ -89,7 +89,7 @@ int get_amp_general(general_basis_core<I> *B,
 
 			if(!check_nan(norm_r) && norm_r > 0){ // ref_state is a representative
 
-				phase_factor = get_amp_rep(B,nt,r,ss,0.0,sign,0);
+				phase_factor = get_amp_rep(B,nt,r,ss);
 				out_tmp = phase_factor/std::sqrt(norm_r * per_factor);
 			}
 			else{
