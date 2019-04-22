@@ -818,16 +818,16 @@ class basis_general(lattice_basis):
 
 
 		q_sum=_np.abs(self._qs).sum()
-		if True: #q_sum>0: # at least one nonzero quantum number
+		if q_sum>0: # at least one nonzero quantum number
 			self._core.get_amp(states,out)
 		else:
-			out_dtype=out.dtype
-			out=_np.zeros(Ns,dtype=self._basis_dtype)
-			self._core.normalization(states,out)
-			out=out.astype(out_dtype)
-			
+			# is there a way not to create a new variable norms?
+			norms=_np.zeros(Ns,dtype=self._basis_dtype)
+			self._core.normalization(states,norms)
 			per_factor=self._pers.prod()
-			out=_np.sqrt(out/per_factor)
+			_np.sqrt(norms,out=out) 
+			_np.divide(out,per_factor,out=out)
+			
 
 		out_dtype = _np.min_scalar_type(out.max())
 		out = out.astype(out_dtype)
@@ -836,8 +836,6 @@ class basis_general(lattice_basis):
 			if states.shape!=amps.shape:
 				raise TypeError('states and amps must have same shape.')
 			
-			#amps=amps.astype(out.dtype)
-
 			if mode=='representative':
 				amps*=out # compute amplitudes in full basis
 			elif mode=='full_basis':

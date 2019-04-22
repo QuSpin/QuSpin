@@ -647,6 +647,7 @@ cdef class general_basis_core_wrap:
         if not states.flags["C_CONTIGUOUS"]:
             raise ValueError("states arrays must be C-contiguous")
 
+        
         if states.dtype == uint32:
             with nogil:
                 err = general_normalization(<general_basis_core[uint32_t]*>B,<uint32_t*>states_ptr,&norms[0],Ns)
