@@ -271,7 +271,7 @@ class user_basis(basis_general):
 					if type(Np) is int:
 						n_sectors=1
 					elif type(Np) is tuple:
-						n_sectors=len(np)
+						n_sectors=len(Np)
 					else:
 						raise ValueError("Np must be tuple, int, or a list of tuples/integers.")
 
@@ -415,8 +415,8 @@ class user_basis(basis_general):
 
 		if not is_sorted_decending(self._basis):
 			ind = _np.argsort(self._basis,kind="heapsort")[::-1]
-			self._basis = basis[ind].copy()
-			self._n = n[ind].copy()
+			self._basis = self._basis[ind]
+			self._n = self._n[ind]
 
 
 		if allowed_ops is None:
