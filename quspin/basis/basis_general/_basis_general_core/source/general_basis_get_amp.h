@@ -1,6 +1,7 @@
 #ifndef _GENERAL_BASIS_GET_AMP_H
 #define _GENERAL_BASIS_GET_AMP_H
 
+//#include <limits>
 #include "general_basis_core.h"
 #include "numpy/ndarraytypes.h"
 #include "misc.h"
@@ -54,56 +55,98 @@ template<class I,class J>
 int get_amp_general(general_basis_core<I> *B,
 						  I s[],   // input states in the full basis
 					      J out[], // state amplitudes of state s (full basis)
-					const int Ns   // length of above arrays (should be the same)			
+					const npy_intp Ns   // length of above arrays (should be the same)			
 
 	)
 
 {
 	int err=0;
 	int per_factor = 1.0;
-	//int q_sum = 0; // sum of quantum numbers
+	int q_sum = 0; // sum of quantum numbers
 	int g[__GENERAL_BASIS_CORE__max_nt];
 	const int nt = B->get_nt();
 	std::complex<double> phase_factor, out_tmp;
-	//double k=0.0;
-
+	
 	for(int i=0;i<nt;i++){
 		per_factor *= B->pers[i];
-		//q_sum += std::abs(B->qs[i]);
+		q_sum += std::abs(B->qs[i]);
 	}
 
 
-	//if(q_sum > 0 || B->fermionic){   // a non-zero quantum number, or fermionic basis => need a nontrivial phase_factor
+	if(q_sum > 0 || B->fermionic){   // a non-zero quantum number, or fermionic basis => need a nontrivial phase_factor
 
-	for(npy_intp i=0;i<Ns;i++){
+		#pragma omp parallel
+		{	
+			const npy_intp chunk = std::max(Ns/(100*omp_get_num_threads()),(npy_intp)1); // check_state has variable workload 
 
-		if(err == 0){
+			#pragma omp parallel for schedule(dynamic,chunk)
+			for(npy_intp i=0;i<Ns;i++){
 
-			int sign=1;
-			I ss=s[i];
+				if(err == 0){
 
-			I r = B->ref_state(ss,g,sign);
-			double norm_r = B->check_state(r);
+					int sign=1;
+					I ss=s[i];
 
-			s[i] = r; // update state with representative
+					I r = B->ref_state(ss,g,sign);
+					double norm_r = B->check_state(r);
 
-			if(!check_nan(norm_r) && norm_r > 0){ // ref_state is a representative
+					s[i] = r; // update state with representative
 
-				phase_factor = get_amp_rep(B,nt,r,ss);
-				out_tmp = phase_factor/std::sqrt(norm_r * per_factor);
+					if(!check_nan(norm_r) && norm_r > 0){ // ref_state is a representative
+
+						phase_factor = get_amp_rep(B,nt,r,ss);
+						out_tmp = phase_factor/std::sqrt(norm_r * per_factor);
+					}
+					else{
+						out_tmp = 0.0;
+					}
+
+					err = check_imag(out_tmp, &out[i]); // compute and assign amplitude in full basis
+					 		
+				
+				}
+			
 			}
-			else{
-				out_tmp = 0.0;
-			}
 
-			err = check_imag(out_tmp, &out[i]); // compute and assign amplitude in full basis
-			 		
-		
 		}
-		
-	}
 
-	//}
+	}
+	else{
+		#pragma omp parallel
+		{	
+			const npy_intp chunk = std::max(Ns/(100*omp_get_num_threads()),(npy_intp)1); // check_state has variable workload 
+
+			#pragma omp parallel for schedule(dynamic,chunk)
+			for(npy_intp i=0;i<Ns;i++){
+
+				if(err == 0){
+
+					int sign=1;
+					I ss=s[i];
+
+					I r = B->ref_state(ss,g,sign);
+					double norm_r = B->check_state(r);
+
+					s[i] = r; // update state with representative
+
+					if(!check_nan(norm_r) && norm_r > 0){ // ref_state is a representative
+
+						//phase_factor = get_amp_rep(B,nt,r,ss);
+						out_tmp = std::sqrt(norm_r/per_factor);
+					}
+					else{
+						out_tmp = 0.0;
+					}
+
+					err = check_imag(out_tmp, &out[i]); // compute and assign amplitude in full basis
+					 		
+				
+				}
+			
+			}
+
+		}
+	}
 
 
 	return err;
@@ -111,6 +154,90 @@ int get_amp_general(general_basis_core<I> *B,
 
 }
 
+
+
+
+
+// same as get_amp_rep, but w/o calling ref_state and check_state
+template<class I,class J>
+int get_amp_general_light(general_basis_core<I> *B,
+						  I s[],   // input states in the symmetry-reduced basis
+					      J out[], // state amplitudes of state s (symmetry-reduced basis)
+					const npy_intp Ns   // length of above arrays (should be the same)			
+
+	)
+
+{
+	int err=0;
+	int per_factor = 1.0;
+	int q_sum = 0; // sum of quantum numbers
+	const int nt = B->get_nt();
+	std::complex<double> phase_factor, out_tmp;
+	
+	for(int i=0;i<nt;i++){
+		per_factor *= B->pers[i];
+		q_sum += std::abs(B->qs[i]);
+	}
+
+
+	if(q_sum > 0 || B->fermionic){   // a non-zero quantum number, or fermionic basis => need a nontrivial phase_factor
+
+		#pragma omp parallel
+		{	
+			const npy_intp chunk = std::max(Ns/(100*omp_get_num_threads()),(npy_intp)1); // check_state has variable workload 
+
+			#pragma omp parallel for schedule(dynamic,chunk)
+			for(npy_intp i=0;i<Ns;i++){
+
+				if(err == 0){
+
+					I ss=s[i];
+
+					double norm_r = B->check_state(ss);
+
+					phase_factor = get_amp_rep(B,nt,ss,ss);
+					out_tmp = phase_factor/std::sqrt(norm_r * per_factor);
+					
+
+					err = check_imag(out_tmp, &out[i]); // compute and assign amplitude in full basis
+					 		
+				
+				}
+			
+			}
+
+		}
+
+	}
+	else{
+		#pragma omp parallel
+		{	
+			const npy_intp chunk = std::max(Ns/(100*omp_get_num_threads()),(npy_intp)1); // check_state has variable workload 
+
+			#pragma omp parallel for schedule(dynamic,chunk)
+			for(npy_intp i=0;i<Ns;i++){
+
+				if(err == 0){
+			
+					double norm_r = B->check_state(s[i]);
+
+					out_tmp = std::sqrt(norm_r/per_factor);
+					
+					err = check_imag(out_tmp, &out[i]); // compute and assign amplitude in full basis
+					 		
+				
+				}
+			
+			}
+
+		}
+	}
+
+
+	return err;
+
+
+}
 
 
 

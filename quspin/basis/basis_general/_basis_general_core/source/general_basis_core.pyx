@@ -647,7 +647,7 @@ cdef class general_basis_core_wrap:
         if not states.flags["C_CONTIGUOUS"]:
             raise ValueError("states arrays must be C-contiguous")
 
-        
+
         if states.dtype == uint32:
             with nogil:
                 err = general_normalization(<general_basis_core[uint32_t]*>B,<uint32_t*>states_ptr,&norms[0],Ns)
@@ -674,34 +674,59 @@ cdef class general_basis_core_wrap:
 
 
     @cython.boundscheck(False)
-    def get_amp(self,_np.ndarray states,dtype [::1] out):
-        cdef npy_intp Ns = states.shape[0]
+    def get_amp(self,_np.ndarray states,dtype [::1] out,int Ns,object mode):
         cdef void * B = self._basis_core
         cdef void * states_ptr = _np.PyArray_GETPTR1(states,0)
         
-        #if not states.flags["C_CONTIGUOUS"]:
-        #    raise ValueError("states arrays must be C-contiguous")
 
-        if states.dtype == uint32:
-            with nogil:
-                err = get_amp_general(<general_basis_core[uint32_t]*>B,<uint32_t*>states_ptr,&out[0],Ns)
-        elif states.dtype == uint64:
-            with nogil:
-                err = get_amp_general(<general_basis_core[uint64_t]*>B,<uint64_t*>states_ptr,&out[0],Ns)
-        elif states.dtype == uint256:
-            with nogil:
-                err = get_amp_general(<general_basis_core[uint256_t]*>B,<uint256_t*>states_ptr,&out[0],Ns)
-        elif states.dtype == uint1024:
-            with nogil:
-                err = get_amp_general(<general_basis_core[uint1024_t]*>B,<uint1024_t*>states_ptr,&out[0],Ns)
-        elif states.dtype == uint4096:
-            with nogil:
-                err = get_amp_general(<general_basis_core[uint4096_t]*>B,<uint4096_t*>states_ptr,&out[0],Ns)
-        elif states.dtype == uint16384:
-            with nogil:
-                err = get_amp_general(<general_basis_core[uint16384_t]*>B,<uint16384_t*>states_ptr,&out[0],Ns)
+        if mode=='representative':
+            if states.dtype == uint32:
+                with nogil:
+                    err = get_amp_general_light(<general_basis_core[uint32_t]*>B,<uint32_t*>states_ptr,&out[0],Ns)
+            elif states.dtype == uint64:
+                with nogil:
+                    err = get_amp_general_light(<general_basis_core[uint64_t]*>B,<uint64_t*>states_ptr,&out[0],Ns)
+            elif states.dtype == uint256:
+                with nogil:
+                    err = get_amp_general_light(<general_basis_core[uint256_t]*>B,<uint256_t*>states_ptr,&out[0],Ns)
+            elif states.dtype == uint1024:
+                with nogil:
+                    err = get_amp_general_light(<general_basis_core[uint1024_t]*>B,<uint1024_t*>states_ptr,&out[0],Ns)
+            elif states.dtype == uint4096:
+                with nogil:
+                    err = get_amp_general_light(<general_basis_core[uint4096_t]*>B,<uint4096_t*>states_ptr,&out[0],Ns)
+            elif states.dtype == uint16384:
+                with nogil:
+                    err = get_amp_general_light(<general_basis_core[uint16384_t]*>B,<uint16384_t*>states_ptr,&out[0],Ns)
+            else:
+                raise TypeError("basis dtype {} not recognized.".format(states.dtype))
+                
+        elif mode=='full_basis':
+            if states.dtype == uint32:
+                with nogil:
+                    err = get_amp_general(<general_basis_core[uint32_t]*>B,<uint32_t*>states_ptr,&out[0],Ns)
+            elif states.dtype == uint64:
+                with nogil:
+                    err = get_amp_general(<general_basis_core[uint64_t]*>B,<uint64_t*>states_ptr,&out[0],Ns)
+            elif states.dtype == uint256:
+                with nogil:
+                    err = get_amp_general(<general_basis_core[uint256_t]*>B,<uint256_t*>states_ptr,&out[0],Ns)
+            elif states.dtype == uint1024:
+                with nogil:
+                    err = get_amp_general(<general_basis_core[uint1024_t]*>B,<uint1024_t*>states_ptr,&out[0],Ns)
+            elif states.dtype == uint4096:
+                with nogil:
+                    err = get_amp_general(<general_basis_core[uint4096_t]*>B,<uint4096_t*>states_ptr,&out[0],Ns)
+            elif states.dtype == uint16384:
+                with nogil:
+                    err = get_amp_general(<general_basis_core[uint16384_t]*>B,<uint16384_t*>states_ptr,&out[0],Ns)
+            else:
+                raise TypeError("basis dtype {} not recognized.".format(states.dtype))
         else:
-            raise TypeError("basis dtype {} not recognized.".format(states.dtype))
+            ValueError("mode accepts only the values 'representative' and 'full_basis'.")
+
+
+        
 
         if err > 0:
             raise TypeError("attemping to use real type for complex matrix elements.")

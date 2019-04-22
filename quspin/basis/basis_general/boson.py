@@ -142,7 +142,7 @@ class boson_basis_general(hcb_basis_general,basis_general):
 
 		self._sps = sps
 		self._allowed_ops=set(["I","z","n","+","-"])
-
+		self._pcon_args = dict(N=N,Nb=Nb,sps=self._sps)
 
 		if self._sps == 2:
 
@@ -205,7 +205,7 @@ class boson_basis_general(hcb_basis_general,basis_general):
 				for b in Nb:
 					Ns += H_dim(b,N,self._sps-1)
 
-			self._pcon_args = dict(N=N,Nb=Nb,sps=self._sps)
+			#self._pcon_args = dict(N=N,Nb=Nb,sps=self._sps)
 
 			if len(self._pers)>0:
 				if Ns_block_est is None:

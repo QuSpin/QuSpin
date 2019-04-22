@@ -801,37 +801,28 @@ class basis_general(lattice_basis):
 		states = _np.asarray(states,order="C",dtype=self._basis.dtype)
 		states = _np.atleast_1d(states)
 
-		Ns=states.shape
+		states_shape=states.shape
 
 			
 		if out is not None:
-			if Ns!=out.shape:
+			if states_shape!=out.shape:
 				raise TypeError('states and out must have same shape.')
 			if out.dtype not in [_np.float32, _np.float64, _np.complex64, _np.complex128]:
 				raise TypeError('out must have datatype numpy.float32, numpy.float64, numpy.complex64, or numpy.complex128.')
 			if not out.flags["CARRAY"]:
 				raise ValueError("out must be C-contiguous array.")
 		elif amps is not None:
-			out=_np.zeros(Ns,dtype=amps.dtype)
+			out=_np.zeros(states_shape,dtype=amps.dtype)
 		else:
-			out=_np.zeros(Ns,dtype=_np.complex128)
+			out=_np.zeros(states_shape,dtype=_np.complex128)
 
-
-		q_sum=_np.abs(self._qs).sum()
-		if q_sum>0: # at least one nonzero quantum number
-			self._core.get_amp(states,out)
-		else:
-			# is there a way not to create a new variable norms?
-			norms=_np.zeros(Ns,dtype=self._basis_dtype)
-			self._core.normalization(states,norms)
-			per_factor=self._pers.prod()
-			_np.sqrt(norms,out=out) 
-			_np.divide(out,per_factor,out=out)
-			
+		self._core.get_amp(states,out,states_shape[0],mode)
+				
 
 		out_dtype = _np.min_scalar_type(out.max())
 		out = out.astype(out_dtype)
 	
+
 		if amps is not None:
 			if states.shape!=amps.shape:
 				raise TypeError('states and amps must have same shape.')
@@ -839,7 +830,7 @@ class basis_general(lattice_basis):
 			if mode=='representative':
 				amps*=out # compute amplitudes in full basis
 			elif mode=='full_basis':
-				amps=amps/out # compute amplitudes in symmetery-rduced basis
+				amps/=out # compute amplitudes in symmetery-rduced basis
 			else:
 				raise ValueError("mode accepts only the values 'representative' and 'full_basis'.")
 
