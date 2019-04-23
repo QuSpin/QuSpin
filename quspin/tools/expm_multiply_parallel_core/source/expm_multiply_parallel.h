@@ -62,8 +62,6 @@ void expm_multiply(const I n,
 			)
 {
 
-	// T2  c1,c2,c3;
-
 	const int nthread = omp_get_max_threads();
 	std::vector<I> rco_vec(nthread);
 	std::vector<T3> vco_vec(nthread);
