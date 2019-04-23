@@ -24,9 +24,9 @@ T_x = (x+1)%Lx + Lx*y # translation along x-direction
 T_y = x +Lx*((y+1)%Ly) # translation along y-direction
 Z   = -(s+1) # spin inversion
 
-
-J_p=[[+np.sqrt(7),i,T_x[i]] for i in range(N_2d)] + [[+np.sqrt(7),i,T_y[i]] for i in range(N_2d)]
-J_n=[[-np.sqrt(7),i,T_x[i]] for i in range(N_2d)] + [[-np.sqrt(7),i,T_y[i]] for i in range(N_2d)]
+J=np.sqrt(7)
+J_p=[[+J,i,T_x[i]] for i in range(N_2d)] + [[+J,i,T_y[i]] for i in range(N_2d)]
+J_n=[[-J,i,T_x[i]] for i in range(N_2d)] + [[-J,i,T_y[i]] for i in range(N_2d)]
 
 lattice_trans=square_lattice_trans(Lx,Ly)
 allowed_sectors=lattice_trans.allowed_blocks_iter()
@@ -95,7 +95,7 @@ for ii,basis_dict in enumerate(allowed_sectors):
 		print('# of states', i, basis_2d_made.Ns, basis_2d_full_made.Ns,basis_2d_made.__class__,basis_2d_made.blocks)
 
 		H=hamiltonian(static,[],basis=basis_2d_made,dtype=np.complex128)
-		E_GS,V_GS=H.eigsh(k=1,which='SA')
+		E_GS,V_GS=H.eigsh(k=1,which='SA') #,sigma=1E-6
 
 	
 		states=basis_2d_made.states.copy()
