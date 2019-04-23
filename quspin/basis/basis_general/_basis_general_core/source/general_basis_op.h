@@ -81,8 +81,7 @@ int general_op(general_basis_core<I> *B,
 					M[i] = std::numeric_limits<T>::quiet_NaN();
 				}
 			}
-
-			if(local_err != 0){
+			else{
 				#pragma omp critical
 				err = local_err;
 			}

@@ -35,8 +35,8 @@ cdef extern from "general_basis_get_vec.h" namespace "basis_general":
 
 
 cdef extern from "general_basis_get_amp.h" namespace "basis_general":
-    int get_amp_general[I,J](general_basis_core[I] *B, const I [], J [], const int ) nogil
-    int get_amp_general_light[I,J](general_basis_core[I] *B, const I [], J [], const int ) nogil
+    int get_amp_general[I,J](general_basis_core[I] *B, const I [], J [], const npy_intp ) nogil
+    int get_amp_general_light[I,J](general_basis_core[I] *B, const I [], J [], const npy_intp ) nogil
 
 
 
