@@ -5,31 +5,71 @@ qspin_path = os.path.join(os.getcwd(),"../")
 sys.path.insert(0,qspin_path)
 
 #print(os.environ["OMP_NUM_THREADS"])
-
+from quspin.basis import spin_basis_1d
+from quspin.operators import hamiltonian
 from quspin.tools.evolution import expm_multiply_parallel
 from scipy.sparse.linalg import expm_multiply
-from scipy.sparse import random,identity
+from scipy.sparse import random,eye
 import numpy as np
 
-seed=np.random.randint(10000000) #9513926
-np.random.seed(seed)
+
+def test_imag_time(L=20,seed=0):
+	np.random.seed(seed)
+
+	basis = spin_basis_1d(L,m=0,kblock=0,pblock=1,zblock=1)
+
+	J = [[1.0,i,(i+1)%L] for i in range(L)]
+	static = [["xx",J],["yy",J],["zz",J]]
+	H = hamiltonian(static,[],basis=basis,dtype=np.float64)
+
+	(E,),psi_gs = H.eigsh(k=1,which="SA")
+
+	psi_gs = psi_gs.ravel()
+
+	A = -(H.tocsr() - E*eye(H.Ns,format="csr",dtype=np.float64))
+
+	U = expm_multiply_parallel(A)
 
 
+	v1 = np.random.uniform(-1,1,size=H.Ns)
+	v1 /= np.linalg.norm(v1)
 
-N = 3500
-for i in range(10):
-	print("testing random matrix {}".format(i+1))
-	A = (random(N,N) + 1j*random(N,N))
-	A = A.tocsr()
-	A = (A + A.H)/2.0
-	v = np.random.uniform(-1,1,size=N) + 1j * np.random.uniform(-1,1,size=N)
+	v2 = v1.copy()
 
-	v1 = expm_multiply(-1j*A,v)
-	v2 = expm_multiply_parallel(A,a=-1j).dot(v)
-	
-	np.testing.assert_allclose(v1-v2,0,atol=1e-10,err_msg='failed seed {:d}'.format(seed) )
+	for i in range(100):
+		v2 = U.dot(v2)
+		v2 /= np.linalg.norm(v2)
+
+		v1 = expm_multiply(A,v1)
+		v1 /= np.linalg.norm(v1)
+
+		if(np.abs(H.expt_value(v2)-E) < 1e-15):
+			break #
+
+		i += 1
+
+	np.testing.assert_allclose(v1,v2,rtol=0,atol=1e-15,err_msg='imaginary time test failed, seed {:d}'.format(seed) )
 
 
+def test_ramdom_matrix(N=3500,ntest=10,seed=0):
+	np.random.seed(seed)
+	i = 0
+	while(i<ntest):
+		print("testing random matrix {}".format(i+1))
+		A = (random(N,N,density=np.log(N)/N) + 1j*random(N,N,density=np.log(N)/N))
+		A = A.tocsr()
+		# A = (A + A.H)/2.0
+		v = np.random.normal(0,1,size=N) + 1j * np.random.normal(0,1,size=N)
+		v /= np.linalg.norm(v)
+
+		v1 = expm_multiply(A,v)
+		v2 = expm_multiply_parallel(A).dot(v)
+		
+		np.testing.assert_allclose(v1,v2,rtol=0,atol=1e-15,err_msg='random matrix test failed, seed {:d}'.format(seed) )
+		i += 1
+
+test_imag_time()
+test_ramdom_matrix()
 print("expm_multiply_parallel tests passed!")
 
 
