@@ -224,7 +224,6 @@ int get_amp_general_light(general_basis_core<I> *B,
 					out_tmp = std::sqrt(norm_r/per_factor);
 					
 					err = check_imag(out_tmp, &out[i]); // compute and assign amplitude in full basis
-					 		
 				
 				}
 			

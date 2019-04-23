@@ -10,7 +10,6 @@ from quspin.basis.transformations import square_lattice_trans
 import numpy as np
 
 
-
 #
 ###### define model parameters ######
 Lx, Ly = 4, 4 # linear dimension of 2d lattice
@@ -96,20 +95,15 @@ for ii,basis_dict in enumerate(allowed_sectors):
 		print('# of states', i, basis_2d_made.Ns, basis_2d_full_made.Ns)
 
 		H=hamiltonian(static,[],basis=basis_2d_made,dtype=np.complex128)
-
 		E_GS,V_GS=H.eigsh(k=1,which='SA')
 
 	
 		states=basis_2d_made.states.copy()
 		inds=[np.where(basis_2d_full.states==r)[0][0] for r in states]
 		psi_GS=V_GS[:,0].copy()
-		#print(psi_GS[:4]/psi_GS[0])
 		out=basis_2d.get_amp(states,amps=psi_GS,mode='representative')
-		print(psi_GS[0:4])
 		psi_tmp=basis_2d_made.get_vec(V_GS[:,0],pcon=True,sparse=False)[inds]
-		print((psi_tmp	)[:4])
-		print(psi_GS[0:4] - psi_tmp[0:4] )
-		np.testing.assert_allclose(psi_GS - psi_tmp,0.0,atol=1E-5,err_msg='failed representative mode comparison!')
+		np.testing.assert_allclose(psi_GS - psi_tmp,0.0,atol=1E-14,err_msg='failed representative mode comparison!')
 		
 
 		states_full=basis_2d_full_made.states.copy()
@@ -117,7 +111,7 @@ for ii,basis_dict in enumerate(allowed_sectors):
 		basis_2d.get_amp(states_full,amps=psi_GS_full,mode='full_basis')
 		ref_states=np.sort( np.unique(states_full) )[::-1]
 		psi_GS_full=psi_GS_full[inds]
-		np.testing.assert_allclose(psi_GS_full - V_GS[:,0],0.0,atol=1E-5,err_msg='failed full_basis mode comparison!')
+		np.testing.assert_allclose(psi_GS_full - V_GS[:,0],0.0,atol=1E-14,err_msg='failed full_basis mode comparison!')
 
 
 

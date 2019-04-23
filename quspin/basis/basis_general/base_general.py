@@ -816,12 +816,9 @@ class basis_general(lattice_basis):
 		else:
 			out=_np.zeros(states_shape,dtype=_np.complex128)
 
+
 		self._core.get_amp(states,out,states_shape[0],mode)
 				
-
-		out_dtype = _np.min_scalar_type(out.max())
-		out = out.astype(out_dtype)
-	
 
 		if amps is not None:
 			if states.shape!=amps.shape:
