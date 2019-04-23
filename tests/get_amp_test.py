@@ -92,7 +92,7 @@ for ii,basis_dict in enumerate(allowed_sectors):
 		else: # boson, spin
 			static=[['zz',J_p],['+-',J_p],['-+',J_p]]
 
-		print('# of states', i, basis_2d_made.Ns, basis_2d_full_made.Ns)
+		print('# of states', i, basis_2d_made.Ns, basis_2d_full_made.Ns,basis_2d_made.__class__,basis_2d_made.blocks)
 
 		H=hamiltonian(static,[],basis=basis_2d_made,dtype=np.complex128)
 		E_GS,V_GS=H.eigsh(k=1,which='SA')

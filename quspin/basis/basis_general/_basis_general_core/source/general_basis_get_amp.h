@@ -179,57 +179,48 @@ int get_amp_general_light(general_basis_core<I> *B,
 		q_sum += std::abs(B->qs[i]);
 	}
 
+	const npy_intp chunk = std::max(Ns/(100*omp_get_num_threads()),(npy_intp)1); // check_state has variable workload 
 
 	if(q_sum > 0 || B->fermionic){   // a non-zero quantum number, or fermionic basis => need a nontrivial phase_factor
 
-		#pragma omp parallel
-		{	
-			const npy_intp chunk = std::max(Ns/(100*omp_get_num_threads()),(npy_intp)1); // check_state has variable workload 
+		#pragma omp parallel for schedule(dynamic,chunk)
+		for(npy_intp i=0;i<Ns;i++){
 
-			#pragma omp parallel for schedule(dynamic,chunk)
-			for(npy_intp i=0;i<Ns;i++){
+			if(err == 0){
 
-				if(err == 0){
+				I ss=s[i];
 
-					I ss=s[i];
+				double norm_r = B->check_state(ss);
 
-					double norm_r = B->check_state(ss);
-
-					phase_factor = get_amp_rep(B,nt,ss,ss);
-					out_tmp = phase_factor/std::sqrt(norm_r * per_factor);
-					
-
-					err = check_imag(out_tmp, &out[i]); // compute and assign amplitude in full basis
-					 		
+				phase_factor = get_amp_rep(B,nt,ss,ss);
+				out_tmp = phase_factor/std::sqrt(norm_r * per_factor);
 				
-				}
+				err = check_imag(out_tmp, &out[i]); // compute and assign amplitude in full basis
+				 		
 			
 			}
-
+		
 		}
-
 	}
 	else{
-		#pragma omp parallel
-		{	
-			const npy_intp chunk = std::max(Ns/(100*omp_get_num_threads()),(npy_intp)1); // check_state has variable workload 
 
-			#pragma omp parallel for schedule(dynamic,chunk)
-			for(npy_intp i=0;i<Ns;i++){
+		#pragma omp parallel for schedule(dynamic,chunk)
+		for(npy_intp i=0;i<Ns;i++){
 
-				if(err == 0){
-			
-					double norm_r = B->check_state(s[i]);
+			if(err == 0){
+		
+				double norm_r = B->check_state(s[i]);
 
-					out_tmp = std::sqrt(norm_r/per_factor);
-					
-					err = check_imag(out_tmp, &out[i]); // compute and assign amplitude in full basis
+				out_tmp = std::sqrt(norm_r/per_factor);
 				
-				}
+				err = check_imag(out_tmp, &out[i]); // compute and assign amplitude in full basis
 			
 			}
 
+
+		
 		}
+
 	}
 
 
