@@ -109,9 +109,10 @@ for ii,basis_dict in enumerate(allowed_sectors):
 		states_full=basis_2d_full_made.states.copy()
 		psi_GS_full=basis_2d_made.get_vec(V_GS[:,0],pcon=True,sparse=False) #V_GS_full[:,0].astype(np.complex128)
 		basis_2d.get_amp(states_full,amps=psi_GS_full,mode='full_basis')
-		ref_states=np.sort( np.unique(states_full) )[::-1]
+		rep_states=basis_2d_made.representative(basis_2d_full_made.states)
 		psi_GS_full=psi_GS_full[inds]
 		np.testing.assert_allclose(psi_GS_full - V_GS[:,0],0.0,atol=1E-14,err_msg='failed full_basis mode comparison!')
+		np.testing.assert_allclose(rep_states - states_full,0.0,atol=1E-14,err_msg='failed full_basis mode states comparison!')
 
 
 
