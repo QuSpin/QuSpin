@@ -677,6 +677,7 @@ cdef class general_basis_core_wrap:
     def get_amp(self,_np.ndarray states,dtype [::1] out,npy_intp Ns,object mode):
         cdef void * B = self._basis_core
         cdef void * states_ptr = _np.PyArray_GETPTR1(states,0)
+        cdef int err = 0
         
 
         if mode=='representative':

@@ -75,7 +75,7 @@ int get_amp_general(general_basis_core<I> *B,
 
 	if(q_sum > 0 || B->fermionic){   // a non-zero quantum number, or fermionic basis => need a nontrivial phase_factor
 
-		#pragma omp parallel for schedule(dynamic,chunk)
+		#pragma omp parallel for schedule(dynamic,chunk) private(phase_factor,out_tmp)
 		for(npy_intp i=0;i<Ns;i++){
 
 			if(err == 0){
@@ -109,7 +109,7 @@ int get_amp_general(general_basis_core<I> *B,
 
 	}
 	else{
-		#pragma omp parallel for schedule(dynamic,chunk)
+		#pragma omp parallel for schedule(dynamic,chunk) private(phase_factor,out_tmp)
 		for(npy_intp i=0;i<Ns;i++){
 
 			if(err == 0){
