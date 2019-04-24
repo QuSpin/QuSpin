@@ -61,10 +61,10 @@ int get_amp_general(general_basis_core<I> *B,
 
 {
 	int err=0;
-	int per_factor = 1.0;
+	double per_factor = 1.0;
 	int q_sum = 0; // sum of quantum numbers
 	const int nt = B->get_nt();
-	std::complex<double> phase_factor, out_tmp;
+
 	
 	for(int i=0;i<nt;i++){
 		per_factor *= B->pers[i];
@@ -75,11 +75,11 @@ int get_amp_general(general_basis_core<I> *B,
 
 	if(q_sum > 0 || B->fermionic){   // a non-zero quantum number, or fermionic basis => need a nontrivial phase_factor
 
-		#pragma omp parallel for schedule(dynamic,chunk) private(phase_factor,out_tmp)
+		#pragma omp parallel for schedule(dynamic,chunk)
 		for(npy_intp i=0;i<Ns;i++){
 
 			if(err == 0){
-
+				std::complex<double> phase_factor, out_tmp;
 				int g[__GENERAL_BASIS_CORE__max_nt];
 				int sign=1;
 				I ss=s[i];
@@ -109,11 +109,11 @@ int get_amp_general(general_basis_core<I> *B,
 
 	}
 	else{
-		#pragma omp parallel for schedule(dynamic,chunk) private(phase_factor,out_tmp)
+		#pragma omp parallel for schedule(dynamic,chunk)
 		for(npy_intp i=0;i<Ns;i++){
 
 			if(err == 0){
-
+				std::complex<double> phase_factor, out_tmp;
 				int g[__GENERAL_BASIS_CORE__max_nt];
 				int sign=1;
 				I ss=s[i];
