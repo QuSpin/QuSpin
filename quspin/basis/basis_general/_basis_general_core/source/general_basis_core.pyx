@@ -11,7 +11,6 @@ from libcpp.set cimport set
 from .general_basis_utils import uint32,uint64,uint256,uint1024,uint4096,uint16384
 
 
-
 @cython.boundscheck(False)
 cdef get_proj_helper(general_basis_core[npy_uint] * B, npy_uint * basis, int nt, int nnt,
                         int8_t[::1] sign, dtype[::1] c, index_type[::1] indices, index_type[::1] indptr,object P):

@@ -103,7 +103,8 @@ for i,(basis_2d,basis_2d_full) in enumerate(zip(bases_2d,bases_2d_full)):
 	basis_2d.representative(states,out=ref_states_inplace)
 	ref_states_inplace=np.sort( np.unique(ref_states_inplace) )[::-1]
 
-	norms_inplace=np.zeros_like(ref_states_inplace,dtype=np.uint16)
+	out_dtype=np.min_scalar_type(np.iinfo(basis_2d.dtype).max*basis_2d._pers.prod())
+	norms_inplace=np.zeros_like(ref_states_inplace,dtype=out_dtype)
 	basis_2d.normalization(ref_states_inplace,out=norms_inplace)
 	mask_inplace=np.abs(norms_inplace)!=0.0
 

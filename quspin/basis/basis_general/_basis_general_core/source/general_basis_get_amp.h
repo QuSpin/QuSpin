@@ -71,7 +71,7 @@ int get_amp_general(general_basis_core<I> *B,
 		q_sum += std::abs(B->qs[i]);
 	}
 
-	const npy_intp chunk = std::max(Ns/(100*omp_get_num_threads()),(npy_intp)1); // check_state has variable workload 
+	const npy_intp chunk = std::max(Ns/(100*omp_get_max_threads()),(npy_intp)1); // check_state has variable workload 
 
 	if(q_sum > 0 || B->fermionic){   // a non-zero quantum number, or fermionic basis => need a nontrivial phase_factor
 
@@ -172,7 +172,7 @@ int get_amp_general_light(general_basis_core<I> *B,
 		q_sum += std::abs(B->qs[i]);
 	}
 
-	const npy_intp chunk = std::max(Ns/(100*omp_get_num_threads()),(npy_intp)1); // check_state has variable workload 
+	const npy_intp chunk = std::max(Ns/(100*omp_get_max_threads()),(npy_intp)1); // check_state has variable workload 
 
 	if(q_sum > 0 || B->fermionic){   // a non-zero quantum number, or fermionic basis => need a nontrivial phase_factor
 
