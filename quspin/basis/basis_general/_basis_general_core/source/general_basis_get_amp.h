@@ -98,8 +98,11 @@ int get_amp_general(general_basis_core<I> *B,
 					out_tmp = 0.0;
 				}
 
-				err = check_imag(out_tmp, &out[i]); // compute and assign amplitude in full basis
-				 		
+				int local_err = check_imag(out_tmp, &out[i]); // compute and assign amplitude in full basis
+				if(local_err){
+					#pragma omp critical
+					err = local_err;
+				}					 		
 			
 			}
 		
@@ -132,8 +135,11 @@ int get_amp_general(general_basis_core<I> *B,
 					out_tmp = 0.0;
 				}
 
-				err = check_imag(out_tmp, &out[i]); // compute and assign amplitude in full basis
-				 		
+				int local_err = check_imag(out_tmp, &out[i]); // compute and assign amplitude in full basis
+				if(local_err){
+					#pragma omp critical
+					err = local_err;
+				}					 		
 			
 			}
 		
@@ -162,10 +168,9 @@ int get_amp_general_light(general_basis_core<I> *B,
 
 {
 	int err=0;
-	int per_factor = 1.0;
+	double per_factor = 1.0;
 	int q_sum = 0; // sum of quantum numbers
 	const int nt = B->get_nt();
-	std::complex<double> phase_factor, out_tmp;
 	
 	for(int i=0;i<nt;i++){
 		per_factor *= B->pers[i];
@@ -180,6 +185,7 @@ int get_amp_general_light(general_basis_core<I> *B,
 		for(npy_intp i=0;i<Ns;i++){
 
 			if(err == 0){
+				std::complex<double> phase_factor, out_tmp;
 
 				I ss=s[i];
 
@@ -188,8 +194,11 @@ int get_amp_general_light(general_basis_core<I> *B,
 				phase_factor = get_amp_rep(B,nt,ss,ss);
 				out_tmp = phase_factor/std::sqrt(norm_r * per_factor);
 				
-				err = check_imag(out_tmp, &out[i]); // compute and assign amplitude in full basis
-				 		
+				int local_err = check_imag(out_tmp, &out[i]); // compute and assign amplitude in full basis
+				if(local_err){
+					#pragma omp critical
+					err = local_err;
+				}				 		
 			
 			}
 		
@@ -201,12 +210,17 @@ int get_amp_general_light(general_basis_core<I> *B,
 		for(npy_intp i=0;i<Ns;i++){
 
 			if(err == 0){
+				std::complex<double> phase_factor, out_tmp;
 		
 				double norm_r = B->check_state(s[i]);
 
 				out_tmp = std::sqrt(norm_r/per_factor);
 				
-				err = check_imag(out_tmp, &out[i]); // compute and assign amplitude in full basis
+				int local_err = check_imag(out_tmp, &out[i]); // compute and assign amplitude in full basis
+				if(local_err){
+					#pragma omp critical
+					err = local_err;
+				}
 			
 			}
 

@@ -38,7 +38,10 @@ int general_normalization(general_basis_core<I> *B,
 		
 		// checks if data type is large enough
 		if(!check_nan(norm) && int_norm>0 ){
-			if( (npy_uintp)(int_norm * per_factor) > std::numeric_limits<J>::max() ){err = 1;}
+			if( (npy_uintp)(int_norm * per_factor) > std::numeric_limits<J>::max() ){
+				#pragma omp critical
+				err = 1;
+			}
 
 			n[i] = (J)norm * per_factor;
 		}
