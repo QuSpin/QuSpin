@@ -725,10 +725,14 @@ class basis_general(lattice_basis):
 		states = _np.asarray(states,order="C",dtype=self._basis.dtype)
 		states = _np.atleast_1d(states)
 
+
 		if out is None:
-			out=_np.zeros(states.shape,dtype=self._n_dtype)
+			# determine appropriate dtype
+			out_dtype=_np.min_scalar_type(_np.iinfo(self._n_dtype).max*self._pers.prod())
+			out=_np.zeros(states.shape,dtype=out_dtype)
 			self._core.normalization(states,out)
 			
+			# reduce dtype
 			out_dtype = _np.min_scalar_type(out.max())
 			out = out.astype(out_dtype)
 

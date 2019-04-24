@@ -25,7 +25,7 @@ int general_normalization(general_basis_core<I> *B,
 		per_factor *= B->pers[i];
 	}
 
-	const npy_intp chunk = std::max(Ns/(100*omp_get_num_threads()),(npy_intp)1); // check_state has variable workload 
+	const npy_intp chunk = std::max(Ns/(100*omp_get_max_threads()),(npy_intp)1); // check_state has variable workload 
 
 	#pragma omp parallel for schedule(dynamic,chunk)
 	for(npy_intp i=0;i<Ns;i++){
@@ -38,9 +38,9 @@ int general_normalization(general_basis_core<I> *B,
 		
 		// checks if data type is large enough
 		if(!check_nan(norm) && int_norm>0 ){
-			if( (npy_uintp)int_norm > std::numeric_limits<J>::max() ){err = 1;}
+			if( (npy_uintp)(int_norm * per_factor) > std::numeric_limits<J>::max() ){err = 1;}
 
-			n[i] = (J)norm*per_factor;
+			n[i] = (J)norm * per_factor;
 		}
 		else{
 			n[i] = 0;
