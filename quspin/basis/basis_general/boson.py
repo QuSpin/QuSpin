@@ -98,7 +98,7 @@ class boson_basis_general(hcb_basis_general,basis_general):
 		make_basis: bool, optional
 			Boolean to control whether to make the basis. Allows the use to use some functionality of the basis constructor without constructing the entire basis.
 		block_order: list of strings, optional
-			A list of strings containing the names of the symmetry blocks which specifies the order in which the symmetries will be applied to the state when calculating the basis. If not specified the symmetries are sorted by their periodicity.
+			A list of strings containing the names of the symmetry blocks which specifies the order in which the symmetries will be applied to the state when calculating the basis. If not specified the symmetries are sorted by their periodicity. 
 		**blocks: optional
 			keyword arguments which pass the symmetry generator arrays. For instance:
 
@@ -183,7 +183,7 @@ class boson_basis_general(hcb_basis_general,basis_general):
 					raise ValueError("_Np == -1 for no particle conservation, _Np >= 0 for particle conservation")
 
 			if Nb is None:
-				Ns = sps**N
+				self._Ns = sps**N
 			elif type(Nb) is int:
 				self._check_pcon = True
 				self._get_proj_pcon = True
@@ -191,7 +191,7 @@ class boson_basis_general(hcb_basis_general,basis_general):
 				if self._sps is None:
 					self._sps = Nb+1
 
-				Ns = H_dim(Nb,N,self._sps-1)
+				self._Ns = H_dim(Nb,N,self._sps-1)
 			else:
 				try:
 					Np_iter = iter(Nb)
@@ -201,26 +201,26 @@ class boson_basis_general(hcb_basis_general,basis_general):
 				if self._sps is None:
 					self._sps = max(list(Nb))+1				
 
-				Ns = 0
+				self._Ns = 0
 				for b in Nb:
-					Ns += H_dim(b,N,self._sps-1)
+					self._Ns += H_dim(b,N,self._sps-1)
 
 			#self._pcon_args = dict(N=N,Nb=Nb,sps=self._sps)
 
 			if len(self._pers)>0:
 				if Ns_block_est is None:
-					Ns = int(float(Ns)/_np.multiply.reduce(self._pers))*self._sps
+					self._Ns = int(float(self._Ns)/_np.multiply.reduce(self._pers))*self._sps
 				else:
 					if type(Ns_block_est) is not int:
 						raise TypeError("Ns_block_est must be integer value.")
 					if Ns_block_est <= 0:
 						raise ValueError("Ns_block_est must be an integer > 0")						
-					Ns = Ns_block_est
+					self._Ns = Ns_block_est
 
 			self._basis_dtype = get_basis_type(N,Nb,self._sps)
 			self._core = boson_basis_core_wrap(self._basis_dtype,N,self._sps,self._maps,self._pers,self._qs)
 			self._N = N
-			self._Ns = Ns
+			self._Ns_block_est=self._Ns
 			self._Np = Nb
 
 			# make the basis; make() is function method of base_general

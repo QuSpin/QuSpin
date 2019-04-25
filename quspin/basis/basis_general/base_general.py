@@ -82,6 +82,7 @@ class basis_general(lattice_basis):
 		self._basis_pcon = None
 		self._get_proj_pcon = False
 		self._made_basis = False # keeps track of whether the basis has been made
+		self._Ns_block_est = 0 # initialize number of states variable
 
 		if self.__class__ is basis_general:
 			raise TypeError("general_basis class is not to be instantiated.")
@@ -481,12 +482,15 @@ class basis_general(lattice_basis):
 		>>> print(basis)
 
 		"""
-
+		
 		if Ns_block_est is not None:
-			Ns = Ns_block_est
+			if Ns_block_est > self._Ns_block_est:
+				Ns = Ns_block_est
+			else:
+				Ns = self._Ns_block_est
 		else:
 			Ns = max(self._Ns,1000)
-
+		
 		# preallocate variables
 		basis = _np.zeros(Ns,dtype=self._basis_dtype)
 		n = _np.zeros(Ns,dtype=self._n_dtype)
@@ -520,6 +524,7 @@ class basis_general(lattice_basis):
 
 
 		self._Ns=Ns
+		self._Ns_block_est=Ns
 
 		self._index_type = _np.result_type(_np.min_scalar_type(self._Ns),_np.int32)
 		self._reduce_n_dtype()
