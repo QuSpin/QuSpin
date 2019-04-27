@@ -764,8 +764,10 @@ class basis_general(lattice_basis):
 
 		Given a quantum state :math:`s` and a state amplitude in the full basis :math:`\\psi_s`, its representative (under the symemtries) 
 		:math:`r(s)` with a corresponding amplitude :math:`\\psi^\\text{sym}_r`, the function computes the ratio :math:`C`, defined as
-		..math::
+		
+		.. math::
 			\\psi_s = C\\psi_r^\\text{sym} 
+
 
 		Notes
 		------
@@ -784,13 +786,13 @@ class basis_general(lattice_basis):
 		amps : numpy.ndarray(float), optional
 			array of amplitudes to rescale by the amplitude factor :math:`C` (see `mode`). Updated in-place. Must be a real or complex-valued `numpy.ndarray` of the same shape as `states`. 
 		mode : string, optional
-			* if `mode=representative` (default), then the function assumes that
+			* if `mode='representative'` (default), then the function assumes that
 				(i) `states` already contains representatives (i.e. states in the symmetry-reduced basis);
 				(ii) `amps` (if passed) are amplitudes in the symmetry-reduced basis (:math:`\\psi_r^\\text{symm}`). The function will update `amps` in-place to :math:`\\psi_s`.
-			* if `mode=full_basis`, then the function assumes that
+			* if `mode='full_basis'`, then the function assumes that
 				(i) `states` contains full-basis states (the funciton will compute the corresponding representatives);
-				(ii) `amps` (if passed) are amplitudes in the full basis (:math:`\\psi_s`). The function will update `amps` in-place to :math:`\\psi_r^\\text{symm}`.
-				*Note*: the function will update the variable `states` in place with the corresponding representatives.
+				(ii) `amps` (if passed) are amplitudes in the full basis (:math:`\\psi_s`). The function will update `amps` in-place to :math:`\\psi_r^\\text{symm}`;
+					**Note**: the function will also update the variable `states` in place with the corresponding representatives.
 
 		Returns
 		--------
@@ -800,10 +802,7 @@ class basis_general(lattice_basis):
 		Examples
 		--------
 		
-		>>> basis=spin_basis_general(N,Nup=Nup,make_basis=False)
-		>>> s = 17
-		>>> norm_s = basis.normalization(s)
-		>>> print(s,norm_s)
+		>>> C = get_amp(states,out=None,amps=None,mode='representative')
 
 		"""
 

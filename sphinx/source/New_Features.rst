@@ -1,4 +1,4 @@
-:math:`\mathrm{\color{magenta} {QuSpin\ 0.3.2}}` here (updated on 2019.03.11)
+:math:`\mathrm{\color{orange} {QuSpin\ 0.3.3}}` here (updated on 2019.05.01)
 ===================================================================
 
 :math:`\mathrm{\color{red} {Highlights}}`: OpenMP support now here!
@@ -9,6 +9,21 @@ Check out :ref:`parallelization-label` and the example script :ref:`example12-la
 
 Complete list of the most recent features 
 =========================================
+
+
+Added in v. 0.3.3 (2019.05.01)
+-----------------
+
+Improved Functionality
+++++++++++++++++++++++
+* introducing improvements to Example 11 to perform Monte Carlo sampling in the symmetry-reduced Hilbert space.
+
+New Attributes, Functions, Methods and Classes
+++++++++++++++++++++++++++++++++++++++++++++++
+
+* adding `*_basis_general.get_amp()` function method which effectively provides a partial `get_vec()` function but does not require the basis to be constructed ahead of time.
+* adding optional argument `double_occupancy` to the `spinful_fermion_basis_*` classes to control whether doubly occupied sites should be part of the basis or not. 
+
 
 Added in v. 0.3.2 (2019.03.11)
 -----------------
