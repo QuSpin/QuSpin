@@ -383,15 +383,15 @@ class user_basis(basis_general):
 		self._pers = _np.array(pers,dtype=_np.int)
 		self._qs = _np.array(qs,dtype=_np.int)
 
-		if len(self._pers)>0:
-			if Ns_block_est is None:
-				Ns = int(float(Ns)/_np.multiply.reduce(self._pers))*2
-			else:
-				if type(Ns_block_est) is not int:
-					raise TypeError("Ns_block_est must be integer value.")
-					
-				Ns = Ns_block_est
 
+		if Ns_block_est is None:
+			if len(self._pers) > 0:
+				Ns = int(float(Ns)/_np.multiply.reduce(self._pers))*2
+		else:
+			if type(Ns_block_est) is not int:
+				raise TypeError("Ns_block_est must be integer value.")
+				
+			Ns = Ns_block_est
 
 		self._basis_dtype = basis_dtype
 		self._core = user_core_wrap(Ns_full, basis_dtype, N, map_funcs, pers, qs,
