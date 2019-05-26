@@ -286,6 +286,27 @@ class quantum_LinearOperator(LinearOperator):
 	# 	"""
 	# 	return self.__rmul__(other)
 
+	def dot(self,other,out=None):
+		if out is not None:
+			out = _np.asanyarray(out)
+			result_dtype = _np.result_type(self._dtype,other.dtype)
+
+			if (not out.flags["CARRAY"] or (out.dtype,out.shape) != (result_dtype,shape)):
+				raise ValueError("out must be C-congituous writable array \
+					with dtype {} and shape {}.".format(result_dtype,self._shape))
+
+			if self.diagonal is not None:
+				_np.multiply(other.T,self.diagonal,out=out.T)
+
+			for opstr,indx,J in self._static_list:
+				self.basis.inplace_Op(other,opstr, indx, J, self._dtype,
+									self._conjugated,self._transposed,v_out=out)
+
+			return out
+		else:
+			return self._matvec(other)
+
+
 	def _matvec(self,other):
 		other = _np.asanyarray(other)
 		result_dtype = _np.result_type(self._dtype,other.dtype)
