@@ -325,7 +325,7 @@ class spinful_fermion_basis_general(spinless_fermion_basis_general):
 		:lines: 7-
 
 	"""
-	def __init__(self,N,Nf=None,nf=None,Ns_block_est=None,simple_symm=True,make_basis=True,block_order=None,double_occupy=True,**blocks):
+	def __init__(self,N,Nf=None,nf=None,Ns_block_est=None,simple_symm=True,make_basis=True,block_order=None,double_occupancy=True,**blocks):
 		"""Intializes the `spinful_fermion_basis_general` object (basis for fermionic operators).
 
 		Parameters
@@ -342,6 +342,8 @@ class spinful_fermion_basis_general(spinless_fermion_basis_general):
 			Flags whidh toggles the setting for the types of mappings and operator strings the basis will use. See this tutorial for more details. 
 		make_basis: bool, optional
 			Boolean to control whether to make the basis. Allows the use to use some functionality of the basis constructor without constructing the entire basis.
+		double_occupancy: bool, optional
+			Boolean to toggle the presence of doubly-occupied sites (both a spin up and a spin-down fermion present on the same lattice site) in the basis. Default is `double_occupancy=True`, for which doubly-occupied states are present.
 		block_order: list of strings, optional
 			A list of strings containing the names of the symmetry blocks which specifies the order in which the symmetries will be applied to the state when calculating the basis. If not specified the symmetries are sorted by their periodicity.
 		**blocks: optional
@@ -470,7 +472,7 @@ class spinful_fermion_basis_general(spinless_fermion_basis_general):
 				Ns = Ns_block_est
 
 		self._basis_dtype = get_basis_type(2*N,None,2)
-		self._core = spinful_fermion_basis_core_wrap(self._basis_dtype,N,self._maps,self._pers,self._qs,double_occupy)
+		self._core = spinful_fermion_basis_core_wrap(self._basis_dtype,N,self._maps,self._pers,self._qs,double_occupancy)
 
 		self._sps = 2
 		self._N = 2*N
