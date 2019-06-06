@@ -78,3 +78,6 @@ class higher_spin_basis_general(basis_general):
 		self._sps=sps
 		self._allowed_ops=set(["I","z","+","-"])
 		
+	def __setstate__(self,state):
+		self.__dict__.update(state)
+		self._core =  higher_spin_basis_core_wrap(self._basis_dtype,self._N,self._sps,self._maps,self._pers,self._qs)

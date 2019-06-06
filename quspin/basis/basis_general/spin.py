@@ -173,6 +173,12 @@ class spin_basis_general(hcb_basis_general,higher_spin_basis_general):
 			self._allowed_ops = set(["I","+","-","z"])
 
 
+	def __setstate__(self,state):
+		if state["_sps"] == 2:
+			hcb_basis_general.__setstate__(self,state)
+		else:
+			higher_spin_basis_general.__setstate__(self,state)
+
 
 	def _Op(self,opstr,indx,J,dtype):
 		

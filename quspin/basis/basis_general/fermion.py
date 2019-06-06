@@ -173,6 +173,10 @@ class spinless_fermion_basis_general(basis_general):
 
 		self._allowed_ops=set(["I","n","+","-","z"])
 		
+	def __setstate__(self,state):
+		self.__dict__.update(state)
+		self._core = spinless_fermion_basis_core_wrap(self._basis_dtype,self._N,self._maps,self._pers,self._qs)
+
 
 	@property
 	def _fermion_basis(self):
@@ -478,6 +482,7 @@ class spinful_fermion_basis_general(spinless_fermion_basis_general):
 		self._N = 2*N
 		self._Ns = Ns
 		self._Np = Nf
+		self._double_occupancy = double_occupancy
 		
 		# make the basis; make() is function method of base_general
 		if make_basis:		
@@ -496,7 +501,9 @@ class spinful_fermion_basis_general(spinless_fermion_basis_general):
 
 		self._allowed_ops=set(["I","n","+","-","z"])
 		
-
+	def __setstate__(self,state):
+		self.__dict__.update(state)
+		self._core = spinful_fermion_basis_core_wrap(self._basis_dtype,self._N,self._maps,self._pers,self._qs,self._double_occupancy)
 
 	def _Op(self,opstr,indx,J,dtype):
 
