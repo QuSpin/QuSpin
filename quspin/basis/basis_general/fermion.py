@@ -503,7 +503,7 @@ class spinful_fermion_basis_general(spinless_fermion_basis_general):
 		
 	def __setstate__(self,state):
 		self.__dict__.update(state)
-		self._core = spinful_fermion_basis_core_wrap(self._basis_dtype,self._N,self._maps,self._pers,self._qs,self._double_occupancy)
+		self._core = spinful_fermion_basis_core_wrap(self._basis_dtype,self._N//2,self._maps,self._pers,self._qs,self._double_occupancy)
 
 	def _Op(self,opstr,indx,J,dtype):
 
