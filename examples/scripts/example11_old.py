@@ -20,13 +20,13 @@ from time import time # timing package
 #
 ti = time() # start timer
 ###### define model parameters ######
-J1=1.0 # nn interaction
-J2=0.5 # nnn interaction
-Lx, Ly = 4, 4 # linear dimension of 2d lattice
-N_2d = Lx*Ly # number of sites
+J1=1.0 # spin=spin interaction
+J2=0.5 # magnetic field strength
+Lx, Ly = 4, 4 # linear dimension of spin 1 2d lattice
+N_2d = Lx*Ly # number of sites for spin 1
 #
 ###### setting up user-defined symmetry transformations for 2d lattice ######
-sites = np.arange(N_2d) # site labels [0,1,2,....]
+sites = np.arange(N_2d) # sites [0,1,2,....]
 x = sites%Lx # x positions for sites
 y = sites//Lx # y positions for sites
 #
@@ -36,14 +36,10 @@ T_y = x +Lx*((y+1)%Ly) # translation along y-direction
 T_a = (x+1)%Lx + Lx*((y+1)%Ly) # translation along anti-diagonal
 T_d = (x-1)%Lx + Lx*((y+1)%Ly) # translation along diagonal
 #
-P_x = x + Lx*(Ly-y-1) # reflection about x-axis
-P_y = (Lx-x-1) + Lx*y # reflection about y-axis
-P_d = y + Lx*x # reflection about diagonal
-#
 Z   = -(sites+1) # spin inversion
 #
 ###### setting up operator string for Hamiltonian matrix elements H_{ss'} ######
-# setting up site-coupling lists for the J1-J2 model on a 2d square lattice
+# setting up site-coupling lists
 J1_list=[[J1,i,T_x[i]] for i in range(N_2d)] + [[J1,i,T_y[i]] for i in range(N_2d)]
 J2_list=[[J2,i,T_d[i]] for i in range(N_2d)] + [[J2,i,T_a[i]] for i in range(N_2d)]
 # setting up opstr list
@@ -51,31 +47,16 @@ static=[["xx",J1_list],["yy",J1_list],["zz",J1_list],  ["xx",J2_list],["yy",J2_l
 # convert static list to format which is easy to use with the basis_general.Op and basis_general.Op_bra_ket methods. 
 static_formatted = _consolidate_static(static)
 #
-###### setting up basis object without computing the basis (make=False) ######
-basis = spin_basis_general(N_2d, pauli=0, make_basis=False, 
-			Nup=N_2d//2, 
-			kxblock=(T_x,0), kyblock=(T_y,0),
-			pxblock=(P_x,0), pyblock=(P_y,0), pdblock=(P_d,0),
-			zblock=(Z,0),
-			block_order=['zblock','pdblock','pyblock','pxblock','kyblock','kxblock'] # momentum symmetry comes last for speed
-		)
+###### setting up basis object without computing the basis ######
+# Z-symmetry allowed in sampling since it commutes with the swap operation which proposes new configurations in MC
+basis = spin_basis_general(N_2d, pauli=0, make_basis=False,Nup=N_2d//2,zblock=(Z,0) )
 print(basis) # examine basis: contains a single element because it is not calculated due to make_basis=False argument above.
 print('basis is empty [note argument make_basis=False]')
 #
 ###### define quantum state to compute the energy of using Monte-Carlo sampling ######
 #
-# auxiliary basis, only needed for probability_amplitude(); not needed in a proper variational ansatz.
-aux_basis = spin_basis_general(N_2d, pauli=0, make_basis=True, 
-			Nup=N_2d//2, 
-			kxblock=(T_x,0), kyblock=(T_y,0),
-			pxblock=(P_x,0), pyblock=(P_y,0), pdblock=(P_d,0),
-			zblock=(Z,0),
-			block_order=['zblock','pdblock','pyblock','pxblock','kyblock','kxblock'] # momentum symmetry comes last for speed
-		)
-# set quantum state to samplee from to be GS of H 
-H = hamiltonian(static,[],basis=aux_basis,dtype=np.float64)
-E, V = H.eigsh(k=2, which='SA') # need NOT be (but can be) normalized
-psi=(V[:,0] + V[:,1])/np.sqrt(2)
+Ns=int(comb(N_2d,N_2d//2)/2) # number of states in Hilbert space 
+psi = np.random.normal(size=Ns) # need NOT be normalized
 #
 ##### define proposal function #####
 #
@@ -84,18 +65,20 @@ def swap_bits(s,i,j):
 
 	Parameters
 	-----------
-	s: int
-		spin configuration stored in bit representation.
-	i: int
-		lattice site position to be swapped with the corresponding one in j.
-	j: int
-		lattice site position to be swapped with the corresponding one in i.
+	s: array_like(int)
+		array of spin configurations stored in their bit representation.
+	i: array_like(int)
+		array of positions to be swapped with the corresponding pair in j.
+	j: array_like(int)
+		array of positions to be swapped with the corresponding pair in i.
 
 	"""
-	x = ( (s>>i)^(s>>j) ) & 1
-	return s^( (x<<i)|(x<<j) )
+	x = np.bitwise_and( np.bitwise_xor( np.right_shift(s,i), np.right_shift(s,j) ) , 1)
+	return np.bitwise_xor(s, np.bitwise_or( np.left_shift(x,i), np.left_shift(x,j) ) )
 #
 ##### define function to compute the amplitude `psi_s` for every spin configuration `s` #####
+#
+aux_basis = spin_basis_general(N_2d,make_basis=True,Nup=N_2d//2,zblock=(Z,0) ) # auxiliary basis, only needed for probability_amplitude()
 basis_state_inds_dict=dict()
 for s in aux_basis.states:
 	basis_state_inds_dict[s]=np.where(aux_basis.states==s)[0][0]
@@ -122,9 +105,9 @@ def compute_local_energy(s,psi_s,psi):
 	s: array_like(int)
 		array of spin configurations [stored in their bit representation] to compute their local energies `E_s`.
 	psi_s: array
-		(unnormalized) probability amplitude values, corresponding to the states `s` in the symmetry-reduced basis. 
+		(unnormalized) probability amplitude values, corresponding to the states `s`. 
 	psi: array
-		(unnormalized) array which encodes the mapping $s \\to \\psi_s$ (e.g. quantum state vector) in the symmetry-reduced basis.
+		(unnormalized) state which encodes the mapping $s \\to \\psi_s$.
 		
 	"""
 	# preallocate variable
@@ -158,76 +141,56 @@ print('representative of random initial state in integer representation:', s)
 # compute amplitude in state s
 psi_s=probability_amplitude(s,psi)
 #
-psi_s_full_basis=np.copy(psi_s)
-# overwrite the symmetry-reduced space psi_s_full_basis with its amplitude in the full basis
-basis.get_amp(s,amps=psi_s_full_basis,mode='representative') # has the advantage that basis need not be made.
-#
 # define MC sampling parameters
 equilibration_time=200
-autocorrelation_time=N_2d
 # number of MC sampling points
-N_MC_points = 1000
+N_MC_points = 100000
 #
 ##### run Markov chain MC #####
 #
 # compute all distinct site pairs to swap
+site_pairs=np.array([(i,j) for i in sites for j in sites if i!=j])
+np.random.shuffle(site_pairs)
+# branch MC chains: allows to run mutiple Markov chains in a vectorized fashion
+s=np.tile(s,N_MC_points)
+psi_s=np.tile(psi_s,N_MC_points)
 #
-# preallocate variables
-E_s=np.zeros(N_MC_points,dtype=np.float64)
-MC_sample=np.zeros(N_MC_points,dtype=basis.dtype)
-#
-j=0 # set MC chain counter
-k=0 # set MC sample counter 
-while k<N_MC_points:
-	# propose new state t by swapping two random bits
-	t=s
-	while t==s: # repeat until a different state is reached
-		# draw two random sites
-		site_i=np.random.randint(0,N_2d)
-		site_j=np.random.randint(0,N_2d)
-		# swap bits in spin configurations
-		t = swap_bits(s,site_i,site_j) # new state t corresponds to integer with swapped bites i and j
-	#
+# sample from MC after allowing the equilibration time to pass
+for k in range(equilibration_time):
+	# draw set of pair of sites to swap their spins 
+	inds=np.random.randint(site_pairs.shape[0],size=N_MC_points)
+	inds=site_pairs[inds]
+	# swap bits in spin configurations
+	t = swap_bits(s,inds[:,0], inds[:,1])
 	# compute representatives or proposed configurations to bring them back to symmetry sector
-	t=basis.representative(t)
+	# CAUTION: MC works only with Z-symmetry because it commutes with swap_bits(); other symmetries break detailed balance.
+	t=basis.representative(t) 
+	### accept/reject new states
 	psi_t=probability_amplitude(t, psi)
-	# CAUTION: symmetries break detailed balance which we need to restore by using the amplitudes in the full basis.
-	psi_t_full_basis=np.copy(psi_t)
-	# overwrite the symmetry-reduced space psi_t_full_basis with its amplitude in the full basis
-	basis.get_amp(t,amps=psi_t_full_basis,mode='representative') # has the advantage that basis need not be made.
+	eps=np.random.uniform(0,1,size=N_MC_points)
+	# compute mask to determine whether to accept/reject every state
+	mask=np.where(eps <= np.abs(psi_t)**2/np.abs(psi_s)**2)
+	# apply mask to only update accepted states
+	s[mask]=t[mask]
+	psi_s[mask]=psi_t[mask]
 	#
-	### accept/reject new state
-	#
-	# use amplitudes psi_t_full_basis and psi_s_full_basis to restore detailed balance
-	eps=np.random.uniform(0,1)
-	if eps * np.abs(psi_s_full_basis)**2 <= np.abs(psi_t_full_basis)**2: 
-		s=t
-		psi_s=psi_t
-		psi_s_full_basis=psi_t_full_basis
-	#
-	# wait for MC chain to quilibrate and collect uncorrelated samples
-	if (j>equilibration_time) and (j%autocorrelation_time==0):
-		# compute local energy
-		print('computing local energy E_s for MC sample {0:d}'.format(k))
-		E_s[k] = compute_local_energy(s,psi_s,psi)
-		# update sample
-		MC_sample[k]=s
-		# update MC samples counter
-		k+=1
-	#
-	j+=1 # update MC chain counter
+	print('{0:d}-th MC chain equilibration step complete'.format(k))
 #
-##### compute MC-sampled average energy #####
+##### compute MC-sampled energy #####
+# compute local energy
+print('computing local energies E_s...')
+E_s = compute_local_energy(s,psi_s,psi)
 # compute energy expectation and MC variance
 E_mean=np.mean(E_s)
-E_var_MC=np.std(E_s)/np.sqrt(N_MC_points)
+E_var=np.std(E_s)/np.sqrt(N_MC_points)
 #
-# compute exact expectation value
-E_exact=H.expt_value(psi/np.linalg.norm(psi))
-#####   compute full basis   #####
-# so far the functions representative(), get_amp(), and Op_bra_ket() did not require to compute the full basis
+#### compute exact expectation value #####
+# compute full basis: required to construct the exact Hamiltonian
 basis.make(Ns_block_est=16000)
 print(basis) # after the basis is made, printing the basis returns the states
+# build Hamiltonian
+H = hamiltonian(static,[],basis=basis,dtype=np.float64)
+E_exact=H.expt_value(psi/np.linalg.norm(psi))
 # compare results
-print('mean energy: {0:.4f}, MC variance: {1:.4f}, exact energy {2:.4f}'.format(E_mean, E_var_MC, E_exact) )
+print('mean energy: {0:.4f}, MC variance: {1:.4f}, exact energy {2:.4f}'.format(E_mean, E_var, E_exact) )
 print("simulation took {0:.4f} sec".format(time()-ti))

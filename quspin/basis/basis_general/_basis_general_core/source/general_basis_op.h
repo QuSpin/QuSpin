@@ -13,24 +13,6 @@
 
 namespace basis_general {
 
-template<class T>
-int inline check_imag(std::complex<double> m,std::complex<T> *M){
-	M[0].real(m.real());
-	M[0].imag(m.imag());
-	return 0;
-}
-
-template<class T>
-int inline check_imag(std::complex<double> m,T *M){
-	if(std::abs(m.imag())>1.1e-15){
-		return 1;
-	}
-	else{
-		M[0] = m.real();
-		return 0;
-	}
-}
-
 
 
 template<class I, class J, class K, class T>
@@ -99,8 +81,7 @@ int general_op(general_basis_core<I> *B,
 					M[i] = std::numeric_limits<T>::quiet_NaN();
 				}
 			}
-
-			if(local_err != 0){
+			else{
 				#pragma omp critical
 				err = local_err;
 			}
@@ -115,30 +96,7 @@ int general_op(general_basis_core<I> *B,
 
 
 
-template<class T>
-int inline atomic_add(const std::complex<double> m,std::complex<T> *M){
-	T * M_v = reinterpret_cast<T*>(M);
-	const T m_real = m.real();
-	const T m_imag = m.imag();
-	#pragma omp atomic
-	M_v[0] += m_real;
-	#pragma omp atomic
-	M_v[1] += m_imag;
-	return 0;
-}
 
-template<class T>
-int inline atomic_add(const std::complex<double> m,T *M){
-	if(std::abs(m.imag())>1.1e-15){
-		return 1;
-	}
-	else{
-		const T m_real = m.real();
-		#pragma omp atomic
-		M[0] += m_real;
-		return 0;
-	}
-}
 
 template<class I, class J, class K>
 int general_inplace_op(general_basis_core<I> *B,
@@ -205,7 +163,7 @@ int general_inplace_op(general_basis_core<I> *B,
 							}
 						}
 					}
-					if(local_err != 0){
+					else{
 						#pragma omp critical
 						err = local_err;
 					}
@@ -262,7 +220,7 @@ int general_inplace_op(general_basis_core<I> *B,
 							}
 						}
 					}
-					if(local_err != 0){
+					else{
 						#pragma omp critical
 						err = local_err;
 					}
@@ -321,7 +279,7 @@ int general_inplace_op(general_basis_core<I> *B,
 							}
 						}
 					}
-					if(local_err != 0){
+					else{
 						#pragma omp critical
 						err = local_err;
 					}
@@ -379,7 +337,7 @@ int general_inplace_op(general_basis_core<I> *B,
 							}
 						}
 					}
-					if(local_err != 0){
+					else{
 						#pragma omp critical
 						err = local_err;
 					}
@@ -457,9 +415,7 @@ int general_op_bra_ket(general_basis_core<I> *B,
 				
 				
 			}
-
-
-			if(local_err != 0){
+			else{
 				#pragma omp critical
 				err = local_err;
 			}
@@ -564,9 +520,7 @@ int general_op_bra_ket_pcon(general_basis_core<I> *B,
 				
 				
 			}
-
-
-			if(local_err != 0){
+			else{
 				#pragma omp critical
 				err = local_err;
 			}
