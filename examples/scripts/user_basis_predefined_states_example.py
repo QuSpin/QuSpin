@@ -1,4 +1,8 @@
-from __future__ import print_function,division
+from __future__ import print_function, division
+import sys,os
+# line 4 and line 5 below are for development purposes and can be removed
+qspin_path = os.path.join(os.getcwd(),"../../")
+sys.path.insert(0,qspin_path)
 from quspin.basis.user import user_basis,next_state_sig_32,op_sig_32,map_sig_32
 from quspin.basis import spin_basis_general
 from scipy.special import comb
@@ -114,7 +118,7 @@ pcon_args = dict(Np=Np,next_state=next_state,next_state_args=next_state_args,
 
 # symmetries to apply.
 maps = dict(
-    tr=(translate,N_half,0),
+    tr=(translate,N_half,0), # function, periodicity, number
     p=(parity,2,0)
     )
 # maps = dict()

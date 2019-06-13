@@ -83,6 +83,7 @@ def py_fliplr(basis_type[:] x,int length, basis_type[:] pars, NP_INT8_t[:] signs
 
 cdef inline basis_type flip_all(basis_type I, int length,NP_INT8_t * sign,basis_type[:] pars):
     # flip all bits
+    ### why do we need the following three lines? where are they used?
     cdef basis_type II = I
     cdef int NA = 0
     cdef int N = 0

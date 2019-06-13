@@ -44,6 +44,15 @@ general lattice symmetries
    spinful_fermion_basis_general
 
 
+user basis
+-----------------------------
+
+.. autosummary::
+   :toctree: generated/
+
+   user_basis
+
+
 combining basis classes
 -----------------------
 
@@ -111,5 +120,5 @@ from .base import *
 from .lattice import *
 from .photon import *
 from .tensor import *
-#from . import user
+from quspin.basis.user import *
 

@@ -1,4 +1,8 @@
-from __future__ import print_function,division
+from __future__ import print_function, division
+import sys,os
+# line 4 and line 5 below are for development purposes and can be removed
+qspin_path = os.path.join(os.getcwd(),"../../")
+sys.path.insert(0,qspin_path)
 from quspin.basis.user import user_basis,check_state_nosymm_sig_32,op_sig_32,map_sig_32
 from quspin.basis import spin_basis_1d
 from quspin.operators import hamiltonian
@@ -52,7 +56,7 @@ N = 10
 # full hilbert space is required
 Ns_full = 2**N 
 
-check_state_nosymm=(check_state_constraint,None)
+check_state_nosymm=(check_state_constraint,None) # None gives a null pinter to args
 # no symmetries to apply.
 maps = dict()
 # construct user defined basis

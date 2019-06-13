@@ -1,4 +1,8 @@
-from __future__ import print_function,division
+from __future__ import print_function, division
+import sys,os
+# line 4 and line 5 below are for development purposes and can be removed
+qspin_path = os.path.join(os.getcwd(),"../../")
+sys.path.insert(0,qspin_path)
 from quspin.basis.user import user_basis,next_state_sig_32,op_sig_32,map_sig_32
 from quspin.operators import hamiltonian
 from scipy.special import comb
@@ -16,7 +20,7 @@ def next_state(s,nns,N,args):
     s_right_min = args[1]
     s_right_max = args[2]
 
-    # get sublattic system size.
+    # get sublattice system size.
     N_half = N >> 1
 
     # split sublattice
@@ -50,7 +54,8 @@ def op_func(resptr,op,ind,N):
     err = 0
     ind = N - ind - 1 # convention for QuSpin for mapping from bits to sites.
     n = (res[0].state>>ind)&1 # either 0 or 1
-    b = 1; b = b << ind
+    b = 1
+    b = b << ind
 
     if op==110: # "n" is integer value 110 (check with ord("n"))
         res[0].matrix_ele *= n

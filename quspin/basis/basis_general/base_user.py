@@ -98,16 +98,9 @@ def _process_user_blocks(use_32bit,blocks_dict,block_order):
 
 
 class user_basis(basis_general):
-	"""Constructs basis for USER-DEFINED functionality for a basis.
+	"""Constructs basis for USER-DEFINED functionality of a basis.
 
-	Any unitary symmetry transformation :math:`Q` of multiplicity :math:`m_Q` (:math:`Q^{m_Q}=1`) has
-	eigenvalues :math:`\\exp(-2\\pi i q/m_Q)`, labelled by an ingeter :math:`q\\in\\{0,1,\\dots,m_Q-1\\}`.
-	These integers :math:`q` are used to define the symmetry blocks.
-
-	For instance, if :math:`Q=P` is parity (reflection), then :math:`q=0,1`. If :math:`Q=T` is translation by one lattice site,
-	then :math:`q` labels the mometum blocks in the same fashion as for the `..._basis_1d` classes. 
-
-	User-defined symmetries with the `user_basis` class can be programmed as follows. 
+	Check out this detailed tutorial: :ref:`user_basis-label`
 
 	Examples
 	--------
