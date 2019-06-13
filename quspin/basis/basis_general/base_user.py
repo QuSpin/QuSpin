@@ -418,9 +418,6 @@ class user_basis(basis_general):
 		self._sps=sps
 		self._allowed_ops=set(allowed_ops)
 
-
-
-
 	def __type__(self):
 		return "<type 'qspin.basis.user.user_basis'>"
 

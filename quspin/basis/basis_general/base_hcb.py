@@ -73,7 +73,9 @@ class hcb_basis_general(basis_general):
 		self._allowed_ops=set(["I","x","y","z","+","-","n"])
 		
 
-
+	def __setstate__(self,state):
+		self.__dict__.update(state)
+		self._core = hcb_basis_core_wrap(self._basis_dtype,self._N,self._maps,self._pers,self._qs)
 
 
 

@@ -172,6 +172,13 @@ class basis_general(lattice_basis):
 		nmax = self._pers.prod()
 		self._n_dtype = _np.min_scalar_type(nmax)
 
+
+	def __getstate__(self):
+		obj_dict = dict(self.__dict__)
+		obj_dict.pop("_core")
+		return obj_dict
+
+
 	@property
 	def description(self):
 		"""str: information about `basis` object."""

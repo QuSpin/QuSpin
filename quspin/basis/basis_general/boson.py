@@ -232,6 +232,15 @@ class boson_basis_general(hcb_basis_general,basis_general):
 				self._n=_np.zeros(self._Ns,dtype=self._n_dtype)
 
 
+	def __setstate__(self,state):
+		print(self.__dict__)
+		if state["_sps"] == 2:
+			hcb_basis_general.__setstate__(self,state)
+		else:
+			self.__dict__.update(state)
+			self._core = boson_basis_core_wrap(self._basis_dtype,self._N,self._sps,self._maps,self._pers,self._qs)
+
+
 			
 	def _sort_opstr(self,op):
 		if op[0].count("|") > 0:
