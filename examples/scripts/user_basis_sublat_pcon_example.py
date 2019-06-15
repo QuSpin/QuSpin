@@ -14,7 +14,7 @@ import numpy as np
 @cfunc(next_state_sig_32,
     locals=dict(N_half=int32,t=uint32,
         s_right=uint32,s_left=uint32))
-def next_state(s,nns,N,args):
+def next_state(s,counter,N,args):
     # unpack args
     mask = args[0]
     s_right_min = args[1]
@@ -33,7 +33,7 @@ def next_state(s,nns,N,args):
             t = (s_right | (s_right - 1)) + 1
             s_right = t | ((((t & (0-t)) // (s_right & (0-s_right))) >> 1) - 1) 
 
-    # otherwise reset s_right to first state and increment s_left.
+    # otherwise op_structet s_right to first state and increment s_left.
     else:
         s_right = s_right_min
 
@@ -47,26 +47,26 @@ def next_state(s,nns,N,args):
 # costumized opstr function
 @cfunc(op_sig_32,
     locals=dict(n=int32,b=uint32))
-def op_func(resptr,op,ind,N):
-    # using struct pointer to pass results 
+def op_func(op_struct_ptr,op_str,ind,N):
+    # using struct pointer to pass op_structults 
     # back to C++ see numba Records
-    res = carray(resptr,1)
+    op_struct = carray(op_struct_ptr,1)[0]
     err = 0
     ind = N - ind - 1 # convention for QuSpin for mapping from bits to sites.
-    n = (res[0].state>>ind)&1 # either 0 or 1
+    n = (op_struct.state>>ind)&1 # either 0 or 1
     b = 1
     b = b << ind
 
-    if op==110: # "n" is integer value 110 (check with ord("n"))
-        res[0].matrix_ele *= n
-    elif op==43: # "+" is integer value 43 (check with ord("+"))
-        if n: res[0].matrix_ele = 0
-        else: res[0].state ^= b # create hcb
-    elif op==45: # "-" is integer value 45 (check with ord("-"))
-        if n: res[0].state ^= b # destroy hcb
-        else: res[0].matrix_ele = 0
+    if op_str==110: # "n" is integer value 110 (check with ord("n"))
+        op_struct.matrix_ele *= n
+    elif op_str==43: # "+" is integer value 43 (check with ord("+"))
+        if n: op_struct.matrix_ele = 0
+        else: op_struct.state ^= b # create hcb
+    elif op_str==45: # "-" is integer value 45 (check with ord("-"))
+        if n: op_struct.state ^= b # destroy hcb
+        else: op_struct.matrix_ele = 0
     else:
-        res[0].matrix_ele = 0
+        op_struct.matrix_ele = 0
         err = -1
 
     return err

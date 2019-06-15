@@ -13,32 +13,32 @@ import numpy as np
 
 # function to call when generating next_state
 @cfunc(next_state_sig_32)
-def next_state(s,nns,N,basis):
+def next_state(s,counter,N,basis):
     # return pre-calculated basis state.
     # add one because the first state is already checked.
-    return basis[nns+1]
+    return basis[counter+1]
 
 # costumized opstr function
 @cfunc(op_sig_32,
     locals=dict(s=int32,b=uint32))
-def op_func(resptr,op,ind,N):
-    # using struct pointer to pass results 
+def op_func(op_struct_ptr,op_str,ind,N):
+    # using struct pointer to pass op_structults 
     # back to C++ see numba Records
-    res = carray(resptr,1)
+    op_struct = carray(op_struct_ptr,1)[0]
     err = 0
     ind = N - ind - 1 # convention for QuSpin for mapping from bits to sites.
-    s = (((res[0].state>>ind)&1)<<1)-1
+    s = (((op_struct.state>>ind)&1)<<1)-1
     b = (1<<ind)
 
-    if op==120: # "x" is integer value 120 (check with ord("x"))
-        res[0].state ^= b
-    elif op==121: # "y" is integer value 120 (check with ord("y"))
-        res[0].state ^= b
-        res[0].matrix_ele *= 1.0j*s
-    elif op==122: # "z" is integer value 120 (check with ord("z"))
-        res[0].matrix_ele *= s
+    if op_str==120: # "x" is integer value 120 (check with ord("x"))
+        op_struct.state ^= b
+    elif op_str==121: # "y" is integer value 120 (check with ord("y"))
+        op_struct.state ^= b
+        op_struct.matrix_ele *= 1.0j*s
+    elif op_str==122: # "z" is integer value 120 (check with ord("z"))
+        op_struct.matrix_ele *= s
     else:
-        res[0].matrix_ele = 0
+        op_struct.matrix_ele = 0
         err = -1
 
     return err
