@@ -112,7 +112,7 @@ class user_basis(basis_general):
 		:lines: 7-
 
 	"""
-	def __init__(self,basis_dtype,N,Ns_full,op_func,pcon_args=None,check_state_nosymm=None,allowed_ops=None,sps=None,
+	def __init__(self,basis_dtype,N,op_func,sps=2,pcon_args=None,pre_check_state=None,allowed_ops=None,
 		Ns_block_est=None,_make_basis=True,block_order=None,_Np=None,**blocks):
 		"""Intializes the `user_basis_general` object (basis for user defined ED calculations).
 
@@ -122,8 +122,6 @@ class user_basis(basis_general):
 			the data type used to represent the states in the basis: must be either uint32 or uint64.
 		N: int
 			Number of sites.
-		Ns_full: int
-			The size of the full hilbert space with no symmetries, e.g. 2^N for spin-1/2 system.
 		op_func: numba.CFunc object
 			This is a compiled function which calculates the matrix elements given a state and a character which
 			represent the operator and an integer specifying the site of that local operator. Note that this functionality
@@ -145,7 +143,7 @@ class user_basis(basis_general):
 					* "count_particles" : CFunc which counts the number of particles in each sector and places them into a pointer passed
 										  into the CFunc. The pointer provided will have `n_sector` of memory allocated. the order of the number
 										  should be kept the same as the ordering of `Np`.
-		check_state_nosymm: CFunc or tuple(CFunc,ndarray(C-contiguous,dtype=basis_dtype)), optional
+		pre_check_state: CFunc or tuple(CFunc,ndarray(C-contiguous,dtype=basis_dtype)), optional
 			This allows the user to specify a boolean function which checks a state before checking if a state is a 
 			representative state. This allows the user to do things like,  enforce a local hilbert space constraint, 
 			e.g. for spinful fermions never having a doubly occupied site. The ndarray are extra arguments which are 
@@ -159,7 +157,7 @@ class user_basis(basis_general):
 		Ns_block_est: int, optional
 			An estimate for the size of the symmetry reduced block, QuSpin does a simple estimate which is not always correct. 
 		block_order: tuple/list, optional
-			An ordered list which contains the order for which the symmetries will be applied on the state. 
+			A list of strings containing the names of the symmetry blocks which specifies the order in which the symmetries will be applied to the state when calculating the basis. If not specified the symmetries are sorted by their periodicity. 
 		**blocks: optional
 			keyword arguments which pass the symmetry generator arrays. For instance:
 
@@ -190,6 +188,7 @@ class user_basis(basis_general):
 		self._get_proj_pcon = False
 		self._made_basis = False # keeps track of whether the basis has been made
 
+		Ns_full=sps**N
 		self._N = N
 		if basis_dtype not in [_np.uint32,_np.uint64]:
 			raise ValueError("basis_dtype must be either uint32 or uint64 for the given basis representation.")
@@ -312,22 +311,22 @@ class user_basis(basis_general):
 
 		# check_state function BEFORE symmetry checks
 		# this can be used to impose local hilbert space constraints.
-		if check_state_nosymm is not None:
+		if pre_check_state is not None:
 			try:
-				check_state_nosymm,check_state_nosymm_args = check_state_nosymm
+				pre_check_state,check_state_nosymm_args = pre_check_state
 			except TypeError:
 				check_state_nosymm_args = None
 
-			if not isinstance(check_state_nosymm,CFunc):
-				raise ValueError("check_state_nosymm must be a numba.CFunc object.")
+			if not isinstance(pre_check_state,CFunc):
+				raise ValueError("pre_check_state must be a numba.CFunc object.")
 
 			if use_32bit:
-				if check_state_nosymm._sig != check_state_nosymm_sig_32:
-					raise ValueError("check_state_nosymm does not have the correct signature, \
+				if pre_check_state._sig != check_state_nosymm_sig_32:
+					raise ValueError("pre_check_state does not have the correct signature, \
 					try using check_state_nosymm_sig_32 from quspin.basis.user module.")
 			else:
-				if check_state_nosymm._sig != check_state_nosymm_sig_64:
-					raise ValueError("check_state_nosymm does not have the correct signature, \
+				if pre_check_state._sig != check_state_nosymm_sig_64:
+					raise ValueError("pre_check_state does not have the correct signature, \
 					try using check_state_nosymm_sig_64 from quspin.basis.user module.")
 
 
@@ -342,7 +341,7 @@ class user_basis(basis_general):
 					raise ValueError("next_state_args must be a C-contiguous numpy \
 						array with dtype {}".format(basis_dtype))
 		else:
-			check_state_nosymm,check_state_nosymm_args = None,None
+			pre_check_state,check_state_nosymm_args = None,None
 
 		if next_state is not None:
 			if not isinstance(next_state,CFunc):
@@ -389,7 +388,7 @@ class user_basis(basis_general):
 		self._basis_dtype = basis_dtype
 		self._core = user_core_wrap(Ns_full, basis_dtype, N, map_funcs, pers, qs,
 								n_sectors, get_Ns_pcon, get_s0_pcon, next_state,
-								next_state_args,check_state_nosymm,check_state_nosymm_args,
+								next_state_args,pre_check_state,check_state_nosymm_args,
 								count_particles, op_func, sps)
 
 		self._N = N

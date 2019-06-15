@@ -21,7 +21,7 @@ def next_state(s,counter,N,basis):
 # costumized opstr function
 @cfunc(op_sig_32,
     locals=dict(s=int32,b=uint32))
-def op_func(op_struct_ptr,op_str,ind,N):
+def op(op_struct_ptr,op_str,ind,N):
     # using struct pointer to pass op_structults 
     # back to C++ see numba Records
     op_struct = carray(op_struct_ptr,1)[0]
@@ -123,6 +123,6 @@ maps = dict(
     )
 # maps = dict()
 # construct user defined basis
-basis = user_basis(np.uint32,N,Ns_full,op_func,allowed_ops=set("xyz"),sps=2,pcon_args=pcon_args,**maps)
+basis = user_basis(np.uint32,N,Ns_full,op,allowed_ops=set("xyz"),sps=2,pcon_args=pcon_args,**maps)
 # print basis
 print(basis)

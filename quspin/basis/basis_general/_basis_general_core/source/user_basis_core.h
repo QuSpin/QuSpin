@@ -35,7 +35,7 @@ class user_basis_core : public general_basis_core<I,P>
 		next_state_type next_state_func;
 		op_func_type op_func;
 		count_particles_type count_particles_func;
-		check_state_nosymm_type check_state_nosymm;
+		check_state_nosymm_type pre_check_state;
 		const int n_sectors;
 		I *ns_args,*csns_args;
 
@@ -51,7 +51,7 @@ class user_basis_core : public general_basis_core<I,P>
 			count_particles_func = (count_particles_type)_count_particles;
 			op_func = (op_func_type)_op_func;
 			ns_args = _ns_args;
-			check_state_nosymm = (check_state_nosymm_type)_check_state_nosymm;
+			pre_check_state = (check_state_nosymm_type)_check_state_nosymm;
 			csns_args = _csns_args;
 		}
 
@@ -94,8 +94,8 @@ class user_basis_core : public general_basis_core<I,P>
 
 			bool ns_check=true;
 
-			if(check_state_nosymm){
-				ns_check = (*check_state_nosymm)(s,(I)general_basis_core<I,P>::N,csns_args);
+			if(pre_check_state){
+				ns_check = (*pre_check_state)(s,(I)general_basis_core<I,P>::N,csns_args);
 			}			
 			
 			if(ns_check){

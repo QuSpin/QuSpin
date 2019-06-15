@@ -48,8 +48,8 @@ cdef basis_type fliplr(basis_type I, int length,NP_INT8_t * sign, basis_type[:] 
     # (generator of) parity symmetry
     cdef basis_type out = 0
     cdef int s = length - 1
+    
     cdef int N = bit_count(I,length)
-
     sign[0] *= (-1 if (N&2) and (pars[0]) else 1)
 
     out ^= (I&1)

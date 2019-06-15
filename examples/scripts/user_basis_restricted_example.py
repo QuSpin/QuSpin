@@ -14,7 +14,7 @@ import sys
 # costumized opstr function
 @cfunc(op_sig_32,
     locals=dict(s=int32,b=uint32))
-def op_func(op_struct_ptr,op_str,ind,N):
+def op(op_struct_ptr,op_str,ind,N):
     # using struct pointer to pass op_structults 
     # back to C++ see numba Records
     op_struct = carray(op_struct_ptr,1)[0]
@@ -56,12 +56,12 @@ N = 10
 # full hilbert space is required
 Ns_full = 2**N 
 
-check_state_nosymm=(check_state_constraint,None) # None gives a null pinter to args
+pre_check_state=(check_state_constraint,None) # None gives a null pinter to args
 # no symmetries to apply.
 maps = dict()
 # construct user defined basis
-basis = user_basis(np.uint32,N,Ns_full,op_func,allowed_ops=set("xyz"),sps=2,
-    check_state_nosymm=check_state_nosymm,Ns_block_est=300000,**maps)
+basis = user_basis(np.uint32,N,Ns_full,op,allowed_ops=set("xyz"),sps=2,
+    pre_check_state=pre_check_state,Ns_block_est=300000,**maps)
 # print basis
 print(basis)
 

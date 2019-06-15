@@ -34,7 +34,7 @@ def op(op_struct_ptr,op_str,ind,N):
 
 	elif op_str==121: # "y" is integer value 120 = ord("y")
 		op_struct.state ^= b
-		op_struct.matrix_ele *= 1.0j
+		op_struct.matrix_ele *= 1.0j*s
 
 	elif op_str==43: # "+" is integer value 43 = ord("+")
 		if n: op_struct.matrix_ele = 0
@@ -90,9 +90,6 @@ def translation(x,N,sign_ptr):
 	I1 = (x >> (period - l))
 	I2 = ((x << l) & Imax)
 	#
-	N1 = bit_count(I1,period)
-	N2 = bit_count(I2,period)
-	#
 	return (I2 | I1)
 #
 def parity(x,N,sign_ptr):
@@ -100,10 +97,9 @@ def parity(x,N,sign_ptr):
 	#
 	out = 0
 	s = N-1
-	N1 = bit_count(x,N)
 	#
-	x >>= 1
 	out ^= (x&1)
+	x >>= 1
 	while(x):
 		out <<= 1
 		out ^= (x&1)
@@ -113,6 +109,8 @@ def parity(x,N,sign_ptr):
 	out <<= s
 	return out
 #
+@cfunc(map_sig_32,
+	locals=dict(Imax=uint32,))
 def spin_inversion(x,N,sign_ptr):
 	""" works for all system sizes N. """
 	#
