@@ -5,23 +5,23 @@ import numpy as _np
 from scipy.misc import comb
 
 
-def H_dim(N,length,m_max):
+def H_dim(Np,N,m_max):
     """
     Returns the total number of states in the bosonic Hilbert space
 
     --- arguments:
 
-    N: total number of bosons in lattice
-    length: total number of sites
+    Np: total number of bosons in lattice
+    N: total number of sites
     m_max+1: max number of states per site 
     """
     Ns = 0
-    for r in range(N//(m_max+1)+1):
-        r_2 = N - r*(m_max+1)
+    for r in range(Np//(m_max+1)+1):
+        r_2 = Np - r*(m_max+1)
         if r % 2 == 0:
-            Ns +=  comb(length,r,exact=True) * comb(length + r_2 - 1,r_2,exact=True)
+            Ns +=  comb(N,r,exact=True) * comb(N + r_2 - 1,r_2,exact=True)
         else:
-            Ns += -comb(length,r,exact=True) * comb(length + r_2 - 1,r_2,exact=True)
+            Ns += -comb(N,r,exact=True) * comb(N + r_2 - 1,r_2,exact=True)
 
     return Ns
 

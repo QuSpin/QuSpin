@@ -166,10 +166,10 @@ class spinless_fermion_basis_core : public hcb_basis_core<I,P>
 
 
 		int op(I &r,std::complex<double> &m,const int n_op,const char opstr[],const int indx[]){
-			I s = r;
+			const I s = r;
 			const I one = 1;
-
 			for(int j=n_op-1;j>-1;j--){
+				
 				const int ind = general_basis_core<I,P>::N-indx[j]-1;
 				I f_count = bit_count(r,ind);
 				double sign = ((f_count&1)?-1:1);

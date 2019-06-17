@@ -21,7 +21,7 @@ class higher_spin_basis_core : public boson_basis_core<I,P>
 		~higher_spin_basis_core() {}
 
 		int op(I &r,std::complex<double> &me,const int n_op,const char opstr[],const int indx[]){
-			I s = r;
+			const I s = r;
 			double me_offdiag = 1;
 			double me_diag = 1;
 			double S = (boson_basis_core<I,P>::sps-1.0)/2.0;

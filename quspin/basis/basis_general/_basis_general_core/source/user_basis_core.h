@@ -24,7 +24,7 @@ struct op_results
 template<class I,class P=signed char>
 class user_basis_core : public general_basis_core<I,P>
 {
-	typedef I (*map_type)(I,int,P*);
+	typedef I (*map_type)(I,int,P*,I*);
 	typedef I (*next_state_type)(I,I,I,I*);
 	typedef int (*op_func_type)(op_results<I>*,char,int,int);
 	typedef void (*count_particles_type)(I,int*);
@@ -37,22 +37,23 @@ class user_basis_core : public general_basis_core<I,P>
 		count_particles_type count_particles_func;
 		check_state_nosymm_type pre_check_state;
 		const int n_sectors;
-		I *ns_args,*csns_args;
+		I *ns_args,*precs_args,*maps_args;
 
 
-		user_basis_core(const int _N,const int _nt,void * _map_funcs, 
-			const int _pers[], const int _qs[], const int _n_sectors,
-			size_t _next_state,I *_ns_args,size_t _check_state_nosymm,
-			I* _csns_args,size_t _count_particles,size_t _op_func) : \
+		user_basis_core(const int _N,const int _nt,
+			void * _map_funcs, const int _pers[], const int _qs[], I* _maps_args, 
+			const int _n_sectors,size_t _next_state,I *_ns_args,size_t _pre_check_state,
+			I* _precs_args,size_t _count_particles,size_t _op_func) : \
 		general_basis_core<I,P>::general_basis_core(_N,_nt,NULL,_pers,_qs), n_sectors(_n_sectors)
 		{
 			map_funcs = (map_type*)_map_funcs;
+			maps_args = _maps_args;
 			next_state_func = (next_state_type)_next_state;
 			count_particles_func = (count_particles_type)_count_particles;
 			op_func = (op_func_type)_op_func;
 			ns_args = _ns_args;
-			pre_check_state = (check_state_nosymm_type)_check_state_nosymm;
-			csns_args = _csns_args;
+			pre_check_state = (check_state_nosymm_type)_pre_check_state;
+			precs_args = _precs_args;
 		}
 
 		~user_basis_core() {}
@@ -62,7 +63,8 @@ class user_basis_core : public general_basis_core<I,P>
 				return s;
 			}
 			P temp_phase = 1;
-			return (*map_funcs[n_map])(s,general_basis_core<I,P>::N,&temp_phase);
+			std::cout << maps_args[n_map] << " , " << n_map << std::endl;
+			return (*map_funcs[n_map])(s, general_basis_core<I,P>::N, &temp_phase, &maps_args[n_map]);
 			phase *= temp_phase;
 		}
 
@@ -71,10 +73,11 @@ class user_basis_core : public general_basis_core<I,P>
 				return;
 			}
 			map_type func = map_funcs[n_map];
+			I args = maps_args[n_map];
 			#pragma omp for schedule(static)
 			for(npy_intp i=0;i<M;i++){
 				P temp_phase = 1;
-				s[i] = (*func)(s[i],general_basis_core<I,P>::N,&temp_phase);
+				s[i] = (*func)(s[i], general_basis_core<I,P>::N, &temp_phase, &args);
 				phase[i] *= temp_phase;
 
 			}
@@ -95,7 +98,7 @@ class user_basis_core : public general_basis_core<I,P>
 			bool ns_check=true;
 
 			if(pre_check_state){
-				ns_check = (*pre_check_state)(s,(I)general_basis_core<I,P>::N,csns_args);
+				ns_check = (*pre_check_state)(s,(I)general_basis_core<I,P>::N,precs_args);
 			}			
 			
 			if(ns_check){

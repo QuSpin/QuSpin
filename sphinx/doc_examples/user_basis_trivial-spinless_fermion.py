@@ -9,22 +9,32 @@ quspin_path = os.path.join(os.getcwd(),"../../")
 sys.path.insert(0,quspin_path)
 #
 from quspin.operators import hamiltonian # Hamiltonians and operators
-from quspin.basis import spin_basis_1d # Hilbert space spin basis_1d
+from quspin.basis import spinless_fermion_basis_1d # Hilbert space spin basis_1d
 from quspin.basis.user import user_basis # Hilbert space user basis
-from quspin.basis.user import next_state_sig_32,op_sig_32,map_sig_32 # user basis data types
+from quspin.basis.user import next_state_sig_32,op_sig_32,map_sig_32,bitcount_sig_32 # user basis data types
 from numba import carray,cfunc # numba helper functions
 from numba import uint32,int32 # numba data types
 import numpy as np
 from scipy.special import comb
 #
-N=6 # lattice sites
+N=8	 # lattice sites
 Np=N//2 # total number of spin ups
 #
-############   create spin-1/2 user basis object   #############
+############   create soinless fermion user basis object   #############
 #
 ######  function to call when applying operators
+#
+# define bit_count function
+@cfunc(bitcount_sig_32)
+def bitcount_32(x,l):
+	""" counts number of 1's in bit configuration of x up to site l. """
+	x = x & ((0x7FFFFFFF) >> (31 - l));
+	x = x - ((x >> 1) & 0x55555555);
+	x = (x & 0x33333333) + ((x >> 2) & 0x33333333);
+	return (((x + (x >> 4)) & 0x0F0F0F0F) * 0x01010101) >> 24
+#
 @cfunc(op_sig_32,
-	locals=dict(s=int32,n=int32,b=uint32), )
+	locals=dict(s=int32,sign=int32,n=int32,b=uint32,f_count=uint32), )
 def op(op_struct_ptr,op_str,ind,N):
 	# using struct pointer to pass op_structults 
 	# back to C++ see numba Records
@@ -32,27 +42,21 @@ def op(op_struct_ptr,op_str,ind,N):
 	err = 0
 	#
 	ind = N - ind - 1 # convention for QuSpin for mapping from bits to sites.
+	f_count = bitcount_32(op_struct.state,ind)
+	sign = -1 if f_count&1 else 1
 	n = (op_struct.state>>ind)&1 # either 0 or 1
-	s = (((op_struct.state>>ind)&1)<<1)-1 # either -1 or 1
 	b = (1<<ind)
 	#
-	if op_str==120: # "x" is integer value 120 = ord("x")
-		op_struct.state ^= b
-
-	elif op_str==121: # "y" is integer value 120 = ord("y")
-		op_struct.state ^= b
-		op_struct.matrix_ele *= 1.0j*s
-
-	elif op_str==43: # "+" is integer value 43 = ord("+")
-		if n: op_struct.matrix_ele = 0
-		else: op_struct.state ^= b # create spin
+	if op_str==43: # "+" is integer value 43 = ord("+")
+		if n: 
+			op_struct.matrix_ele = 0
+		else: 
+			op_struct.state ^= b # create fermion
+			op_struct.matrix_ele *= sign
 
 	elif op_str==45: # "-" is integer value 45 = ord("-")
-		if n: op_struct.state ^= b # destroy spin
+		if n: op_struct.state ^= b # destroy fermion
 		else: op_struct.matrix_ele = 0
-
-	elif op_str==122: # "z" is integer value 120 = ord("z")
-		op_struct.matrix_ele *= s
 
 	elif op_str==110: # "n" is integer value 110 = ord("n")
 		op_struct.matrix_ele *= n
@@ -71,7 +75,7 @@ def op(op_struct_ptr,op_str,ind,N):
 @cfunc(next_state_sig_32,
 	locals=dict(t=uint32), )
 def next_state(s,counter,N,args):
-	""" implements magnetization conservation. """
+	""" implements particle number conservation. """
 	if(s==0): return s;
 	#
 	t = (s | (s - 1)) + 1
@@ -86,7 +90,7 @@ def get_Ns_pcon(N,Np):
 ######  define symmetry maps
 #
 @cfunc(map_sig_32,
-	locals=dict(shift=uint32,xmax=uint32,x1=uint32,x2=uint32,period=int32,l=int32,) )
+	locals=dict(shift=uint32,xmax=uint32,x1=uint32,x2=uint32,period=int32,l=int32,f_count1=int32,f_count2=int32) )
 def translation(x,N,sign_ptr,args):
 	""" works for all system sizes N. """
 	shift = 1 # translate state by shift sites
@@ -97,15 +101,22 @@ def translation(x,N,sign_ptr,args):
 	x1 = (x >> (period - l))
 	x2 = ((x << l) & xmax)
 	#
+	f_count1 = bitcount_32(x1,period)
+    f_count2 = bitcount_32(x2,period)
+    sign_ptr[0] *= (-1 if (f_count1&1)&(f_count2&1)&1 else 1)
+    #
 	return (x2 | x1)
 T_args=np.array([1,0,2],dtype=np.uint32)
 #
 @cfunc(map_sig_32,
-	locals=dict(out=uint32,s=int32,) )
+	locals=dict(out=uint32,s=int32,f_count=int32) )
 def parity(x,N,sign_ptr,args):
 	""" works for all system sizes N. """
 	out = 0 #args[0]
 	s = N-1 #args[1]
+	#
+	f_count = bitcount_32(x,N)
+    sign_ptr[0] *= (-1 if (f_count&2)&1 else 1)
 	#
 	out ^= (x&1)
 	x >>= 1
@@ -119,26 +130,18 @@ def parity(x,N,sign_ptr,args):
 	return out
 P_args=np.array([0,N-1],dtype=np.uint32)
 #
-@cfunc(map_sig_32,
-	locals=dict(xmax=uint32,))
-def spin_inversion(x,N,sign_ptr,args):
-	""" works for all system sizes N. """
-	xmax = (1<<N)-1 # maximum integer
-	return x^xmax
-Z_args=np.array([1],dtype=np.uint32)
-#
 ######  construct user_basis 
 # define maps dict
-maps = dict(T=(translation,N,0,T_args), P=(parity,2,0,P_args), Z=(spin_inversion,2,0,Z_args))
+maps = dict(T=(translation,N,0,T_args), P=(parity,2,0,P_args), )
 # define particle conservation dict
 pcon_args = dict(Np=Np,next_state=next_state,get_Ns_pcon=get_Ns_pcon,get_s0_pcon=get_s0_pcon)
 # create user basiss
-basis = user_basis(np.uint32,N,op,allowed_ops=set("+-xyznI"),sps=2,pcon_args=pcon_args,**maps)
+basis = user_basis(np.uint32,N,op,allowed_ops=set("+-nI"),sps=2,pcon_args=pcon_args,**maps)
 #
 #
 #
-############   create same spin-1/2 basis_1d object   #############
-basis_1d=spin_basis_1d(N,Nup=Np,kblock=0,pblock=1,zblock=1,pauli=True)
+############   create same spinless fermion basis_1d object   #############
+basis_1d=spinless_fermion_basis_1d(N,Nf=Np,kblock=0,pblock=1,)
 #
 #
 print(basis)
@@ -146,10 +149,16 @@ print(basis_1d)
 #
 ############   create Hamiltonians   #############
 #
-J=1.0
-spin_spin=[[J,j,(j+1)%N] for j in range(N)]
-static=[["xx",spin_spin],["yy",spin_spin],["zz",spin_spin]]
+J=-1.0
+U=+1.0
+#
+hopping_pm=[[+J,j,(j+1)%N] for j in range(N)]
+hopping_mp=[[-J,j,(j+1)%N] for j in range(N)]
+nn_int=[[U,j,(j+1)%N] for j in range(N)]
+#
+static=[["+-",hopping_pm],["-+",hopping_mp],["nn",nn_int]]
 dynamic=[]
+#
 H=hamiltonian(static,[],basis=basis,dtype=np.float64)
 H_1d=hamiltonian(static,[],basis=basis_1d,dtype=np.float64)
 print(H.toarray())

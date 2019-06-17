@@ -144,6 +144,10 @@ This method contains user-defined action of operators on the integer states.
 ++++++
 This method provides a user-defined particle conservation rule.
 
+two extra python funcs
+
+Given the initial state s0, next_state generates all other states recursively; Hence, if next_state is set to conserve particle number then the particle number sector 
+is defined by the initial state s0. 
 
 `pre_check_state()`
 ++++++

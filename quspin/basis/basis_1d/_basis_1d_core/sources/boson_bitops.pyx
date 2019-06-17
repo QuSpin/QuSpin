@@ -21,7 +21,7 @@ cdef basis_type shift(basis_type s,int shift,int length,NP_INT8_t * sign,basis_t
     cdef basis_type v = 0
     cdef basis_type[:] M = pars[1:]
     cdef basis_type sps = M[1]
-    cdef basis_type m = 1
+    cdef basis_type m = 1 # ? do we need this?
     cdef int i,j
 
     for i in range(length):

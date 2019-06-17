@@ -119,12 +119,12 @@ class boson_basis_core : public general_basis_core<I,P>
 		}
 
 		int op(I &r,std::complex<double> &me,const int n_op,const char opstr[],const int indx[]){
-			I s = r;
+			const I s = r;
 			double me_offdiag=1;
 			double me_diag=1;
 			double S = (sps-1.0)/2.0;
-
 			for(int j=n_op-1;j>-1;j--){
+
 				int ind = general_basis_core<I,P>::N-indx[j]-1;
 				int occ = (int)((r/M[ind])%sps);
 				I b = M[ind];

@@ -4,18 +4,18 @@ import numpy as _np
 from numba import cfunc, types, njit
 from numba.ccallback import CFunc
 
-map_sig_32 = types.uint32(types.uint32,types.intc,types.CPointer(types.intc))
-map_sig_64 = types.uint64(types.uint64,types.intc,types.CPointer(types.intc))
+map_sig_32 = types.uint32(types.uint32,types.intc,types.CPointer(types.intc),types.CPointer(types.uint32))
+map_sig_64 = types.uint64(types.uint64,types.intc,types.CPointer(types.intc),types.CPointer(types.uint64))
 
-next_state_sig_32 = types.uint32(types.uint32,types.uint32,
-	types.uint32,types.CPointer(types.uint32))
-next_state_sig_64 = types.uint64(types.uint64,types.uint64,
-	types.uint64,types.CPointer(types.uint64))
+next_state_sig_32 = types.uint32(types.uint32,types.uint32,types.uint32,types.CPointer(types.uint32))
+next_state_sig_64 = types.uint64(types.uint64,types.uint64,types.uint64,types.CPointer(types.uint64))
 
-check_state_nosymm_sig_32 = types.uint32(types.uint32,
-	types.uint32,types.CPointer(types.uint32))
-check_state_nosymm_sig_64 = types.uint64(types.uint64,
-	types.uint64,types.CPointer(types.uint64))
+pre_check_state_sig_32 = types.uint32(types.uint32,types.uint32,types.CPointer(types.uint32))
+pre_check_state_sig_64 = types.uint64(types.uint64,types.uint64,types.CPointer(types.uint64))
+
+bitcount_sig_32 = types.uint32(types.uint32,types.intc)
+bitcount_sig_64 = types.uint64(types.uint64,types.intc)
+
 
 op_results_32 = types.Record.make_c_struct([
    ('matrix_ele', types.complex128),('state', types.uint32),
@@ -55,15 +55,15 @@ def _process_user_blocks(use_32bit,blocks_dict,block_order):
 	if any((type(v) is not tuple) and (len(v)!=3) for v in blocks_dict.values()):
 		raise ValueError
 
-	if not all(isinstance(f,CFunc) for f,_,_ in blocks_dict.values()):
+	if not all(isinstance(f,CFunc) for f,_,_,_ in blocks_dict.values()):
 		raise ValueError("map_func must be instance of numba.CFunc.")
 
 	if use_32bit:
-		if not all(f._sig==map_sig_32 for f,_,_ in blocks_dict.values()):
+		if not all(f._sig==map_sig_32 for f,_,_,_ in blocks_dict.values()):
 			raise ValueError("map_func does not have the correct signature, \
 					try using map_sig_32 from quspin.basis.user module.")
 	else:
-		if not all(f._sig==map_sig_64 for f,_,_ in blocks_dict.values()):
+		if not all(f._sig==map_sig_64 for f,_,_,_ in blocks_dict.values()):
 			raise ValueError("map_func does not have the correct signature, \
 					try using map_sig_64 from quspin.basis.user module.")
 
@@ -84,16 +84,18 @@ def _process_user_blocks(use_32bit,blocks_dict,block_order):
 
 	if len(sorted_items)>0:
 
-		blocks = {block:((-1)**q if per==2 else q) for block,(_,per,q) in sorted_items}
+		blocks = {block:((-1)**q if per==2 else q) for block,(_,per,q,_) in sorted_items}
 
 
 		_,items = zip(*sorted_items)
-		map_funcs,pers,qs = zip(*items)
+		map_funcs,pers,qs,map_args = zip(*items)
+		
+		#exit()
 
-		return blocks,map_funcs,pers,qs
+		return blocks,map_funcs,pers,qs,map_args
 
 	else:
-		return {},[],[],[]
+		return {},[],[],[],[]
 
 
 
@@ -321,13 +323,13 @@ class user_basis(basis_general):
 				raise ValueError("pre_check_state must be a numba.CFunc object.")
 
 			if use_32bit:
-				if pre_check_state._sig != check_state_nosymm_sig_32:
+				if pre_check_state._sig != pre_check_state_sig_32:
 					raise ValueError("pre_check_state does not have the correct signature, \
-					try using check_state_nosymm_sig_32 from quspin.basis.user module.")
+					try using pre_check_state_sig_32 from quspin.basis.user module.")
 			else:
-				if pre_check_state._sig != check_state_nosymm_sig_64:
+				if pre_check_state._sig != pre_check_state_sig_64:
 					raise ValueError("pre_check_state does not have the correct signature, \
-					try using check_state_nosymm_sig_64 from quspin.basis.user module.")
+					try using pre_check_state_sig_64 from quspin.basis.user module.")
 
 
 			if check_state_nosymm_args is not None:
@@ -369,11 +371,13 @@ class user_basis(basis_general):
 					raise ValueError("count_particles does not have the correct signature, \
 					try using count_particles_sig_64 from quspin.basis.user module.")
 
-		self._blocks,map_funcs,pers,qs = _process_user_blocks(use_32bit,blocks,block_order)
+		self._blocks,map_funcs,pers,qs,map_args = _process_user_blocks(use_32bit,blocks,block_order)
 
 		self.map_funcs = map_funcs
 		self._pers = _np.array(pers,dtype=_np.int)
 		self._qs = _np.array(qs,dtype=_np.int)
+		self.map_args = map_args
+		print('here',map_args)
 
 
 		if Ns_block_est is None:
@@ -386,7 +390,7 @@ class user_basis(basis_general):
 			Ns = Ns_block_est
 
 		self._basis_dtype = basis_dtype
-		self._core = user_core_wrap(Ns_full, basis_dtype, N, map_funcs, pers, qs,
+		self._core = user_core_wrap(Ns_full, basis_dtype, N, map_funcs, pers, qs, map_args,
 								n_sectors, get_Ns_pcon, get_s0_pcon, next_state,
 								next_state_args,pre_check_state,check_state_nosymm_args,
 								count_particles, op_func, sps)
