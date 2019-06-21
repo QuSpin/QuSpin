@@ -71,26 +71,28 @@ def next_state(s,counter,N,args):
 	""" implements particle number conservation. Particle number set by initial state, cf `get_s0_pcon()` below. """
 	t = s;
 	sps=3 #args[-1]
-	n=0;
-	for i in range(N): 
-		b1 = (t//args[i])%sps
-		if b1>0:
-			n += b1;
-			b2 = (t/args[i+1])%sps
-			if b2<(sps-1):
-				n -= 1
-				t -= args[i]
-				t += args[i+1]
-				if n>0:
-					l = n//(sps-1)
-					n_left = n%(sps-1)
-					for j in range(i+1): 
+	n=0 # running total of number of particles
+	for i in range(N): # loop over lattices sites
+		b1 = (t//args[i])%sps # get occupation at site i
+		if b1>0: # if there is a boson
+			n += b1 
+			b2 = (t/args[i+1])%sps # get occupation st site ahead
+			if b2<(sps-1): # if I can move a boson to this site
+				n -= 1 # decrease one from the running total
+				t -= args[i] # remove one boson from site i 
+				t += args[i+1] # add one boson to site i+1
+				if n>0: # if any bosons left
+					# so far: moved one boson forward; 
+					# now: take rest of bosons and fill first l sites with maximum occupation to keep lexigraphic order
+					l = n//(sps-1) # how many sites can be fully occupied with n bosons
+					n_left = n%(sps-1) # leftover of particles on not maximally occupied sites
+					for j in range(i+1):
 						t -= (t//args[j])%sps * args[j];
-						if j<l:
+						if j<l: # fill in with maximal occupation
 							t += (sps-1)*args[j]
-						elif j==l:
+						elif j==l: # fill with leftover
 							t += n_left*args[j]
-				break
+				break # stop loop
 	return t
 next_state_args=np.array([sps**i for i in range(N)],dtype=np.uint32)
 # python function to calculate the starting state to generate the particle conserving basis
@@ -171,7 +173,7 @@ hopping=[[+J,j,(j+1)%N] for j in range(N)]
 int_bb=[[0.5*U,j,j] for j in range(N)]
 int_b=[[-0.5*U,j] for j in range(N)]
 #
-static=[["+-",hopping],["-+",hopping],["nn",int_bb,["n",int_b]]]
+static=[["+-",hopping],["-+",hopping],["nn",int_bb],["n",int_b]]
 dynamic=[]
 #
 H=hamiltonian(static,[],basis=basis,dtype=np.float64)

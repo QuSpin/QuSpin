@@ -104,7 +104,7 @@ T_args=np.array([1,0,2],dtype=np.uint32)
 	locals=dict(out=uint32,s=int32,) )
 def parity(x,N,sign_ptr,args):
 	""" works for all system sizes N. """
-	out = 0 #args[0]
+	out = 0#args[0]
 	s = N-1 #args[1]
 	#
 	out ^= (x&1)
@@ -123,9 +123,9 @@ P_args=np.array([0,N-1],dtype=np.uint32)
 	locals=dict(xmax=uint32,))
 def spin_inversion(x,N,sign_ptr,args):
 	""" works for all system sizes N. """
-	xmax = (1<<N)-1 # maximum integer
+	xmax = (1<<N)-1  #args[0]# maximum integer
 	return x^xmax
-Z_args=np.array([1],dtype=np.uint32)
+Z_args=np.array([(1<<N)-1],dtype=np.uint32)
 #
 ######  construct user_basis 
 # define maps dict
@@ -143,6 +143,7 @@ basis_1d=spin_basis_1d(N,Nup=Np,kblock=0,pblock=1,zblock=1,pauli=True)
 #
 print(basis)
 print(basis_1d)
+exit()
 #
 ############   create Hamiltonians   #############
 #

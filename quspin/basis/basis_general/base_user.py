@@ -13,9 +13,6 @@ next_state_sig_64 = types.uint64(types.uint64,types.uint64,types.uint64,types.CP
 pre_check_state_sig_32 = types.uint32(types.uint32,types.uint32,types.CPointer(types.uint32))
 pre_check_state_sig_64 = types.uint64(types.uint64,types.uint64,types.CPointer(types.uint64))
 
-bitcount_sig_32 = types.uint32(types.uint32,types.intc)
-bitcount_sig_64 = types.uint64(types.uint64,types.intc)
-
 
 op_results_32 = types.Record.make_c_struct([
    ('matrix_ele', types.complex128),('state', types.uint32),

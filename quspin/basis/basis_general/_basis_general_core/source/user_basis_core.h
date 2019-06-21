@@ -37,11 +37,12 @@ class user_basis_core : public general_basis_core<I,P>
 		count_particles_type count_particles_func;
 		check_state_nosymm_type pre_check_state;
 		const int n_sectors;
-		I *ns_args,*precs_args,*maps_args;
+		I *ns_args,*precs_args;
+		I **maps_args;
 
 
 		user_basis_core(const int _N,const int _nt,
-			void * _map_funcs, const int _pers[], const int _qs[], I* _maps_args, 
+			void * _map_funcs, const int _pers[], const int _qs[], I** _maps_args, 
 			const int _n_sectors,size_t _next_state,I *_ns_args,size_t _pre_check_state,
 			I* _precs_args,size_t _count_particles,size_t _op_func) : \
 		general_basis_core<I,P>::general_basis_core(_N,_nt,NULL,_pers,_qs), n_sectors(_n_sectors)
@@ -54,6 +55,13 @@ class user_basis_core : public general_basis_core<I,P>
 			ns_args = _ns_args;
 			pre_check_state = (check_state_nosymm_type)_pre_check_state;
 			precs_args = _precs_args;
+
+
+			for(int i=0;i<3;i++){
+				std::cout << i << " , " << maps_args[i] << " , " << maps_args[i][0] << std::endl; 
+			}
+			std::cout << '\n' << std::endl; 
+
 		}
 
 		~user_basis_core() {}
@@ -63,8 +71,8 @@ class user_basis_core : public general_basis_core<I,P>
 				return s;
 			}
 			P temp_phase = 1;
-			std::cout << maps_args[n_map] << " , " << n_map << std::endl;
-			return (*map_funcs[n_map])(s, general_basis_core<I,P>::N, &temp_phase, &maps_args[n_map]);
+			std::cout << n_map << " , " << maps_args[n_map] << " , " << maps_args[n_map][0] << std::endl;
+			return (*map_funcs[n_map])(s, general_basis_core<I,P>::N, &temp_phase, maps_args[n_map]);
 			phase *= temp_phase;
 		}
 
@@ -73,11 +81,12 @@ class user_basis_core : public general_basis_core<I,P>
 				return;
 			}
 			map_type func = map_funcs[n_map];
-			I args = maps_args[n_map];
+			I * args = maps_args[n_map];
+			//std::cout << n_map << " , " << std::endl; 
 			#pragma omp for schedule(static)
 			for(npy_intp i=0;i<M;i++){
 				P temp_phase = 1;
-				s[i] = (*func)(s[i], general_basis_core<I,P>::N, &temp_phase, &args);
+				s[i] = (*func)(s[i], general_basis_core<I,P>::N, &temp_phase, args);
 				phase[i] *= temp_phase;
 
 			}
@@ -90,7 +99,7 @@ class user_basis_core : public general_basis_core<I,P>
 		}
 
 		I inline next_state_pcon(const I s,const I nns){
-			return (*next_state_func)(s,nns,(I)general_basis_core<I,P>::N,ns_args);
+			return (*next_state_func)(s,nns,(I)general_basis_core<I,P>::N, ns_args);
 		}
 
 		double check_state(I s){

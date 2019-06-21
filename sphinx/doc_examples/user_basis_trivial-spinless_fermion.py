@@ -11,7 +11,7 @@ sys.path.insert(0,quspin_path)
 from quspin.operators import hamiltonian # Hamiltonians and operators
 from quspin.basis import spinless_fermion_basis_1d # Hilbert space spin basis_1d
 from quspin.basis.user import user_basis # Hilbert space user basis
-from quspin.basis.user import next_state_sig_32,op_sig_32,map_sig_32,bitcount_sig_32 # user basis data types
+from quspin.basis.user import next_state_sig_32,op_sig_32,map_sig_32 # user basis data types
 from numba import carray,cfunc # numba helper functions
 from numba import uint32,int32 # numba data types
 import numpy as np
@@ -25,7 +25,6 @@ Np=N//2 # total number of spin ups
 ######  function to call when applying operators
 #
 # define bit_count function
-@cfunc(bitcount_sig_32)
 def bitcount_32(x,l):
 	""" counts number of 1's in bit configuration of x up to site l. """
 	x = x & ((0x7FFFFFFF) >> (31 - l));

@@ -27,6 +27,8 @@ Spin-:math:`1/2`, hardcore-boson, and fermion states all have in common that the
 Coincidentally, integers are stored in memory using the so-called binary representation: every integer is assigned a unique bit string. Therefore, a particularly efficient way of storing basis states is via this integer representation. 
 
 
+bitstring is the same; site label is reversed relative to bitstring; 
+
 **CONVENTION**: in QuSpin, the integer corresponding to a given spin configuration is given by the integer representation of the **reversed** bitstring. For instance in a chain of four sites, we have:
 
 * :math:`|0000\rangle \leftrightarrow 0`
@@ -34,7 +36,7 @@ Coincidentally, integers are stored in memory using the so-called binary represe
 * :math:`|0100\rangle \leftrightarrow 2`
 * :math:`|0001\rangle \leftrightarrow 8`
 
-*Note*: the `user_basis` allows the user to adopt their own convention **DOES IT REALLY**?. For consistency, this tutorial follows the above QuSpin convention. 
+*Note*: the `user_basis` allows the user to adopt their own convention. For consistency, this tutorial follows the above QuSpin convention. 
 
 Definition:
 .........
