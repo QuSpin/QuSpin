@@ -19,14 +19,14 @@ from scipy.special import comb
 #
 N=6 # lattice sites
 sps=3 # states per site
-Np=N//2 # total number of spin ups
+Np=N//2 # total number of bosons
 #
 ############   create boson user basis object   #############
 #
 ######  function to call when applying operators
 @cfunc(op_sig_32,
 	locals=dict(s=int32,n=int32,b=uint32,occ=int32,sps=int32,me_offdiag=float64,me_diag=float64), )
-def op(op_struct_ptr,op_str,ind,N):
+def op(op_struct_ptr,op_str,site_ind,N):
 	# using struct pointer to pass op_structults 
 	# back to C++ see numba Records
 	op_struct = carray(op_struct_ptr,1)[0]
@@ -35,11 +35,11 @@ def op(op_struct_ptr,op_str,ind,N):
 	me_offdiag=1.0;
 	me_diag=1.0;
 	#
-	ind = N - ind - 1 # convention for QuSpin for mapping from bits to sites.
-	occ = (op_struct.state//sps**ind)%sps # occupation
-	n = (op_struct.state>>ind)&1 # either 0 or 1
-	s = (((op_struct.state>>ind)&1)<<1)-1 # either -1 or 1
-	b = sps**ind
+	site_ind = N - site_ind - 1 # convention for QuSpin for mapping from bits to sites.
+	occ = (op_struct.state//sps**site_ind)%sps # occupation
+	n = (op_struct.state>>site_ind)&1 # either 0 or 1
+	s = (((op_struct.state>>site_ind)&1)<<1)-1 # either -1 or 1
+	b = sps**site_ind
 	#
 	if op_str==43: # "+" is integer value 43 = ord("+")
 		me_offdiag *= (occ+1)%sps
@@ -162,7 +162,6 @@ basis_1d=boson_basis_1d(N,Nb=Np,sps=sps,kblock=0,pblock=1)
 #
 print(basis)
 print(basis_1d)
-
 #
 ############   create Hamiltonians   #############
 #
@@ -181,3 +180,4 @@ H_1d=hamiltonian(static,[],basis=basis_1d,dtype=np.float64)
 #
 print(H.toarray())
 print(H_1d.toarray())
+print(np.linalg.norm((H-H_1d).toarray()))

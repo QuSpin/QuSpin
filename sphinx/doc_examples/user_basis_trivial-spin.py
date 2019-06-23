@@ -25,16 +25,16 @@ Np=N//2 # total number of spin ups
 ######  function to call when applying operators
 @cfunc(op_sig_32,
 	locals=dict(s=int32,n=int32,b=uint32), )
-def op(op_struct_ptr,op_str,ind,N):
+def op(op_struct_ptr,op_str,site_ind,N):
 	# using struct pointer to pass op_structults 
 	# back to C++ see numba Records
 	op_struct = carray(op_struct_ptr,1)[0]
 	err = 0
 	#
-	ind = N - ind - 1 # convention for QuSpin for mapping from bits to sites.
-	n = (op_struct.state>>ind)&1 # either 0 or 1
-	s = (((op_struct.state>>ind)&1)<<1)-1 # either -1 or 1
-	b = (1<<ind)
+	site_ind = N - site_ind - 1 # convention for QuSpin for mapping from bits to sites.
+	n = (op_struct.state>>site_ind)&1 # either 0 or 1
+	s = (((op_struct.state>>site_ind)&1)<<1)-1 # either -1 or 1
+	b = (1<<site_ind)
 	#
 	if op_str==120: # "x" is integer value 120 = ord("x")
 		op_struct.state ^= b
@@ -104,8 +104,9 @@ T_args=np.array([1,0,2],dtype=np.uint32)
 	locals=dict(out=uint32,s=int32,) )
 def parity(x,N,sign_ptr,args):
 	""" works for all system sizes N. """
-	out = 0#args[0]
-	s = N-1 #args[1]
+	#P_args=carray(args,1).copy()
+	out = 0 
+	s = N-1 #P_args[0]
 	#
 	out ^= (x&1)
 	x >>= 1
@@ -117,7 +118,7 @@ def parity(x,N,sign_ptr,args):
 	#
 	out <<= s
 	return out
-P_args=np.array([0,N-1],dtype=np.uint32)
+P_args=np.array([N-1],dtype=np.uint32)
 #
 @cfunc(map_sig_32,
 	locals=dict(xmax=uint32,))
@@ -155,3 +156,4 @@ H=hamiltonian(static,[],basis=basis,dtype=np.float64)
 H_1d=hamiltonian(static,[],basis=basis_1d,dtype=np.float64)
 print(H.toarray())
 print(H_1d.toarray())
+print(np.linalg.norm((H-H_1d).toarray()))

@@ -113,7 +113,7 @@ pcon_args = dict(Np=Np,next_state=next_state,next_state_args=next_state_args,
 # no symmetries to apply.
 maps = dict()
 # construct user defined basis
-basis = user_basis(np.uint32,N,Ns_full,op,allowed_ops=set("n+-"),sps=2,pcon_args=pcon_args,**maps)
+basis = user_basis(np.uint32,N,op,allowed_ops=set("n+-"),sps=2,pcon_args=pcon_args,**maps)
 print(basis)
 
 t_list  = [[1.0,i,(i+1)%N_half] for i in range(N_half)]
