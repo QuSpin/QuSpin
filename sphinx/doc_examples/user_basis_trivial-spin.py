@@ -104,7 +104,7 @@ T_args=np.array([1,0,2],dtype=np.uint32)
 	locals=dict(out=uint32,s=int32,) )
 def parity(x,N,sign_ptr,args):
 	""" works for all system sizes N. """
-	#P_args=carray(args,1).copy()
+	#P_args=carray(args,1).copy() # otherwise args values may be overwritten bycode below
 	out = 0 
 	s = N-1 #P_args[0]
 	#
@@ -130,7 +130,7 @@ Z_args=np.array([(1<<N)-1],dtype=np.uint32)
 #
 ######  construct user_basis 
 # define maps dict
-maps = dict(T=(translation,N,0,T_args), P=(parity,2,0,P_args), Z=(spin_inversion,2,0,Z_args))
+maps = dict(T_block=(translation,N,0,T_args), P_block=(parity,2,0,P_args), Z_block=(spin_inversion,2,0,Z_args))
 # define particle conservation dict
 pcon_args = dict(Np=Np,next_state=next_state,get_Ns_pcon=get_Ns_pcon,get_s0_pcon=get_s0_pcon)
 # create user basiss
@@ -139,7 +139,7 @@ basis = user_basis(np.uint32,N,op,allowed_ops=set("+-xyznI"),sps=2,pcon_args=pco
 #
 #
 ############   create same spin-1/2 basis_1d object   #############
-basis_1d=spin_basis_1d(N,Nup=Np,kblock=0,pblock=1,zblock=1,pauli=True)
+basis_1d=spin_basis_1d(N,Nup=Np,pauli=True,kblock=0,pblock=1,zblock=1)#
 #
 #
 print(basis)

@@ -148,7 +148,7 @@ P_args=np.array([0,N-1],dtype=np.uint32)
 #
 ######  construct user_basis 
 # define maps dict
-maps = dict(T=(translation,N,0,T_args),P=(parity,2,0,P_args), ) 
+maps = dict(T_block=(translation,N,0,T_args),P_block=(parity,2,0,P_args), ) 
 # define particle conservation dict
 pcon_args = dict(Np=Np,next_state=next_state,next_state_args=next_state_args,get_Ns_pcon=get_Ns_pcon,get_s0_pcon=get_s0_pcon)
 # create user basiss

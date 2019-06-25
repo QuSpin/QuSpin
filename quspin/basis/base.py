@@ -39,10 +39,11 @@ class basis(object):
 
 	def __str__(self):
 		
-		string = "reference states: \n"
+		string = "reference states: \narray index   /   Fock state   /   integer repr. \n"
+		
 		if self._Ns == 0:
 			return string
-		
+
 		str_list = list(self._get__str__())
 		if self._Ns > MAXPRINT:
 			try:
@@ -56,6 +57,7 @@ class basis(object):
 			str_list.insert(MAXPRINT//2,t)
 		
 		string += "\n".join(str_list)
+		
 		if any('block' in x for x in self._blocks): 
 			string += "\nThe states printed do NOT correspond to the physical states: see review arXiv:1101.3281 for more details about reference states for symmetry-reduced blocks.\n"
 		return string

@@ -121,7 +121,7 @@ class user_basis(basis_general):
 			the data type used to represent the states in the basis: must be either uint32 or uint64.
 		N: int
 			Number of sites.
-		op_func: numba.CFunc object
+		op_func(op_struct_ptr,op_str,site_ind,N): numba.CFunc object
 			This is a compiled function which calculates the matrix elements given a state and a character which
 			represent the operator and an integer specifying the site of that local operator. Note that this functionality
 			will not support branching, e.g. O|state> = me|new_state> and can't be a linear combination of multiple
@@ -129,20 +129,21 @@ class user_basis(basis_general):
 			one would use this for spin-1/2 system.
 		pcon_args: dict, optional
 			This dictionary contains the following items which are required to use particle conservation in this basis:
-				minimum requirements:
-					* "Np"			: list of tuple/int or a single tuple/int which specify the particle sector(s). 
-					* "next_state"  : CFunc which, given an integer, generates the next lexigraphically ordered particle conservation state.
-					* "get_Ns_pcon" : python function which being called as get_Ns_pcon(N,Np) returns the size of the 
-									  non-symmeterized particle conservation basis.
-					* "get_s0_pcon" : python function which being called as get_s0_pcon(N,Np) returns the starting state to generate the whole 
-									  particle conservation basis by repeatidly calling next_sate(s).
-				advanced requirements to use Op_bra_ket functionality (on top of the minimum):
-					* "n_sectors"       : the number of integers which parameterized the particle sectors, e.g. with spinful fermions 
-										  there is a particle number for both the up and the down sectors, so this number would be 2. 
-					* "count_particles" : CFunc which counts the number of particles in each sector and places them into a pointer passed
-										  into the CFunc. The pointer provided will have `n_sector` of memory allocated. the order of the number
-										  should be kept the same as the ordering of `Np`.
-		pre_check_state: CFunc or tuple(CFunc,ndarray(C-contiguous,dtype=basis_dtype)), optional
+				*minimum requirements*:
+					* **Np: tuple/int, list(tuple/int)**		
+						specifies the particle sector(s). 
+					* **next_state(s,counter,N,args): numba.CFunc object**
+						 given an integer, this CFunc generates the next lexigraphically ordered particle conservation state.
+					* **get_Ns_pcon(N,Np): python function**
+						 when called as get_Ns_pcon(N,Np), this function returns the size of the symmetery-free particle conservation basis.
+					* **get_s0_pcon(N,Np): python function**
+						 when called as get_s0_pcon(N,Np), this function returns the starting state to generate the whole particle conservation basis by repeatedly calling `next_state()`.
+				*advanced requirements* to access `basis.Op_bra_ket()` functionality (on top of the minimum requirements):
+					* **n_sectors: int, list(int)**
+						number of integers which parameterize the particle sectors, e.g. with spinful fermions there is a particle number for both the up and the down sectors, so this number would be 2. 
+					* **count_particles(): numba.CFunc object**
+						 this CFunc counts the number of particles in each sector and places them into a pointer passed. The pointer provided will have `n_sector` of memory allocated. The order of the number should be kept the same as the ordering of `Np`.
+		pre_check_state(s,N,args): numba.CFunc object or tuple(numba.CFunc object,ndarray(C-contiguous,dtype=basis_dtype)), optional
 			This allows the user to specify a boolean function which checks a state before checking if a state is a 
 			representative state. This allows the user to do things like,  enforce a local hilbert space constraint, 
 			e.g. for spinful fermions never having a doubly occupied site. The ndarray are extra arguments which are 

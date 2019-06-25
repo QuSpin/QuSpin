@@ -29,12 +29,12 @@ Coincidentally, integers are stored in memory using the so-called binary represe
 
 bitstring is the same; site label is reversed relative to bitstring; 
 
-**CONVENTION**: in QuSpin, the integer corresponding to a given spin configuration is given by the integer representation of the **reversed** bitstring. For instance in a chain of four sites, we have:
+**CONVENTION**: in QuSpin, the integer corresponding to a given spin configuration is given by the integer representation of the Fock state bitstring. The lattice indices are defined in **reversed** order. For instance in a chain of four sites, we have:
 
-* :math:`|0000\rangle \leftrightarrow 0`
-* :math:`|1000\rangle \leftrightarrow 1`
-* :math:`|0100\rangle \leftrightarrow 2`
-* :math:`|0001\rangle \leftrightarrow 8`
+* :math:`|0000\rangle \leftrightarrow 0`:    empty lattice,
+* :math:`|0001\rangle \leftrightarrow 1`:    one particle at site 3,
+* :math:`|0010\rangle \leftrightarrow 2`:    one particle at site 2,
+* :math:`|1000\rangle \leftrightarrow 8`:    one particle at site 0,
 
 *Note*: the `user_basis` allows the user to adopt their own convention. For consistency, this tutorial follows the above QuSpin convention. 
 
@@ -44,7 +44,7 @@ Definition:
 Cosider an :math:`N`-site lattice. Let :math:`c_i` denote the occupation of site :math:`i \in [0,1,\dots,N-1]` (e.g., for :math:`|0100\rangle` we have :math:`c_1=1` and :math:`c_{i\neq 1}=0`). Then, a generic expression for the integer :math:`s`, corresponding to the state :math:`|\{c_i\}\rangle`, is given by
 
 .. math::
-	s = \sum_{j=0}^{N-1} c_j 2^j
+	s = \sum_{j=0}^{N-1} c_j 2^{N-1-j}
 
 
 Reading off particle occupation on a given site:
@@ -79,16 +79,16 @@ Definition:
 Denoting by :math:`sps` (states per site) the local Hilbert space dimension, the integer compression of basis states generalizes to:
 
 .. math::
-	s = \sum_{j=0}^{N-1} c_j sps^j
+	s = \sum_{j=0}^{N-1} c_j sps^{N-1-j}
 
 For instance in a chain of four sites with at most two particles per site (i.e., three states: :math:`sps=3`), we have:
 
-* :math:`|0000\rangle \leftrightarrow 0`
-* :math:`|1000\rangle \leftrightarrow 1`
-* :math:`|0100\rangle \leftrightarrow 3`
-* :math:`|0200\rangle \leftrightarrow 6`
-* :math:`|0120\rangle \leftrightarrow 21`
-* :math:`|0001\rangle \leftrightarrow 27`
+* :math:`|0000\rangle \leftrightarrow 0`:    empty lattice,
+* :math:`|0001\rangle \leftrightarrow 1`:    one particle at site 3,
+* :math:`|0010\rangle \leftrightarrow 3`:    one particle at site 2,
+* :math:`|0020\rangle \leftrightarrow 6`:    two particles at site 2,
+* :math:`|0210\rangle \leftrightarrow 21`:    one particle at site 2 and two particles at site 1,
+* :math:`|1000\rangle \leftrightarrow 27`:    one particle at site 0,
 
 
 Reading off particle occupation on a given site:
@@ -137,12 +137,12 @@ The core parent class for all `basis_general` classes contains a number of funct
 Below, we give a brief overview of the methods required to define `user_basis` objects.
 
 
-`op()`
+`op(op_struct_ptr,op_str,site_ind,N)`
 ++++++
 This method contains user-defined action of operators on the integer states.
 
 
-`next_state()` 
+`next_state(s,counter,N,args)` 
 ++++++
 This method provides a user-defined particle conservation rule.
 
