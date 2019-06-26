@@ -14,7 +14,7 @@ include "source/general_basis_core.pyx"
 cdef extern from "user_basis_core.h" namespace "basis_general":
     cdef cppclass user_basis_core[I](general_basis_core[I]):
         user_basis_core(const int,const int,void *, 
-            const int*, const int*,const I * const *, const int,size_t,I*,size_t,I*,size_t,size_t)
+            const int*, const int*,I **, const int,size_t,I*,size_t,I*,size_t,size_t)
 
 cdef class user_core_wrap(general_basis_core_wrap):
     cdef object get_Ns_pcon_py
@@ -30,6 +30,8 @@ cdef class user_core_wrap(general_basis_core_wrap):
     cdef _np.ndarray ns_args_arr
     cdef _np.ndarray precs_args_arr
     cdef int n_sectors
+    cdef vector[void*] maps_args_vector 
+        
 
     def __cinit__(self,Ns_full,dtype,N,maps, pers, qs, maps_args,
         int n_sectors, get_Ns_pcon, get_s0_pcon, next_state,
@@ -96,7 +98,6 @@ cdef class user_core_wrap(general_basis_core_wrap):
         cdef void * maps_ptr = NULL
         cdef void * ns_args_ptr = NULL
         cdef void * precs_args_ptr = NULL
-        cdef vector[void*] maps_args_vector 
         cdef int  * pers_ptr = NULL
         cdef int  * qs_ptr   = NULL
 
@@ -107,8 +108,7 @@ cdef class user_core_wrap(general_basis_core_wrap):
 
             if maps_args is not None:
                 for arg in maps_args:
-                    print(arg)
-                    maps_args_vector.push_back(_np.PyArray_DATA(arg))
+                   self.maps_args_vector.push_back(_np.PyArray_DATA(arg))
 
         if ns_args is not None:
             ns_args_ptr = _np.PyArray_DATA(self.ns_args_arr)
@@ -117,11 +117,11 @@ cdef class user_core_wrap(general_basis_core_wrap):
             precs_args_ptr = _np.PyArray_DATA(self.precs_args_arr)
 
         if dtype == uint32:
-            self._basis_core = <void *> new user_basis_core[uint32_t](N,self._nt,maps_ptr,pers_ptr,qs_ptr,<const uint32_t * const *>&maps_args_vector[0],
+            self._basis_core = <void *> new user_basis_core[uint32_t](N,self._nt,maps_ptr,pers_ptr,qs_ptr,<uint32_t**>&self.maps_args_vector[0],
                 n_sectors,next_state_add,<uint32_t*>ns_args_ptr,pre_check_state_add,<uint32_t*>precs_args_ptr,
                 count_particles_add,op_func_add)
         elif dtype == uint64:
-            self._basis_core = <void *> new user_basis_core[uint64_t](N,self._nt,maps_ptr,pers_ptr,qs_ptr,<const uint64_t * const *>&maps_args_vector[0],
+            self._basis_core = <void *> new user_basis_core[uint64_t](N,self._nt,maps_ptr,pers_ptr,qs_ptr,<uint64_t**>&self.maps_args_vector[0],
                 n_sectors,next_state_add,<uint64_t*>ns_args_ptr,pre_check_state_add,<uint64_t*>precs_args_ptr,
                 count_particles_add,op_func_add)
         else:

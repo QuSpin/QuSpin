@@ -137,12 +137,12 @@ The core parent class for all `basis_general` classes contains a number of funct
 Below, we give a brief overview of the methods required to define `user_basis` objects.
 
 
-`op(op_struct_ptr,op_str,site_ind,N)`
+`op(op_struct_ptr, op_str, site_ind, N)`
 ++++++
 This method contains user-defined action of operators on the integer states.
 
 
-`next_state(s,counter,N,args)` 
+`next_state(s, counter, N, args)` 
 ++++++
 This method provides a user-defined particle conservation rule.
 
@@ -151,7 +151,7 @@ two extra python funcs
 Given the initial state s0, next_state generates all other states recursively; Hence, if next_state is set to conserve particle number then the particle number sector 
 is defined by the initial state s0. 
 
-`pre_check_state()`
+`pre_check_state(s, N, args)`
 ++++++
 This *optional* method provides user-defined extra projection of states out of the basis.
 
@@ -189,7 +189,7 @@ Passing the transformed integer sequence (right-hand side) to the online generat
 
 .. code-block:: python
    
-   def parity(x,N,sign_ptr):
+   def parity(x,N,sign_ptr,args):
        """ works for N=10 sites and 32 bit-integers spin-1/2 states only """
        return 	 (  ((x & 0x00004010) << 1)
                   | ((x & 0x00002008) << 3)
@@ -215,7 +215,7 @@ corresponds to the bit operation (again, fixed system size and data type):
 
 .. code-block:: python
    
-   def translation(x,N,sign_ptr):
+   def translation(x,N,sign_ptr,args):
        """ works for N=10 sites and 32 bit-integers spin-1/2 states only. """
        return ((x & 0x0007fdff) << 1) | ((x & 0x00080200) >> 9)
 
@@ -226,7 +226,7 @@ In the `user_basis`, the functions encoding the symmetry action are referred to 
 
 Symmtries are passed to the `user_basis` constructor via a python dictionary, called `maps`. The keys are arbitrary strings which define a unique name for each map; the corresponding values are tuples of three entries: `(map function, symmetry periodicity, quantum number)`. The symmetry periodicity (or cyclicity) is the smallest integer :math:`l`, such that :math:`T^l = T`. 
 
->>> maps = dict(T=(translation,10,0), P=(parity,2,0), )
+>>> maps = dict(T_block=(translation,10,0,T_args), P_block=(parity,2,0,P_args), )
 
 **Note**: the map functions need to be cast as decorated numba cfuncs (see below).
 

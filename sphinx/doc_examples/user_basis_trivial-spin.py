@@ -89,24 +89,23 @@ def get_Ns_pcon(N,Np):
 	locals=dict(shift=uint32,xmax=uint32,x1=uint32,x2=uint32,period=int32,l=int32,) )
 def translation(x,N,sign_ptr,args):
 	""" works for all system sizes N. """
-	shift = 1 # translate state by shift sites
+	shift = args[0] # translate state by shift sites
 	period = N # periodicity/cyclicity of translation
-	xmax = (1<<N)-1
+	xmax = args[1]
 	#
 	l = (shift+period)%period
 	x1 = (x >> (period - l))
 	x2 = ((x << l) & xmax)
 	#
 	return (x2 | x1)
-T_args=np.array([1,0,2],dtype=np.uint32)
+T_args=np.array([1,(1<<N)-1],dtype=np.uint32)
 #
 @cfunc(map_sig_32,
 	locals=dict(out=uint32,s=int32,) )
 def parity(x,N,sign_ptr,args):
 	""" works for all system sizes N. """
-	#P_args=carray(args,1).copy() # otherwise args values may be overwritten bycode below
 	out = 0 
-	s = N-1 #P_args[0]
+	s = args[0]
 	#
 	out ^= (x&1)
 	x >>= 1
@@ -124,7 +123,7 @@ P_args=np.array([N-1],dtype=np.uint32)
 	locals=dict(xmax=uint32,))
 def spin_inversion(x,N,sign_ptr,args):
 	""" works for all system sizes N. """
-	xmax = (1<<N)-1  #args[0]# maximum integer
+	xmax = args[0]# maximum integer
 	return x^xmax
 Z_args=np.array([(1<<N)-1],dtype=np.uint32)
 #
@@ -144,7 +143,6 @@ basis_1d=spin_basis_1d(N,Nup=Np,pauli=True,kblock=0,pblock=1,zblock=1)#
 #
 print(basis)
 print(basis_1d)
-exit()
 #
 ############   create Hamiltonians   #############
 #

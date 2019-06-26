@@ -24,7 +24,7 @@ struct op_results
 template<class I,class P=signed char>
 class user_basis_core : public general_basis_core<I,P>
 {
-	typedef I (*map_type)(I,int,P*,const I*);
+	typedef I (*map_type)(I,int,P*,I*);
 	typedef I (*next_state_type)(I,I,I,I*);
 	typedef int (*op_func_type)(op_results<I>*,char,int,int);
 	typedef void (*count_particles_type)(I,int*);
@@ -38,11 +38,11 @@ class user_basis_core : public general_basis_core<I,P>
 		check_state_nosymm_type pre_check_state;
 		const int n_sectors;
 		I *ns_args,*precs_args;
-		const I * const *maps_args;
+		I **maps_args;
 
 
 		user_basis_core(const int _N,const int _nt,
-			void * _map_funcs, const int _pers[], const int _qs[], const I* const * _maps_args, 
+			void * _map_funcs, const int _pers[], const int _qs[], I** _maps_args, 
 			const int _n_sectors,size_t _next_state,I *_ns_args,size_t _pre_check_state,
 			I* _precs_args,size_t _count_particles,size_t _op_func) : \
 		general_basis_core<I,P>::general_basis_core(_N,_nt,NULL,_pers,_qs), n_sectors(_n_sectors)
@@ -56,12 +56,6 @@ class user_basis_core : public general_basis_core<I,P>
 			pre_check_state = (check_state_nosymm_type)_pre_check_state;
 			precs_args = _precs_args;
 
-
-			for(int i=0;i<3;i++){
-				std::cout << i << " , " << maps_args[i] << " , " << maps_args[i][0] << std::endl; 
-			}
-			std::cout << maps_args[0] << " , " << maps_args[1] << " , " << maps_args[2] << " , " << '\n' << std::endl; 
-
 		}
 
 		~user_basis_core() {}
@@ -70,9 +64,6 @@ class user_basis_core : public general_basis_core<I,P>
 			if(general_basis_core<I,P>::nt<=0){
 				return s;
 			}
-			std::cout << "here" << " , " << maps_args[0] << " , " << maps_args[1] << " , " << maps_args[2] << " , " << std::endl;
-			// std::cout << n_map << std::endl;
-			// std::cout << maps_args[n_map] << " , " << maps_args[n_map][0] << std::endl;
 			
 			P temp_phase = 1;
 			s = (*map_funcs[n_map])(s, general_basis_core<I,P>::N, &temp_phase, maps_args[n_map]);
@@ -86,7 +77,7 @@ class user_basis_core : public general_basis_core<I,P>
 				return;
 			}
 			map_type func = map_funcs[n_map];
-			const I * args = maps_args[n_map];
+			I * args = maps_args[n_map];
 			#pragma omp for schedule(static)
 			for(npy_intp i=0;i<M;i++){
 				P temp_phase = 1;
