@@ -134,7 +134,7 @@ class user_basis(basis_general):
 					states in the basis, e.g. O|state> = me1|new_state_1> + me2|new_state_2> + ... see the above example for how
 					one would use this for spin-1/2 system.
 				* **op_args: np.ndarray**
-					can be used to pass arguments to the CFunc `op`.
+					used to pass arguments to the CFunc `op()`.
 		pcon_dict: dict, optional
 			This dictionary contains the following items which are required to use particle conservation in this basis:
 				*minimum requirements*:
@@ -204,7 +204,12 @@ class user_basis(basis_general):
 		use_32bit = (basis_dtype == _np.uint32)
 
 
-		# put chekcs on map_args here
+		if  not all(isinstance(map_args,_np.ndarray) for _,_,_,map_args in blocks.values()) or \
+			not all(map_args.flags["CARRAY"] for _,_,_,map_args in blocks.values()) or \
+			not all(map_args.dtype == basis_dtype for _,_,_,map_args in blocks.values()):
+
+			raise ValueError("map_args must be a C-contiguous numpy array with dtype {}".format(basis_dtype))
+		
 
 
 		if type(op_dict) is dict:
