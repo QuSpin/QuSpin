@@ -25,7 +25,7 @@ Np=N//2 # total number of spin ups
 ######  function to call when applying operators
 @cfunc(op_sig_32,
 	locals=dict(s=int32,n=int32,b=uint32), )
-def op(op_struct_ptr,op_str,site_ind,N):
+def op(op_struct_ptr,op_str,site_ind,N,args):
 	# using struct pointer to pass op_structults 
 	# back to C++ see numba Records
 	op_struct = carray(op_struct_ptr,1)[0]
@@ -65,6 +65,7 @@ def op(op_struct_ptr,op_str,site_ind,N):
 		err = -1
 	#
 	return err
+op_args=np.array([],dtype=np.uint32)
 #
 ######  function to implement magnetization/particle conservation
 #
@@ -130,10 +131,11 @@ Z_args=np.array([(1<<N)-1],dtype=np.uint32)
 ######  construct user_basis 
 # define maps dict
 maps = dict(T_block=(translation,N,0,T_args), P_block=(parity,2,0,P_args), Z_block=(spin_inversion,2,0,Z_args))
-# define particle conservation dict
-pcon_args = dict(Np=Np,next_state=next_state,get_Ns_pcon=get_Ns_pcon,get_s0_pcon=get_s0_pcon)
+# define particle conservation and op dicts
+pcon_dict = dict(Np=Np,next_state=next_state,get_Ns_pcon=get_Ns_pcon,get_s0_pcon=get_s0_pcon)
+op_dict = dict(op=op,op_args=op_args)
 # create user basiss
-basis = user_basis(np.uint32,N,op,allowed_ops=set("+-xyznI"),sps=2,pcon_args=pcon_args,**maps)
+basis = user_basis(np.uint32,N,op_dict,allowed_ops=set("+-xyznI"),sps=2,pcon_dict=pcon_dict,**maps)
 #
 #
 #

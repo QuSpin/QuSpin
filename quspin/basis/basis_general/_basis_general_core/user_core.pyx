@@ -14,7 +14,7 @@ include "source/general_basis_core.pyx"
 cdef extern from "user_basis_core.h" namespace "basis_general":
     cdef cppclass user_basis_core[I](general_basis_core[I]):
         user_basis_core(const int,const int,void *, 
-            const int*, const int*,I **, const int,size_t,I*,size_t,I*,size_t,size_t)
+            const int*, const int*,I **, const int,size_t,I*,size_t,I*,size_t,size_t,I*)
 
 cdef class user_core_wrap(general_basis_core_wrap):
     cdef object get_Ns_pcon_py
@@ -29,13 +29,14 @@ cdef class user_core_wrap(general_basis_core_wrap):
     cdef _np.ndarray maps_args_arr
     cdef _np.ndarray ns_args_arr
     cdef _np.ndarray precs_args_arr
+    cdef _np.ndarray op_args_arr
     cdef int n_sectors
     cdef vector[void*] maps_args_vector 
         
 
     def __cinit__(self,Ns_full,dtype,N,maps, pers, qs, maps_args,
         int n_sectors, get_Ns_pcon, get_s0_pcon, next_state,
-        ns_args,pre_check_state,precs_args,count_particles, op_func, sps):
+        ns_args,pre_check_state,precs_args,count_particles, op_func, op_args, sps):
         self._N = N
         self._Ns_full = Ns_full
         self.get_s0_pcon_py = get_s0_pcon
@@ -48,6 +49,7 @@ cdef class user_core_wrap(general_basis_core_wrap):
 
         if sps is None:
             sps = -1
+        print("why do we need the sps variable in user_core.pyx?")
 
 
         cdef size_t next_state_add=0,pre_check_state_add=0,count_particles_add=0,op_func_add=0
@@ -94,10 +96,12 @@ cdef class user_core_wrap(general_basis_core_wrap):
         self.qs_arr   = _np.array(qs,dtype=_np.intc)
         self.ns_args_arr = ns_args
         self.precs_args_arr = precs_args
+        self.op_args_arr = op_args
         self._nt = self.maps_arr.shape[0]
         cdef void * maps_ptr = NULL
         cdef void * ns_args_ptr = NULL
         cdef void * precs_args_ptr = NULL
+        cdef void * op_args_ptr = NULL
         cdef int  * pers_ptr = NULL
         cdef int  * qs_ptr   = NULL
 
@@ -116,14 +120,18 @@ cdef class user_core_wrap(general_basis_core_wrap):
         if precs_args is not None:
             precs_args_ptr = _np.PyArray_DATA(self.precs_args_arr)
 
+        if op_args is not None:
+            op_args_ptr =  _np.PyArray_DATA(self.op_args_arr)
+
+
         if dtype == uint32:
             self._basis_core = <void *> new user_basis_core[uint32_t](N,self._nt,maps_ptr,pers_ptr,qs_ptr,<uint32_t**>&self.maps_args_vector[0],
                 n_sectors,next_state_add,<uint32_t*>ns_args_ptr,pre_check_state_add,<uint32_t*>precs_args_ptr,
-                count_particles_add,op_func_add)
+                count_particles_add,op_func_add,<uint32_t*>op_args_ptr)
         elif dtype == uint64:
             self._basis_core = <void *> new user_basis_core[uint64_t](N,self._nt,maps_ptr,pers_ptr,qs_ptr,<uint64_t**>&self.maps_args_vector[0],
                 n_sectors,next_state_add,<uint64_t*>ns_args_ptr,pre_check_state_add,<uint64_t*>precs_args_ptr,
-                count_particles_add,op_func_add)
+                count_particles_add,op_func_add,<uint64_t*>op_args_ptr)
         else:
             raise ValueError("user defined basis only supports system sizes <= 64.")
 

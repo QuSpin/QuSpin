@@ -25,13 +25,13 @@ Np=N//2 # total number of bosons
 #
 ######  function to call when applying operators
 @cfunc(op_sig_32,
-	locals=dict(s=int32,n=int32,b=uint32,occ=int32,sps=int32,me_offdiag=float64,me_diag=float64), )
-def op(op_struct_ptr,op_str,site_ind,N):
+	locals=dict(s=int32,n=int32,b=uint32,occ=int32,sps=uint32,me_offdiag=float64,me_diag=float64), )
+def op(op_struct_ptr,op_str,site_ind,N,args):
 	# using struct pointer to pass op_structults 
 	# back to C++ see numba Records
 	op_struct = carray(op_struct_ptr,1)[0]
 	err = 0
-	sps=3
+	sps=3 #args[0]
 	me_offdiag=1.0;
 	me_diag=1.0;
 	#
@@ -63,14 +63,15 @@ def op(op_struct_ptr,op_str,site_ind,N):
 	#
 	return err
 #
+op_args=np.array([sps],dtype=np.uint32)
 ######  function to implement magnetization/particle conservation
 #
 @cfunc(next_state_sig_32,
-	locals=dict(t=uint32,i=int32,j=int32,n=int32,b1=int32,b2=int32,l=int32,n_left=int32), )
+	locals=dict(t=uint32,i=int32,j=int32,n=int32,sps=uint32,b1=int32,b2=int32,l=int32,n_left=int32), )
 def next_state(s,counter,N,args):
 	""" implements particle number conservation. Particle number set by initial state, cf `get_s0_pcon()` below. """
 	t = s;
-	sps=3 #args[-1]
+	sps=args[1]
 	n=0 # running total of number of particles
 	for i in range(N): # loop over lattices sites
 		b1 = (t//args[i])%sps # get occupation at site i
@@ -99,7 +100,7 @@ next_state_args=np.array([sps**i for i in range(N)],dtype=np.uint32)
 def get_s0_pcon(N,Np):
 	sps = 3
 	l = Np//(sps-1)
-	s  = np.sum((sps-1) * sps**i for i in range(l))
+	s  = sum((sps-1) * sps**i for i in range(l))
 	s += (Np%(sps-1)) * sps**l
 	return s
 # python function to calculate the size of the particle-conserved basis, i.e. BEFORE applying pre_check_state and symmetry maps
@@ -118,41 +119,42 @@ def get_Ns_pcon(N,Np):
 ######  define symmetry maps
 #
 @cfunc(map_sig_32,
-	locals=dict(shift=uint32,out=uint32,sps=int32,i=int32,j=int32,) )
+	locals=dict(shift=uint32,out=uint32,sps=uint32,i=int32,j=int32,) )
 def translation(x,N,sign_ptr,args):
 	""" works for all system sizes N. """
 	out = 0
-	shift = 1
-	sps = 3
+	shift = args[0]
+	sps = args[1]
 	for i in range(N):
 		j = (i+shift+N)%N
 		out += ( x%sps ) * sps**j
 		x //= sps
 	#
 	return out
-T_args=np.array([1,0,2],dtype=np.uint32)
+T_args=np.array([1,sps],dtype=np.uint32)
 #
 @cfunc(map_sig_32,
-	locals=dict(out=uint32,sps=int32,i=int32,j=int32) )
+	locals=dict(out=uint32,sps=uint32,i=int32,j=int32) )
 def parity(x,N,sign_ptr,args):
 	""" works for all system sizes N. """
 	out = 0
-	sps = 3
+	sps = args[0]
 	for i in range(N):
 		j = (N-1) - i
 		out += ( x%sps ) * (sps**j)
 		x //= sps
 	#
 	return out
-P_args=np.array([0,N-1],dtype=np.uint32)
+P_args=np.array([sps],dtype=np.uint32)
 #
 ######  construct user_basis 
 # define maps dict
 maps = dict(T_block=(translation,N,0,T_args),P_block=(parity,2,0,P_args), ) 
-# define particle conservation dict
-pcon_args = dict(Np=Np,next_state=next_state,next_state_args=next_state_args,get_Ns_pcon=get_Ns_pcon,get_s0_pcon=get_s0_pcon)
+# define particle conservation and op dicts
+pcon_dict = dict(Np=Np,next_state=next_state,get_Ns_pcon=get_Ns_pcon,get_s0_pcon=get_s0_pcon)
+op_dict = dict(op=op,op_args=op_args)
 # create user basiss
-basis = user_basis(np.uint32,N,op,allowed_ops=set("+-xyznI"),sps=sps,pcon_args=pcon_args,**maps)
+basis = user_basis(np.uint32,N,op_dict,allowed_ops=set("+-xyznI"),sps=sps,pcon_dict=pcon_dict,**maps)
 #
 #
 #

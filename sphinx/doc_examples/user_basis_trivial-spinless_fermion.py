@@ -24,7 +24,7 @@ Np=N//2 # total number of fermions
 #
 @cfunc(op_sig_32,
 	locals=dict(s=int32,sign=int32,n=int32,b=uint32,f_count=uint32), )
-def op(op_struct_ptr,op_str,site_ind,N):
+def op(op_struct_ptr,op_str,site_ind,N,args):
 	# using struct pointer to pass op_structults 
 	# back to C++ see numba Records
 	op_struct = carray(op_struct_ptr,1)[0]
@@ -62,6 +62,7 @@ def op(op_struct_ptr,op_str,site_ind,N):
 		err = -1
 	#
 	return err
+op_args=np.array([],dtype=np.uint32)
 #
 ######  function to implement magnetization/particle conservation
 #
@@ -86,9 +87,9 @@ def get_Ns_pcon(N,Np):
 	locals=dict(shift=uint32,xmax=uint32,x1=uint32,x2=uint32,period=int32,l=int32,f_count1=int32,f_count2=int32) )
 def translation(x,N,sign_ptr,args):
 	""" works for all system sizes N. """
-	shift = 1 # translate state by shift sites
+	shift = args[0] # translate state by shift sites
 	period = N # periodicity/cyclicity of translation
-	xmax = (1<<N)-1
+	xmax = args[1]
 	#
 	l = (shift+period)%period
 	x1 = (x >> (period - l))
@@ -113,14 +114,14 @@ def translation(x,N,sign_ptr,args):
 	sign_ptr[0] *= (-1 if ((f_count1&1)&(f_count2&1)&1) else 1)
 	#
 	return (x2 | x1)
-T_args=np.array([1,0,2],dtype=np.uint32)
+T_args=np.array([1,(1<<N)-1],dtype=np.uint32)
 #
 @cfunc(map_sig_32,
-	locals=dict(out=uint32,s=int32,f_count=int32) )
+	locals=dict(out=uint32,s=uint32,f_count=int32) )
 def parity(x,N,sign_ptr,args):
 	""" works for all system sizes N. """
-	out = 0 #args[0]
-	s = N-1 #args[1]
+	out = 0
+	s = args[0]
 	#
 	#####
 	# count number of fermions, i.e. 1's in bit configuration of the state
@@ -142,15 +143,16 @@ def parity(x,N,sign_ptr,args):
 	#
 	out <<= s
 	return out
-P_args=np.array([0,N-1],dtype=np.uint32)
+P_args=np.array([N-1],dtype=np.uint32)
 #
 ######  construct user_basis 
 # define maps dict
 maps = dict(T_block=(translation,N,0,T_args), P_block=(parity,2,0,P_args), ) 
-# define particle conservation dict
-pcon_args = dict(Np=Np,next_state=next_state,get_Ns_pcon=get_Ns_pcon,get_s0_pcon=get_s0_pcon)
+# define particle conservation and op dicts
+pcon_dict = dict(Np=Np,next_state=next_state,get_Ns_pcon=get_Ns_pcon,get_s0_pcon=get_s0_pcon)
+op_dict = dict(op=op,op_args=op_args)
 # create user basiss
-basis = user_basis(np.uint32,N,op,allowed_ops=set("+-nI"),sps=2,pcon_args=pcon_args,**maps)
+basis = user_basis(np.uint32,N,op_dict,allowed_ops=set("+-nI"),sps=2,pcon_dict=pcon_dict,**maps)
 #
 #
 #

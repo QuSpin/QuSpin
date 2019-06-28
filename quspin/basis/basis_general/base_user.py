@@ -25,11 +25,15 @@ op_results_64 = types.Record.make_c_struct([
 op_sig_32 = types.intc(types.CPointer(op_results_32),
 								types.char,
 								types.intc,
-								types.intc)
+								types.intc,
+								types.CPointer(types.uint32)
+								)
 op_sig_64 = types.intc(types.CPointer(op_results_64),
 								types.char,
 								types.intc,
-								types.intc)
+								types.intc,
+								types.CPointer(types.uint64)
+								)
 
 count_particles_sig_32 = types.void(types.uint32,
 							types.CPointer(types.intc))
@@ -111,7 +115,7 @@ class user_basis(basis_general):
 		:lines: 7-
 
 	"""
-	def __init__(self,basis_dtype,N,op_func,sps=2,pcon_args=None,pre_check_state=None,allowed_ops=None,
+	def __init__(self,basis_dtype,N,op_dict,sps=2,pcon_dict=None,pre_check_state=None,allowed_ops=None,
 		Ns_block_est=None,_make_basis=True,block_order=None,_Np=None,**blocks):
 		"""Intializes the `user_basis_general` object (basis for user defined ED calculations).
 
@@ -121,13 +125,17 @@ class user_basis(basis_general):
 			the data type used to represent the states in the basis: must be either uint32 or uint64.
 		N: int
 			Number of sites.
-		op_func(op_struct_ptr,op_str,site_ind,N): numba.CFunc object
-			This is a compiled function which calculates the matrix elements given a state and a character which
-			represent the operator and an integer specifying the site of that local operator. Note that this functionality
-			will not support branching, e.g. O|state> = me|new_state> and can't be a linear combination of multiple
-			states in the basis, e.g. O|state> = me1|new_state_1> + me2|new_state_2> + ... see the above example for how
-			one would use this for spin-1/2 system.
-		pcon_args: dict, optional
+		op_dict: dict,
+			used to define the `basis.Op` function; the dictionary contais the following items:
+				* **op(op_struct_ptr,op_str,site_ind,N,args): numba.CFunc object**
+					This is a compiled function which calculates the matrix elements given a state and a character which
+					represent the operator and an integer specifying the site of that local operator. Note that this functionality
+					will not support branching, e.g. O|state> = me|new_state> and can't be a linear combination of multiple
+					states in the basis, e.g. O|state> = me1|new_state_1> + me2|new_state_2> + ... see the above example for how
+					one would use this for spin-1/2 system.
+				* **op_args: np.ndarray**
+					can be used to pass arguments to the CFunc `op`.
+		pcon_dict: dict, optional
 			This dictionary contains the following items which are required to use particle conservation in this basis:
 				*minimum requirements*:
 					* **Np: tuple/int, list(tuple/int)**		
@@ -195,8 +203,33 @@ class user_basis(basis_general):
 
 		use_32bit = (basis_dtype == _np.uint32)
 
-		if not isinstance(op_func,CFunc):
-			raise ValueError("op_func must be a numba.CFunc object.")
+
+		# put chekcs on map_args here
+
+
+		if type(op_dict) is dict:
+			if len(op_dict) != 2:
+				raise ValueError("op_dict must contain exactly two items.")
+			else:
+				op_func=op_dict['op']
+				op_args=op_dict['op_args']
+
+				if not isinstance(op_func,CFunc):
+					raise ValueError("op_func must be a numba.CFunc object.")
+
+				if not isinstance(op_args,_np.ndarray):
+					raise ValueError("op_args must be a C-contiguous numpy \
+						array with dtype {}".format(basis_dtype))
+				if not op_args.flags["CARRAY"]:
+					raise ValueError("op_args must be a C-contiguous numpy \
+						array with dtype {}".format(basis_dtype))
+				if op_args.dtype != basis_dtype:
+					raise ValueError("op_args must be a C-contiguous numpy \
+						array with dtype {}".format(basis_dtype))
+		else:
+			raise ValueError("op_dict input not understood.")
+
+		
 
 		if use_32bit:
 			if op_func._sig != op_sig_32:
@@ -208,10 +241,10 @@ class user_basis(basis_general):
 					try using op_sig_64 from quspin.basis.user module.")
 
 
-		if pcon_args is not None:
+		if pcon_dict is not None:
 
-			if type(pcon_args) is dict:
-				next_state_args = pcon_args.get("next_state_args")
+			if type(pcon_dict) is dict:
+				next_state_args = pcon_dict.get("next_state_args")
 				if next_state_args is not None:
 					if not isinstance(next_state_args,_np.ndarray):
 						raise ValueError("next_state_args must be a C-contiguous numpy \
@@ -223,27 +256,27 @@ class user_basis(basis_general):
 						raise ValueError("next_state_args must be a C-contiguous numpy \
 							array with dtype {}".format(basis_dtype))
 
-					pcon_args.pop("next_state_args")
+					pcon_dict.pop("next_state_args")
 
-				if len(pcon_args) == 4:
-					Np = pcon_args["Np"]
-					next_state = pcon_args["next_state"]
-					get_Ns_pcon = pcon_args["get_Ns_pcon"]
-					get_s0_pcon = pcon_args["get_s0_pcon"]
+				if len(pcon_dict) == 4:
+					Np = pcon_dict["Np"]
+					next_state = pcon_dict["next_state"]
+					get_Ns_pcon = pcon_dict["get_Ns_pcon"]
+					get_s0_pcon = pcon_dict["get_s0_pcon"]
 					n_sectors = None
 					count_particles = None
 
-				elif len(pcon_args) == 6:
-					Np = pcon_args["Np"]
-					next_state = pcon_args["next_state"]
-					get_Ns_pcon = pcon_args["get_Ns_pcon"]
-					get_s0_pcon = pcon_args["get_s0_pcon"]
-					n_sectors = pcon_args["n_sectors"]
-					count_particles = pcon_args["count_particles"]
+				elif len(pcon_dict) == 6:
+					Np = pcon_dict["Np"]
+					next_state = pcon_dict["next_state"]
+					get_Ns_pcon = pcon_dict["get_Ns_pcon"]
+					get_s0_pcon = pcon_dict["get_s0_pcon"]
+					n_sectors = pcon_dict["n_sectors"]
+					count_particles = pcon_dict["count_particles"]
 				else:
-					raise ValueError("pcon_args input not understood.")
+					raise ValueError("pcon_dict input not understood.")
 			else:
-				raise ValueError("pcon_args input not understood.")
+				raise ValueError("pcon_dict input not understood.")
 
 
 			if Np is None:
@@ -375,8 +408,7 @@ class user_basis(basis_general):
 		self._pers = _np.array(pers,dtype=_np.int)
 		self._qs = _np.array(qs,dtype=_np.int)
 		self.map_args = map_args
-		print('here',map_args)
-
+		
 
 		if Ns_block_est is None:
 			if len(self._pers) > 0:
@@ -391,7 +423,7 @@ class user_basis(basis_general):
 		self._core = user_core_wrap(Ns_full, basis_dtype, N, map_funcs, pers, qs, map_args,
 								n_sectors, get_Ns_pcon, get_s0_pcon, next_state,
 								next_state_args,pre_check_state,check_state_nosymm_args,
-								count_particles, op_func, sps)
+								count_particles, op_func, op_args, sps)
 
 		self._N = N
 		self._Ns = Ns
