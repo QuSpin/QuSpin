@@ -1,13 +1,15 @@
 .. _user_basis-label:
 
 
-What does the `user_basis` allow and how does it work?
+A tutorial on QuSpin's `user_basis`
 --------
-List of features:
+List of functionality features which `user_basis` allows the user to access, and which are **not** accessible in the `*_basis_1d` and `*_basis_general`:
 
 * ...
 * ...
 * ...
+
+CONTENTS:
 
 For examples, see [link to below]
 
@@ -137,27 +139,76 @@ The core parent class for all `basis_general` classes contains a number of funct
 Below, we give a brief overview of the methods required to define `user_basis` objects.
 
 
-`op(op_struct_ptr, op_str, site_ind, N)`
+`op(op_struct_ptr, op_str, site_ind, N, args)`
 ++++++
-This method contains user-defined action of operators on the integer states.
+This function method contains user-defined action of operators :math:`O` on the integer states :math:`|s\rangle` which produces the matrix elements :math:`\mathrm{me}` via :math:`O|s\rangle = \mathrm{me}|s'\rangle`.
+
+* `op_struct_ptr`: an cpp-pointer to an object which, after being cast into an array using `op_struct=carray(op_struct_ptr,1)[0]`, contains the attributes `op_struct.state` (which contains the quantum state in integer representation), and `op_struct.matrix_ele` (the value of the corresponding matrix element which defines
+the action of the operator :math:`O`.).  
+
+* `op_str`: holds the operator string (e.g. `+`, `-`, `z`, `n`, or any custom user-defined letter). Note that the underlying cpp-code uses integers to store the `op_str`, e.g. `+` corresponds to the integer `43`. It is these integers that are used in the body of `op()` to distinguish the different `op_str`'s. The integer, corresponding to any string `str` can be found in python using `ord(str)`.
+
+* `N`: the total number of lattice sites.
+
+* `args`: optional arguments passed into the CFunc `op`; must be a `np.ndarray` of dtype `basis_dtype`.  
+
+The CFunc `op` returns an integer `err` which is used by QuSpin to throw different error messages **CHECK!!!**:
+
+* `err=0`: the calculation was completed successfully.
+
+* `err=-1`: no matching operator string was found.
+
+**Notes** 
+
+* this functionality will not support branching, i.e. no linear combination of multiple states in the basis, e.g. :math:`O|s\rangle = \mathrm{me}_1|s'_1\rangle + \mathrm{me}_2|s'_2\rangle + \dots`, is allowed.
+
 
 
 `next_state(s, counter, N, args)` 
 ++++++
-This method provides a user-defined particle conservation rule.
+This functions method provides a user-defined particle conservation rule, which constructs the basis in lexicographical order **(DEFINE!)**. Given the initial state `s0`, `next_state()` generates all other states recursively. Hence, if `next_state()` is set to conserve particle number then the particle number sector is defined by the initial state `s0`. 
 
-two extra python funcs
+* `s`: quantum state in integer representation.
 
-Given the initial state s0, next_state generates all other states recursively; Hence, if next_state is set to conserve particle number then the particle number sector 
-is defined by the initial state s0. 
+* `counter`: an integer which counts internally how many times the function has been called. The incrementation of `counter` will occur in the underlying cpp code, i.e. the user should not attempt to do this in the function body of `next_state()`. Can be used, e.g., to index an array passed in `args`.
+
+* `args`: a `np.ndarray` of the same data type as the `user_basis`. Can be used to pass optional arguments, e.g. to pass a precomputed basis into QuSpin in order to reduce it to a given symmetry sector: ** see Example ??? below**.
+
+
+**Two extra python functions required**: they are **not** called inside `next_state()`, but are required by QuSpin to run `next_state()`.
+
+* get_s0_pcon(N,Np): given the total number of sites `N` and (the tuple of) particle sector `Np` this function computes the initial state, to be used by `next_state()` to construct the entire basis.
+
+* get_Ns_pcon(N,Np): given the total number of sites `N` and (the tuple of) particle sector `Np` this function computes the Hilbert space dimension (i.e. the size of the basis) **with particle umber conservation only** (In other words, `get_Ns_pcon()` should be equal to the number of iterations in `next_state()` required to exhaust the states search. `get_Ns_pcon()` returns an integer required to allocate memory for the particle-conserving basis. Note that `get_Ns_pcon()` ignores any possible reduction due to lattice symmetries (see the maps below), i.e. `get_Ns_pcon()` may not correspond to the final integer `basis.Ns`.  
+
+
+**Notes**
+
+* there is no need to define `next_state()` if no particle number conservation use is intended. ** See example ??? below**.
+* one can use this function, e.g., to implement sublattice particle number conservation, and similar features. 
+* `next_state()`, together with the entire set of related functions and variables is passed to the `user_basis` constructor via the `pcon_dict` dictionary.
+* `next_state()` is a numba.CFunc object, but `get_s0_pcon()` and `get_Ns_pcon()` are regular python functions.
+
 
 `pre_check_state(s, N, args)`
 ++++++
-This *optional* method provides user-defined extra projection of states out of the basis.
+This *optional* function method provides user-defined extra filtering of basis states. The function body contains a boolean operation which, when applied to the basis states one at a time, determines whether to keep a state in the basis or not. 
+
+A simple example of what `pre_check_state()` can be useful for is this: suppose you want a `spinful_fermion_basis()` without doubly occupied sites. This can be achieved by ajusting the body of `pre_check_state()` to eliminate such states. QuSpin will then first generate the basis with doble occupancies using `next_state()`, and subsequntly get rid of the doubly-occupied states using `pre_check_state()`. Another example is shown in ** Example ??? below **.
+
+* `s`: quantum state in integer representation.
+
+* `N`: the total number of lattice sites.
+
+* `args`: a `np.ndarray` of the same data type as the `user_basis`. Can be used to pass optional arguments.
+
 
 `count_particles()`
 ++++++
-This *optional* method counts the total number of particles/magnetization in a given state.
+This *optional* function method counts the total number of particles/magnetization in a given state.
+
+**NEED TO SHOW EXAMPLES AND UPDATE THE CLASS DOC**
+
 
 
 
@@ -169,7 +220,50 @@ Any discrete symmetry is uniquely defined by its action on the basis states. Sin
 
 System-size independent symmetries
 ++++++
-System-size independent symmetries contain as a parameter the system size :math:`N`. As a result, they apply to all system sizes. Examples of such  
+System-size independent symmetries contain as a parameter the system size :math:`N`. As a result, they apply to all system sizes. Examples of such symmetries are
+
+parity in 1d 
+````````
+
+Parity is the reflection of a state w.r.t. the middle of the chain.
+
+.. code-block:: python
+
+	def parity(x,N,sign_ptr,args):
+		""" works for all system sizes N, spin-1/2 only. """
+		out = 0 
+		s = N-1
+		#
+		out ^= (x&1)
+		x >>= 1
+		while(x):
+			out <<= 1
+			out ^= (x&1)
+			x >>= 1
+			s -= 1
+		#
+		out <<= s
+		return out
+
+
+translation in 1d 
+````````
+
+We consider translation by `shift=1` sites, but the code can easily be generalized to a larger-shift translation. 
+
+.. code-block:: python
+
+	def translation(x,N,sign_ptr,args):
+		""" works for all system sizes N, spin-1/2 only. """
+		shift = 1 # translate state by shift sites
+		period = N # periodicity/cyclicity of translation
+		xmax = (1<<N)-1 # largest integer allowed to appear in the basis
+		#
+		l = (shift+period)%period
+		x1 = (x >> (period - l))
+		x2 = ((x << l) & xmax)
+		#
+		return (x2 | x1)
 
 
 Symmetries for fixed system sizes using precomputed masks
@@ -178,7 +272,7 @@ The convenience to define symmetry maps which apply to all system sizes comes at
 
 Luckily, there is a great tool to compute the symmetry maps, available at http://programming.sirrida.de/calcperm.php. All one needs to do is find the permutation of the lattice sites under the symmetry, and pass it to the tool to obain the symmetry map that acts on integers. Let us demonstrate how this works using two examples.
 
-parity 
+parity in 1d
 ````````
 Consider a ladder of :math:`2\times 10` sites, labelled 0 through 19. The action of parity/reflection along the long ladder axis is easily defined on the lattice sites to be
 
@@ -204,7 +298,7 @@ Passing the transformed integer sequence (right-hand side) to the online generat
 
 This map works only for this system size, and for 32-bit integers. 
 
-translation
+translation in 1d
 ````````
 Consider again a ladder of :math:`2\times 10` sites, labelled 0 through 19. The action of translation along the long ladder axis is easily defined on the lattice sites to be
 
@@ -224,11 +318,16 @@ corresponds to the bit operation (again, fixed system size and data type):
 In the `user_basis`, the functions encoding the symmetry action are referred to as maps. Every map has as its first argument the integer (state) to be tansformed, followed by the number of sites. For fermionic systems, the symmetry action can also modify the fermion sign of a given state. Therefore, the last argument is a `sign_ptr`. 
 
 
-Symmtries are passed to the `user_basis` constructor via a python dictionary, called `maps`. The keys are arbitrary strings which define a unique name for each map; the corresponding values are tuples of three entries: `(map function, symmetry periodicity, quantum number)`. The symmetry periodicity (or cyclicity) is the smallest integer :math:`l`, such that :math:`T^l = T`. 
+Symmtries are passed to the `user_basis` constructor via a python dictionary, called `maps`. The keys are arbitrary strings which define a unique name for each map; the corresponding values are tuples of three entries: `(map function, periodicity, quantum number, args)`. The symmetry periodicity (or cyclicity, or multiplicity) is the smallest integer :math:`m_Q`, such that :math:`Q^{m_Q} = 1`. 
 
 >>> maps = dict(T_block=(translation,10,0,T_args), P_block=(parity,2,0,P_args), )
 
-**Note**: the map functions need to be cast as decorated numba cfuncs (see below).
+**Note**: 
+
+* all map functions need to be cast as decorated numba cfuncs **(SEE below)**.
+* even though some arguments of the map functions are not used in the function bodies, the user is required to define them (and no mores). This allows to keep the code general. The names of these arguments are arbitrary, but their data typs are **not**. 
+
+
 
 
 Using `numba` to pass python functions to the `C++` `user_basis` constructor

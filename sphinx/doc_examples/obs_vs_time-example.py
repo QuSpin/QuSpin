@@ -36,6 +36,7 @@ E2,V2=H2.eigh()
 times=np.linspace(0.0,5.0,10)
 psi1_t=H2.evolve(psi1,0.0,times,iterate=True)
 # calculate expectation values of observables
-Obs_time=obs_vs_time(psi1_t,times,dict(E1=H1,Energy2=H2))
+Obs_time=obs_vs_time(psi1_t,times,dict(E1=H1,Energy2=H2),return_state=True)
 print("Output keys are same as input keys:", Obs_time.keys())
 E1_time=Obs_time['E1']
+psi_time=Obs_time['psi_t']

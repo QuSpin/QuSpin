@@ -101,15 +101,23 @@ def _process_user_blocks(use_32bit,blocks_dict,block_order):
 
 
 class user_basis(basis_general):
-	"""Constructs basis for USER-DEFINED functionality of a basis.
+	"""Constructs basis for USER-DEFINED functionality of a basis object.
 
-	Check out this detailed tutorial: :ref:`user_basis-label`
+
+	The `user_basis` unveils the inner workings of QuSpin. This is the most advanced usage of the package, and requires some understanding of python,
+	the `numba` package used to interface QuSpin's underlying cpp code with python, and some experience with bitwise operations to manipulate integers. 
+
+	Since we believe that the users will benefit from a more detailed discussion on how the `user_basis` is intended to work, we also provide a detailed 
+	tutorial: :ref:`user_basis-label` which covers the general concepts and provides six complete examples of various complexity.
 
 	Examples
 	--------
 
+	The following example shows how to use the `user_basis` class to define the 1d isotropic Heisenberg model with fixed magnetization, translation, parity 
+	and spin-inversion symmetries. The result is then compared to `spin_basis_1d`. **Note** that this model can be more easily constructed using the `spin_basis_1d` 
+	or the `spin_basis_general` classes; the example below serves merely a didactic purpose. It can also be used as a starting point to read QuSpin' cpp libraries. 
 
-	.. literalinclude:: ../../doc_examples/user_basis_general-example.py
+	.. literalinclude:: ../../doc_examples/user_basis_trivial-spin.py
 		:linenos:
 		:language: python
 		:lines: 7-
@@ -125,43 +133,39 @@ class user_basis(basis_general):
 			the data type used to represent the states in the basis: must be either uint32 or uint64.
 		N: int
 			Number of sites.
-		op_dict: dict,
+		op_dict: dict
 			used to define the `basis.Op` function; the dictionary contais the following items:
 				* **op(op_struct_ptr,op_str,site_ind,N,args): numba.CFunc object**
-					This is a compiled function which calculates the matrix elements given a state and a character which
-					represent the operator and an integer specifying the site of that local operator. Note that this functionality
-					will not support branching, e.g. O|state> = me|new_state> and can't be a linear combination of multiple
-					states in the basis, e.g. O|state> = me1|new_state_1> + me2|new_state_2> + ... see the above example for how
+					This is a numba-compiled function (CFunc) which calculates the matrix elements :math:`\\mathrm{me}` given a state :math:`|s\\rangle` together with a character to
+					represent the operator, an integer `site_ind` specifying the site of that local operator, the total number of sites `N`, and a set of optional `uint`-dtype arguments `args`. See the above example for how
 					one would use this for spin-1/2 system.
-				* **op_args: np.ndarray**
-					used to pass arguments to the CFunc `op()`.
+				* **op_args: np.ndarray[basis_dtype]**
+					used to pass the arguments `args` to the CFunc `op(...,args)`. The corresponding key must be a `np.ndarray[basis_dtype]`.
 		pcon_dict: dict, optional
 			This dictionary contains the following items which are required to use particle conservation in this basis:
 				*minimum requirements*:
 					* **Np: tuple/int, list(tuple/int)**		
 						specifies the particle sector(s). 
 					* **next_state(s,counter,N,args): numba.CFunc object**
-						 given an integer, this CFunc generates the next lexigraphically ordered particle conservation state.
+						 given a quantum state :math:`|s\\rangle` in the integer-representation `s`, this CFunc generates the next lexicographically ordered particle conservation state. 
+						 `counter` is an intrinsic variable which increments by unity every time the function is called, `N` is the total number of lattice sites, and `args` holds any optional arguments stored in a `np.ndarray[basis_dtype]`.
 					* **get_Ns_pcon(N,Np): python function**
-						 when called as get_Ns_pcon(N,Np), this function returns the size of the symmetery-free particle conservation basis.
+						 when called as get_Ns_pcon(N,Np), this python function returns the size of the symmetery-free particle conservation basis, given the `N` lattice sites and `Np` (see above).
 					* **get_s0_pcon(N,Np): python function**
-						 when called as get_s0_pcon(N,Np), this function returns the starting state to generate the whole particle conservation basis by repeatedly calling `next_state()`.
+						 when called as get_s0_pcon(N,Np), this python function returns the starting state to generate the whole particle conservation basis by repeatedly calling `next_state()`.
 				*advanced requirements* to access `basis.Op_bra_ket()` functionality (on top of the minimum requirements):
 					* **n_sectors: int, list(int)**
 						number of integers which parameterize the particle sectors, e.g. with spinful fermions there is a particle number for both the up and the down sectors, so this number would be 2. 
 					* **count_particles(): numba.CFunc object**
 						 this CFunc counts the number of particles in each sector and places them into a pointer passed. The pointer provided will have `n_sector` of memory allocated. The order of the number should be kept the same as the ordering of `Np`.
 		pre_check_state(s,N,args): numba.CFunc object or tuple(numba.CFunc object,ndarray(C-contiguous,dtype=basis_dtype)), optional
-			This allows the user to specify a boolean function which checks a state before checking if a state is a 
-			representative state. This allows the user to do things like,  enforce a local hilbert space constraint, 
-			e.g. for spinful fermions never having a doubly occupied site. The ndarray are extra arguments which are 
-			passed into this function.
+			This CFunc allows the user to specify a boolean criterion used to discard/filter states from the basis. In the low-level code, this function is applied before checking if a given state is
+			representative state (i.e. belogs to a given symmetry sector) or not. This allows the user to, e.g., enforce a local Hilbert-space constraint 
+			(e.g. for a spinful fermion basis to never have a doubly occupied site). One can pass additional arguments `args` using a `np.ndarray[basis_dtype]`.
 		allowed_ops: list/set, optional
-			A list of allowed charactors which can be passed in to the op_func. This will be used in the error handling
-			so that python will throw a more detailed error message when the wrong operator string is passed into the basis.
+			A list of allowed characters, each of which is to be passed in to the `op` in the form of `op_str` (see above).
 		sps: int, optional
-			The number of states per site, this is not required for the main functionality for this basis, however it is required
-			for doing entanglement entropy calculations. 
+			The number of states per site (i.e. the local on-site Hilbert space dimension).
 		Ns_block_est: int, optional
 			An estimate for the size of the symmetry reduced block, QuSpin does a simple estimate which is not always correct. 
 		block_order: tuple/list, optional
@@ -169,12 +173,12 @@ class user_basis(basis_general):
 		**blocks: optional
 			keyword arguments which pass the symmetry generator arrays. For instance:
 
-			>>> basis(...,kxblock=(QFunc,Tq,q),...)
+			>>> basis(...,kxblock=(CFunc,m_Q,q,args),...)
 
-			The keys of the symmetry sector, e.g. `kxblock`, can be defined arbitrarily by the user. The
-			values are tuples where the first entry contains the numba.CFunc which generates the symmetry transformation :math:`Q` 
-			acting on the state (see class example), the second entry is an integer :math:`Tq` which gives the periodicity
-			of the symmetry sector, and q is the quantum number for the given sector. Note that if the periodicity is wrong
+			The key names of the symmetry sector, e.g. `kxblock`, can be defined arbitrarily by the user. The
+			values are tuples where the first entry contains the numba-CFunc which generates the symmetry transformation :math:`Q` 
+			acting on the state (see class example), the second entry is an integer :math:`m_Q` which gives the periodicity
+			of the symmetry sector (:math:`Q^{m_Q} = 1`), and :math:`q` is the quantum number for the given sector. Optional arguments can be passed using the`args` argument which is a `np.ndarray[basis_dtype]`. Note that if the periodicity is wrong
 			the basis will give undefined behavior. 
 		"""
 
