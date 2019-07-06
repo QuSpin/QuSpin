@@ -9,9 +9,28 @@ List of functionality features which `user_basis` allows the user to access, and
 * ...
 * ...
 
-CONTENTS:
+**TUTORIAL CONTENTS:**
 
-For examples, see [link to below]
+* `Inner workings and functionality: basic structure of the user_basis class`_
+	* `Integer representation of states`_
+* `user_basis function methods`_
+	* `op(op_struct_ptr, op_str, site_ind, N, args)`_
+	* `next_state(s, counter, N, args)`_
+	* `pre_check_state(s, N, args)`_
+	* `count_particles()`_
+* `Symmetry transformations from bit operations`_
+	* `System-size independent symmetries`_
+	* `Symmetries for fixed system sizes using precomputed masks`_
+	* `Symmetry maps dictionary`_
+* `Using numba to pass python functions to the c++ user_basis constructor`_
+	* `Data types`_
+	* `Function decorators`_
+* `Example Scripts`_
+	* `Scripts to construct spin, fermion, and boson bases`_
+	* `Scripts to demonstrate the additional functionality introduced by the user_basis`_
+
+
+
 
 Inner workings and functionality: basic structure of the `user_basis` class
 --------
@@ -313,7 +332,7 @@ corresponds to the bit operation (again, fixed system size and data type):
        """ works for N=10 sites and 32 bit-integers spin-1/2 states only. """
        return ((x & 0x0007fdff) << 1) | ((x & 0x00080200) >> 9)
 
-`maps` dictionary
+Symmetry `maps` dictionary
 ++++++
 In the `user_basis`, the functions encoding the symmetry action are referred to as maps. Every map has as its first argument the integer (state) to be tansformed, followed by the number of sites. For fermionic systems, the symmetry action can also modify the fermion sign of a given state. Therefore, the last argument is a `sign_ptr`. 
 
@@ -332,18 +351,49 @@ Symmtries are passed to the `user_basis` constructor via a python dictionary, ca
 
 Using `numba` to pass python functions to the `C++` `user_basis` constructor
 -------
-The function methods of `user_basis` discussed above, are passed to the `user_basis` constructor. Since the latter is written in `C++` for speed, we use  the `numba` package to decorate python functions which are automatically compiled to `C++` and then parsed to the `user_basis`. 
+The function methods of `user_basis` discussed above, are passed to the `user_basis` constructor. Since the latter is written in `C++` for speed, we use  the [numba](https://numba.pydata.org/) package to decorate python functions which are automatically compiled to `C++` and then parsed to the `user_basis`. 
 
 
 Data types
 ++++++++
+Unlike python, cpp code requires the user to specify the data types of all variables (so called strong typing). For this purpose, numba supports various data types, e.g. `uint32`, or `int32`. They are typically imported from numba in the beginning of the python script.
 
 Function decorators
 ++++++++
+To indicate that the function we wrote in python should be compiled as a cpp code by numba, we use the `@cfunc(signature,locals=dict())` decorator. The arguments of the decorator are the function variable signature (which contains the data times of all function variables), and `locals` which is a dictionary containing the data types of all other variables defined and used privately inside the function body. 
+
+In QuSpin, we provide the precompiled signatures `next_state_sig_32`, `op_sig_32`, `map_sig_32`, `next_state_sig_64`, `op_sig_64`, `map_sig_64`. The name of the signature refers to the function type it is designed for, and the integer in the end specifies the data type the `user_basis` will be constructed with. These signaturescan be imported from the `user_basis`. 
+
+As an example, consider the `translation()` python function defined above. To make this a `numba.CFunc` object, it suffices to place the decorator:
+
+.. code-block:: python
+
+	from quspin.basis.user import map_sig_32 # user basis data types
+	from numba import cfunc
+	from numba import uint32,int32 # numba data types
+	#
+	@cfunc(map_sig_32,
+		locals=dict(shift=uint32,xmax=uint32,x1=uint32,x2=uint32,period=int32,l=int32,) )
+	def translation(x,N,sign_ptr,args):
+		""" works for all system sizes N. """
+		shift = 1 # translate state by shift sites
+		period = N # periodicity/cyclicity of translation
+		xmax = (1<<N-1)
+		#
+		l = (shift+period)%period
+		x1 = (x >> (period - l))
+		x2 = ((x << l) & xmax)
+		#
+		return (x2 | x1)
+
+We use the signature `map_sig_32` because it is designed to decorate symmetry map functions. Moreover, the local (private) variable data types are defined via `locals=dict(shift=uint32,xmax=uint32,x1=uint32,x2=uint32,period=int32,l=int32,)`. These variables appear in the function body.
+
+**Notes**
+* if you mess up the data types, most likely you will receive a numba error. In such cases, we suggest that you remove the CFunc decorator and debug your function in python as yous would normally do. Once you ares confident that the function does it job, put back the decorator and pass it to the `user_basis` constructor. 
 
 
 
-Examples
+Example Scripts
 --------
 Below, we provide examples which demonstrate how to use the `user_basis` class. 
 
