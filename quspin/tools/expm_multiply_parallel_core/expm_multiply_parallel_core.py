@@ -60,7 +60,6 @@ class expm_multiply_parallel(object):
         shift.data *= mu
         self._A = self._A - shift
         self._A_1_norm = _wrapper_csr_1_norm(self._A.indptr,self._A.indices,self._A.data)
-
         self._calculate_partition()
 
 
