@@ -1,6 +1,10 @@
 from __future__ import print_function, division
 #
 import sys,os
+os.environ['KMP_DUPLICATE_LIB_OK']='True' # uncomment this line if omp error occurs on OSX for python 3
+os.environ['OMP_NUM_THREADS']='1' # set number of OpenMP threads to run in parallel
+os.environ['MKL_NUM_THREADS']='1' # set number of MKL threads to run in parallel
+#
 quspin_path = os.path.join(os.getcwd(),"../../")
 sys.path.insert(0,quspin_path)
 #
@@ -22,8 +26,7 @@ Np=N//2 # total number of spin ups
 @cfunc(op_sig_32,
 	locals=dict(s=int32,n=int32,b=uint32), )
 def op(op_struct_ptr,op_str,site_ind,N,args):
-	# using struct pointer to pass op_structults 
-	# back to C++ see numba Records
+	# using struct pointer to pass op_struct_ptr back to C++ see numba Records
 	op_struct = carray(op_struct_ptr,1)[0]
 	err = 0
 	#
@@ -76,7 +79,8 @@ def next_state(s,counter,N,args):
 # python function to calculate the starting state to generate the particle conserving basis
 def get_s0_pcon(N,Np):
 	return sum(1<<i for i in range(Np))
-# python function to calculate the size of the particle-conserved basis, i.e. BEFORE applying pre_check_state and symmetry maps
+# python function to calculate the size of the particle-conserved basis, 
+# i.e. BEFORE applying pre_check_state and symmetry maps
 def get_Ns_pcon(N,Np):
     return comb(N,Np,exact=True)
 #

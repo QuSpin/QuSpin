@@ -120,7 +120,7 @@ class user_basis(basis_general):
 	.. literalinclude:: ../../doc_examples/user_basis_trivial-spin.py
 		:linenos:
 		:language: python
-		:lines: 7-
+		:lines: 11-
 
 	"""
 	def __init__(self,basis_dtype,N,op_dict,sps=2,pcon_dict=None,pre_check_state=None,allowed_ops=None,

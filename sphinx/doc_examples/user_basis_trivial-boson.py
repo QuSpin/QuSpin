@@ -27,8 +27,7 @@ Np=N//2 # total number of bosons
 @cfunc(op_sig_32,
 	locals=dict(s=int32,n=int32,b=uint32,occ=int32,sps=uint32,me_offdiag=float64,me_diag=float64), )
 def op(op_struct_ptr,op_str,site_ind,N,args):
-	# using struct pointer to pass op_structults 
-	# back to C++ see numba Records
+	# using struct pointer to pass op_struct_ptr back to C++ see numba Records
 	op_struct = carray(op_struct_ptr,1)[0]
 	err = 0
 	sps=3 #args[0]
@@ -84,7 +83,8 @@ def next_state(s,counter,N,args):
 				t += args[i+1] # add one boson to site i+1
 				if n>0: # if any bosons left
 					# so far: moved one boson forward; 
-					# now: take rest of bosons and fill first l sites with maximum occupation to keep lexigraphic order
+					# now: take rest of bosons and fill first l sites with maximum occupation 
+					# to keep lexigraphic order
 					l = n//(sps-1) # how many sites can be fully occupied with n bosons
 					n_left = n%(sps-1) # leftover of particles on not maximally occupied sites
 					for j in range(i+1):
@@ -103,7 +103,8 @@ def get_s0_pcon(N,Np):
 	s  = sum((sps-1) * sps**i for i in range(l))
 	s += (Np%(sps-1)) * sps**l
 	return s
-# python function to calculate the size of the particle-conserved basis, i.e. BEFORE applying pre_check_state and symmetry maps
+# python function to calculate the size of the particle-conserved basis, i.e. 
+# BEFORE applying pre_check_state and symmetry maps
 def get_Ns_pcon(N,Np):
 	Ns=0
 	sps=3
@@ -154,7 +155,7 @@ maps = dict(T_block=(translation,N,0,T_args),P_block=(parity,2,0,P_args), )
 pcon_dict = dict(Np=Np,next_state=next_state,get_Ns_pcon=get_Ns_pcon,get_s0_pcon=get_s0_pcon)
 op_dict = dict(op=op,op_args=op_args)
 # create user basiss
-basis = user_basis(np.uint32,N,op_dict,allowed_ops=set("+-xyznI"),sps=sps,pcon_dict=pcon_dict,**maps)
+basis = user_basis(np.uint32,N,op_dict,allowed_ops=set("+-nI"),sps=sps,pcon_dict=pcon_dict,**maps)
 #
 #
 #
