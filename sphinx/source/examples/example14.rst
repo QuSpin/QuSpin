@@ -1,11 +1,11 @@
 .. _example14-label:
 
-???
+spin-1/2 example: the Heisenberg Model in 1d
 --------
 
-This example makes use of the `user_basis` class of `basis_general` to show how to ...
+This example makes use of the `user_basis` class of `basis_general` to show how to define spin-1/2 systems using the `user_basis`.
 
-Please consult this tutorial for a detailed tutorial about using the `user_basis` class.
+Please consult this post: :ref:`user_basis-label`, with more detailed explanations for using the `user_basis` class.
 
 Script
 ------

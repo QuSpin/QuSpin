@@ -108,12 +108,12 @@ class user_basis(basis_general):
 	the `numba` package used to interface QuSpin's underlying cpp code with python, and some experience with bitwise operations to manipulate integers. 
 
 	Since we believe that the users will benefit from a more detailed discussion on how the `user_basis` is intended to work, we also provide a detailed 
-	tutorial: :ref:`user_basis-label` which covers the general concepts and provides six complete examples of various complexity.
+	tutorial: :ref:`user_basis-label`, which covers the general concepts and provides six complete examples of various complexity.
 
 	Examples
 	--------
 
-	The following example shows how to use the `user_basis` class to define the 1d isotropic Heisenberg model with fixed magnetization, translation, parity 
+	The following example shows how to use the `user_basis` class to define the 1d isotropic Heisenberg model in a subspace of fixed magnetization, translation, parity 
 	and spin-inversion symmetries. The result is then compared to `spin_basis_1d`. **Note** that this model can be more easily constructed using the `spin_basis_1d` 
 	or the `spin_basis_general` classes; the example below serves merely a didactic purpose. It can also be used as a starting point to read QuSpin' cpp libraries. 
 

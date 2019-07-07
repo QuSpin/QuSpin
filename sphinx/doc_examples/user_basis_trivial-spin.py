@@ -130,7 +130,7 @@ maps = dict(T_block=(translation,N,0,T_args), P_block=(parity,2,0,P_args), Z_blo
 # define particle conservation and op dicts
 pcon_dict = dict(Np=Np,next_state=next_state,get_Ns_pcon=get_Ns_pcon,get_s0_pcon=get_s0_pcon)
 op_dict = dict(op=op,op_args=op_args)
-# create user basiss
+# create user basis
 basis = user_basis(np.uint32,N,op_dict,allowed_ops=set("+-xyznI"),sps=2,pcon_dict=pcon_dict,**maps)
 #
 #
@@ -142,7 +142,7 @@ basis_1d=spin_basis_1d(N,Nup=Np,pauli=True,kblock=0,pblock=1,zblock=1)#
 print(basis)
 print(basis_1d)
 #
-############   create Hamiltonians   #############
+############   create and compare Hamiltonians   #############
 #
 J=1.0
 spin_spin=[[J,j,(j+1)%N] for j in range(N)]

@@ -9,10 +9,13 @@ List of functionality features which `user_basis` allows the user to access, and
 * ...
 * ...
 
+The user basis brings to surface the low-level functionality of the `basis_general` classes and allows the user to customize the relevant function methods. 
+
 **TUTORIAL CONTENTS:**
 
-* `Inner workings and functionality: basic structure of the user_basis class`_
-	* `Integer representation of states`_
+* `Integer representation of states`_
+	* `Spin-1/2, Fermions, Hardcore Bosons`_
+	* `Bosons, Higher Spins`_
 * `user_basis function methods`_
 	* `op(op_struct_ptr, op_str, site_ind, N, args)`_
 	* `next_state(s, counter, N, args)`_
@@ -32,17 +35,15 @@ List of functionality features which `user_basis` allows the user to access, and
 
 
 
-Inner workings and functionality: basic structure of the `user_basis` class
---------
-The user basis brings to surface the low-level functionality of the `basis_general` classes and allows the user to customize the relevant function methods. 
+
 
 Integer representation of states 
-++++++++
+--------
 The computational basis in QuSpin is the local particle/spin-z basis. For computational efficiency, basis states are stored as bit representations of integers. In order to fully grasp the underlying ideas behind the `user_basis` functionality, it is required to explain in detail how this works.
 
 
 Spin-1/2, Fermions, Hardcore Bosons
-````````````
+++++++++
 Spin-:math:`1/2`, hardcore-boson, and fermion states all have in common that they allow at most one particle pre site. Thus, in the particle/z-spin basis, the basis states are given by strings of ones and zeros. The number of ones sets the particle number/magnetization of a given state. 
 
 Coincidentally, integers are stored in memory using the so-called binary representation: every integer is assigned a unique bit string. Therefore, a particularly efficient way of storing basis states is via this integer representation. 
@@ -60,7 +61,7 @@ bitstring is the same; site label is reversed relative to bitstring;
 *Note*: the `user_basis` allows the user to adopt their own convention. For consistency, this tutorial follows the above QuSpin convention. 
 
 Definition:
-.........
+````````````
 
 Cosider an :math:`N`-site lattice. Let :math:`c_i` denote the occupation of site :math:`i \in [0,1,\dots,N-1]` (e.g., for :math:`|0100\rangle` we have :math:`c_1=1` and :math:`c_{i\neq 1}=0`). Then, a generic expression for the integer :math:`s`, corresponding to the state :math:`|\{c_i\}\rangle`, is given by
 
@@ -69,7 +70,7 @@ Cosider an :math:`N`-site lattice. Let :math:`c_i` denote the occupation of site
 
 
 Reading off particle occupation on a given site:
-.........
+````````````
 
 To read off the particle occupation on site :math:`j` of the state :math:`s` (with a total of :math:`N` sites), do
 
@@ -78,7 +79,7 @@ To read off the particle occupation on site :math:`j` of the state :math:`s` (wi
 
 
 Flipping particle occupation on a given site:
-.........
+````````````
 
 To flip the particle occupation on site :math:`j` of the state :math:`s` (with a total of :math:`N` sites), use the XOR operator `^`:
 
@@ -88,14 +89,14 @@ To flip the particle occupation on site :math:`j` of the state :math:`s` (with a
 
 
 Bosons, Higher Spins
-````````````
++++++++
 
 
 When dealing with bosons or higher spins, the binary representation is no longer sufficient, since the local on-site occupation can be larger than one. 
 
 
 Definition:
-.........
+````````````
 
 Denoting by :math:`sps` (states per site) the local Hilbert space dimension, the integer compression of basis states generalizes to:
 
@@ -113,7 +114,7 @@ For instance in a chain of four sites with at most two particles per site (i.e.,
 
 
 Reading off particle occupation on a given site:
-.........
+````````````
 To read off the particle occupation on site :math:`j` of the state :math:`s` (with a total of :math:`N` sites and :math:`sps` states per site), do
 
 >>> j = N - j - 1            # compute lattice site in reversed bit configuration (cf QuSpin convention for mapping from bits to sites)
@@ -121,7 +122,8 @@ To read off the particle occupation on site :math:`j` of the state :math:`s` (wi
 
 
 Increasing the particle occupation on a given site:
-.........
+````````````
+
 To increase the particle occupation on site :math:`j` of the state :math:`s` (with a total of :math:`N` sites and :math:`sps` states per site), do
 
 >>> j = N - j - 1            # compute lattice site in reversed bit configuration (cf QuSpin convention for mapping from bits to sites)
@@ -132,7 +134,8 @@ To increase the particle occupation on site :math:`j` of the state :math:`s` (wi
 
 
 Decreasing the particle occupation on a given site:
-.........
+````````````
+
 To decrease the particle occupation on site :math:`j` of the state :math:`s` (with a total of :math:`N` sites and :math:`sps` states per site), do
 
 >>> j = N - j - 1            # compute lattice site in reversed bit configuration (cf QuSpin convention for mapping from bits to sites)
@@ -142,7 +145,7 @@ To decrease the particle occupation on site :math:`j` of the state :math:`s` (wi
 
 
 *Notes*:
-```````````` 
++++++++
 
 * even though in the case :math:`sps=2`, the above expressions reproduce the corresponding spin-1/2 expressions, they are not as efficient computationally.
 * convenient quspin functions to transform between integer and quspin bit representations are `basis.int_to_state()` and `basis.state_to_int()`. 
@@ -341,7 +344,7 @@ Symmtries are passed to the `user_basis` constructor via a python dictionary, ca
 
 >>> maps = dict(T_block=(translation,10,0,T_args), P_block=(parity,2,0,P_args), )
 
-**Note**: 
+**Notes**: 
 
 * all map functions need to be cast as decorated numba cfuncs **(SEE below)**.
 * even though some arguments of the map functions are not used in the function bodies, the user is required to define them (and no mores). This allows to keep the code general. The names of these arguments are arbitrary, but their data typs are **not**. 
@@ -389,6 +392,9 @@ As an example, consider the `translation()` python function defined above. To ma
 We use the signature `map_sig_32` because it is designed to decorate symmetry map functions. Moreover, the local (private) variable data types are defined via `locals=dict(shift=uint32,xmax=uint32,x1=uint32,x2=uint32,period=int32,l=int32,)`. These variables appear in the function body.
 
 **Notes**
+
+* because QuSpin provides predefined CFunc signatures, every CFunc (see function methods above) has a predefined, **fixed** number of arguments. Moreover, the data types of the arguments is also fixed. Even if some arguments are not used in the CFunc body, they have to appear in the function definition.
+
 * if you mess up the data types, most likely you will receive a numba error. In such cases, we suggest that you remove the CFunc decorator and debug your function in python as yous would normally do. Once you ares confident that the function does it job, put back the decorator and pass it to the `user_basis` constructor. 
 
 
@@ -400,11 +406,11 @@ Below, we provide examples which demonstrate how to use the `user_basis` class.
 
 Scripts to construct spin, fermion, and boson bases 
 ++++++++
-Demonstrate that the `user_basis` recovers the functionality of the `basis_general` classes:
+The following three examples demonstrate how the `user_basis` recovers the functionality of the `basis_general` classes:
 
-* spin-1/2 Heisenberg model in 1d
-* spinless fermions with nearest-neighbor interactions in 1d
-* Bose-Hubbard model in 1d
+* :ref:`user-basis_example0-label`, :download:`download script <../doc_examples/user_basis_trivial-spin.py>` 
+* :ref:`user-basis_example1-label`, :download:`download script <../doc_examples/user_basis_trivial-spinless_fermion.py>`
+* :ref:`user-basis_example2-label`, :download:`download script <../doc_examples/user_basis_trivial-boson.py>`
 
 
 Scripts to demonstrate the additional functionality introduced by the `user_basis`
