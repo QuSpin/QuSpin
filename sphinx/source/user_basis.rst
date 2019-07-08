@@ -415,8 +415,8 @@ The following three examples demonstrate how the `user_basis` recovers the funct
 
 Scripts to demonstrate the additional functionality introduced by the `user_basis`
 ++++++++
-*
-*
-*
+* :ref:`example14-label`, :download:`download script <../../examples/scripts/example14.py>`
+* :ref:`example15-label`, :download:`download script <../../examples/scripts/example15.py>`
+* :ref:`example16-label`, :download:`download script <../../examples/scripts/example16.py>`
 
 

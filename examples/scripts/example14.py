@@ -9,6 +9,7 @@ quspin_path = os.path.join(os.getcwd(),"../../")
 sys.path.insert(0,quspin_path)
 #
 from quspin.operators import hamiltonian
+from quspin.operators import hamiltonian
 from quspin.basis import spin_basis_1d # Hilbert space spin basis_1d
 from quspin.basis.user import user_basis # Hilbert space user basis
 from quspin.basis.user import pre_check_state_sig_32,op_sig_32,map_sig_32 # user basis data types
@@ -77,3 +78,11 @@ basis = user_basis(np.uint32,N,op_dict,allowed_ops=set("xyz"),sps=2,
                     pre_check_state=pre_check_state,Ns_block_est=300000,**maps)
 # print basis
 print(basis)
+#
+###### construct Hamiltonian
+# site-coupling lists
+h_list  = [[1.0,i] for i in range(N)]
+# operator string lists
+static = [["x",h_list],]
+# compute Hamiltonian, no checks have been implemented
+H = hamiltonian(static,[],basis=basis,dtype=np.float64)

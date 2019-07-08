@@ -1,9 +1,12 @@
 .. _example14-label:
 
-spin-1/2 example: the Heisenberg Model in 1d
+Quantum scars Hamiltonian: spin-1/2 system with Hilbert space constraint
 --------
 
-This example makes use of the `user_basis` class of `basis_general` to show how to define spin-1/2 systems using the `user_basis`.
+This example makes use of the `user_basis` class of `basis_general` to define the Hamiltonian
+
+.. math::
+	H = \sum_j P_{j-1} \sigma^x_j P_{j+1}, \qquad P_j = |\downarrow_j\rangle\langle\downarrow_j|
 
 Please consult this post: :ref:`user_basis-label`, with more detailed explanations for using the `user_basis` class.
 

@@ -34,7 +34,7 @@ def make_basis(N_half):
     # this does the kronecker sum in a more memory efficient way. 
     return (states_b+shift_states_b.T).ravel()
 #
-new_basis = make_basis(N_half)
+external_basis = make_basis(N_half)
 #
 Np = () # dummy argument, could be any value (particle conservation should've been 
 # taken into account when constructing the basis object)
@@ -73,7 +73,7 @@ def next_state(s,counter,N,args):
     # add one to counter because the first state is already checked.
     return args[counter+1] # = basis
 #
-next_state_args = new_basis # this has to be an array of same dtype as the user_basis
+next_state_args = external_basis # this has to be an array of same dtype as the user_basis
 #
 class function_wrapper(object):
     """
@@ -136,7 +136,7 @@ P_args=np.array([],dtype=np.uint32)
 # define maps dict
 maps = dict(T_block=(translation,N_half,0,T_args), P_block=(parity,2,0,P_args), )
 # define particle conservation and op dicts
-FW = function_wrapper(new_basis)
+FW = function_wrapper(external_basis)
 pcon_dict = dict(Np=Np,next_state=next_state,next_state_args=next_state_args,
                  get_Ns_pcon=FW.get_Ns_pcon,get_s0_pcon=FW.get_s0_pcon)
 op_dict = dict(op=op,op_args=op_args)

@@ -113,8 +113,8 @@ print(basis)
 #
 ###### construct Hamiltonian
 # site-coupling lists
-t_list  = [[1.0,i,(i+1)%N_half] for i in range(N_half)]
-t_list += [[t,N_half+i,N_half+j] for t,i,j in t_list]
+t_list  = [[1.0,i,(i+1)%N_half] for i in range(N_half)] # first sublattice/leg of the ladder
+t_list += [[t,N_half+i,N_half+j] for t,i,j in t_list] # second sublattice/leg of the ladder
 U_list = [[1.0,i,i+N_half] for i in range(N_half)]
 # operator string lists
 static = [["+-",t_list],["-+",t_list],["nn",U_list]]
