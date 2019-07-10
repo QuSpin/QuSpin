@@ -27,7 +27,7 @@ class user_basis_core : public general_basis_core<I,P>
 	typedef I (*map_type)(I,int,P*,I*);
 	typedef I (*next_state_type)(I,I,I,I*);
 	typedef int (*op_func_type)(op_results<I>*,char,int,int,I*);
-	typedef void (*count_particles_type)(I,int*);
+	typedef void (*count_particles_type)(I,int*,I*);
 	typedef bool (*check_state_nosymm_type)(I,I,I*);
 
 	public:
@@ -37,14 +37,14 @@ class user_basis_core : public general_basis_core<I,P>
 		count_particles_type count_particles_func;
 		check_state_nosymm_type pre_check_state;
 		const int n_sectors;
-		I *ns_args,*precs_args,*op_args;
+		I *ns_args,*precs_args,*op_args,*count_particles_args;
 		I **maps_args;
 
 
 		user_basis_core(const int _N,const int _nt,
 			void * _map_funcs, const int _pers[], const int _qs[], I** _maps_args, 
 			const int _n_sectors,size_t _next_state,I *_ns_args,size_t _pre_check_state,
-			I* _precs_args,size_t _count_particles,size_t _op_func,I *_op_args) : \
+			I* _precs_args,size_t _count_particles,I *_count_particles_args,size_t _op_func,I *_op_args) : \
 		general_basis_core<I,P>::general_basis_core(_N,_nt,NULL,_pers,_qs), n_sectors(_n_sectors)
 		{
 			map_funcs = (map_type*)_map_funcs;
@@ -56,7 +56,7 @@ class user_basis_core : public general_basis_core<I,P>
 			ns_args = _ns_args;
 			pre_check_state = (check_state_nosymm_type)_pre_check_state;
 			precs_args = _precs_args;
-			
+			count_particles_args = _count_particles_args;
 			
 		}
 
@@ -91,7 +91,7 @@ class user_basis_core : public general_basis_core<I,P>
 
 		std::vector<int> count_particles(const I s){
 			std::vector<int> v(n_sectors);
-			(*count_particles_func)(s,&v[0]);
+			(*count_particles_func)(s,&v[0],count_particles_args);
 			return v;
 		}
 

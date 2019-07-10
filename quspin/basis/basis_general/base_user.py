@@ -35,10 +35,8 @@ op_sig_64 = types.intc(types.CPointer(op_results_64),
 								types.CPointer(types.uint64)
 								)
 
-count_particles_sig_32 = types.void(types.uint32,
-							types.CPointer(types.intc))
-count_particles_sig_64 = types.void(types.uint64,
-							types.CPointer(types.intc))
+count_particles_sig_32 = types.void(types.uint32,types.CPointer(types.intc),types.CPointer(types.intc))
+count_particles_sig_64 = types.void(types.uint64,types.CPointer(types.intc),types.CPointer(types.intc))
 
 __all__ = ["map_sig_32","map_sig_64","next_state_sig_32",
 	"next_state_sig_64","op_func_sig_32","op_func_sig_64","user_basis"]
@@ -113,11 +111,19 @@ class user_basis(basis_general):
 	Examples
 	--------
 
-	The following example shows how to use the `user_basis` class to define the 1d isotropic Heisenberg model in a subspace of fixed magnetization, translation, parity 
-	and spin-inversion symmetries. The result is then compared to `spin_basis_1d`. **Note** that this model can be more easily constructed using the `spin_basis_1d` 
-	or the `spin_basis_general` classes; the example below serves merely a didactic purpose. It can also be used as a starting point to read QuSpin' cpp libraries. 
+	The following example shows how to use the `user_basis` class to construct the Hamiltonian
+	
+	.. math::
 
-	.. literalinclude:: ../../doc_examples/user_basis_trivial-spin.py
+		H = \\sum_j P_{j-1}\\sigma^x_j P_{j+1},\\quad P_j = |\\downarrow_j\\rangle\\langle\\downarrow_j|
+
+	using translation and reflection symmetry. The projector operator :math:`P_j`, which only allows a spin-up state in the basis to be preceded and succeeded by a spin-down,
+	is incorporated by constructing the corresponding `user_basis` object. One can then just build the Hamiltonian :math:`H=\\sum_j\\sigma^x_j` in the
+	constrained Hilbert space.
+
+	More examples (including explanations of the class methods and attributes) can be found at: :ref:`user_basis-label`.
+
+	.. literalinclude:: ../../doc_examples/user_basis-example.py
 		:linenos:
 		:language: python
 		:lines: 11-
@@ -147,17 +153,21 @@ class user_basis(basis_general):
 					* **Np: tuple/int, list(tuple/int)**		
 						specifies the particle sector(s). 
 					* **next_state(s,counter,N,args): numba.CFunc object**
-						 given a quantum state :math:`|s\\rangle` in the integer-representation `s`, this CFunc generates the next lexicographically ordered particle conservation state. 
-						 `counter` is an intrinsic variable which increments by unity every time the function is called, `N` is the total number of lattice sites, and `args` holds any optional arguments stored in a `np.ndarray[basis_dtype]`.
+						given a quantum state :math:`|s\\rangle` in the integer-representation `s`, this CFunc generates the next lexicographically ordered particle conservation state. 
+						`counter` is an intrinsic variable which increments by unity every time the function is called, `N` is the total number of lattice sites, and `args` holds any optional arguments stored in a `np.ndarray[basis_dtype]`.
+					* **next_state_args: np.ndarray(basis_dtype)**
+						optional arguments for `next_state(...,args)`.
 					* **get_Ns_pcon(N,Np): python function**
-						 when called as get_Ns_pcon(N,Np), this python function returns the size of the symmetery-free particle conservation basis, given the `N` lattice sites and `Np` (see above).
+						when called as get_Ns_pcon(N,Np), this python function returns the size of the symmetery-free particle conservation basis, given the `N` lattice sites and `Np` (see above).
 					* **get_s0_pcon(N,Np): python function**
-						 when called as get_s0_pcon(N,Np), this python function returns the starting state to generate the whole particle conservation basis by repeatedly calling `next_state()`.
+						when called as get_s0_pcon(N,Np), this python function returns the starting state to generate the whole particle conservation basis by repeatedly calling `next_state()`.
 				*advanced requirements* to access `basis.Op_bra_ket()` functionality (on top of the minimum requirements):
 					* **n_sectors: int, list(int)**
-						number of integers which parameterize the particle sectors, e.g. with spinful fermions there is a particle number for both the up and the down sectors, so this number would be 2. 
-					* **count_particles(): numba.CFunc object**
-						 this CFunc counts the number of particles in each sector and places them into a pointer passed. The pointer provided will have `n_sector` of memory allocated. The order of the number should be kept the same as the ordering of `Np`.
+						number of integers which parameterize the particle sectors, e.g. with spinful fermions there is a particle number for both the up and the down sectors, and hence `n_sectors=2`. 
+					* **count_particles(s,p_count_ptr,args): numba.CFunc object**
+						For a quantum state `s` in the integer representation, this CFunc counts the number of particles in each particle sector and places them into a pointer `p_count_ptr`passed (`count_particles` does **not** return any output). The pointer provided will have `n_sector` slots of memory allocated. The components of the pointer `p_count_ptr` must correspond to the ordering of `Np`. The integer `s` cannot be changed.
+					* **count_particles_args: np.ndarray(int)**
+						optional arguments for `count_particles(...,args)`.
 		pre_check_state(s,N,args): numba.CFunc object or tuple(numba.CFunc object,ndarray(C-contiguous,dtype=basis_dtype)), optional
 			This CFunc allows the user to specify a boolean criterion used to discard/filter states from the basis. In the low-level code, this function is applied before checking if a given state is
 			representative state (i.e. belogs to a given symmetry sector) or not. This allows the user to, e.g., enforce a local Hilbert-space constraint 
@@ -274,7 +284,7 @@ class user_basis(basis_general):
 					get_s0_pcon = pcon_dict["get_s0_pcon"]
 					n_sectors = None
 					count_particles = None
-
+					count_particles_args = None
 				elif len(pcon_dict) == 6:
 					Np = pcon_dict["Np"]
 					next_state = pcon_dict["next_state"]
@@ -282,6 +292,15 @@ class user_basis(basis_general):
 					get_s0_pcon = pcon_dict["get_s0_pcon"]
 					n_sectors = pcon_dict["n_sectors"]
 					count_particles = pcon_dict["count_particles"]
+					count_particles_args = None
+				elif len(pcon_dict) == 7:
+					Np = pcon_dict["Np"]
+					next_state = pcon_dict["next_state"]
+					get_Ns_pcon = pcon_dict["get_Ns_pcon"]
+					get_s0_pcon = pcon_dict["get_s0_pcon"]
+					n_sectors = pcon_dict["n_sectors"]
+					count_particles = pcon_dict["count_particles"]
+					count_particles_args = pcon_dict["count_particles_args"]
 				else:
 					raise ValueError("pcon_dict input not understood.")
 			else:
@@ -299,8 +318,8 @@ class user_basis(basis_general):
 					elif type(Np) is tuple and n_sectors!=len(Np):
 						raise ValueError("n_sectors is {} when the size \
 							of the particle sector is {}".format(n_sectors,len(np)))
-					else:
-						raise ValueError("Np must be tuple, int, or a list of tuples/integers.")
+					#else:
+					#	raise ValueError("Np must be tuple, int, or a list of tuples/integers.")
 				else:
 					if type(Np) is int:
 						n_sectors=1
@@ -347,6 +366,7 @@ class user_basis(basis_general):
 			next_state_args = None
 			next_state = None
 			count_particles = None
+			count_particles_args = None
 			get_s0_pcon = None
 			get_Ns_pcon = None
 			n_sectors = -1
@@ -400,7 +420,7 @@ class user_basis(basis_general):
 
 		if count_particles is not None:
 			if not isinstance(count_particles,CFunc):
-				raise ValueError("next_state must be a numba.CFunc object.")
+				raise ValueError("count_particles must be a numba.CFunc object.")
 
 			if use_32bit:
 				if count_particles._sig != count_particles_sig_32:
@@ -410,6 +430,17 @@ class user_basis(basis_general):
 				if count_particles._sig != count_particles_sig_64:
 					raise ValueError("count_particles does not have the correct signature, \
 					try using count_particles_sig_64 from quspin.basis.user module.")
+
+			if count_particles_args is not None:
+				if not isinstance(count_particles_args,_np.ndarray):
+					raise ValueError("count_particles_args must be a C-contiguous numpy \
+						array with dtype {}".format(basis_dtype))
+				if not count_particles_args.flags["CARRAY"]:
+					raise ValueError("count_particles_args must be a C-contiguous numpy \
+						array with dtype {}".format(basis_dtype))
+				if not _np.issubdtype(count_particles_args.dtype,_np.integer):
+					raise ValueError("count_particles_args must be a C-contiguous numpy \
+						array with dtype {}".format(_np.integer))
 
 		self._blocks,map_funcs,pers,qs,map_args = _process_user_blocks(use_32bit,blocks,block_order)
 
@@ -427,12 +458,11 @@ class user_basis(basis_general):
 				raise TypeError("Ns_block_est must be integer value.")
 				
 			Ns = Ns_block_est
-
 		self._basis_dtype = basis_dtype
 		self._core = user_core_wrap(Ns_full, basis_dtype, N, map_funcs, pers, qs, map_args,
 								n_sectors, get_Ns_pcon, get_s0_pcon, next_state,
 								next_state_args,pre_check_state,check_state_nosymm_args,
-								count_particles, op_func, op_args, sps)
+								count_particles, count_particles_args, op_func, op_args, sps)
 
 		self._N = N
 		self._Ns = Ns

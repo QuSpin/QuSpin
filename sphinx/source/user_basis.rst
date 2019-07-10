@@ -408,9 +408,9 @@ Scripts to construct spin, fermion, and boson bases
 ++++++++
 The following three examples demonstrate how the `user_basis` recovers the functionality of the `basis_general` classes:
 
-* :ref:`user-basis_example0-label`, :download:`download script <../doc_examples/user_basis_trivial-spin.py>` 
-* :ref:`user-basis_example1-label`, :download:`download script <../doc_examples/user_basis_trivial-spinless_fermion.py>`
-* :ref:`user-basis_example2-label`, :download:`download script <../doc_examples/user_basis_trivial-boson.py>`
+* :ref:`user-basis_example0-label`, :download:`download script <../../examples/scripts/user_basis_trivial-spin.py>` 
+* :ref:`user-basis_example1-label`, :download:`download script <../../examples/scripts/user_basis_trivial-spinless_fermion.py>`
+* :ref:`user-basis_example2-label`, :download:`download script <../../examples/scripts/user_basis_trivial-boson.py>`
 
 
 Scripts to demonstrate the additional functionality introduced by the `user_basis`

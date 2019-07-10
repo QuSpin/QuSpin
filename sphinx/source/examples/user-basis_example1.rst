@@ -10,9 +10,9 @@ Please consult this post: :ref:`user_basis-label`, for more detailed explanation
 Script
 ------
 
-:download:`download script <../../doc_examples/user_basis_trivial-spinless_fermion.py>`
+:download:`download script <../../../examples/scripts/user_basis_trivial-spinless_fermion.py>`
 
-.. literalinclude:: ../../doc_examples/user_basis_trivial-spinless_fermion.py
+.. literalinclude:: ../../../examples/scripts/user_basis_trivial-spinless_fermion.py
 	:linenos:
 	:language: python
 	:lines: 1-

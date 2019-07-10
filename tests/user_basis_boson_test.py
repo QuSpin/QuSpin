@@ -1,17 +1,14 @@
 from __future__ import print_function, division
 #
 import sys,os
-os.environ['KMP_DUPLICATE_LIB_OK']='True' # uncomment this line if omp error occurs on OSX for python 3
-os.environ['OMP_NUM_THREADS']='1' # set number of OpenMP threads to run in parallel
-os.environ['MKL_NUM_THREADS']='1' # set number of MKL threads to run in parallel
 #
-quspin_path = os.path.join(os.getcwd(),"../../")
+quspin_path = os.path.join(os.getcwd(),"../")
 sys.path.insert(0,quspin_path)
 #
 from quspin.operators import hamiltonian # Hamiltonians and operators
 from quspin.basis import boson_basis_1d # Hilbert space spin basis_1d
 from quspin.basis.user import user_basis # Hilbert space user basis
-from quspin.basis.user import next_state_sig_32,op_sig_32,map_sig_32 # user basis data types
+from quspin.basis.user import next_state_sig_32,op_sig_32,map_sig_32,count_particles_sig_32 # user basis data types signatures
 from numba import carray,cfunc # numba helper functions
 from numba import uint32,int32,float64 # numba data types
 import numpy as np
@@ -148,11 +145,26 @@ def parity(x,N,sign_ptr,args):
 	return out
 P_args=np.array([sps],dtype=np.uint32)
 #
+######  define function to count particles in bit representation
+#
+@cfunc(count_particles_sig_32,
+	locals=dict(s=uint32,))
+def count_particles(x,p_count_ptr,args):
+	""" Counts number of particles/spin-ups in a state stored in integer representation for up to N=32 sites """
+	#
+	s = x # integer x cannot be changed
+	for i in range(args[0]):
+		p_count_ptr[0] += s%args[1]
+		s /= args[1]
+n_sectors=1 # number of particle sectors
+count_particles_args=np.array([N,sps],dtype=np.int32)
+#
 ######  construct user_basis 
 # define maps dict
 maps = dict(T_block=(translation,N,0,T_args),P_block=(parity,2,0,P_args), ) 
 # define particle conservation and op dicts
-pcon_dict = dict(Np=Np,next_state=next_state,get_Ns_pcon=get_Ns_pcon,get_s0_pcon=get_s0_pcon)
+pcon_dict = dict(Np=Np,next_state=next_state,get_Ns_pcon=get_Ns_pcon,get_s0_pcon=get_s0_pcon,
+				 count_particles=count_particles,n_sectors=n_sectors)
 op_dict = dict(op=op,op_args=op_args)
 # create user basiss
 basis = user_basis(np.uint32,N,op_dict,allowed_ops=set("+-nI"),sps=sps,pcon_dict=pcon_dict,**maps)
@@ -165,6 +177,7 @@ basis_1d=boson_basis_1d(N,Nb=Np,sps=sps,kblock=0,pblock=1)
 #
 print(basis)
 print(basis_1d)
+np.testing.assert_allclose(basis.states - basis_1d.states,0.0,atol=1E-5,err_msg='Failed bases comparison!')
 #
 ############   create Hamiltonians   #############
 #
@@ -178,9 +191,10 @@ int_b=[[-0.5*U,j] for j in range(N)]
 static=[["+-",hopping],["-+",hopping],["nn",int_bb],["n",int_b]]
 dynamic=[]
 #
-H=hamiltonian(static,[],basis=basis,dtype=np.float64)
-H_1d=hamiltonian(static,[],basis=basis_1d,dtype=np.float64)
+no_checks=dict(check_symm=False,check_herm=False,check_pcon=False)
+H=hamiltonian(static,[],basis=basis,dtype=np.float64,**no_checks)
+H_1d=hamiltonian(static,[],basis=basis_1d,dtype=np.float64.**no_checks)
 #
-print(H.toarray())
-print(H_1d.toarray())
-print(np.linalg.norm((H-H_1d).toarray()))
+
+np.testing.assert_allclose( (H-H_1d).toarray(),0.0,atol=1E-5,err_msg='Failed Hamiltonians comparison!')
+
