@@ -20,7 +20,7 @@ The `user_basis` class brings to surface the low-level functionality of the `bas
 	* `op(op_struct_ptr, op_str, site_ind, N, args)`_
 	* `next_state(s, counter, N, args)`_
 	* `pre_check_state(s, N, args)`_
-	* `count_particles()`_
+	* `count_particles(s, p_number_ptr, args)`_
 * `Symmetry transformations from bit operations`_
 	* `System-size independent symmetries`_
 	* `Symmetries for fixed system sizes using precomputed masks`_
@@ -225,7 +225,7 @@ A simple example of what `pre_check_state()` can be useful for is this: suppose 
 * `args`: a `np.ndarray` of the same data type as the `user_basis`. Can be used to pass optional arguments.
 
 
-`count_particles(s,p_number_ptr,args)`
+`count_particles(s, p_number_ptr, args)`
 ++++++
 This *optional* function method counts the total number of particles/magnetization in a given state.
 
@@ -237,7 +237,7 @@ This *optional* function method counts the total number of particles/magnetizati
 
 **Notes**
 
-* this function does **not** return anything. Fill in the pointer `p_number_ptr` instead. 
+* this function does **not** return anything. Fill in the pointer `p_number_ptr` with the output instead. 
 
 * make sure that `p_number_ptr[i]` corresponds to the particle sector `Np[i]`, etc.
 
@@ -246,13 +246,29 @@ Symmetry transformations from bit operations
 -------
 Any discrete symmetry is uniquely defined by its action on the basis states. Since the basis is stored in the integer representation, the symmetry operations have to be defined to transform integers. In the `basis_1d` and `basis_general` classes this is done under the hood; the `user_basis` brings this functionality to the surface, and allows the user to modify it accordingly.
 
-  
+
+`symmetry_map(s, N, sign_ptr, args)`
+++++++
+
+* `s`: quantum state in integer representation.
+
+* `N`: the total number of lattice sites.
+
+* `sign_ptr`: a pointer to keep track of changes to the sign; used for fermion systems. 
+
+* `args`: a `np.ndarray` of the same data type as the `user_basis`. Can be used to pass optional arguments, e.g. `sps` in the case of bosons.
+
+
+**Notes**
+
+* all four arguments must be present in the function, even if some are not used (this is required to keep the syntax general for all particle species).
+
 
 System-size independent symmetries
 ++++++
 System-size independent symmetries contain as a parameter the system size :math:`N`. As a result, they apply to all system sizes. Examples of such symmetries are
 
-parity in 1d 
+parity in 1d for any system size `N`
 ````````
 
 Parity is the reflection of a state w.r.t. the middle of the chain.
@@ -276,7 +292,7 @@ Parity is the reflection of a state w.r.t. the middle of the chain.
 		return out
 
 
-translation in 1d 
+translation in 1d for any system size `N`
 ````````
 
 We consider translation by `shift=1` sites, but the code can easily be generalized to a larger-shift translation. 
@@ -302,7 +318,7 @@ The convenience to define symmetry maps which apply to all system sizes comes at
 
 Luckily, there is a great tool to compute the symmetry maps, available at http://programming.sirrida.de/calcperm.php. All one needs to do is find the permutation of the lattice sites under the symmetry, and pass it to the tool to obain the symmetry map that acts on integers. Let us demonstrate how this works using two examples.
 
-parity in 1d
+parity in 1d for a fixed system size `N=10`
 ````````
 Consider a ladder of :math:`2\times 10` sites, labelled 0 through 19. The action of parity/reflection along the long ladder axis is easily defined on the lattice sites to be
 
@@ -328,7 +344,7 @@ Passing the transformed integer sequence (right-hand side) to the online generat
 
 This map works only for this system size, and for 32-bit integers. 
 
-translation in 1d
+translation in 1d for a fixed system size `N=10`
 ````````
 Consider again a ladder of :math:`2\times 10` sites, labelled 0 through 19. The action of translation along the long ladder axis is easily defined on the lattice sites to be
 

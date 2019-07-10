@@ -3,12 +3,12 @@
 Quantum scars Hamiltonian: spin-1/2 system with Hilbert space constraint
 --------
 
-This example makes use of the `user_basis` class of `basis_general` to define the Hamiltonian
+This example makes use of the `user_basis` class to define the Hamiltonian
 
 .. math::
 	H = \sum_j P_{j-1} \sigma^x_j P_{j+1}, \qquad P_j = |\downarrow_j\rangle\langle\downarrow_j|
 
-Please consult this post: :ref:`user_basis-label`, with more detailed explanations for using the `user_basis` class.
+Please consult this post: :ref:`user_basis-label`, with more detailed explanations on using the `user_basis` class.
 
 Script
 ------
