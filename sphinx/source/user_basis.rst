@@ -9,7 +9,7 @@ List of functionality features which `user_basis` allows the user to access, and
 * ...
 * ...
 
-The user basis brings to surface the low-level functionality of the `basis_general` classes and allows the user to customize the relevant function methods. 
+The `user_basis` class brings to surface the low-level functionality of the `basis_general` core class and allows the user to customize the corresponding function methods, thereby creating their provate QuSpin basis class.  
 
 **TUTORIAL CONTENTS:**
 
@@ -25,7 +25,7 @@ The user basis brings to surface the low-level functionality of the `basis_gener
 	* `System-size independent symmetries`_
 	* `Symmetries for fixed system sizes using precomputed masks`_
 	* `Symmetry maps dictionary`_
-* `Using numba to pass python functions to the c++ user_basis constructor`_
+* `Using numba to pass python functions to the C++ user_basis constructor`_
 	* `Data types`_
 	* `Function decorators`_
 * `Example Scripts`_
@@ -165,10 +165,10 @@ Below, we give a brief overview of the methods required to define `user_basis` o
 ++++++
 This function method contains user-defined action of operators :math:`O` on the integer states :math:`|s\rangle` which produces the matrix elements :math:`\mathrm{me}` via :math:`O|s\rangle = \mathrm{me}|s'\rangle`.
 
-* `op_struct_ptr`: an cpp-pointer to an object which, after being cast into an array using `op_struct=carray(op_struct_ptr,1)[0]`, contains the attributes `op_struct.state` (which contains the quantum state in integer representation), and `op_struct.matrix_ele` (the value of the corresponding matrix element which defines
+* `op_struct_ptr`: an C++-pointer to an object which, after being cast into an array using `op_struct=carray(op_struct_ptr,1)[0]`, contains the attributes `op_struct.state` (which contains the quantum state in integer representation), and `op_struct.matrix_ele` (the value of the corresponding matrix element which defines
 the action of the operator :math:`O`.).  
 
-* `op_str`: holds the operator string (e.g. `+`, `-`, `z`, `n`, or any custom user-defined letter). Note that the underlying cpp-code uses integers to store the `op_str`, e.g. `+` corresponds to the integer `43`. It is these integers that are used in the body of `op()` to distinguish the different `op_str`'s. The integer, corresponding to any string `str` can be found in python using `ord(str)`.
+* `op_str`: holds the operator string (e.g. `+`, `-`, `z`, `n`, or any custom user-defined letter). Note that the underlying C++-code uses integers to store the `op_str`, e.g. `+` corresponds to the integer `43`. It is these integers that are used in the body of `op()` to distinguish the different `op_str`'s. The integer, corresponding to any string `str` can be found in python using `ord(str)`.
 
 * `N`: the total number of lattice sites.
 
@@ -192,7 +192,7 @@ This functions method provides a user-defined particle conservation rule, which 
 
 * `s`: quantum state in integer representation.
 
-* `counter`: an integer which counts internally how many times the function has been called. The incrementation of `counter` will occur in the underlying cpp code, i.e. the user should not attempt to do this in the function body of `next_state()`. Can be used, e.g., to index an array passed in `args`.
+* `counter`: an integer which counts internally how many times the function has been called. The incrementation of `counter` will occur in the underlying C++ code, i.e. the user should not attempt to do this in the function body of `next_state()`. Can be used, e.g., to index an array passed in `args`.
 
 * `args`: a `np.ndarray` of the same data type as the `user_basis`. Can be used to pass optional arguments, e.g. to pass a precomputed basis into QuSpin in order to reduce it to a given symmetry sector: ** see Example ??? below**.
 
@@ -225,13 +225,21 @@ A simple example of what `pre_check_state()` can be useful for is this: suppose 
 * `args`: a `np.ndarray` of the same data type as the `user_basis`. Can be used to pass optional arguments.
 
 
-`count_particles()`
+`count_particles(s,p_number_ptr,args)`
 ++++++
 This *optional* function method counts the total number of particles/magnetization in a given state.
 
-**NEED TO SHOW EXAMPLES AND UPDATE THE CLASS DOC**
+* `s`: quantum state in integer representation.
 
+* `p_number_ptr`: pointer of length `n_sectors` to fill in the number of particles. Each entry should correspond to the given particle sector in `Np`. 
 
+* `args`: a `np.ndarray` of data type `np.integer`. Can be used to pass optional arguments.
+
+**Notes**
+
+* this function does **not** return anything. Fill in the pointer `p_number_ptr` instead. 
+
+* make sure that `p_number_ptr[i]` corresponds to the particle sector `Np[i]`, etc.
 
 
 Symmetry transformations from bit operations
@@ -359,13 +367,13 @@ The function methods of `user_basis` discussed above, are passed to the `user_ba
 
 Data types
 ++++++++
-Unlike python, cpp code requires the user to specify the data types of all variables (so called strong typing). For this purpose, numba supports various data types, e.g. `uint32`, or `int32`. They are typically imported from numba in the beginning of the python script.
+Unlike python, C++ code requires the user to specify the data types of all variables (so called strong typing). For this purpose, numba supports various data types, e.g. `uint32`, or `int32`. They are typically imported from numba in the beginning of the python script.
 
 Function decorators
 ++++++++
-To indicate that the function we wrote in python should be compiled as a cpp code by numba, we use the `@cfunc(signature,locals=dict())` decorator. The arguments of the decorator are the function variable signature (which contains the data times of all function variables), and `locals` which is a dictionary containing the data types of all other variables defined and used privately inside the function body. 
+To indicate that the function we wrote in python should be compiled as a C++ code by numba, we use the `@cfunc(signature,locals=dict())` decorator. The arguments of the decorator are the function variable signature (which contains the data times of all function variables), and `locals` which is a dictionary containing the data types of all other variables defined and used privately inside the function body. 
 
-In QuSpin, we provide the precompiled signatures `next_state_sig_32`, `op_sig_32`, `map_sig_32`, `next_state_sig_64`, `op_sig_64`, `map_sig_64`. The name of the signature refers to the function type it is designed for, and the integer in the end specifies the data type the `user_basis` will be constructed with. These signaturescan be imported from the `user_basis`. 
+In QuSpin, we provide the precompiled signatures `next_state_sig_32`, `op_sig_32`, `map_sig_32`, `count_particles_32`; `next_state_sig_64`, `op_sig_64`, `map_sig_64`, `count_particles_64`. The name of the signature refers to the function type it is designed for, and the integer in the end specifies the data type the `user_basis` will be constructed with. These signaturescan be imported from the `user_basis`. 
 
 As an example, consider the `translation()` python function defined above. To make this a `numba.CFunc` object, it suffices to place the decorator:
 

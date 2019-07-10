@@ -164,8 +164,8 @@ class user_basis(basis_general):
 				*advanced requirements* to access `basis.Op_bra_ket()` functionality (on top of the minimum requirements):
 					* **n_sectors: int, list(int)**
 						number of integers which parameterize the particle sectors, e.g. with spinful fermions there is a particle number for both the up and the down sectors, and hence `n_sectors=2`. 
-					* **count_particles(s,p_count_ptr,args): numba.CFunc object**
-						For a quantum state `s` in the integer representation, this CFunc counts the number of particles in each particle sector and places them into a pointer `p_count_ptr`passed (`count_particles` does **not** return any output). The pointer provided will have `n_sector` slots of memory allocated. The components of the pointer `p_count_ptr` must correspond to the ordering of `Np`. The integer `s` cannot be changed.
+					* **count_particles(s,p_number_ptr,args): numba.CFunc object**
+						For a quantum state `s` in the integer representation, this CFunc counts the number of particles in each particle sector and places them into a pointer `p_number_ptr`passed (`count_particles` does **not** return any output). The pointer provided will have `n_sector` slots of memory allocated. The components of the pointer `p_number_ptr` must correspond to the ordering of `Np`. The integer `s` cannot be changed.
 					* **count_particles_args: np.ndarray(int)**
 						optional arguments for `count_particles(...,args)`.
 		pre_check_state(s,N,args): numba.CFunc object or tuple(numba.CFunc object,ndarray(C-contiguous,dtype=basis_dtype)), optional

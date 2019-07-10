@@ -152,12 +152,12 @@ P_args=np.array([sps],dtype=np.uint32)
 #
 @cfunc(count_particles_sig_32,
 	locals=dict(s=uint32,))
-def count_particles(x,p_count_ptr,args):
+def count_particles(x,p_number_ptr,args):
 	""" Counts number of particles/spin-ups in a state stored in integer representation for up to N=32 sites """
 	#
 	s = x # integer x cannot be changed
 	for i in range(args[0]):
-		p_count_ptr[0] += s%args[1]
+		p_number_ptr[0] += s%args[1]
 		s /= args[1]
 n_sectors=1 # number of particle sectors
 count_particles_args=np.array([N,sps],dtype=np.int32)
