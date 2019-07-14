@@ -9,7 +9,6 @@ quspin_path = os.path.join(os.getcwd(),"../../")
 sys.path.insert(0,quspin_path)
 #
 from quspin.operators import hamiltonian
-from quspin.operators import hamiltonian
 from quspin.basis import spin_basis_1d # Hilbert space spin basis_1d
 from quspin.basis.user import user_basis # Hilbert space user basis
 from quspin.basis.user import pre_check_state_sig_32,op_sig_32,map_sig_32 # user basis data types

@@ -1291,7 +1291,7 @@ class hamiltonian(object):
 		for func,Hd in iteritems(self._dynamic):
 			self._dynamic_matvec[func](Hd,V,a=func(time),out=V_out,overwrite_out=False)
 
-		V_out *= -1
+		V_out *= -1.0
 		return V_out.ravel()
 
 	def __SO_real(self,time,V,V_out):
