@@ -112,7 +112,7 @@ cdef inline bool not_well_defined_output(ndarray arr,npy_intp ndim):
 	return (not _np.PyArray_ISCARRAY(arr)) or (_np.PyArray_NDIM(arr)!=ndim)
 
 
-def _wrapper_expm_multiply(ndarray Ap,ndarray Aj,ndarray Ax,int m_star,int s,ndarray a,
+def _wrapper_expm_multiply(ndarray Ap,ndarray Aj,ndarray Ax,int s,int m_star,ndarray a,
 							ndarray tol,ndarray mu,ndarray v,ndarray work):
 	cdef PyArray_Descr * dtype1 = _np.PyArray_DESCR(Ap)
 	cdef PyArray_Descr * dtype2 = _np.PyArray_DESCR(Aj)

@@ -48,6 +48,24 @@ inline float exp(const float value){
 	return std::exp(value);
 }
 
+
+
+inline void print(const npy_cdouble_wrapper value){
+	printf("(%f, %f)\n",value.real,value.imag);
+}
+
+inline void print(const npy_cfloat_wrapper value){
+	printf("(%f, %f)\n",value.real,value.imag);
+}
+
+inline void print(const double value){
+	printf("%f\n",value);
+}
+
+inline void print(const float value){
+	printf("%f\n",value);
+}
+
 }
 
 #endif
