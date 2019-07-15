@@ -27,7 +27,7 @@ def op(op_struct_ptr,op_str,site_ind,N,args):
 	# using struct pointer to pass op_struct_ptr back to C++ see numba Records
 	op_struct = carray(op_struct_ptr,1)[0]
 	err = 0
-	sps=3 #args[0]
+	sps = args[0]
 	me_offdiag=1.0;
 	me_diag=1.0;
 	#
@@ -73,7 +73,7 @@ def next_state(s,counter,N,args):
 		b1 = (t//args[i])%sps # get occupation at site i
 		if b1>0: # if there is a boson
 			n += b1 
-			b2 = (t/args[i+1])%sps # get occupation st site ahead
+			b2 = (t//args[i+1])%sps # get occupation st site ahead
 			if b2<(sps-1): # if I can move a boson to this site
 				n -= 1 # decrease one from the running total
 				t -= args[i] # remove one boson from site i 
@@ -164,7 +164,7 @@ count_particles_args=np.array([N,sps],dtype=np.int32)
 maps = dict(T_block=(translation,N,0,T_args),P_block=(parity,2,0,P_args), ) 
 # define particle conservation and op dicts
 pcon_dict = dict(Np=Np,next_state=next_state,get_Ns_pcon=get_Ns_pcon,get_s0_pcon=get_s0_pcon,
-				 count_particles=count_particles,n_sectors=n_sectors)
+				 count_particles=count_particles,n_sectors=n_sectors,next_state_args=next_state_args)
 op_dict = dict(op=op,op_args=op_args)
 # create user basiss
 basis = user_basis(np.uint32,N,op_dict,allowed_ops=set("+-nI"),sps=sps,pcon_dict=pcon_dict,**maps)
@@ -193,7 +193,7 @@ dynamic=[]
 #
 no_checks=dict(check_symm=False,check_herm=False,check_pcon=False)
 H=hamiltonian(static,[],basis=basis,dtype=np.float64,**no_checks)
-H_1d=hamiltonian(static,[],basis=basis_1d,dtype=np.float64.**no_checks)
+H_1d=hamiltonian(static,[],basis=basis_1d,dtype=np.float64,**no_checks)
 #
 
 np.testing.assert_allclose( (H-H_1d).toarray(),0.0,atol=1E-5,err_msg='Failed Hamiltonians comparison!')
