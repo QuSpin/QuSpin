@@ -480,6 +480,9 @@ def bitwise_not(x, out=None, where=None):
         if out.dtype not in [uint32,uint64,uint256,uint1024,uint4096,uint16384]:
            raise TypeError("unsupported dtype for variable out. Expecting array of unsigned integers.")
 
+        if not out.flags["C_CONTIGUOUS"]:
+            raise ValueError("out array must be C-contiguous")
+
     py_array_out = out
 
     if py_array_out.ndim!=1:
@@ -598,6 +601,9 @@ def bitwise_and(x1, x2, out=None, where=None):
         if out.dtype not in [uint32,uint64,uint256,uint1024,uint4096,uint16384]:
            raise TypeError("unsupported dtype for variable out. Expecting array of unsigned integers.")
 
+        if not out.flags["C_CONTIGUOUS"]:
+            raise ValueError("out array must be C-contiguous")
+
     py_array_out = out
 
     if py_array_out.ndim!=1:
@@ -714,6 +720,9 @@ def bitwise_or(x1, x2, out=None, where=None):
 
         if out.dtype not in [uint32,uint64,uint256,uint1024,uint4096,uint16384]:
            raise TypeError("unsupported dtype for variable out. Expecting array of unsigned integers.")
+
+        if not out.flags["C_CONTIGUOUS"]:
+            raise ValueError("out array must be C-contiguous")
 
     py_array_out = out
 
@@ -832,6 +841,9 @@ def bitwise_xor(x1, x2, out=None, where=None):
         if out.dtype not in [uint32,uint64,uint256,uint1024,uint4096,uint16384]:
            raise TypeError("unsupported dtype for variable out. Expecting array of unsigned integers.")
 
+        if not out.flags["C_CONTIGUOUS"]:
+            raise ValueError("out array must be C-contiguous")
+
     py_array_out = out
 
     if py_array_out.ndim!=1:
@@ -946,7 +958,7 @@ def bitwise_rightshift(x1, x2, out=None, where=None):
     return _bitwise_right_shift(x1, x2, out=out, where=where)
 
 
-def _bitwise_left_shift(x1, shift_type[:] x2, out=None, where=None):
+def _bitwise_left_shift(x1, shift_type[::1] x2, out=None, where=None):
     
     cdef _np.ndarray[uint8_t] py_array_where 
     cdef _np.ndarray py_array_out
@@ -987,6 +999,9 @@ def _bitwise_left_shift(x1, shift_type[:] x2, out=None, where=None):
 
         if out.dtype not in [uint32,uint64,uint256,uint1024,uint4096,uint16384]:
            raise TypeError("unsupported dtype for variable out. Expecting array of unsigned integers.")
+
+        if not out.flags["C_CONTIGUOUS"]:
+            raise ValueError("out array must be C-contiguous")
 
     py_array_out = out
 
@@ -1017,7 +1032,7 @@ def _bitwise_left_shift(x1, shift_type[:] x2, out=None, where=None):
     return py_array_out
 
 
-def _bitwise_right_shift(x1, shift_type[:] x2, out=None, where=None):
+def _bitwise_right_shift(x1, shift_type[::1] x2, out=None, where=None):
     
     cdef _np.ndarray[uint8_t] py_array_where 
     cdef _np.ndarray py_array_out
@@ -1058,6 +1073,9 @@ def _bitwise_right_shift(x1, shift_type[:] x2, out=None, where=None):
 
         if out.dtype not in [uint32,uint64,uint256,uint1024,uint4096,uint16384]:
            raise TypeError("unsupported dtype for variable out. Expecting array of unsigned integers.")
+
+        if not out.flags["C_CONTIGUOUS"]:
+            raise ValueError("out array must be C-contiguous")
 
     py_array_out = out
 

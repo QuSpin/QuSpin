@@ -38,6 +38,25 @@ bool inline check_nan(double val){
 #endif
 }
 
+
+template<class T>
+int inline check_imag(std::complex<double> m,std::complex<T> *M){
+	M[0].real(m.real());
+	M[0].imag(m.imag());
+	return 0;
+}
+
+template<class T>
+int inline check_imag(std::complex<double> m,T *M){
+	if(std::abs(m.imag())>1.1e-15){
+		return 1;
+	}
+	else{
+		M[0] = m.real();
+		return 0;
+	}
+}
+
 }
 
 

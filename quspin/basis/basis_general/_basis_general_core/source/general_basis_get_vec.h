@@ -1,11 +1,10 @@
 #ifndef _GENERAL_BASIS_GET_VEC_H
 #define _GENERAL_BASIS_GET_VEC_H
 
-
-
 #include "general_basis_core.h"
 #include "numpy/ndarraytypes.h"
 #include "misc.h"
+#include "openmp.h"
 
 
 namespace basis_general {
@@ -31,6 +30,7 @@ bool inline update_out_dense(std::complex<double> c, int sign, npy_intp n_vec,co
 		return true;
 	}
 }
+
 
 
 template<class I,class T>
@@ -194,6 +194,7 @@ bool get_vec_general_dense(general_basis_core<I> *B,
 }
 
 }
+
 
 
 #endif

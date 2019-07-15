@@ -435,7 +435,7 @@ class quantum_LinearOperator(LinearOperator):
 		Returns
 		--------
 		:obj:`quantum_LinearOperator`
-			:math:`H_{ij}\\mapsto H_{ij}^*`
+			:math:`H_{ij}\\mapsto H_{ji}^*`
 
 		Examples
 		---------
