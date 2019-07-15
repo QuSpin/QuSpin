@@ -17,7 +17,7 @@ import numpy as np
 from scipy.special import comb
 #
 #####
-N_half = 12 # number of sites for each leg of the ladder
+N_half = 10 # number of sites for each leg of the ladder
 N = 2*N_half # total number of lattice sites
 #
 def make_basis(N_half):

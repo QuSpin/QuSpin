@@ -98,7 +98,7 @@ def next_state(s,counter,N,args):
 next_state_args=np.array([sps**i for i in range(N)],dtype=np.uint32)
 # python function to calculate the starting state to generate the particle conserving basis
 def get_s0_pcon(N,Np):
-	sps = 3
+	sps = 3 # use as global variable
 	l = Np//(sps-1)
 	s  = sum((sps-1) * sps**i for i in range(l))
 	s += (Np%(sps-1)) * sps**l

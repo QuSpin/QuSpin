@@ -37,7 +37,7 @@ print('Hamiltonian:\n',H.toarray())
 #
 ##### create Lindbladian
 # site-coupling lists
-L_list=[[1.0j,i] for i in range(L)]
+L_list=[[1.0,i] for i in range(L)]
 # static opstr list 
 static_L=[['+',L_list]]
 # Lindblad operator
