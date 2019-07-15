@@ -462,7 +462,7 @@ class user_basis(basis_general):
 		self._core = user_core_wrap(Ns_full, basis_dtype, N, map_funcs, pers, qs, map_args,
 								n_sectors, get_Ns_pcon, get_s0_pcon, next_state,
 								next_state_args,pre_check_state,check_state_nosymm_args,
-								count_particles, count_particles_args, op_func, op_args, sps)
+								count_particles, count_particles_args, op_func, op_args)
 
 		self._N = N
 		self._Ns = Ns
