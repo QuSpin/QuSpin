@@ -7,7 +7,12 @@ os.environ['MKL_NUM_THREADS']='1' # set number of MKL threads to run in parallel
 #
 quspin_path = os.path.join(os.getcwd(),"../../")
 sys.path.insert(0,quspin_path)
-#
+###########################################################################
+#                            example 13                                   #
+#  In this script we demonstrate how to construct a spinful fermion basis #
+#  with no doubly occupancid sites in the Fermi-Hubbard model,            #
+#  using the spinful_fermion_ basis_general class.                        #
+###########################################################################
 from quspin.basis import spinful_fermion_basis_general
 from quspin.operators import hamiltonian
 import numpy as np

@@ -7,7 +7,11 @@ os.environ['MKL_NUM_THREADS']='1' # set number of MKL threads to run in parallel
 #
 quspin_path = os.path.join(os.getcwd(),"../../")
 sys.path.insert(0,quspin_path)
-#
+###########################################################################
+#                            example 15                                   #
+#  In this script we demonstrate how to apply the user_basis to           #
+#  construct a spin-1/2 model with sublattice particle conservation.      #
+###########################################################################
 from quspin.operators import hamiltonian
 from quspin.basis import spin_basis_1d # Hilbert space spin basis_1d
 from quspin.basis.user import user_basis # Hilbert space user basis

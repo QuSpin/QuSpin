@@ -22,6 +22,7 @@ The `user_basis` class brings to surface the low-level functionality of the `bas
 	* `pre_check_state(s, N, args)`_
 	* `count_particles(s, p_number_ptr, args)`_
 * `Symmetry transformations from bit operations`_
+	* `symmetry_map(s, N, sign_ptr, args)`_
 	* `System-size independent symmetries`_
 	* `Symmetries for fixed system sizes using precomputed masks`_
 	* `Symmetry maps dictionary`_

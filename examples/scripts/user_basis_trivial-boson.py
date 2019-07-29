@@ -30,7 +30,7 @@ def op(op_struct_ptr,op_str,site_ind,N,args):
 	# using struct pointer to pass op_struct_ptr back to C++ see numba Records
 	op_struct = carray(op_struct_ptr,1)[0]
 	err = 0
-	sps=3 #args[0]
+	sps=args[0]
 	me_offdiag=1.0;
 	me_diag=1.0;
 	#
@@ -98,7 +98,7 @@ def next_state(s,counter,N,args):
 next_state_args=np.array([sps**i for i in range(N)],dtype=np.uint32)
 # python function to calculate the starting state to generate the particle conserving basis
 def get_s0_pcon(N,Np):
-	sps = 3
+	sps = 3 # use as global variable
 	l = Np//(sps-1)
 	s  = sum((sps-1) * sps**i for i in range(l))
 	s += (Np%(sps-1)) * sps**l
@@ -166,7 +166,8 @@ count_particles_args=np.array([N,sps],dtype=np.int32)
 # define maps dict
 maps = dict(T_block=(translation,N,0,T_args),P_block=(parity,2,0,P_args), ) 
 # define particle conservation and op dicts
-pcon_dict = dict(Np=Np,next_state=next_state,get_Ns_pcon=get_Ns_pcon,get_s0_pcon=get_s0_pcon,
+pcon_dict = dict(Np=Np,next_state=next_state,next_state_args=next_state_args,
+				 get_Ns_pcon=get_Ns_pcon,get_s0_pcon=get_s0_pcon,
 				 count_particles=count_particles,n_sectors=n_sectors)
 op_dict = dict(op=op,op_args=op_args)
 # create user basiss

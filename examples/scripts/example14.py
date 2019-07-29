@@ -7,7 +7,12 @@ os.environ['MKL_NUM_THREADS']='1' # set number of MKL threads to run in parallel
 #
 quspin_path = os.path.join(os.getcwd(),"../../")
 sys.path.insert(0,quspin_path)
-#
+###########################################################################
+#                            example 14                                   #
+#  In this script we demonstrate how to use the user_basis to construct   #
+#  a spin-1/2 Hamiltonian on a restricted Hilbert space where a spin-up   #
+#  on a given lattice site must be preceded and succeeded by a spin-down. #
+###########################################################################
 from quspin.operators import hamiltonian
 from quspin.basis import spin_basis_1d # Hilbert space spin basis_1d
 from quspin.basis.user import user_basis # Hilbert space user basis

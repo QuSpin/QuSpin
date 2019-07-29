@@ -37,7 +37,7 @@ cdef class user_core_wrap(general_basis_core_wrap):
 
     def __cinit__(self,Ns_full,dtype,N,maps, pers, qs, maps_args,
         int n_sectors, get_Ns_pcon, get_s0_pcon, next_state,
-        ns_args,pre_check_state,precs_args,count_particles, count_particles_args, op_func, op_args, sps):
+        ns_args,pre_check_state,precs_args,count_particles, count_particles_args, op_func, op_args):
         self._N = N
         self._Ns_full = Ns_full
         self.get_s0_pcon_py = get_s0_pcon
@@ -47,11 +47,6 @@ cdef class user_core_wrap(general_basis_core_wrap):
         self.count_particles = count_particles
         self.op_func = op_func
         self.n_sectors = n_sectors
-
-        if sps is None:
-            sps = -1
-        print("why do we need the sps variable in user_core.pyx?")
-
 
         cdef size_t next_state_add=0,pre_check_state_add=0,count_particles_add=0,op_func_add=0
 

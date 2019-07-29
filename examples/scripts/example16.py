@@ -7,7 +7,12 @@ os.environ['MKL_NUM_THREADS']='1' # set number of MKL threads to run in parallel
 #
 quspin_path = os.path.join(os.getcwd(),"../../")
 sys.path.insert(0,quspin_path)
-#
+###########################################################################
+#                            example 16                                   #
+#  In this script we demonstrate how to apply the user_basis to reduce    #
+#  user-imported arrays of bases states (in integer representation)       #
+#  to user-defined symmetry-reduced subspaces.                            #
+###########################################################################
 from quspin.basis import spin_basis_1d,spin_basis_general # Hilbert space spin basis_1d
 from quspin.basis.user import user_basis # Hilbert space user basis
 from quspin.basis.user import next_state_sig_32,op_sig_32,map_sig_32 # user basis data types
@@ -17,7 +22,7 @@ import numpy as np
 from scipy.special import comb
 #
 #####
-N_half = 12 # number of sites for each leg of the ladder
+N_half = 10 # number of sites for each leg of the ladder
 N = 2*N_half # total number of lattice sites
 #
 def make_basis(N_half):
