@@ -839,6 +839,8 @@ def _hc_opstr_spinful(op):
 		indx_right = indx[i:]
 
 		opstr_left,opstr_right=opstr.split("|",1)
+		n_left = opstr_left.count("+")+opstr_left.count("-")
+		n_right = opstr_right.count("+")+opstr_right.count("-")
 
 		op1 = list(op)
 		op1[0] = opstr_left
@@ -856,7 +858,7 @@ def _hc_opstr_spinful(op):
 		op[0] = "|".join((op1[0],op2[0]))
 		op[1] = op1[1] + op2[1]
 
-		op[2] = op1[2]*op2[2]
+		op[2] = ((-1)**(n_left*n_right))*op1[2]*op2[2]
 
 		return tuple(op)
 

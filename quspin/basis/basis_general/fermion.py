@@ -117,41 +117,41 @@ class spinless_fermion_basis_general(basis_general):
 				raise ValueError("_Np == -1 for no particle conservation, _Np >= 0 for particle conservation")
 
 		if Nf is None:
-			Ns = (1<<N)	
+			self._Ns = (1<<N)	
 		elif type(Nf) is int:
 			self._check_pcon = True
 			self._get_proj_pcon = True
-			Ns = comb(N,Nf,exact=True)
+			self._Ns = comb(N,Nf,exact=True)
 		else:
 			try:
 				Np_iter = iter(Nf)
 			except TypeError:
 				raise TypeError("Nf must be integer or iterable object.")
-			Ns = 0
+			self._Ns = 0
 			for Nf in Np_iter:
 				if Nf > N or Nf < 0:
 					raise ValueError("particle number Nf must satisfy: 0 <= Nf <= N")
-				Ns += comb(N,Nf,exact=True)
+				self._Ns += comb(N,Nf,exact=True)
 
 		self._pcon_args = dict(N=N,Nf=Nf)
 
 		if len(self._pers)>0:
 			if Ns_block_est is None:
-				Ns = int(float(Ns)/_np.multiply.reduce(self._pers))*4
+				self._Ns = int(float(self._Ns)/_np.multiply.reduce(self._pers))*4
 			else:
 				if type(Ns_block_est) is not int:
 					raise TypeError("Ns_block_est must be integer value.")
 				if Ns_block_est <= 0:
 					raise ValueError("Ns_block_est must be an integer > 0")
 					
-				Ns = Ns_block_est
+				self._Ns = Ns_block_est
 
 		self._basis_dtype = get_basis_type(N,None,2)
 		self._core = spinless_fermion_basis_core_wrap(self._basis_dtype,N,self._maps,self._pers,self._qs)
 		
 		self._sps = 2
+		self._Ns_block_est=self._Ns
 		self._N = N
-		self._Ns = Ns
 		self._Np = Nf
 		
 
@@ -418,14 +418,14 @@ class spinful_fermion_basis_general(spinless_fermion_basis_general):
 				raise ValueError("_Np == -1 for no particle conservation, _Np >= 0 for particle conservation")
 
 		if Nf is None:
-			Ns = (1<<N)**2
+			self._Ns = (1<<N)**2
 		else:
 			if type(Nf) is tuple:
 				if len(Nf)==2:
 					self._get_proj_pcon = True
 					Nup,Ndown = Nf
 					if (type(Nup) is int) and type(Ndown) is int:
-						Ns = comb(N,Nup,exact=True)*comb(N,Ndown,exact=True)
+						self._Ns = comb(N,Nup,exact=True)*comb(N,Ndown,exact=True)
 					else:
 						raise ValueError("Nf must be tuple of integers or iterable object of tuples.")
 					Nf = [Nf]
@@ -434,13 +434,13 @@ class spinful_fermion_basis_general(spinless_fermion_basis_general):
 					if any((type(tup)is not tuple) and len(tup)!=2 for tup in Nf):
 						raise ValueError("Nf must be tuple of integers or iterable object of tuples.")		
 
-					Ns = 0
+					self._Ns = 0
 					for Nup,Ndown in Nf:
 						if Nup > N or Nup < 0:
 							raise ValueError("particle numbers in Nf must satisfy: 0 <= n <= N")
 						if Ndown > N or Ndown < 0:
 							raise ValueError("particle numbers in Nf must satisfy: 0 <= n <= N")
-						Ns += comb(N,Nup,exact=True)*comb(N,Ndown,exact=True)
+						self._Ns += comb(N,Nup,exact=True)*comb(N,Ndown,exact=True)
 
 			else:
 				try:
@@ -453,34 +453,34 @@ class spinful_fermion_basis_general(spinless_fermion_basis_general):
 
 				Nf = list(Nf)
 
-				Ns = 0
+				self._Ns = 0
 				for Nup,Ndown in Nf:
 					if Nup > N or Nup < 0:
 						raise ValueError("particle numbers in Nf must satisfy: 0 <= n <= N")
 					if Ndown > N or Ndown < 0:
 						raise ValueError("particle numbers in Nf must satisfy: 0 <= n <= N")
 
-					Ns += comb(N,Nup,exact=True)*comb(N,Ndown,exact=True)
+					self._Ns += comb(N,Nup,exact=True)*comb(N,Ndown,exact=True)
 
 		self._pcon_args = dict(N=N,Nf=Nf)
 
 		if len(self._pers)>0:
 			if Ns_block_est is None:
-				Ns = int(float(Ns)/_np.multiply.reduce(self._pers))*4
+				self._Ns = int(float(self._Ns)/_np.multiply.reduce(self._pers))*4
 			else:
 				if type(Ns_block_est) is not int:
 					raise TypeError("Ns_block_est must be integer value.")
 				if Ns_block_est <= 0:
 					raise ValueError("Ns_block_est must be an integer > 0")
 										
-				Ns = Ns_block_est
+				self._Ns = Ns_block_est
 
 		self._basis_dtype = get_basis_type(2*N,None,2)
 		self._core = spinful_fermion_basis_core_wrap(self._basis_dtype,N,self._maps,self._pers,self._qs,double_occupancy)
 
 		self._sps = 2
 		self._N = 2*N
-		self._Ns = Ns
+		self._Ns_block_est=self._Ns
 		self._Np = Nf
 		self._double_occupancy = double_occupancy
 		
@@ -726,6 +726,9 @@ class spinful_fermion_basis_general(spinless_fermion_basis_general):
 
 			opstr_left,opstr_right=opstr.split("|")
 
+			n_left = opstr_left.count("+")+opstr_left.count("-")
+			n_right = opstr_right.count("+")+opstr_right.count("-")
+
 			op1 = list(op)
 			op1[0] = opstr_left
 			op1[1] = tuple(indx_left)
@@ -740,7 +743,7 @@ class spinful_fermion_basis_general(spinless_fermion_basis_general):
 
 			op[0] = "|".join((op1[0],op2[0]))
 			op[1] = op1[1] + op2[1]
-			op[2] = op1[2] * op2[2]
+			op[2] = ((-1)**(n_left*n_right)) * op1[2] * op2[2]
 
 			return tuple(op)
 		else:

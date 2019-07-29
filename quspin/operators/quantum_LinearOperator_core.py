@@ -286,7 +286,51 @@ class quantum_LinearOperator(LinearOperator):
 	# 	"""
 	# 	return self.__rmul__(other)
 
+	def dot(self,other,out=None):
+		"""Matrix-vector multiplication of `quantum_LinearOperator` operator, with state `V`.
+
+		.. math::
+			H|V\\rangle
+
+		Parameters
+		-----------
+		other : numpy.ndarray
+			Vector (quantums tate) to multiply the `quantum_LinearOperator` operator with.	
+
+		Returns
+		--------
+		numpy.ndarray
+			Vector corresponding to the `hamiltonian` operator applied on the state `V`.
+
+		Examples
+		---------
+		>>> B = H.dot(A,check=True)
+
+		corresponds to :math:`B = HA`. 
+	
+		"""
+		if out is not None:
+			out = _np.asanyarray(out)
+			result_dtype = _np.result_type(self._dtype,other.dtype)
+
+			if (not out.flags["CARRAY"] or (out.dtype,out.shape) != (result_dtype,shape)):
+				raise ValueError("out must be C-congituous writable array \
+					with dtype {} and shape {}.".format(result_dtype,self._shape))
+
+			if self.diagonal is not None:
+				_np.multiply(other.T,self.diagonal,out=out.T)
+
+			for opstr,indx,J in self._static_list:
+				self.basis.inplace_Op(other,opstr, indx, J, self._dtype,
+									self._conjugated,self._transposed,v_out=out)
+
+			return out
+		else:
+			return self * other
+
+
 	def _matvec(self,other):
+
 		other = _np.asanyarray(other)
 		result_dtype = _np.result_type(self._dtype,other.dtype)
 		other = _np.ascontiguousarray(other,dtype=result_dtype)
@@ -414,7 +458,7 @@ class quantum_LinearOperator(LinearOperator):
 		Returns
 		--------
 		:obj:`quantum_LinearOperator`
-			:math:`H_{ij}\\mapsto H_{ij}^*`
+			:math:`H_{ij}\\mapsto H_{ji}^*`
 
 		Examples
 		---------
@@ -513,7 +557,7 @@ class quantum_LinearOperator(LinearOperator):
 		elif ishamiltonian(other):
 			return self._mul_hamiltonian(other)
 		elif isinstance(other,LinearOperator):
-			return LinearOperator.__mul__(self,other)
+			return LinearOperator.dot(self,other)
 		elif _np.asarray(other).ndim == 0:
 			return self._mul_scalar(other)
 		else:
@@ -541,7 +585,7 @@ class quantum_LinearOperator(LinearOperator):
 		elif ishamiltonian(other):
 			return self._rmul_hamiltonian(other)
 		elif isinstance(other,LinearOperator):
-			return LinearOperator.__rmul__(self,other)
+			return LinearOperator.dot(other.transpose(),self.transpose()).transpose()
 		elif _np.isscalar(other):
 			return self._mul_scalar(other)
 		else:

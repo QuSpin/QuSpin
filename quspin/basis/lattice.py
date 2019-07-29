@@ -124,6 +124,10 @@ class lattice_basis(basis):
 		"""
 		return self._index(s)
 
+	@property
+	def dtype(self):
+		return self._basis.dtype
+	
 
 	@property
 	def states(self):

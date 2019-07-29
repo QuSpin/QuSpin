@@ -329,6 +329,10 @@ class Floquet(object):
 			# check and orthogonalise VF in degenerate subspaces
 			if _np.any( _np.diff(_np.sort(thetaF)) < 1E3*_np.finfo(thetaF.dtype).eps):
 				VF,_ = _la.qr(VF, overwrite_a=True) 
+			
+			# thetaF, VF = _la.schur(UF,overwrite_a=True,output='real')
+			# thetaF=thetaF.diagonal()
+		
 			# calculate and order q'energies
 			EF = _np.real( 1j/self.T*_np.log(thetaF) )
 			# sort and order

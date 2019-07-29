@@ -30,40 +30,40 @@ class higher_spin_basis_general(basis_general):
 			raise ValueError("sps required for higher_spin_core")
 
 		if Nup is None:
-			Ns = sps**N
+			self._Ns = sps**N
 			self._basis_dtype = get_basis_type(N,Nup,sps)
 		elif type(Nup) is int:
 			self._check_pcon = True
 			self._get_proj_pcon = True
-			Ns = H_dim(Nup,N,sps-1)
+			self._Ns = H_dim(Nup,N,sps-1)
 			self._basis_dtype = get_basis_type(N,Nup,sps)
 		else:
 			try:
 				Np_iter = iter(Nup)
 			except TypeError:
 				raise TypeError("Nup must be integer or iteratable object.")
-			Ns = 0
+			self._Ns = 0
 			for Nup in Np_iter:
-				Ns += H_dim(Nup,N,sps-1)
+				self._Ns += H_dim(Nup,N,sps-1)
 
 			self._basis_dtype = get_basis_type(N,max(iter(Nup)),sps)
 
 		if len(self._pers)>0:
 			if Ns_block_est is None:
-				Ns = int(float(Ns)/_np.multiply.reduce(self._pers))*sps
+				self._Ns = int(float(self._Ns)/_np.multiply.reduce(self._pers))*sps
 			else:
 				if type(Ns_block_est) is not int:
 					raise TypeError("Ns_block_est must be integer value.")
 				if Ns_block_est <= 0:
 					raise ValueError("Ns_block_est must be an integer > 0")
 
-				Ns = Ns_block_est
+				self._Ns = Ns_block_est
 
 		self._basis_dtype = get_basis_type(N,Nup,sps)
 		self._core = higher_spin_basis_core_wrap(self._basis_dtype,N,sps,self._maps,self._pers,self._qs)
 
 		self._N = N
-		self._Ns = Ns
+		self._Ns_block_est=self._Ns
 		self._Np = Nup
 		
 

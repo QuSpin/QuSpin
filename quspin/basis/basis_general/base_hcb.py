@@ -26,38 +26,38 @@ class hcb_basis_general(basis_general):
 				raise ValueError("_Np == -1 for no particle conservation, _Np >= 0 for particle conservation")
 
 		if Nb is None:
-			Ns = (1<<N)	
+			self._Ns = (1<<N)	
 		elif type(Nb) is int:
 			self._check_pcon = True
 			self._get_proj_pcon = True
-			Ns = comb(N,Nb,exact=True)
+			self._Ns = comb(N,Nb,exact=True)
 		else:
 			try:
 				Np_iter = iter(Nb)
 			except TypeError:
 				raise TypeError("Nb must be integer or iteratable object.")
 			Nb = list(Nb)
-			Ns = 0
+			self._Ns = 0
 			for b in Nb:
 				if b > N or b < 0:
 					raise ValueError("particle number Nb must satisfy: 0 <= Nb <= N")
-				Ns += comb(N,b,exact=True)
+				self._Ns += comb(N,b,exact=True)
 
 		if len(self._pers)>0:
 			if Ns_block_est is None:
-				Ns = int(float(Ns)/_np.multiply.reduce(self._pers))*2
+				self._Ns = int(float(self._Ns)/_np.multiply.reduce(self._pers))*2
 			else:
 				if type(Ns_block_est) is not int:
 					raise TypeError("Ns_block_est must be integer value.")
 					
-				Ns = Ns_block_est
+				self._Ns = Ns_block_est
 
 		# create basis constructor
 		self._basis_dtype = get_basis_type(N,None,2)
 		self._core = hcb_basis_core_wrap(self._basis_dtype,N,self._maps,self._pers,self._qs)
 
 		self._N = N
-		self._Ns = Ns
+		self._Ns_block_est=self._Ns
 		self._Np = Nb
 		
 

@@ -69,12 +69,6 @@ void csrmv_merge(const bool overwrite_y,
 	I num_merge_items = num_rows + num_nonzeros; // Merge path total length
 	I items_per_thread = (num_merge_items + num_threads - 1) / num_threads; // Merge items per thread
 
-	if(overwrite_y){
-		#pragma omp for schedule(static)
-		for(I i=0;i<num_rows;i++){
-			y[i] = T3(0);
-		}
-	}
 	// Spawn parallel threads
 	#pragma omp for schedule(static,1)
 	for (int tid = 0; tid < num_threads; tid++)
@@ -84,16 +78,21 @@ void csrmv_merge(const bool overwrite_y,
 		I diagonal_end = std::min(diagonal + items_per_thread, num_merge_items);
 		CoordinateT<I> thread_coord = MergePathSearch(diagonal, num_rows, num_nonzeros, row_end_offsets, nz_indices);
 		CoordinateT<I> thread_coord_end = MergePathSearch(diagonal_end, num_rows, num_nonzeros,row_end_offsets, nz_indices);
+		if(overwrite_y){
+			for(I thd_x=thread_coord.x;thd_x<thread_coord_end.x;++thd_x)
+				y[thd_x] = T3(0);
+		}
+
 
 		// Consume merge items, whole rows first
-		T3 running_total = 0.0;
+		T3 running_total = T3(0);
 		for (; thread_coord.x < thread_coord_end.x; ++thread_coord.x)
 		{
 			for (; thread_coord.y < row_end_offsets[thread_coord.x]; ++thread_coord.y)
 			running_total += values[thread_coord.y] * x[column_indices[thread_coord.y]];
 
 			y[thread_coord.x] += alpha * running_total;
-			running_total = 0.0;
+			running_total = T3(0);
 		}
 
 		// Consume partial portion of thread's last row
@@ -112,7 +111,6 @@ void csrmv_merge(const bool overwrite_y,
 		if (row_carry_out[tid] < num_rows)
 		y[row_carry_out[tid]] += alpha * value_carry_out[tid];
 	}
-
 }
 
 
@@ -181,7 +179,6 @@ void csrmv_merge_strided(const bool overwrite_y,
 		if (row_carry_out[tid] < num_rows)
 		y[row_carry_out[tid] * stride_y] += alpha * value_carry_out[tid];
 	}
-
 }
 
 
