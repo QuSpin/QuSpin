@@ -4,8 +4,8 @@ import numpy as _np
 from numba import cfunc, types, njit
 from numba.ccallback import CFunc
 
-map_sig_32 = types.uint32(types.uint32,types.intc,types.CPointer(types.intc),types.CPointer(types.uint32))
-map_sig_64 = types.uint64(types.uint64,types.intc,types.CPointer(types.intc),types.CPointer(types.uint64))
+map_sig_32 = types.uint32(types.uint32,types.intc,types.CPointer(types.int8),types.CPointer(types.uint32))
+map_sig_64 = types.uint64(types.uint64,types.intc,types.CPointer(types.int8),types.CPointer(types.uint64))
 
 next_state_sig_32 = types.uint32(types.uint32,types.uint32,types.uint32,types.CPointer(types.uint32))
 next_state_sig_64 = types.uint64(types.uint64,types.uint64,types.uint64,types.CPointer(types.uint64))
