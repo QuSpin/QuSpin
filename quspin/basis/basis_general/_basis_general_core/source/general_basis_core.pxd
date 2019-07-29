@@ -42,7 +42,6 @@ cdef extern from "general_basis_get_amp.h" namespace "basis_general":
 
 cdef extern from "misc.h" namespace "basis_general":
     K binary_search[K,I](const K,const I[],const I) nogil
-    void map_state_wrapper(void*,void*,npy_intp,int,uint8_t*) nogil
 
 
 cdef extern from "general_basis_rep.h" namespace "basis_general":
