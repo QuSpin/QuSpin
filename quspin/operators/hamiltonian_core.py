@@ -668,7 +668,7 @@ class hamiltonian(object):
 		
 		else:
 			if isinstance(V,_np.ndarray):
-				V = V.astype(result_dtype)
+				V = V.astype(result_dtype,copy=False,order="C")
 
 				if out is None:
 					out = self._static_matvec(self._static,V)

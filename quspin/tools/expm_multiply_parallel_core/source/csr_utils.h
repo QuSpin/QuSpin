@@ -141,9 +141,11 @@ realT csr_1_norm(const I n_row,
 	std::vector<realT> col_sums(n_col);
 
 	for(I i = 0; i < n_row; i++){
+		realT sum = 0;
 		for(I jj = Ap[i]; jj < Ap[i+1]; jj++){
-			col_sums[Aj[jj]] += std::abs(Ax[jj]);
+			sum += std::abs(Ax[jj]);
 		}
+		col_sums[i] = sum;
 	}
 
 	return *std::max_element(col_sums.begin(),col_sums.end());

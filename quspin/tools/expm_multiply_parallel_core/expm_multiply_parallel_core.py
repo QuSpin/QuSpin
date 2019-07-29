@@ -60,7 +60,6 @@ class expm_multiply_parallel(object):
         shift.data *= mu
         self._A = self._A - shift
         self._A_1_norm = _wrapper_csr_1_norm(self._A.indptr,self._A.indices,self._A.data)
-
         self._calculate_partition()
 
 
@@ -141,6 +140,7 @@ class expm_multiply_parallel(object):
         a_dtype = _np.result_type(self._A.dtype,a_dtype_min)
         v_dtype = _np.result_type(self._A.dtype,a_dtype,v.dtype)
 
+
         if overwrite_v:
             if v_dtype != v.dtype:
                 raise ValueError("if overwrite_v is True, the input array must match correct output dtype for matrix multiplication.")
@@ -164,7 +164,7 @@ class expm_multiply_parallel(object):
 
         a = _np.array(self._a,dtype=v_dtype)
         _wrapper_expm_multiply(self._A.indptr,self._A.indices,self._A.data,
-                    self._m_star,self._s,a,self._tol,self._mu,v,work_array)
+                    self._s,self._m_star,a,self._tol,self._mu,v,work_array)
 
         return v
 
