@@ -1,7 +1,7 @@
 # cython: language_level=2
 # distutils: language=c++
 import cython
-from scipy.misc import comb
+from scipy.special import comb
 import scipy.sparse as _sp
 
 include "source/general_basis_core.pyx"
