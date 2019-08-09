@@ -2,7 +2,7 @@ from ._basis_general_core import higher_spin_basis_core_wrap,get_basis_type,basi
 from .base_general import basis_general
 from .boson import H_dim
 import numpy as _np
-from scipy.misc import comb
+from scipy.special import comb
 
 
 

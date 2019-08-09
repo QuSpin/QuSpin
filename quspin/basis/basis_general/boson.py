@@ -2,8 +2,7 @@ from ._basis_general_core import boson_basis_core_wrap,get_basis_type,basis_zero
 from .base_hcb import hcb_basis_general
 from .base_general import basis_general
 import numpy as _np
-from scipy.misc import comb
-
+from scipy.special import comb
 
 def H_dim(N,length,m_max):
     """

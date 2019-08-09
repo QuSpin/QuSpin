@@ -4,7 +4,7 @@ from ._basis_general_core import get_basis_type,basis_zeros
 from .base_general import basis_general,_check_symm_map
 from ..base import MAXPRINT
 import numpy as _np
-from scipy.misc import comb
+from scipy.special import comb
 
 
 # general basis for hardcore bosons/spin-1/2

@@ -1,5 +1,6 @@
 import numpy as _np
-from scipy.misc import comb
+#from scipy.misc import comb
+from scipy.special import comb
 
 # tells whether or not the inputs into the ops needs Ns or 2*Ns elements
 """
