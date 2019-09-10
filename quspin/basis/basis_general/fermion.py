@@ -588,7 +588,7 @@ class spinful_fermion_basis_general(spinless_fermion_basis_general):
 		else:
 			raise ValueError("down_state must be integer or string.")
 
-		s = down_state + (up_state << self.L)
+		s = down_state + (up_state << (self.N//2) ) # self.N here counts 2N sites 
 
 		indx = _np.argwhere(self._basis == s)
 
