@@ -3,9 +3,19 @@
 Exact Diagonalisation of Spin Hamiltonians
 ------------------------------------------
 
+This example shows how to code up the Heisenberg Hamiltonian:
+
+.. math::
+	H = \sum_{j=0}^{L-2}\frac{J_{xy}}{2}\left(S^+_{j+1}S^-_{j} + \mathrm{h.c.}\right) + J_{zz}S^z_{j+1}S^z_{j} + h_z\sum_{j=0}^{L-1}S^z_{j}.
+
+Details about the code below can be found in `this tutorial paper <https://scipost.org/SciPostPhys.2.1.003>`_.
+
+
+Script
+------
+
 :download:`download script <../../../examples/scripts/example0.py>`
 
-For a detailed discussion of the code below, see `arXiv:1610.03042 <https://arxiv.org/abs/1610.03042>`_.
 
 .. literalinclude:: ../../../examples/scripts/example0.py
 	:linenos:

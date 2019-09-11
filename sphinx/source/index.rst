@@ -12,7 +12,7 @@ This page contains the documentation for the use of all public functions and cla
 
 Check out these papers for a detailed tutorial:
     * `SciPost Phys. 2, 003 (2017) <https://scipost.org/10.21468/SciPostPhys.2.1.003>`_
-    * `arXiv:1804.06782 <https://arxiv.org/abs/1804.06782>`_
+    * `SciPost Phys. 7, 020 (2019) <https://scipost.org/SciPostPhys.7.2.020>`_
 
 The source code is available on `Github <https://github.com/weinbe58/QuSpin/tree/master>`_.
 
