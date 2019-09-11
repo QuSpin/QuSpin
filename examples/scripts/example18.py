@@ -1,5 +1,5 @@
 ###########################################################################
-#                            example 13                                   #	
+#                            example 18                                   #	
 # This example exploits networkx for building a connectivity graph        #
 # representing the hexagonal lattice geometry for the 2 species           #
 # Fermy-Hubbard model.                                                    #
