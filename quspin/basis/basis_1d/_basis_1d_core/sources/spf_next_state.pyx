@@ -4,8 +4,10 @@ cdef inline basis_type next_state_pcon(basis_type v,basis_type[:] pars):
 	if v == 0 :
 		return v
 
-	cdef basis_type t = (v | (v - 1)) + 1
-	return t | ((((t & -t) / (v & -v)) >> 1) - 1)
+	cdef basis_type one=1;
+
+	cdef basis_type t = (v | (v - one)) + one
+	return t | ((((t & -t) // (v & -v)) >> one) - one)
 
 
 cdef basis_type next_state_pcon_spf(basis_type v, basis_type[:] pars):
