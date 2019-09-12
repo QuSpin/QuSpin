@@ -11,7 +11,7 @@ This example shows how to code up the Bose-Fermi mixture Hamiltonian:
 	H_\mathrm{f}(t) &=& -J_\mathrm{f}\sum_{j}\left(c^\dagger_{j+1}c_j - c_{j+1}c^\dagger_j\right) + A\cos\Omega t\sum_j (-1)^j n^\mathrm{f}_j +  U_\mathrm{ff}\sum_j n^\mathrm{f}_jn^\mathrm{f}_{j+1},\nonumber\\
 	H_\mathrm{bf} &=& U_\mathrm{bf}\sum_j n^\mathrm{b}_jn^\mathrm{f}_j
 
-Details about the code below can be found in `this tutorial paper <https://scipost.org/SciPostPhys.7.2.020>`_.
+Details about the code below can be found in `SciPost Phys. 7, 020 (2019) <https://scipost.org/10.21468/SciPostPhys.7.2.020>`_.
 
 
 Script

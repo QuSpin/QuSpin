@@ -17,7 +17,7 @@ where
 .. math::
 	H_{zz} = -\sum_{\langle ij\rangle} S^z_iS^z_{j}, \qquad H_{x} = -\sum_{i}S^x_i.
 
-Details about the code below can be found in `this tutorial paper <https://scipost.org/SciPostPhys.7.2.020>`_.
+Details about the code below can be found in `SciPost Phys. 7, 020 (2019) <https://scipost.org/10.21468/SciPostPhys.7.2.020>`_.
 
 
 Script

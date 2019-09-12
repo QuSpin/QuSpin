@@ -11,8 +11,8 @@ QuSpin is an open-source Python package for exact diagonalization and quantum dy
 This page contains the documentation for the use of all public functions and classes contained in QuSpin. 
 
 Check out these papers for a detailed tutorial:
-    * `SciPost Phys. 2, 003 (2017) <https://scipost.org/10.21468/SciPostPhys.2.1.003>`_
-    * `SciPost Phys. 7, 020 (2019) <https://scipost.org/SciPostPhys.7.2.020>`_
+    * `SciPost Phys. 2, 003 (2017) <https://scipost.org/10.21468/SciPostPhys.2.1.003>`_.
+    * `SciPost Phys. 7, 020 (2019) <https://scipost.org/SciPostPhys.7.2.020>`_.
 
 The source code is available on `Github <https://github.com/weinbe58/QuSpin/tree/master>`_.
 

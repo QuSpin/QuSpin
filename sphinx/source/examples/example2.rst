@@ -13,7 +13,7 @@ This example shows how to code up the periodically-driven spin Hamiltonian:
 	&=& \sum_{j=0}^{L-1} \frac{1}{2}\left(J \sigma^z_j\sigma^z_{j+1} + h\sigma^z + g\sigma^x_j\right)
 	+ \frac{1}{2}\text{sgn}\left[\cos\Omega t\right]\left( J \sigma^z_j\sigma^z_{j+1} + h\sigma^z - g\sigma^x_j \right).
 
-Details about the code below can be found in `this tutorial paper <https://scipost.org/SciPostPhys.2.1.003>`_.
+Details about the code below can be found in `SciPost Phys. 2, 003 (2017) <https://scipost.org/10.21468/SciPostPhys.2.1.003>`_.
 
 
 Script

@@ -1,4 +1,4 @@
-:math:`\mathrm{\color{orange} {QuSpin\ 0.3.3}}` here (updated on 2019.05.01)
+:math:`\mathrm{\color{orange} {QuSpin\ 0.3.3}}` here (updated on 2019.10.01)
 ===================================================================
 
 :math:`\mathrm{\color{red} {Highlights}}`: OpenMP support now here!
