@@ -7,12 +7,7 @@ os.environ['MKL_NUM_THREADS']='1' # set number of MKL threads to run in parallel
 #
 quspin_path = os.path.join(os.getcwd(),"../../")
 sys.path.insert(0,quspin_path)
-###########################################################################
-#                            example 17                                   #
-#  In this script we demonstrate how to apply the matvec function         #
-#  to define the Lundblad equation for a two-leel system, and solve it    #
-#  using the evolve funcion.                                              #
-###########################################################################
+#
 from quspin.operators import hamiltonian, commutator, anti_commutator
 from quspin.basis import spin_basis_1d # Hilbert space spin basis_1d
 from quspin.tools.evolution import evolve
@@ -31,7 +26,7 @@ gamma = 0.5*np.sqrt(3) # decay rate
 #
 ##### create Hamiltonian to evolve unitarily
 # basis
-basis=spin_basis_1d(L,pauli=-1) # uses convention "+" = [[0,1],[0,0]]
+basis=spin_basis_1d(L,pauli=-1) # uses convention "+" = [[0,1],[0,0]] (mind the spin factor 1/2)
 # site-coupling lists
 hx_list=[[Omega_0,i] for i in range(L)]
 hz_list=[[delta,i] for i in range(L)]
@@ -57,21 +52,6 @@ L_daggerL=L_dagger*L
 #
 matvec=get_matvec_function(H.static)
 #
-#
-##### define Lindblad equation in diagonal form
-# slow, straightforward function
-def Lindblad_EOM_v1(time,rho):
-	"""
-	This function solves the complex-valued time-dependent GPE:
-	$$ \dot\rho(t) = -i[H,\rho(t)] + 2\gamma\left( L\rho L^\dagger - \frac{1}{2}\{L^\dagger L, \rho \} \right) $$
-	"""
-	# solve static part of Lindblad equation
-	rho = rho.reshape((H.Ns,H.Ns))
-	rho_dot = -1j*commutator(H,rho).static + 2.0*gamma*(L*rho*L_dagger).static - gamma*anti_commutator(L_daggerL,rho).static 
-	# solve dynamic part of Lindblad equation (no time-dependence in Lindbladian for this example)
-	for f,Hd in iteritems(H.dynamic):
-		rho_dot += -1j*f(time)*commutator(Hd,rho)
-	return rho_dot.ravel()
 #
 # fast function (not as memory efficient)
 def Lindblad_EOM_v2(time,rho,rho_out,rho_aux):
@@ -120,9 +100,8 @@ t_max=6.0
 time=np.linspace(0.0,t_max,101)
 # define initial state
 rho0=np.array([[0.5,0.5j],[-0.5j,0.5]],dtype=np.complex128)
-# slow solution
-#rho_t = evolve(rho0,time[0],time,Lindblad_EOM_v1,iterate=True,atol=1E-12,rtol=1E-12)
-# fast solution (but 3 times as memory intensive)
+#
+# evolution 
 rho_t = evolve(rho0,time[0],time,Lindblad_EOM_v2,f_params=EOM_args,iterate=True,atol=1E-12,rtol=1E-12) 
 #
 # compute state evolution
@@ -131,15 +110,3 @@ for i,rho_flattened in enumerate(rho_t):
 	rho=rho_flattened.reshape(H.Ns,H.Ns)
 	population_down[i]=rho_flattened[1,1]
 	print("time={0:.2f}, population of down state = {1:0.8f}".format(time[i],population_down[i]) )
-#
-##### plot population dynamics of down state
-#
-plt.plot(Omega_Rabi*time, population_down)
-plt.xlabel('$\\Omega_R t$')
-plt.ylabel('$\\rho_{\\downarrow\\downarrow}$')
-plt.xlim(time[0],time[-1])
-plt.ylim(0.0,1.0)
-plt.grid()
-plt.tight_layout()
-plt.savefig('example17.pdf', bbox_inches='tight')
-plt.close()

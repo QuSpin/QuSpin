@@ -21,6 +21,8 @@ where :math:`[\cdot,\cdot]` is the commutator, and :math:`\{\cdot,\cdot\}` is th
 Below, we provide two ways to define the function for the Lindblad ODE. The first version is very intuitive, but rather slow. The second version
 uses the `matvec()` function and is fast (but might not be memory efficient for large systems).
 
+Note that this way of simulating the Lindblad equation has severe limitations for many-body systems. An alternative, parallelizable way to effectively simulate Lindblad dynamics using unitary evolution is described in 
+`arXiv:1608.01317 <https://arxiv.org/pdf/1608.01317.pdf>`_.
 
 Script
 ------

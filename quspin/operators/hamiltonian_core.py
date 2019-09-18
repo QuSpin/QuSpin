@@ -5,8 +5,11 @@ from ..basis import isbasis as _isbasis
 
 from ..tools.evolution import evolve
 
-from ._oputils import matvec as _matvec
-from ._oputils import _get_matvec_function
+from ..tools.matvec import _matvec
+from ..tools.matvec import _get_matvec_function
+
+# from ._oputils import matvec as _matvec
+# from ._oputils import _get_matvec_function
 
 # from .exp_op_core import isexp_op,exp_op
 

@@ -10,7 +10,8 @@ def get_include_dirs():
     include_dirs = {}
     include_dirs["numpy"] = numpy.get_include()
     include_dirs["source"] = os.path.join(package_dir,"source")
-    include_dirs["_oputils"] = os.path.join(package_dir,"..","..","operators","_oputils")
+    #include_dirs["_oputils"] = os.path.join(package_dir,"..","..","operators","_oputils")
+    include_dirs["_oputils"] = os.path.join(package_dir,"..","matvec","_oputils")
 
     return include_dirs
 

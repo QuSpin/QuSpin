@@ -11,9 +11,9 @@ def csr_matvec(A,v,a=None,out=None,overwrite_out=True):
 
 	Notes
 	-----
-	For QuSpin builds which support OpenMP this function will be multithreaded. Note that using
-	out=v will result in incorrect results. Also note that if format of A is not 'csr' 
-	the matrix will be converted.
+	* For QuSpin builds which support OpenMP this function will be multithreaded. 
+	* Using `out=v` will result in incorrect results. 
+	* If format of A is not 'csr' the matrix will be converted to `csr` format.
 
 	Examples
 	--------
