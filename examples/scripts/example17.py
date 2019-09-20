@@ -43,7 +43,7 @@ print('Hamiltonian:\n',H.toarray())
 #
 ##### create Lindbladian
 # site-coupling lists
-L_list=[[1.0,i] for i in range(L)]
+L_list=[[1.0j,i] for i in range(L)]
 # static opstr list 
 static_L=[['+',L_list]]
 # Lindblad operator
@@ -59,7 +59,9 @@ matvec=get_matvec_function(H.static)
 #
 #
 ##### define Lindblad equation in diagonal form
+#
 # slow, straightforward function
+#
 def Lindblad_EOM_v1(time,rho):
 	"""
 	This function solves the complex-valued time-dependent GPE:
@@ -73,7 +75,8 @@ def Lindblad_EOM_v1(time,rho):
 		rho_dot += -1j*f(time)*commutator(Hd,rho)
 	return rho_dot.ravel()
 #
-# fast function (not as memory efficient)
+# intermediate, straightforward function using dot and rdot
+#
 def Lindblad_EOM_v2(time,rho,rho_out,rho_aux):
 	"""
 	This function solves the complex-valued time-dependent GPE:
@@ -81,10 +84,41 @@ def Lindblad_EOM_v2(time,rho,rho_out,rho_aux):
 	"""
 	rho = rho.reshape((H.Ns,H.Ns)) # reshape vector from ODE solver input
 	### Hamiltonian part
+	# commutator term (unitary)
+	# rho_out = H.static.dot(rho))
+	H.dot( rho,out=rho_out  ,a=+1.0,overwrite_out=True)
+	# rho_out -= (H.static.T.dot(rho.T)).T // RHS~rho.dot(H) 
+	H.rdot(rho,out=rho_out,a=-1.0,overwrite_out=False)
+	# multiply by -i
+	rho_out *= -1.0j
+	#
+	### Lindbladian part (static only)
+	# 1st Lindblad term (nonunitary)
+	# rho_aux = 2\gamma*L.dot(rho)
+	L.dot(rho             ,out=rho_aux  ,a=+2.0*gamma,overwrite_out=True)
+	# rho_out += (L.static.T.conj().dot(rho_aux.T)).T // RHS~rho_aux.dot(L_dagger) 
+	L.H.rdot(rho_aux,out=rho_out,a=+1.0,overwrite_out=False) # L.H = L^\dagger
+	# anticommutator (2nd Lindblad) term (nonunitary)
+	# rho_out += gamma*L_daggerL._static.dot(rho)
+	L_daggerL.dot(rho  ,out=rho_out  ,a=-gamma,overwrite_out=False)
+	# # rho_out += gamma*(L_daggerL._static.T.dot(rho.T)).T // RHS~rho.dot(L_daggerL) 
+	L_daggerL.rdot(rho,out=rho_out,a=-gamma,overwrite_out=False) 
+	
+	return rho_out.ravel() # ODE solver accepts vectors only
+#
+# fast function using matvec (not as memory efficient)
+#
+def Lindblad_EOM_v3(time,rho,rho_out,rho_aux):
+	"""
+	This function solves the complex-valued time-dependent GPE:
+	$$ \dot\rho(t) = -i[H,\rho(t)] + 2\gamma\left( L\rho L^\dagger - \frac{1}{2}\{L^\dagger L, \rho \} \right) $$
+	"""
+	rho = rho.reshape((H.Ns,H.Ns)) # reshape vector from ODE solver input
+	### Hamiltonian part
 	# commutator term (unitary
-	# rho_out = H._static.dot(rho))
+	# rho_out = H.static.dot(rho))
 	matvec(H.static  ,rho  ,out=rho_out  ,a=+1.0,overwrite_out=True)
-	# rho_out -= (H._static.T.dot(rho.T)).T // RHS~rho.dot(H) 
+	# rho_out -= (H.static.T.dot(rho.T)).T // RHS~rho.dot(H) 
 	matvec(H.static.T,rho.T,out=rho_out.T,a=-1.0,overwrite_out=False)
 	# 
 	for func,Hd in iteritems(H._dynamic):
@@ -103,11 +137,11 @@ def Lindblad_EOM_v2(time,rho,rho_out,rho_aux):
 	# rho_out += (L.static.T.conj().dot(rho_aux.T)).T // RHS~rho_aux.dot(L_dagger) 
 	matvec(L.static.T.conj(),rho_aux.T,out=rho_out.T,a=+1.0,overwrite_out=False) 
 	# anticommutator (2nd Lindblad) term (nonunitary)
-	# rho_out += gamma*L_daggerL._static.dot(rho)
+	# rho_out += gamma*L_daggerL.static.dot(rho)
 	matvec(L_daggerL.static  ,rho  ,out=rho_out  ,a=-gamma,overwrite_out=False)
-	# rho_out += gamma*(L_daggerL._static.T.dot(rho.T)).T // RHS~rho.dot(L_daggerL) 
+	# # rho_out += gamma*(L_daggerL.static.T.dot(rho.T)).T // RHS~rho.dot(L_daggerL) 
 	matvec(L_daggerL.static.T,rho.T,out=rho_out.T,a=-gamma,overwrite_out=False) 
-	#
+	
 	return rho_out.ravel() # ODE solver accepts vectors only
 #
 # define auxiliary arguments
@@ -120,10 +154,12 @@ t_max=6.0
 time=np.linspace(0.0,t_max,101)
 # define initial state
 rho0=np.array([[0.5,0.5j],[-0.5j,0.5]],dtype=np.complex128)
-# slow solution
+# slow solution, uses Lindblad_EOM_v1
 #rho_t = evolve(rho0,time[0],time,Lindblad_EOM_v1,iterate=True,atol=1E-12,rtol=1E-12)
-# fast solution (but 3 times as memory intensive)
-rho_t = evolve(rho0,time[0],time,Lindblad_EOM_v2,f_params=EOM_args,iterate=True,atol=1E-12,rtol=1E-12) 
+# intermediate function, uses Lindblad_EOM_v2
+#rho_t = evolve(rho0,time[0],time,Lindblad_EOM_v2,f_params=EOM_args,iterate=True,atol=1E-12,rtol=1E-12) 
+# fast solution (but 3 times as memory intensive), uses Lindblad_EOM_v3
+rho_t = evolve(rho0,time[0],time,Lindblad_EOM_v3,f_params=EOM_args,iterate=True,atol=1E-12,rtol=1E-12) 
 #
 # compute state evolution
 population_down=np.zeros(time.shape,dtype=np.float64)
