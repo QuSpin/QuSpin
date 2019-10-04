@@ -168,7 +168,7 @@ maps = dict(T_block=(translation,N,0,T_args),P_block=(parity,2,0,P_args), )
 # define particle conservation and op dicts
 pcon_dict = dict(Np=Np,next_state=next_state,next_state_args=next_state_args,
 				 get_Ns_pcon=get_Ns_pcon,get_s0_pcon=get_s0_pcon,
-				 count_particles=count_particles,n_sectors=n_sectors)
+				 count_particles=count_particles,count_particles_args=count_particles_args,n_sectors=n_sectors)
 op_dict = dict(op=op,op_args=op_args)
 # create user basiss
 basis = user_basis(np.uint32,N,op_dict,allowed_ops=set("+-nI"),sps=sps,pcon_dict=pcon_dict,**maps)
@@ -194,7 +194,8 @@ int_b=[[-0.5*U,j] for j in range(N)]
 static=[["+-",hopping],["-+",hopping],["nn",int_bb],["n",int_b]]
 dynamic=[]
 #
-H=hamiltonian(static,[],basis=basis,dtype=np.float64)
+no_checks=dict(check_symm=False, check_pcon=False, check_herm=False)
+H=hamiltonian(static,[],basis=basis,dtype=np.float64,**no_checks)
 H_1d=hamiltonian(static,[],basis=basis_1d,dtype=np.float64)
 #
 print(H.toarray())

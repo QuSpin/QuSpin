@@ -89,4 +89,5 @@ h_list  = [[1.0,i] for i in range(N)]
 # operator string lists
 static = [["x",h_list],]
 # compute Hamiltonian, no checks have been implemented
-H = hamiltonian(static,[],basis=basis,dtype=np.float64)
+no_checks=dict(check_symm=False, check_pcon=False, check_herm=False)
+H = hamiltonian(static,[],basis=basis,dtype=np.float64,**no_checks)

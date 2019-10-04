@@ -73,6 +73,7 @@ def next_state(s,counter,N,args):
 	#
 	t = (s | (s - 1)) + 1
 	return t | ((((t & (0-t)) // (s & (0-s))) >> 1) - 1)
+next_state_args=np.array([],dtype=np.uint32) # compulsory, even if empty
 # python function to calculate the starting state to generate the particle conserving basis
 def get_s0_pcon(N,Np):
 	return sum(1<<i for i in range(Np))
@@ -165,8 +166,8 @@ count_particles_args=np.array([N],dtype=np.int32)
 # define maps dict
 maps = dict(T_block=(translation,N,0,T_args), P_block=(parity,2,0,P_args), ) 
 # define particle conservation and op dicts
-pcon_dict = dict(Np=Np,next_state=next_state,get_Ns_pcon=get_Ns_pcon,get_s0_pcon=get_s0_pcon,
-				 count_particles=count_particles,n_sectors=n_sectors)
+pcon_dict = dict(Np=Np,next_state=next_state,next_state_args=next_state_args,get_Ns_pcon=get_Ns_pcon,get_s0_pcon=get_s0_pcon,
+				 count_particles=count_particles,count_particles_args=count_particles_args,n_sectors=n_sectors)
 op_dict = dict(op=op,op_args=op_args)
 # create user basiss
 basis = user_basis(np.uint32,N,op_dict,allowed_ops=set("+-nI"),sps=2,pcon_dict=pcon_dict,**maps)
@@ -192,7 +193,8 @@ nn_int=[[U,j,(j+1)%N] for j in range(N)]
 static=[["+-",hopping_pm],["-+",hopping_mp],["nn",nn_int]]
 dynamic=[]
 #
-H=hamiltonian(static,[],basis=basis,dtype=np.float64)
+no_checks=dict(check_symm=False, check_pcon=False, check_herm=False)
+H=hamiltonian(static,[],basis=basis,dtype=np.float64,**no_checks)
 H_1d=hamiltonian(static,[],basis=basis_1d,dtype=np.float64)
 print(H.toarray())
 print(H_1d.toarray())

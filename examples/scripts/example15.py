@@ -123,4 +123,5 @@ U_list = [[1.0,i,i+N_half] for i in range(N_half)]
 # operator string lists
 static = [["+-",t_list],["-+",t_list],["nn",U_list]]
 # compute Hamiltonian, no checks have been implemented
-H = hamiltonian(static,[],basis=basis,dtype=np.float64)
+no_checks=dict(check_symm=False, check_pcon=False, check_herm=False)
+H = hamiltonian(static,[],basis=basis,dtype=np.float64,**no_checks)

@@ -73,6 +73,7 @@ def next_state(s,counter,N,args):
 	#
 	t = (s | (s - 1)) + 1
 	return t | ((((t & (0-t)) // (s & (0-s))) >> 1) - 1)
+next_state_args=np.array([],dtype=np.uint32) # compulsory, even if empty
 # python function to calculate the starting state to generate the particle conserving basis
 def get_s0_pcon(N,Np):
 	return sum(1<<i for i in range(Np))
@@ -145,7 +146,7 @@ count_particles_args=np.array([N],dtype=np.int32)
 # define maps dict
 maps = dict(T_block=(translation,N,0,T_args), P_block=(parity,2,0,P_args), Z_block=(spin_inversion,2,0,Z_args))
 # define particle conservation and op dicts
-pcon_dict = dict(Np=Np,next_state=next_state,get_Ns_pcon=get_Ns_pcon,get_s0_pcon=get_s0_pcon,
+pcon_dict = dict(Np=Np,next_state=next_state,next_state_args=next_state_args,get_Ns_pcon=get_Ns_pcon,get_s0_pcon=get_s0_pcon,
 				 count_particles=count_particles,count_particles_args=count_particles_args,n_sectors=n_sectors)
 op_dict = dict(op=op,op_args=op_args)
 # create user basis

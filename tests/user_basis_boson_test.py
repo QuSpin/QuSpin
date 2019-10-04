@@ -163,8 +163,8 @@ count_particles_args=np.array([N,sps],dtype=np.int32)
 # define maps dict
 maps = dict(T_block=(translation,N,0,T_args),P_block=(parity,2,0,P_args), ) 
 # define particle conservation and op dicts
-pcon_dict = dict(Np=Np,next_state=next_state,get_Ns_pcon=get_Ns_pcon,get_s0_pcon=get_s0_pcon,
-				 count_particles=count_particles,n_sectors=n_sectors,next_state_args=next_state_args)
+pcon_dict = dict(Np=Np,next_state=next_state,next_state_args=next_state_args,get_Ns_pcon=get_Ns_pcon,get_s0_pcon=get_s0_pcon,
+				 count_particles=count_particles,count_particles_args=count_particles_args,n_sectors=n_sectors,)
 op_dict = dict(op=op,op_args=op_args)
 # create user basiss
 basis = user_basis(np.uint32,N,op_dict,allowed_ops=set("+-nI"),sps=sps,pcon_dict=pcon_dict,**maps)

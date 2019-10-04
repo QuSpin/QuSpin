@@ -165,9 +165,9 @@ class user_basis(basis_general):
 					* **n_sectors: int, list(int)**
 						number of integers which parameterize the particle sectors, e.g. with spinful fermions there is a particle number for both the up and the down sectors, and hence `n_sectors=2`. 
 					* **count_particles(s,p_number_ptr,args): numba.CFunc object**
-						For a quantum state `s` in the integer representation, this CFunc counts the number of particles in each particle sector and places them into a pointer `p_number_ptr`passed (`count_particles` does **not** return any output). The pointer provided will have `n_sector` slots of memory allocated. The components of the pointer `p_number_ptr` must correspond to the ordering of `Np`. The integer `s` cannot be changed.
+						For a quantum state `s` in the integer representation, this CFunc counts the number of particles in each particle sector and places them into a pointer `p_number_ptr` (`count_particles` does **not** return any output). The pointer provided will have `n_sector` slots of memory allocated. The components of the pointer `p_number_ptr` must correspond to the ordering of `Np`. The integer `s` cannot be changed.
 					* **count_particles_args: np.ndarray(int)**
-						optional arguments for `count_particles(...,args)`.
+						compulsory arguments for `count_particles(...,args)` (whenever used).
 		pre_check_state(s,N,args): numba.CFunc object or tuple(numba.CFunc object,ndarray(C-contiguous,dtype=basis_dtype)), optional
 			This CFunc allows the user to specify a boolean criterion used to discard/filter states from the basis. In the low-level code, this function is applied before checking if a given state is
 			representative state (i.e. belogs to a given symmetry sector) or not. This allows the user to, e.g., enforce a local Hilbert-space constraint 
@@ -263,21 +263,21 @@ class user_basis(basis_general):
 		if pcon_dict is not None:
 
 			if type(pcon_dict) is dict:
-				next_state_args = pcon_dict.get("next_state_args")
-				if next_state_args is not None:
-					if not isinstance(next_state_args,_np.ndarray):
-						raise ValueError("next_state_args must be a C-contiguous numpy \
-							array with dtype {}".format(basis_dtype))
-					if not next_state_args.flags["CARRAY"]:
-						raise ValueError("next_state_args must be a C-contiguous numpy \
-							array with dtype {}".format(basis_dtype))
-					if next_state_args.dtype != basis_dtype:
-						raise ValueError("next_state_args must be a C-contiguous numpy \
-							array with dtype {}".format(basis_dtype))
 
-					pcon_dict.pop("next_state_args")
+				next_state_args = pcon_dict["next_state_args"]
+				
+				if not isinstance(next_state_args,_np.ndarray):
+					raise ValueError("next_state_args must be a C-contiguous numpy \
+						array with dtype {}".format(basis_dtype))
+				if not next_state_args.flags["CARRAY"]:
+					raise ValueError("next_state_args must be a C-contiguous numpy \
+						array with dtype {}".format(basis_dtype))
+				if next_state_args.dtype != basis_dtype:
+					raise ValueError("next_state_args must be a C-contiguous numpy \
+						array with dtype {}".format(basis_dtype))
 
-				if len(pcon_dict) == 4:
+
+				if len(pcon_dict) == 5: # basic usage
 					Np = pcon_dict["Np"]
 					next_state = pcon_dict["next_state"]
 					get_Ns_pcon = pcon_dict["get_Ns_pcon"]
@@ -285,15 +285,8 @@ class user_basis(basis_general):
 					n_sectors = None
 					count_particles = None
 					count_particles_args = None
-				elif len(pcon_dict) == 6:
-					Np = pcon_dict["Np"]
-					next_state = pcon_dict["next_state"]
-					get_Ns_pcon = pcon_dict["get_Ns_pcon"]
-					get_s0_pcon = pcon_dict["get_s0_pcon"]
-					n_sectors = pcon_dict["n_sectors"]
-					count_particles = pcon_dict["count_particles"]
-					count_particles_args = None
-				elif len(pcon_dict) == 7:
+
+				elif len(pcon_dict) == 8:
 					Np = pcon_dict["Np"]
 					next_state = pcon_dict["next_state"]
 					get_Ns_pcon = pcon_dict["get_Ns_pcon"]
@@ -301,8 +294,20 @@ class user_basis(basis_general):
 					n_sectors = pcon_dict["n_sectors"]
 					count_particles = pcon_dict["count_particles"]
 					count_particles_args = pcon_dict["count_particles_args"]
+
+					if not isinstance(count_particles_args,_np.ndarray):
+						raise ValueError("count_particles_args must be a C-contiguous numpy \
+							array with dtype {} or {}".format(_np.int32,_np.int64))
+					if not count_particles_args.flags["CARRAY"]:
+						raise ValueError("count_particles_args must be a C-contiguous numpy \
+							array with dtype {} or {}".format(_np.int32,_np.int64))
+					if count_particles_args.dtype != _np.int32 and count_particles_args.dtype != _np.int64:
+						raise ValueError("count_particles_args must be a C-contiguous numpy \
+							array with dtype {} or {}".format(_np.int32,_np.int64))
+
+
 				else:
-					raise ValueError("pcon_dict input not understood.")
+					raise ValueError("pcon_dict input not understood. Check if you passed all keys (currently pcon_dict can have either 5 or 8 keys.")
 			else:
 				raise ValueError("pcon_dict input not understood.")
 
