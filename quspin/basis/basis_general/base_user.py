@@ -464,10 +464,11 @@ class user_basis(basis_general):
 				
 			Ns = Ns_block_est
 		self._basis_dtype = basis_dtype
-		self._core = user_core_wrap(Ns_full, basis_dtype, N, map_funcs, pers, qs, map_args,
+		self._core_args = (Ns_full, basis_dtype, N, map_funcs, pers, qs, map_args,
 								n_sectors, get_Ns_pcon, get_s0_pcon, next_state,
 								next_state_args,pre_check_state,check_state_nosymm_args,
 								count_particles, count_particles_args, op_func, op_args)
+		self._core = user_core_wrap(*self._core_args)
 
 		self._N = N
 		self._Ns = Ns
@@ -504,4 +505,6 @@ class user_basis(basis_general):
 	def __name__(self):
 		return "<type 'qspin.basis.user.user_basis'>"
 
-
+	def __setstate__(self,state):
+		self.__dict__.update(state)
+		self._core = user_core_wrap(*self._core_args)
