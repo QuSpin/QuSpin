@@ -1,7 +1,7 @@
 .. _example14-label:
 
 Quantum scars Hamiltonian: spin-1/2 system with Hilbert space constraint
---------
+------------------------------------------------------------------------
 
 This example makes use of the `user_basis` class to define the Hamiltonian
 

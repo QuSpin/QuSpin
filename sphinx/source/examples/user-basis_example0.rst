@@ -1,7 +1,7 @@
 .. _user-basis_example0-label:
 
 spin-1/2 Heisenberg model in 1d
---------
+-------------------------------
 
 This example makes use of the `user_basis` class of `basis_general` to show how to construct spin-1/2 systems with symmetries.
 

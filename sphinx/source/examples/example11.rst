@@ -1,7 +1,7 @@
 .. _example11-label:
 
 Monte Carlo Sampling Expectation Values of Obsevables
--------------------------------------------
+-----------------------------------------------------
 
 :download:`download script <../../../examples/scripts/example11.py>`
 

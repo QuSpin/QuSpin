@@ -21,6 +21,7 @@ quspin.basis.boson\_basis\_general
       ~boson_basis_general.check_symm
       ~boson_basis_general.ent_entropy
       ~boson_basis_general.expanded_form
+      ~boson_basis_general.get_amp
       ~boson_basis_general.get_proj
       ~boson_basis_general.get_vec
       ~boson_basis_general.index
@@ -44,6 +45,7 @@ quspin.basis.boson\_basis\_general
       ~boson_basis_general.Ns
       ~boson_basis_general.blocks
       ~boson_basis_general.description
+      ~boson_basis_general.dtype
       ~boson_basis_general.operators
       ~boson_basis_general.sps
       ~boson_basis_general.states

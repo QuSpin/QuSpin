@@ -1,7 +1,7 @@
 .. _example18-label:
 
 Hexagonal Lattice: Fermi-Hubbard model [courtesy of A. Buyskikh]
---------
+----------------------------------------------------------------
 
 This example demonstrates how to use the python package `networkx <https://networkx.github.io/documentation/stable/install.html>`_ to construct a hexagonal (honeycomb) lattice, and define the Fermi-Hubbard Hamiltonian: 
 

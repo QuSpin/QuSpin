@@ -100,19 +100,7 @@ author = u'Phillip Weinberg and Marin Bukov'
 # built documents.
 #
 # The short X.Y version.
-
-cwd = os.path.dirname(os.path.realpath(__file__))
-meta_file = os.path.join(cwd,"..","..","meta.yaml")
-io = open(meta_file,"r")
-meta_data = io.read()
-io.close()
-
-meta_data = meta_data.split()
-
-ind = meta_data.index("version:")
-version = meta_data[ind+1].replace('"','')
-
-# version = u'0.2.8'
+version = u'0.3.3'
 # The full version, including alpha/beta/rc tags.
 release = version
 

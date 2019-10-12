@@ -1,7 +1,7 @@
 .. _example13-label:
 
 Fermi-Hubbard model **without** doubly-occupied sites
---------
+-----------------------------------------------------
 
 This example shows how to construct the Fermi-Hubbard model of spinful fermions in the subspace without doubly-occupied sites using the `user_basis`. 
 

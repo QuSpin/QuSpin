@@ -1,7 +1,7 @@
 .. _example17-label:
 
 Optical Bloch equations: Lindblad dynamics using the fast (omp-parallelized) `matvec` function
---------
+----------------------------------------------------------------------------------------------
 
 This example uses the omp-parallelized `tools.misc.matvec()` function to define a Lindblad equation and solve the ODE using the `tools.evolution.evolve()` function. 
 

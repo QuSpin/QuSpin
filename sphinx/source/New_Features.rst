@@ -1,5 +1,5 @@
 :math:`\mathrm{\color{orange} {QuSpin\ 0.3.3}}` here (updated on 2019.10.01)
-===================================================================
+============================================================================
 
 :math:`\mathrm{\color{red} {Highlights}}`: OpenMP support now here!
 ===================================================================
@@ -12,7 +12,7 @@ Complete list of the most recent features
 
 
 Added in v. 0.3.3 (2019.05.01)
------------------
+------------------------------
 
 Improved Functionality
 ++++++++++++++++++++++
@@ -26,7 +26,7 @@ New Attributes, Functions, Methods and Classes
 
 
 Added in v. 0.3.2 (2019.03.11)
------------------
+------------------------------
 
 Improved Functionality
 ++++++++++++++++++++++
@@ -36,7 +36,7 @@ Improved Functionality
 
 
 Added in v. 0.3.1 (2019.03.08)
------------------
+------------------------------
 
 
 Improved Functionality

@@ -21,6 +21,7 @@ quspin.basis.user\_basis
       ~user_basis.check_symm
       ~user_basis.ent_entropy
       ~user_basis.expanded_form
+      ~user_basis.get_amp
       ~user_basis.get_proj
       ~user_basis.get_vec
       ~user_basis.index
@@ -44,6 +45,7 @@ quspin.basis.user\_basis
       ~user_basis.Ns
       ~user_basis.blocks
       ~user_basis.description
+      ~user_basis.dtype
       ~user_basis.operators
       ~user_basis.sps
       ~user_basis.states

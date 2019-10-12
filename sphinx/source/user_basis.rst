@@ -2,12 +2,15 @@
 
 
 A tutorial on QuSpin's `user_basis`
---------
+-----------------------------------
 List of functionality features which `user_basis` allows the user to access, and which are **not** accessible in the `*_basis_1d` and `*_basis_general`:
 
-* ...
-* ...
-* ...
+* Constrained Hilbert Spaces
+* Quantum Clock and Potts models
+* Implement symmetries which act on the local hilbert space, e.g. :math:`Z_n, n>2`
+* Symmetries for mixed particle representations, e.g. Bose-Fermi mixtures. 
+* Optimized low-level functions increaseing performence in constructing operators. 
+* Construct a basis through some other means but use it within QuSpin. 
 
 The `user_basis` class brings to surface the low-level functionality of the `basis_general` core class and allows the user to customize the corresponding function methods, thereby creating their provate QuSpin basis class.  
 
@@ -39,12 +42,12 @@ The `user_basis` class brings to surface the low-level functionality of the `bas
 
 
 Integer representation of states 
---------
+--------------------------------
 The computational basis in QuSpin is the local particle/spin-z basis. For computational efficiency, basis states are stored as bit representations of integers. In order to fully grasp the underlying ideas behind the `user_basis` functionality, it is required to explain in detail how this works.
 
 
 Spin-1/2, Fermions, Hardcore Bosons
-++++++++
++++++++++++++++++++++++++++++++++++
 Spin-:math:`1/2`, hardcore-boson, and fermion states all have in common that they allow at most one particle pre site. Thus, in the particle/z-spin basis, the basis states are given by strings of ones and zeros. The number of ones sets the particle number/magnetization of a given state. 
 
 Coincidentally, integers are stored in memory using the so-called binary representation: every integer is assigned a unique bit string. Therefore, a particularly efficient way of storing basis states is via this integer representation. 
@@ -71,7 +74,7 @@ Cosider an :math:`N`-site lattice. Let :math:`c_i` denote the occupation of site
 
 
 Reading off particle occupation on a given site:
-````````````
+````````````````````````````````````````````````
 
 To read off the particle occupation on site :math:`j` of the state :math:`s` (with a total of :math:`N` sites), do
 
@@ -80,7 +83,7 @@ To read off the particle occupation on site :math:`j` of the state :math:`s` (wi
 
 
 Flipping particle occupation on a given site:
-````````````
+`````````````````````````````````````````````
 
 To flip the particle occupation on site :math:`j` of the state :math:`s` (with a total of :math:`N` sites), use the XOR operator `^`:
 
@@ -89,11 +92,11 @@ To flip the particle occupation on site :math:`j` of the state :math:`s` (with a
 >>> s ^= b            # flip occupation on site j
 
 
-Bosons, Higher Spins
-+++++++
+State Spaces Larger than two: Bosons, Higher Spins, etc.
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 
-When dealing with bosons or higher spins, the binary representation is no longer sufficient, since the local on-site occupation can be larger than one. 
+When dealing with bosons or higher spins, the binary representation is no longer convenient, since the local on-site occupation can be larger than one. 
 
 
 Definition:
@@ -113,9 +116,10 @@ For instance in a chain of four sites with at most two particles per site (i.e.,
 * :math:`|0210\rangle \leftrightarrow 21`:    one particle at site 2 and two particles at site 1,
 * :math:`|1000\rangle \leftrightarrow 27`:    one particle at site 0,
 
+*Note*: In some cases when sps=:math:`2^n` one partition the integer bits into sections of size `n` and still use binary operations. In this case the code will most likely be faster, however it becomes more complicated to write functions. you can still use the value `sps` for you system when passing arguments into the `user_basis` class as this is just on the level of the underlying code implementation. 
 
 Reading off particle occupation on a given site:
-````````````
+````````````````````````````````````````````````
 To read off the particle occupation on site :math:`j` of the state :math:`s` (with a total of :math:`N` sites and :math:`sps` states per site), do
 
 >>> j = N - j - 1            # compute lattice site in reversed bit configuration (cf QuSpin convention for mapping from bits to sites)
@@ -123,7 +127,7 @@ To read off the particle occupation on site :math:`j` of the state :math:`s` (wi
 
 
 Increasing the particle occupation on a given site:
-````````````
+````````````````````````````````````````````````````
 
 To increase the particle occupation on site :math:`j` of the state :math:`s` (with a total of :math:`N` sites and :math:`sps` states per site), do
 
@@ -135,7 +139,7 @@ To increase the particle occupation on site :math:`j` of the state :math:`s` (wi
 
 
 Decreasing the particle occupation on a given site:
-````````````
+````````````````````````````````````````````````````
 
 To decrease the particle occupation on site :math:`j` of the state :math:`s` (with a total of :math:`N` sites and :math:`sps` states per site), do
 
@@ -146,7 +150,7 @@ To decrease the particle occupation on site :math:`j` of the state :math:`s` (wi
 
 
 *Notes*:
-+++++++
+++++++++
 
 * even though in the case :math:`sps=2`, the above expressions reproduce the corresponding spin-1/2 expressions, they are not as efficient computationally.
 * convenient quspin functions to transform between integer and quspin bit representations are `basis.int_to_state()` and `basis.state_to_int()`. 
@@ -155,7 +159,7 @@ To decrease the particle occupation on site :math:`j` of the state :math:`s` (wi
 
 
 `user_basis` function methods
--------
+-----------------------------
 
 The core parent class for all `basis_general` classes contains a number of function methods to facilitate the construction of the basis and the basis methods. The `user_basis` exposes those methods which can be re-defined/overridden by the user. This enhances the functionality of QuSpin, allowing the user maximum flexibility in constructing basis objects. 
 
@@ -163,23 +167,28 @@ Below, we give a brief overview of the methods required to define `user_basis` o
 
 
 `op(op_struct_ptr, op_str, site_ind, N, args)`
-++++++
+++++++++++++++++++++++++++++++++++++++++++++++
 This function method contains user-defined action of operators :math:`O` on the integer states :math:`|s\rangle` which produces the matrix elements :math:`\mathrm{me}` via :math:`O|s\rangle = \mathrm{me}|s'\rangle`.
 
 * `op_struct_ptr`: an C++-pointer to an object which, after being cast into an array using `op_struct=carray(op_struct_ptr,1)[0]`, contains the attributes `op_struct.state` (which contains the quantum state in integer representation), and `op_struct.matrix_ele` (the value of the corresponding matrix element which defines
 the action of the operator :math:`O`.).  
 
-* `op_str`: holds the operator string (e.g. `+`, `-`, `z`, `n`, or any custom user-defined letter). Note that the underlying C++-code uses integers to store the `op_str`, e.g. `+` corresponds to the integer `43`. It is these integers that are used in the body of `op()` to distinguish the different `op_str`'s. The integer, corresponding to any string `str` can be found in python using `ord(str)`.
+* `op_str`: holds the operator string (e.g. `+`, `-`, `z`, `n`, or any custom user-defined letter). Due to limitations in compiling python functions (see section on `numba` below), the charactors are passed in as integers using utf-8 unicode, e.g. `+` corresponds to the integer `43`. Because of this one has to compare `op_str` to an integer representing the charactor of you choice in the body of `op()`. The integer, corresponding to any charactor `str` can be found in python using `ord(str)` or by looking up a utf-8 unicode table.
 
 * `N`: the total number of lattice sites.
 
 * `args`: optional arguments passed into the CFunc `op`; must be a `np.ndarray` of dtype `basis_dtype`.  
 
-The CFunc `op` returns an integer `err` which is used by QuSpin to throw different error messages **CHECK!!!**:
+The CFunc `op` returns an integer `err` which is used by QuSpin to throw different error messages. The following are reserved by QuSpin:
 
 * `err=0`: the calculation was completed successfully.
 
 * `err=-1`: no matching operator string was found.
+
+* `err=1`: using real dtype for complex value.
+
+If the error code returned is not one of these values QuSpin will raise a `RunTimeError` with the message: "user defined error code: <err>", with <err> being the integer value returned by the user defined op CFunc. In this way the user can provide costume errors. 
+
 
 **Notes** 
 
@@ -188,8 +197,8 @@ The CFunc `op` returns an integer `err` which is used by QuSpin to throw differe
 
 
 `next_state(s, counter, N, args)` 
-++++++
-This functions method provides a user-defined particle conservation rule, which constructs the basis in lexicographical order **(DEFINE!)**. Given the initial state `s0`, `next_state()` generates all other states recursively. Hence, if `next_state()` is set to conserve particle number then the particle number sector is defined by the initial state `s0`. 
++++++++++++++++++++++++++++++++++
+This functions method provides a user-defined particle conservation rule, which constructs the basis in acending order by numerical value. Given the initial state `s0`, `next_state()` generates all other states successively. Hence, if `next_state()` is set to conserve particle number then the particle number sector is defined by the initial state `s0`. 
 
 * `s`: quantum state in integer representation.
 
@@ -202,7 +211,7 @@ This functions method provides a user-defined particle conservation rule, which 
 
 * get_s0_pcon(N,Np): given the total number of sites `N` and (the tuple of) particle sector `Np` this function computes the initial state, to be used by `next_state()` to construct the entire basis.
 
-* get_Ns_pcon(N,Np): given the total number of sites `N` and (the tuple of) particle sector `Np` this function computes the Hilbert space dimension (i.e. the size of the basis) **with particle umber conservation only** (In other words, `get_Ns_pcon()` should be equal to the number of iterations in `next_state()` required to exhaust the states search. `get_Ns_pcon()` returns an integer required to allocate memory for the particle-conserving basis. Note that `get_Ns_pcon()` ignores any possible reduction due to lattice symmetries (see the maps below), i.e. `get_Ns_pcon()` may not correspond to the final integer `basis.Ns`.  
+* get_Ns_pcon(N,Np): given the total number of sites `N` and (the tuple of) particle sector `Np` this function computes the Hilbert space dimension (i.e. the size of the basis) **with particle number conservation only** (In other words, `get_Ns_pcon()` should be equal to the number of iterations in `next_state()` required to exhaust the states search. `get_Ns_pcon()` returns an integer required to allocate memory for the particle-conserving basis. Note that `get_Ns_pcon()` ignores any possible reduction due to lattice symmetries (see the maps below), i.e. `get_Ns_pcon()` may not correspond to the final integer `basis.Ns`.  
 
 
 **Notes**
@@ -214,8 +223,8 @@ This functions method provides a user-defined particle conservation rule, which 
 
 
 `pre_check_state(s, N, args)`
-++++++
-This *optional* function method provides user-defined extra filtering of basis states. The function body contains a boolean operation which, when applied to the basis states one at a time, determines whether to keep a state in the basis or not. 
++++++++++++++++++++++++++++++
+This *optional* function method provides user-defined extra filtering of basis states. The function body contains a boolean operation which, when applied to the basis states one at a time, determines whether to keep a state in the basis or not. This is independent of the symmetries and can be interpreted as a projection or a constraint on the Hilbert space. 
 
 A simple example of what `pre_check_state()` can be useful for is this: suppose you want a `spinful_fermion_basis()` without doubly occupied sites. This can be achieved by ajusting the body of `pre_check_state()` to eliminate such states. QuSpin will then first generate the basis with doble occupancies using `next_state()`, and subsequntly get rid of the doubly-occupied states using `pre_check_state()`. Another example is shown in ** Example ??? below **.
 
@@ -227,7 +236,7 @@ A simple example of what `pre_check_state()` can be useful for is this: suppose 
 
 
 `count_particles(s, p_number_ptr, args)`
-++++++
+++++++++++++++++++++++++++++++++++++++++
 This *optional* function method counts the total number of particles/magnetization in a given state.
 
 * `s`: quantum state in integer representation.
@@ -244,18 +253,20 @@ This *optional* function method counts the total number of particles/magnetizati
 
 
 Symmetry transformations from bit operations
--------
+--------------------------------------------
 Any discrete symmetry is uniquely defined by its action on the basis states. Since the basis is stored in the integer representation, the symmetry operations have to be defined to transform integers. In the `basis_1d` and `basis_general` classes this is done under the hood; the `user_basis` brings this functionality to the surface, and allows the user to modify it accordingly.
+
+*Note*: these functions can be used to generate symmetries of the local Hilbert space, e.g., in the Quantum Clock model the interactions are rotationally invariant with respect to the local states and therefore one can perform a global clock rotation on all states to generate a symmetry. In the case of the Potts models this symmetry is enhances to the full premutation group on the local hilbert space. One has to be careful when dealing with non-abelian symmetries, however if one is only interested in the ground state sector, then the non-abelian nature of the symmetries is not actually important. 
 
 
 `symmetry_map(s, N, sign_ptr, args)`
-++++++
+++++++++++++++++++++++++++++++++++++
 
 * `s`: quantum state in integer representation.
 
 * `N`: the total number of lattice sites.
 
-* `sign_ptr`: a pointer to keep track of changes to the sign; used for fermion systems. 
+* `sign_ptr`: a pointer to a number which one can use to pass sign changes back to QuSpin; used for fermion systems. 
 
 * `args`: a `np.ndarray` of the same data type as the `user_basis`. Can be used to pass optional arguments, e.g. `sps` in the case of bosons.
 
@@ -266,11 +277,11 @@ Any discrete symmetry is uniquely defined by its action on the basis states. Sin
 
 
 System-size independent symmetries
-++++++
+++++++++++++++++++++++++++++++++++
 System-size independent symmetries contain as a parameter the system size :math:`N`. As a result, they apply to all system sizes. Examples of such symmetries are
 
 parity in 1d for any system size `N`
-````````
+````````````````````````````````````
 
 Parity is the reflection of a state w.r.t. the middle of the chain.
 
@@ -294,7 +305,7 @@ Parity is the reflection of a state w.r.t. the middle of the chain.
 
 
 translation in 1d for any system size `N`
-````````
+`````````````````````````````````````````
 
 We consider translation by `shift=1` sites, but the code can easily be generalized to a larger-shift translation. 
 
@@ -314,8 +325,8 @@ We consider translation by `shift=1` sites, but the code can easily be generaliz
 
 
 Symmetries for fixed system sizes using precomputed masks
-++++++++
-The convenience to define symmetry maps which apply to all system sizes comes at a certain efficiency cost. This can be circumvented by defining system-size specific maps, using integer masks to perform the bit operations. These masks also depend on the data type of the integer storing the state. 
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+The convenience to define symmetry maps which apply to all system sizes comes at a cost of speed. This can be circumvented by defining system-size specific maps, using integer masks to perform the bit operations. These masks also depend on the data type of the integer storing the state. 
 
 Luckily, there is a great tool to compute the symmetry maps, available at http://programming.sirrida.de/calcperm.php. All one needs to do is find the permutation of the lattice sites under the symmetry, and pass it to the tool to obain the symmetry map that acts on integers. Let us demonstrate how this works using two examples.
 
@@ -343,10 +354,10 @@ Passing the transformed integer sequence (right-hand side) to the online generat
                   | ((x & 0x00010040) >> 3)
                   | ((x & 0x00008020) >> 1)) 
 
-This map works only for this system size, and for 32-bit integers. 
+This map works only for this system size, and for 32-bit integers. However if one downloads the source code from the website, one can compile a program which generates these for higher integer representations. 
 
 translation in 1d for a fixed system size `N=10`
-````````
+````````````````````````````````````````````````
 Consider again a ladder of :math:`2\times 10` sites, labelled 0 through 19. The action of translation along the long ladder axis is easily defined on the lattice sites to be
 
 .. math::
@@ -361,7 +372,7 @@ corresponds to the bit operation (again, fixed system size and data type):
        return ((x & 0x0007fdff) << 1) | ((x & 0x00080200) >> 9)
 
 Symmetry `maps` dictionary
-++++++
+++++++++++++++++++++++++++
 In the `user_basis`, the functions encoding the symmetry action are referred to as maps. Every map has as its first argument the integer (state) to be tansformed, followed by the number of sites. For fermionic systems, the symmetry action can also modify the fermion sign of a given state. Therefore, the last argument is a `sign_ptr`. 
 
 
@@ -378,19 +389,19 @@ Symmtries are passed to the `user_basis` constructor via a python dictionary, ca
 
 
 Using `numba` to pass python functions to the `C++` `user_basis` constructor
--------
-The function methods of `user_basis` discussed above, are passed to the `user_basis` constructor. Since the latter is written in `C++` for speed, we use  the [numba](https://numba.pydata.org/) package to decorate python functions which are automatically compiled to `C++` and then parsed to the `user_basis`. 
+----------------------------------------------------------------------------
+The function methods of `user_basis` discussed above, are passed to the `user_basis` constructor. Since the latter is written in `C++` for speed, we use  the (numba)[https://numba.pydata.org/] package to decorate python functions which are automatically compiled to low level code that can then be called by the underlying QuSpin `C++` base code for the `user_basis`. 
 
 
 Data types
-++++++++
+++++++++++
 Unlike python, C++ code requires the user to specify the data types of all variables (so called strong typing). For this purpose, numba supports various data types, e.g. `uint32`, or `int32`. They are typically imported from numba in the beginning of the python script.
 
 Function decorators
-++++++++
++++++++++++++++++++
 To indicate that the function we wrote in python should be compiled as a C++ code by numba, we use the `@cfunc(signature,locals=dict())` decorator. The arguments of the decorator are the function variable signature (which contains the data times of all function variables), and `locals` which is a dictionary containing the data types of all other variables defined and used privately inside the function body. 
 
-In QuSpin, we provide the precompiled signatures `next_state_sig_32`, `op_sig_32`, `map_sig_32`, `count_particles_32`; `next_state_sig_64`, `op_sig_64`, `map_sig_64`, `count_particles_64`. The name of the signature refers to the function type it is designed for, and the integer in the end specifies the data type the `user_basis` will be constructed with. These signaturescan be imported from the `user_basis`. 
+In QuSpin, we provide the signatures `next_state_sig_32`, `op_sig_32`, `map_sig_32`, `count_particles_32`; `next_state_sig_64`, `op_sig_64`, `map_sig_64`, `count_particles_64` which are compatible with the QuSpin base code. The name of the signature refers to the function type it is designed for, and the integer in the end specifies the data type the `user_basis` will be constructed with. These signaturescan be imported from the `user_basis`. 
 
 As an example, consider the `translation()` python function defined above. To make this a `numba.CFunc` object, it suffices to place the decorator:
 
@@ -422,15 +433,17 @@ We use the signature `map_sig_32` because it is designed to decorate symmetry ma
 
 * if you mess up the data types, most likely you will receive a numba error. In such cases, we suggest that you remove the CFunc decorator and debug your function in python as yous would normally do. Once you ares confident that the function does it job, put back the decorator and pass it to the `user_basis` constructor. 
 
+* Unfortunately `numba` will not allow printing inside CFuncs because of complications dealing with Python's Global Interpreter Lock or GIL. Because of this, debugging these functions can be a bit tedious. Always make sure that your code performs properly by running it purely with python before attemping to use it within the `user_basis`.  
+
 
 
 Example Scripts
---------
+---------------
 Below, we provide examples which demonstrate how to use the `user_basis` class. 
 
 
 Scripts to construct spin, fermion, and boson bases 
-++++++++
++++++++++++++++++++++++++++++++++++++++++++++++++++
 The following three examples demonstrate how the `user_basis` recovers the functionality of the `basis_general` classes:
 
 * :ref:`user-basis_example0-label`, :download:`download script <../../examples/scripts/user_basis_trivial-spin.py>` 

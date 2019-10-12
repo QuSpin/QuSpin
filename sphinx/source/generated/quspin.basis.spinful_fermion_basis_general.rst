@@ -21,6 +21,7 @@ quspin.basis.spinful\_fermion\_basis\_general
       ~spinful_fermion_basis_general.check_symm
       ~spinful_fermion_basis_general.ent_entropy
       ~spinful_fermion_basis_general.expanded_form
+      ~spinful_fermion_basis_general.get_amp
       ~spinful_fermion_basis_general.get_proj
       ~spinful_fermion_basis_general.get_vec
       ~spinful_fermion_basis_general.index
@@ -44,6 +45,7 @@ quspin.basis.spinful\_fermion\_basis\_general
       ~spinful_fermion_basis_general.Ns
       ~spinful_fermion_basis_general.blocks
       ~spinful_fermion_basis_general.description
+      ~spinful_fermion_basis_general.dtype
       ~spinful_fermion_basis_general.operators
       ~spinful_fermion_basis_general.sps
       ~spinful_fermion_basis_general.states

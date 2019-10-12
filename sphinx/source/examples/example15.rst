@@ -1,7 +1,7 @@
 .. _example15-label:
 
 Spin-1/2 system with sublattice particle consevation
---------
+----------------------------------------------------
 
 This example makes use of the `user_basis` class to define the Hamiltonian
 
