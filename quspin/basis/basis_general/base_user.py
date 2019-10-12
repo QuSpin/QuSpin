@@ -51,8 +51,8 @@ def is_sorted_decending(a):
 
 def _process_user_blocks(use_32bit,blocks_dict,block_order):
 
-	if any((type(v) is not tuple) and (len(v)!=3) for v in blocks_dict.values()):
-		raise ValueError
+	if not all((type(v) is tuple) and (len(v)==4) for v in blocks_dict.values()):
+		raise ValueError("blocks must contain tuple with a CFunc, the period of the symmetry, the quantum number, and the extra arguments.")
 
 	if not all(isinstance(f,CFunc) for f,_,_,_ in blocks_dict.values()):
 		raise ValueError("map_func must be instance of numba.CFunc.")
