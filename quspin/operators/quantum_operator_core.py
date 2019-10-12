@@ -414,11 +414,11 @@ class quantum_operator(object):
 		"""
 		return self.dot(X)
 
-	def dot(self,V,pars={},check=True,out=None,overwrite_out=True):
+	def dot(self,V,pars={},check=True,out=None,overwrite_out=True,a=1.0):
 		"""Matrix-vector multiplication of `quantum_operator` quantum_operator for parameters `pars`, with state `V`.
 
 		.. math::
-			H(t=\\lambda)|V\\rangle
+			aH(\\lambda)|V\\rangle
 
 		Notes
 		-----
@@ -433,10 +433,12 @@ class quantum_operator(object):
 		check : bool, optional
 			Whether or not to do checks for shape compatibility.
 		out : array_like, optional
-			specify the output array for the the result. This is not supported of `V` is a sparse matrix or if `times` is an array. 
+			specify the output array for the the result. This is not supported if `V` is a sparse matrix. 
 		overwrite_out : bool, optional
 			flag used to toggle between two different ways to treat `out`. If set to `True` all values in `out` will be overwritten with the result of the dot product. 
-			If `False` the result of the dot product will be added to the values of `out`. 			
+			If `False` the result of the dot product will be added to the values of `out`.
+		a : scalar, optional
+			scalar to multiply the final product with: :math:`B = aHV`. 			
 
 		Returns
 		--------
@@ -484,6 +486,7 @@ class quantum_operator(object):
 			out = sparse_constuctor(V.shape,dtype=result_dtype)
 			for key,J in pars.items():
 				out = out + J*self._quantum_operator[key].dot(V)
+			out = a*out
 
 		else:
 			if out is not None:
@@ -504,16 +507,16 @@ class quantum_operator(object):
 			V = _np.asarray(V,dtype=result_dtype)
 			for key,J in pars.items():
 				if _np.abs(J)>eps:
-					self._matvec_functions[key](self._quantum_operator[key],V,overwrite_out=False,a=J,out=out)
+					self._matvec_functions[key](self._quantum_operator[key],V,overwrite_out=False,a=a*J,out=out)
 
 
 		return out
 
-	def rdot(self,V,pars={},check=False):
+	def rdot(self,V,pars={},check=False,out=None,overwrite_out=True,a=1.0):
 		"""Vector-matrix multiplication of `quantum_operator` quantum_operator for parameters `pars`, with state `V`.
 
 		.. math::
-			\\langle V]H(t=\\lambda)
+			a\\langle V]H(\\lambda)
 
 		
 		Parameters
@@ -525,6 +528,13 @@ class quantum_operator(object):
 			are assumed to be set to unity.
 		check : bool, optional
 			Whether or not to do checks for shape compatibility.
+		out : array_like, optional
+			specify the output array for the the result. This is not supported if `V` is a sparse matrix. 
+		overwrite_out : bool, optional
+			flag used to toggle between two different ways to treat `out`. If set to `True` all values in `out` will be overwritten with the result. 
+			If `False` the result of the dot product will be added to the values of `out`. 
+		a : scalar, optional
+			scalar to multiply the final product with: :math:`B = aVH`. 
 			
 
 		Returns
@@ -539,12 +549,7 @@ class quantum_operator(object):
 		corresponds to :math:`B = AH`. 
 	
 		"""
-		try:
-			V = V.transpose()
-		except AttributeError:
-			V = _np.asanyarray(V)
-			V = V.transpose()
-		return (self.transpose().dot(V,pars=pars,check=check)).transpose()
+		return self.transpose().dot(V.transpose(),pars=pars,check=check,out=out.T,overwrite_out=overwrite_out,a=a).transpose()
 
 	def quant_fluct(self,V,pars={},check=True,enforce_pure=False):
 		"""Calculates the quantum fluctuations (variance) of `hamiltonian` operator at time `time`, in state `V`.
