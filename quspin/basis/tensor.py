@@ -64,6 +64,7 @@ class tensor_basis(basis):
 		if not isinstance(basis_list[0],basis):
 			raise ValueError("basis_list must contain instances of basis class")
 
+		self._check_herm=True
 		fermion_list = []
 		for b in basis_list:
 			try:

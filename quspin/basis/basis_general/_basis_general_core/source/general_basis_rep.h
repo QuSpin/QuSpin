@@ -11,8 +11,8 @@
 
 namespace basis_general {
 
-template<class I,class J>
-int general_normalization(general_basis_core<I> *B,
+template<class I,class J,class P=signed char>
+int general_normalization(general_basis_core<I,P> *B,
 								  I s[],
 								  J n[],
 							const npy_intp Ns
@@ -55,41 +55,47 @@ int general_normalization(general_basis_core<I> *B,
 }
 
 
-template<class I>
-void general_representative(general_basis_core<I> *B,
+template<class I,class P=signed char>
+void general_representative(general_basis_core<I,P> *B,
 							const I s[],
 									I r[],
 									int *g_out_ptr,
-									npy_int8 *sign_out_ptr,
+									P *phase_out_ptr,
 							const npy_intp Ns
 						  )
 {
 
 	const int nt = B->get_nt();
-	if(g_out_ptr && sign_out_ptr){
-		#pragma omp parallel for schedule(static) // NOTE: refstate time has a constant workload
-		for(npy_intp i=0;i<Ns;i++){
-			int temp_sign = 1;
-			r[i] = B->ref_state(s[i],&g_out_ptr[i*nt],temp_sign);
-			sign_out_ptr[i] = temp_sign;
-		}				
-	}
-	else if(g_out_ptr){
-		#pragma omp parallel for schedule(static) // NOTE: refstate time has a constant workload
-		for(npy_intp i=0;i<Ns;i++){
-			int temp_sign = 1;
-			r[i] = B->ref_state(s[i],&g_out_ptr[i*nt],temp_sign);
+	if(g_out_ptr && phase_out_ptr){
+		#pragma omp parallel
+		{
+			#pragma omp for schedule(static) // NOTE: refstate time has a constant workload
+			for(npy_intp i=0;i<Ns;i++){
+				P temp_phase = 1;
+				r[i] = B->ref_state(s[i],&g_out_ptr[i*nt],temp_phase);
+				phase_out_ptr[i] = temp_phase;
+			}				
 		}
 	}
-	else if(sign_out_ptr){
+	else if(g_out_ptr){
+		#pragma omp parallel
+		{
+			#pragma omp parallel for schedule(static) // NOTE: refstate time has a constant workload
+			for(npy_intp i=0;i<Ns;i++){
+				P temp_phase = 1;
+				r[i] = B->ref_state(s[i],&g_out_ptr[i*nt],temp_phase);
+			}				
+		}
+	}
+	else if(phase_out_ptr){
 		#pragma omp parallel
 		{
 			int g[__GENERAL_BASIS_CORE__max_nt];
 			#pragma omp for schedule(static) // NOTE: refstate time has a constant workload
 			for(npy_intp i=0;i<Ns;i++){
-				int temp_sign = 1;
-				r[i] = B->ref_state(s[i],g,temp_sign);
-				sign_out_ptr[i] = temp_sign;
+				P temp_phase = 1;
+				r[i] = B->ref_state(s[i],g,temp_phase);
+				phase_out_ptr[i] = temp_phase;
 			}
 			
 		}
@@ -101,8 +107,8 @@ void general_representative(general_basis_core<I> *B,
 			int g[__GENERAL_BASIS_CORE__max_nt];
 			#pragma omp for schedule(static) // NOTE: refstate time has a constant workload
 			for(npy_intp i=0;i<Ns;i++){
-				int temp_sign = 1;
-				r[i] = B->ref_state(s[i],g,temp_sign);
+				P temp_phase = 1;
+				r[i] = B->ref_state(s[i],g,temp_phase);
 			}
 			
 		}

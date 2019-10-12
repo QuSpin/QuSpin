@@ -24,8 +24,8 @@ I inline hcb_map_bits(I s,const int map[],const int N){
 }
 
 
-template<class I>
-class hcb_basis_core : public general_basis_core<I>
+template<class I,class P=signed char>
+class hcb_basis_core : public general_basis_core<I,P>
 {
 
 	public:
@@ -38,13 +38,14 @@ class hcb_basis_core : public general_basis_core<I>
 		hcb_basis_core(const int _N,const int _nt,const int _maps[], \
 					const int _pers[], const int _qs[], const bool _fermionic=false) : \
 		general_basis_core<I>::general_basis_core(_N,_nt,_maps,_pers,_qs,_fermionic) {
+
 			benes_maps.resize(_nt);
 			invs.resize(_nt);
 			ta_index<I> index;
 			for(int j=0;j<bit_info<I>::bits;j++){index.data[j] = no_index;}
 
 			for(int i=0;i<_nt;i++){
-				const int * map = &general_basis_core<I>::maps[i*_N];
+				const int * map = &general_basis_core<I,P>::maps[i*_N];
 				I inv = 0;
 
 				for(int j=0;j<_N;j++){
@@ -70,15 +71,15 @@ class hcb_basis_core : public general_basis_core<I>
 
 		~hcb_basis_core() {}
 
-		I map_state(I s,int n_map,int &sign){
-			if(general_basis_core<I>::nt<=0){
+		I map_state(I s,int n_map,P &sign){
+			if(general_basis_core<I,P>::nt<=0){
 				return s;
 			}
 			return benes_bwd(&benes_maps[n_map],s^invs[n_map]);	
 		}
 
-		void map_state(I s[],npy_intp M,int n_map,signed char sign[]){
-			if(general_basis_core<I>::nt<=0){
+		void map_state(I s[],npy_intp M,int n_map,P sign[]){
+			if(general_basis_core<I,P>::nt<=0){
 				return;
 			}
 			const tr_benes<I> * benes_map = &benes_maps[n_map];
@@ -91,32 +92,32 @@ class hcb_basis_core : public general_basis_core<I>
 
 		std::vector<int> count_particles(const I s){
 			std::vector<int> v(1);
-			v[0] = bit_count(s,general_basis_core<I>::N);
+			v[0] = bit_count(s,general_basis_core<I,P>::N);
 			return v;
 		}
 
 		// I map_state(I s,int n_map,int &sign){
-		// 	if(general_basis_core<I>::nt<=0){
+		// 	if(general_basis_core<I,P>::nt<=0){
 		// 		return s;
 		// 	}
-		// 	const int n = general_basis_core<I>::N;
-		// 	return hcb_map_bits(s,&general_basis_core<I>::maps[n_map*n],n);
+		// 	const int n = general_basis_core<I,P>::N;
+		// 	return hcb_map_bits(s,&general_basis_core<I,P>::maps[n_map*n],n);
 			
 		// }
 
 		// void map_state(I s[],npy_intp M,int n_map,signed char sign[]){
-		// 	if(general_basis_core<I>::nt<=0){
+		// 	if(general_basis_core<I,P>::nt<=0){
 		// 		return;
 		// 	}
-		// 	const int n = general_basis_core<I>::N;
-		// 	const int * map = &general_basis_core<I>::maps[n_map*n];
+		// 	const int n = general_basis_core<I,P>::N;
+		// 	const int * map = &general_basis_core<I,P>::maps[n_map*n];
 		// 	#pragma omp for schedule(static,1)
 		// 	for(npy_intp i=0;i<M;i++){
 		// 		s[i] = hcb_map_bits(s[i],map,n);
 		// 	}
 		// }
 
-		I inline next_state_pcon(const I s){
+		I inline next_state_pcon(const I s,const I nns){
 			if(s==0){return s;}
 			I t = (s | (s - 1)) + 1;
 			return t | ((((t & (0-t)) / (s & (0-s))) >> 1) - 1);
@@ -127,7 +128,7 @@ class hcb_basis_core : public general_basis_core<I>
 			const I one = 1;
 			for(int j=n_op-1;j>-1;j--){
 
-				const int ind = general_basis_core<I>::N-indx[j]-1;
+				const int ind = general_basis_core<I,P>::N-indx[j]-1;
 				const I b = (one << ind);
 				const bool a = (bool)((r >> ind)&one);
 				const char op = opstr[j];

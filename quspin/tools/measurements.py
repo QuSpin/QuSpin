@@ -548,12 +548,17 @@ def diag_ensemble(N,system_state,E2,V2,density=True,alpha=1.0,rho_d=False,Obs=Fa
 def obs_vs_time(psi_t,times,Obs_dict,return_state=False,Sent_args={},enforce_pure=False,verbose=False):
 	"""Calculates expectation value of observable(s) as a function of time in a time-dependent state.
 
+<<<<<<< HEAD
+	.. math:
+		\\langle\\psi(t)|\\mathcal{O}(t)|\\psi(t)\\rangle
+=======
 	This function computes the expectation of a time-dependent state :math:`|\\psi(t)\\rangle` in a time-dependent observable :math:`\\mathcal{O}(t)`. 
 	It automatically handles the cases where only the state or only the observable is time-dependent.
 	
 	.. math::
 		\\langle\\psi(t)| \\mathcal{O}(t) | \\psi(t)\\rangle
 
+>>>>>>> dev_0.3.3
 
 	Examples
 	--------

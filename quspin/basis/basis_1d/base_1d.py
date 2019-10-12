@@ -107,6 +107,7 @@ class basis_1d(lattice_basis):
 		self._pars = _np.asarray(pars,dtype=self._basis_type)
 		self._bitops = bitops(basis_module,**blocks)
 		self._check_pcon = False
+		self._check_herm = True
 		if Np is None:
 			self._conserved = ""
 			self._Ns_pcon = None
@@ -414,12 +415,13 @@ class basis_1d(lattice_basis):
 		else: 
 			if Np is None:
 				self._op = ops_module.op
-				self._basis = _np.arange(Ns-1,-1,-1,dtype=self._basis_type)
+				basis = _np.empty((Ns,),dtype=self._basis_type)
+				Ns = basis_module.basis(L,self._pars,basis)
 				self._Ns = Ns
 			else:
 				self._op = ops_module.n_op
 				basis = _np.empty((Ns,),dtype=self._basis_type)
-				basis_module.n_basis(L,Np,self._pars,basis,Np_list)
+				Ns = basis_module.n_basis(L,Np,self._pars,basis,Np_list)
 				self._Ns = Ns
 
 		if N is not None and M is not None:
@@ -468,7 +470,7 @@ class basis_1d(lattice_basis):
 
 		else:
 			if Np is None: 
-				pass
+				self._basis = basis[Ns-1::-1].copy()
 			elif len(Np)==1:
 				self._basis = basis[Ns-1::-1].copy()
 				if Np_list is not None: self._Np_list = Np_list[Ns-1::-1].copy()

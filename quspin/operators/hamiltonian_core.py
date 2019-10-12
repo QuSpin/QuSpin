@@ -5,8 +5,11 @@ from ..basis import isbasis as _isbasis
 
 from ..tools.evolution import evolve
 
-from ._oputils import matvec as _matvec
-from ._oputils import _get_matvec_function
+from ..tools.matvec import _matvec
+from ..tools.matvec import _get_matvec_function
+
+# from ._oputils import matvec as _matvec
+# from ._oputils import _get_matvec_function
 
 # from .exp_op_core import isexp_op,exp_op
 
@@ -562,16 +565,16 @@ class hamiltonian(object):
 
 	### state manipulation/observable routines
 
-	def dot(self,V,time=0,check=True,out=None,overwrite_out=True):
+	def dot(self,V,time=0,check=True,out=None,overwrite_out=True,a=1.0):
 		"""Matrix-vector multiplication of `hamiltonian` operator at time `time`, with state `V`.
 
 		.. math::
-			H(t=\\texttt{time})|V\\rangle
+			aH(t=\\texttt{time})|V\\rangle
 
 		Notes
 		-----
-		It is faster to multiply the individual (static, dynamic) parts of the Hamiltonian first, then add all those 
-		vectors together.
+		* this function does the matrix multiplication with the state(s) and Hamiltonian as is, see Example 17 (Lidblad dynamics / Optical Bloch Equations) 
+		* for right-multiplication of quantum operators, see function `rdot()`.
 
 		Parameters
 		-----------
@@ -589,10 +592,12 @@ class hamiltonian(object):
 		check : bool, optional
 			Whether or not to do checks for shape compatibility.
 		out : array_like, optional
-			specify the output array for the the result. This is not supported of `V` is a sparse matrix or if `times` is an array. 
+			specify the output array for the the result. This is not supported if `V` is a sparse matrix or if `times` is an array. 
 		overwrite_out : bool, optional
 			flag used to toggle between two different ways to treat `out`. If set to `True` all values in `out` will be overwritten with the result. 
 			If `False` the result of the dot product will be added to the values of `out`. 
+		a : scalar, optional
+			scalar to multiply the final product with: :math:`B = aHV`. 
 
 		Returns
 		--------
@@ -611,9 +616,9 @@ class hamiltonian(object):
 
 		
 		if ishamiltonian(V):
-			return self * V
+			return a*(self * V)
 		elif isexp_op(V):
-			raise ValueError("This is ambiguous action. Use the .rdot() method of the `exp_op` class isntead.")
+			raise ValueError("This is an ambiguous operation. Use the .rdot() method of the `exp_op` class instead.")
 
 		times = _np.array(time)
 
@@ -644,19 +649,19 @@ class hamiltonian(object):
 
 			if _sp.issparse(V):
 				V = V.tocsc()
-				return _sp.vstack([self.dot(V.get_col(i),time=t,check=check) for i,t in enumerate(time)])
+				return _sp.vstack([a*self.dot(V.get_col(i),time=t,check=check) for i,t in enumerate(time)])
 			else:
 				if V.ndim == 3 and V.shape[0] != V.shape[1]:
-					raise ValueError("Density matricies must be square!")
+					raise ValueError("Density matrices must be square!")
 
 				# allocate C-contiguous array to output results in.
 				out = _np.zeros(V.shape[-1:]+V.shape[:-1],dtype=result_dtype)
-
+				
 				for i,t in enumerate(time):
 					v = _np.ascontiguousarray(V[...,i],dtype=result_dtype)
-					self._static_matvec(self._static,v,overwrite_out=True,out=out[i,...])
+					self._static_matvec(self._static,v,overwrite_out=True,out=out[i,...],a=a)
 					for func,Hd in iteritems(self._dynamic):
-						self._dynamic_matvec[func](Hd,v,overwrite_out=False,a=func(t),out=out[i,...])
+						self._dynamic_matvec[func](Hd,v,overwrite_out=False,a=a*func(t),out=out[i,...])
 
 				# transpose, leave non-contiguous results which can be handled by numpy. 
 				if out.ndim == 2:
@@ -671,7 +676,7 @@ class hamiltonian(object):
 				V = V.astype(result_dtype,copy=False,order="C")
 
 				if out is None:
-					out = self._static_matvec(self._static,V)
+					out = self._static_matvec(self._static,V,a=a)
 				else:
 					try:
 						if out.dtype != result_dtype:
@@ -684,10 +689,10 @@ class hamiltonian(object):
 					except AttributeError:
 						raise TypeError("'out' must be array with correct dtype and dimensions for output array.")
 
-					self._static_matvec(self._static,V,out=out,overwrite_out=overwrite_out)
+					self._static_matvec(self._static,V,out=out,overwrite_out=overwrite_out,a=a)
 
 				for func,Hd in iteritems(self._dynamic):
-					self._dynamic_matvec[func](Hd,V,overwrite_out=False,a=func(time),out=out)
+					self._dynamic_matvec[func](Hd,V,overwrite_out=False,a=a*func(time),out=out)
 
 			elif _sp.issparse(V):
 				if out is not None:
@@ -696,21 +701,24 @@ class hamiltonian(object):
 				out = self._static * V
 				for func,Hd in iteritems(self._dynamic):
 					out = out + func(time)*(Hd.dot(V))
+
+				out = a*out
 			else:
+				# should we raise an error here?
 				pass
 
 
 			return out
 
-	def rdot(self,V,time=0,check=True):
+	def rdot(self,V,time=0,check=True,out=None,overwrite_out=True,a=1.0):
 		"""Vector-Matrix multiplication of `hamiltonian` operator at time `time`, with state `V`.
 
 		.. math::
-			\\langle V|H(t=\\texttt{time})
+			a\\langle V|H(t=\\texttt{time})
 
 		Notes
 		-----
-		This function does the matrix multiplication with the state(s) and Hamiltonian as is.
+		* this function does the matrix multiplication with the state(s) and Hamiltonian as is, see Example 17 (Lidblad dynamics / Optical Bloch Equations).
 
 		Parameters
 		-----------
@@ -726,7 +734,13 @@ class hamiltonian(object):
 					2- or 3-d array, where 2-d would be for pure states and 3-d would be for mixed states.
 		check : bool, optional
 			Whether or not to do checks for shape compatibility.
-			
+		out : array_like, optional
+			specify the output array for the the result. This is not supported if `V` is a sparse matrix or if `times` is an array. 
+		overwrite_out : bool, optional
+			flag used to toggle between two different ways to treat `out`. If set to `True` all values in `out` will be overwritten with the result. 
+			If `False` the result of the dot product will be added to the values of `out`. 
+		a : scalar, optional
+			scalar to multiply the final product with: :math:`B = aVH`. 
 
 		Returns
 		--------
@@ -740,10 +754,8 @@ class hamiltonian(object):
 		corresponds to :math:`B = AH`. 
 	
 		"""
-		# try:
-		# 	V_transpose = V.transpose()
-		# except AttributeError:
-		# 	V_transpose = _np.asanyarray(V).transpose()
+
+		times = _np.array(time)
 
 		try:
 			ndim = V.ndim
@@ -755,15 +767,15 @@ class hamiltonian(object):
 			raise ValueError("expecting V.ndim < 4.")
 
 		if ndim == 1:
-			return self.transpose().dot(V,time=time,check=check)
+			return self.transpose().dot(V,time=times,check=check,out=out.T,overwrite_out=overwrite_out,a=a)
 		elif ndim == 2:
 			if _np.array(times).ndim>0:
-				return self.transpose().dot(V,time=time,check=check)
+				return self.transpose().dot(V,time=times,check=check,out=out.T,overwrite_out=overwrite_out,a=a)
 			else:
-				return self.transpose().dot(V.transpose(),time=time,check=check).transpose()
+				return self.transpose().dot(V.transpose(),time=times,check=check,out=out.T,overwrite_out=overwrite_out,a=a).transpose()
 		else:
 			V_transpose = V.transpose((1,0,2))
-			return self.transpose().dot(V_transpose,time=time,check=check).transpose((1,0,2))
+			return self.transpose().dot(V_transpose,time=times,check=check,out=out.T,overwrite_out=overwrite_out,a=a).transpose((1,0,2))
 
 	def quant_fluct(self,V,time=0,check=True,enforce_pure=False):
 		"""Calculates the quantum fluctuations (variance) of `hamiltonian` operator at time `time`, in state `V`.
@@ -1291,7 +1303,7 @@ class hamiltonian(object):
 		for func,Hd in iteritems(self._dynamic):
 			self._dynamic_matvec[func](Hd,V,a=func(time),out=V_out,overwrite_out=False)
 
-		V_out *= -1
+		V_out *= -1.0
 		return V_out.ravel()
 
 	def __SO_real(self,time,V,V_out):
@@ -1950,7 +1962,7 @@ class hamiltonian(object):
 
 		return trace
 	
-	def astype(self,dtype,copy=False):
+	def astype(self,dtype,copy=False,casting="unsafe"):
 		"""Changes data type of `hamiltonian` object.
 
 		Parameters
@@ -1975,11 +1987,10 @@ class hamiltonian(object):
 		if dtype not in supported_dtypes:
 			raise TypeError('hamiltonian does not support type: '+str(dtype))
 
-		dynamic = [[M.astype(dtype),func] for func,M in iteritems(self.dynamic)]
-		if dtype == self._dtype:
-			return hamiltonian([self.static.astype(dtype)],dynamic,basis=self._basis,dtype=dtype,copy=copy)
-		else:
-			return hamiltonian([self.static.astype(dtype)],dynamic,basis=self._basis,dtype=dtype,copy=True)
+		static = self.static.astype(dtype,copy=copy,casting=casting)
+		dynamic = [[M.astype(dtype,copy=copy,casting=casting),func] for func,M in iteritems(self.dynamic)]
+		return hamiltonian([static],dynamic,basis=self._basis,dtype=dtype,copy=False)
+
 
 	def copy(self):
 		"""Returns a copy of `hamiltonian` object."""

@@ -15,8 +15,8 @@ namespace basis_general {
 
 
 
-template<class I, class J, class K, class T>
-int general_op(general_basis_core<I> *B,
+template<class I, class J, class K, class T,class P=signed char>
+int general_op(general_basis_core<I,P> *B,
 						  const int n_op,
 						  const char opstr[],
 						  const int indx[],
@@ -48,7 +48,7 @@ int general_op(general_basis_core<I> *B,
 			int local_err = B->op(r,m,n_op,opstr,indx);;
 
 			if(local_err == 0){
-				int sign = 1;
+				P sign = 1;
 
 				for(int k=0;k<nt;k++){
 					g[k]=0;
@@ -98,8 +98,8 @@ int general_op(general_basis_core<I> *B,
 
 
 
-template<class I, class J, class K>
-int general_inplace_op(general_basis_core<I> *B,
+template<class I, class J, class K,class P=signed char>
+int general_inplace_op(general_basis_core<I,P> *B,
 						  const bool conjugate,
 						  const bool transpose,
 						  const int n_op,
@@ -115,6 +115,7 @@ int general_inplace_op(general_basis_core<I> *B,
 						  		K v_out[])
 {
 	int err = 0;
+
 	if(transpose){
 		if(conjugate){
 			#pragma omp parallel
@@ -133,7 +134,7 @@ int general_inplace_op(general_basis_core<I> *B,
 					int local_err = B->op(r,m,n_op,opstr,indx);
 
 					if(local_err == 0){
-						int sign = 1;
+						P sign = 1;
 						npy_intp j = i;
 						if(r != basis[i]){
 							I rr = B->ref_state(r,g,sign);
@@ -187,7 +188,7 @@ int general_inplace_op(general_basis_core<I> *B,
 					int local_err = B->op(r,m,n_op,opstr,indx);
 
 					if(local_err == 0){
-						int sign = 1;
+						P sign = 1;
 
 						npy_intp j = i;
 						if(r != basis[i]){
@@ -246,7 +247,7 @@ int general_inplace_op(general_basis_core<I> *B,
 					int local_err = B->op(r,m,n_op,opstr,indx);
 
 					if(local_err == 0){
-						int sign = 1;
+						P sign = 1;
 
 						npy_intp j = i;
 						if(r != basis[i]){
@@ -303,7 +304,7 @@ int general_inplace_op(general_basis_core<I> *B,
 					int local_err = B->op(r,m,n_op,opstr,indx);
 
 					if(local_err == 0){
-						int sign = 1;
+						P sign = 1;
 
 						npy_intp j = i;
 						if(r != basis[i]){
@@ -351,8 +352,8 @@ int general_inplace_op(general_basis_core<I> *B,
 
 
 
-template<class I, class T>
-int general_op_bra_ket(general_basis_core<I> *B,
+template<class I, class T, class P=signed char>
+int general_op_bra_ket(general_basis_core<I,P> *B,
 						  const int n_op,
 						  const char opstr[],
 						  const int indx[],
@@ -382,7 +383,7 @@ int general_op_bra_ket(general_basis_core<I> *B,
 			int local_err = B->op(r,m,n_op,opstr,indx);
 
 			if(local_err == 0){
-				int sign = 1;
+				P sign = 1;
 
 				if(r != s){ // off-diagonal matrix element
 					r = B->ref_state(r,g,sign);
@@ -431,8 +432,8 @@ int general_op_bra_ket(general_basis_core<I> *B,
 
 
 
-template<class I, class T>
-int general_op_bra_ket_pcon(general_basis_core<I> *B,
+template<class I, class T, class P=signed char>
+int general_op_bra_ket_pcon(general_basis_core<I,P> *B,
 						  const int n_op,
 						  const char opstr[],
 						  const int indx[],
@@ -465,7 +466,7 @@ int general_op_bra_ket_pcon(general_basis_core<I> *B,
 			int local_err = B->op(r,m,n_op,opstr,indx);
 
 			if(local_err == 0){
-				int sign = 1;
+				P sign = 1;
 
 
 				if(r != s){ // off-diagonal matrix element

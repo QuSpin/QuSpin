@@ -4,23 +4,23 @@ from .base_general import basis_general
 import numpy as _np
 from scipy.special import comb
 
-def H_dim(N,length,m_max):
+def H_dim(Np,N,m_max):
     """
     Returns the total number of states in the bosonic Hilbert space
 
     --- arguments:
 
-    N: total number of bosons in lattice
-    length: total number of sites
+    Np: total number of bosons in lattice
+    N: total number of sites
     m_max+1: max number of states per site 
     """
     Ns = 0
-    for r in range(N//(m_max+1)+1):
-        r_2 = N - r*(m_max+1)
+    for r in range(Np//(m_max+1)+1):
+        r_2 = Np - r*(m_max+1)
         if r % 2 == 0:
-            Ns +=  comb(length,r,exact=True) * comb(length + r_2 - 1,r_2,exact=True)
+            Ns +=  comb(N,r,exact=True) * comb(N + r_2 - 1,r_2,exact=True)
         else:
-            Ns += -comb(length,r,exact=True) * comb(length + r_2 - 1,r_2,exact=True)
+            Ns += -comb(N,r,exact=True) * comb(N + r_2 - 1,r_2,exact=True)
 
     return Ns
 
@@ -28,7 +28,7 @@ def H_dim(N,length,m_max):
 class boson_basis_general(hcb_basis_general,basis_general):
 	"""Constructs basis for boson operators for USER-DEFINED symmetries.
 
-	Any unitary symmetry transformation :math:`Q` of multiplicity :math:`m_Q` (:math:`Q^{m_Q}=1`) has
+	Any unitary symmetry transformation :math:`Q` of periodicity :math:`m_Q` (:math:`Q^{m_Q}=1`) has
 	eigenvalues :math:`\\exp(-2\\pi i q/m_Q)`, labelled by an ingeter :math:`q\\in\\{0,1,\\dots,m_Q-1\\}`.
 	These integers :math:`q` are used to define the symmetry blocks.
 
@@ -229,6 +229,15 @@ class boson_basis_general(hcb_basis_general,basis_general):
 				self._Ns=1
 				self._basis=basis_zeros(self._Ns,dtype=self._basis_dtype)
 				self._n=_np.zeros(self._Ns,dtype=self._n_dtype)
+
+
+	def __setstate__(self,state):
+		print(self.__dict__)
+		if state["_sps"] == 2:
+			hcb_basis_general.__setstate__(self,state)
+		else:
+			self.__dict__.update(state)
+			self._core = boson_basis_core_wrap(self._basis_dtype,self._N,self._sps,self._maps,self._pers,self._qs)
 
 
 			

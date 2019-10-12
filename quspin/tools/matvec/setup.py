@@ -23,7 +23,7 @@ def cython_files():
 def configuration(parent_package='', top_path=None):
     from numpy.distutils.misc_util import Configuration
     import numpy
-    config = Configuration('operators', parent_package, top_path)
+    config = Configuration('matvec', parent_package, top_path)
 
 
     subprocess.check_call([sys.executable,

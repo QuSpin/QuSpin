@@ -258,6 +258,8 @@ cdef class general_basis_core_wrap:
             raise ValueError("operator not recognized.")
         elif err == 1:
             raise TypeError("attemping to use real type for complex matrix elements.")
+        elif err != 0:
+            raise RuntimeError("user defined error code: {}".format(err))
  
     @cython.boundscheck(False)
     def inplace_op(self,dtype[:,::1] v_in,dtype[:,::1] v_out,bool transposed,bool conjugated,object opstr,int[::1] indx,object J,_np.ndarray basis,norm_type[::1] n):
@@ -587,6 +589,8 @@ cdef class general_basis_core_wrap:
             raise ValueError("operator not recognized.")
         elif err == 1:
             raise TypeError("attemping to use real type for complex matrix elements.")
+        elif err != 0:
+            raise RuntimeError("user defined error code: {}".format(err))
 
     @cython.boundscheck(False)
     def representative(self,_np.ndarray states,_np.ndarray ref_states,int[:,::1] g_out=None,int8_t[::1] sign_out=None):

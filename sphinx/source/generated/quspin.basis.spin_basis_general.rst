@@ -21,6 +21,7 @@ quspin.basis.spin\_basis\_general
       ~spin_basis_general.check_symm
       ~spin_basis_general.ent_entropy
       ~spin_basis_general.expanded_form
+      ~spin_basis_general.get_amp
       ~spin_basis_general.get_proj
       ~spin_basis_general.get_vec
       ~spin_basis_general.index
@@ -44,6 +45,7 @@ quspin.basis.spin\_basis\_general
       ~spin_basis_general.Ns
       ~spin_basis_general.blocks
       ~spin_basis_general.description
+      ~spin_basis_general.dtype
       ~spin_basis_general.operators
       ~spin_basis_general.sps
       ~spin_basis_general.states

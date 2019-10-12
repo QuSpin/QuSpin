@@ -41,6 +41,7 @@ quspin.basis.spinful\_fermion\_basis\_1d
       ~spinful_fermion_basis_1d.Ns
       ~spinful_fermion_basis_1d.blocks
       ~spinful_fermion_basis_1d.description
+      ~spinful_fermion_basis_1d.dtype
       ~spinful_fermion_basis_1d.operators
       ~spinful_fermion_basis_1d.sps
       ~spinful_fermion_basis_1d.states

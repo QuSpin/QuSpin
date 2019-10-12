@@ -11,7 +11,7 @@ from scipy.special import comb
 class spinless_fermion_basis_general(basis_general):
 	"""Constructs basis for spinless fermion operators for USER-DEFINED symmetries.
 
-	Any unitary symmetry transformation :math:`Q` of multiplicity :math:`m_Q` (:math:`Q^{m_Q}=1`) has
+	Any unitary symmetry transformation :math:`Q` of periodicity :math:`m_Q` (:math:`Q^{m_Q}=1`) has
 	eigenvalues :math:`\\exp(-2\\pi i q/m_Q)`, labelled by an ingeter :math:`q\\in\\{0,1,\\dots,m_Q-1\\}`.
 	These integers :math:`q` are used to define the symmetry blocks.
 
@@ -173,6 +173,10 @@ class spinless_fermion_basis_general(basis_general):
 
 		self._allowed_ops=set(["I","n","+","-","z"])
 		
+	def __setstate__(self,state):
+		self.__dict__.update(state)
+		self._core = spinless_fermion_basis_core_wrap(self._basis_dtype,self._N,self._maps,self._pers,self._qs)
+
 
 	@property
 	def _fermion_basis(self):
@@ -257,7 +261,7 @@ def process_spinful_map(N,map,q):
 class spinful_fermion_basis_general(spinless_fermion_basis_general):
 	"""Constructs basis for spinful fermion operators for USER-DEFINED symmetries.
 
-	Any unitary symmetry transformation :math:`Q` of multiplicity :math:`m_Q` (:math:`Q^{m_Q}=1`) has
+	Any unitary symmetry transformation :math:`Q` of periodicity :math:`m_Q` (:math:`Q^{m_Q}=1`) has
 	eigenvalues :math:`\\exp(-2\\pi i q/m_Q)`, labelled by an ingeter :math:`q\\in\\{0,1,\\dots,m_Q-1\\}`.
 	These integers :math:`q` are used to define the symmetry blocks.
 
@@ -325,7 +329,7 @@ class spinful_fermion_basis_general(spinless_fermion_basis_general):
 		:lines: 7-
 
 	"""
-	def __init__(self,N,Nf=None,nf=None,Ns_block_est=None,simple_symm=True,make_basis=True,block_order=None,**blocks):
+	def __init__(self,N,Nf=None,nf=None,Ns_block_est=None,simple_symm=True,make_basis=True,block_order=None,double_occupancy=True,**blocks):
 		"""Intializes the `spinful_fermion_basis_general` object (basis for fermionic operators).
 
 		Parameters
@@ -342,6 +346,8 @@ class spinful_fermion_basis_general(spinless_fermion_basis_general):
 			Flags whidh toggles the setting for the types of mappings and operator strings the basis will use. See this tutorial for more details. 
 		make_basis: bool, optional
 			Boolean to control whether to make the basis. Allows the use to use some functionality of the basis constructor without constructing the entire basis.
+		double_occupancy: bool, optional
+			Boolean to toggle the presence of doubly-occupied sites (both a spin up and a spin-down fermion present on the same lattice site) in the basis. Default is `double_occupancy=True`, for which doubly-occupied states are present.
 		block_order: list of strings, optional
 			A list of strings containing the names of the symmetry blocks which specifies the order in which the symmetries will be applied to the state when calculating the basis. If not specified the symmetries are sorted by their periodicity.
 		**blocks: optional
@@ -470,12 +476,13 @@ class spinful_fermion_basis_general(spinless_fermion_basis_general):
 				self._Ns = Ns_block_est
 
 		self._basis_dtype = get_basis_type(2*N,None,2)
-		self._core = spinful_fermion_basis_core_wrap(self._basis_dtype,N,self._maps,self._pers,self._qs)
+		self._core = spinful_fermion_basis_core_wrap(self._basis_dtype,N,self._maps,self._pers,self._qs,double_occupancy)
 
 		self._sps = 2
 		self._N = 2*N
 		self._Ns_block_est=self._Ns
 		self._Np = Nf
+		self._double_occupancy = double_occupancy
 		
 		# make the basis; make() is function method of base_general
 		if make_basis:		
@@ -494,7 +501,9 @@ class spinful_fermion_basis_general(spinless_fermion_basis_general):
 
 		self._allowed_ops=set(["I","n","+","-","z"])
 		
-
+	def __setstate__(self,state):
+		self.__dict__.update(state)
+		self._core = spinful_fermion_basis_core_wrap(self._basis_dtype,self._N//2,self._maps,self._pers,self._qs,self._double_occupancy)
 
 	def _Op(self,opstr,indx,J,dtype):
 
@@ -579,7 +588,7 @@ class spinful_fermion_basis_general(spinless_fermion_basis_general):
 		else:
 			raise ValueError("down_state must be integer or string.")
 
-		s = down_state + (up_state << self.L)
+		s = down_state + (up_state << (self.N//2) ) # self.N here counts 2N sites 
 
 		indx = _np.argwhere(self._basis == s)
 

@@ -11,7 +11,7 @@ except NameError:
 class spin_basis_general(hcb_basis_general,higher_spin_basis_general):
 	"""Constructs basis for spin operators for USER-DEFINED symmetries.
 
-	Any unitary symmetry transformation :math:`Q` of multiplicity :math:`m_Q` (:math:`Q^{m_Q}=1`) has
+	Any unitary symmetry transformation :math:`Q` of periodicity :math:`m_Q` (:math:`Q^{m_Q}=1`) has
 	eigenvalues :math:`\\exp(-2\\pi i q/m_Q)`, labelled by an ingeter :math:`q\\in\\{0,1,\\dots,m_Q-1\\}`.
 	These integers :math:`q` are used to define the symmetry blocks.
 
@@ -172,6 +172,12 @@ class spin_basis_general(hcb_basis_general,higher_spin_basis_general):
 
 			self._allowed_ops = set(["I","+","-","z"])
 
+
+	def __setstate__(self,state):
+		if state["_sps"] == 2:
+			hcb_basis_general.__setstate__(self,state)
+		else:
+			higher_spin_basis_general.__setstate__(self,state)
 
 
 	def _Op(self,opstr,indx,J,dtype):

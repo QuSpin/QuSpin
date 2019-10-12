@@ -13,13 +13,13 @@ namespace basis_general {
 
 
 
-template<class I>
-std::complex<double> get_amp_rep(general_basis_core<I> *B,
+template<class I,class P=signed char>
+std::complex<double> get_amp_rep(general_basis_core<I,P> *B,
 								 const int nt,
 									   I r, // start out with representative state and iterate over all transofmrations. 
 								 const I s, // target states to find amplitude of
 								       double k = 0.0,
-									   int sign = 1,
+									   P sign = 1,
 								 const int depth = 0
 								)
 {
@@ -51,8 +51,8 @@ std::complex<double> get_amp_rep(general_basis_core<I> *B,
 }
 
 
-template<class I,class J>
-int get_amp_general(general_basis_core<I> *B,
+template<class I,class J,class P=signed char>
+int get_amp_general(general_basis_core<I,P> *B,
 						  I s[],   // input states in the full basis
 					      J out[], // state amplitudes of state s (full basis)
 					const npy_intp Ns   // length of above arrays (should be the same)			
@@ -81,7 +81,7 @@ int get_amp_general(general_basis_core<I> *B,
 			if(err == 0){
 				std::complex<double> phase_factor, out_tmp;
 				int g[__GENERAL_BASIS_CORE__max_nt];
-				int sign=1;
+				P sign=1;
 				I ss=s[i];
 
 				I r = B->ref_state(ss,g,sign);
@@ -118,7 +118,7 @@ int get_amp_general(general_basis_core<I> *B,
 			if(err == 0){
 				std::complex<double> phase_factor, out_tmp;
 				int g[__GENERAL_BASIS_CORE__max_nt];
-				int sign=1;
+				P sign=1;
 				I ss=s[i];
 
 				I r = B->ref_state(ss,g,sign);
@@ -158,8 +158,8 @@ int get_amp_general(general_basis_core<I> *B,
 
 
 // same as get_amp_rep, but w/o calling ref_state and check_state
-template<class I,class J>
-int get_amp_general_light(general_basis_core<I> *B,
+template<class I,class J,class P=signed char>
+int get_amp_general_light(general_basis_core<I,P> *B,
 						  I s[],   // input states in the symmetry-reduced basis
 					      J out[], // state amplitudes of state s (symmetry-reduced basis)
 					const npy_intp Ns   // length of above arrays (should be the same)			

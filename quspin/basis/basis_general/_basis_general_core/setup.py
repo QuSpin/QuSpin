@@ -41,7 +41,7 @@ def configuration(parent_package='', top_path=None):
 
         cython_files()
 
-        extra_compile_args=["-fno-strict-aliasing"]
+        extra_compile_args=["-fno-strict-aliasing","-Wno-unused-variable","-Wno-unknown-pragmas"]
         extra_link_args=[]  
           
         if sys.platform == "darwin":
@@ -49,6 +49,10 @@ def configuration(parent_package='', top_path=None):
     
         package_dir = os.path.dirname(os.path.realpath(__file__))
         package_dir = os.path.expandvars(package_dir)
+
+        depends = glob.glob(os.path.join(package_dir,"source","*.h"))
+        user_header = os.path.join(package_dir,"source","user_basis_core.h")
+
         all_headers = set(glob.glob(os.path.join(package_dir,"source","*.h")))
 
         src_spec_headers = set(glob.glob(os.path.join(package_dir,"source","*_basis_core.h")))
@@ -59,6 +63,7 @@ def configuration(parent_package='', top_path=None):
 
         # remove specific headers from all the headers to get the shared headers.
         global_headers = list(all_headers - src_spec_headers)
+
 
         extension_kwargs = dict(include_dirs=get_include_dirs(),
                                 extra_compile_args=extra_compile_args,
@@ -100,6 +105,9 @@ def configuration(parent_package='', top_path=None):
         depends = global_headers+[spinful_fermion_src_header]
         config.add_extension('spinful_fermion_core',sources=spinful_fermion_src,
             depends=depends,**extension_kwargs)
+
+        user_src = os.path.join(package_dir,"user_core.cpp") 
+        config.add_extension('user_core',sources=user_src,depends=[user_header],**extension_kwargs)
 
         return config
 

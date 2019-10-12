@@ -42,6 +42,7 @@ class basis(object):
 		self._unique_me = True
 		self._check_symm = None
 		self._check_pcon = None
+		self._check_herm = None
 		if self.__class__.__name__ == 'basis':
 			raise ValueError("This class is not intended"
 							 " to be instantiated directly.")
@@ -49,10 +50,11 @@ class basis(object):
 
 	def __str__(self):
 		
-		string = "reference states: \n"
+		string = "reference states: \narray index   /   Fock state   /   integer repr. \n"
+		
 		if self._Ns == 0:
 			return string
-		
+
 		str_list = list(self._get__str__())
 		if self._Ns > MAXPRINT:
 			try:
@@ -66,6 +68,7 @@ class basis(object):
 			str_list.insert(MAXPRINT//2,t)
 		
 		string += "\n".join(str_list)
+		
 		if any('block' in x for x in self._blocks): 
 			string += "\nThe states printed do NOT correspond to the physical states: see review arXiv:1101.3281 for more details about reference states for symmetry-reduced blocks.\n"
 		return string
@@ -452,6 +455,10 @@ class basis(object):
 		---------
 
 		"""
+		if self._check_herm is None:
+			warnings.warn("Test for hermiticity not implemented for {0}, to turn off this warning set check_symm=False in hamiltonian".format(type(self)),UserWarning,stacklevel=3)
+			return
+
 		static_list,dynamic_list = self._get_local_lists(static,dynamic)
 		static_expand,static_expand_hc,dynamic_expand,dynamic_expand_hc = self._get_hc_local_lists(static_list,dynamic_list)
 		# calculate non-hermitian elements

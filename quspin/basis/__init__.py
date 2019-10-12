@@ -1,7 +1,7 @@
 """
-==========================================
+==================================
 Basis module (:mod:`quspin.basis`)
-==========================================
+==================================
 
 Basis classes for quantum many-body systems.
 
@@ -22,7 +22,7 @@ the operator strings "x" and "y".
 .. currentmodule:: quspin.basis
 
 one-dimensional symmetries
----------------------------
+--------------------------
 
 .. autosummary::
    :toctree: generated/
@@ -33,7 +33,7 @@ one-dimensional symmetries
    spinful_fermion_basis_1d
 
 general lattice symmetries
------------------------------
+--------------------------
 
 .. autosummary::
    :toctree: generated/
@@ -42,6 +42,15 @@ general lattice symmetries
    boson_basis_general
    spinless_fermion_basis_general
    spinful_fermion_basis_general
+
+
+user basis
+----------
+
+.. autosummary::
+   :toctree: generated/
+
+   user_basis
 
 
 combining basis classes
@@ -54,7 +63,7 @@ combining basis classes
    photon_basis
 
 functions
-----------
+---------
 
 .. autosummary::
    :toctree: generated/
@@ -64,12 +73,12 @@ functions
 
 
 large integer support for general basis classes
---------------------
+-----------------------------------------------
 To construct `*_basis_general` classes with more than 64 lattice sites, QuSpin uses custom unsigned integer types for the integer 
 representation of many-body states.
 
 a) custom large integer data types supported in general basis
-++++++
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 .. autosummary::
    :toctree: generated/
@@ -80,7 +89,7 @@ a) custom large integer data types supported in general basis
    uint16384
 
 b) array initialization routines
-+++++++++++++++++++
+++++++++++++++++++++++++++++++++
 
 .. autosummary::
    :toctree: generated/
@@ -90,7 +99,7 @@ b) array initialization routines
 
 
 c) utilities to use large integers
-+++++++++++++++++++
+++++++++++++++++++++++++++++++++++
 
 .. autosummary::
    :toctree: generated/
@@ -111,4 +120,5 @@ from .base import *
 from .lattice import *
 from .photon import *
 from .tensor import *
+from quspin.basis.user import *
 

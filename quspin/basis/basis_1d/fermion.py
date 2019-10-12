@@ -195,7 +195,7 @@ class spinful_fermion_basis_1d(spinless_fermion_basis_1d,basis_1d):
 		:lines: 7-
 
 	"""	
-	def __init__(self,L,Nf=None,nf=None,**blocks):
+	def __init__(self,L,Nf=None,nf=None,double_occupancy=True,**blocks):
 		"""Intializes the `fermion_basis_1d` object (basis for fermionic operators).
 
 		Parameters
@@ -208,6 +208,8 @@ class spinful_fermion_basis_1d(spinless_fermion_basis_1d,basis_1d):
 		nf: tuple(float), optional
 			Density of fermions in chain (fermions per site). First (left) entry refers to spin-up. Second (right)
 			entry refers to spin-down.
+		double_occupancy: bool, optional
+			Boolean to toggle the presence of doubly-occupied sites (both a spin up and a spin-down fermion present on the same lattice site) in the basis. Default is `double_occupancy=True`, for which doubly-occupied states are present.
 		**blocks: optional
 			extra keyword arguments which include:
 
@@ -357,8 +359,9 @@ class spinful_fermion_basis_1d(spinless_fermion_basis_1d,basis_1d):
 					raise ValueError("fermion spin inversion symmetry only reduces the half-filled particle sector")
 
 
+		double_occupancy = bool(double_occupancy)
 		Imax = (1<<L)-1
-		pars = [L,Imax,0,0] # sign to be calculated
+		pars = [L,Imax,0,0,int(double_occupancy)] # sign to be calculated
 		self._operators = ("availible operators for fermion_basis_1d:"+
 							"\n\tI: identity "+
 							"\n\t+: raising operator"+
