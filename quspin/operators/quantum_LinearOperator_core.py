@@ -286,16 +286,20 @@ class quantum_LinearOperator(LinearOperator):
 	# 	"""
 	# 	return self.__rmul__(other)
 
-	def dot(self,other,out=None):
+	def dot(self,other,out=None,a=1.0):
 		"""Matrix-vector multiplication of `quantum_LinearOperator` operator, with state `V`.
 
 		.. math::
-			H|V\\rangle
+			aH|V\\rangle
 
 		Parameters
 		-----------
 		other : numpy.ndarray
-			Vector (quantums tate) to multiply the `quantum_LinearOperator` operator with.	
+			Vector (quantums tate) to multiply the `quantum_LinearOperator` operator with.
+		out : array_like, optional
+			specify the output array for the the result.
+		a : scalar, optional
+			scalar to multiply the final product with: :math:`B = aHA`. 	
 
 		Returns
 		--------
@@ -324,9 +328,9 @@ class quantum_LinearOperator(LinearOperator):
 				self.basis.inplace_Op(other,opstr, indx, J, self._dtype,
 									self._conjugated,self._transposed,v_out=out)
 
-			return out
+			return a*out
 		else:
-			return self * other
+			return a * (self * other)
 
 
 	def _matvec(self,other):
