@@ -1953,7 +1953,7 @@ class hamiltonian(object):
 
 		return trace
 	
-	def astype(self,dtype,copy=False):
+	def astype(self,dtype,copy=False,casting="unsafe"):
 		"""Changes data type of `hamiltonian` object.
 
 		Parameters
@@ -1978,11 +1978,10 @@ class hamiltonian(object):
 		if dtype not in supported_dtypes:
 			raise TypeError('hamiltonian does not support type: '+str(dtype))
 
-		dynamic = [[M.astype(dtype),func] for func,M in iteritems(self.dynamic)]
-		if dtype == self._dtype:
-			return hamiltonian([self.static.astype(dtype)],dynamic,basis=self._basis,dtype=dtype,copy=copy)
-		else:
-			return hamiltonian([self.static.astype(dtype)],dynamic,basis=self._basis,dtype=dtype,copy=True)
+		static = self.static.astype(dtype,copy=copy,casting=casting)
+		dynamic = [[M.astype(dtype,copy=copy,casting=casting),func] for func,M in iteritems(self.dynamic)]
+		return hamiltonian([static],dynamic,basis=self._basis,dtype=dtype,copy=False)
+
 
 	def copy(self):
 		"""Returns a copy of `hamiltonian` object."""

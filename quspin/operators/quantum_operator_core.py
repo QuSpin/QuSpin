@@ -584,7 +584,7 @@ class quantum_operator(object):
 		if self.Ns <= 0:
 			return _np.asarray([])
 
-		if ishamiltonian(V):
+		if hamiltonian_core.ishamiltonian(V):
 			raise TypeError("Can't take expectation value of hamiltonian")
 
 		if isexp_op(V):
@@ -639,14 +639,14 @@ class quantum_operator(object):
 		if self.Ns <= 0:
 			return _np.asarray([])
 
-		if ishamiltonian(V):
+		if hamiltonian_core.ishamiltonian(V):
 			raise TypeError("Can't take expectation value of hamiltonian")
 
 		if isexp_op(V):
 			raise TypeError("Can't take expectation value of exp_op")
 
 		
-		V_dot = self.dot(V,time=time,check=check)
+		V_dot = self.dot(V,check=check,pars=pars)
 		return self._expt_value_core(V,V_dot,enforce_pure=enforce_pure)
 
 	def _expt_value_core(self,V_left,V_right,enforce_pure=False):
@@ -1188,7 +1188,7 @@ class quantum_operator(object):
 		new_dict = {key:[op] for key,op in iteritems(self._quantum_operator)}
 		return quantum_operator(new_dict,basis=self._basis,dtype=self._dtype,shape=self._shape,copy=True)
 
-	def astype(self,dtype,copy=False):
+	def astype(self,dtype,copy=False,casting="unsafe"):
 		""" Changes data type of `quantum_operator` object.
 
 		Parameters
@@ -1208,12 +1208,9 @@ class quantum_operator(object):
 		if dtype not in hamiltonian_core.supported_dtypes:
 			raise ValueError("quantum_operator can only be cast to floating point types")
 
-		new_dict = {key:[op] for key,op in iteritems(self._quantum_operator)}
+		new_dict = {key:[op.astype(dtype,copy=copy,casting=casting)] for key,op in iteritems(self._quantum_operator)}
 
-		if dtype == self._dtype:
-			return quantum_operator(new_dict,basis=self._basis,dtype=dtype,shape=self._shape,copy=copy)
-		else:
-			return quantum_operator(new_dict,basis=self._basis,dtype=dtype,shape=self._shape,copy=True)
+		return quantum_operator(new_dict,basis=self._basis,dtype=dtype,shape=self._shape,copy=copy)
 
 
 	### lin-alg operations

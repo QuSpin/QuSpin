@@ -186,10 +186,3 @@ cdef class user_core_wrap(general_basis_core_wrap):
 
         return Ns_2
 
-
-    def op_bra_ket(self,*args):
-        if self.count_particles is None:
-            raise RuntimeError("op_bra_ket features requires the user to define a 'count_particles' cfunc and 'n_sectors' argument.")
-
-        return general_basis_core_wrap.op_bra_ket(self,*args)
-
