@@ -60,6 +60,16 @@ Parallel Computing Capabilities
     
     parallelization
 
+
+User Basis Tutorial
+===============================
+
+.. toctree::
+    :maxdepth: 1
+    
+    user_basis
+
+
 Report a Bug / Ask a Question
 =============================
 
