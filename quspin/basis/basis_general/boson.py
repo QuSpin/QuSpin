@@ -97,7 +97,7 @@ class boson_basis_general(hcb_basis_general,basis_general):
 		make_basis: bool, optional
 			Boolean to control whether to make the basis. Allows the use to use some functionality of the basis constructor without constructing the entire basis.
 		block_order: list of strings, optional
-			A list of strings containing the names of the symmetry blocks which specifies the order in which the symmetries will be applied to the state when calculating the basis. If not specified the symmetries are sorted by their periodicity. 
+			A list of strings containing the names of the symmetry blocks which specifies the order in which the symmetries will be applied to the state when calculating the basis. The first element in the list is applied to the state first followed by the second element, etc. If the list is not specificed the ordering is such that the symmetry with the largest cycle is the first, followed by the second largest, etc. 
 		**blocks: optional
 			keyword arguments which pass the symmetry generator arrays. For instance:
 

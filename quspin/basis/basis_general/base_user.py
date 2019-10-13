@@ -179,7 +179,7 @@ class user_basis(basis_general):
 		Ns_block_est: int, optional
 			An estimate for the size of the symmetry reduced block, QuSpin does a simple estimate which is not always correct. 
 		block_order: tuple/list, optional
-			A list of strings containing the names of the symmetry blocks which specifies the order in which the symmetries will be applied to the state when calculating the basis. If not specified the symmetries are sorted by their periodicity. 
+			A list of strings containing the names of the symmetry blocks which specifies the order in which the symmetries will be applied to the state when calculating the basis. The first element in the list is applied to the state first followed by the second element, etc. If the list is not specificed the ordering is such that the symmetry with the largest cycle is the first, followed by the second largest, etc. 
 		**blocks: optional
 			keyword arguments which pass the symmetry generator arrays. For instance:
 
