@@ -110,9 +110,9 @@ class basis_general(lattice_basis):
 
 		kwargs = {block:process_map(*item) for block,item in kwargs.items()}
 	
-		if block_order is None: # sort by periodicies largest to smallest
+		if block_order is None: 
+			# sort by periodicies smallest to largest for speed up
 			sorted_items = sorted(kwargs.items(),key=lambda x:x[1][1])
-			sorted_items.reverse()
 		else:
 			block_order = list(block_order)
 			missing = set(kwargs.keys()) - set(block_order)
@@ -123,6 +123,7 @@ class basis_general(lattice_basis):
 			if len(missing)>0:
 				raise ValueError("{} names found in block_order but missing from block names.".format(missing))
 
+			block_order.reverse()
 			sorted_items = [(key,kwargs[key]) for key in block_order]
 
 		self._blocks = {block:((-1)**q if per==2 else q) for block,(_,per,q,_) in sorted_items}
