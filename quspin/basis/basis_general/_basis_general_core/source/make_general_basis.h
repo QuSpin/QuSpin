@@ -135,13 +135,13 @@ npy_intp make_basis_parallel(general_basis_core<I,P> *B,const npy_intp MAX,const
 
 		}
 
-
+		#pragma omp barrier // wait for all threads to finish searching.
 
 		if(!insuff_mem){
 
 			master_pos_data[threadn+1] = thread_block.size(); // get sizes for each thread block into shared memory
 
-			#pragma omp barrier // wait for all threads to finish searching.
+			#pragma omp barrier
 
 			#pragma omp single // calculate the cumulative sum to get data paritions of master_block
 			{
@@ -231,8 +231,11 @@ npy_intp make_basis_pcon_parallel(general_basis_core<I,P> *B,const npy_intp MAX,
 			}
 		}
 
+		#pragma omp barrier
+
 		if(!insuff_mem){
 			master_pos_data[threadn+1] = thread_block.size();
+
 
 			#pragma omp barrier
 

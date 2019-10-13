@@ -113,6 +113,7 @@ class basis_general(lattice_basis):
 		if block_order is None: 
 			# sort by periodicies smallest to largest for speed up
 			sorted_items = sorted(kwargs.items(),key=lambda x:x[1][1])
+			# sorted_items.reverse()
 		else:
 			block_order = list(block_order)
 			missing = set(kwargs.keys()) - set(block_order)

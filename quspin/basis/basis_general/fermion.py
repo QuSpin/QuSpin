@@ -483,7 +483,7 @@ class spinful_fermion_basis_general(spinless_fermion_basis_general):
 		self._Ns_block_est=self._Ns
 		self._Np = Nf
 		self._double_occupancy = double_occupancy
-		
+
 		# make the basis; make() is function method of base_general
 		if make_basis:		
 			self.make()
