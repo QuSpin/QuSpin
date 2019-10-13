@@ -1,28 +1,42 @@
-:math:`\mathrm{\color{orange} {QuSpin\ 0.3.3}}` here (updated on 2019.10.01)
+:math:`\mathrm{\color{orange} {QuSpin\ 0.3.3}}` here (updated on 2019.10.13)
 ============================================================================
 
-:math:`\mathrm{\color{red} {Highlights}}`: OpenMP support now here!
+:math:`\mathrm{\color{red} {Highlights}}`: OpenMP support here; Constrained Hilbert spaces support now here!
 ===================================================================
 
-Check out :ref:`parallelization-label` and the example script :ref:`example12-label`!
+Check out :ref:`parallelization-label` and the example script :ref:`example12-label`.
+
+For a tutorial in QuSpin's `user_basis` which allows the user to define custom bases with constraints, check out: :ref:`user_basis-label`.
 
 
 Complete list of the most recent features 
 =========================================
 
 
-Added in v. 0.3.3 (2019.05.01)
+Added in v. 0.3.3 (2019.10.13)
 ------------------------------
 
 Improved Functionality
 ++++++++++++++++++++++
 * introducing improvements to Example 11 to perform Monte Carlo sampling in the symmetry-reduced Hilbert space.
+* new examples:
+	* Example 13 to showcase `double_occupancy` option of the `spinful_fermion_basis_*`.
+	* Examples 14-16 demonstrate the usage of `user_basis`.
+	* Example 17 shows how to use QuSpin for Lindblad dynamics and demonstrates the use of the omp-parallelzied `matvec` function for speedup.
+	* Example 18 shows how to construct Hamiltinians on a hexagonal lattice. 
+* improved functionality of the `tools.evolution.evolve()` function.
+* fixed import issue with scipy's `comb` function.
+* fixed a number of small bugs. 
 
 New Attributes, Functions, Methods and Classes
 ++++++++++++++++++++++++++++++++++++++++++++++
 
 * adding `*_basis_general.get_amp()` function method which effectively provides a partial `get_vec()` function but does not require the basis to be constructed ahead of time.
 * adding optional argument `double_occupancy` to the `spinful_fermion_basis_*` classes to control whether doubly occupied sites should be part of the basis or not. 
+* adding the `user_basis` class which enables the user to build in Hilbert-space constraints, and exposes the inner workings of QuSpin's core function to give the user almost complete control (see :ref:`user_basis-label`).
+* adding `tools.misc.matvec()` and `tools.misc.get_matvec()` functions with omp-parallelized implementation which outperforms scipy and numpy in computing matrix-vector peroducts.
+* adding optional arguments to the `dot()` and `rdot()` functions of the operators module.
+
 
 
 Added in v. 0.3.2 (2019.03.11)

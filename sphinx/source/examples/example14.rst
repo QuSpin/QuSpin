@@ -8,7 +8,9 @@ This example makes use of the `user_basis` class to define the Hamiltonian
 .. math::
 	H = \sum_j P_{j-1} \sigma^x_j P_{j+1}, \qquad P_j = |\downarrow_j\rangle\langle\downarrow_j|
 
-Please consult this post: :ref:`user_basis-label`, with more detailed explanations on using the `user_basis` class.
+The projector operators :math:`P_j` are built in the definition of the basis for the constrained Hibert space.
+
+Please consult this post -- :ref:`user_basis-label` -- for more detailed explanations on using the `user_basis` class.
 
 Script
 ------

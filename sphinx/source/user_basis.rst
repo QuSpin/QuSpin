@@ -7,7 +7,7 @@ List of functionality features which `user_basis` allows the user to access, and
 
 * Constrained Hilbert Spaces
 * Quantum Clock and Potts models
-* Implement symmetries which act on the local Hilbert space, e.g. :math:`Z_n, n>2`
+* Implement symmetries which act on the local Hilbert space, e.g. :math:`\mathbb{Z}_n, n>2`
 * Symmetries for mixed particle representations, e.g. Bose-Fermi mixtures. 
 * Optimized low-level functions increasing performence in constructing operators. 
 * Construct a basis through some other means but use it within QuSpin (e.g. to further reduce it applying symmetries). 

@@ -18,8 +18,7 @@ where :math:`H` is the Hamiltonian of the two-level system, and :math:`L` is the
 
 where :math:`[\cdot,\cdot]` is the commutator, and :math:`\{\cdot,\cdot\}` is the anti-commutator. The system of equations for this specific problem is also known as the optical Bloch equations.
 
-Below, we provide two ways to define the function for the Lindblad ODE. The first version is very intuitive, but rather slow. The second version
-uses the `matvec()` function and is fast (but might not be memory efficient for large systems).
+Below, we provide three ways to define the function for the Lindblad ODE. The first version is very intuitive, but rather slow. The second version uses the `hamiltonian.dot()` and `hamiltonian.rdot()` functions and is a bit more sophisticated and a bit faster. The third version uses the `matvec()` function and is faster than the previous two (but may not be memory efficient for large systems).
 
 Note that this way of simulating the Lindblad equation has severe limitations for many-body systems. An alternative, parallelizable way to effectively simulate Lindblad dynamics using unitary evolution is described in 
 `arXiv:1608.01317 <https://arxiv.org/pdf/1608.01317.pdf>`_.
