@@ -37,7 +37,7 @@ for ii,basis_dict in enumerate(allowed_sectors):
 
 	basis_boson = boson_basis_general(N_2d, make_basis=False,
 										Nb=N_2d//4,sps=2,
-										**basis_dict,
+										**basis_dict
 									)
 
 	basis_boson_full = boson_basis_general(N_2d, make_basis=False,
@@ -47,8 +47,8 @@ for ii,basis_dict in enumerate(allowed_sectors):
 
 	basis_spin = spin_basis_general(N_2d, pauli=False, make_basis=False,
 										Nup=N_2d//2,
-										**basis_dict,
-										zblock=(Z,0)
+										zblock=(Z,0),
+										**basis_dict
 									)
 
 	basis_spin_full = spin_basis_general(N_2d, pauli=False, make_basis=False,
@@ -57,7 +57,7 @@ for ii,basis_dict in enumerate(allowed_sectors):
 
 	basis_fermion = spinless_fermion_basis_general(N_2d, make_basis=False,
 										Nf=N_2d//2,
-										**basis_dict,
+										**basis_dict
 									)
 
 	basis_fermion_full = spinless_fermion_basis_general(N_2d, make_basis=False,
@@ -68,7 +68,7 @@ for ii,basis_dict in enumerate(allowed_sectors):
 
 	basis_spinful_fermion = spinful_fermion_basis_general(N_2d, make_basis=False,
 										Nf=(N_2d//8,N_2d//8),
-										**basis_dict,
+										**basis_dict
 									)
 
 	basis_spinful_fermion_full = spinful_fermion_basis_general(N_2d, make_basis=False,
