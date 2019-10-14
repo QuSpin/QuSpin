@@ -32,59 +32,64 @@ def cython_files():
 
 
 def configuration(parent_package='', top_path=None):
-		import numpy,os
-		from numpy.distutils.misc_util import Configuration
-		config = Configuration('_basis_1d_core',parent_package, top_path)
+	import numpy,os,sys
+	from numpy.distutils.misc_util import Configuration
+	config = Configuration('_basis_1d_core',parent_package, top_path)
 
-		cython_files()
+	cython_files()
 
-		package_dir = os.path.dirname(os.path.realpath(__file__))
-		package_dir = os.path.expandvars(package_dir)
+	if sys.platform == "win32":
+		extra_compile_args=[]
+	else:
+		extra_compile_args=["-fno-strict-aliasing"]
 
-		sources_dir = os.path.join(package_dir,"sources")
+	package_dir = os.path.dirname(os.path.realpath(__file__))
+	package_dir = os.path.expandvars(package_dir)
 
-		hcp_basis_src = os.path.join(package_dir,"hcp_basis.cpp")	
-		config.add_extension('hcp_basis',sources=hcp_basis_src,include_dirs=[numpy.get_include(),sources_dir],
-								extra_compile_args=["-fno-strict-aliasing"],
-								language="c++")
+	sources_dir = os.path.join(package_dir,"sources")
 
-		spf_ops_src = os.path.join(package_dir,"spf_basis.cpp")	
-		config.add_extension('spf_basis',sources=spf_ops_src,include_dirs=[numpy.get_include(),sources_dir],
-								extra_compile_args=["-fno-strict-aliasing"],
-								language="c++")
+	hcp_basis_src = os.path.join(package_dir,"hcp_basis.cpp")	
+	config.add_extension('hcp_basis',sources=hcp_basis_src,include_dirs=[numpy.get_include(),sources_dir],
+							extra_compile_args=extra_compile_args,
+							language="c++")
 
-		boson_basis_src = os.path.join(package_dir,"boson_basis.cpp")	
-		config.add_extension('boson_basis',sources=boson_basis_src,include_dirs=[numpy.get_include(),sources_dir],
-								extra_compile_args=["-fno-strict-aliasing"],
-								language="c++")
+	spf_ops_src = os.path.join(package_dir,"spf_basis.cpp")	
+	config.add_extension('spf_basis',sources=spf_ops_src,include_dirs=[numpy.get_include(),sources_dir],
+							extra_compile_args=extra_compile_args,
+							language="c++")
 
-		hcp_ops_src = os.path.join(package_dir,"hcp_ops.cpp")	
-		config.add_extension('hcp_ops',sources=hcp_ops_src,include_dirs=[numpy.get_include(),sources_dir],
-								extra_compile_args=["-fno-strict-aliasing"],
-								language="c++")
+	boson_basis_src = os.path.join(package_dir,"boson_basis.cpp")	
+	config.add_extension('boson_basis',sources=boson_basis_src,include_dirs=[numpy.get_include(),sources_dir],
+							extra_compile_args=extra_compile_args,
+							language="c++")
 
-		spf_ops_src = os.path.join(package_dir,"spf_ops.cpp")	
-		config.add_extension('spf_ops',sources=spf_ops_src,include_dirs=[numpy.get_include(),sources_dir],
-								extra_compile_args=["-fno-strict-aliasing"],
-								language="c++")
+	hcp_ops_src = os.path.join(package_dir,"hcp_ops.cpp")	
+	config.add_extension('hcp_ops',sources=hcp_ops_src,include_dirs=[numpy.get_include(),sources_dir],
+							extra_compile_args=extra_compile_args,
+							language="c++")
 
-		boson_ops_src = os.path.join(package_dir,"boson_ops.cpp")	
-		config.add_extension('boson_ops',sources=boson_ops_src,include_dirs=[numpy.get_include(),sources_dir],
-								extra_compile_args=["-fno-strict-aliasing"],
-								language="c++")
+	spf_ops_src = os.path.join(package_dir,"spf_ops.cpp")	
+	config.add_extension('spf_ops',sources=spf_ops_src,include_dirs=[numpy.get_include(),sources_dir],
+							extra_compile_args=extra_compile_args,
+							language="c++")
 
-		return config
+	boson_ops_src = os.path.join(package_dir,"boson_ops.cpp")	
+	config.add_extension('boson_ops',sources=boson_ops_src,include_dirs=[numpy.get_include(),sources_dir],
+							extra_compile_args=extra_compile_args,
+							language="c++")
+
+	return config
 
 if __name__ == '__main__':
-		from numpy.distutils.core import setup
-		import sys
-		try:
-			instr = sys.argv[1]
-			if instr == "build_templates":
-				cython_files()
-			else:
-				setup(**configuration(top_path='').todict())
-		except IndexError: pass
+	from numpy.distutils.core import setup
+	import sys
+	try:
+		instr = sys.argv[1]
+		if instr == "build_templates":
+			cython_files()
+		else:
+			setup(**configuration(top_path='').todict())
+	except IndexError: pass
 
 
 

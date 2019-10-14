@@ -21,7 +21,10 @@ import warnings
 
 __all__ =  ["ent_entropy", 
 			"diag_ensemble",
-			"obs_vs_time"
+			"obs_vs_time",
+			"ED_state_vs_time",
+			"project_op",
+			"mean_level_spacing"
 			]
 
 
