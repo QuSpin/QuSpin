@@ -1,4 +1,4 @@
-:math:`\mathrm{\color{orange} {QuSpin\ 0.3.3}}` here (updated on 2019.10.13)
+:math:`\mathrm{\color{orange} {QuSpin\ 0.3.3}}` here (updated on 2019.10.15)
 ============================================================================
 
 :math:`\mathrm{\color{red} {Highlights}}`: OpenMP support here; Constrained Hilbert spaces support now here!
@@ -13,7 +13,7 @@ Complete list of the most recent features
 =========================================
 
 
-Added in v. 0.3.3 (2019.10.13)
+Added in v. 0.3.3 (2019.10.15)
 ------------------------------
 
 Improved Functionality
