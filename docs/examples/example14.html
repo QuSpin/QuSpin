@@ -1,0 +1,304 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><script type="text/javascript">
+
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-110543543-1']);
+      _gaq.push(['_trackPageview']);
+
+      (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+    </script>
+    <title>Quantum scars Hamiltonian: spin-1/2 system with Hilbert space constraint &#8212; QuSpin 0.3.3 documentation</title>
+    <link rel="stylesheet" href="../static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../static/documentation_options.js"></script>
+    <script type="text/javascript" src="../static/jquery.js"></script>
+    <script type="text/javascript" src="../static/underscore.js"></script>
+    <script type="text/javascript" src="../static/doctools.js"></script>
+    <script type="text/javascript" src="../static/language_data.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.3 documentation</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="quantum-scars-hamiltonian-spin-1-2-system-with-hilbert-space-constraint">
+<span id="example14-label"></span><h1>Quantum scars Hamiltonian: spin-1/2 system with Hilbert space constraint<a class="headerlink" href="#quantum-scars-hamiltonian-spin-1-2-system-with-hilbert-space-constraint" title="Permalink to this headline">¶</a></h1>
+<p>This example makes use of the <cite>user_basis</cite> class to define the Hamiltonian</p>
+<div class="math notranslate nohighlight">
+\[H = \sum_j P_{j-1} \sigma^x_j P_{j+1}, \qquad P_j = |\downarrow_j\rangle\langle\downarrow_j|\]</div>
+<p>The projector operators <span class="math notranslate nohighlight">\(P_j\)</span> are built in the definition of the basis for the constrained Hibert space.</p>
+<p>Please consult this post – <a class="reference internal" href="../user_basis.html#user-basis-label"><span class="std std-ref">A tutorial on QuSpin’s user_basis</span></a> – for more detailed explanations on using the <cite>user_basis</cite> class.</p>
+</div>
+<div class="section" id="script">
+<h1>Script<a class="headerlink" href="#script" title="Permalink to this headline">¶</a></h1>
+<p><a class="reference download internal" download="" href="../downloads/e141762dbdfa1072467083d5c2080dae/example14.py"><code class="xref download docutils literal notranslate"><span class="pre">download</span> <span class="pre">script</span></code></a></p>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span><span class="p">,</span> <span class="n">division</span>
+<span class="c1">#</span>
+<span class="kn">import</span> <span class="nn">sys</span><span class="o">,</span><span class="nn">os</span>
+<span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s1">&#39;KMP_DUPLICATE_LIB_OK&#39;</span><span class="p">]</span><span class="o">=</span><span class="s1">&#39;True&#39;</span> <span class="c1"># uncomment this line if omp error occurs on OSX for python 3</span>
+<span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s1">&#39;OMP_NUM_THREADS&#39;</span><span class="p">]</span><span class="o">=</span><span class="s1">&#39;1&#39;</span> <span class="c1"># set number of OpenMP threads to run in parallel</span>
+<span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s1">&#39;MKL_NUM_THREADS&#39;</span><span class="p">]</span><span class="o">=</span><span class="s1">&#39;1&#39;</span> <span class="c1"># set number of MKL threads to run in parallel</span>
+<span class="c1">#</span>
+<span class="n">quspin_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">(),</span><span class="s2">&quot;../../&quot;</span><span class="p">)</span>
+<span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">quspin_path</span><span class="p">)</span>
+<span class="c1">###########################################################################</span>
+<span class="c1">#                            example 14                                   #</span>
+<span class="c1">#  In this script we demonstrate how to use the user_basis to construct   #</span>
+<span class="c1">#  a spin-1/2 Hamiltonian on a restricted Hilbert space where a spin-up   #</span>
+<span class="c1">#  on a given lattice site must be preceded and succeeded by a spin-down. #</span>
+<span class="c1">###########################################################################</span>
+<span class="kn">from</span> <span class="nn">quspin.operators</span> <span class="kn">import</span> <span class="n">hamiltonian</span>
+<span class="kn">from</span> <span class="nn">quspin.basis</span> <span class="kn">import</span> <span class="n">spin_basis_1d</span> <span class="c1"># Hilbert space spin basis_1d</span>
+<span class="kn">from</span> <span class="nn">quspin.basis.user</span> <span class="kn">import</span> <span class="n">user_basis</span> <span class="c1"># Hilbert space user basis</span>
+<span class="kn">from</span> <span class="nn">quspin.basis.user</span> <span class="kn">import</span> <span class="n">pre_check_state_sig_32</span><span class="p">,</span><span class="n">op_sig_32</span><span class="p">,</span><span class="n">map_sig_32</span> <span class="c1"># user basis data types</span>
+<span class="kn">from</span> <span class="nn">numba</span> <span class="kn">import</span> <span class="n">carray</span><span class="p">,</span><span class="n">cfunc</span> <span class="c1"># numba helper functions</span>
+<span class="kn">from</span> <span class="nn">numba</span> <span class="kn">import</span> <span class="n">uint32</span><span class="p">,</span><span class="n">int32</span> <span class="c1"># numba data types</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="c1">#</span>
+<span class="n">N</span> <span class="o">=</span> <span class="mi">10</span> <span class="c1"># total number of lattice sites</span>
+<span class="c1">#</span>
+<span class="c1">######  function to call when applying operators</span>
+<span class="nd">@cfunc</span><span class="p">(</span><span class="n">op_sig_32</span><span class="p">,</span> <span class="nb">locals</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">s</span><span class="o">=</span><span class="n">int32</span><span class="p">,</span><span class="n">b</span><span class="o">=</span><span class="n">uint32</span><span class="p">))</span>
+<span class="k">def</span> <span class="nf">op</span><span class="p">(</span><span class="n">op_struct_ptr</span><span class="p">,</span><span class="n">op_str</span><span class="p">,</span><span class="n">ind</span><span class="p">,</span><span class="n">N</span><span class="p">,</span><span class="n">args</span><span class="p">):</span>
+    <span class="c1"># using struct pointer to pass op_struct_ptr back to C++ see numba Records</span>
+    <span class="n">op_struct</span> <span class="o">=</span> <span class="n">carray</span><span class="p">(</span><span class="n">op_struct_ptr</span><span class="p">,</span><span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">err</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">ind</span> <span class="o">=</span> <span class="n">N</span> <span class="o">-</span> <span class="n">ind</span> <span class="o">-</span> <span class="mi">1</span> <span class="c1"># convention for QuSpin for mapping from bits to sites.</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="p">(((</span><span class="n">op_struct</span><span class="o">.</span><span class="n">state</span><span class="o">&gt;&gt;</span><span class="n">ind</span><span class="p">)</span><span class="o">&amp;</span><span class="mi">1</span><span class="p">)</span><span class="o">&lt;&lt;</span><span class="mi">1</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span>
+    <span class="n">b</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="o">&lt;&lt;</span><span class="n">ind</span><span class="p">)</span>
+    <span class="c1">#</span>
+    <span class="k">if</span> <span class="n">op_str</span><span class="o">==</span><span class="mi">120</span><span class="p">:</span> <span class="c1"># &quot;x&quot; is integer value 120 (check with ord(&quot;x&quot;))</span>
+        <span class="n">op_struct</span><span class="o">.</span><span class="n">state</span> <span class="o">^=</span> <span class="n">b</span>
+    <span class="k">elif</span> <span class="n">op_str</span><span class="o">==</span><span class="mi">121</span><span class="p">:</span> <span class="c1"># &quot;y&quot; is integer value 120 (check with ord(&quot;y&quot;))</span>
+        <span class="n">op_struct</span><span class="o">.</span><span class="n">state</span> <span class="o">^=</span> <span class="n">b</span>
+        <span class="n">op_struct</span><span class="o">.</span><span class="n">matrix_ele</span> <span class="o">*=</span> <span class="mf">1.0j</span><span class="o">*</span><span class="n">s</span>
+    <span class="k">elif</span> <span class="n">op_str</span><span class="o">==</span><span class="mi">122</span><span class="p">:</span> <span class="c1"># &quot;z&quot; is integer value 120 (check with ord(&quot;z&quot;))</span>
+        <span class="n">op_struct</span><span class="o">.</span><span class="n">matrix_ele</span> <span class="o">*=</span> <span class="n">s</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">op_struct</span><span class="o">.</span><span class="n">matrix_ele</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">err</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+    <span class="c1">#</span>
+    <span class="k">return</span> <span class="n">err</span>
+<span class="c1">#</span>
+<span class="n">op_args</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([],</span><span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">uint32</span><span class="p">)</span>
+<span class="c1">#</span>
+<span class="c1">######  function to filter states/project states out of the basis</span>
+<span class="c1">#</span>
+<span class="nd">@cfunc</span><span class="p">(</span><span class="n">pre_check_state_sig_32</span><span class="p">,</span>
+    <span class="nb">locals</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">s_shift_left</span><span class="o">=</span><span class="n">uint32</span><span class="p">,</span><span class="n">s_shift_right</span><span class="o">=</span><span class="n">uint32</span><span class="p">),</span> <span class="p">)</span>
+<span class="k">def</span> <span class="nf">pre_check_state</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">N</span><span class="p">,</span><span class="n">args</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; imposes that that a bit with 1 must be preceded and followed by 0,</span>
+<span class="sd">    i.e. a particle on a given site must have empty neighboring sites.</span>
+<span class="sd">    #</span>
+<span class="sd">    Works only for lattices of up to N=32 sites (otherwise, change mask)</span>
+<span class="sd">    #</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">mask</span> <span class="o">=</span> <span class="p">(</span><span class="mh">0xffffffff</span> <span class="o">&gt;&gt;</span> <span class="p">(</span><span class="mi">32</span> <span class="o">-</span> <span class="n">N</span><span class="p">))</span> <span class="c1"># works for lattices of up to 32 sites</span>
+    <span class="c1"># cycle bits left by 1 periodically</span>
+    <span class="n">s_shift_left</span> <span class="o">=</span> <span class="p">(((</span><span class="n">s</span> <span class="o">&lt;&lt;</span> <span class="mi">1</span><span class="p">)</span> <span class="o">&amp;</span> <span class="n">mask</span><span class="p">)</span> <span class="o">|</span> <span class="p">((</span><span class="n">s</span> <span class="o">&gt;&gt;</span> <span class="p">(</span><span class="n">N</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span> <span class="o">&amp;</span> <span class="n">mask</span><span class="p">))</span>
+    <span class="c1">#</span>
+    <span class="c1"># cycle bits right by 1 periodically</span>
+    <span class="n">s_shift_right</span> <span class="o">=</span> <span class="p">(((</span><span class="n">s</span> <span class="o">&gt;&gt;</span> <span class="mi">1</span><span class="p">)</span> <span class="o">&amp;</span> <span class="n">mask</span><span class="p">)</span> <span class="o">|</span> <span class="p">((</span><span class="n">s</span> <span class="o">&lt;&lt;</span> <span class="p">(</span><span class="n">N</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span> <span class="o">&amp;</span> <span class="n">mask</span><span class="p">))</span>
+    <span class="c1">#</span>
+    <span class="k">return</span> <span class="p">(((</span><span class="n">s_shift_right</span><span class="o">|</span><span class="n">s_shift_left</span><span class="p">)</span><span class="o">&amp;</span><span class="n">s</span><span class="p">))</span><span class="o">==</span><span class="mi">0</span>
+<span class="c1">#</span>
+<span class="n">pre_check_state_args</span><span class="o">=</span><span class="bp">None</span>
+<span class="c1">#</span>
+<span class="c1">######  construct user_basis </span>
+<span class="c1"># define maps dict</span>
+<span class="n">maps</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span> <span class="c1"># no symmetries to apply.</span>
+<span class="c1"># define op_dict</span>
+<span class="n">op_dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">op</span><span class="o">=</span><span class="n">op</span><span class="p">,</span><span class="n">op_args</span><span class="o">=</span><span class="n">op_args</span><span class="p">)</span>
+<span class="c1"># define pre_check_state</span>
+<span class="n">pre_check_state</span><span class="o">=</span><span class="p">(</span><span class="n">pre_check_state</span><span class="p">,</span><span class="n">pre_check_state_args</span><span class="p">)</span> <span class="c1"># None gives a null pinter to args</span>
+<span class="c1"># create user basis</span>
+<span class="n">basis</span> <span class="o">=</span> <span class="n">user_basis</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">uint32</span><span class="p">,</span><span class="n">N</span><span class="p">,</span><span class="n">op_dict</span><span class="p">,</span><span class="n">allowed_ops</span><span class="o">=</span><span class="nb">set</span><span class="p">(</span><span class="s2">&quot;xyz&quot;</span><span class="p">),</span><span class="n">sps</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+                    <span class="n">pre_check_state</span><span class="o">=</span><span class="n">pre_check_state</span><span class="p">,</span><span class="n">Ns_block_est</span><span class="o">=</span><span class="mi">300000</span><span class="p">,</span><span class="o">**</span><span class="n">maps</span><span class="p">)</span>
+<span class="c1"># print basis</span>
+<span class="k">print</span><span class="p">(</span><span class="n">basis</span><span class="p">)</span>
+<span class="c1">#</span>
+<span class="c1">###### construct Hamiltonian</span>
+<span class="c1"># site-coupling lists</span>
+<span class="n">h_list</span>  <span class="o">=</span> <span class="p">[[</span><span class="mf">1.0</span><span class="p">,</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">)]</span>
+<span class="c1"># operator string lists</span>
+<span class="n">static</span> <span class="o">=</span> <span class="p">[[</span><span class="s2">&quot;x&quot;</span><span class="p">,</span><span class="n">h_list</span><span class="p">],]</span>
+<span class="c1"># compute Hamiltonian, no checks have been implemented</span>
+<span class="n">no_checks</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">check_symm</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">check_pcon</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">check_herm</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+<span class="n">H</span> <span class="o">=</span> <span class="n">hamiltonian</span><span class="p">(</span><span class="n">static</span><span class="p">,[],</span><span class="n">basis</span><span class="o">=</span><span class="n">basis</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">,</span><span class="o">**</span><span class="n">no_checks</span><span class="p">)</span>
+</pre></div>
+</td></tr></table></div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Quantum scars Hamiltonian: spin-1/2 system with Hilbert space constraint</a></li>
+<li><a class="reference internal" href="#script">Script</a></li>
+</ul>
+
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../sources/examples/example14.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.3 documentation</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2016, Phillip Weinberg and Marin Bukov.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.4.
+    </div>
+  </body>
+</html>

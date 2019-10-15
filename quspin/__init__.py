@@ -4,6 +4,6 @@ from . import operators
 from . import basis
 from . import tools
 
-__version__ = "0.3.2"
+__version__ = "0.3.3"
 __all__ = ["basis","operators","tools"]
 

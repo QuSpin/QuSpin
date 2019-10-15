@@ -21,7 +21,10 @@ import warnings
 
 __all__ =  ["ent_entropy", 
 			"diag_ensemble",
-			"obs_vs_time"
+			"obs_vs_time",
+			"ED_state_vs_time",
+			"project_op",
+			"mean_level_spacing"
 			]
 
 
@@ -188,7 +191,7 @@ def diag_ensemble(N,system_state,E2,V2,density=True,alpha=1.0,rho_d=False,Obs=Fa
 	Hamiltonian :math:`H_1` to a Hamiltonian :math:`H_2`. Let us label the two eigenbases by
 
 	.. math::
-		V_1=\\{|n_1\\rangle: H_1|n_1\\rangle=E_1|n_1\\rangle\\} \qquad V_2=\\{|n_2\\rangle: H_2|n_2\\rangle=E_2|n_2\\rangle\\}
+		V_1=\\{|n_1\\rangle: H_1|n_1\\rangle=E_1|n_1\\rangle\\} \\qquad V_2=\\{|n_2\\rangle: H_2|n_2\\rangle=E_2|n_2\\rangle\\}
 
 	See eg. `arXiv:1509.06411 <https://arxiv.org/abs/1509.06411>`_ for the physical definition of Diagonal Ensemble.
 	
@@ -267,7 +270,7 @@ def diag_ensemble(N,system_state,E2,V2,density=True,alpha=1.0,rho_d=False,Obs=Fa
 		For example, if `system_state` is the pure state :math:`|\\psi\\rangle`:
   		
   		.. math::
-  			\\langle\mathcal{O}\\rangle_d^\\psi = \\lim_{T\\to\\infty}\\frac{1}{T}\\int_0^T\\mathrm{d}t \\frac{1}{N}\\langle\\psi\\left|\\mathcal{O}(t)\\right|\\psi\\rangle = \\frac{1}{N}\\sum_{n_2}\\left(\\rho_d^\\psi\\right)_{n_2n_2} \\langle n_2\\left|\\mathcal{O}\\right|n_2\\rangle
+  			\\langle\\mathcal{O}\\rangle_d^\\psi = \\lim_{T\\to\\infty}\\frac{1}{T}\\int_0^T\\mathrm{d}t \\frac{1}{N}\\langle\\psi\\left|\\mathcal{O}(t)\\right|\\psi\\rangle = \\frac{1}{N}\\sum_{n_2}\\left(\\rho_d^\\psi\\right)_{n_2n_2} \\langle n_2\\left|\\mathcal{O}\\right|n_2\\rangle
 	delta_q_Obs : bool, optional
 		QUANTUM fluctuations of the expectation of `Obs` at infinite times. Requires `Obs`. Calculates
 		temporal fluctuations `delta_t_Obs` for along the way (see above).
@@ -286,7 +289,7 @@ def diag_ensemble(N,system_state,E2,V2,density=True,alpha=1.0,rho_d=False,Obs=Fa
 		For example, if `system_state` is the pure state :math:`|\\psi\\rangle`:
 
 		.. math::  
-  			\\delta_t\\mathcal{O}^\\psi_d = \\frac{1}{N}\\sqrt{ \\lim_{T\\to\infty}\\frac{1}{T}\\int_0^T\\mathrm{d}t \\langle\\psi\\left|[\\mathcal{O}(t)]^2\\right|\\psi\\rangle - \\langle\\psi\\left|\\mathcal{O}(t)\\right|\\psi\\rangle^2} = \\frac{1}{N}\\sqrt{\\langle\\mathcal{O}^2\\rangle_d - \\langle\\mathcal{O}\\rangle_d^2 - \\left(\\delta_q\\mathcal{O}^\\psi_d\\right)^2 }
+  			\\delta_t\\mathcal{O}^\\psi_d = \\frac{1}{N}\\sqrt{ \\lim_{T\\to\\infty}\\frac{1}{T}\\int_0^T\\mathrm{d}t \\langle\\psi\\left|[\\mathcal{O}(t)]^2\\right|\\psi\\rangle - \\langle\\psi\\left|\\mathcal{O}(t)\\right|\\psi\\rangle^2} = \\frac{1}{N}\\sqrt{\\langle\\mathcal{O}^2\\rangle_d - \\langle\\mathcal{O}\\rangle_d^2 - \\left(\\delta_q\\mathcal{O}^\\psi_d\\right)^2 }
 	alpha : float, optional
 		Renyi :math:`alpha` parameter. Default is `alpha = 1.0`.
 	Sd_Renyi : bool, optional
@@ -337,13 +340,11 @@ def diag_ensemble(N,system_state,E2,V2,density=True,alpha=1.0,rho_d=False,Obs=Fa
 		The following keys of the output are possible, depending on the choice of flags:
 
 		* "rho_d": density matrix of Diagonal Ensemble.
-		* "Obs_...": infinite-time expectation of observable `Obs`.
-		* "delta_t_Obs_...": infinite-time temporal fluctuations of `Obs`.
-		* "delta_q_Obs_...": infinite-time quantum fluctuations of `Obs`.
-		* "Sd_..." ("Sd_Renyi_..." for :math:`\\alpha\\neq1.0`): Renyi diagonal entropy of density matrix of 
-			`rho_d` with parameter `alpha`.
-		* "Srdm_..." ("Srdm_Renyi_..." for :math:`\\alpha\\neq1.0`): Renyi entanglement entropy of reduced DM of 
-			`rho_d` (`rho_d` is a mixed DM itself) with parameter `alpha`.
+		* "Obs...": infinite-time expectation of observable `Obs`.
+		* "delta_t_Obs...": infinite-time temporal fluctuations of `Obs`.
+		* "delta_q_Obs...": infinite-time quantum fluctuations of `Obs`.
+		* "Sd..." ("Sd_Renyi..." for :math:`\\alpha\\neq1.0`): Renyi diagonal entropy of density matrix of `rho_d` with parameter `alpha`.
+		* "Srdm..." ("Srdm_Renyi..." for :math:`\\alpha\\neq1.0`): Renyi entanglement entropy of reduced DM of`rho_d` (`rho_d` is a mixed DM itself) with parameter `alpha`.
 
 		Replace "..." above by 'pure', 'thermal' or 'mixed' depending on input parameters.
 
@@ -547,6 +548,12 @@ def diag_ensemble(N,system_state,E2,V2,density=True,alpha=1.0,rho_d=False,Obs=Fa
 
 def obs_vs_time(psi_t,times,Obs_dict,return_state=False,Sent_args={},enforce_pure=False,verbose=False):
 	"""Calculates expectation value of observable(s) as a function of time in a time-dependent state.
+	
+	This function computes the expectation of a time-dependent state :math:`|\\psi(t)\\rangle` in a time-dependent observable :math:`\\mathcal{O}(t)`. 
+	It automatically handles the cases where only the state or only the observable is time-dependent.
+
+	.. math::
+		\\langle\\psi(t)|\\mathcal{O}(t)|\\psi(t)\\rangle
 
 	Examples
 	--------
@@ -721,7 +728,7 @@ def obs_vs_time(psi_t,times,Obs_dict,return_state=False,Sent_args={},enforce_pur
 	
 	if return_state:
 		for key,Obs in Obs_dict.items():
-			Expt_time[key]=Obs.expt_value(psi_t,time=times,check=False,enforce_pure=enforce_pure).real
+			Expt_time[key]=Obs.expt_value(psi_t,time=times,check=False,enforce_pure=enforce_pure)
 			
 		# calculate entanglement entropy if requested	
 		if calc_Sent:
@@ -736,7 +743,7 @@ def obs_vs_time(psi_t,times,Obs_dict,return_state=False,Sent_args={},enforce_pur
 
 		for key,Obs in Obs_dict.items():
 			
-			val = Obs.expt_value(psi,time=time,check=False).real
+			val = Obs.expt_value(psi,time=time,check=False)
 			dtype = val.dtype #_np.dtype(val)
 			shape = (len(times),) + val.shape
 			Expt_time[key] = _np.zeros(shape,dtype=dtype)
@@ -764,7 +771,7 @@ def obs_vs_time(psi_t,times,Obs_dict,return_state=False,Sent_args={},enforce_pur
 			if verbose: print("obs_vs_time integrated to t={:.4f}".format(time))
 
 			for key,Obs in Obs_dict.items():
-				Expt_time[key][m+1] = Obs.expt_value(psi,time=time,check=False).real
+				Expt_time[key][m+1] = Obs.expt_value(psi,time=time,check=False)
 
 			if calc_Sent:
 				Sent_time_update = calc_ent_entropy(psi,**Sent_args)

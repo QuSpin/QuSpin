@@ -56,7 +56,10 @@ E1_time=Obs_time['E1']
 #
 # project Hamiltonian from `kblock=0` and `pblock=1` onto full Hilbert space
 proj=basis.get_proj(np.float64) # calculate projector
-H2_full=project_op(H2,proj,dtype=np.float128)["Proj_Obs"]
+if sys.platform=="win32":
+	H2_full=project_op(H2,proj,dtype=np.float64)["Proj_Obs"]
+else:
+	H2_full=project_op(H2,proj,dtype=np.float128)["Proj_Obs"]
 print("dimenions of symmetry-reduced and full Hilbert spaces are %i and %i " %(H2.Ns,H2_full.Ns) )
 #
 # calculate mean level spacing of spectrum E2

@@ -9,11 +9,15 @@ import numpy as _np
 
 from .expm_multiply_parallel_core import csr_matvec
 
+from .matvec.matvec_core import matvec, get_matvec_function
+
 import warnings
 
 __all__ =  ["project_op", 
 			"KL_div",
-			"mean_level_spacing"
+			"mean_level_spacing",
+			"matvec",
+			"get_matvec_function",
 			]
 
 def project_op(Obs,proj,dtype=_np.complex128):

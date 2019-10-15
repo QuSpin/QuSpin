@@ -4,14 +4,14 @@ from ._basis_general_core import get_basis_type,basis_zeros
 from .base_general import basis_general,_check_symm_map
 from ..base import MAXPRINT
 import numpy as _np
-from scipy.misc import comb
+from scipy.special import comb
 
 
 # general basis for hardcore bosons/spin-1/2
 class spinless_fermion_basis_general(basis_general):
 	"""Constructs basis for spinless fermion operators for USER-DEFINED symmetries.
 
-	Any unitary symmetry transformation :math:`Q` of multiplicity :math:`m_Q` (:math:`Q^{m_Q}=1`) has
+	Any unitary symmetry transformation :math:`Q` of periodicity :math:`m_Q` (:math:`Q^{m_Q}=1`) has
 	eigenvalues :math:`\\exp(-2\\pi i q/m_Q)`, labelled by an ingeter :math:`q\\in\\{0,1,\\dots,m_Q-1\\}`.
 	These integers :math:`q` are used to define the symmetry blocks.
 
@@ -77,7 +77,7 @@ class spinless_fermion_basis_general(basis_general):
 		make_basis: bool, optional
 			Boolean to control whether to make the basis. Allows the use to use some functionality of the basis constructor without constructing the entire basis.
 		block_order: list of strings, optional
-			A list of strings containing the names of the symmetry blocks which specifies the order in which the symmetries will be applied to the state when calculating the basis. If not specified the symmetries are sorted by their periodicity.
+			A list of strings containing the names of the symmetry blocks which specifies the order in which the symmetries will be applied to the state when calculating the basis. The first element in the list is applied to the state first followed by the second element, etc. If the list is not specificed the ordering is such that the symmetry with the largest cycle is the first, followed by the second largest, etc. 
 		**blocks: optional
 			keyword arguments which pass the symmetry generator arrays. For instance:
 
@@ -117,41 +117,41 @@ class spinless_fermion_basis_general(basis_general):
 				raise ValueError("_Np == -1 for no particle conservation, _Np >= 0 for particle conservation")
 
 		if Nf is None:
-			Ns = (1<<N)	
+			self._Ns = (1<<N)	
 		elif type(Nf) is int:
 			self._check_pcon = True
 			self._get_proj_pcon = True
-			Ns = comb(N,Nf,exact=True)
+			self._Ns = comb(N,Nf,exact=True)
 		else:
 			try:
 				Np_iter = iter(Nf)
 			except TypeError:
 				raise TypeError("Nf must be integer or iterable object.")
-			Ns = 0
+			self._Ns = 0
 			for Nf in Np_iter:
 				if Nf > N or Nf < 0:
 					raise ValueError("particle number Nf must satisfy: 0 <= Nf <= N")
-				Ns += comb(N,Nf,exact=True)
+				self._Ns += comb(N,Nf,exact=True)
 
 		self._pcon_args = dict(N=N,Nf=Nf)
 
 		if len(self._pers)>0:
 			if Ns_block_est is None:
-				Ns = int(float(Ns)/_np.multiply.reduce(self._pers))*4
+				self._Ns = int(float(self._Ns)/_np.multiply.reduce(self._pers))*4
 			else:
 				if type(Ns_block_est) is not int:
 					raise TypeError("Ns_block_est must be integer value.")
 				if Ns_block_est <= 0:
 					raise ValueError("Ns_block_est must be an integer > 0")
 					
-				Ns = Ns_block_est
+				self._Ns = Ns_block_est
 
 		self._basis_dtype = get_basis_type(N,None,2)
 		self._core = spinless_fermion_basis_core_wrap(self._basis_dtype,N,self._maps,self._pers,self._qs)
 		
 		self._sps = 2
+		self._Ns_block_est=self._Ns
 		self._N = N
-		self._Ns = Ns
 		self._Np = Nf
 		
 
@@ -173,6 +173,10 @@ class spinless_fermion_basis_general(basis_general):
 
 		self._allowed_ops=set(["I","n","+","-","z"])
 		
+	def __setstate__(self,state):
+		self.__dict__.update(state)
+		self._core = spinless_fermion_basis_core_wrap(self._basis_dtype,self._N,self._maps,self._pers,self._qs)
+
 
 	@property
 	def _fermion_basis(self):
@@ -257,7 +261,7 @@ def process_spinful_map(N,map,q):
 class spinful_fermion_basis_general(spinless_fermion_basis_general):
 	"""Constructs basis for spinful fermion operators for USER-DEFINED symmetries.
 
-	Any unitary symmetry transformation :math:`Q` of multiplicity :math:`m_Q` (:math:`Q^{m_Q}=1`) has
+	Any unitary symmetry transformation :math:`Q` of periodicity :math:`m_Q` (:math:`Q^{m_Q}=1`) has
 	eigenvalues :math:`\\exp(-2\\pi i q/m_Q)`, labelled by an ingeter :math:`q\\in\\{0,1,\\dots,m_Q-1\\}`.
 	These integers :math:`q` are used to define the symmetry blocks.
 
@@ -325,7 +329,7 @@ class spinful_fermion_basis_general(spinless_fermion_basis_general):
 		:lines: 7-
 
 	"""
-	def __init__(self,N,Nf=None,nf=None,Ns_block_est=None,simple_symm=True,make_basis=True,block_order=None,**blocks):
+	def __init__(self,N,Nf=None,nf=None,Ns_block_est=None,simple_symm=True,make_basis=True,block_order=None,double_occupancy=True,**blocks):
 		"""Intializes the `spinful_fermion_basis_general` object (basis for fermionic operators).
 
 		Parameters
@@ -342,8 +346,10 @@ class spinful_fermion_basis_general(spinless_fermion_basis_general):
 			Flags whidh toggles the setting for the types of mappings and operator strings the basis will use. See this tutorial for more details. 
 		make_basis: bool, optional
 			Boolean to control whether to make the basis. Allows the use to use some functionality of the basis constructor without constructing the entire basis.
+		double_occupancy: bool, optional
+			Boolean to toggle the presence of doubly-occupied sites (both a spin up and a spin-down fermion present on the same lattice site) in the basis. Default is `double_occupancy=True`, for which doubly-occupied states are present.
 		block_order: list of strings, optional
-			A list of strings containing the names of the symmetry blocks which specifies the order in which the symmetries will be applied to the state when calculating the basis. If not specified the symmetries are sorted by their periodicity.
+			A list of strings containing the names of the symmetry blocks which specifies the order in which the symmetries will be applied to the state when calculating the basis. The first element in the list is applied to the state first followed by the second element, etc. If the list is not specificed the ordering is such that the symmetry with the largest cycle is the first, followed by the second largest, etc. 
 		**blocks: optional
 			keyword arguments which pass the symmetry generator arrays. For instance:
 
@@ -387,7 +393,7 @@ class spinful_fermion_basis_general(spinless_fermion_basis_general):
 		blocks.update(new_blocks)
 
 		basis_general.__init__(self,2*N,block_order=block_order,**blocks)
-		self._check_pcon = False
+		# self._check_pcon = False
 		self._count_particles = False
 		if _Np is not None and Nf is None:
 			self._count_particles = True
@@ -412,14 +418,14 @@ class spinful_fermion_basis_general(spinless_fermion_basis_general):
 				raise ValueError("_Np == -1 for no particle conservation, _Np >= 0 for particle conservation")
 
 		if Nf is None:
-			Ns = (1<<N)**2
+			self._Ns = (1<<N)**2
 		else:
 			if type(Nf) is tuple:
 				if len(Nf)==2:
 					self._get_proj_pcon = True
 					Nup,Ndown = Nf
 					if (type(Nup) is int) and type(Ndown) is int:
-						Ns = comb(N,Nup,exact=True)*comb(N,Ndown,exact=True)
+						self._Ns = comb(N,Nup,exact=True)*comb(N,Ndown,exact=True)
 					else:
 						raise ValueError("Nf must be tuple of integers or iterable object of tuples.")
 					Nf = [Nf]
@@ -428,13 +434,13 @@ class spinful_fermion_basis_general(spinless_fermion_basis_general):
 					if any((type(tup)is not tuple) and len(tup)!=2 for tup in Nf):
 						raise ValueError("Nf must be tuple of integers or iterable object of tuples.")		
 
-					Ns = 0
+					self._Ns = 0
 					for Nup,Ndown in Nf:
 						if Nup > N or Nup < 0:
 							raise ValueError("particle numbers in Nf must satisfy: 0 <= n <= N")
 						if Ndown > N or Ndown < 0:
 							raise ValueError("particle numbers in Nf must satisfy: 0 <= n <= N")
-						Ns += comb(N,Nup,exact=True)*comb(N,Ndown,exact=True)
+						self._Ns += comb(N,Nup,exact=True)*comb(N,Ndown,exact=True)
 
 			else:
 				try:
@@ -447,36 +453,37 @@ class spinful_fermion_basis_general(spinless_fermion_basis_general):
 
 				Nf = list(Nf)
 
-				Ns = 0
+				self._Ns = 0
 				for Nup,Ndown in Nf:
 					if Nup > N or Nup < 0:
 						raise ValueError("particle numbers in Nf must satisfy: 0 <= n <= N")
 					if Ndown > N or Ndown < 0:
 						raise ValueError("particle numbers in Nf must satisfy: 0 <= n <= N")
 
-					Ns += comb(N,Nup,exact=True)*comb(N,Ndown,exact=True)
+					self._Ns += comb(N,Nup,exact=True)*comb(N,Ndown,exact=True)
 
 		self._pcon_args = dict(N=N,Nf=Nf)
 
 		if len(self._pers)>0:
 			if Ns_block_est is None:
-				Ns = int(float(Ns)/_np.multiply.reduce(self._pers))*4
+				self._Ns = int(float(self._Ns)/_np.multiply.reduce(self._pers))*4
 			else:
 				if type(Ns_block_est) is not int:
 					raise TypeError("Ns_block_est must be integer value.")
 				if Ns_block_est <= 0:
 					raise ValueError("Ns_block_est must be an integer > 0")
 										
-				Ns = Ns_block_est
+				self._Ns = Ns_block_est
 
 		self._basis_dtype = get_basis_type(2*N,None,2)
-		self._core = spinful_fermion_basis_core_wrap(self._basis_dtype,N,self._maps,self._pers,self._qs)
+		self._core = spinful_fermion_basis_core_wrap(self._basis_dtype,N,self._maps,self._pers,self._qs,double_occupancy)
 
 		self._sps = 2
 		self._N = 2*N
-		self._Ns = Ns
+		self._Ns_block_est=self._Ns
 		self._Np = Nf
-		
+		self._double_occupancy = double_occupancy
+
 		# make the basis; make() is function method of base_general
 		if make_basis:		
 			self.make()
@@ -494,7 +501,9 @@ class spinful_fermion_basis_general(spinless_fermion_basis_general):
 
 		self._allowed_ops=set(["I","n","+","-","z"])
 		
-
+	def __setstate__(self,state):
+		self.__dict__.update(state)
+		self._core = spinful_fermion_basis_core_wrap(self._basis_dtype,self._N//2,self._maps,self._pers,self._qs,self._double_occupancy)
 
 	def _Op(self,opstr,indx,J,dtype):
 
@@ -579,7 +588,7 @@ class spinful_fermion_basis_general(spinless_fermion_basis_general):
 		else:
 			raise ValueError("down_state must be integer or string.")
 
-		s = down_state + (up_state << self.L)
+		s = down_state + (up_state << (self.N//2) ) # self.N here counts 2N sites 
 
 		indx = _np.argwhere(self._basis == s)
 
@@ -717,6 +726,9 @@ class spinful_fermion_basis_general(spinless_fermion_basis_general):
 
 			opstr_left,opstr_right=opstr.split("|")
 
+			n_left = opstr_left.count("+")+opstr_left.count("-")
+			n_right = opstr_right.count("+")+opstr_right.count("-")
+
 			op1 = list(op)
 			op1[0] = opstr_left
 			op1[1] = tuple(indx_left)
@@ -731,7 +743,7 @@ class spinful_fermion_basis_general(spinless_fermion_basis_general):
 
 			op[0] = "|".join((op1[0],op2[0]))
 			op[1] = op1[1] + op2[1]
-			op[2] = op1[2] * op2[2]
+			op[2] = ((-1)**(n_left*n_right)) * op1[2] * op2[2]
 
 			return tuple(op)
 		else:

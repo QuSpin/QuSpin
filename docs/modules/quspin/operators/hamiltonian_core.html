@@ -17,7 +17,7 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-    <title>quspin.operators.hamiltonian_core &#8212; QuSpin 0.3.2 documentation</title>
+    <title>quspin.operators.hamiltonian_core &#8212; QuSpin 0.3.3 documentation</title>
     <link rel="stylesheet" href="../../../static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../static/pygments.css" type="text/css" />
     
@@ -25,7 +25,8 @@
     <script type="text/javascript" src="../../../static/jquery.js"></script>
     <script type="text/javascript" src="../../../static/underscore.js"></script>
     <script type="text/javascript" src="../../../static/doctools.js"></script>
-    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="../../../static/language_data.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" /> 
@@ -39,7 +40,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">QuSpin 0.3.2 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">QuSpin 0.3.3 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -57,8 +58,11 @@
 
 <span class="kn">from</span> <span class="nn">..tools.evolution</span> <span class="k">import</span> <span class="n">evolve</span>
 
-<span class="kn">from</span> <span class="nn">._oputils</span> <span class="k">import</span> <span class="n">matvec</span> <span class="k">as</span> <span class="n">_matvec</span>
-<span class="kn">from</span> <span class="nn">._oputils</span> <span class="k">import</span> <span class="n">_get_matvec_function</span>
+<span class="kn">from</span> <span class="nn">..tools.matvec</span> <span class="k">import</span> <span class="n">_matvec</span>
+<span class="kn">from</span> <span class="nn">..tools.matvec</span> <span class="k">import</span> <span class="n">_get_matvec_function</span>
+
+<span class="c1"># from ._oputils import matvec as _matvec</span>
+<span class="c1"># from ._oputils import _get_matvec_function</span>
 
 <span class="c1"># from .exp_op_core import isexp_op,exp_op</span>
 
@@ -614,16 +618,16 @@
 
 	<span class="c1">### state manipulation/observable routines</span>
 
-<div class="viewcode-block" id="hamiltonian.dot"><a class="viewcode-back" href="../../../generated/quspin.operators.hamiltonian.html#quspin.operators.hamiltonian.dot">[docs]</a>	<span class="k">def</span> <span class="nf">dot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">V</span><span class="p">,</span><span class="n">time</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">out</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">overwrite_out</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<div class="viewcode-block" id="hamiltonian.dot"><a class="viewcode-back" href="../../../generated/quspin.operators.hamiltonian.html#quspin.operators.hamiltonian.dot">[docs]</a>	<span class="k">def</span> <span class="nf">dot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">V</span><span class="p">,</span><span class="n">time</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">out</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">overwrite_out</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">a</span><span class="o">=</span><span class="mf">1.0</span><span class="p">):</span>
 		<span class="sd">&quot;&quot;&quot;Matrix-vector multiplication of `hamiltonian` operator at time `time`, with state `V`.</span>
 
 <span class="sd">		.. math::</span>
-<span class="sd">			H(t=\\texttt{time})|V\\rangle</span>
+<span class="sd">			aH(t=\\texttt{time})|V\\rangle</span>
 
 <span class="sd">		Notes</span>
 <span class="sd">		-----</span>
-<span class="sd">		It is faster to multiply the individual (static, dynamic) parts of the Hamiltonian first, then add all those </span>
-<span class="sd">		vectors together.</span>
+<span class="sd">		* this function does the matrix multiplication with the state(s) and Hamiltonian as is, see Example 17 (Lidblad dynamics / Optical Bloch Equations) </span>
+<span class="sd">		* for right-multiplication of quantum operators, see function `rdot()`.</span>
 
 <span class="sd">		Parameters</span>
 <span class="sd">		-----------</span>
@@ -641,10 +645,12 @@
 <span class="sd">		check : bool, optional</span>
 <span class="sd">			Whether or not to do checks for shape compatibility.</span>
 <span class="sd">		out : array_like, optional</span>
-<span class="sd">			specify the output array for the the result. This is not supported of `V` is a sparse matrix or if `times` is an array. </span>
+<span class="sd">			specify the output array for the the result. This is not supported if `V` is a sparse matrix or if `times` is an array. </span>
 <span class="sd">		overwrite_out : bool, optional</span>
 <span class="sd">			flag used to toggle between two different ways to treat `out`. If set to `True` all values in `out` will be overwritten with the result. </span>
 <span class="sd">			If `False` the result of the dot product will be added to the values of `out`. </span>
+<span class="sd">		a : scalar, optional</span>
+<span class="sd">			scalar to multiply the final product with: :math:`B = aHV`. </span>
 
 <span class="sd">		Returns</span>
 <span class="sd">		--------</span>
@@ -663,9 +669,9 @@
 
 		
 		<span class="k">if</span> <span class="n">ishamiltonian</span><span class="p">(</span><span class="n">V</span><span class="p">):</span>
-			<span class="k">return</span> <span class="bp">self</span> <span class="o">*</span> <span class="n">V</span>
+			<span class="k">return</span> <span class="n">a</span><span class="o">*</span><span class="p">(</span><span class="bp">self</span> <span class="o">*</span> <span class="n">V</span><span class="p">)</span>
 		<span class="k">elif</span> <span class="n">isexp_op</span><span class="p">(</span><span class="n">V</span><span class="p">):</span>
-			<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;This is ambiguous action. Use the .rdot() method of the `exp_op` class isntead.&quot;</span><span class="p">)</span>
+			<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;This is an ambiguous operation. Use the .rdot() method of the `exp_op` class instead.&quot;</span><span class="p">)</span>
 
 		<span class="n">times</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">time</span><span class="p">)</span>
 
@@ -696,19 +702,19 @@
 
 			<span class="k">if</span> <span class="n">_sp</span><span class="o">.</span><span class="n">issparse</span><span class="p">(</span><span class="n">V</span><span class="p">):</span>
 				<span class="n">V</span> <span class="o">=</span> <span class="n">V</span><span class="o">.</span><span class="n">tocsc</span><span class="p">()</span>
-				<span class="k">return</span> <span class="n">_sp</span><span class="o">.</span><span class="n">vstack</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">V</span><span class="o">.</span><span class="n">get_col</span><span class="p">(</span><span class="n">i</span><span class="p">),</span><span class="n">time</span><span class="o">=</span><span class="n">t</span><span class="p">,</span><span class="n">check</span><span class="o">=</span><span class="n">check</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">t</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">time</span><span class="p">)])</span>
+				<span class="k">return</span> <span class="n">_sp</span><span class="o">.</span><span class="n">vstack</span><span class="p">([</span><span class="n">a</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">V</span><span class="o">.</span><span class="n">get_col</span><span class="p">(</span><span class="n">i</span><span class="p">),</span><span class="n">time</span><span class="o">=</span><span class="n">t</span><span class="p">,</span><span class="n">check</span><span class="o">=</span><span class="n">check</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">t</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">time</span><span class="p">)])</span>
 			<span class="k">else</span><span class="p">:</span>
 				<span class="k">if</span> <span class="n">V</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">3</span> <span class="ow">and</span> <span class="n">V</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="n">V</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
-					<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Density matricies must be square!&quot;</span><span class="p">)</span>
+					<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Density matrices must be square!&quot;</span><span class="p">)</span>
 
 				<span class="c1"># allocate C-contiguous array to output results in.</span>
 				<span class="n">out</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">V</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">:]</span><span class="o">+</span><span class="n">V</span><span class="o">.</span><span class="n">shape</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span><span class="n">dtype</span><span class="o">=</span><span class="n">result_dtype</span><span class="p">)</span>
-
+				
 				<span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">t</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">time</span><span class="p">):</span>
 					<span class="n">v</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">ascontiguousarray</span><span class="p">(</span><span class="n">V</span><span class="p">[</span><span class="o">...</span><span class="p">,</span><span class="n">i</span><span class="p">],</span><span class="n">dtype</span><span class="o">=</span><span class="n">result_dtype</span><span class="p">)</span>
-					<span class="bp">self</span><span class="o">.</span><span class="n">_static_matvec</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_static</span><span class="p">,</span><span class="n">v</span><span class="p">,</span><span class="n">overwrite_out</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="o">...</span><span class="p">])</span>
+					<span class="bp">self</span><span class="o">.</span><span class="n">_static_matvec</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_static</span><span class="p">,</span><span class="n">v</span><span class="p">,</span><span class="n">overwrite_out</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="o">...</span><span class="p">],</span><span class="n">a</span><span class="o">=</span><span class="n">a</span><span class="p">)</span>
 					<span class="k">for</span> <span class="n">func</span><span class="p">,</span><span class="n">Hd</span> <span class="ow">in</span> <span class="n">iteritems</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dynamic</span><span class="p">):</span>
-						<span class="bp">self</span><span class="o">.</span><span class="n">_dynamic_matvec</span><span class="p">[</span><span class="n">func</span><span class="p">](</span><span class="n">Hd</span><span class="p">,</span><span class="n">v</span><span class="p">,</span><span class="n">overwrite_out</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">a</span><span class="o">=</span><span class="n">func</span><span class="p">(</span><span class="n">t</span><span class="p">),</span><span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="o">...</span><span class="p">])</span>
+						<span class="bp">self</span><span class="o">.</span><span class="n">_dynamic_matvec</span><span class="p">[</span><span class="n">func</span><span class="p">](</span><span class="n">Hd</span><span class="p">,</span><span class="n">v</span><span class="p">,</span><span class="n">overwrite_out</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">a</span><span class="o">=</span><span class="n">a</span><span class="o">*</span><span class="n">func</span><span class="p">(</span><span class="n">t</span><span class="p">),</span><span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="o">...</span><span class="p">])</span>
 
 				<span class="c1"># transpose, leave non-contiguous results which can be handled by numpy. </span>
 				<span class="k">if</span> <span class="n">out</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
@@ -720,10 +726,10 @@
 		
 		<span class="k">else</span><span class="p">:</span>
 			<span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">V</span><span class="p">,</span><span class="n">_np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
-				<span class="n">V</span> <span class="o">=</span> <span class="n">V</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">result_dtype</span><span class="p">)</span>
+				<span class="n">V</span> <span class="o">=</span> <span class="n">V</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">result_dtype</span><span class="p">,</span><span class="n">copy</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">order</span><span class="o">=</span><span class="s2">&quot;C&quot;</span><span class="p">)</span>
 
 				<span class="k">if</span> <span class="n">out</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-					<span class="n">out</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_static_matvec</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_static</span><span class="p">,</span><span class="n">V</span><span class="p">)</span>
+					<span class="n">out</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_static_matvec</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_static</span><span class="p">,</span><span class="n">V</span><span class="p">,</span><span class="n">a</span><span class="o">=</span><span class="n">a</span><span class="p">)</span>
 				<span class="k">else</span><span class="p">:</span>
 					<span class="k">try</span><span class="p">:</span>
 						<span class="k">if</span> <span class="n">out</span><span class="o">.</span><span class="n">dtype</span> <span class="o">!=</span> <span class="n">result_dtype</span><span class="p">:</span>
@@ -736,10 +742,10 @@
 					<span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
 						<span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;&#39;out&#39; must be array with correct dtype and dimensions for output array.&quot;</span><span class="p">)</span>
 
-					<span class="bp">self</span><span class="o">.</span><span class="n">_static_matvec</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_static</span><span class="p">,</span><span class="n">V</span><span class="p">,</span><span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">,</span><span class="n">overwrite_out</span><span class="o">=</span><span class="n">overwrite_out</span><span class="p">)</span>
+					<span class="bp">self</span><span class="o">.</span><span class="n">_static_matvec</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_static</span><span class="p">,</span><span class="n">V</span><span class="p">,</span><span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">,</span><span class="n">overwrite_out</span><span class="o">=</span><span class="n">overwrite_out</span><span class="p">,</span><span class="n">a</span><span class="o">=</span><span class="n">a</span><span class="p">)</span>
 
 				<span class="k">for</span> <span class="n">func</span><span class="p">,</span><span class="n">Hd</span> <span class="ow">in</span> <span class="n">iteritems</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dynamic</span><span class="p">):</span>
-					<span class="bp">self</span><span class="o">.</span><span class="n">_dynamic_matvec</span><span class="p">[</span><span class="n">func</span><span class="p">](</span><span class="n">Hd</span><span class="p">,</span><span class="n">V</span><span class="p">,</span><span class="n">overwrite_out</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">a</span><span class="o">=</span><span class="n">func</span><span class="p">(</span><span class="n">time</span><span class="p">),</span><span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span>
+					<span class="bp">self</span><span class="o">.</span><span class="n">_dynamic_matvec</span><span class="p">[</span><span class="n">func</span><span class="p">](</span><span class="n">Hd</span><span class="p">,</span><span class="n">V</span><span class="p">,</span><span class="n">overwrite_out</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">a</span><span class="o">=</span><span class="n">a</span><span class="o">*</span><span class="n">func</span><span class="p">(</span><span class="n">time</span><span class="p">),</span><span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span>
 
 			<span class="k">elif</span> <span class="n">_sp</span><span class="o">.</span><span class="n">issparse</span><span class="p">(</span><span class="n">V</span><span class="p">):</span>
 				<span class="k">if</span> <span class="n">out</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -748,21 +754,24 @@
 				<span class="n">out</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_static</span> <span class="o">*</span> <span class="n">V</span>
 				<span class="k">for</span> <span class="n">func</span><span class="p">,</span><span class="n">Hd</span> <span class="ow">in</span> <span class="n">iteritems</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dynamic</span><span class="p">):</span>
 					<span class="n">out</span> <span class="o">=</span> <span class="n">out</span> <span class="o">+</span> <span class="n">func</span><span class="p">(</span><span class="n">time</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="n">Hd</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">V</span><span class="p">))</span>
+
+				<span class="n">out</span> <span class="o">=</span> <span class="n">a</span><span class="o">*</span><span class="n">out</span>
 			<span class="k">else</span><span class="p">:</span>
+				<span class="c1"># should we raise an error here?</span>
 				<span class="k">pass</span>
 
 
 			<span class="k">return</span> <span class="n">out</span></div>
 
-<div class="viewcode-block" id="hamiltonian.rdot"><a class="viewcode-back" href="../../../generated/quspin.operators.hamiltonian.html#quspin.operators.hamiltonian.rdot">[docs]</a>	<span class="k">def</span> <span class="nf">rdot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">V</span><span class="p">,</span><span class="n">time</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<div class="viewcode-block" id="hamiltonian.rdot"><a class="viewcode-back" href="../../../generated/quspin.operators.hamiltonian.html#quspin.operators.hamiltonian.rdot">[docs]</a>	<span class="k">def</span> <span class="nf">rdot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">V</span><span class="p">,</span><span class="n">time</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">out</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">overwrite_out</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">a</span><span class="o">=</span><span class="mf">1.0</span><span class="p">):</span>
 		<span class="sd">&quot;&quot;&quot;Vector-Matrix multiplication of `hamiltonian` operator at time `time`, with state `V`.</span>
 
 <span class="sd">		.. math::</span>
-<span class="sd">			\\langle V|H(t=\\texttt{time})</span>
+<span class="sd">			a\\langle V|H(t=\\texttt{time})</span>
 
 <span class="sd">		Notes</span>
 <span class="sd">		-----</span>
-<span class="sd">		This function does the matrix multiplication with the state(s) and Hamiltonian as is.</span>
+<span class="sd">		* this function does the matrix multiplication with the state(s) and Hamiltonian as is, see Example 17 (Lidblad dynamics / Optical Bloch Equations).</span>
 
 <span class="sd">		Parameters</span>
 <span class="sd">		-----------</span>
@@ -778,7 +787,13 @@
 <span class="sd">					2- or 3-d array, where 2-d would be for pure states and 3-d would be for mixed states.</span>
 <span class="sd">		check : bool, optional</span>
 <span class="sd">			Whether or not to do checks for shape compatibility.</span>
-<span class="sd">			</span>
+<span class="sd">		out : array_like, optional</span>
+<span class="sd">			specify the output array for the the result. This is not supported if `V` is a sparse matrix or if `times` is an array. </span>
+<span class="sd">		overwrite_out : bool, optional</span>
+<span class="sd">			flag used to toggle between two different ways to treat `out`. If set to `True` all values in `out` will be overwritten with the result. </span>
+<span class="sd">			If `False` the result of the dot product will be added to the values of `out`. </span>
+<span class="sd">		a : scalar, optional</span>
+<span class="sd">			scalar to multiply the final product with: :math:`B = aVH`. </span>
 
 <span class="sd">		Returns</span>
 <span class="sd">		--------</span>
@@ -792,10 +807,8 @@
 <span class="sd">		corresponds to :math:`B = AH`. </span>
 <span class="sd">	</span>
 <span class="sd">		&quot;&quot;&quot;</span>
-		<span class="c1"># try:</span>
-		<span class="c1"># 	V_transpose = V.transpose()</span>
-		<span class="c1"># except AttributeError:</span>
-		<span class="c1"># 	V_transpose = _np.asanyarray(V).transpose()</span>
+
+		<span class="n">times</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">time</span><span class="p">)</span>
 
 		<span class="k">try</span><span class="p">:</span>
 			<span class="n">ndim</span> <span class="o">=</span> <span class="n">V</span><span class="o">.</span><span class="n">ndim</span>
@@ -807,15 +820,15 @@
 			<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;expecting V.ndim &lt; 4.&quot;</span><span class="p">)</span>
 
 		<span class="k">if</span> <span class="n">ndim</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-			<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">transpose</span><span class="p">()</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">V</span><span class="p">,</span><span class="n">time</span><span class="o">=</span><span class="n">time</span><span class="p">,</span><span class="n">check</span><span class="o">=</span><span class="n">check</span><span class="p">)</span>
+			<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">transpose</span><span class="p">()</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">V</span><span class="p">,</span><span class="n">time</span><span class="o">=</span><span class="n">times</span><span class="p">,</span><span class="n">check</span><span class="o">=</span><span class="n">check</span><span class="p">,</span><span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="o">.</span><span class="n">T</span><span class="p">,</span><span class="n">overwrite_out</span><span class="o">=</span><span class="n">overwrite_out</span><span class="p">,</span><span class="n">a</span><span class="o">=</span><span class="n">a</span><span class="p">)</span>
 		<span class="k">elif</span> <span class="n">ndim</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
 			<span class="k">if</span> <span class="n">_np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">times</span><span class="p">)</span><span class="o">.</span><span class="n">ndim</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">:</span>
-				<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">transpose</span><span class="p">()</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">V</span><span class="p">,</span><span class="n">time</span><span class="o">=</span><span class="n">time</span><span class="p">,</span><span class="n">check</span><span class="o">=</span><span class="n">check</span><span class="p">)</span>
+				<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">transpose</span><span class="p">()</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">V</span><span class="p">,</span><span class="n">time</span><span class="o">=</span><span class="n">times</span><span class="p">,</span><span class="n">check</span><span class="o">=</span><span class="n">check</span><span class="p">,</span><span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="o">.</span><span class="n">T</span><span class="p">,</span><span class="n">overwrite_out</span><span class="o">=</span><span class="n">overwrite_out</span><span class="p">,</span><span class="n">a</span><span class="o">=</span><span class="n">a</span><span class="p">)</span>
 			<span class="k">else</span><span class="p">:</span>
-				<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">transpose</span><span class="p">()</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">V</span><span class="o">.</span><span class="n">transpose</span><span class="p">(),</span><span class="n">time</span><span class="o">=</span><span class="n">time</span><span class="p">,</span><span class="n">check</span><span class="o">=</span><span class="n">check</span><span class="p">)</span><span class="o">.</span><span class="n">transpose</span><span class="p">()</span>
+				<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">transpose</span><span class="p">()</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">V</span><span class="o">.</span><span class="n">transpose</span><span class="p">(),</span><span class="n">time</span><span class="o">=</span><span class="n">times</span><span class="p">,</span><span class="n">check</span><span class="o">=</span><span class="n">check</span><span class="p">,</span><span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="o">.</span><span class="n">T</span><span class="p">,</span><span class="n">overwrite_out</span><span class="o">=</span><span class="n">overwrite_out</span><span class="p">,</span><span class="n">a</span><span class="o">=</span><span class="n">a</span><span class="p">)</span><span class="o">.</span><span class="n">transpose</span><span class="p">()</span>
 		<span class="k">else</span><span class="p">:</span>
 			<span class="n">V_transpose</span> <span class="o">=</span> <span class="n">V</span><span class="o">.</span><span class="n">transpose</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">))</span>
-			<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">transpose</span><span class="p">()</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">V_transpose</span><span class="p">,</span><span class="n">time</span><span class="o">=</span><span class="n">time</span><span class="p">,</span><span class="n">check</span><span class="o">=</span><span class="n">check</span><span class="p">)</span><span class="o">.</span><span class="n">transpose</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">))</span></div>
+			<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">transpose</span><span class="p">()</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">V_transpose</span><span class="p">,</span><span class="n">time</span><span class="o">=</span><span class="n">times</span><span class="p">,</span><span class="n">check</span><span class="o">=</span><span class="n">check</span><span class="p">,</span><span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="o">.</span><span class="n">T</span><span class="p">,</span><span class="n">overwrite_out</span><span class="o">=</span><span class="n">overwrite_out</span><span class="p">,</span><span class="n">a</span><span class="o">=</span><span class="n">a</span><span class="p">)</span><span class="o">.</span><span class="n">transpose</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">))</span></div>
 
 <div class="viewcode-block" id="hamiltonian.quant_fluct"><a class="viewcode-back" href="../../../generated/quspin.operators.hamiltonian.html#quspin.operators.hamiltonian.quant_fluct">[docs]</a>	<span class="k">def</span> <span class="nf">quant_fluct</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">V</span><span class="p">,</span><span class="n">time</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">enforce_pure</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 		<span class="sd">&quot;&quot;&quot;Calculates the quantum fluctuations (variance) of `hamiltonian` operator at time `time`, in state `V`.</span>
@@ -1343,7 +1356,7 @@
 		<span class="k">for</span> <span class="n">func</span><span class="p">,</span><span class="n">Hd</span> <span class="ow">in</span> <span class="n">iteritems</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dynamic</span><span class="p">):</span>
 			<span class="bp">self</span><span class="o">.</span><span class="n">_dynamic_matvec</span><span class="p">[</span><span class="n">func</span><span class="p">](</span><span class="n">Hd</span><span class="p">,</span><span class="n">V</span><span class="p">,</span><span class="n">a</span><span class="o">=</span><span class="n">func</span><span class="p">(</span><span class="n">time</span><span class="p">),</span><span class="n">out</span><span class="o">=</span><span class="n">V_out</span><span class="p">,</span><span class="n">overwrite_out</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
-		<span class="n">V_out</span> <span class="o">*=</span> <span class="o">-</span><span class="mi">1</span>
+		<span class="n">V_out</span> <span class="o">*=</span> <span class="o">-</span><span class="mf">1.0</span>
 		<span class="k">return</span> <span class="n">V_out</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
 
 	<span class="k">def</span> <span class="nf">__SO_real</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">time</span><span class="p">,</span><span class="n">V</span><span class="p">,</span><span class="n">V_out</span><span class="p">):</span>
@@ -2002,7 +2015,7 @@
 
 		<span class="k">return</span> <span class="n">trace</span></div>
 	
-<div class="viewcode-block" id="hamiltonian.astype"><a class="viewcode-back" href="../../../generated/quspin.operators.hamiltonian.html#quspin.operators.hamiltonian.astype">[docs]</a>	<span class="k">def</span> <span class="nf">astype</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">dtype</span><span class="p">,</span><span class="n">copy</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="hamiltonian.astype"><a class="viewcode-back" href="../../../generated/quspin.operators.hamiltonian.html#quspin.operators.hamiltonian.astype">[docs]</a>	<span class="k">def</span> <span class="nf">astype</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">dtype</span><span class="p">,</span><span class="n">copy</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">casting</span><span class="o">=</span><span class="s2">&quot;unsafe&quot;</span><span class="p">):</span>
 		<span class="sd">&quot;&quot;&quot;Changes data type of `hamiltonian` object.</span>
 
 <span class="sd">		Parameters</span>
@@ -2027,11 +2040,10 @@
 		<span class="k">if</span> <span class="n">dtype</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">supported_dtypes</span><span class="p">:</span>
 			<span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;hamiltonian does not support type: &#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">dtype</span><span class="p">))</span>
 
-		<span class="n">dynamic</span> <span class="o">=</span> <span class="p">[[</span><span class="n">M</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">dtype</span><span class="p">),</span><span class="n">func</span><span class="p">]</span> <span class="k">for</span> <span class="n">func</span><span class="p">,</span><span class="n">M</span> <span class="ow">in</span> <span class="n">iteritems</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dynamic</span><span class="p">)]</span>
-		<span class="k">if</span> <span class="n">dtype</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dtype</span><span class="p">:</span>
-			<span class="k">return</span> <span class="n">hamiltonian</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">static</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">dtype</span><span class="p">)],</span><span class="n">dynamic</span><span class="p">,</span><span class="n">basis</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_basis</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">,</span><span class="n">copy</span><span class="o">=</span><span class="n">copy</span><span class="p">)</span>
-		<span class="k">else</span><span class="p">:</span>
-			<span class="k">return</span> <span class="n">hamiltonian</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">static</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">dtype</span><span class="p">)],</span><span class="n">dynamic</span><span class="p">,</span><span class="n">basis</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_basis</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">,</span><span class="n">copy</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+		<span class="n">static</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">static</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">dtype</span><span class="p">,</span><span class="n">copy</span><span class="o">=</span><span class="n">copy</span><span class="p">,</span><span class="n">casting</span><span class="o">=</span><span class="n">casting</span><span class="p">)</span>
+		<span class="n">dynamic</span> <span class="o">=</span> <span class="p">[[</span><span class="n">M</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">dtype</span><span class="p">,</span><span class="n">copy</span><span class="o">=</span><span class="n">copy</span><span class="p">,</span><span class="n">casting</span><span class="o">=</span><span class="n">casting</span><span class="p">),</span><span class="n">func</span><span class="p">]</span> <span class="k">for</span> <span class="n">func</span><span class="p">,</span><span class="n">M</span> <span class="ow">in</span> <span class="n">iteritems</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dynamic</span><span class="p">)]</span>
+		<span class="k">return</span> <span class="n">hamiltonian</span><span class="p">([</span><span class="n">static</span><span class="p">],</span><span class="n">dynamic</span><span class="p">,</span><span class="n">basis</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_basis</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">,</span><span class="n">copy</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
+
 
 <div class="viewcode-block" id="hamiltonian.copy"><a class="viewcode-back" href="../../../generated/quspin.operators.hamiltonian.html#quspin.operators.hamiltonian.copy">[docs]</a>	<span class="k">def</span> <span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 		<span class="sd">&quot;&quot;&quot;Returns a copy of `hamiltonian` object.&quot;&quot;&quot;</span>
@@ -3090,13 +3102,13 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">QuSpin 0.3.2 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">QuSpin 0.3.3 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2016, Phillip Weinberg and Marin Bukov.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.2.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.4.
     </div>
   </body>
 </html>

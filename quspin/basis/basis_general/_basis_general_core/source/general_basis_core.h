@@ -17,7 +17,7 @@
 
 namespace basis_general {
 
-template<class I>
+template<class I,class P=signed char>
 class general_basis_core{
 	public:
 		const int N;
@@ -25,23 +25,24 @@ class general_basis_core{
 		const int * maps;
 		const int * pers;
 		const int * qs;
+		const bool fermionic;
 
-		general_basis_core(const int _N) : \
-			 N(_N), nt(0), maps(NULL), pers(NULL), qs(NULL) {}
+		general_basis_core(const int _N, const bool _fermionnic=false) : \
+			 N(_N), nt(0), maps(NULL), pers(NULL), qs(NULL), fermionic(_fermionnic) {}
 
 		general_basis_core(const int _N,const int _nt,const int _maps[], \
-			const int _pers[], const int _qs[]) : \
-			 N(_N), nt(_nt), maps(_maps) , pers(_pers), qs(_qs) { }
+			const int _pers[], const int _qs[], const bool _fermionnic=false) : \
+			 N(_N), nt(_nt), maps(_maps) , pers(_pers), qs(_qs), fermionic(_fermionnic) { }
 
 		~general_basis_core() {}
 
 		bool check_pcon(const I,const std::set<std::vector<int>>&);
-		double check_state(I);
-		I ref_state(I,int[],int&);
-		virtual I next_state_pcon(I) = 0;
+		virtual double check_state(I);
+		I ref_state(I,int[],P&);
+		virtual I next_state_pcon(I,I) = 0;
 		virtual int op(I&,std::complex<double>&,const int,const char[],const int[]) = 0;
-		virtual void map_state(I[],npy_intp,int,signed char[]) = 0;
-		virtual I map_state(I,int,int&) = 0;
+		virtual void map_state(I[],npy_intp,int,P[]) = 0;
+		virtual I map_state(I,int,P&) = 0;
 		virtual std::vector<int> count_particles(const I s) = 0;
 		// virtual void print(I) = 0;
 		virtual int get_N() const{
@@ -53,9 +54,20 @@ class general_basis_core{
 		}
 };
 
+template<class T>
+inline double get_real(T val){
+	return (double)val;
+}
 
-template<class I>
-double check_state_core_unrolled(general_basis_core<I> *B,const I s,const int nt){
+template<>
+inline double get_real(std::complex<double> val){
+	return std::real(val);
+}
+
+
+
+template<class I,class P=signed char>
+double check_state_core_unrolled(general_basis_core<I,P> *B,const I s,const int nt){
 
 	if(nt <= 0 || nt > __GENERAL_BASIS_CORE__max_nt){
 		return 1;
@@ -64,7 +76,7 @@ double check_state_core_unrolled(general_basis_core<I> *B,const I s,const int nt
 	int gg[__GENERAL_BASIS_CORE__max_nt];
 	double ks[__GENERAL_BASIS_CORE__max_nt];
 	double k = 0;
-	int sign = 1;
+	P phase = 1;
 	double norm = 0;
 	I t = s;
 
@@ -103,9 +115,9 @@ double check_state_core_unrolled(general_basis_core<I> *B,const I s,const int nt
 				change = false; // Stop as there the upper levels of the loop are unaffected
 
 			// We can perform any inner loop calculation here gg[depth]
-			if(depth == (nt-1) && t==s){norm += sign * std::cos(k);}
+			if(depth == (nt-1) && t==s){norm += get_real(phase) * std::cos(k);}
 			k += ks[depth];
-			t = B->map_state(t,depth,sign);
+			t = B->map_state(t,depth,phase);
 			if(t > s){
 				return std::numeric_limits<double>::quiet_NaN();
 			}
@@ -118,8 +130,8 @@ double check_state_core_unrolled(general_basis_core<I> *B,const I s,const int nt
 }
 
 
-template<class I>
-I ref_state_core_unrolled(general_basis_core<I> *B, const I s,int g[],int &sign,const int nt){
+template<class I,class P=signed char>
+I ref_state_core_unrolled(general_basis_core<I,P> *B, const I s,int g[],P &phase,const int nt){
 
 	if(nt <= 0 || nt > __GENERAL_BASIS_CORE__max_nt){
 		for(int i=0;i<std::min((int)__GENERAL_BASIS_CORE__max_nt,nt);i++){g[i]=0;}
@@ -127,7 +139,7 @@ I ref_state_core_unrolled(general_basis_core<I> *B, const I s,int g[],int &sign,
 	}
 
 	int gg[__GENERAL_BASIS_CORE__max_nt];  // represent the different variables in the for loops;
-	int tempsign = 1;
+	P temp_phase = 1;
 	I t = s;
 	I r = s;
 
@@ -156,7 +168,7 @@ I ref_state_core_unrolled(general_basis_core<I> *B, const I s,int g[],int &sign,
 		while (change && depth>=0) {
 			if(t>r){
 				r = t;
-				sign = tempsign;
+				phase = temp_phase;
 				for(int j=0;j<nt;j++){
 					g[j] = gg[j];
 				}
@@ -173,7 +185,7 @@ I ref_state_core_unrolled(general_basis_core<I> *B, const I s,int g[],int &sign,
 				change = false; // Stop as there the upper levels of the loop are unaffected
 
 			// We can perform any inner loop calculation here gg[depth]
-			t = B->map_state(t,depth,tempsign);
+			t = B->map_state(t,depth,temp_phase);
 
 
 			depth--;  // move to upper level of the loop
@@ -184,21 +196,21 @@ I ref_state_core_unrolled(general_basis_core<I> *B, const I s,int g[],int &sign,
 }
 
 
-template<class I>
-I general_basis_core<I>::ref_state(I s,int g[],int &sign){
-	return ref_state_core_unrolled<I>(this,s,g,sign,nt);
+template<class I,class P>
+I general_basis_core<I,P>::ref_state(I s,int g[],P &phase){
+	return ref_state_core_unrolled<I,P>(this,s,g,phase,nt);
 }
 
 
 
-template<class I>
-double general_basis_core<I>::check_state(I s){
-	return check_state_core_unrolled<I>(this,s,nt);
+template<class I,class P>
+double general_basis_core<I,P>::check_state(I s){
+	return check_state_core_unrolled<I,P>(this,s,nt);
 }
 
 
-template<class I>
-bool general_basis_core<I>::check_pcon(const I s,const std::set<std::vector<int>> &Np){
+template<class I,class P>
+bool general_basis_core<I,P>::check_pcon(const I s,const std::set<std::vector<int>> &Np){
 	// basis_core objects have a count_particles function which returns a vector of the required size;
 	// cython construct a vector of vectors, each sub-vector can be arbitrary size: see function load_pcon_list in general_basis_core.pyx
 	// in order to be compatible with later general basis classes which may have more than two spcies of particles!
@@ -267,7 +279,7 @@ bool general_basis_core<I>::check_pcon(const I s,const std::set<std::vector<int>
 // }
 
 // template<class I>
-// I ref_state_core(general_basis_core<I> *B, const I s,I r,int g[], int gg[],int &sign,int &tempsign,const int nt,const int depth){
+// I ref_state_core(general_basis_core<I> *B, const I s,I r,int g[], int gg[],int &sign,int &temp_phase,const int nt,const int depth){
 // 	if(nt<=0){
 // 		return s;
 // 	}
@@ -276,8 +288,8 @@ bool general_basis_core<I>::check_pcon(const I s,const std::set<std::vector<int>
 // 	if(depth<nt-1){
 // 		for(int i=0;i<per;i++){
 // 			gg[depth] = i;
-// 			r = ref_state_core(B,t,r,g,gg,sign,tempsign,nt,depth+1);
-// 			t = B->map_state(t,depth,tempsign);
+// 			r = ref_state_core(B,t,r,g,gg,sign,temp_phase,nt,depth+1);
+// 			t = B->map_state(t,depth,temp_phase);
 // 		}
 // 		return r;
 // 	}
@@ -286,12 +298,12 @@ bool general_basis_core<I>::check_pcon(const I s,const std::set<std::vector<int>
 // 			gg[depth] = i;
 // 			if(t>r){
 // 				r = t;
-// 				sign = tempsign;
+// 				sign = temp_phase;
 // 				for(int j=0;j<nt;j++){
 // 					g[j] = gg[j];
 // 				}
 // 			}
-// 			t = B->map_state(t,depth,tempsign);
+// 			t = B->map_state(t,depth,temp_phase);
 // 		}
 // 		return r;
 // 	}
@@ -382,12 +394,12 @@ bool general_basis_core<I>::check_pcon(const I s,const std::set<std::vector<int>
 
 // template<class I>
 // I general_basis_core<I>::ref_state(I s,int g[],int gg[],int &sign){
-// 	int tempsign=1;
+// 	int temp_phase=1;
 // 	for(int i=0;i<nt;i++){
 // 		g[i] = 0;
 // 		gg[i] = 0;
 // 	}
-// 	return ref_state_core<I>(this,s,s,g,gg,sign,tempsign,nt,0);
+// 	return ref_state_core<I>(this,s,s,g,gg,sign,temp_phase,nt,0);
 // }
 }
 

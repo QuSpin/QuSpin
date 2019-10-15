@@ -124,6 +124,10 @@ class lattice_basis(basis):
 		"""
 		return self._index(s)
 
+	@property
+	def dtype(self):
+		return self._basis.dtype
+	
 
 	@property
 	def states(self):
@@ -553,13 +557,15 @@ class lattice_basis(basis):
 		return p_A, p_B, rdm_A, rdm_B
 
 	def _get__str__(self):
-		temp1 = "     {0:"+str(len(str(self.Ns)))+"d}.  "
+		temp1 = "     {0:"+str(len(str(self.Ns)))+"d}.         "
+		temp2 = "           {0:"+str(len(str(self._basis[0])))+"d}  "
+		
 		if self._Ns > MAXPRINT:
 			half = MAXPRINT // 2
-			str_list = [(temp1.format(i))+self.int_to_state(b) for i,b in zip(range(half),self._basis[:half])]
-			str_list.extend([(temp1.format(i))+self.int_to_state(b) for i,b in zip(range(self._Ns-half,self._Ns,1),self._basis[-half:])])
+			str_list = [(temp1.format(i))+self.int_to_state(b)+temp2.format(b) for i,b in zip(range(half),self._basis[:half])]
+			str_list.extend([(temp1.format(i))+self.int_to_state(b)+temp2.format(b) for i,b in zip(range(self._Ns-half,self._Ns,1),self._basis[-half:])])
 		else:
-			str_list = [(temp1.format(i))+self.int_to_state(b) for i,b in enumerate(self._basis)]
+			str_list = [(temp1.format(i))+self.int_to_state(b)+temp2.format(b) for i,b in enumerate(self._basis)]
 
 		return tuple(str_list)
 

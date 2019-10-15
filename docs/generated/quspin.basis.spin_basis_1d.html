@@ -17,7 +17,7 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-    <title>quspin.basis.spin_basis_1d &#8212; QuSpin 0.3.2 documentation</title>
+    <title>quspin.basis.spin_basis_1d &#8212; QuSpin 0.3.3 documentation</title>
     <link rel="stylesheet" href="../static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../static/pygments.css" type="text/css" />
     
@@ -25,7 +25,8 @@
     <script type="text/javascript" src="../static/jquery.js"></script>
     <script type="text/javascript" src="../static/underscore.js"></script>
     <script type="text/javascript" src="../static/doctools.js"></script>
-    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="../static/language_data.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -43,7 +44,7 @@
         <li class="right" >
           <a href="../basis.html" title="Basis module (quspin.basis)"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.2 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.3 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../basis.html" accesskey="U">Basis module (<code class="docutils literal notranslate"><span class="pre">quspin.basis</span></code>)</a> &#187;</li> 
       </ul>
     </div>  
@@ -152,6 +153,8 @@
 <dt><a class="reference internal" href="#quspin.basis.spin_basis_1d.description" title="quspin.basis.spin_basis_1d.description"><code class="xref py py-obj docutils literal notranslate"><span class="pre">description</span></code></a></dt>
 <dd><p class="first last">str: information about <cite>basis</cite> object.</p>
 </dd>
+<dt><strong>dtype</strong></dt>
+<dd></dd>
 <dt><a class="reference internal" href="#quspin.basis.spin_basis_1d.operators" title="quspin.basis.spin_basis_1d.operators"><code class="xref py py-obj docutils literal notranslate"><span class="pre">operators</span></code></a></dt>
 <dd><p class="first last">set: set of available operator strings.</p>
 </dd>
@@ -347,13 +350,16 @@ e.g. to get the Nup_max state use Nup = -1, for Nup_max-1 state use Nup = -2, et
 <tr class="row-odd"><td><a class="reference internal" href="#quspin.basis.spin_basis_1d.description" title="quspin.basis.spin_basis_1d.description"><code class="xref py py-obj docutils literal notranslate"><span class="pre">description</span></code></a></td>
 <td>str: information about <cite>basis</cite> object.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#quspin.basis.spin_basis_1d.operators" title="quspin.basis.spin_basis_1d.operators"><code class="xref py py-obj docutils literal notranslate"><span class="pre">operators</span></code></a></td>
+<tr class="row-even"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">dtype</span></code></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#quspin.basis.spin_basis_1d.operators" title="quspin.basis.spin_basis_1d.operators"><code class="xref py py-obj docutils literal notranslate"><span class="pre">operators</span></code></a></td>
 <td>set: set of available operator strings.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#quspin.basis.spin_basis_1d.sps" title="quspin.basis.spin_basis_1d.sps"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sps</span></code></a></td>
+<tr class="row-even"><td><a class="reference internal" href="#quspin.basis.spin_basis_1d.sps" title="quspin.basis.spin_basis_1d.sps"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sps</span></code></a></td>
 <td>int: number of states per site (i.e.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#quspin.basis.spin_basis_1d.states" title="quspin.basis.spin_basis_1d.states"><code class="xref py py-obj docutils literal notranslate"><span class="pre">states</span></code></a></td>
+<tr class="row-odd"><td><a class="reference internal" href="#quspin.basis.spin_basis_1d.states" title="quspin.basis.spin_basis_1d.states"><code class="xref py py-obj docutils literal notranslate"><span class="pre">states</span></code></a></td>
 <td>numpy.ndarray(int): basis states stored in their integer representation.</td>
 </tr>
 </tbody>
@@ -1051,13 +1057,13 @@ it is a square array. Default is <cite>False</cite>.</p>
         <li class="right" >
           <a href="../basis.html" title="Basis module (quspin.basis)"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.2 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.3 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../basis.html" >Basis module (<code class="docutils literal notranslate"><span class="pre">quspin.basis</span></code>)</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2016, Phillip Weinberg and Marin Bukov.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.2.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.4.
     </div>
   </body>
 </html>

@@ -1,7 +1,7 @@
 # cython: language_level=2
 # distutils: language=c++
 import cython
-from scipy.misc import comb
+from scipy.special import comb
 import scipy.sparse as _sp
 
 include "source/general_basis_core.pyx"
@@ -66,7 +66,6 @@ cdef class spinless_fermion_basis_core_wrap(general_basis_core_wrap):
         cdef int Ns_1 = 0
         cdef int Ns_2 = 0
         cdef int Ns_3 = 0
-        cdef uint8_t np = 0
         cdef npy_intp i = 0
         cdef mem_MAX = basis.shape[0]
 

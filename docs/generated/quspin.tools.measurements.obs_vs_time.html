@@ -17,7 +17,7 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-    <title>quspin.tools.measurements.obs_vs_time &#8212; QuSpin 0.3.2 documentation</title>
+    <title>quspin.tools.measurements.obs_vs_time &#8212; QuSpin 0.3.3 documentation</title>
     <link rel="stylesheet" href="../static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../static/pygments.css" type="text/css" />
     
@@ -25,7 +25,8 @@
     <script type="text/javascript" src="../static/jquery.js"></script>
     <script type="text/javascript" src="../static/underscore.js"></script>
     <script type="text/javascript" src="../static/doctools.js"></script>
-    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="../static/language_data.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -47,7 +48,7 @@
         <li class="right" >
           <a href="quspin.tools.measurements.diag_ensemble.html" title="quspin.tools.measurements.diag_ensemble"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.2 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.3 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../tools.html" accesskey="U">Tools module (<code class="docutils literal notranslate"><span class="pre">quspin.tools</span></code>)</a> &#187;</li> 
       </ul>
     </div>  
@@ -63,6 +64,10 @@
 <dt id="quspin.tools.measurements.obs_vs_time">
 <code class="descclassname">quspin.tools.measurements.</code><code class="descname">obs_vs_time</code><span class="sig-paren">(</span><em>psi_t</em>, <em>times</em>, <em>Obs_dict</em>, <em>return_state=False</em>, <em>Sent_args={}</em>, <em>enforce_pure=False</em>, <em>verbose=False</em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/tools/measurements.html#obs_vs_time"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#quspin.tools.measurements.obs_vs_time" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculates expectation value of observable(s) as a function of time in a time-dependent state.</p>
+<p>This function computes the expectation of a time-dependent state <span class="math notranslate nohighlight">\(|\psi(t)\rangle\)</span> in a time-dependent observable <span class="math notranslate nohighlight">\(\mathcal{O}(t)\)</span>. 
+It automatically handles the cases where only the state or only the observable is time-dependent.</p>
+<div class="math notranslate nohighlight">
+\[\langle\psi(t)|\mathcal{O}(t)|\psi(t)\rangle\]</div>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -196,7 +201,8 @@ under <span class="math notranslate nohighlight">\(H_2=\sum_j JS^z_{j+1}S^z_j+ h
 32
 33
 34
-35</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">quspin.operators</span> <span class="kn">import</span> <span class="n">hamiltonian</span> <span class="c1"># Hamiltonians and operators</span>
+35
+36</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">quspin.operators</span> <span class="kn">import</span> <span class="n">hamiltonian</span> <span class="c1"># Hamiltonians and operators</span>
 <span class="kn">from</span> <span class="nn">quspin.basis</span> <span class="kn">import</span> <span class="n">spin_basis_1d</span> <span class="c1"># Hilbert space spin basis</span>
 <span class="kn">from</span> <span class="nn">quspin.tools.measurements</span> <span class="kn">import</span> <span class="n">obs_vs_time</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span> <span class="c1"># generic math functions</span>
@@ -228,9 +234,10 @@ under <span class="math notranslate nohighlight">\(H_2=\sum_j JS^z_{j+1}S^z_j+ h
 <span class="n">times</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span><span class="mf">5.0</span><span class="p">,</span><span class="mi">10</span><span class="p">)</span>
 <span class="n">psi1_t</span><span class="o">=</span><span class="n">H2</span><span class="o">.</span><span class="n">evolve</span><span class="p">(</span><span class="n">psi1</span><span class="p">,</span><span class="mf">0.0</span><span class="p">,</span><span class="n">times</span><span class="p">,</span><span class="n">iterate</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
 <span class="c1"># calculate expectation values of observables</span>
-<span class="n">Obs_time</span><span class="o">=</span><span class="n">obs_vs_time</span><span class="p">(</span><span class="n">psi1_t</span><span class="p">,</span><span class="n">times</span><span class="p">,</span><span class="nb">dict</span><span class="p">(</span><span class="n">E1</span><span class="o">=</span><span class="n">H1</span><span class="p">,</span><span class="n">Energy2</span><span class="o">=</span><span class="n">H2</span><span class="p">))</span>
+<span class="n">Obs_time</span><span class="o">=</span><span class="n">obs_vs_time</span><span class="p">(</span><span class="n">psi1_t</span><span class="p">,</span><span class="n">times</span><span class="p">,</span><span class="nb">dict</span><span class="p">(</span><span class="n">E1</span><span class="o">=</span><span class="n">H1</span><span class="p">,</span><span class="n">Energy2</span><span class="o">=</span><span class="n">H2</span><span class="p">),</span><span class="n">return_state</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
 <span class="k">print</span><span class="p">(</span><span class="s2">&quot;Output keys are same as input keys:&quot;</span><span class="p">,</span> <span class="n">Obs_time</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
 <span class="n">E1_time</span><span class="o">=</span><span class="n">Obs_time</span><span class="p">[</span><span class="s1">&#39;E1&#39;</span><span class="p">]</span>
+<span class="n">psi_time</span><span class="o">=</span><span class="n">Obs_time</span><span class="p">[</span><span class="s1">&#39;psi_t&#39;</span><span class="p">]</span>
 </pre></div>
 </td></tr></table></div>
 </dd></dl>
@@ -287,13 +294,13 @@ under <span class="math notranslate nohighlight">\(H_2=\sum_j JS^z_{j+1}S^z_j+ h
         <li class="right" >
           <a href="quspin.tools.measurements.diag_ensemble.html" title="quspin.tools.measurements.diag_ensemble"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.2 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.3 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../tools.html" >Tools module (<code class="docutils literal notranslate"><span class="pre">quspin.tools</span></code>)</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2016, Phillip Weinberg and Marin Bukov.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.2.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.4.
     </div>
   </body>
 </html>

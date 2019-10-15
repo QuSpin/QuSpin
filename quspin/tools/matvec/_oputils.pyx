@@ -567,7 +567,7 @@ def _other_dot(mat_obj,other,overwrite_out=False,out=None,a=1.0):
   return out
 
 
-def matvec(mat_obj,*args,**kwargs):
+def _matvec(mat_obj,*args,**kwargs):
   if _sp.isspmatrix_csr(mat_obj):
     return _csr_dot(mat_obj,*args,**kwargs)
   elif _sp.isspmatrix_csc(mat_obj):

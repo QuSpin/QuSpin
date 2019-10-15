@@ -41,6 +41,7 @@ quspin.basis.boson\_basis\_1d
       ~boson_basis_1d.Ns
       ~boson_basis_1d.blocks
       ~boson_basis_1d.description
+      ~boson_basis_1d.dtype
       ~boson_basis_1d.operators
       ~boson_basis_1d.sps
       ~boson_basis_1d.states

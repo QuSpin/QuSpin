@@ -48,8 +48,8 @@ cdef basis_type fliplr(basis_type I, int length,NP_INT8_t * sign, basis_type[:] 
     # (generator of) parity symmetry
     cdef basis_type out = 0
     cdef int s = length - 1
+    
     cdef int N = bit_count(I,length)
-
     sign[0] *= (-1 if (N&2) and (pars[0]) else 1)
 
     out ^= (I&1)
@@ -83,6 +83,7 @@ def py_fliplr(basis_type[:] x,int length, basis_type[:] pars, NP_INT8_t[:] signs
 
 cdef inline basis_type flip_all(basis_type I, int length,NP_INT8_t * sign,basis_type[:] pars):
     # flip all bits
+    ### why do we need the following three lines? where are they used?
     cdef basis_type II = I
     cdef int NA = 0
     cdef int N = 0

@@ -2,26 +2,25 @@ from ._basis_general_core import boson_basis_core_wrap,get_basis_type,basis_zero
 from .base_hcb import hcb_basis_general
 from .base_general import basis_general
 import numpy as _np
-from scipy.misc import comb
+from scipy.special import comb
 
-
-def H_dim(N,length,m_max):
+def H_dim(Np,N,m_max):
     """
     Returns the total number of states in the bosonic Hilbert space
 
     --- arguments:
 
-    N: total number of bosons in lattice
-    length: total number of sites
+    Np: total number of bosons in lattice
+    N: total number of sites
     m_max+1: max number of states per site 
     """
     Ns = 0
-    for r in range(N//(m_max+1)+1):
-        r_2 = N - r*(m_max+1)
+    for r in range(Np//(m_max+1)+1):
+        r_2 = Np - r*(m_max+1)
         if r % 2 == 0:
-            Ns +=  comb(length,r,exact=True) * comb(length + r_2 - 1,r_2,exact=True)
+            Ns +=  comb(N,r,exact=True) * comb(N + r_2 - 1,r_2,exact=True)
         else:
-            Ns += -comb(length,r,exact=True) * comb(length + r_2 - 1,r_2,exact=True)
+            Ns += -comb(N,r,exact=True) * comb(N + r_2 - 1,r_2,exact=True)
 
     return Ns
 
@@ -29,7 +28,7 @@ def H_dim(N,length,m_max):
 class boson_basis_general(hcb_basis_general,basis_general):
 	"""Constructs basis for boson operators for USER-DEFINED symmetries.
 
-	Any unitary symmetry transformation :math:`Q` of multiplicity :math:`m_Q` (:math:`Q^{m_Q}=1`) has
+	Any unitary symmetry transformation :math:`Q` of periodicity :math:`m_Q` (:math:`Q^{m_Q}=1`) has
 	eigenvalues :math:`\\exp(-2\\pi i q/m_Q)`, labelled by an ingeter :math:`q\\in\\{0,1,\\dots,m_Q-1\\}`.
 	These integers :math:`q` are used to define the symmetry blocks.
 
@@ -98,7 +97,7 @@ class boson_basis_general(hcb_basis_general,basis_general):
 		make_basis: bool, optional
 			Boolean to control whether to make the basis. Allows the use to use some functionality of the basis constructor without constructing the entire basis.
 		block_order: list of strings, optional
-			A list of strings containing the names of the symmetry blocks which specifies the order in which the symmetries will be applied to the state when calculating the basis. If not specified the symmetries are sorted by their periodicity.
+			A list of strings containing the names of the symmetry blocks which specifies the order in which the symmetries will be applied to the state when calculating the basis. The first element in the list is applied to the state first followed by the second element, etc. If the list is not specificed the ordering is such that the symmetry with the largest cycle is the first, followed by the second largest, etc. 
 		**blocks: optional
 			keyword arguments which pass the symmetry generator arrays. For instance:
 
@@ -142,7 +141,7 @@ class boson_basis_general(hcb_basis_general,basis_general):
 
 		self._sps = sps
 		self._allowed_ops=set(["I","z","n","+","-"])
-
+		self._pcon_args = dict(N=N,Nb=Nb,sps=self._sps)
 
 		if self._sps == 2:
 
@@ -183,7 +182,7 @@ class boson_basis_general(hcb_basis_general,basis_general):
 					raise ValueError("_Np == -1 for no particle conservation, _Np >= 0 for particle conservation")
 
 			if Nb is None:
-				Ns = sps**N
+				self._Ns = sps**N
 			elif type(Nb) is int:
 				self._check_pcon = True
 				self._get_proj_pcon = True
@@ -191,7 +190,7 @@ class boson_basis_general(hcb_basis_general,basis_general):
 				if self._sps is None:
 					self._sps = Nb+1
 
-				Ns = H_dim(Nb,N,self._sps-1)
+				self._Ns = H_dim(Nb,N,self._sps-1)
 			else:
 				try:
 					Np_iter = iter(Nb)
@@ -201,26 +200,26 @@ class boson_basis_general(hcb_basis_general,basis_general):
 				if self._sps is None:
 					self._sps = max(list(Nb))+1				
 
-				Ns = 0
+				self._Ns = 0
 				for b in Nb:
-					Ns += H_dim(b,N,self._sps-1)
+					self._Ns += H_dim(b,N,self._sps-1)
 
-			self._pcon_args = dict(N=N,Nb=Nb,sps=self._sps)
+			#self._pcon_args = dict(N=N,Nb=Nb,sps=self._sps)
 
 			if len(self._pers)>0:
 				if Ns_block_est is None:
-					Ns = int(float(Ns)/_np.multiply.reduce(self._pers))*self._sps
+					self._Ns = int(float(self._Ns)/_np.multiply.reduce(self._pers))*self._sps
 				else:
 					if type(Ns_block_est) is not int:
 						raise TypeError("Ns_block_est must be integer value.")
 					if Ns_block_est <= 0:
 						raise ValueError("Ns_block_est must be an integer > 0")						
-					Ns = Ns_block_est
+					self._Ns = Ns_block_est
 
 			self._basis_dtype = get_basis_type(N,Nb,self._sps)
 			self._core = boson_basis_core_wrap(self._basis_dtype,N,self._sps,self._maps,self._pers,self._qs)
 			self._N = N
-			self._Ns = Ns
+			self._Ns_block_est=self._Ns
 			self._Np = Nb
 
 			# make the basis; make() is function method of base_general
@@ -230,6 +229,15 @@ class boson_basis_general(hcb_basis_general,basis_general):
 				self._Ns=1
 				self._basis=basis_zeros(self._Ns,dtype=self._basis_dtype)
 				self._n=_np.zeros(self._Ns,dtype=self._n_dtype)
+
+
+	def __setstate__(self,state):
+		print(self.__dict__)
+		if state["_sps"] == 2:
+			hcb_basis_general.__setstate__(self,state)
+		else:
+			self.__dict__.update(state)
+			self._core = boson_basis_core_wrap(self._basis_dtype,self._N,self._sps,self._maps,self._pers,self._qs)
 
 
 			

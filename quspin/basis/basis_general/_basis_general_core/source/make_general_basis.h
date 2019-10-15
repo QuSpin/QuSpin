@@ -17,8 +17,8 @@
 
 namespace basis_general {
 
-template<class I,class J>
-npy_intp make_basis_sequential(general_basis_core<I> *B,npy_intp MAX,npy_intp mem_MAX,I basis[],J n[]){
+template<class I,class J,class P=signed char>
+npy_intp make_basis_sequential(general_basis_core<I,P> *B,npy_intp MAX,npy_intp mem_MAX,I basis[],J n[]){
 	npy_intp Ns = 0;
 	I s = 0;
 	bool insuff_mem = false;
@@ -49,9 +49,10 @@ npy_intp make_basis_sequential(general_basis_core<I> *B,npy_intp MAX,npy_intp me
 }
 
 
-template<class I,class J>
-npy_intp make_basis_pcon_sequential(general_basis_core<I> *B,npy_intp MAX,npy_intp mem_MAX,I s,I basis[],J n[]){
+template<class I,class J,class P=signed char>
+npy_intp make_basis_pcon_sequential(general_basis_core<I,P> *B,npy_intp MAX,npy_intp mem_MAX,I s,I basis[],J n[]){
 	npy_intp Ns = 0;
+	I nns = 0; // number of next_state calls
 	bool insuff_mem = false;
 
 	while(MAX!=0){
@@ -67,7 +68,7 @@ npy_intp make_basis_pcon_sequential(general_basis_core<I> *B,npy_intp MAX,npy_in
 			n[Ns] = norm;
 			Ns++;
 		}
-		s = B->next_state_pcon(s);
+		s = B->next_state_pcon(s,nns++);
 		MAX--;
 	}
 
@@ -92,8 +93,8 @@ struct compare_pair : std::binary_function<std::pair<I,J>,std::pair<I,J>,bool>
 
 
 
-template<class I,class J>
-npy_intp make_basis_parallel(general_basis_core<I> *B,const npy_intp MAX,const npy_intp mem_MAX,I basis[],J n[]){
+template<class I,class J,class P=signed char>
+npy_intp make_basis_parallel(general_basis_core<I,P> *B,const npy_intp MAX,const npy_intp mem_MAX,I basis[],J n[]){
 	npy_intp Ns = 0;
 
 	bool insuff_mem = false;
@@ -134,13 +135,13 @@ npy_intp make_basis_parallel(general_basis_core<I> *B,const npy_intp MAX,const n
 
 		}
 
-
+		#pragma omp barrier // wait for all threads to finish searching.
 
 		if(!insuff_mem){
 
 			master_pos_data[threadn+1] = thread_block.size(); // get sizes for each thread block into shared memory
 
-			#pragma omp barrier // wait for all threads to finish searching.
+			#pragma omp barrier
 
 			#pragma omp single // calculate the cumulative sum to get data paritions of master_block
 			{
@@ -187,8 +188,8 @@ npy_intp make_basis_parallel(general_basis_core<I> *B,const npy_intp MAX,const n
 	}
 }
 
-template<class I,class J>
-npy_intp make_basis_pcon_parallel(general_basis_core<I> *B,const npy_intp MAX,const npy_intp mem_MAX,I s,I basis[],J n[]){
+template<class I,class J,class P=signed char>
+npy_intp make_basis_pcon_parallel(general_basis_core<I,P> *B,const npy_intp MAX,const npy_intp mem_MAX,I s,I basis[],J n[]){
 	npy_intp Ns = 0;
 
 	bool insuff_mem = false;
@@ -208,7 +209,8 @@ npy_intp make_basis_pcon_parallel(general_basis_core<I> *B,const npy_intp MAX,co
 		thread_block.reserve(block_size); // preallocate memory for each block so that it does not have to expand during search. 
 		
 		npy_intp chunk = MAX - threadn;
-		for(int i=0;i<threadn;i++){s=B->next_state_pcon(s);}
+		I nns = 0;// number of next_state calls
+		for(int i=0;i<threadn;i++){s=B->next_state_pcon(s,nns++);}
 
 		while(chunk>0 && !insuff_mem){
 			double norm = B->check_state(s);
@@ -220,7 +222,7 @@ npy_intp make_basis_pcon_parallel(general_basis_core<I> *B,const npy_intp MAX,co
 				Ns++;
 			}
 
-			for(int i=0;i<nthread;i++){s=B->next_state_pcon(s);}
+			for(int i=0;i<nthread;i++){s=B->next_state_pcon(s,nns++);}
 			chunk-=nthread;
 
 			if(Ns>=mem_MAX){
@@ -229,8 +231,11 @@ npy_intp make_basis_pcon_parallel(general_basis_core<I> *B,const npy_intp MAX,co
 			}
 		}
 
+		#pragma omp barrier
+
 		if(!insuff_mem){
 			master_pos_data[threadn+1] = thread_block.size();
+
 
 			#pragma omp barrier
 
@@ -282,8 +287,8 @@ npy_intp make_basis_pcon_parallel(general_basis_core<I> *B,const npy_intp MAX,co
 
 
 
-template<class I,class J>
-npy_intp make_basis(general_basis_core<I> *B,npy_intp MAX,npy_intp mem_MAX,I basis[],J n[]){
+template<class I,class J,class P=signed char>
+npy_intp make_basis(general_basis_core<I,P> *B,npy_intp MAX,npy_intp mem_MAX,I basis[],J n[]){
 	const int nt =  B->get_nt();
 	const int nthreads = omp_get_max_threads();
 
@@ -295,8 +300,8 @@ npy_intp make_basis(general_basis_core<I> *B,npy_intp MAX,npy_intp mem_MAX,I bas
 	}
 }
 
-template<class I,class J>
-npy_intp make_basis_pcon(general_basis_core<I> *B,npy_intp MAX,npy_intp mem_MAX,I s,I basis[],J n[]){
+template<class I,class J,class P=signed char>
+npy_intp make_basis_pcon(general_basis_core<I,P> *B,npy_intp MAX,npy_intp mem_MAX,I s,I basis[],J n[]){
 	const int nt =  B->get_nt();
 	const int nthreads = omp_get_max_threads();
 
@@ -310,15 +315,15 @@ npy_intp make_basis_pcon(general_basis_core<I> *B,npy_intp MAX,npy_intp mem_MAX,
 
 
 
-template<class I,class J>
-npy_intp inline make_basis_wrapper(void *B,npy_intp MAX,npy_intp mem_MAX,void * basis,J n[]){
-	return make_basis(reinterpret_cast<general_basis_core<I> *>(B),MAX,mem_MAX,(I*)basis,n);
-}
+// template<class I,class J>
+// npy_intp inline make_basis_wrapper(void *B,npy_intp MAX,npy_intp mem_MAX,void * basis,J n[]){
+// 	return make_basis(reinterpret_cast<general_basis_core<I> *>(B),MAX,mem_MAX,(I*)basis,n);
+// }
 
-template<class I,class J>
-npy_intp inline make_basis_pcon_wrapper(void *B,npy_intp MAX,npy_intp mem_MAX,npy_uint64 s,void * basis,J n[]){
-	return make_basis_pcon(reinterpret_cast<general_basis_core<I> *>(B),MAX,mem_MAX,(I)s,(I*)basis,n);
-}
+// template<class I,class J>
+// npy_intp inline make_basis_pcon_wrapper(void *B,npy_intp MAX,npy_intp mem_MAX,npy_uint64 s,void * basis,J n[]){
+// 	return make_basis_pcon(reinterpret_cast<general_basis_core<I> *>(B),MAX,mem_MAX,(I)s,(I*)basis,n);
+// }
 
 }
 

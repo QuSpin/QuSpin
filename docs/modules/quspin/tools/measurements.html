@@ -17,7 +17,7 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-    <title>quspin.tools.measurements &#8212; QuSpin 0.3.2 documentation</title>
+    <title>quspin.tools.measurements &#8212; QuSpin 0.3.3 documentation</title>
     <link rel="stylesheet" href="../../../static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../static/pygments.css" type="text/css" />
     
@@ -25,7 +25,8 @@
     <script type="text/javascript" src="../../../static/jquery.js"></script>
     <script type="text/javascript" src="../../../static/underscore.js"></script>
     <script type="text/javascript" src="../../../static/doctools.js"></script>
-    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="../../../static/language_data.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" /> 
@@ -39,7 +40,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">QuSpin 0.3.2 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">QuSpin 0.3.3 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -73,7 +74,10 @@
 
 <span class="n">__all__</span> <span class="o">=</span>  <span class="p">[</span><span class="s2">&quot;ent_entropy&quot;</span><span class="p">,</span> 
 			<span class="s2">&quot;diag_ensemble&quot;</span><span class="p">,</span>
-			<span class="s2">&quot;obs_vs_time&quot;</span>
+			<span class="s2">&quot;obs_vs_time&quot;</span><span class="p">,</span>
+			<span class="s2">&quot;ED_state_vs_time&quot;</span><span class="p">,</span>
+			<span class="s2">&quot;project_op&quot;</span><span class="p">,</span>
+			<span class="s2">&quot;mean_level_spacing&quot;</span>
 			<span class="p">]</span>
 
 
@@ -240,7 +244,7 @@
 <span class="sd">	Hamiltonian :math:`H_1` to a Hamiltonian :math:`H_2`. Let us label the two eigenbases by</span>
 
 <span class="sd">	.. math::</span>
-<span class="sd">		V_1=\\{|n_1\\rangle: H_1|n_1\\rangle=E_1|n_1\\rangle\\} \qquad V_2=\\{|n_2\\rangle: H_2|n_2\\rangle=E_2|n_2\\rangle\\}</span>
+<span class="sd">		V_1=\\{|n_1\\rangle: H_1|n_1\\rangle=E_1|n_1\\rangle\\} \\qquad V_2=\\{|n_2\\rangle: H_2|n_2\\rangle=E_2|n_2\\rangle\\}</span>
 
 <span class="sd">	See eg. `arXiv:1509.06411 &lt;https://arxiv.org/abs/1509.06411&gt;`_ for the physical definition of Diagonal Ensemble.</span>
 <span class="sd">	</span>
@@ -319,7 +323,7 @@
 <span class="sd">		For example, if `system_state` is the pure state :math:`|\\psi\\rangle`:</span>
 <span class="sd">  		</span>
 <span class="sd">  		.. math::</span>
-<span class="sd">  			\\langle\mathcal{O}\\rangle_d^\\psi = \\lim_{T\\to\\infty}\\frac{1}{T}\\int_0^T\\mathrm{d}t \\frac{1}{N}\\langle\\psi\\left|\\mathcal{O}(t)\\right|\\psi\\rangle = \\frac{1}{N}\\sum_{n_2}\\left(\\rho_d^\\psi\\right)_{n_2n_2} \\langle n_2\\left|\\mathcal{O}\\right|n_2\\rangle</span>
+<span class="sd">  			\\langle\\mathcal{O}\\rangle_d^\\psi = \\lim_{T\\to\\infty}\\frac{1}{T}\\int_0^T\\mathrm{d}t \\frac{1}{N}\\langle\\psi\\left|\\mathcal{O}(t)\\right|\\psi\\rangle = \\frac{1}{N}\\sum_{n_2}\\left(\\rho_d^\\psi\\right)_{n_2n_2} \\langle n_2\\left|\\mathcal{O}\\right|n_2\\rangle</span>
 <span class="sd">	delta_q_Obs : bool, optional</span>
 <span class="sd">		QUANTUM fluctuations of the expectation of `Obs` at infinite times. Requires `Obs`. Calculates</span>
 <span class="sd">		temporal fluctuations `delta_t_Obs` for along the way (see above).</span>
@@ -338,7 +342,7 @@
 <span class="sd">		For example, if `system_state` is the pure state :math:`|\\psi\\rangle`:</span>
 
 <span class="sd">		.. math::  </span>
-<span class="sd">  			\\delta_t\\mathcal{O}^\\psi_d = \\frac{1}{N}\\sqrt{ \\lim_{T\\to\infty}\\frac{1}{T}\\int_0^T\\mathrm{d}t \\langle\\psi\\left|[\\mathcal{O}(t)]^2\\right|\\psi\\rangle - \\langle\\psi\\left|\\mathcal{O}(t)\\right|\\psi\\rangle^2} = \\frac{1}{N}\\sqrt{\\langle\\mathcal{O}^2\\rangle_d - \\langle\\mathcal{O}\\rangle_d^2 - \\left(\\delta_q\\mathcal{O}^\\psi_d\\right)^2 }</span>
+<span class="sd">  			\\delta_t\\mathcal{O}^\\psi_d = \\frac{1}{N}\\sqrt{ \\lim_{T\\to\\infty}\\frac{1}{T}\\int_0^T\\mathrm{d}t \\langle\\psi\\left|[\\mathcal{O}(t)]^2\\right|\\psi\\rangle - \\langle\\psi\\left|\\mathcal{O}(t)\\right|\\psi\\rangle^2} = \\frac{1}{N}\\sqrt{\\langle\\mathcal{O}^2\\rangle_d - \\langle\\mathcal{O}\\rangle_d^2 - \\left(\\delta_q\\mathcal{O}^\\psi_d\\right)^2 }</span>
 <span class="sd">	alpha : float, optional</span>
 <span class="sd">		Renyi :math:`alpha` parameter. Default is `alpha = 1.0`.</span>
 <span class="sd">	Sd_Renyi : bool, optional</span>
@@ -389,13 +393,11 @@
 <span class="sd">		The following keys of the output are possible, depending on the choice of flags:</span>
 
 <span class="sd">		* &quot;rho_d&quot;: density matrix of Diagonal Ensemble.</span>
-<span class="sd">		* &quot;Obs_...&quot;: infinite-time expectation of observable `Obs`.</span>
-<span class="sd">		* &quot;delta_t_Obs_...&quot;: infinite-time temporal fluctuations of `Obs`.</span>
-<span class="sd">		* &quot;delta_q_Obs_...&quot;: infinite-time quantum fluctuations of `Obs`.</span>
-<span class="sd">		* &quot;Sd_...&quot; (&quot;Sd_Renyi_...&quot; for :math:`\\alpha\\neq1.0`): Renyi diagonal entropy of density matrix of </span>
-<span class="sd">			`rho_d` with parameter `alpha`.</span>
-<span class="sd">		* &quot;Srdm_...&quot; (&quot;Srdm_Renyi_...&quot; for :math:`\\alpha\\neq1.0`): Renyi entanglement entropy of reduced DM of </span>
-<span class="sd">			`rho_d` (`rho_d` is a mixed DM itself) with parameter `alpha`.</span>
+<span class="sd">		* &quot;Obs...&quot;: infinite-time expectation of observable `Obs`.</span>
+<span class="sd">		* &quot;delta_t_Obs...&quot;: infinite-time temporal fluctuations of `Obs`.</span>
+<span class="sd">		* &quot;delta_q_Obs...&quot;: infinite-time quantum fluctuations of `Obs`.</span>
+<span class="sd">		* &quot;Sd...&quot; (&quot;Sd_Renyi...&quot; for :math:`\\alpha\\neq1.0`): Renyi diagonal entropy of density matrix of `rho_d` with parameter `alpha`.</span>
+<span class="sd">		* &quot;Srdm...&quot; (&quot;Srdm_Renyi...&quot; for :math:`\\alpha\\neq1.0`): Renyi entanglement entropy of reduced DM of`rho_d` (`rho_d` is a mixed DM itself) with parameter `alpha`.</span>
 
 <span class="sd">		Replace &quot;...&quot; above by &#39;pure&#39;, &#39;thermal&#39; or &#39;mixed&#39; depending on input parameters.</span>
 
@@ -599,6 +601,12 @@
 
 <div class="viewcode-block" id="obs_vs_time"><a class="viewcode-back" href="../../../generated/quspin.tools.measurements.obs_vs_time.html#quspin.tools.measurements.obs_vs_time">[docs]</a><span class="k">def</span> <span class="nf">obs_vs_time</span><span class="p">(</span><span class="n">psi_t</span><span class="p">,</span><span class="n">times</span><span class="p">,</span><span class="n">Obs_dict</span><span class="p">,</span><span class="n">return_state</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">Sent_args</span><span class="o">=</span><span class="p">{},</span><span class="n">enforce_pure</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 	<span class="sd">&quot;&quot;&quot;Calculates expectation value of observable(s) as a function of time in a time-dependent state.</span>
+<span class="sd">	</span>
+<span class="sd">	This function computes the expectation of a time-dependent state :math:`|\\psi(t)\\rangle` in a time-dependent observable :math:`\\mathcal{O}(t)`. </span>
+<span class="sd">	It automatically handles the cases where only the state or only the observable is time-dependent.</span>
+
+<span class="sd">	.. math::</span>
+<span class="sd">		\\langle\\psi(t)|\\mathcal{O}(t)|\\psi(t)\\rangle</span>
 
 <span class="sd">	Examples</span>
 <span class="sd">	--------</span>
@@ -773,7 +781,7 @@
 	
 	<span class="k">if</span> <span class="n">return_state</span><span class="p">:</span>
 		<span class="k">for</span> <span class="n">key</span><span class="p">,</span><span class="n">Obs</span> <span class="ow">in</span> <span class="n">Obs_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-			<span class="n">Expt_time</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">=</span><span class="n">Obs</span><span class="o">.</span><span class="n">expt_value</span><span class="p">(</span><span class="n">psi_t</span><span class="p">,</span><span class="n">time</span><span class="o">=</span><span class="n">times</span><span class="p">,</span><span class="n">check</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">enforce_pure</span><span class="o">=</span><span class="n">enforce_pure</span><span class="p">)</span><span class="o">.</span><span class="n">real</span>
+			<span class="n">Expt_time</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">=</span><span class="n">Obs</span><span class="o">.</span><span class="n">expt_value</span><span class="p">(</span><span class="n">psi_t</span><span class="p">,</span><span class="n">time</span><span class="o">=</span><span class="n">times</span><span class="p">,</span><span class="n">check</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">enforce_pure</span><span class="o">=</span><span class="n">enforce_pure</span><span class="p">)</span>
 			
 		<span class="c1"># calculate entanglement entropy if requested	</span>
 		<span class="k">if</span> <span class="n">calc_Sent</span><span class="p">:</span>
@@ -788,7 +796,7 @@
 
 		<span class="k">for</span> <span class="n">key</span><span class="p">,</span><span class="n">Obs</span> <span class="ow">in</span> <span class="n">Obs_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
 			
-			<span class="n">val</span> <span class="o">=</span> <span class="n">Obs</span><span class="o">.</span><span class="n">expt_value</span><span class="p">(</span><span class="n">psi</span><span class="p">,</span><span class="n">time</span><span class="o">=</span><span class="n">time</span><span class="p">,</span><span class="n">check</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">real</span>
+			<span class="n">val</span> <span class="o">=</span> <span class="n">Obs</span><span class="o">.</span><span class="n">expt_value</span><span class="p">(</span><span class="n">psi</span><span class="p">,</span><span class="n">time</span><span class="o">=</span><span class="n">time</span><span class="p">,</span><span class="n">check</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 			<span class="n">dtype</span> <span class="o">=</span> <span class="n">val</span><span class="o">.</span><span class="n">dtype</span> <span class="c1">#_np.dtype(val)</span>
 			<span class="n">shape</span> <span class="o">=</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">times</span><span class="p">),)</span> <span class="o">+</span> <span class="n">val</span><span class="o">.</span><span class="n">shape</span>
 			<span class="n">Expt_time</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">shape</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
@@ -816,7 +824,7 @@
 			<span class="k">if</span> <span class="n">verbose</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;obs_vs_time integrated to t=</span><span class="si">{:.4f}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">time</span><span class="p">))</span>
 
 			<span class="k">for</span> <span class="n">key</span><span class="p">,</span><span class="n">Obs</span> <span class="ow">in</span> <span class="n">Obs_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-				<span class="n">Expt_time</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="n">m</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">Obs</span><span class="o">.</span><span class="n">expt_value</span><span class="p">(</span><span class="n">psi</span><span class="p">,</span><span class="n">time</span><span class="o">=</span><span class="n">time</span><span class="p">,</span><span class="n">check</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">real</span>
+				<span class="n">Expt_time</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="n">m</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">Obs</span><span class="o">.</span><span class="n">expt_value</span><span class="p">(</span><span class="n">psi</span><span class="p">,</span><span class="n">time</span><span class="o">=</span><span class="n">time</span><span class="p">,</span><span class="n">check</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
 			<span class="k">if</span> <span class="n">calc_Sent</span><span class="p">:</span>
 				<span class="n">Sent_time_update</span> <span class="o">=</span> <span class="n">calc_ent_entropy</span><span class="p">(</span><span class="n">psi</span><span class="p">,</span><span class="o">**</span><span class="n">Sent_args</span><span class="p">)</span>
@@ -1432,13 +1440,13 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">QuSpin 0.3.2 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">QuSpin 0.3.3 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2016, Phillip Weinberg and Marin Bukov.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.2.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.4.
     </div>
   </body>
 </html>

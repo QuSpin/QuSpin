@@ -1,0 +1,473 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><script type="text/javascript">
+
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-110543543-1']);
+      _gaq.push(['_trackPageview']);
+
+      (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+    </script>
+    <title>spin-1/2 Heisenberg model in 1d &#8212; QuSpin 0.3.3 documentation</title>
+    <link rel="stylesheet" href="../static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../static/documentation_options.js"></script>
+    <script type="text/javascript" src="../static/jquery.js"></script>
+    <script type="text/javascript" src="../static/underscore.js"></script>
+    <script type="text/javascript" src="../static/doctools.js"></script>
+    <script type="text/javascript" src="../static/language_data.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.3 documentation</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="spin-1-2-heisenberg-model-in-1d">
+<span id="user-basis-example0-label"></span><h1>spin-1/2 Heisenberg model in 1d<a class="headerlink" href="#spin-1-2-heisenberg-model-in-1d" title="Permalink to this headline">¶</a></h1>
+<p>This example makes use of the <cite>user_basis</cite> class of <cite>basis_general</cite> to show how to construct spin-1/2 systems with symmetries.</p>
+<p>Please consult this post: <a class="reference internal" href="../user_basis.html#user-basis-label"><span class="std std-ref">A tutorial on QuSpin’s user_basis</span></a>, for more detailed explanations for using the <cite>user_basis</cite> class.</p>
+</div>
+<div class="section" id="script">
+<h1>Script<a class="headerlink" href="#script" title="Permalink to this headline">¶</a></h1>
+<p><a class="reference download internal" download="" href="../downloads/3603425b46b85936d230c1d5f5a12285/user_basis_trivial-spin.py"><code class="xref download docutils literal notranslate"><span class="pre">download</span> <span class="pre">script</span></code></a></p>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>  1
+  2
+  3
+  4
+  5
+  6
+  7
+  8
+  9
+ 10
+ 11
+ 12
+ 13
+ 14
+ 15
+ 16
+ 17
+ 18
+ 19
+ 20
+ 21
+ 22
+ 23
+ 24
+ 25
+ 26
+ 27
+ 28
+ 29
+ 30
+ 31
+ 32
+ 33
+ 34
+ 35
+ 36
+ 37
+ 38
+ 39
+ 40
+ 41
+ 42
+ 43
+ 44
+ 45
+ 46
+ 47
+ 48
+ 49
+ 50
+ 51
+ 52
+ 53
+ 54
+ 55
+ 56
+ 57
+ 58
+ 59
+ 60
+ 61
+ 62
+ 63
+ 64
+ 65
+ 66
+ 67
+ 68
+ 69
+ 70
+ 71
+ 72
+ 73
+ 74
+ 75
+ 76
+ 77
+ 78
+ 79
+ 80
+ 81
+ 82
+ 83
+ 84
+ 85
+ 86
+ 87
+ 88
+ 89
+ 90
+ 91
+ 92
+ 93
+ 94
+ 95
+ 96
+ 97
+ 98
+ 99
+100
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110
+111
+112
+113
+114
+115
+116
+117
+118
+119
+120
+121
+122
+123
+124
+125
+126
+127
+128
+129
+130
+131
+132
+133
+134
+135
+136
+137
+138
+139
+140
+141
+142
+143
+144
+145
+146
+147
+148
+149
+150
+151
+152
+153
+154
+155
+156
+157
+158
+159
+160
+161
+162
+163
+164
+165
+166
+167
+168
+169
+170
+171
+172
+173
+174
+175
+176
+177
+178
+179</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span><span class="p">,</span> <span class="n">division</span>
+<span class="c1">#</span>
+<span class="kn">import</span> <span class="nn">sys</span><span class="o">,</span><span class="nn">os</span>
+<span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s1">&#39;KMP_DUPLICATE_LIB_OK&#39;</span><span class="p">]</span><span class="o">=</span><span class="s1">&#39;True&#39;</span> <span class="c1"># uncomment this line if omp error occurs on OSX for python 3</span>
+<span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s1">&#39;OMP_NUM_THREADS&#39;</span><span class="p">]</span><span class="o">=</span><span class="s1">&#39;1&#39;</span> <span class="c1"># set number of OpenMP threads to run in parallel</span>
+<span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s1">&#39;MKL_NUM_THREADS&#39;</span><span class="p">]</span><span class="o">=</span><span class="s1">&#39;1&#39;</span> <span class="c1"># set number of MKL threads to run in parallel</span>
+<span class="c1">#</span>
+<span class="n">quspin_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">(),</span><span class="s2">&quot;../../&quot;</span><span class="p">)</span>
+<span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">quspin_path</span><span class="p">)</span>
+<span class="c1">#</span>
+<span class="kn">from</span> <span class="nn">quspin.operators</span> <span class="kn">import</span> <span class="n">hamiltonian</span> <span class="c1"># Hamiltonians and operators</span>
+<span class="kn">from</span> <span class="nn">quspin.basis</span> <span class="kn">import</span> <span class="n">spin_basis_1d</span> <span class="c1"># Hilbert space spin basis_1d</span>
+<span class="kn">from</span> <span class="nn">quspin.basis.user</span> <span class="kn">import</span> <span class="n">user_basis</span> <span class="c1"># Hilbert space user basis</span>
+<span class="kn">from</span> <span class="nn">quspin.basis.user</span> <span class="kn">import</span> <span class="n">next_state_sig_32</span><span class="p">,</span><span class="n">op_sig_32</span><span class="p">,</span><span class="n">map_sig_32</span><span class="p">,</span><span class="n">count_particles_sig_32</span> <span class="c1"># user basis data types signatures</span>
+<span class="kn">from</span> <span class="nn">numba</span> <span class="kn">import</span> <span class="n">carray</span><span class="p">,</span><span class="n">cfunc</span> <span class="c1"># numba helper functions</span>
+<span class="kn">from</span> <span class="nn">numba</span> <span class="kn">import</span> <span class="n">uint32</span><span class="p">,</span><span class="n">int32</span> <span class="c1"># numba data types</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">scipy.special</span> <span class="kn">import</span> <span class="n">comb</span>
+<span class="c1">#</span>
+<span class="n">N</span><span class="o">=</span><span class="mi">6</span> <span class="c1"># lattice sites</span>
+<span class="n">Np</span><span class="o">=</span><span class="n">N</span><span class="o">//</span><span class="mi">2</span> <span class="c1"># total number of spin ups</span>
+<span class="c1">#</span>
+<span class="c1">############   create spin-1/2 user basis object   #############</span>
+<span class="c1">#</span>
+<span class="c1">######  function to call when applying operators</span>
+<span class="nd">@cfunc</span><span class="p">(</span><span class="n">op_sig_32</span><span class="p">,</span>
+	<span class="nb">locals</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">s</span><span class="o">=</span><span class="n">int32</span><span class="p">,</span><span class="n">n</span><span class="o">=</span><span class="n">int32</span><span class="p">,</span><span class="n">b</span><span class="o">=</span><span class="n">uint32</span><span class="p">),</span> <span class="p">)</span>
+<span class="k">def</span> <span class="nf">op</span><span class="p">(</span><span class="n">op_struct_ptr</span><span class="p">,</span><span class="n">op_str</span><span class="p">,</span><span class="n">site_ind</span><span class="p">,</span><span class="n">N</span><span class="p">,</span><span class="n">args</span><span class="p">):</span>
+	<span class="c1"># using struct pointer to pass op_struct_ptr back to C++ see numba Records</span>
+	<span class="n">op_struct</span> <span class="o">=</span> <span class="n">carray</span><span class="p">(</span><span class="n">op_struct_ptr</span><span class="p">,</span><span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+	<span class="n">err</span> <span class="o">=</span> <span class="mi">0</span>
+	<span class="c1">#</span>
+	<span class="n">site_ind</span> <span class="o">=</span> <span class="n">N</span> <span class="o">-</span> <span class="n">site_ind</span> <span class="o">-</span> <span class="mi">1</span> <span class="c1"># convention for QuSpin for mapping from bits to sites.</span>
+	<span class="n">n</span> <span class="o">=</span> <span class="p">(</span><span class="n">op_struct</span><span class="o">.</span><span class="n">state</span><span class="o">&gt;&gt;</span><span class="n">site_ind</span><span class="p">)</span><span class="o">&amp;</span><span class="mi">1</span> <span class="c1"># either 0 or 1</span>
+	<span class="n">s</span> <span class="o">=</span> <span class="p">(((</span><span class="n">op_struct</span><span class="o">.</span><span class="n">state</span><span class="o">&gt;&gt;</span><span class="n">site_ind</span><span class="p">)</span><span class="o">&amp;</span><span class="mi">1</span><span class="p">)</span><span class="o">&lt;&lt;</span><span class="mi">1</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span> <span class="c1"># either -1 or 1</span>
+	<span class="n">b</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="o">&lt;&lt;</span><span class="n">site_ind</span><span class="p">)</span>
+	<span class="c1">#</span>
+	<span class="k">if</span> <span class="n">op_str</span><span class="o">==</span><span class="mi">120</span><span class="p">:</span> <span class="c1"># &quot;x&quot; is integer value 120 = ord(&quot;x&quot;)</span>
+		<span class="n">op_struct</span><span class="o">.</span><span class="n">state</span> <span class="o">^=</span> <span class="n">b</span>
+
+	<span class="k">elif</span> <span class="n">op_str</span><span class="o">==</span><span class="mi">121</span><span class="p">:</span> <span class="c1"># &quot;y&quot; is integer value 120 = ord(&quot;y&quot;)</span>
+		<span class="n">op_struct</span><span class="o">.</span><span class="n">state</span> <span class="o">^=</span> <span class="n">b</span>
+		<span class="n">op_struct</span><span class="o">.</span><span class="n">matrix_ele</span> <span class="o">*=</span> <span class="mf">1.0j</span><span class="o">*</span><span class="n">s</span>
+
+	<span class="k">elif</span> <span class="n">op_str</span><span class="o">==</span><span class="mi">43</span><span class="p">:</span> <span class="c1"># &quot;+&quot; is integer value 43 = ord(&quot;+&quot;)</span>
+		<span class="k">if</span> <span class="n">n</span><span class="p">:</span> <span class="n">op_struct</span><span class="o">.</span><span class="n">matrix_ele</span> <span class="o">=</span> <span class="mi">0</span>
+		<span class="k">else</span><span class="p">:</span> <span class="n">op_struct</span><span class="o">.</span><span class="n">state</span> <span class="o">^=</span> <span class="n">b</span> <span class="c1"># create spin</span>
+
+	<span class="k">elif</span> <span class="n">op_str</span><span class="o">==</span><span class="mi">45</span><span class="p">:</span> <span class="c1"># &quot;-&quot; is integer value 45 = ord(&quot;-&quot;)</span>
+		<span class="k">if</span> <span class="n">n</span><span class="p">:</span> <span class="n">op_struct</span><span class="o">.</span><span class="n">state</span> <span class="o">^=</span> <span class="n">b</span> <span class="c1"># destroy spin</span>
+		<span class="k">else</span><span class="p">:</span> <span class="n">op_struct</span><span class="o">.</span><span class="n">matrix_ele</span> <span class="o">=</span> <span class="mi">0</span>
+
+	<span class="k">elif</span> <span class="n">op_str</span><span class="o">==</span><span class="mi">122</span><span class="p">:</span> <span class="c1"># &quot;z&quot; is integer value 120 = ord(&quot;z&quot;)</span>
+		<span class="n">op_struct</span><span class="o">.</span><span class="n">matrix_ele</span> <span class="o">*=</span> <span class="n">s</span>
+
+	<span class="k">elif</span> <span class="n">op_str</span><span class="o">==</span><span class="mi">110</span><span class="p">:</span> <span class="c1"># &quot;n&quot; is integer value 110 = ord(&quot;n&quot;)</span>
+		<span class="n">op_struct</span><span class="o">.</span><span class="n">matrix_ele</span> <span class="o">*=</span> <span class="n">n</span>
+
+	<span class="k">elif</span> <span class="n">op_str</span><span class="o">==</span><span class="mi">73</span><span class="p">:</span> <span class="c1"># &quot;I&quot; is integer value 73 = ord(&quot;I&quot;)</span>
+		<span class="k">pass</span>
+
+	<span class="k">else</span><span class="p">:</span>
+		<span class="n">op_struct</span><span class="o">.</span><span class="n">matrix_ele</span> <span class="o">=</span> <span class="mi">0</span>
+		<span class="n">err</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+	<span class="c1">#</span>
+	<span class="k">return</span> <span class="n">err</span>
+<span class="n">op_args</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([],</span><span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">uint32</span><span class="p">)</span>
+<span class="c1">#</span>
+<span class="c1">######  function to implement magnetization/particle conservation</span>
+<span class="c1">#</span>
+<span class="nd">@cfunc</span><span class="p">(</span><span class="n">next_state_sig_32</span><span class="p">,</span>
+	<span class="nb">locals</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">t</span><span class="o">=</span><span class="n">uint32</span><span class="p">),</span> <span class="p">)</span>
+<span class="k">def</span> <span class="nf">next_state</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">counter</span><span class="p">,</span><span class="n">N</span><span class="p">,</span><span class="n">args</span><span class="p">):</span>
+	<span class="sd">&quot;&quot;&quot; implements magnetization conservation. &quot;&quot;&quot;</span>
+	<span class="k">if</span><span class="p">(</span><span class="n">s</span><span class="o">==</span><span class="mi">0</span><span class="p">):</span> <span class="k">return</span> <span class="n">s</span><span class="p">;</span>
+	<span class="c1">#</span>
+	<span class="n">t</span> <span class="o">=</span> <span class="p">(</span><span class="n">s</span> <span class="o">|</span> <span class="p">(</span><span class="n">s</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span> <span class="o">+</span> <span class="mi">1</span>
+	<span class="k">return</span> <span class="n">t</span> <span class="o">|</span> <span class="p">((((</span><span class="n">t</span> <span class="o">&amp;</span> <span class="p">(</span><span class="mi">0</span><span class="o">-</span><span class="n">t</span><span class="p">))</span> <span class="o">//</span> <span class="p">(</span><span class="n">s</span> <span class="o">&amp;</span> <span class="p">(</span><span class="mi">0</span><span class="o">-</span><span class="n">s</span><span class="p">)))</span> <span class="o">&gt;&gt;</span> <span class="mi">1</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">next_state_args</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([],</span><span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">uint32</span><span class="p">)</span> <span class="c1"># compulsory, even if empty</span>
+<span class="c1"># python function to calculate the starting state to generate the particle conserving basis</span>
+<span class="k">def</span> <span class="nf">get_s0_pcon</span><span class="p">(</span><span class="n">N</span><span class="p">,</span><span class="n">Np</span><span class="p">):</span>
+	<span class="k">return</span> <span class="nb">sum</span><span class="p">(</span><span class="mi">1</span><span class="o">&lt;&lt;</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">Np</span><span class="p">))</span>
+<span class="c1"># python function to calculate the size of the particle-conserved basis, </span>
+<span class="c1"># i.e. BEFORE applying pre_check_state and symmetry maps</span>
+<span class="k">def</span> <span class="nf">get_Ns_pcon</span><span class="p">(</span><span class="n">N</span><span class="p">,</span><span class="n">Np</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">comb</span><span class="p">(</span><span class="n">N</span><span class="p">,</span><span class="n">Np</span><span class="p">,</span><span class="n">exact</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="c1">#</span>
+<span class="c1">######  define symmetry maps</span>
+<span class="c1">#</span>
+<span class="nd">@cfunc</span><span class="p">(</span><span class="n">map_sig_32</span><span class="p">,</span>
+	<span class="nb">locals</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">shift</span><span class="o">=</span><span class="n">uint32</span><span class="p">,</span><span class="n">xmax</span><span class="o">=</span><span class="n">uint32</span><span class="p">,</span><span class="n">x1</span><span class="o">=</span><span class="n">uint32</span><span class="p">,</span><span class="n">x2</span><span class="o">=</span><span class="n">uint32</span><span class="p">,</span><span class="n">period</span><span class="o">=</span><span class="n">int32</span><span class="p">,</span><span class="n">l</span><span class="o">=</span><span class="n">int32</span><span class="p">,)</span> <span class="p">)</span>
+<span class="k">def</span> <span class="nf">translation</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">N</span><span class="p">,</span><span class="n">sign_ptr</span><span class="p">,</span><span class="n">args</span><span class="p">):</span>
+	<span class="sd">&quot;&quot;&quot; works for all system sizes N. &quot;&quot;&quot;</span>
+	<span class="n">shift</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="c1"># translate state by shift sites</span>
+	<span class="n">period</span> <span class="o">=</span> <span class="n">N</span> <span class="c1"># periodicity/cyclicity of translation</span>
+	<span class="n">xmax</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+	<span class="c1">#</span>
+	<span class="n">l</span> <span class="o">=</span> <span class="p">(</span><span class="n">shift</span><span class="o">+</span><span class="n">period</span><span class="p">)</span><span class="o">%</span><span class="n">period</span>
+	<span class="n">x1</span> <span class="o">=</span> <span class="p">(</span><span class="n">x</span> <span class="o">&gt;&gt;</span> <span class="p">(</span><span class="n">period</span> <span class="o">-</span> <span class="n">l</span><span class="p">))</span>
+	<span class="n">x2</span> <span class="o">=</span> <span class="p">((</span><span class="n">x</span> <span class="o">&lt;&lt;</span> <span class="n">l</span><span class="p">)</span> <span class="o">&amp;</span> <span class="n">xmax</span><span class="p">)</span>
+	<span class="c1">#</span>
+	<span class="k">return</span> <span class="p">(</span><span class="n">x2</span> <span class="o">|</span> <span class="n">x1</span><span class="p">)</span>
+<span class="n">T_args</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,(</span><span class="mi">1</span><span class="o">&lt;&lt;</span><span class="n">N</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span><span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">uint32</span><span class="p">)</span>
+<span class="c1">#</span>
+<span class="nd">@cfunc</span><span class="p">(</span><span class="n">map_sig_32</span><span class="p">,</span>
+	<span class="nb">locals</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">out</span><span class="o">=</span><span class="n">uint32</span><span class="p">,</span><span class="n">s</span><span class="o">=</span><span class="n">int32</span><span class="p">,)</span> <span class="p">)</span>
+<span class="k">def</span> <span class="nf">parity</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">N</span><span class="p">,</span><span class="n">sign_ptr</span><span class="p">,</span><span class="n">args</span><span class="p">):</span>
+	<span class="sd">&quot;&quot;&quot; works for all system sizes N. &quot;&quot;&quot;</span>
+	<span class="n">out</span> <span class="o">=</span> <span class="mi">0</span> 
+	<span class="n">s</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="c1"># N-1</span>
+	<span class="c1">#</span>
+	<span class="n">out</span> <span class="o">^=</span> <span class="p">(</span><span class="n">x</span><span class="o">&amp;</span><span class="mi">1</span><span class="p">)</span>
+	<span class="n">x</span> <span class="o">&gt;&gt;=</span> <span class="mi">1</span>
+	<span class="k">while</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+		<span class="n">out</span> <span class="o">&lt;&lt;=</span> <span class="mi">1</span>
+		<span class="n">out</span> <span class="o">^=</span> <span class="p">(</span><span class="n">x</span><span class="o">&amp;</span><span class="mi">1</span><span class="p">)</span>
+		<span class="n">x</span> <span class="o">&gt;&gt;=</span> <span class="mi">1</span>
+		<span class="n">s</span> <span class="o">-=</span> <span class="mi">1</span>
+	<span class="c1">#</span>
+	<span class="n">out</span> <span class="o">&lt;&lt;=</span> <span class="n">s</span>
+	<span class="k">return</span> <span class="n">out</span>
+<span class="n">P_args</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">N</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span><span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">uint32</span><span class="p">)</span>
+<span class="c1">#</span>
+<span class="nd">@cfunc</span><span class="p">(</span><span class="n">map_sig_32</span><span class="p">,</span>
+	<span class="nb">locals</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">xmax</span><span class="o">=</span><span class="n">uint32</span><span class="p">,))</span>
+<span class="k">def</span> <span class="nf">spin_inversion</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">N</span><span class="p">,</span><span class="n">sign_ptr</span><span class="p">,</span><span class="n">args</span><span class="p">):</span>
+	<span class="sd">&quot;&quot;&quot; works for all system sizes N. &quot;&quot;&quot;</span>
+	<span class="n">xmax</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="c1"># maximum integer</span>
+	<span class="k">return</span> <span class="n">x</span><span class="o">^</span><span class="n">xmax</span>
+<span class="n">Z_args</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([(</span><span class="mi">1</span><span class="o">&lt;&lt;</span><span class="n">N</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span><span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">uint32</span><span class="p">)</span>
+<span class="c1">#</span>
+<span class="c1">######  define function to count particles in bit representation</span>
+<span class="c1">#</span>
+<span class="nd">@cfunc</span><span class="p">(</span><span class="n">count_particles_sig_32</span><span class="p">,</span>
+	<span class="nb">locals</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">s_count</span><span class="o">=</span><span class="n">uint32</span><span class="p">))</span>
+<span class="k">def</span> <span class="nf">count_particles</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">p_number_ptr</span><span class="p">,</span><span class="n">args</span><span class="p">):</span>
+	<span class="sd">&quot;&quot;&quot; Counts number of particles/spin-ups in a state stored in integer representation for up to N=32 sites &quot;&quot;&quot;</span>
+	<span class="c1">#</span>
+	<span class="n">s_count</span> <span class="o">=</span> <span class="n">x</span> <span class="o">&amp;</span> <span class="p">((</span><span class="mh">0x7FFFFFFF</span><span class="p">)</span> <span class="o">&gt;&gt;</span> <span class="p">(</span><span class="mi">31</span> <span class="o">-</span> <span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]));</span>
+	<span class="n">s_count</span> <span class="o">=</span> <span class="n">s_count</span> <span class="o">-</span> <span class="p">((</span><span class="n">s_count</span> <span class="o">&gt;&gt;</span> <span class="mi">1</span><span class="p">)</span> <span class="o">&amp;</span> <span class="mh">0x55555555</span><span class="p">);</span>
+	<span class="n">s_count</span> <span class="o">=</span> <span class="p">(</span><span class="n">s_count</span> <span class="o">&amp;</span> <span class="mh">0x33333333</span><span class="p">)</span> <span class="o">+</span> <span class="p">((</span><span class="n">s_count</span> <span class="o">&gt;&gt;</span> <span class="mi">2</span><span class="p">)</span> <span class="o">&amp;</span> <span class="mh">0x33333333</span><span class="p">);</span>
+	<span class="n">s_count</span> <span class="o">=</span> <span class="p">(((</span><span class="n">s_count</span> <span class="o">+</span> <span class="p">(</span><span class="n">s_count</span> <span class="o">&gt;&gt;</span> <span class="mi">4</span><span class="p">))</span> <span class="o">&amp;</span> <span class="mh">0x0F0F0F0F</span><span class="p">)</span> <span class="o">*</span> <span class="mh">0x01010101</span><span class="p">)</span> <span class="o">&gt;&gt;</span> <span class="mi">24</span>
+	<span class="c1">#</span>
+	<span class="n">p_number_ptr</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">s_count</span>
+<span class="n">n_sectors</span><span class="o">=</span><span class="mi">1</span> <span class="c1"># number of particle sectors</span>
+<span class="n">count_particles_args</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">N</span><span class="p">],</span><span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
+<span class="c1">#</span>
+<span class="c1">######  construct user_basis </span>
+<span class="c1"># define maps dict</span>
+<span class="n">maps</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">T_block</span><span class="o">=</span><span class="p">(</span><span class="n">translation</span><span class="p">,</span><span class="n">N</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="n">T_args</span><span class="p">),</span> <span class="n">P_block</span><span class="o">=</span><span class="p">(</span><span class="n">parity</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="n">P_args</span><span class="p">),</span> <span class="n">Z_block</span><span class="o">=</span><span class="p">(</span><span class="n">spin_inversion</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="n">Z_args</span><span class="p">))</span>
+<span class="c1"># define particle conservation and op dicts</span>
+<span class="n">pcon_dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">Np</span><span class="o">=</span><span class="n">Np</span><span class="p">,</span><span class="n">next_state</span><span class="o">=</span><span class="n">next_state</span><span class="p">,</span><span class="n">next_state_args</span><span class="o">=</span><span class="n">next_state_args</span><span class="p">,</span><span class="n">get_Ns_pcon</span><span class="o">=</span><span class="n">get_Ns_pcon</span><span class="p">,</span><span class="n">get_s0_pcon</span><span class="o">=</span><span class="n">get_s0_pcon</span><span class="p">,</span>
+				 <span class="n">count_particles</span><span class="o">=</span><span class="n">count_particles</span><span class="p">,</span><span class="n">count_particles_args</span><span class="o">=</span><span class="n">count_particles_args</span><span class="p">,</span><span class="n">n_sectors</span><span class="o">=</span><span class="n">n_sectors</span><span class="p">)</span>
+<span class="n">op_dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">op</span><span class="o">=</span><span class="n">op</span><span class="p">,</span><span class="n">op_args</span><span class="o">=</span><span class="n">op_args</span><span class="p">)</span>
+<span class="c1"># create user basis</span>
+<span class="n">basis</span> <span class="o">=</span> <span class="n">user_basis</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">uint32</span><span class="p">,</span><span class="n">N</span><span class="p">,</span><span class="n">op_dict</span><span class="p">,</span><span class="n">allowed_ops</span><span class="o">=</span><span class="nb">set</span><span class="p">(</span><span class="s2">&quot;+-xyznI&quot;</span><span class="p">),</span><span class="n">sps</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span><span class="n">pcon_dict</span><span class="o">=</span><span class="n">pcon_dict</span><span class="p">,</span><span class="o">**</span><span class="n">maps</span><span class="p">)</span>
+<span class="c1">#</span>
+<span class="c1">#</span>
+<span class="c1">#</span>
+<span class="c1">############   create same spin-1/2 basis_1d object   #############</span>
+<span class="n">basis_1d</span><span class="o">=</span><span class="n">spin_basis_1d</span><span class="p">(</span><span class="n">N</span><span class="p">,</span><span class="n">Nup</span><span class="o">=</span><span class="n">Np</span><span class="p">,</span><span class="n">pauli</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span><span class="n">kblock</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">pblock</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">zblock</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="c1">#</span>
+<span class="c1">#</span>
+<span class="c1">#</span>
+<span class="k">print</span><span class="p">(</span><span class="n">basis</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">basis_1d</span><span class="p">)</span>
+<span class="c1">#</span>
+<span class="c1">############   create and compare Hamiltonians   #############</span>
+<span class="c1">#</span>
+<span class="n">J</span><span class="o">=</span><span class="mf">1.0</span>
+<span class="n">spin_spin</span><span class="o">=</span><span class="p">[[</span><span class="n">J</span><span class="p">,</span><span class="n">j</span><span class="p">,(</span><span class="n">j</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">%</span><span class="n">N</span><span class="p">]</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">)]</span>
+<span class="n">static</span><span class="o">=</span><span class="p">[[</span><span class="s2">&quot;xx&quot;</span><span class="p">,</span><span class="n">spin_spin</span><span class="p">],[</span><span class="s2">&quot;yy&quot;</span><span class="p">,</span><span class="n">spin_spin</span><span class="p">],[</span><span class="s2">&quot;zz&quot;</span><span class="p">,</span><span class="n">spin_spin</span><span class="p">]]</span>
+<span class="n">dynamic</span><span class="o">=</span><span class="p">[]</span>
+<span class="c1">#</span>
+<span class="n">no_checks</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">check_symm</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">check_pcon</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">check_herm</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+<span class="n">H</span><span class="o">=</span><span class="n">hamiltonian</span><span class="p">(</span><span class="n">static</span><span class="p">,[],</span><span class="n">basis</span><span class="o">=</span><span class="n">basis</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">,</span><span class="o">**</span><span class="n">no_checks</span><span class="p">)</span>
+<span class="n">H_1d</span><span class="o">=</span><span class="n">hamiltonian</span><span class="p">(</span><span class="n">static</span><span class="p">,[],</span><span class="n">basis</span><span class="o">=</span><span class="n">basis_1d</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">H</span><span class="o">.</span><span class="n">toarray</span><span class="p">())</span>
+<span class="k">print</span><span class="p">(</span><span class="n">H_1d</span><span class="o">.</span><span class="n">toarray</span><span class="p">())</span>
+<span class="k">print</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">((</span><span class="n">H</span><span class="o">-</span><span class="n">H_1d</span><span class="p">)</span><span class="o">.</span><span class="n">toarray</span><span class="p">()))</span>
+</pre></div>
+</td></tr></table></div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">spin-1/2 Heisenberg model in 1d</a></li>
+<li><a class="reference internal" href="#script">Script</a></li>
+</ul>
+
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../sources/examples/user-basis_example0.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.3 documentation</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2016, Phillip Weinberg and Marin Bukov.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.4.
+    </div>
+  </body>
+</html>

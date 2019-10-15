@@ -11,7 +11,7 @@ except NameError:
 class spin_basis_general(hcb_basis_general,higher_spin_basis_general):
 	"""Constructs basis for spin operators for USER-DEFINED symmetries.
 
-	Any unitary symmetry transformation :math:`Q` of multiplicity :math:`m_Q` (:math:`Q^{m_Q}=1`) has
+	Any unitary symmetry transformation :math:`Q` of periodicity :math:`m_Q` (:math:`Q^{m_Q}=1`) has
 	eigenvalues :math:`\\exp(-2\\pi i q/m_Q)`, labelled by an ingeter :math:`q\\in\\{0,1,\\dots,m_Q-1\\}`.
 	These integers :math:`q` are used to define the symmetry blocks.
 
@@ -102,7 +102,7 @@ class spin_basis_general(hcb_basis_general,higher_spin_basis_general):
 		make_basis: bool, optional
 			Boolean to control whether to make the basis. Allows the use to use some functionality of the basis constructor without constructing the entire basis.
 		block_order: list of strings, optional
-			A list of strings containing the names of the symmetry blocks which specifies the order in which the symmetries will be applied to the state when calculating the basis. If not specified the symmetries are sorted by their periodicity.
+			A list of strings containing the names of the symmetry blocks which specifies the order in which the symmetries will be applied to the state when calculating the basis. The first element in the list is applied to the state first followed by the second element, etc. If the list is not specificed the ordering is such that the symmetry with the largest cycle is the first, followed by the second largest, etc. 
 		**blocks: optional
 			keyword arguments which pass the symmetry generator arrays. For instance:
 
@@ -172,6 +172,12 @@ class spin_basis_general(hcb_basis_general,higher_spin_basis_general):
 
 			self._allowed_ops = set(["I","+","-","z"])
 
+
+	def __setstate__(self,state):
+		if state["_sps"] == 2:
+			hcb_basis_general.__setstate__(self,state)
+		else:
+			higher_spin_basis_general.__setstate__(self,state)
 
 
 	def _Op(self,opstr,indx,J,dtype):

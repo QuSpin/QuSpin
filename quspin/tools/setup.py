@@ -3,6 +3,7 @@ def configuration(parent_package='',top_path=None):
 	import os
 	config = Configuration('tools', parent_package, top_path)
 	config.add_subpackage('expm_multiply_parallel_core')
+	config.add_subpackage('matvec')
 	return config
 
 if __name__ == '__main__':

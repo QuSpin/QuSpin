@@ -17,7 +17,7 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-    <title>quspin.basis.basis_general.boson &#8212; QuSpin 0.3.2 documentation</title>
+    <title>quspin.basis.basis_general.boson &#8212; QuSpin 0.3.3 documentation</title>
     <link rel="stylesheet" href="../../../../static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../../static/pygments.css" type="text/css" />
     
@@ -25,7 +25,8 @@
     <script type="text/javascript" src="../../../../static/jquery.js"></script>
     <script type="text/javascript" src="../../../../static/underscore.js"></script>
     <script type="text/javascript" src="../../../../static/doctools.js"></script>
-    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="../../../../static/language_data.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <link rel="index" title="Index" href="../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../search.html" /> 
@@ -39,7 +40,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">QuSpin 0.3.2 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">QuSpin 0.3.3 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -54,26 +55,25 @@
 <span class="kn">from</span> <span class="nn">.base_hcb</span> <span class="k">import</span> <span class="n">hcb_basis_general</span>
 <span class="kn">from</span> <span class="nn">.base_general</span> <span class="k">import</span> <span class="n">basis_general</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">_np</span>
-<span class="kn">from</span> <span class="nn">scipy.misc</span> <span class="k">import</span> <span class="n">comb</span>
+<span class="kn">from</span> <span class="nn">scipy.special</span> <span class="k">import</span> <span class="n">comb</span>
 
-
-<span class="k">def</span> <span class="nf">H_dim</span><span class="p">(</span><span class="n">N</span><span class="p">,</span><span class="n">length</span><span class="p">,</span><span class="n">m_max</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">H_dim</span><span class="p">(</span><span class="n">Np</span><span class="p">,</span><span class="n">N</span><span class="p">,</span><span class="n">m_max</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns the total number of states in the bosonic Hilbert space</span>
 
 <span class="sd">    --- arguments:</span>
 
-<span class="sd">    N: total number of bosons in lattice</span>
-<span class="sd">    length: total number of sites</span>
+<span class="sd">    Np: total number of bosons in lattice</span>
+<span class="sd">    N: total number of sites</span>
 <span class="sd">    m_max+1: max number of states per site </span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">Ns</span> <span class="o">=</span> <span class="mi">0</span>
-    <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="o">//</span><span class="p">(</span><span class="n">m_max</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">):</span>
-        <span class="n">r_2</span> <span class="o">=</span> <span class="n">N</span> <span class="o">-</span> <span class="n">r</span><span class="o">*</span><span class="p">(</span><span class="n">m_max</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">Np</span><span class="o">//</span><span class="p">(</span><span class="n">m_max</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">):</span>
+        <span class="n">r_2</span> <span class="o">=</span> <span class="n">Np</span> <span class="o">-</span> <span class="n">r</span><span class="o">*</span><span class="p">(</span><span class="n">m_max</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">r</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="n">Ns</span> <span class="o">+=</span>  <span class="n">comb</span><span class="p">(</span><span class="n">length</span><span class="p">,</span><span class="n">r</span><span class="p">,</span><span class="n">exact</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="o">*</span> <span class="n">comb</span><span class="p">(</span><span class="n">length</span> <span class="o">+</span> <span class="n">r_2</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span><span class="n">r_2</span><span class="p">,</span><span class="n">exact</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">Ns</span> <span class="o">+=</span>  <span class="n">comb</span><span class="p">(</span><span class="n">N</span><span class="p">,</span><span class="n">r</span><span class="p">,</span><span class="n">exact</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="o">*</span> <span class="n">comb</span><span class="p">(</span><span class="n">N</span> <span class="o">+</span> <span class="n">r_2</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span><span class="n">r_2</span><span class="p">,</span><span class="n">exact</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">Ns</span> <span class="o">+=</span> <span class="o">-</span><span class="n">comb</span><span class="p">(</span><span class="n">length</span><span class="p">,</span><span class="n">r</span><span class="p">,</span><span class="n">exact</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="o">*</span> <span class="n">comb</span><span class="p">(</span><span class="n">length</span> <span class="o">+</span> <span class="n">r_2</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span><span class="n">r_2</span><span class="p">,</span><span class="n">exact</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">Ns</span> <span class="o">+=</span> <span class="o">-</span><span class="n">comb</span><span class="p">(</span><span class="n">N</span><span class="p">,</span><span class="n">r</span><span class="p">,</span><span class="n">exact</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="o">*</span> <span class="n">comb</span><span class="p">(</span><span class="n">N</span> <span class="o">+</span> <span class="n">r_2</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span><span class="n">r_2</span><span class="p">,</span><span class="n">exact</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">Ns</span>
 
@@ -81,7 +81,7 @@
 <div class="viewcode-block" id="boson_basis_general"><a class="viewcode-back" href="../../../../generated/quspin.basis.boson_basis_general.html#quspin.basis.boson_basis_general">[docs]</a><span class="k">class</span> <span class="nc">boson_basis_general</span><span class="p">(</span><span class="n">hcb_basis_general</span><span class="p">,</span><span class="n">basis_general</span><span class="p">):</span>
 	<span class="sd">&quot;&quot;&quot;Constructs basis for boson operators for USER-DEFINED symmetries.</span>
 
-<span class="sd">	Any unitary symmetry transformation :math:`Q` of multiplicity :math:`m_Q` (:math:`Q^{m_Q}=1`) has</span>
+<span class="sd">	Any unitary symmetry transformation :math:`Q` of periodicity :math:`m_Q` (:math:`Q^{m_Q}=1`) has</span>
 <span class="sd">	eigenvalues :math:`\\exp(-2\\pi i q/m_Q)`, labelled by an ingeter :math:`q\\in\\{0,1,\\dots,m_Q-1\\}`.</span>
 <span class="sd">	These integers :math:`q` are used to define the symmetry blocks.</span>
 
@@ -150,7 +150,7 @@
 <span class="sd">		make_basis: bool, optional</span>
 <span class="sd">			Boolean to control whether to make the basis. Allows the use to use some functionality of the basis constructor without constructing the entire basis.</span>
 <span class="sd">		block_order: list of strings, optional</span>
-<span class="sd">			A list of strings containing the names of the symmetry blocks which specifies the order in which the symmetries will be applied to the state when calculating the basis. If not specified the symmetries are sorted by their periodicity.</span>
+<span class="sd">			A list of strings containing the names of the symmetry blocks which specifies the order in which the symmetries will be applied to the state when calculating the basis. The first element in the list is applied to the state first followed by the second element, etc. If the list is not specificed the ordering is such that the symmetry with the largest cycle is the first, followed by the second largest, etc. </span>
 <span class="sd">		**blocks: optional</span>
 <span class="sd">			keyword arguments which pass the symmetry generator arrays. For instance:</span>
 
@@ -194,7 +194,7 @@
 
 		<span class="bp">self</span><span class="o">.</span><span class="n">_sps</span> <span class="o">=</span> <span class="n">sps</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">_allowed_ops</span><span class="o">=</span><span class="nb">set</span><span class="p">([</span><span class="s2">&quot;I&quot;</span><span class="p">,</span><span class="s2">&quot;z&quot;</span><span class="p">,</span><span class="s2">&quot;n&quot;</span><span class="p">,</span><span class="s2">&quot;+&quot;</span><span class="p">,</span><span class="s2">&quot;-&quot;</span><span class="p">])</span>
-
+		<span class="bp">self</span><span class="o">.</span><span class="n">_pcon_args</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">N</span><span class="o">=</span><span class="n">N</span><span class="p">,</span><span class="n">Nb</span><span class="o">=</span><span class="n">Nb</span><span class="p">,</span><span class="n">sps</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_sps</span><span class="p">)</span>
 
 		<span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sps</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
 
@@ -235,7 +235,7 @@
 					<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;_Np == -1 for no particle conservation, _Np &gt;= 0 for particle conservation&quot;</span><span class="p">)</span>
 
 			<span class="k">if</span> <span class="n">Nb</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-				<span class="n">Ns</span> <span class="o">=</span> <span class="n">sps</span><span class="o">**</span><span class="n">N</span>
+				<span class="bp">self</span><span class="o">.</span><span class="n">_Ns</span> <span class="o">=</span> <span class="n">sps</span><span class="o">**</span><span class="n">N</span>
 			<span class="k">elif</span> <span class="nb">type</span><span class="p">(</span><span class="n">Nb</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">int</span><span class="p">:</span>
 				<span class="bp">self</span><span class="o">.</span><span class="n">_check_pcon</span> <span class="o">=</span> <span class="kc">True</span>
 				<span class="bp">self</span><span class="o">.</span><span class="n">_get_proj_pcon</span> <span class="o">=</span> <span class="kc">True</span>
@@ -243,7 +243,7 @@
 				<span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sps</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
 					<span class="bp">self</span><span class="o">.</span><span class="n">_sps</span> <span class="o">=</span> <span class="n">Nb</span><span class="o">+</span><span class="mi">1</span>
 
-				<span class="n">Ns</span> <span class="o">=</span> <span class="n">H_dim</span><span class="p">(</span><span class="n">Nb</span><span class="p">,</span><span class="n">N</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">_sps</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+				<span class="bp">self</span><span class="o">.</span><span class="n">_Ns</span> <span class="o">=</span> <span class="n">H_dim</span><span class="p">(</span><span class="n">Nb</span><span class="p">,</span><span class="n">N</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">_sps</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
 			<span class="k">else</span><span class="p">:</span>
 				<span class="k">try</span><span class="p">:</span>
 					<span class="n">Np_iter</span> <span class="o">=</span> <span class="nb">iter</span><span class="p">(</span><span class="n">Nb</span><span class="p">)</span>
@@ -253,26 +253,26 @@
 				<span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sps</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
 					<span class="bp">self</span><span class="o">.</span><span class="n">_sps</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">Nb</span><span class="p">))</span><span class="o">+</span><span class="mi">1</span>				
 
-				<span class="n">Ns</span> <span class="o">=</span> <span class="mi">0</span>
+				<span class="bp">self</span><span class="o">.</span><span class="n">_Ns</span> <span class="o">=</span> <span class="mi">0</span>
 				<span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">Nb</span><span class="p">:</span>
-					<span class="n">Ns</span> <span class="o">+=</span> <span class="n">H_dim</span><span class="p">(</span><span class="n">b</span><span class="p">,</span><span class="n">N</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">_sps</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+					<span class="bp">self</span><span class="o">.</span><span class="n">_Ns</span> <span class="o">+=</span> <span class="n">H_dim</span><span class="p">(</span><span class="n">b</span><span class="p">,</span><span class="n">N</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">_sps</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
 
-			<span class="bp">self</span><span class="o">.</span><span class="n">_pcon_args</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">N</span><span class="o">=</span><span class="n">N</span><span class="p">,</span><span class="n">Nb</span><span class="o">=</span><span class="n">Nb</span><span class="p">,</span><span class="n">sps</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_sps</span><span class="p">)</span>
+			<span class="c1">#self._pcon_args = dict(N=N,Nb=Nb,sps=self._sps)</span>
 
 			<span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_pers</span><span class="p">)</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">:</span>
 				<span class="k">if</span> <span class="n">Ns_block_est</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-					<span class="n">Ns</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">Ns</span><span class="p">)</span><span class="o">/</span><span class="n">_np</span><span class="o">.</span><span class="n">multiply</span><span class="o">.</span><span class="n">reduce</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_pers</span><span class="p">))</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">_sps</span>
+					<span class="bp">self</span><span class="o">.</span><span class="n">_Ns</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_Ns</span><span class="p">)</span><span class="o">/</span><span class="n">_np</span><span class="o">.</span><span class="n">multiply</span><span class="o">.</span><span class="n">reduce</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_pers</span><span class="p">))</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">_sps</span>
 				<span class="k">else</span><span class="p">:</span>
 					<span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">Ns_block_est</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="nb">int</span><span class="p">:</span>
 						<span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Ns_block_est must be integer value.&quot;</span><span class="p">)</span>
 					<span class="k">if</span> <span class="n">Ns_block_est</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
 						<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Ns_block_est must be an integer &gt; 0&quot;</span><span class="p">)</span>						
-					<span class="n">Ns</span> <span class="o">=</span> <span class="n">Ns_block_est</span>
+					<span class="bp">self</span><span class="o">.</span><span class="n">_Ns</span> <span class="o">=</span> <span class="n">Ns_block_est</span>
 
 			<span class="bp">self</span><span class="o">.</span><span class="n">_basis_dtype</span> <span class="o">=</span> <span class="n">get_basis_type</span><span class="p">(</span><span class="n">N</span><span class="p">,</span><span class="n">Nb</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">_sps</span><span class="p">)</span>
 			<span class="bp">self</span><span class="o">.</span><span class="n">_core</span> <span class="o">=</span> <span class="n">boson_basis_core_wrap</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_basis_dtype</span><span class="p">,</span><span class="n">N</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">_sps</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">_maps</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">_pers</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">_qs</span><span class="p">)</span>
 			<span class="bp">self</span><span class="o">.</span><span class="n">_N</span> <span class="o">=</span> <span class="n">N</span>
-			<span class="bp">self</span><span class="o">.</span><span class="n">_Ns</span> <span class="o">=</span> <span class="n">Ns</span>
+			<span class="bp">self</span><span class="o">.</span><span class="n">_Ns_block_est</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_Ns</span>
 			<span class="bp">self</span><span class="o">.</span><span class="n">_Np</span> <span class="o">=</span> <span class="n">Nb</span>
 
 			<span class="c1"># make the basis; make() is function method of base_general</span>
@@ -282,6 +282,15 @@
 				<span class="bp">self</span><span class="o">.</span><span class="n">_Ns</span><span class="o">=</span><span class="mi">1</span>
 				<span class="bp">self</span><span class="o">.</span><span class="n">_basis</span><span class="o">=</span><span class="n">basis_zeros</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_Ns</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_basis_dtype</span><span class="p">)</span>
 				<span class="bp">self</span><span class="o">.</span><span class="n">_n</span><span class="o">=</span><span class="n">_np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_Ns</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_n_dtype</span><span class="p">)</span></div>
+
+
+	<span class="k">def</span> <span class="nf">__setstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">state</span><span class="p">):</span>
+		<span class="nb">print</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">)</span>
+		<span class="k">if</span> <span class="n">state</span><span class="p">[</span><span class="s2">&quot;_sps&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+			<span class="n">hcb_basis_general</span><span class="o">.</span><span class="n">__setstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">state</span><span class="p">)</span>
+		<span class="k">else</span><span class="p">:</span>
+			<span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">state</span><span class="p">)</span>
+			<span class="bp">self</span><span class="o">.</span><span class="n">_core</span> <span class="o">=</span> <span class="n">boson_basis_core_wrap</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_basis_dtype</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">_N</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">_sps</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">_maps</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">_pers</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">_qs</span><span class="p">)</span>
 
 
 			
@@ -369,13 +378,13 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">QuSpin 0.3.2 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">QuSpin 0.3.3 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2016, Phillip Weinberg and Marin Bukov.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.2.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.4.
     </div>
   </body>
 </html>

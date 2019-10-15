@@ -1,7 +1,7 @@
 .. _example12-label:
 
 Parallel Computing in QuSpin
---------
+----------------------------
 
 :download:`download script <../../../examples/scripts/example12.py>`
 

@@ -17,7 +17,7 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-    <title>The Bose-Hubbard Model on Translationally Invariant Ladder &#8212; QuSpin 0.3.2 documentation</title>
+    <title>The Bose-Hubbard Model on Translationally Invariant Ladder &#8212; QuSpin 0.3.3 documentation</title>
     <link rel="stylesheet" href="../static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../static/pygments.css" type="text/css" />
     
@@ -25,7 +25,8 @@
     <script type="text/javascript" src="../static/jquery.js"></script>
     <script type="text/javascript" src="../static/underscore.js"></script>
     <script type="text/javascript" src="../static/doctools.js"></script>
-    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="../static/language_data.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" /> 
@@ -39,7 +40,7 @@
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.2 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.3 documentation</a> &#187;</li> 
       </ul>
     </div>  
 
@@ -50,7 +51,14 @@
             
   <div class="section" id="the-bose-hubbard-model-on-translationally-invariant-ladder">
 <span id="example7-label"></span><h1>The Bose-Hubbard Model on Translationally Invariant Ladder<a class="headerlink" href="#the-bose-hubbard-model-on-translationally-invariant-ladder" title="Permalink to this headline">¶</a></h1>
-<p><a class="reference download internal" download="" href="../downloads/946ddc08eb6e9aefb0559740d940ec1a/example7.py"><code class="xref download docutils literal notranslate"><span class="pre">download</span> <span class="pre">script</span></code></a></p>
+<p>This example shows how to code up the Bose-Hubbard model on a ladder geometry:</p>
+<div class="math notranslate nohighlight">
+\[H = -J\sum_{\langle ij\rangle} \left(b_i^\dagger b_j + \mathrm{h.c.}\right) + \frac{U}{2}\sum_{i}n_i(n_i-1).\]</div>
+<p>Details about the code below can be found in <a class="reference external" href="https://scipost.org/10.21468/SciPostPhys.7.2.020">SciPost Phys. 7, 020 (2019)</a>.</p>
+</div>
+<div class="section" id="script">
+<h1>Script<a class="headerlink" href="#script" title="Permalink to this headline">¶</a></h1>
+<p><a class="reference download internal" download="" href="../downloads/0be8d6b6407bc01f596407990dacadb7/example7.py"><code class="xref download docutils literal notranslate"><span class="pre">download</span> <span class="pre">script</span></code></a></p>
 <div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>  1
   2
   3
@@ -378,6 +386,12 @@
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">The Bose-Hubbard Model on Translationally Invariant Ladder</a></li>
+<li><a class="reference internal" href="#script">Script</a></li>
+</ul>
+
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
@@ -410,12 +424,12 @@
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.2 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.3 documentation</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2016, Phillip Weinberg and Marin Bukov.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.2.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.4.
     </div>
   </body>
 </html>

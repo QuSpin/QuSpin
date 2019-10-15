@@ -23,7 +23,7 @@ def cython_files():
 def configuration(parent_package='', top_path=None):
     from numpy.distutils.misc_util import Configuration
     import numpy
-    config = Configuration('operators', parent_package, top_path)
+    config = Configuration('matvec', parent_package, top_path)
 
 
     subprocess.check_call([sys.executable,
@@ -34,7 +34,11 @@ def configuration(parent_package='', top_path=None):
 
 
 
-    extra_compile_args=["-fno-strict-aliasing"]
+    if sys.platform == "win32":
+        extra_compile_args=[]
+    else:
+        extra_compile_args=["-fno-strict-aliasing"]
+        
     extra_link_args=[]  
       
     if sys.platform == "darwin":

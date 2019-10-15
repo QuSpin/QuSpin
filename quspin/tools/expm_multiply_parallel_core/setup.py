@@ -10,7 +10,7 @@ def get_include_dirs():
     include_dirs = {}
     include_dirs["numpy"] = numpy.get_include()
     include_dirs["source"] = os.path.join(package_dir,"source")
-    include_dirs["_oputils"] = os.path.join(package_dir,"..","..","operators","_oputils")
+    include_dirs["_oputils"] = os.path.join(package_dir,"..","matvec","_oputils")
 
     return include_dirs
 
@@ -41,7 +41,10 @@ def configuration(parent_package='', top_path=None):
 
     cython_files()
 
-    extra_compile_args = ["-fno-strict-aliasing"]
+    if sys.platform == "win32":
+        extra_compile_args=[]
+    else:
+        extra_compile_args=["-fno-strict-aliasing"]
     extra_link_args = []
     if sys.platform == "darwin":
         extra_compile_args.append("-std=c++11")

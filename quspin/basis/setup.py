@@ -47,7 +47,11 @@ def configuration(parent_package='',top_path=None):
 
 	package_dir = os.path.dirname(os.path.realpath(__file__))
 	package_dir = os.path.expandvars(package_dir)
-	extra_compile_args=["-fno-strict-aliasing"]
+
+	if sys.platform == "win32":
+		extra_compile_args=[]
+	else:
+		extra_compile_args=["-fno-strict-aliasing"]
 	extra_link_args=[]  
 	  
 	if sys.platform == "darwin":

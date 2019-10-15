@@ -1,7 +1,7 @@
 # cython: language_level=2
 # distutils: language=c++
 import cython
-from scipy.misc import comb
+from scipy.special import comb
 import scipy.sparse as _sp
 cimport numpy as _np
 import numpy as _np
@@ -14,11 +14,11 @@ cdef extern from "glibc_fix.h":
 # specialized code 
 cdef extern from "spinful_fermion_basis_core.h" namespace "basis_general":
     cdef cppclass spinful_fermion_basis_core[I](general_basis_core[I]):
-        spinful_fermion_basis_core(const int,const int,const int[],const int[],const int[])
-        spinful_fermion_basis_core(const int) 
+        spinful_fermion_basis_core(const int,const int,const int[],const int[],const int[],const bool)
+        spinful_fermion_basis_core(const int,const bool) 
 
 cdef class spinful_fermion_basis_core_wrap(general_basis_core_wrap):
-    def __cinit__(self,object dtype,object N,int[:,::1] maps, int[:] pers, int[:] qs):
+    def __cinit__(self,object dtype,object N,int[:,::1] maps, int[:] pers, int[:] qs,bool dble_occ):
 
         self._N = N
         self._nt = pers.shape[0]
@@ -27,36 +27,36 @@ cdef class spinful_fermion_basis_core_wrap(general_basis_core_wrap):
 
         if dtype == uint32:
             if self._nt>0:
-                self._basis_core = <void *> new spinful_fermion_basis_core[uint32_t](N,self._nt,&maps[0,0],&pers[0],&qs[0])
+                self._basis_core = <void *> new spinful_fermion_basis_core[uint32_t](N,self._nt,&maps[0,0],&pers[0],&qs[0],dble_occ)
             else:
-                self._basis_core = <void *> new spinful_fermion_basis_core[uint32_t](N)
+                self._basis_core = <void *> new spinful_fermion_basis_core[uint32_t](N,dble_occ)
         elif dtype == uint64:
             if self._nt>0:
-                self._basis_core = <void *> new spinful_fermion_basis_core[uint64_t](N,self._nt,&maps[0,0],&pers[0],&qs[0])
+                self._basis_core = <void *> new spinful_fermion_basis_core[uint64_t](N,self._nt,&maps[0,0],&pers[0],&qs[0],dble_occ)
             else:
-                self._basis_core = <void *> new spinful_fermion_basis_core[uint64_t](N)
+                self._basis_core = <void *> new spinful_fermion_basis_core[uint64_t](N,dble_occ)
         elif dtype == uint256:
             if self._nt>0:
-                self._basis_core = <void *> new spinful_fermion_basis_core[uint256_t](N,self._nt,&maps[0,0],&pers[0],&qs[0])
+                self._basis_core = <void *> new spinful_fermion_basis_core[uint256_t](N,self._nt,&maps[0,0],&pers[0],&qs[0],dble_occ)
             else:
-                self._basis_core = <void *> new spinful_fermion_basis_core[uint256_t](N)
+                self._basis_core = <void *> new spinful_fermion_basis_core[uint256_t](N,dble_occ)
         elif dtype == uint1024:
             if self._nt>0:
-                self._basis_core = <void *> new spinful_fermion_basis_core[uint1024_t](N,self._nt,&maps[0,0],&pers[0],&qs[0])
+                self._basis_core = <void *> new spinful_fermion_basis_core[uint1024_t](N,self._nt,&maps[0,0],&pers[0],&qs[0],dble_occ)
             else:
-                self._basis_core = <void *> new spinful_fermion_basis_core[uint1024_t](N)
+                self._basis_core = <void *> new spinful_fermion_basis_core[uint1024_t](N,dble_occ)
         elif dtype == uint4096:
             if self._nt>0:
-                self._basis_core = <void *> new spinful_fermion_basis_core[uint4096_t](N,self._nt,&maps[0,0],&pers[0],&qs[0])
+                self._basis_core = <void *> new spinful_fermion_basis_core[uint4096_t](N,self._nt,&maps[0,0],&pers[0],&qs[0],dble_occ)
             else:
-                self._basis_core = <void *> new spinful_fermion_basis_core[uint4096_t](N)
+                self._basis_core = <void *> new spinful_fermion_basis_core[uint4096_t](N,dble_occ)
         elif dtype == uint16384:
             if self._nt>0:
-                self._basis_core = <void *> new spinful_fermion_basis_core[uint16384_t](N,self._nt,&maps[0,0],&pers[0],&qs[0])
+                self._basis_core = <void *> new spinful_fermion_basis_core[uint16384_t](N,self._nt,&maps[0,0],&pers[0],&qs[0],dble_occ)
             else:
-                self._basis_core = <void *> new spinful_fermion_basis_core[uint16384_t](N)
+                self._basis_core = <void *> new spinful_fermion_basis_core[uint16384_t](N,dble_occ)
         else:
-            raise ValueError("general basis supports system sizes <= 128.")
+            raise ValueError("general basis supports system sizes <= 16384.")
 
     def get_s0_pcon(self,object Np):
         s = sum(<object>(1)<<i for i in range(Np[1]))

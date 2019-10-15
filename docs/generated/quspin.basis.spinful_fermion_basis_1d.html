@@ -17,7 +17,7 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-    <title>quspin.basis.spinful_fermion_basis_1d &#8212; QuSpin 0.3.2 documentation</title>
+    <title>quspin.basis.spinful_fermion_basis_1d &#8212; QuSpin 0.3.3 documentation</title>
     <link rel="stylesheet" href="../static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../static/pygments.css" type="text/css" />
     
@@ -25,7 +25,8 @@
     <script type="text/javascript" src="../static/jquery.js"></script>
     <script type="text/javascript" src="../static/underscore.js"></script>
     <script type="text/javascript" src="../static/doctools.js"></script>
-    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="../static/language_data.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" /> 
@@ -39,7 +40,7 @@
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.2 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.3 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../basis.html" accesskey="U">Basis module (<code class="docutils literal notranslate"><span class="pre">quspin.basis</span></code>)</a> &#187;</li> 
       </ul>
     </div>  
@@ -53,7 +54,7 @@
 <h1>quspin.basis.spinful_fermion_basis_1d<a class="headerlink" href="#quspin-basis-spinful-fermion-basis-1d" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
 <dt id="quspin.basis.spinful_fermion_basis_1d">
-<em class="property">class </em><code class="descclassname">quspin.basis.</code><code class="descname">spinful_fermion_basis_1d</code><span class="sig-paren">(</span><em>L</em>, <em>Nf=None</em>, <em>nf=None</em>, <em>**blocks</em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/basis/basis_1d/fermion.html#spinful_fermion_basis_1d"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#quspin.basis.spinful_fermion_basis_1d" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">quspin.basis.</code><code class="descname">spinful_fermion_basis_1d</code><span class="sig-paren">(</span><em>L</em>, <em>Nf=None</em>, <em>nf=None</em>, <em>double_occupancy=True</em>, <em>**blocks</em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/basis/basis_1d/fermion.html#spinful_fermion_basis_1d"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#quspin.basis.spinful_fermion_basis_1d" title="Permalink to this definition">¶</a></dt>
 <dd><p>Constructs basis for spinful fermionic operators in a specified 1-d symmetry sector.</p>
 <p>The supported operator strings for <cite>spinful_fermion_basis_1d</cite> are:</p>
 <div class="math notranslate nohighlight">
@@ -151,6 +152,8 @@ a pipe symbol, ‘|’, while the index array has no splitting pipe character.</
 <dt><a class="reference internal" href="#quspin.basis.spinful_fermion_basis_1d.description" title="quspin.basis.spinful_fermion_basis_1d.description"><code class="xref py py-obj docutils literal notranslate"><span class="pre">description</span></code></a></dt>
 <dd><p class="first last">str: information about <cite>basis</cite> object.</p>
 </dd>
+<dt><strong>dtype</strong></dt>
+<dd></dd>
 <dt><a class="reference internal" href="#quspin.basis.spinful_fermion_basis_1d.operators" title="quspin.basis.spinful_fermion_basis_1d.operators"><code class="xref py py-obj docutils literal notranslate"><span class="pre">operators</span></code></a></dt>
 <dd><p class="first last">set: set of available operator strings.</p>
 </dd>
@@ -215,7 +218,7 @@ a pipe symbol, ‘|’, while the index array has no splitting pipe character.</
 </table>
 <dl class="method">
 <dt id="quspin.basis.spinful_fermion_basis_1d.__init__">
-<code class="descname">__init__</code><span class="sig-paren">(</span><em>L</em>, <em>Nf=None</em>, <em>nf=None</em>, <em>**blocks</em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/basis/basis_1d/fermion.html#spinful_fermion_basis_1d.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#quspin.basis.spinful_fermion_basis_1d.__init__" title="Permalink to this definition">¶</a></dt>
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>L</em>, <em>Nf=None</em>, <em>nf=None</em>, <em>double_occupancy=True</em>, <em>**blocks</em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/basis/basis_1d/fermion.html#spinful_fermion_basis_1d.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#quspin.basis.spinful_fermion_basis_1d.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Intializes the <cite>fermion_basis_1d</cite> object (basis for fermionic operators).</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -232,6 +235,9 @@ to spin-down. Each of the two entries can be integer or list to specify one or m
 <dt><strong>nf: tuple(float), optional</strong></dt>
 <dd><p class="first last">Density of fermions in chain (fermions per site). First (left) entry refers to spin-up. Second (right)
 entry refers to spin-down.</p>
+</dd>
+<dt><strong>double_occupancy: bool, optional</strong></dt>
+<dd><p class="first last">Boolean to toggle the presence of doubly-occupied sites (both a spin up and a spin-down fermion present on the same lattice site) in the basis. Default is <cite>double_occupancy=True</cite>, for which doubly-occupied states are present.</p>
 </dd>
 <dt><strong>**blocks: optional</strong></dt>
 <dd><p class="first">extra keyword arguments which include:</p>
@@ -260,7 +266,7 @@ entry refers to spin-down.</p>
 <tr class="row-odd"><td><a class="reference internal" href="#quspin.basis.spinful_fermion_basis_1d.Op" title="quspin.basis.spinful_fermion_basis_1d.Op"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Op</span></code></a>(opstr,&nbsp;indx,&nbsp;J,&nbsp;dtype)</td>
 <td>Constructs operator from a site-coupling list and an operator string in a lattice basis.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#quspin.basis.spinful_fermion_basis_1d.__init__" title="quspin.basis.spinful_fermion_basis_1d.__init__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__init__</span></code></a>(L[,&nbsp;Nf,&nbsp;nf])</td>
+<tr class="row-even"><td><a class="reference internal" href="#quspin.basis.spinful_fermion_basis_1d.__init__" title="quspin.basis.spinful_fermion_basis_1d.__init__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__init__</span></code></a>(L[,&nbsp;Nf,&nbsp;nf,&nbsp;double_occupancy])</td>
 <td>Intializes the <cite>fermion_basis_1d</cite> object (basis for fermionic operators).</td>
 </tr>
 <tr class="row-odd"><td><a class="reference internal" href="#quspin.basis.spinful_fermion_basis_1d.check_hermitian" title="quspin.basis.spinful_fermion_basis_1d.check_hermitian"><code class="xref py py-obj docutils literal notranslate"><span class="pre">check_hermitian</span></code></a>(static,&nbsp;dynamic)</td>
@@ -323,13 +329,16 @@ entry refers to spin-down.</p>
 <tr class="row-odd"><td><a class="reference internal" href="#quspin.basis.spinful_fermion_basis_1d.description" title="quspin.basis.spinful_fermion_basis_1d.description"><code class="xref py py-obj docutils literal notranslate"><span class="pre">description</span></code></a></td>
 <td>str: information about <cite>basis</cite> object.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#quspin.basis.spinful_fermion_basis_1d.operators" title="quspin.basis.spinful_fermion_basis_1d.operators"><code class="xref py py-obj docutils literal notranslate"><span class="pre">operators</span></code></a></td>
+<tr class="row-even"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">dtype</span></code></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#quspin.basis.spinful_fermion_basis_1d.operators" title="quspin.basis.spinful_fermion_basis_1d.operators"><code class="xref py py-obj docutils literal notranslate"><span class="pre">operators</span></code></a></td>
 <td>set: set of available operator strings.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#quspin.basis.spinful_fermion_basis_1d.sps" title="quspin.basis.spinful_fermion_basis_1d.sps"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sps</span></code></a></td>
+<tr class="row-even"><td><a class="reference internal" href="#quspin.basis.spinful_fermion_basis_1d.sps" title="quspin.basis.spinful_fermion_basis_1d.sps"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sps</span></code></a></td>
 <td>int: number of states per site (i.e.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#quspin.basis.spinful_fermion_basis_1d.states" title="quspin.basis.spinful_fermion_basis_1d.states"><code class="xref py py-obj docutils literal notranslate"><span class="pre">states</span></code></a></td>
+<tr class="row-odd"><td><a class="reference internal" href="#quspin.basis.spinful_fermion_basis_1d.states" title="quspin.basis.spinful_fermion_basis_1d.states"><code class="xref py py-obj docutils literal notranslate"><span class="pre">states</span></code></a></td>
 <td>numpy.ndarray(int): basis states stored in their integer representation.</td>
 </tr>
 </tbody>
@@ -971,13 +980,13 @@ it is a square array. Default is <cite>False</cite>.</p>
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.2 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.3 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../basis.html" >Basis module (<code class="docutils literal notranslate"><span class="pre">quspin.basis</span></code>)</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2016, Phillip Weinberg and Marin Bukov.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.2.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.4.
     </div>
   </body>
 </html>
