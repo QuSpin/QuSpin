@@ -17,7 +17,7 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-    <title>\(\mathrm{\color{magenta} {QuSpin\ 0.3.2}}\) here (updated on 2019.03.11) &#8212; QuSpin 0.3.2 documentation</title>
+    <title>\(\mathrm{\color{orange} {QuSpin\ 0.3.3}}\) here (updated on 2019.10.15) &#8212; QuSpin 0.3.3 documentation</title>
     <link rel="stylesheet" href="static/classic.css" type="text/css" />
     <link rel="stylesheet" href="static/pygments.css" type="text/css" />
     
@@ -25,7 +25,8 @@
     <script type="text/javascript" src="static/jquery.js"></script>
     <script type="text/javascript" src="static/underscore.js"></script>
     <script type="text/javascript" src="static/doctools.js"></script>
-    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="static/language_data.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -47,7 +48,7 @@
         <li class="right" >
           <a href="index.html" title="Welcome to the Official QuSpin Documentation!"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">QuSpin 0.3.2 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">QuSpin 0.3.3 documentation</a> &#187;</li> 
       </ul>
     </div>  
 
@@ -56,19 +57,53 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="section" id="mathrm-color-magenta-quspin-0-3-2-here-updated-on-2019-03-11">
-<h1><span class="math notranslate nohighlight">\(\mathrm{\color{magenta} {QuSpin\ 0.3.2}}\)</span> here (updated on 2019.03.11)<a class="headerlink" href="#mathrm-color-magenta-quspin-0-3-2-here-updated-on-2019-03-11" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="mathrm-color-orange-quspin-0-3-3-here-updated-on-2019-10-15">
+<h1><span class="math notranslate nohighlight">\(\mathrm{\color{orange} {QuSpin\ 0.3.3}}\)</span> here (updated on 2019.10.15)<a class="headerlink" href="#mathrm-color-orange-quspin-0-3-3-here-updated-on-2019-10-15" title="Permalink to this headline">¶</a></h1>
 </div>
-<div class="section" id="mathrm-color-red-highlights-openmp-support-now-here">
-<h1><span class="math notranslate nohighlight">\(\mathrm{\color{red} {Highlights}}\)</span>: OpenMP support now here!<a class="headerlink" href="#mathrm-color-red-highlights-openmp-support-now-here" title="Permalink to this headline">¶</a></h1>
-<p>Check out <a class="reference internal" href="parallelization.html#parallelization-label"><span class="std std-ref">Parallel Computing Support</span></a> and the example script <a class="reference internal" href="examples/example12.html#example12-label"><span class="std std-ref">Parallel Computing in QuSpin</span></a>!</p>
+<div class="section" id="mathrm-color-red-highlights-openmp-support-here-constrained-hilbert-spaces-support-now-here">
+<h1><span class="math notranslate nohighlight">\(\mathrm{\color{red} {Highlights}}\)</span>: OpenMP support here; Constrained Hilbert spaces support now here!<a class="headerlink" href="#mathrm-color-red-highlights-openmp-support-here-constrained-hilbert-spaces-support-now-here" title="Permalink to this headline">¶</a></h1>
+<p>Check out <a class="reference internal" href="parallelization.html#parallelization-label"><span class="std std-ref">Parallel Computing Support</span></a> and the example script <a class="reference internal" href="examples/example12.html#example12-label"><span class="std std-ref">Parallel Computing in QuSpin</span></a>.</p>
+<p>For a tutorial in QuSpin’s <cite>user_basis</cite> which allows the user to define custom bases with constraints, check out: <a class="reference internal" href="user_basis.html#user-basis-label"><span class="std std-ref">A tutorial on QuSpin’s user_basis</span></a>.</p>
 </div>
 <div class="section" id="complete-list-of-the-most-recent-features">
 <h1>Complete list of the most recent features<a class="headerlink" href="#complete-list-of-the-most-recent-features" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="added-in-v-0-3-2-2019-03-11">
-<h2>Added in v. 0.3.2 (2019.03.11)<a class="headerlink" href="#added-in-v-0-3-2-2019-03-11" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="added-in-v-0-3-3-2019-10-15">
+<h2>Added in v. 0.3.3 (2019.10.15)<a class="headerlink" href="#added-in-v-0-3-3-2019-10-15" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="improved-functionality">
 <h3>Improved Functionality<a class="headerlink" href="#improved-functionality" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>introducing improvements to Example 11 to perform Monte Carlo sampling in the symmetry-reduced Hilbert space.</li>
+<li><dl class="first docutils">
+<dt>new examples:</dt>
+<dd><ul class="first last">
+<li>Example 13 to showcase <cite>double_occupancy</cite> option of the <cite>spinful_fermion_basis_*</cite>.</li>
+<li>Examples 14-16 demonstrate the usage of <cite>user_basis</cite>.</li>
+<li>Example 17 shows how to use QuSpin for Lindblad dynamics and demonstrates the use of the omp-parallelzied <cite>matvec</cite> function for speedup.</li>
+<li>Example 18 shows how to construct Hamiltinians on a hexagonal lattice.</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li>improved functionality of the <cite>tools.evolution.evolve()</cite> function.</li>
+<li>fixed import issue with scipy’s <cite>comb</cite> function.</li>
+<li>fixed a number of small bugs.</li>
+</ul>
+</div>
+<div class="section" id="new-attributes-functions-methods-and-classes">
+<h3>New Attributes, Functions, Methods and Classes<a class="headerlink" href="#new-attributes-functions-methods-and-classes" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>adding <cite>*_basis_general.get_amp()</cite> function method which effectively provides a partial <cite>get_vec()</cite> function but does not require the basis to be constructed ahead of time.</li>
+<li>adding optional argument <cite>double_occupancy</cite> to the <cite>spinful_fermion_basis_*</cite> classes to control whether doubly occupied sites should be part of the basis or not.</li>
+<li>adding the <cite>user_basis</cite> class which enables the user to build in Hilbert-space constraints, and exposes the inner workings of QuSpin’s core function to give the user almost complete control (see <a class="reference internal" href="user_basis.html#user-basis-label"><span class="std std-ref">A tutorial on QuSpin’s user_basis</span></a>).</li>
+<li>adding <cite>tools.misc.matvec()</cite> and <cite>tools.misc.get_matvec()</cite> functions with omp-parallelized implementation which outperforms scipy and numpy in computing matrix-vector peroducts.</li>
+<li>adding optional arguments to the <cite>dot()</cite> and <cite>rdot()</cite> functions of the operators module.</li>
+</ul>
+</div>
+</div>
+<div class="section" id="added-in-v-0-3-2-2019-03-11">
+<h2>Added in v. 0.3.2 (2019.03.11)<a class="headerlink" href="#added-in-v-0-3-2-2019-03-11" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id1">
+<h3>Improved Functionality<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>improved performance for matrix vector product in _oputils and expm_multiply_parallel. Leads to significant speedup in the <cite>hamiltonian</cite> and <cite>quantum_operator</cite> classes (e.g. in the <cite>hamiltonian.evolve()</cite> function) and the <cite>tools.evolution.expm_multiply_parallel()</cite> function.</li>
 </ul>
@@ -76,8 +111,8 @@
 </div>
 <div class="section" id="added-in-v-0-3-1-2019-03-08">
 <h2>Added in v. 0.3.1 (2019.03.08)<a class="headerlink" href="#added-in-v-0-3-1-2019-03-08" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="id1">
-<h3>Improved Functionality<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id2">
+<h3>Improved Functionality<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>support for python 3.7.</li>
 <li><span class="math notranslate nohighlight">\(\mathrm{\color{red} {discontinued\ support}}\)</span> for python 3.5 on all platforms and python 2.7 on windows. QuSpin for these versions will remain available to download up to and including QuSpin 0.3.0, but they are no longer being maintained.</li>
@@ -92,8 +127,8 @@
 <li>large integer support for <cite>*_general_basis</cite> classes allows to build lattices with more than 64 sites.</li>
 </ul>
 </div>
-<div class="section" id="new-attributes-functions-methods-and-classes">
-<h3>New Attributes, Functions, Methods and Classes<a class="headerlink" href="#new-attributes-functions-methods-and-classes" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id3">
+<h3>New Attributes, Functions, Methods and Classes<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>new argument <cite>make_basis</cite> for <cite>*_basis_general</cite> classes allows to use some of the basis functionality without constructing the basis.</li>
 <li>new <cite>*_basis_general</cite> class methods: <cite>Op_bra_ket()</cite>, <cite>representative()</cite>, <cite>normalization()</cite>, <cite>inplace_Op()</cite>.</li>
@@ -117,16 +152,21 @@
         <div class="sphinxsidebarwrapper">
   <h3><a href="index.html">Table of Contents</a></h3>
   <ul>
-<li><a class="reference internal" href="#"><span class="math notranslate nohighlight">\(\mathrm{\color{magenta} {QuSpin\ 0.3.2}}\)</span> here (updated on 2019.03.11)</a></li>
-<li><a class="reference internal" href="#mathrm-color-red-highlights-openmp-support-now-here"><span class="math notranslate nohighlight">\(\mathrm{\color{red} {Highlights}}\)</span>: OpenMP support now here!</a></li>
+<li><a class="reference internal" href="#"><span class="math notranslate nohighlight">\(\mathrm{\color{orange} {QuSpin\ 0.3.3}}\)</span> here (updated on 2019.10.15)</a></li>
+<li><a class="reference internal" href="#mathrm-color-red-highlights-openmp-support-here-constrained-hilbert-spaces-support-now-here"><span class="math notranslate nohighlight">\(\mathrm{\color{red} {Highlights}}\)</span>: OpenMP support here; Constrained Hilbert spaces support now here!</a></li>
 <li><a class="reference internal" href="#complete-list-of-the-most-recent-features">Complete list of the most recent features</a><ul>
-<li><a class="reference internal" href="#added-in-v-0-3-2-2019-03-11">Added in v. 0.3.2 (2019.03.11)</a><ul>
+<li><a class="reference internal" href="#added-in-v-0-3-3-2019-10-15">Added in v. 0.3.3 (2019.10.15)</a><ul>
 <li><a class="reference internal" href="#improved-functionality">Improved Functionality</a></li>
+<li><a class="reference internal" href="#new-attributes-functions-methods-and-classes">New Attributes, Functions, Methods and Classes</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#added-in-v-0-3-2-2019-03-11">Added in v. 0.3.2 (2019.03.11)</a><ul>
+<li><a class="reference internal" href="#id1">Improved Functionality</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#added-in-v-0-3-1-2019-03-08">Added in v. 0.3.1 (2019.03.08)</a><ul>
-<li><a class="reference internal" href="#id1">Improved Functionality</a></li>
-<li><a class="reference internal" href="#new-attributes-functions-methods-and-classes">New Attributes, Functions, Methods and Classes</a></li>
+<li><a class="reference internal" href="#id2">Improved Functionality</a></li>
+<li><a class="reference internal" href="#id3">New Attributes, Functions, Methods and Classes</a></li>
 </ul>
 </li>
 </ul>
@@ -177,12 +217,12 @@
         <li class="right" >
           <a href="index.html" title="Welcome to the Official QuSpin Documentation!"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">QuSpin 0.3.2 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">QuSpin 0.3.3 documentation</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2016, Phillip Weinberg and Marin Bukov.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.2.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.4.
     </div>
   </body>
 </html>

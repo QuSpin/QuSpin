@@ -17,7 +17,7 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-    <title>quspin.tools.measurements.diag_ensemble &#8212; QuSpin 0.3.2 documentation</title>
+    <title>quspin.tools.measurements.diag_ensemble &#8212; QuSpin 0.3.3 documentation</title>
     <link rel="stylesheet" href="../static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../static/pygments.css" type="text/css" />
     
@@ -25,7 +25,8 @@
     <script type="text/javascript" src="../static/jquery.js"></script>
     <script type="text/javascript" src="../static/underscore.js"></script>
     <script type="text/javascript" src="../static/doctools.js"></script>
-    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="../static/language_data.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -47,7 +48,7 @@
         <li class="right" >
           <a href="quspin.tools.measurements.ent_entropy.html" title="quspin.tools.measurements.ent_entropy"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.2 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.3 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../tools.html" accesskey="U">Tools module (<code class="docutils literal notranslate"><span class="pre">quspin.tools</span></code>)</a> &#187;</li> 
       </ul>
     </div>  
@@ -224,19 +225,11 @@ Default is ‘True’.</p>
 <dd><p class="first">The following keys of the output are possible, depending on the choice of flags:</p>
 <ul class="simple">
 <li>“rho_d”: density matrix of Diagonal Ensemble.</li>
-<li>“<a href="#id1"><span class="problematic" id="id2">Obs_</span></a>…”: infinite-time expectation of observable <cite>Obs</cite>.</li>
-<li>“<a href="#id3"><span class="problematic" id="id4">delta_t_Obs_</span></a>…”: infinite-time temporal fluctuations of <cite>Obs</cite>.</li>
-<li>“<a href="#id5"><span class="problematic" id="id6">delta_q_Obs_</span></a>…”: infinite-time quantum fluctuations of <cite>Obs</cite>.</li>
-<li><dl class="first docutils">
-<dt>“<a href="#id7"><span class="problematic" id="id8">Sd_</span></a>…” (“<a href="#id9"><span class="problematic" id="id10">Sd_Renyi_</span></a>…” for <span class="math notranslate nohighlight">\(\alpha\neq1.0\)</span>): Renyi diagonal entropy of density matrix of </dt>
-<dd><cite>rho_d</cite> with parameter <cite>alpha</cite>.</dd>
-</dl>
-</li>
-<li><dl class="first docutils">
-<dt>“<a href="#id11"><span class="problematic" id="id12">Srdm_</span></a>…” (“<a href="#id13"><span class="problematic" id="id14">Srdm_Renyi_</span></a>…” for <span class="math notranslate nohighlight">\(\alpha\neq1.0\)</span>): Renyi entanglement entropy of reduced DM of </dt>
-<dd><cite>rho_d</cite> (<cite>rho_d</cite> is a mixed DM itself) with parameter <cite>alpha</cite>.</dd>
-</dl>
-</li>
+<li>“Obs…”: infinite-time expectation of observable <cite>Obs</cite>.</li>
+<li>“delta_t_Obs…”: infinite-time temporal fluctuations of <cite>Obs</cite>.</li>
+<li>“delta_q_Obs…”: infinite-time quantum fluctuations of <cite>Obs</cite>.</li>
+<li>“Sd…” (“Sd_Renyi…” for <span class="math notranslate nohighlight">\(\alpha\neq1.0\)</span>): Renyi diagonal entropy of density matrix of <cite>rho_d</cite> with parameter <cite>alpha</cite>.</li>
+<li>“Srdm…” (“Srdm_Renyi…” for <span class="math notranslate nohighlight">\(\alpha\neq1.0\)</span>): Renyi entanglement entropy of reduced DM of`rho_d` (<cite>rho_d</cite> is a mixed DM itself) with parameter <cite>alpha</cite>.</li>
 </ul>
 <p class="last">Replace “…” above by ‘pure’, ‘thermal’ or ‘mixed’ depending on input parameters.</p>
 </dd>
@@ -367,13 +360,13 @@ it’s infinite-time temporal fluctuations <span class="math notranslate nohighl
         <li class="right" >
           <a href="quspin.tools.measurements.ent_entropy.html" title="quspin.tools.measurements.ent_entropy"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.2 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.3 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../tools.html" >Tools module (<code class="docutils literal notranslate"><span class="pre">quspin.tools</span></code>)</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2016, Phillip Weinberg and Marin Bukov.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.2.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.4.
     </div>
   </body>
 </html>

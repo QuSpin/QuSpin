@@ -17,7 +17,7 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-    <title>quspin.basis.base &#8212; QuSpin 0.3.2 documentation</title>
+    <title>quspin.basis.base &#8212; QuSpin 0.3.3 documentation</title>
     <link rel="stylesheet" href="../../../static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../static/pygments.css" type="text/css" />
     
@@ -25,7 +25,8 @@
     <script type="text/javascript" src="../../../static/jquery.js"></script>
     <script type="text/javascript" src="../../../static/underscore.js"></script>
     <script type="text/javascript" src="../../../static/doctools.js"></script>
-    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="../../../static/language_data.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" /> 
@@ -39,7 +40,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">QuSpin 0.3.2 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">QuSpin 0.3.3 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -55,7 +56,6 @@
 <span class="kn">import</span> <span class="nn">scipy.sparse</span> <span class="k">as</span> <span class="nn">_sp</span>
 <span class="kn">import</span> <span class="nn">warnings</span><span class="o">,</span><span class="nn">numba</span>
 
-
 <span class="nd">@numba</span><span class="o">.</span><span class="n">njit</span>
 <span class="k">def</span> <span class="nf">_coo_dot</span><span class="p">(</span><span class="n">v_in</span><span class="p">,</span><span class="n">v_out</span><span class="p">,</span><span class="n">row</span><span class="p">,</span><span class="n">col</span><span class="p">,</span><span class="n">ME</span><span class="p">):</span>
 	<span class="n">n</span> <span class="o">=</span> <span class="n">row</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
@@ -67,6 +67,18 @@
 		<span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">m</span><span class="p">):</span>
 			<span class="n">v_out</span><span class="p">[</span><span class="n">r</span><span class="p">,</span><span class="n">j</span><span class="p">]</span> <span class="o">+=</span> <span class="n">me</span> <span class="o">*</span> <span class="n">v_in</span><span class="p">[</span><span class="n">c</span><span class="p">,</span><span class="n">j</span><span class="p">]</span>
 
+<span class="nd">@numba</span><span class="o">.</span><span class="n">njit</span>
+<span class="k">def</span> <span class="nf">_is_diagonal</span><span class="p">(</span><span class="n">row</span><span class="p">,</span><span class="n">col</span><span class="p">):</span>
+	<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">row</span><span class="o">.</span><span class="n">size</span><span class="p">):</span>
+		<span class="k">if</span> <span class="n">row</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">!=</span> <span class="n">col</span><span class="p">[</span><span class="n">i</span><span class="p">]:</span>
+			<span class="k">return</span> <span class="kc">False</span>
+
+	<span class="k">return</span> <span class="kc">True</span>
+
+<span class="nd">@numba</span><span class="o">.</span><span class="n">njit</span>
+<span class="k">def</span> <span class="nf">_update_diag</span><span class="p">(</span><span class="n">diag</span><span class="p">,</span><span class="n">ind</span><span class="p">,</span><span class="n">ME</span><span class="p">):</span>
+	<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">ind</span><span class="o">.</span><span class="n">size</span><span class="p">):</span>
+		<span class="n">diag</span><span class="p">[</span><span class="n">ind</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span> <span class="o">+=</span> <span class="n">ME</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
 
 <span class="n">MAXPRINT</span> <span class="o">=</span> <span class="mi">50</span>
 <span class="c1"># this file stores the base class for all basis classes</span>
@@ -83,6 +95,7 @@
 		<span class="bp">self</span><span class="o">.</span><span class="n">_unique_me</span> <span class="o">=</span> <span class="kc">True</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">_check_symm</span> <span class="o">=</span> <span class="kc">None</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">_check_pcon</span> <span class="o">=</span> <span class="kc">None</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">_check_herm</span> <span class="o">=</span> <span class="kc">None</span>
 		<span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;basis&#39;</span><span class="p">:</span>
 			<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;This class is not intended&quot;</span>
 							 <span class="s2">&quot; to be instantiated directly.&quot;</span><span class="p">)</span>
@@ -90,10 +103,11 @@
 
 	<span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 		
-		<span class="n">string</span> <span class="o">=</span> <span class="s2">&quot;reference states: </span><span class="se">\n</span><span class="s2">&quot;</span>
+		<span class="n">string</span> <span class="o">=</span> <span class="s2">&quot;reference states: </span><span class="se">\n</span><span class="s2">array index   /   Fock state   /   integer repr. </span><span class="se">\n</span><span class="s2">&quot;</span>
+		
 		<span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Ns</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
 			<span class="k">return</span> <span class="n">string</span>
-		
+
 		<span class="n">str_list</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_get__str__</span><span class="p">())</span>
 		<span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Ns</span> <span class="o">&gt;</span> <span class="n">MAXPRINT</span><span class="p">:</span>
 			<span class="k">try</span><span class="p">:</span>
@@ -107,6 +121,7 @@
 			<span class="n">str_list</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">MAXPRINT</span><span class="o">//</span><span class="mi">2</span><span class="p">,</span><span class="n">t</span><span class="p">)</span>
 		
 		<span class="n">string</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">str_list</span><span class="p">)</span>
+		
 		<span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="s1">&#39;block&#39;</span> <span class="ow">in</span> <span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_blocks</span><span class="p">):</span> 
 			<span class="n">string</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">The states printed do NOT correspond to the physical states: see review arXiv:1101.3281 for more details about reference states for symmetry-reduced blocks.</span><span class="se">\n</span><span class="s2">&quot;</span>
 		<span class="k">return</span> <span class="n">string</span>
@@ -264,6 +279,39 @@
 <span class="sd">		&quot;&quot;&quot;</span>
 		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Op</span><span class="p">(</span><span class="n">opstr</span><span class="p">,</span><span class="n">indx</span><span class="p">,</span><span class="n">J</span><span class="p">,</span><span class="n">dtype</span><span class="p">)</span>
 
+	<span class="k">def</span> <span class="nf">_make_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">op_list</span><span class="p">,</span><span class="n">dtype</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot; takes list of operator strings and couplings to create matrix.&quot;&quot;&quot;</span>
+		<span class="n">off_diag</span> <span class="o">=</span> <span class="kc">None</span>
+		<span class="n">diag</span> <span class="o">=</span> <span class="kc">None</span>
+
+		<span class="k">for</span> <span class="n">opstr</span><span class="p">,</span><span class="n">indx</span><span class="p">,</span><span class="n">J</span> <span class="ow">in</span> <span class="n">op_list</span><span class="p">:</span>
+			<span class="n">ME</span><span class="p">,</span><span class="n">row</span><span class="p">,</span><span class="n">col</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Op</span><span class="p">(</span><span class="n">opstr</span><span class="p">,</span><span class="n">indx</span><span class="p">,</span><span class="n">J</span><span class="p">,</span><span class="n">dtype</span><span class="p">)</span>
+			<span class="k">if</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">ME</span><span class="p">)</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">):</span>
+				<span class="n">imax</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">row</span><span class="o">.</span><span class="n">max</span><span class="p">(),</span><span class="n">col</span><span class="o">.</span><span class="n">max</span><span class="p">())</span>
+				<span class="n">index_type</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">result_type</span><span class="p">(</span><span class="n">_np</span><span class="o">.</span><span class="n">int32</span><span class="p">,</span><span class="n">_np</span><span class="o">.</span><span class="n">min_scalar_type</span><span class="p">(</span><span class="n">imax</span><span class="p">))</span>
+				<span class="n">row</span> <span class="o">=</span> <span class="n">row</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">index_type</span><span class="p">)</span>
+				<span class="n">col</span> <span class="o">=</span> <span class="n">col</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">index_type</span><span class="p">)</span>
+				<span class="k">if</span> <span class="n">_is_diagonal</span><span class="p">(</span><span class="n">row</span><span class="p">,</span><span class="n">col</span><span class="p">):</span>
+					<span class="k">if</span> <span class="n">diag</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+						<span class="n">diag</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Ns</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
+
+					<span class="n">_update_diag</span><span class="p">(</span><span class="n">diag</span><span class="p">,</span><span class="n">row</span><span class="p">,</span><span class="n">ME</span><span class="p">)</span>
+				<span class="k">else</span><span class="p">:</span>
+					<span class="k">if</span> <span class="n">off_diag</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+						<span class="n">off_diag</span> <span class="o">=</span> <span class="n">_sp</span><span class="o">.</span><span class="n">csr_matrix</span><span class="p">((</span><span class="n">ME</span><span class="p">,(</span><span class="n">row</span><span class="p">,</span><span class="n">col</span><span class="p">)),</span><span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Ns</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">Ns</span><span class="p">),</span><span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span> 
+					<span class="k">else</span><span class="p">:</span>
+						<span class="n">off_diag</span> <span class="o">=</span> <span class="n">off_diag</span> <span class="o">+</span> <span class="n">_sp</span><span class="o">.</span><span class="n">csr_matrix</span><span class="p">((</span><span class="n">ME</span><span class="p">,(</span><span class="n">row</span><span class="p">,</span><span class="n">col</span><span class="p">)),</span><span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Ns</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">Ns</span><span class="p">),</span><span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span> 
+
+		<span class="k">if</span> <span class="n">diag</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">off_diag</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+			<span class="n">indptr</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Ns</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+			<span class="k">return</span> <span class="n">off_diag</span> <span class="o">+</span> <span class="n">_sp</span><span class="o">.</span><span class="n">csr_matrix</span><span class="p">((</span><span class="n">diag</span><span class="p">,</span><span class="n">indptr</span><span class="p">[:</span><span class="bp">self</span><span class="o">.</span><span class="n">Ns</span><span class="p">],</span><span class="n">indptr</span><span class="p">),</span><span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Ns</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">Ns</span><span class="p">),</span><span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
+
+		<span class="k">elif</span> <span class="n">off_diag</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+			<span class="k">return</span> <span class="n">off_diag</span>
+		<span class="k">elif</span> <span class="n">diag</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+			<span class="k">return</span> <span class="n">_sp</span><span class="o">.</span><span class="n">dia_matrix</span><span class="p">((</span><span class="n">_np</span><span class="o">.</span><span class="n">atleast_2d</span><span class="p">(</span><span class="n">diag</span><span class="p">),[</span><span class="mi">0</span><span class="p">]),</span><span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Ns</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">Ns</span><span class="p">),</span><span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
+		<span class="k">else</span><span class="p">:</span>
+			<span class="k">return</span> <span class="n">_sp</span><span class="o">.</span><span class="n">dia_matrix</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">Ns</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">Ns</span><span class="p">),</span><span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
 
 	<span class="k">def</span> <span class="nf">partial_trace</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">state</span><span class="p">,</span><span class="n">sub_sys_A</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">subsys_ordering</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">return_rdm</span><span class="o">=</span><span class="s2">&quot;A&quot;</span><span class="p">,</span><span class="n">enforce_pure</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">sparse</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 		<span class="sd">&quot;&quot;&quot;Calculates reduced density matrix, through a partial trace of a quantum state in a lattice `basis`.</span>
@@ -386,7 +434,6 @@
 								<span class="n">enforce_pure</span><span class="o">=</span><span class="n">enforce_pure</span><span class="p">,</span><span class="n">return_rdm_EVs</span><span class="o">=</span><span class="n">return_rdm_EVs</span><span class="p">,</span>
 								<span class="n">sparse</span><span class="o">=</span><span class="n">sparse</span><span class="p">,</span><span class="n">alpha</span><span class="o">=</span><span class="n">alpha</span><span class="p">,</span><span class="n">sparse_diag</span><span class="o">=</span><span class="n">sparse_diag</span><span class="p">,</span><span class="n">maxiter</span><span class="o">=</span><span class="n">maxiter</span><span class="p">)</span>
 
-
 	<span class="k">def</span> <span class="nf">expanded_form</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">static</span><span class="o">=</span><span class="p">[],</span><span class="n">dynamic</span><span class="o">=</span><span class="p">[]):</span>
 		<span class="sd">&quot;&quot;&quot;Splits up operator strings containing &quot;x&quot; and &quot;y&quot; into operator combinations of &quot;+&quot; and &quot;-&quot;. This function is useful for higher spin hamiltonians where &quot;x&quot; and &quot;y&quot; operators are not appropriate operators. </span>
 
@@ -461,6 +508,10 @@
 <span class="sd">		---------</span>
 
 <span class="sd">		&quot;&quot;&quot;</span>
+		<span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_check_herm</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+			<span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;Test for hermiticity not implemented for </span><span class="si">{0}</span><span class="s2">, to turn off this warning set check_symm=False in hamiltonian&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)),</span><span class="ne">UserWarning</span><span class="p">,</span><span class="n">stacklevel</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+			<span class="k">return</span>
+
 		<span class="n">static_list</span><span class="p">,</span><span class="n">dynamic_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_local_lists</span><span class="p">(</span><span class="n">static</span><span class="p">,</span><span class="n">dynamic</span><span class="p">)</span>
 		<span class="n">static_expand</span><span class="p">,</span><span class="n">static_expand_hc</span><span class="p">,</span><span class="n">dynamic_expand</span><span class="p">,</span><span class="n">dynamic_expand_hc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_hc_local_lists</span><span class="p">(</span><span class="n">static_list</span><span class="p">,</span><span class="n">dynamic_list</span><span class="p">)</span>
 		<span class="c1"># calculate non-hermitian elements</span>
@@ -897,13 +948,13 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">QuSpin 0.3.2 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">QuSpin 0.3.3 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2016, Phillip Weinberg and Marin Bukov.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.2.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.4.
     </div>
   </body>
 </html>

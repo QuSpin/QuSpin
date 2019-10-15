@@ -168,7 +168,7 @@ class Floquet(object):
 	"""
 
 	def __init__(self,evo_dict,HF=False,UF=False,thetaF=False,VF=False,n_jobs=1):
-		"""
+		"""Instantiates the `Floquet` class.
 		
 		Parameters
 		-----------
@@ -330,6 +330,7 @@ class Floquet(object):
 			if _np.any( _np.diff(_np.sort(thetaF)) < 1E3*_np.finfo(thetaF.dtype).eps):
 				VF,_ = _la.qr(VF, overwrite_a=True) 
 			
+			# https://math.stackexchange.com/questions/269164/diagonalizable-unitarily-schur-factorization
 			# thetaF, VF = _la.schur(UF,overwrite_a=True,output='real')
 			# thetaF=thetaF.diagonal()
 		

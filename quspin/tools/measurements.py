@@ -340,13 +340,11 @@ def diag_ensemble(N,system_state,E2,V2,density=True,alpha=1.0,rho_d=False,Obs=Fa
 		The following keys of the output are possible, depending on the choice of flags:
 
 		* "rho_d": density matrix of Diagonal Ensemble.
-		* "Obs_...": infinite-time expectation of observable `Obs`.
-		* "delta_t_Obs_...": infinite-time temporal fluctuations of `Obs`.
-		* "delta_q_Obs_...": infinite-time quantum fluctuations of `Obs`.
-		* "Sd_..." ("Sd_Renyi_..." for :math:`\\alpha\\neq1.0`): Renyi diagonal entropy of density matrix of 
-			`rho_d` with parameter `alpha`.
-		* "Srdm_..." ("Srdm_Renyi_..." for :math:`\\alpha\\neq1.0`): Renyi entanglement entropy of reduced DM of 
-			`rho_d` (`rho_d` is a mixed DM itself) with parameter `alpha`.
+		* "Obs...": infinite-time expectation of observable `Obs`.
+		* "delta_t_Obs...": infinite-time temporal fluctuations of `Obs`.
+		* "delta_q_Obs...": infinite-time quantum fluctuations of `Obs`.
+		* "Sd..." ("Sd_Renyi..." for :math:`\\alpha\\neq1.0`): Renyi diagonal entropy of density matrix of `rho_d` with parameter `alpha`.
+		* "Srdm..." ("Srdm_Renyi..." for :math:`\\alpha\\neq1.0`): Renyi entanglement entropy of reduced DM of`rho_d` (`rho_d` is a mixed DM itself) with parameter `alpha`.
 
 		Replace "..." above by 'pure', 'thermal' or 'mixed' depending on input parameters.
 
@@ -550,18 +548,12 @@ def diag_ensemble(N,system_state,E2,V2,density=True,alpha=1.0,rho_d=False,Obs=Fa
 
 def obs_vs_time(psi_t,times,Obs_dict,return_state=False,Sent_args={},enforce_pure=False,verbose=False):
 	"""Calculates expectation value of observable(s) as a function of time in a time-dependent state.
-
-<<<<<<< HEAD
-	.. math:
-		\\langle\\psi(t)|\\mathcal{O}(t)|\\psi(t)\\rangle
-=======
+	
 	This function computes the expectation of a time-dependent state :math:`|\\psi(t)\\rangle` in a time-dependent observable :math:`\\mathcal{O}(t)`. 
 	It automatically handles the cases where only the state or only the observable is time-dependent.
-	
-	.. math::
-		\\langle\\psi(t)| \\mathcal{O}(t) | \\psi(t)\\rangle
 
->>>>>>> dev_0.3.3
+	.. math::
+		\\langle\\psi(t)|\\mathcal{O}(t)|\\psi(t)\\rangle
 
 	Examples
 	--------

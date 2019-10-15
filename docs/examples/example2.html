@@ -17,7 +17,7 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-    <title>Heating in Periodically Driven Spin Chains &#8212; QuSpin 0.3.2 documentation</title>
+    <title>Heating in Periodically Driven Spin Chains &#8212; QuSpin 0.3.3 documentation</title>
     <link rel="stylesheet" href="../static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../static/pygments.css" type="text/css" />
     
@@ -25,7 +25,8 @@
     <script type="text/javascript" src="../static/jquery.js"></script>
     <script type="text/javascript" src="../static/underscore.js"></script>
     <script type="text/javascript" src="../static/doctools.js"></script>
-    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="../static/language_data.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" /> 
@@ -39,7 +40,7 @@
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.2 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.3 documentation</a> &#187;</li> 
       </ul>
     </div>  
 
@@ -50,8 +51,19 @@
             
   <div class="section" id="heating-in-periodically-driven-spin-chains">
 <span id="example2-label"></span><h1>Heating in Periodically Driven Spin Chains<a class="headerlink" href="#heating-in-periodically-driven-spin-chains" title="Permalink to this headline">¶</a></h1>
-<p><a class="reference download internal" download="" href="../downloads/b45f8287f8707d42bdd396b849cd14d6/example2.py"><code class="xref download docutils literal notranslate"><span class="pre">download</span> <span class="pre">script</span></code></a></p>
-<p>For a detailed discussion of the code below, see <a class="reference external" href="https://arxiv.org/abs/1610.03042">arXiv:1610.03042</a>.</p>
+<p>This example shows how to code up the periodically-driven spin Hamiltonian:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}H(t) &amp;=&amp; \left\{ \begin{array}{cl}
+J\sum_{j=0}^{L-1} \sigma^z_j\sigma^z_{j+1} + h\sum_{j=0}^{L-1}\sigma^z, &amp;  t\in[-T/4,\phantom{3}T/4] \\
+\kern-8em g\sum_{j=0}^{L-1} \sigma^x_j, &amp;  t\in[\phantom{-} T/4,3T/4]
+\end{array} \right\}  \mathrm{mod}\ T,\nonumber\\
+&amp;=&amp; \sum_{j=0}^{L-1} \frac{1}{2}\left(J \sigma^z_j\sigma^z_{j+1} + h\sigma^z + g\sigma^x_j\right)
++ \frac{1}{2}\text{sgn}\left[\cos\Omega t\right]\left( J \sigma^z_j\sigma^z_{j+1} + h\sigma^z - g\sigma^x_j \right).\end{split}\]</div>
+<p>Details about the code below can be found in <a class="reference external" href="https://scipost.org/10.21468/SciPostPhys.2.1.003">SciPost Phys. 2, 003 (2017)</a>.</p>
+</div>
+<div class="section" id="script">
+<h1>Script<a class="headerlink" href="#script" title="Permalink to this headline">¶</a></h1>
+<p><a class="reference download internal" download="" href="../downloads/ea10f6bcdb78dfdec82c256e5c6581c0/example2.py"><code class="xref download docutils literal notranslate"><span class="pre">download</span> <span class="pre">script</span></code></a></p>
 <div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>  1
   2
   3
@@ -349,6 +361,12 @@
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Heating in Periodically Driven Spin Chains</a></li>
+<li><a class="reference internal" href="#script">Script</a></li>
+</ul>
+
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
@@ -381,12 +399,12 @@
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.2 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.3 documentation</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2016, Phillip Weinberg and Marin Bukov.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.2.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.4.
     </div>
   </body>
 </html>
