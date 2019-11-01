@@ -22,7 +22,12 @@ import numpy as _np
 import functools
 from six import iteritems,itervalues,viewkeys
 
-__all__=["quantum_operator","isquantum_operator"]
+from zipfile import ZipFile
+from tempfile import TemporaryDirectory
+import os,pickle
+
+
+__all__=["quantum_operator","isquantum_operator","save_zip","load_zip"]
 		
 # function used to create Linearquantum_operator with fixed set of parameters. 
 def _quantum_operator_dot(op,pars,v):
@@ -1461,4 +1466,103 @@ def isquantum_operator(obj):
 	"""
 	return isinstance(obj,quantum_operator)
 
-	
+
+
+def save_zip(archive,op,save_basis=True):
+	"""save a `quantum_operator` to a zip archive to be used later.
+
+	Parameters
+	-----------
+	archive : str
+		name of archive, including path. 
+
+	op : `quantum_operator` object
+		operator which you would like to save to disk
+
+	save_basis : bool
+		flag which tells code whether to save `basis` attribute of `op`, if it has such an attribute. 
+		some basis objects may not be able to be pickled, therefore attempting to save them will fail
+		if this is the case, then set this flag to be `False`.
+
+
+	Notes
+	-----
+	In order to keep formatting consistent, this function will always overwrite any file with the same name `archive`. 
+	This means that you can not append data to an existing archive. If you would like to combine data, either 
+	construct everything together and save or combine different `quantum_oeprator` objects using the `+` operator in python. 
+
+	"""
+	if not isquantum_operator(op):
+		raise ValueError("this function can only save quantum_operator objects")
+
+	with TemporaryDirectory() as tmpdirname:
+		with ZipFile(archive, "w") as arch:
+
+			if save_basis and op._basis is not None:
+				file = os.path.join(tmpdirname,"basis.pickle")
+				with open(file,"wb") as IO:
+					pickle.dump(op._basis,IO)
+
+				arch.write(file,"basis.pickle")
+
+			for key,matrix in iteritems(op._quantum_operator):
+				if _sp.isspmatrix(matrix):
+					filename = "sparse_"+key+".npz"
+					file = os.path.join(tmpdirname,filename)
+					_sp.save_npz(file,matrix)
+				else:
+					filename = "dense_"+key+".npz"
+					file = os.path.join(tmpdirname,filename)
+					_np.savez_compressed(file,matrix=matrix)
+
+				if filename in arch.namelist():
+					raise ValueError("duplicate operator key '{}'' entry in archive.".format(key))
+				arch.write(file,arcname=filename)
+
+
+
+
+def load_zip(archive):
+	"""Load quantum_operator object from a zip archive.
+
+	Parameters
+	-----------
+	archive : str
+		name of archive, including path. 
+
+	Returns
+	--------
+	operator:  `quantum_operator` 
+		an object with matrix data extracted from the archive.
+		
+	"""
+	ops_dict = {}
+	dtype = None
+	basis = None
+	with ZipFile(archive, 'r') as arch:
+		for file in arch.namelist():
+			if file == "basis.pickle":
+				with arch.open(file) as basisfile:
+					basis = pickle.load(basisfile)
+				
+				continue
+
+			elif "sparse" in file:
+				key = file.replace("sparse_","").replace(".npz","")
+				with arch.open(file) as matfile:
+					matrix = _sp.load_npz(matfile)
+			else:
+				key = file.replace("dense_","").replace(".npz","")
+				with arch.open(file) as matfile:
+					f = _np.load(matfile)
+					matrix = f["matrix"]
+
+			if dtype is None:
+				dtype = matrix.dtype
+			else:
+				dtype = _np.result_type(dtype,matrix.dtype)
+
+			ops_dict[key] = [matrix]
+
+	return quantum_operator(ops_dict,dtype=dtype,copy=False,basis=basis)
+
