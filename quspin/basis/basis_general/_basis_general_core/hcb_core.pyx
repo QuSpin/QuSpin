@@ -65,9 +65,9 @@ cdef class hcb_basis_core_wrap(general_basis_core_wrap):
 
     @cython.boundscheck(False)
     def make_basis(self,_np.ndarray basis,norm_type[:] n,object Np=None,uint8_t[:] count=None):
-        cdef int Ns_1 = 0
-        cdef int Ns_2 = 0
-        cdef int Ns_3 = 0
+        cdef npy_intp Ns_1 = 0
+        cdef npy_intp Ns_2 = 0
+        cdef npy_intp Ns_3 = 0
         cdef npy_intp i = 0
         cdef mem_MAX = basis.shape[0]
 
