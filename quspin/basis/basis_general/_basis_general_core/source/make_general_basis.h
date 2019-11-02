@@ -296,6 +296,9 @@ npy_intp make_basis(general_basis_core<I,P> *B,npy_intp MAX,npy_intp mem_MAX,I b
 		return make_basis_parallel(B,MAX,mem_MAX,basis,n);
 	}
 	else{
+		// If there are no symmetries it does not make sense to use parallel version.
+		// This is because it requires extra memory as well as extra time to sort
+		// the basis states that are produced by the parallel code.
 		return make_basis_sequential(B,MAX,mem_MAX,basis,n);
 	}
 }
@@ -309,6 +312,9 @@ npy_intp make_basis_pcon(general_basis_core<I,P> *B,npy_intp MAX,npy_intp mem_MA
 		return make_basis_pcon_parallel(B,MAX,mem_MAX,s,basis,n);
 	}
 	else{
+		// If there are no symmetries it does not make sense to use parallel version.
+		// This is because it requires extra memory as well as extra time to sort
+		// the basis states that are produced by the parallel code.
 		return make_basis_pcon_sequential(B,MAX,mem_MAX,s,basis,n);
 	}
 }
