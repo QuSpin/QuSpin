@@ -2,6 +2,7 @@ import numpy as _np
 import scipy.sparse as _sp
 import os
 from ._basis_general_core.general_basis_utils import basis_int_to_python_int,_get_basis_index
+from ._basis_general_core import basis_zeros
 from ..lattice import lattice_basis
 import warnings
 
@@ -471,7 +472,7 @@ class basis_general(lattice_basis):
 		return static_blocks,dynamic_blocks
 
 
-	def make(self,Ns_block_est=None):
+	def make(self,Ns_block_est=None,N_A=None):
 		"""Creates the entire basis by calling the basis constructor.
 
 		Parameters
@@ -504,7 +505,7 @@ class basis_general(lattice_basis):
 			Ns = max(self._Ns,1000)
 		
 		# preallocate variables
-		basis = _np.zeros(Ns,dtype=self._basis_dtype)
+		basis = basis_zeros(Ns,dtype=self._basis_dtype)
 		n = _np.zeros(Ns,dtype=self._n_dtype)
 
 		# make basis
@@ -547,6 +548,26 @@ class basis_general(lattice_basis):
 		self._reduce_n_dtype()
 
 		self._made_basis = True
+
+
+	def make_basis_blocks(self,N_p=None):
+		if not self._made_basis:
+			raise ValueError("reference states are not constructed yet. basis must be constructed before calculating blocks")
+
+		if N_p is None:
+			N_p = int(np.floor(np.log2(self._Ns)))-1
+		else:
+			N_p = int(N_p)
+
+		self._N_p = max(N_p,0)
+
+		if self._N_p > 0:
+
+			self._basis_begin,self._basis_end = self._core.make_basis_blocks(self._basis,self._N_p)
+		else:
+			self._basis_begin = _np.array([],dtype=_np.intp)
+			self._basis_end   = _np.array([],dtype=_np.intp)
+
 
 	def Op_bra_ket(self,opstr,indx,J,dtype,ket_states,reduce_output=True):
 		"""Finds bra states which connect given ket states by operator from a site-coupling list and an operator string.
@@ -775,7 +796,6 @@ class basis_general(lattice_basis):
 			out_dtype = _np.min_scalar_type(out.max())
 			out = out.astype(out_dtype)
 		
-
 	def get_amp(self,states,out=None,amps=None,mode='representative'):
 		"""Computes the rescale factor of state amplitudes between the symmetry-reduced and full basis.
 

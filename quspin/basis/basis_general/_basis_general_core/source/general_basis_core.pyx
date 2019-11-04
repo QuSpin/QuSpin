@@ -122,7 +122,7 @@ cdef get_proj_pcon_helper(general_basis_core[state_type] * B, state_type * basis
                 with nogil:
                     for i in range(Ns):
                         c[i] *= sign[i]
-                        indices[i] = <npy_intp>binary_search(Ns_full,basis_pcon,basis[i])
+                        indices[i] = <npy_intp>rep_position(Ns_full,basis_pcon,basis[i])
 
                 P = P + _sp.csc_matrix((c,indices,indptr),shape=P.shape,copy=False)
 
@@ -134,7 +134,7 @@ cdef get_proj_pcon_helper(general_basis_core[state_type] * B, state_type * basis
                 with nogil:
                     for i in range(Ns):
                         c[i] *= sign[i]
-                        indices[i] = <npy_intp>binary_search(Ns_full,basis_pcon,basis[i])
+                        indices[i] = <npy_intp>rep_position(Ns_full,basis_pcon,basis[i])
 
                 P = P + _sp.csc_matrix((c,indices,indptr),shape=P.shape,copy=False)
                 with nogil:
@@ -516,6 +516,47 @@ cdef class general_basis_core_wrap:
             raise TypeError("basis dtype {} not recognized.".format(basis.dtype))
 
         return Ns
+
+    @cython.boundscheck(False)
+    def make_basis_blocks(self,_np.ndarray basis,int N_p):
+        cdef _np.ndarray basis_begin = _np.zeros(2**N_p,dtype=_np.intp)
+        cdef _np.ndarray basis_end = _np.zeros(2**N_p,dtype=_np.intp)
+        cdef npy_intp Ns = basis.shape[0]
+        cdef void * basis_ptr = _np.PyArray_GETPTR1(basis,0)
+        cdef void * B = self._basis_core
+        cdef npy_intp * basis_begin_ptr = <npy_intp *>_np.PyArray_GETPTR1(basis_begin,0)
+        cdef npy_intp * basis_end_ptr = <npy_intp *>_np.PyArray_GETPTR1(basis_end,0)
+        cdef int err = 0;
+
+        if not basis.flags["C_CONTIGUOUS"]:
+            raise ValueError("basis array must be C-contiguous")
+
+        if basis.dtype == uint32:
+            with nogil:
+                err = general_make_basis_blocks(N_p,Ns,<uint32_t*>basis_ptr,basis_begin_ptr,basis_end_ptr)
+        elif basis.dtype == uint64:
+            with nogil:
+                err = general_make_basis_blocks(N_p,Ns,<uint64_t*>basis_ptr,basis_begin_ptr,basis_end_ptr)
+        elif basis.dtype == uint256:
+            with nogil:
+                err = general_make_basis_blocks(N_p,Ns,<uint256_t*>basis_ptr,basis_begin_ptr,basis_end_ptr)
+        elif basis.dtype == uint1024:
+            with nogil:
+                err = general_make_basis_blocks(N_p,Ns,<uint1024_t*>basis_ptr,basis_begin_ptr,basis_end_ptr)
+        elif basis.dtype == uint4096:
+            with nogil:
+                err = general_make_basis_blocks(N_p,Ns,<uint4096_t*>basis_ptr,basis_begin_ptr,basis_end_ptr)
+        elif basis.dtype == uint16384:
+            with nogil:
+                err = general_make_basis_blocks(N_p,Ns,<uint16384_t*>basis_ptr,basis_begin_ptr,basis_end_ptr)
+        else:
+            raise TypeError("basis dtype {} not recognized.".format(basis.dtype))
+
+        if err != 0:
+            raise ValueError("overflow in integer conversion.")
+
+        return basis_begin,basis_end
+
 
 
     @cython.boundscheck(False)

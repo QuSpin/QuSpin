@@ -24,6 +24,9 @@ int general_op(general_basis_core<I,P> *B,
 						  const bool full_basis,
 						  const npy_intp Ns,
 						  const I basis[],
+						  // const npy_intp basis_begin[],
+						  // const npy_intp basis_end[],
+						  // const int N_p,
 						  const J n[],
 						  		K row[],
 						  		K col[],
@@ -34,8 +37,14 @@ int general_op(general_basis_core<I,P> *B,
 	#pragma omp parallel 
 	{
 		const int nt = B->get_nt();
+		const int N = B->get_N();
 		const npy_intp chunk = std::max(Ns/(1000*omp_get_num_threads()),(npy_intp)1);
 		int g[__GENERAL_BASIS_CORE__max_nt];
+		double kk[__GENERAL_BASIS_CORE__max_nt];
+
+		for(int k=0;k<nt;k++)
+			kk[k] = 2.0*M_PI*B->qs[k]/B->pers[k];
+
 
 		#pragma omp for schedule(dynamic,chunk)
 		for(npy_intp i=0;i<Ns;i++){
@@ -45,7 +54,7 @@ int general_op(general_basis_core<I,P> *B,
 
 			I r = basis[i];
 			std::complex<double> m = A;
-			int local_err = B->op(r,m,n_op,opstr,indx);;
+			int local_err = B->op(r,m,n_op,opstr,indx);
 
 			if(local_err == 0){
 				P sign = 1;
@@ -61,16 +70,18 @@ int general_op(general_basis_core<I,P> *B,
 						j = Ns - (npy_intp)rr - 1;
 					}
 					else{
-						j = binary_search(Ns,basis,rr);
+						// j = rep_position(basis_begin,basis_end,N,N_p,Ns,basis,rr);
+						j = rep_position(Ns,basis,rr);
 					}
 					
 				}
 				if(j >= 0){
+					double q = 0;
 					for(int k=0;k<nt;k++){
-						double q = (2.0*M_PI*B->qs[k]*g[k])/B->pers[k];
-						m *= std::exp(std::complex<double>(0,-q));
+						q += kk[k]*g[k];
 					}
-					m *= sign * std::sqrt(double(n[j])/double(n[i]));
+					m *= sign * std::sqrt(double(n[j])/double(n[i])) * std::exp(std::complex<double>(0,-q));
+					
 					local_err = check_imag(m,&M[i]);
 					col[i]=i;
 					row[i]=j;
@@ -121,9 +132,14 @@ int general_inplace_op(general_basis_core<I,P> *B,
 			#pragma omp parallel
 			{
 				const int nt = B->get_nt();
+				const npy_intp chunk = std::max(Ns/(1000*omp_get_num_threads()),(npy_intp)1);
 				int g[__GENERAL_BASIS_CORE__max_nt];
+				double kk[__GENERAL_BASIS_CORE__max_nt];
+
+				for(int k=0;k<nt;k++)
+					kk[k] = 2.0*M_PI*B->qs[k]/B->pers[k];
 				
-				#pragma omp for schedule(static)
+				#pragma omp for schedule(dynamic,chunk)
 				for(npy_intp i=0;i<Ns;i++){
 					if(err != 0){
 						continue;
@@ -142,16 +158,16 @@ int general_inplace_op(general_basis_core<I,P> *B,
 								j = Ns - (npy_intp)rr - 1;
 							}
 							else{
-								j = binary_search(Ns,basis,rr);
+								j = rep_position(Ns,basis,rr);
 							}
 						}
 						if(j >= 0){
+							double q = 0;
 							for(int k=0;k<nt;k++){
-								double q = (2.0*M_PI*B->qs[k]*g[k])/B->pers[k];
-								m *= std::exp(std::complex<double>(0,-q));
+								q += kk[k]*g[k];								
 							}
+							m *= sign * std::sqrt(double(n[j])/double(n[i])) * std::exp(std::complex<double>(0,-q));
 
-							m *= sign * std::sqrt(double(n[j])/double(n[i]));
 							const K * v_in_col  = v_in  + j * nvecs;
 								  K * v_out_row = v_out + i * nvecs;
 
@@ -175,9 +191,14 @@ int general_inplace_op(general_basis_core<I,P> *B,
 			#pragma omp parallel
 			{
 				const int nt = B->get_nt();
+				const npy_intp chunk = std::max(Ns/(1000*omp_get_num_threads()),(npy_intp)1);
 				int g[__GENERAL_BASIS_CORE__max_nt];
+				double kk[__GENERAL_BASIS_CORE__max_nt];
+
+				for(int k=0;k<nt;k++)
+					kk[k] = 2.0*M_PI*B->qs[k]/B->pers[k];
 				
-				#pragma omp for schedule(static)
+				#pragma omp for schedule(dynamic,chunk)
 				for(npy_intp i=0;i<Ns;i++){
 					if(err != 0){
 						continue;
@@ -197,18 +218,17 @@ int general_inplace_op(general_basis_core<I,P> *B,
 								j = Ns - (npy_intp)rr - 1;
 							}
 							else{
-								j = binary_search(Ns,basis,rr);
+								j = rep_position(Ns,basis,rr);
 							}
 							
 						}
 
 						if(j >= 0){
+							double q = 0;
 							for(int k=0;k<nt;k++){
-								double q = (2.0*M_PI*B->qs[k]*g[k])/B->pers[k];
-								m *= std::exp(std::complex<double>(0,-q));
+								q += kk[k]*g[k];								
 							}
-
-							m *= sign * std::sqrt(double(n[j])/double(n[i]));
+							m *= sign * std::sqrt(double(n[j])/double(n[i])) * std::exp(std::complex<double>(0,-q));
 
 							const K * v_in_col  = v_in  + j * nvecs;
 								  K * v_out_row = v_out + i * nvecs;
@@ -234,9 +254,14 @@ int general_inplace_op(general_basis_core<I,P> *B,
 			#pragma omp parallel
 			{
 				const int nt = B->get_nt();
+				const npy_intp chunk = std::max(Ns/(1000*omp_get_num_threads()),(npy_intp)1);
 				int g[__GENERAL_BASIS_CORE__max_nt];
+				double kk[__GENERAL_BASIS_CORE__max_nt];
+
+				for(int k=0;k<nt;k++)
+					kk[k] = 2.0*M_PI*B->qs[k]/B->pers[k];
 				
-				#pragma omp for schedule(static)
+				#pragma omp for schedule(dynamic,chunk)
 				for(npy_intp i=0;i<Ns;i++){
 					if(err != 0){
 						continue;
@@ -256,18 +281,17 @@ int general_inplace_op(general_basis_core<I,P> *B,
 								j = Ns - (npy_intp)rr - 1;
 							}
 							else{
-								j = binary_search(Ns,basis,rr);
+								j = rep_position(Ns,basis,rr);
 							}
 							
 						}
 
 						if(j >= 0){
+							double q = 0;
 							for(int k=0;k<nt;k++){
-								double q = (2.0*M_PI*B->qs[k]*g[k])/B->pers[k];
-								m *= std::exp(std::complex<double>(0,-q));
+								q += kk[k]*g[k];								
 							}
-
-							m *= sign * std::sqrt(double(n[j])/double(n[i]));
+							m *= sign * std::sqrt(double(n[j])/double(n[i])) * std::exp(std::complex<double>(0,-q));
 
 							const K * v_in_col  = v_in  + i * nvecs;
 								  K * v_out_row = v_out + j * nvecs;
@@ -291,9 +315,14 @@ int general_inplace_op(general_basis_core<I,P> *B,
 			#pragma omp parallel
 			{
 				const int nt = B->get_nt();
+				const npy_intp chunk = std::max(Ns/(1000*omp_get_num_threads()),(npy_intp)1);
 				int g[__GENERAL_BASIS_CORE__max_nt];
+				double kk[__GENERAL_BASIS_CORE__max_nt];
+
+				for(int k=0;k<nt;k++)
+					kk[k] = 2.0*M_PI*B->qs[k]/B->pers[k];
 				
-				#pragma omp for schedule(static)
+				#pragma omp for schedule(dynamic,chunk)
 				for(npy_intp i=0;i<Ns;i++){
 					if(err != 0){
 						continue;
@@ -313,18 +342,17 @@ int general_inplace_op(general_basis_core<I,P> *B,
 								j = Ns - (npy_intp)rr - 1;
 							}
 							else{
-								j = binary_search(Ns,basis,rr);
+								j = rep_position(Ns,basis,rr);
 							}
 							
 						}
 
 						if(j >= 0){
+							double q = 0;
 							for(int k=0;k<nt;k++){
-								double q = (2.0*M_PI*B->qs[k]*g[k])/B->pers[k];
-								m *= std::exp(std::complex<double>(0,-q));
+								q += kk[k]*g[k];								
 							}
-
-							m *= sign * std::sqrt(double(n[j])/double(n[i]));
+							m *= sign * std::sqrt(double(n[j])/double(n[i])) * std::exp(std::complex<double>(0,-q));
 
 							const K * v_in_col  = v_in  + i * nvecs;
 								  K * v_out_row = v_out + j * nvecs;

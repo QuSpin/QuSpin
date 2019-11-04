@@ -13,6 +13,7 @@ cdef extern from "general_basis_core.h" namespace "basis_general":
 cdef extern from "make_general_basis.h" namespace "basis_general":
     npy_intp make_basis[I,J](general_basis_core[I]*,npy_intp,npy_intp,I[], J[]) nogil
     npy_intp make_basis_pcon[I,J](general_basis_core[I]*,npy_intp,npy_intp,I,I[], J[]) nogil
+    int general_make_basis_blocks[I](const int,const npy_intp,const I[],npy_intp[],npy_intp[]) nogil
 
 cdef extern from "general_basis_op.h" namespace "basis_general":
     int general_op[I,J,K,T](general_basis_core[I] *B,const int,const char[], const int[],
@@ -39,7 +40,7 @@ cdef extern from "general_basis_get_amp.h" namespace "basis_general":
 
 
 cdef extern from "misc.h" namespace "basis_general":
-    K binary_search[K,I](const K,const I[],const I) nogil
+    K rep_position[K,I](const K,const I[],const I) nogil
 
 
 cdef extern from "general_basis_rep.h" namespace "basis_general":
