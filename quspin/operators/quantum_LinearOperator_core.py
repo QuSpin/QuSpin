@@ -337,11 +337,11 @@ class quantum_LinearOperator(LinearOperator):
 
 		other = _np.asanyarray(other)
 		result_dtype = _np.result_type(self._dtype,other.dtype)
-		other = _np.ascontiguousarray(other,dtype=result_dtype)
-		new_other = _np.zeros_like(other,dtype=result_dtype)
+		other = other.astype(result_dtype,copy=False,order="C")
+		new_other = _np.zeros_like(other)
 		
-		if self.diagonal is not None:
-			_np.multiply(other.T,self.diagonal,out=new_other.T)
+		if self._diagonal is not None:
+			_np.multiply(other.T,self._diagonal,out=new_other.T)
 
 		for opstr,indx,J in self._static_list:
 			self.basis.inplace_Op(other,opstr, indx, J, self._dtype,
