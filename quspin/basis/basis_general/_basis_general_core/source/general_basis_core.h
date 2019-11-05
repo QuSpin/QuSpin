@@ -44,6 +44,7 @@ class general_basis_core{
 		virtual void map_state(I[],npy_intp,int,P[]) = 0;
 		virtual I map_state(I,int,P&) = 0;
 		virtual std::vector<int> count_particles(const I s) = 0;
+		virtual npy_intp get_prefix(const I s,const int N_p) = 0;
 		// virtual void print(I) = 0;
 		virtual int get_N() const{
 			return N;

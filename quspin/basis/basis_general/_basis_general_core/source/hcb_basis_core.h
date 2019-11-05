@@ -71,6 +71,10 @@ class hcb_basis_core : public general_basis_core<I,P>
 
 		~hcb_basis_core() {}
 
+		npy_intp get_prefix(const I s,const int N_p){
+			return integer_cast<npy_intp,I>(s >> (general_basis_core<I,P>::N - N_p));
+		}
+
 		I map_state(I s,int n_map,P &sign){
 			if(general_basis_core<I,P>::nt<=0){
 				return s;

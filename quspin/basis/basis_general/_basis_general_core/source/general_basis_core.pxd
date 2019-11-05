@@ -2,6 +2,7 @@
 from general_basis_types cimport *
 from libcpp.vector cimport vector
 from libcpp.set cimport set
+from numpy cimport PyArray_Descr,PyArray_DESCR,ndarray
 
 
 cdef extern from "general_basis_core.h" namespace "basis_general":
@@ -13,13 +14,18 @@ cdef extern from "general_basis_core.h" namespace "basis_general":
 cdef extern from "make_general_basis.h" namespace "basis_general":
     npy_intp make_basis[I,J](general_basis_core[I]*,npy_intp,npy_intp,I[], J[]) nogil
     npy_intp make_basis_pcon[I,J](general_basis_core[I]*,npy_intp,npy_intp,I,I[], J[]) nogil
-    int general_make_basis_blocks[I](const int,const npy_intp,const I[],npy_intp[],npy_intp[]) nogil
+    int general_make_basis_blocks[I](general_basis_core[I] *B,const int,const npy_intp,const I[],npy_intp[],npy_intp[]) nogil
 
 cdef extern from "general_basis_op.h" namespace "basis_general":
     int general_op[I,J,K,T](general_basis_core[I] *B,const int,const char[], const int[],
                           const double complex, const bool, const npy_intp, const I[], const J[], K[], K[], T[]) nogil
-    int general_inplace_op[I,J,K](general_basis_core[I] *B,const bool,const bool,const int,const char[], const int[],
-                          const double complex, const bool, const npy_intp,const npy_intp, const I[], const J[],const K[], K[]) nogil
+    int general_op[I,J,K,T](general_basis_core[I] *B,const int,const char[], const int[],
+                          const double complex, const bool, const npy_intp, const I[], const J[],
+                          const npy_intp[],const npy_intp[],const int, K[], K[], T[]) nogil
+
+    int general_inplace_op[I,J](general_basis_core[I] *B,const bool,const bool,const int,const char[], const int[],
+                          void*, const bool, const npy_intp,const npy_intp, const I[], const J[],
+                          const npy_intp[],const npy_intp[],const int,PyArray_Descr*,void*,void*) nogil
     int general_op_bra_ket[I,T](general_basis_core[I] *B,const int,const char[], const int[],
                           const double complex, const npy_intp, const I[], I[], T[]) nogil
     int general_op_bra_ket_pcon[I,T](general_basis_core[I] *B,const int,const char[], const int[],
@@ -139,3 +145,5 @@ cdef inline void bitwise_right_shift_op_core(state_type * x1_ptr, shift_type * x
         bitwise_shift_op(x1_ptr,x2_ptr, where_ptr,out_ptr, Ns, op[0])
 
 
+cdef inline PyArray_Descr * get_Descr(ndarray arr):
+    return PyArray_DESCR(arr)

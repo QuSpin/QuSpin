@@ -59,7 +59,8 @@ class hcb_basis_general(basis_general):
 		self._N = N
 		self._Ns_block_est=self._Ns
 		self._Np = Nb
-		
+		self._sps=2
+		self._allowed_ops=set(["I","x","y","z","+","-","n"])	
 
 		# make the basis; make() is function method of base_general
 		if _make_basis:	
@@ -69,8 +70,7 @@ class hcb_basis_general(basis_general):
 			self._basis=basis_zeros(self._Ns,dtype=self._basis_dtype)
 			self._n=_np.zeros(self._Ns,dtype=self._n_dtype)
 			
-		self._sps=2
-		self._allowed_ops=set(["I","x","y","z","+","-","n"])
+
 		
 
 	def __setstate__(self,state):

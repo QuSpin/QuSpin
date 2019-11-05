@@ -36,16 +36,17 @@ class user_basis_core : public general_basis_core<I,P>
 		op_func_type op_func;
 		count_particles_type count_particles_func;
 		check_state_nosymm_type pre_check_state;
-		const int n_sectors;
+		const int n_sectors,sps;
 		I *ns_args,*precs_args,*op_args,*count_particles_args;
 		I **maps_args;
+		std::vector<I> M;
 
 
-		user_basis_core(const int _N,const int _nt,
+		user_basis_core(const int _N,const int _nt,const int _sps,
 			void * _map_funcs, const int _pers[], const int _qs[], I** _maps_args, 
 			const int _n_sectors,size_t _next_state,I *_ns_args,size_t _pre_check_state,
 			I* _precs_args,size_t _count_particles,I *_count_particles_args,size_t _op_func,I *_op_args) : \
-		general_basis_core<I,P>::general_basis_core(_N,_nt,NULL,_pers,_qs,true), n_sectors(_n_sectors)
+		general_basis_core<I,P>::general_basis_core(_N,_nt,NULL,_pers,_qs,true), n_sectors(_n_sectors), sps(_sps)
 		{
 			map_funcs = (map_type*)_map_funcs;
 			maps_args = _maps_args;
@@ -57,10 +58,24 @@ class user_basis_core : public general_basis_core<I,P>
 			pre_check_state = (check_state_nosymm_type)_pre_check_state;
 			precs_args = _precs_args;
 			count_particles_args = _count_particles_args;
-			
+
+			M.resize(_N);
+			M[0] = (I)1;
+			for(int i=1;i<_N;i++){
+				M[i] = (M[i-1] * (I)_sps);
+			}
 		}
 
 		~user_basis_core() {}
+
+		npy_intp get_prefix(const I s,const int N_p){
+			if(sps>2){
+				return integer_cast<npy_intp,I>(s / M[general_basis_core<I,P>::N - N_p]);
+			}
+			else{
+				return integer_cast<npy_intp,I>(s >> (general_basis_core<I,P>::N - N_p));
+			}
+		}
 
 		I map_state(I s,int n_map,P &phase){
 			if(general_basis_core<I,P>::nt<=0){

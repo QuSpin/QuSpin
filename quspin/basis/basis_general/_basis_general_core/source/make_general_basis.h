@@ -18,20 +18,14 @@
 namespace basis_general {
 
 
-template<class I>
-int general_make_basis_blocks(const int N_p,const npy_intp Ns,const I basis[],npy_intp basis_begin[],npy_intp basis_end[]){
+template<class I,class P>
+int general_make_basis_blocks(general_basis_core<I,P> *B,const int N_p,const npy_intp Ns,const I basis[],npy_intp basis_begin[],npy_intp basis_end[]){
 
-	int N = 0;
-	I s = basis[0];
-	while(s>0){
-		N++; s >>= 1;
-	}
-	const int M = (N-N_p);
 
 	npy_intp begin = 0;
 	npy_intp end   = 0;
 
-	npy_intp s_p = integer_cast<npy_intp,I>(basis[0] >> M);
+	npy_intp s_p = B->get_prefix(basis[0],N_p);
 	npy_intp s_p_next = 0;
 
 	if(s_p < 0){
@@ -39,7 +33,7 @@ int general_make_basis_blocks(const int N_p,const npy_intp Ns,const I basis[],np
 	}
 
 	for(npy_intp i=0;i<Ns;i++){
-		s_p_next = integer_cast<npy_intp,I>(basis[i] >> M);
+		s_p_next = B->get_prefix(basis[i],N_p);
 		if(s_p_next < 0){
 			return -1;
 		}
@@ -56,6 +50,7 @@ int general_make_basis_blocks(const int N_p,const npy_intp Ns,const I basis[],np
 	
 	basis_begin[s_p_next] = begin;
 	basis_end[s_p_next] = end;
+
 
 	return 0;
 }

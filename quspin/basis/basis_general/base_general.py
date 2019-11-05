@@ -266,7 +266,8 @@ class basis_general(lattice_basis):
 		row = _np.zeros(self._Ns,dtype=self._index_type)
 		ME = _np.zeros(self._Ns,dtype=dtype)
 
-		self._core.op(row,col,ME,opstr,indx,J,self._basis,self._n)
+		self._core.op(row,col,ME,opstr,indx,J,self._basis,self._n,
+			self._basis_begin,self._basis_end,self._N_p)
 
 		mask = _np.logical_not(_np.logical_or(_np.isnan(ME),_np.abs(ME)==0.0))
 		col = col[mask]
@@ -296,7 +297,8 @@ class basis_general(lattice_basis):
 
 		indx = _np.ascontiguousarray(indx,dtype=_np.int32)
 
-		self._core.inplace_op(v_in.reshape((self._Ns,-1)),v_out.reshape((self._Ns,-1)),conjugated,transposed,opstr,indx,J,self._basis,self._n)
+		self._core.inplace_op(v_in.reshape((self._Ns,-1)),v_out.reshape((self._Ns,-1)),
+			conjugated,transposed,opstr,indx,J,self._basis,self._n,self._basis_begin,self._basis_end,self._N_p)
 
 		return v_out
 	
@@ -395,7 +397,8 @@ class basis_general(lattice_basis):
 
 		if pcon==True:
 			if self._basis_pcon is None:
-				self._basis_pcon = self.__class__(**self._pcon_args)
+				self._basis_pcon = self.__class__(**self._pcon_args,make_basis=False)
+				self._basis_pcon.make(N_p=0)
 
 			basis_pcon = self._basis_pcon._basis
 
@@ -472,18 +475,26 @@ class basis_general(lattice_basis):
 		return static_blocks,dynamic_blocks
 
 
-	def make(self,Ns_block_est=None,N_A=None):
+	def make(self,Ns_block_est=None,N_p=None):
 		"""Creates the entire basis by calling the basis constructor.
 
 		Parameters
 		-----------
 		Ns_block_est: int, optional
 			Overwrites the internal estimate of the size of the reduced Hilbert space for the given symmetries. This can be used to help conserve memory if the exact size of the H-space is known ahead of time. 
-				
+		N_p: int, optional
+			number of bits to use in the prefix label used to generate blocks for searching positions of representatives.
+
 		Returns
 		--------
 		int
 			Total number of states in the (symmetry-reduced) Hilbert space.
+
+		Notes
+		-----
+		The memory stored in the basis grows exponentially as exactly :math:`2^{N_p+1}`. The default behavior is to use `N_p` such that 
+		the size of the stored information for the representative bounds is approximately as large as the basis. This is not as effective
+		for basis which small particle numbers as the blocks have very uneven sizes. To not use the blocks just set N_p=0. 
 
 		Examples
 		--------
@@ -548,22 +559,51 @@ class basis_general(lattice_basis):
 		self._reduce_n_dtype()
 
 		self._made_basis = True
-
+		self.make_basis_blocks(N_p=N_p)
 
 	def make_basis_blocks(self,N_p=None):
+		"""Creates/modifies the bounds for representatives based on prefix tages.
+
+		Parameters
+		-----------
+		N_p: int, optional
+			number of bits to use in the prefix label used to generate blocks for searching positions of representatives.
+
+		Notes
+		-----
+		The memory stored in the basis grows exponentially as exactly :math:`2^{N_p+1}`. The default behavior is to use `N_p` such that 
+		the size of the stored information for the representative bounds is approximately as large as the basis. This is not as effective
+		for basis which small particle numbers as the blocks have very uneven sizes. To not use the blocks just set N_p=0. 
+
+		Examples
+		--------
+		
+		>>> N, Nup = 8, 4
+		>>> basis=spin_basis_general(N,Nup=Nup,make_basis=False)
+		>>> print(basis)
+		>>> basis.make()
+		>>> print(basis)
+
+		"""
 		if not self._made_basis:
 			raise ValueError("reference states are not constructed yet. basis must be constructed before calculating blocks")
 
+		sps = self.sps
+		if sps is None:
+			sps = 2
+
 		if N_p is None:
-			N_p = int(np.floor(np.log2(self._Ns)))-1
+			N_p = int(_np.floor(_np.log(self._Ns//2+1)/_np.log(sps)))
 		else:
 			N_p = int(N_p)
 
-		self._N_p = max(N_p,0)
+		if len(self._pers) == 0 and self._Np is None:
+			N_p = 0 # do not use blocks for full basis
+
+		self._N_p = min(max(N_p,0),self.N)
 
 		if self._N_p > 0:
-
-			self._basis_begin,self._basis_end = self._core.make_basis_blocks(self._basis,self._N_p)
+			self._basis_begin,self._basis_end = self._core.make_basis_blocks(self._N_p,self._basis)
 		else:
 			self._basis_begin = _np.array([],dtype=_np.intp)
 			self._basis_end   = _np.array([],dtype=_np.intp)

@@ -28,7 +28,7 @@ def cython_files():
     package_dir = os.path.expandvars(package_dir)
 
     cython_src = glob.glob(os.path.join(package_dir,"*.pyx"))
-    # cython_src = [os.path.join(package_dir,"hcb_core.pyx")]
+    # cython_src = [os.path.join(package_dir,"hcb_core.pyx"),os.path.join(package_dir,"higher_spin_core.pyx")]
     # cython_src = [os.path.join(package_dir,"general_basis_utils.pyx")]
 
     include_dir = os.path.join(package_dir,"source")
@@ -56,7 +56,6 @@ def configuration(parent_package='', top_path=None):
     package_dir = os.path.expandvars(package_dir)
 
     depends = glob.glob(os.path.join(package_dir,"source","*.h"))
-    user_header = os.path.join(package_dir,"source","user_basis_core.h")
 
     all_headers = set(glob.glob(os.path.join(package_dir,"source","*.h")))
 
@@ -67,8 +66,8 @@ def configuration(parent_package='', top_path=None):
     src_spec_headers.remove(os.path.join(package_dir,"source","general_basis_core.h"))
 
     # remove specific headers from all the headers to get the shared headers.
+    
     global_headers = list(all_headers - src_spec_headers)
-
 
     extension_kwargs = dict(include_dirs=get_include_dirs(),
                             extra_compile_args=extra_compile_args,
@@ -112,7 +111,9 @@ def configuration(parent_package='', top_path=None):
         depends=depends,**extension_kwargs)
 
     user_src = os.path.join(package_dir,"user_core.cpp") 
-    config.add_extension('user_core',sources=user_src,depends=[user_header],**extension_kwargs)
+    user_src_header = os.path.join(package_dir,"source","user_basis_core.h")
+    depends = global_headers+[user_src_header]
+    config.add_extension('user_core',sources=user_src,depends=depends,**extension_kwargs)
 
     return config
 
