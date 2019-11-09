@@ -318,7 +318,7 @@ cdef class general_basis_core_wrap:
         if not v_out.flags["CARRAY"]:
            raise ValueError("'v_out' array must be writable and C-contiguous")
 
-        if not basis.flags["C C_CONTIGUOUS"]:
+        if not basis.flags["C_CONTIGUOUS"]:
             raise ValueError("basis array must be C-contiguous")
 
         if basis.dtype == uint32:

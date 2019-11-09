@@ -13,6 +13,29 @@ namespace basis_general
 typedef std::complex<double> npy_cdouble_wrapper;
 typedef std::complex<float> npy_cfloat_wrapper;
 
+namespace complex_ops
+{
+
+inline npy_cdouble_wrapper exp(npy_cdouble_wrapper z){
+  return std::exp(z);
+}
+
+inline npy_cfloat_wrapper exp(npy_cfloat_wrapper z){
+  return std::exp(z);
+}
+
+inline npy_cdouble_wrapper conj(npy_cdouble_wrapper z){
+  return std::conj(z);
+}
+
+inline npy_cfloat_wrapper conj(npy_cfloat_wrapper z){
+  return std::conj(z);
+} 
+
+
+}
+
+
 }
 
 namespace basis_general_addition 

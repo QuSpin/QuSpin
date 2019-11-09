@@ -191,9 +191,12 @@ class quantum_LinearOperator(LinearOperator):
 	@property
 	def diagonal(self):
 		"""numpy.ndarray: static diagonal part of the linear operator. """
-		diagonal_view=self._diagonal[:]
-		diagonal_view.setflags(write=0,uic=0)
-		return diagonal_view
+		if self._diagonal is not None:
+			diagonal_view=self._diagonal[:]
+			diagonal_view.setflags(write=0,uic=0)
+			return diagonal_view
+		else:
+			return None
 
 	def set_diagonal(self,diagonal,copy=True):
 		"""Sets the diagonal part of the quantum_LinearOperator.
