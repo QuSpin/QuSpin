@@ -276,7 +276,9 @@ class basis_general(lattice_basis):
 
 		return ME,row,col
 
-	def _inplace_Op(self,v_in,opstr,indx,J,dtype,transposed=False,conjugated=False,v_out=None):
+	
+	def _inplace_Op(self,v_in,op_list,dtype,transposed=False,conjugated=False,v_out=None,a=1.0):
+
 		v_in = _np.asanyarray(v_in)
 		
 		result_dtype = _np.result_type(v_in.dtype,dtype)
@@ -289,19 +291,24 @@ class basis_general(lattice_basis):
 			v_out = _np.zeros_like(v_in,dtype=result_dtype,order="C")
 		else:
 			if v_out.dtype != result_dtype:
-				raise TypeError
+				raise TypeError("v_out does not have the correct data type.")
 			if not v_out.flags["CARRAY"]:
-				raise ValueError
+				raise ValueError("v_out is not a writable C-contiguous array")
 			if v_out.shape != v_in.shape:
-				raise ValueError("v_in.shape != v_out.shape")
+				raise ValueError("invalid shape for v_out and v_in: v_in.shape != v_out.shape")
 
-		indx = _np.ascontiguousarray(indx,dtype=_np.int32)
+		v_out = v_out.reshape((self.Ns,-1))
+		v_in = v_in.reshape((self.Ns,-1))
 
-		self._core.inplace_op(v_in.reshape((self._Ns,-1)),v_out.reshape((self._Ns,-1)),
-			conjugated,transposed,opstr,indx,J,self._basis,self._n,self._basis_begin,self._basis_end,self._N_p)
+		for opstr,indx,J in op_list:
+			indx = _np.ascontiguousarray(indx,dtype=_np.int32)
 
-		return v_out
-	
+			self._core.inplace_op(v_in,v_out,conjugated,transposed,opstr,indx,a*J,
+				self._basis,self._n,self._basis_begin,self._basis_end,self._N_p)
+
+		return v_out.squeeze()
+
+
 	def get_proj(self,dtype,pcon=False):
 		"""Calculates transformation/projector from symmetry-reduced basis to full (symmetry-free) basis.
 
@@ -513,8 +520,8 @@ class basis_general(lattice_basis):
 			else:
 				Ns = self._Ns_block_est
 		else:
-			Ns = max(self._Ns,1000)
-		
+			Ns = max([self._Ns,1000,self._Ns_block_est])
+
 		# preallocate variables
 		basis = basis_zeros(Ns,dtype=self._basis_dtype)
 		n = _np.zeros(Ns,dtype=self._n_dtype)
@@ -529,13 +536,16 @@ class basis_general(lattice_basis):
 
 		if Ns < 0:
 				raise ValueError("estimate for size of reduced Hilbert-space is too low, please double check that transformation mappings are correct or use 'Ns_block_est' argument to give an upper bound of the block size.")
-
+		print("here")
 		# sort basis
 		if type(self._Np) is int or type(self._Np) is tuple or self._Np is None:
 			if Ns > 0:
-				self._basis = basis[Ns-1::-1].copy()
-				self._n = n[Ns-1::-1].copy()
-				if Np_list is not None: self._Np_list = Np_list[Ns-1::-1].copy()
+				# self._basis = basis[Ns-1::-1].copy()
+				# self._n = n[Ns-1::-1].copy()
+				# if Np_list is not None: self._Np_list = Np_list[Ns-1::-1].copy()
+				self._basis = basis[:Ns].copy()
+				self._n = n[:Ns].copy()
+				if Np_list is not None: self._Np_list = Np_list[:Ns].copy()
 			else:
 				self._basis = _np.array([],dtype=basis.dtype)
 				self._n = _np.array([],dtype=n.dtype)
@@ -599,7 +609,7 @@ class basis_general(lattice_basis):
 
 		if len(self._pers) == 0 and self._Np is None:
 			N_p = 0 # do not use blocks for full basis
-
+		print(N_p)
 		self._N_p = min(max(N_p,0),self.N)
 
 		if self._N_p > 0:

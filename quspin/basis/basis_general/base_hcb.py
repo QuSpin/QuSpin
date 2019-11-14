@@ -55,7 +55,6 @@ class hcb_basis_general(basis_general):
 		# create basis constructor
 		self._basis_dtype = get_basis_type(N,None,2)
 		self._core = hcb_basis_core_wrap(self._basis_dtype,N,self._maps,self._pers,self._qs)
-
 		self._N = N
 		self._Ns_block_est=self._Ns
 		self._Np = Nb

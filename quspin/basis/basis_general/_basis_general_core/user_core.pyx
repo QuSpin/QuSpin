@@ -126,11 +126,11 @@ cdef class user_core_wrap(general_basis_core_wrap):
             count_particles_args_ptr = _np.PyArray_DATA(self.count_particles_args_arr)
 
         if dtype == uint32:
-            self._basis_core = <void *> new user_basis_core[uint32_t](N,self.sps,self._nt,maps_ptr,pers_ptr,qs_ptr,<uint32_t**>&self.maps_args_vector[0],
+            self._basis_core = <void *> new user_basis_core[uint32_t](N,self._sps,self._nt,maps_ptr,pers_ptr,qs_ptr,<uint32_t**>&self.maps_args_vector[0],
                 n_sectors,next_state_add,<uint32_t*>ns_args_ptr,pre_check_state_add,<uint32_t*>precs_args_ptr,
                 count_particles_add,<uint32_t*>count_particles_args_ptr,op_func_add,<uint32_t*>op_args_ptr)
         elif dtype == uint64:
-            self._basis_core = <void *> new user_basis_core[uint64_t](N,self.sps,self._nt,maps_ptr,pers_ptr,qs_ptr,<uint64_t**>&self.maps_args_vector[0],
+            self._basis_core = <void *> new user_basis_core[uint64_t](N,self._sps,self._nt,maps_ptr,pers_ptr,qs_ptr,<uint64_t**>&self.maps_args_vector[0],
                 n_sectors,next_state_add,<uint64_t*>ns_args_ptr,pre_check_state_add,<uint64_t*>precs_args_ptr,
                 count_particles_add,<uint64_t*>count_particles_args_ptr,op_func_add,<uint64_t*>op_args_ptr)
         else:

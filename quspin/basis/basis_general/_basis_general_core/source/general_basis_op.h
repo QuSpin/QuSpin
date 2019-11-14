@@ -37,7 +37,7 @@ struct transpose_indices<true> {
 	{
 		npy_intp k = j;
 		j = i;
-		i = j;
+		i = k;
 	}
 };
 
@@ -46,23 +46,21 @@ struct transpose_indices<true> {
 template<bool conjugate>
 struct conj
 {
-	inline static npy_cdouble_wrapper call(npy_cdouble_wrapper &z){
-		return z;
-	}
+	inline static void call(std::complex<double> &z){}
 };
 
 template<>
 struct conj<true>
 {
-	inline static npy_cdouble_wrapper call(npy_cdouble_wrapper &z){
-		return complex_ops::conj(z);
+	inline static void call(std::complex<double> &z){
+		z = std::conj(z);
 	}
 };
 
 template<class I,class P,
 		bool full_basis,
 		bool symmetries,
-		bool braket_basis>
+		bool bracket_basis>
 struct get_index {};
 
 
@@ -183,8 +181,7 @@ struct scale_matrix_ele
 							const J n[],
 							const int g[],
 							const double kk[],
-							npy_cdouble_wrapper &m) {}
-
+							std::complex<double> &m) {}
 };
 
 template<class J,class P>
@@ -197,25 +194,31 @@ struct scale_matrix_ele<J,P,true>
 							const J n[],
 							const int g[],
 							const double kk[],
-							npy_cdouble_wrapper &m) 
+							std::complex<double> &m) 
 	{
 		double q = 0;
 		for(int k=0;k<nt;k++){
 			q += kk[k]*g[k];								
 		}
-		m *= sign * std::sqrt(double(n[j])/double(n[i])) * complex_ops::exp(npy_cdouble_wrapper(0,-q));
+		m *= sign * std::sqrt(double(n[j])/double(n[i])) * std::exp(std::complex<double>(0,-q));
 	}	
 };
 
 
+
+
+
+
+
+
 template<class I, class J, class K,class P=signed char,
-			bool full_basis,bool symmetries,bool braket_basis,
+			bool full_basis,bool symmetries,bool bracket_basis,
 			bool transpose,bool conjugate>
 int general_inplace_op_core(general_basis_core<I,P> *B,
 								  const int n_op,
 								  const char opstr[],
 								  const int indx[],
-								  const npy_cdouble_wrapper A,
+								  const std::complex<double> A,
 								  const npy_intp Ns,
 								  const npy_intp nvecs,
 								  const I basis[],
@@ -227,54 +230,68 @@ int general_inplace_op_core(general_basis_core<I,P> *B,
 								  		K v_out[])
 {
 	int err = 0;
-	#pragma omp parallel
+	#pragma omp parallel shared(err) firstprivate(A)
 	{
 		const int nt = B->get_nt();
-		const npy_intp chunk = std::max(Ns/(1000*omp_get_num_threads()),(npy_intp)1);
+		const int nthread = omp_get_num_threads();
+		const npy_intp chunk = std::max(Ns/(1000*nthread),(npy_intp)1);
+
+		std::complex<double> m;
 		int g[__GENERAL_BASIS_CORE__max_nt];
 		double kk[__GENERAL_BASIS_CORE__max_nt];
 
 		for(int k=0;k<nt;k++)
 			kk[k] = (2.0*M_PI*B->qs[k])/B->pers[k];
-		
+
 		#pragma omp for schedule(dynamic,chunk)
-		for(npy_intp i=0;i<Ns;i++){
+		for(npy_intp ii=0;ii<Ns;ii++){
 			if(err != 0){
 				continue;
 			}
+			
+			npy_intp i = ii;
 
-			I r = basis[i];
-			npy_cdouble_wrapper m = A;
+			const I s = basis[ii];
+			I r = s;
+			m.real(A.real());
+			m.imag(A.imag());
 			int local_err = B->op(r,m,n_op,opstr,indx);
 
 			if(local_err == 0){
 				P sign = 1;
 				npy_intp j = i;
-				bool diag = (r != basis[i]);
-				if(diag){
-					j = get_index<I,P,full_basis,symmetries,braket_basis>::call(B,nt,r,Ns,basis,basis_begin,basis_end,N_p,g,sign);
+				bool not_diag = (r != s);
+				if(not_diag){
+					j = get_index<I,P,full_basis,symmetries,bracket_basis>::call(B,nt,r,Ns,basis,basis_begin,basis_end,N_p,g,sign);
 				}
 
 				if(j >= 0){
-					if(diag){
+					if(symmetries && not_diag){
 						scale_matrix_ele<J,P,symmetries>::call(nt,i,j,sign,n,g,kk,m);						
 					}
+
 					transpose_indices<transpose>::call(i,j);
+					conj<conjugate>::call(m);
 
 					const K * v_in_col  = v_in  + i * nvecs;
 						  K * v_out_row = v_out + j * nvecs;
 
+
+					local_err = check_imag<K>(m);
+
+					if(local_err){
+						#pragma omp atomic write
+						err = local_err;						
+					}
+
 					for(int k=0;k<nvecs;k++){
-						const npy_cdouble_wrapper ME = npy_cdouble_wrapper(v_in_col[k]) * conj<conjugate>::call(m);
-						local_err = atomic_add(ME,&v_out_row[k]);
-						if(local_err){
-							break;
-						}
+						const std::complex<double> M = mul(v_in_col[k],m);
+						atomic_add(M,&v_out_row[k]);
 					}
 				}
 			}
 			else{
-				#pragma omp critical
+				#pragma omp atomic write
 				err = local_err;
 			}
 		}
@@ -282,171 +299,6 @@ int general_inplace_op_core(general_basis_core<I,P> *B,
 	return err;
 }
 
-
-
-
-template<class I, class J, class K, class T,class P=signed char>
-int general_op(general_basis_core<I,P> *B,
-						  const int n_op,
-						  const char opstr[],
-						  const int indx[],
-						  const npy_cdouble_wrapper A,
-						  const bool full_basis,
-						  const npy_intp Ns,
-						  const I basis[],
-						  const J n[],
-						  		K row[],
-						  		K col[],
-						  		T M[]
-						  )
-{
-	int err = 0;
-	#pragma omp parallel 
-	{
-		const int nt = B->get_nt();
-		const int N = B->get_N();
-		const npy_intp chunk = std::max(Ns/(1000*omp_get_num_threads()),(npy_intp)1);
-		int g[__GENERAL_BASIS_CORE__max_nt];
-		double kk[__GENERAL_BASIS_CORE__max_nt];
-
-		for(int k=0;k<nt;k++)
-			kk[k] = 2.0*M_PI*B->qs[k]/B->pers[k];
-
-
-		#pragma omp for schedule(dynamic,chunk)
-		for(npy_intp i=0;i<Ns;i++){
-			if(err != 0){
-				continue;
-			}
-
-			I r = basis[i];
-			npy_cdouble_wrapper m = A;
-			int local_err = B->op(r,m,n_op,opstr,indx);
-
-			if(local_err == 0){
-				P sign = 1;
-
-				for(int k=0;k<nt;k++){
-					g[k]=0;
-				}
-
-				K j = i;
-				if(r != basis[i]){
-					I rr = B->ref_state(r,g,sign);
-					if(full_basis){
-						j = Ns - (npy_intp)rr - 1;
-					}
-					else{
-						j = rep_position(Ns,basis,rr);
-					}
-					
-				}
-				if(j >= 0){
-					double q = 0;
-					for(int k=0;k<nt;k++){
-						q += kk[k]*g[k];
-					}
-					m *= sign * std::sqrt(double(n[j])/double(n[i])) * complex_ops::exp(npy_cdouble_wrapper(0,-q));
-					
-					local_err = check_imag(m,&M[i]);
-					col[i]=i;
-					row[i]=j;
-				}
-				else{
-					col[i] = i;
-					row[i] = i;
-					M[i] = std::numeric_limits<T>::quiet_NaN();
-				}
-			}
-			else{
-				#pragma omp critical
-				err = local_err;
-			}
-		}
-
-		
-	}
-	return err;
-}
-
-
-template<class I, class J, class K, class T,class P=signed char>
-int general_op(general_basis_core<I,P> *B,
-						  const int n_op,
-						  const char opstr[],
-						  const int indx[],
-						  const npy_cdouble_wrapper A,
-						  const bool full_basis,
-						  const npy_intp Ns,
-						  const I basis[],
-						  const J n[],
-						  const npy_intp basis_begin[],
-						  const npy_intp basis_end[],
-						  const int N_p,
-						  		K row[],
-						  		K col[],
-						  		T M[]
-						  )
-{
-	int err = 0;
-
-	#pragma omp parallel 
-	{
-		const int N = B->get_N();
-		const int nt = B->get_nt();
-
-		const npy_intp chunk = std::max(Ns/(1000*omp_get_num_threads()),(npy_intp)1);
-		int g[__GENERAL_BASIS_CORE__max_nt];
-		double kk[__GENERAL_BASIS_CORE__max_nt];
-
-		for(int k=0;k<nt;k++)
-			kk[k] = 2.0*M_PI*B->qs[k]/B->pers[k];
-
-
-		#pragma omp for schedule(dynamic,chunk)
-		for(npy_intp i=0;i<Ns;i++){
-			if(err != 0){
-				continue;
-			}
-
-			I r = basis[i];
-			npy_cdouble_wrapper m = A;
-			int local_err = B->op(r,m,n_op,opstr,indx);
-
-			if(local_err == 0){
-				P sign = 1;
-				npy_intp j = i;
-				bool diag = (r != basis[i]);
-
-				if(diag){
-					j = get_index<I,P,full_basis,symmetries,braket_basis>::call(B,nt,r,Ns,basis,basis_begin,basis_end,N_p,g,sign);
-				}
-	
-				if(j >= 0){
-					if(diag){
-						scale_matrix_ele<J,P,symmetries>::call(nt,i,j,sign,n,g,kk,m);						
-					}
-					
-					local_err = check_imag(m,&M[i]);
-					col[i] = i;
-					row[i] = j;
-				}
-				else{
-					col[i] = i;
-					row[i] = i;
-					M[i] = std::numeric_limits<double>::quiet_NaN();
-				}
-			}
-			else{
-				#pragma omp critical
-				err = local_err;
-			}
-		}
-
-		
-	}
-	return err;
-}
 
 
 
@@ -457,7 +309,7 @@ int general_inplace_op(general_basis_core<I,P> *B,
 						  const int n_op,
 						  const char opstr[],
 						  const int indx[],
-						  const npy_cdouble_wrapper A,
+						  const std::complex<double> A,
 						  const bool full_basis,
 						  const npy_intp Ns,
 						  const npy_intp nvecs,
@@ -611,17 +463,635 @@ int general_inplace_op_impl(general_basis_core<I,P> *B,
 	switch (type_num)
 	{
 		case NPY_COMPLEX128:
-			return general_inplace_op<I,J,npy_cdouble_wrapper,P>(B,conjugate,transpose,n_op,opstr,indx,*(npy_cdouble_wrapper *)A,full_basis,Ns,nvecs,basis,n,basis_begin,basis_end,N_p,(const npy_cdouble_wrapper *)v_in,(npy_cdouble_wrapper *)v_out);
+			return general_inplace_op<I,J,std::complex<double>,P>(B,conjugate,transpose,n_op,opstr,indx,*(std::complex<double> *)A,full_basis,Ns,nvecs,basis,n,basis_begin,basis_end,N_p,(const std::complex<double> *)v_in,(std::complex<double> *)v_out);
 		case NPY_FLOAT64:
-			return general_inplace_op<I,J,double,P>(B,conjugate,transpose,n_op,opstr,indx,*(npy_cdouble_wrapper *)A,full_basis,Ns,nvecs,basis,n,basis_begin,basis_end,N_p,(const double *)v_in,(double *)v_out);
+			return general_inplace_op<I,J,double,P>(B,conjugate,transpose,n_op,opstr,indx,*(std::complex<double> *)A,full_basis,Ns,nvecs,basis,n,basis_begin,basis_end,N_p,(const double *)v_in,(double *)v_out);
 		case NPY_COMPLEX64:
-			return general_inplace_op<I,J,npy_cfloat_wrapper,P>(B,conjugate,transpose,n_op,opstr,indx,*(npy_cdouble_wrapper *)A,full_basis,Ns,nvecs,basis,n,basis_begin,basis_end,N_p,(const npy_cfloat_wrapper *)v_in,(npy_cfloat_wrapper *)v_out);
+			return general_inplace_op<I,J,std::complex<float>,P>(B,conjugate,transpose,n_op,opstr,indx,*(std::complex<double> *)A,full_basis,Ns,nvecs,basis,n,basis_begin,basis_end,N_p,(const std::complex<float> *)v_in,(std::complex<float> *)v_out);
 		case NPY_FLOAT32:
-			return general_inplace_op<I,J,float,P>(B,conjugate,transpose,n_op,opstr,indx,*(npy_cdouble_wrapper *)A,full_basis,Ns,nvecs,basis,n,basis_begin,basis_end,N_p,(const float *)v_in,(float *)v_out);
+			return general_inplace_op<I,J,float,P>(B,conjugate,transpose,n_op,opstr,indx,*(std::complex<double> *)A,full_basis,Ns,nvecs,basis,n,basis_begin,basis_end,N_p,(const float *)v_in,(float *)v_out);
 		default:
 	        return -2;
 	}	
 }
+
+
+template<class I, class J, class K, class T,class P=signed char,
+		bool full_basis,bool symmetries,bool bracket_basis>
+int general_op_core(general_basis_core<I,P> *B,
+						  const int n_op,
+						  const char opstr[],
+						  const int indx[],
+						  const std::complex<double> A,
+						  const npy_intp Ns,
+						  const I basis[],
+						  const J n[],
+						  const npy_intp basis_begin[],
+						  const npy_intp basis_end[],
+						  const int N_p,
+						  		K row[],
+						  		K col[],
+						  		T M[]
+						  )
+{
+	int err = 0;
+
+	#pragma omp parallel shared(err)
+	{
+		const int N = B->get_N();
+		const int nt = B->get_nt();
+
+		const npy_intp chunk = std::max(Ns/(1000*omp_get_num_threads()),(npy_intp)1);
+		int g[__GENERAL_BASIS_CORE__max_nt];
+		double kk[__GENERAL_BASIS_CORE__max_nt];
+
+		for(int k=0;k<nt;k++)
+			kk[k] = 2.0*M_PI*B->qs[k]/B->pers[k];
+
+
+		#pragma omp for schedule(dynamic,chunk)
+		for(npy_intp i=0;i<Ns;i++){
+			if(err != 0){
+				continue;
+			}
+
+			I r = basis[i];
+			const I s = r;
+			std::complex<double> m = A;
+			int local_err = B->op(r,m,n_op,opstr,indx);
+
+			if(local_err == 0){
+				P sign = 1;
+				npy_intp j = i;
+				bool not_diag = (r != s);
+				if(not_diag){
+					j = get_index<I,P,full_basis,symmetries,bracket_basis>::call(B,nt,r,Ns,basis,basis_begin,basis_end,N_p,g,sign);
+				}
+	
+				if(j >= 0){
+					if(not_diag){
+						scale_matrix_ele<J,P,symmetries>::call(nt,i,j,sign,n,g,kk,m);						
+					}
+
+					local_err = check_imag(m,&M[i]);
+					col[i] = i;
+					row[i] = j;
+				}
+				else{
+					col[i] = i;
+					row[i] = i;
+					M[i] = std::numeric_limits<K>::quiet_NaN();
+				}
+			}
+			else{
+				#pragma omp critical
+				err = local_err;
+			}
+		}
+
+		
+	}
+	return err;
+}
+
+
+template<class I, class J, class K,class T,class P=signed char>
+int general_op(general_basis_core<I,P> *B,
+						  const int n_op,
+						  const char opstr[],
+						  const int indx[],
+						  const std::complex<double> A,
+						  const bool full_basis,
+						  const npy_intp Ns,
+						  const I basis[],
+						  const J n[],
+						  const npy_intp basis_begin[],
+						  const npy_intp basis_end[],
+						  const int N_p,
+						  		K row[],
+						  		K col[],
+						  		T M[]
+						  )
+{
+	int err = 0;
+	const int nt = B->get_nt();
+	if(full_basis){ // full_basis = true, symmetries = false, // bracket_basis = false
+		return general_op_core<I,J,K,T,P,true,false,false>(B,n_op,opstr,indx,A,Ns,basis,n,basis_begin,basis_end,N_p,row,col,M);
+	}
+	else if(nt>0){ // full_basis = false, symmetries = true 
+		if(N_p>0){ // bracket_basis = true
+			return general_op_core<I,J,K,T,P,false,true,true>(B,n_op,opstr,indx,A,Ns,basis,n,basis_begin,basis_end,N_p,row,col,M);
+		}
+		else{ // bracket_basis = false
+			return general_op_core<I,J,K,T,P,false,true,false>(B,n_op,opstr,indx,A,Ns,basis,n,basis_begin,basis_end,N_p,row,col,M);
+		}
+	}
+	else{ // full_basis = flase, symmetries = false
+		if(N_p>0){ // bracket_basis = true
+			return general_op_core<I,J,K,T,P,false,false,true>(B,n_op,opstr,indx,A,Ns,basis,n,basis_begin,basis_end,N_p,row,col,M);
+		}
+		else{ // bracket_basis = false
+			return general_op_core<I,J,K,T,P,false,false,false>(B,n_op,opstr,indx,A,Ns,basis,n,basis_begin,basis_end,N_p,row,col,M);
+		}
+	}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*
+typedef std::vector<std::complex<double>> J_list_type;
+typedef std::vector<std::vector<int>> indx_list_type;
+typedef std::vector<std::string> op_list_type;
+
+template<class I, class J, class K,class P=signed char,
+			bool full_basis,bool symmetries,bool bracket_basis,
+			bool transpose,bool conjugate>
+int general_inplace_op_core(general_basis_core<I,P> *B,
+								op_list_type op_list,
+								indx_list_type indx_list,
+								J_list_type J_list,
+								  const npy_intp Ns,
+								  const npy_intp nvecs,
+								  const I basis[],
+								  const J n[],
+								  const npy_intp basis_begin[],
+								  const npy_intp basis_end[],
+								  const int N_p,
+								  const K v_in[],
+								  		K v_out[])
+{
+	int err = 0;
+	const int nt = B->get_nt();
+	const int nthread = omp_get_max_threads();
+	const npy_intp chunk = std::max(Ns/(1000*nthread),(npy_intp)1);
+	const int n_ops = J_list.size();
+
+	std::vector<std::pair<npy_intp,K>> ME_vec(Ns);
+	std::vector<std::complex<double>> tmp(nvecs*nthread);
+
+	std::pair<npy_intp,K> * ME = &ME_vec[0];
+
+	#pragma omp parallel shared(err,ME)
+	{
+
+		std::complex<double> m;
+		K M = 0;
+		int g[__GENERAL_BASIS_CORE__max_nt];
+		double kk[__GENERAL_BASIS_CORE__max_nt];
+
+		for(int k=0;k<nt;k++)
+			kk[k] = (2.0*M_PI*B->qs[k])/B->pers[k];
+		
+
+		for(int o=0;o<n_ops;o++){
+			if(err!=0){
+				break;
+			}
+
+			const int n_op = indx_list[o].size();
+			const char * opstr = op_list[o].c_str();
+			const int * indx = indx_list[o].data();
+
+			#pragma omp for schedule(dynamic,chunk)
+			for(npy_intp ii=0;ii<Ns;ii++){
+				if(err!=0){
+					continue;
+				}
+
+				int i = ii;
+				const I s = basis[ii];
+				I r = s;
+				m = A;
+				int local_err = B->op(r,m,n_op,opstr,indx);
+
+				if(local_err == 0){
+					P sign = 1;
+					npy_intp j = i;
+					bool not_diag = (r != s);
+					if(not_diag){
+						j = get_index<I,P,full_basis,symmetries,bracket_basis>::call(B,nt,r,Ns,basis,basis_begin,basis_end,N_p,g,sign);
+					}
+
+					if(j >= 0){
+						if(not_diag){
+							scale_matrix_ele<J,P,symmetries>::call(nt,i,j,sign,n,g,kk,m);						
+						}
+						transpose_indices<transpose>::call(i,j);
+						
+						local_err = check_imag(conj<conjugate>::call(m),&M);
+						ME[ii] = std::make_pair(j,M);
+
+						if(local_err){
+							#pragma omp atomic write
+							err = local_err;
+						}
+					}
+					else{
+						M = 0;
+						ME[ii] = std::make_pair(j,M);
+					}
+				}
+				else{
+					#pragma omp atomic write
+					err = local_err;
+				}
+			}
+
+
+
+
+			if(err!=0){
+				break;
+			}
+
+
+
+		}
+
+	}
+	return err;
+}
+
+template<class I, class J, class K,class P=signed char>
+int general_inplace_op(general_basis_core<I,P> *B,
+						  const bool conjugate,
+						  const bool transpose,
+						  const bool full_basis,
+								op_list_type op_list,
+								indx_list_type indx_list,
+								J_list_type J_list,
+						  const npy_intp Ns,
+						  const npy_intp nvecs,
+						  const I basis[],
+						  const J n[],
+						  const npy_intp basis_begin[],
+						  const npy_intp basis_end[],
+						  const int N_p,
+						  const K v_in[],
+						  		K v_out[])
+{
+	int err = 0;
+	const int nt = B->get_nt();
+	if(full_basis){ // full_basis = true, symmetries = false, // bracket_basis = false
+		if(transpose){ // transpose = true
+			if(conjugate){ // conjugate = true
+				return general_inplace_op_core<I,J,K,P,true,false,false,true,true>(
+					B,op_list,indx_list,J_list,Ns,nvecs,basis,n,basis_begin,basis_end,N_p,v_in,v_out);
+			}
+			else{ // conjugate = false
+				return general_inplace_op_core<I,J,K,P,true,false,false,true,false>(
+					B,op_list,indx_list,J_list,Ns,nvecs,basis,n,basis_begin,basis_end,N_p,v_in,v_out);
+			}
+		}
+		else{ // transpose = false
+			if(conjugate){ // conjugate = true
+				return general_inplace_op_core<I,J,K,P,true,false,false,false,true>(
+					B,op_list,indx_list,J_list,Ns,nvecs,basis,n,basis_begin,basis_end,N_p,v_in,v_out);
+			}
+			else{ // conjugate = false
+				return general_inplace_op_core<I,J,K,P,true,false,false,false,false>(
+					B,op_list,indx_list,J_list,Ns,nvecs,basis,n,basis_begin,basis_end,N_p,v_in,v_out);
+			}
+		}
+	}
+	else if(nt>0){ // full_basis = false, symmetries = true 
+		if(N_p>0){ // bracket_basis = true
+			if(transpose){ // transpose = true
+				if(conjugate){ // conjugate = true
+					return general_inplace_op_core<I,J,K,P,false,true,true,true,true>(
+						B,op_list,indx_list,J_list,Ns,nvecs,basis,n,basis_begin,basis_end,N_p,v_in,v_out);
+				}
+				else{ // conjugate = false
+					return general_inplace_op_core<I,J,K,P,false,true,true,true,false>(
+						B,op_list,indx_list,J_list,Ns,nvecs,basis,n,basis_begin,basis_end,N_p,v_in,v_out);
+				}
+			}
+			else{ // transpose = false
+				if(conjugate){ // conjugate = true
+					return general_inplace_op_core<I,J,K,P,false,true,true,false,true>(
+						B,op_list,indx_list,J_list,Ns,nvecs,basis,n,basis_begin,basis_end,N_p,v_in,v_out);
+				}
+				else{ // conjugate = false
+					return general_inplace_op_core<I,J,K,P,false,true,true,false,false>(
+						B,op_list,indx_list,J_list,Ns,nvecs,basis,n,basis_begin,basis_end,N_p,v_in,v_out);
+				}
+			}
+		}
+		else{ // bracket_basis = false
+			if(transpose){ // transpose = true
+				if(conjugate){ // conjugate = true
+					return general_inplace_op_core<I,J,K,P,false,true,false,true,true>(
+						B,op_list,indx_list,J_list,Ns,nvecs,basis,n,basis_begin,basis_end,N_p,v_in,v_out);
+				}
+				else{ // conjugate = false
+					return general_inplace_op_core<I,J,K,P,false,true,false,true,false>(
+						B,op_list,indx_list,J_list,Ns,nvecs,basis,n,basis_begin,basis_end,N_p,v_in,v_out);
+				}
+			}
+			else{ // transpose = false
+				if(conjugate){ // conjugate = true
+					return general_inplace_op_core<I,J,K,P,false,true,false,false,true>(
+						B,op_list,indx_list,J_list,Ns,nvecs,basis,n,basis_begin,basis_end,N_p,v_in,v_out);
+				}
+				else{ // conjugate = false
+					return general_inplace_op_core<I,J,K,P,false,true,false,false,false>(
+						B,op_list,indx_list,J_list,Ns,nvecs,basis,n,basis_begin,basis_end,N_p,v_in,v_out);
+				}
+			}			
+		}
+	}
+	else{ // full_basis = flase, symmetries = false
+		if(N_p>0){ // bracket_basis = true
+			if(transpose){ // transpose = true
+				if(conjugate){ // conjugate = true
+					return general_inplace_op_core<I,J,K,P,false,false,true,true,true>(
+						B,op_list,indx_list,J_list,Ns,nvecs,basis,n,basis_begin,basis_end,N_p,v_in,v_out);
+				}
+				else{ // conjugate = false
+					return general_inplace_op_core<I,J,K,P,false,false,true,true,false>(
+						B,op_list,indx_list,J_list,Ns,nvecs,basis,n,basis_begin,basis_end,N_p,v_in,v_out);
+				}
+			}
+			else{ // transpose = false
+				if(conjugate){ // conjugate = true
+					return general_inplace_op_core<I,J,K,P,false,false,true,false,true>(
+						B,op_list,indx_list,J_list,Ns,nvecs,basis,n,basis_begin,basis_end,N_p,v_in,v_out);
+				}
+				else{ // conjugate = false
+					return general_inplace_op_core<I,J,K,P,false,false,true,false,false>(
+						B,op_list,indx_list,J_list,Ns,nvecs,basis,n,basis_begin,basis_end,N_p,v_in,v_out);
+				}
+			}
+		}
+		else{ // bracket_basis = false
+			if(transpose){ // transpose = true
+				if(conjugate){ // conjugate = true
+					return general_inplace_op_core<I,J,K,P,false,false,false,true,true>(
+						B,op_list,indx_list,J_list,Ns,nvecs,basis,n,basis_begin,basis_end,N_p,v_in,v_out);
+				}
+				else{ // conjugate = false
+					return general_inplace_op_core<I,J,K,P,false,false,false,true,false>(
+						B,op_list,indx_list,J_list,Ns,nvecs,basis,n,basis_begin,basis_end,N_p,v_in,v_out);
+				}
+			}
+			else{ // transpose = false
+				if(conjugate){ // conjugate = true
+					return general_inplace_op_core<I,J,K,P,false,false,false,false,true>(
+						B,op_list,indx_list,J_list,Ns,nvecs,basis,n,basis_begin,basis_end,N_p,v_in,v_out);
+				}
+				else{ // conjugate = false
+					return general_inplace_op_core<I,J,K,P,false,false,false,false,false>(
+						B,op_list,indx_list,J_list,Ns,nvecs,basis,n,basis_begin,basis_end,N_p,v_in,v_out);
+				}
+			}			
+		}
+	}
+}
+
+template<class I, class J,class P=signed char>
+int general_inplace_op_impl(general_basis_core<I,P> *B,
+						  const bool conjugate,
+						  const bool transpose,
+						  const bool full_basis,
+								op_list_type op_list,
+								indx_list_type indx_list,
+								J_list_type J_list,
+						  const npy_intp Ns,
+						  const npy_intp nvecs,
+						  const I basis[],
+						  const J n[],
+						  const npy_intp basis_begin[],
+						  const npy_intp basis_end[],
+						  const int N_p,
+						  PyArray_Descr * dtype,
+						  		void * v_in,
+						  		void * v_out)
+{
+	int type_num = dtype->type_num;
+	switch (type_num)
+	{
+		case NPY_COMPLEX128:
+			return general_inplace_op<I,J,std::complex<double>,P>(B,conjugate,transpose,op_list,indx_list,J_list,full_basis,Ns,nvecs,basis,n,basis_begin,basis_end,N_p,(const std::complex<double> *)v_in,(std::complex<double> *)v_out);
+		case NPY_FLOAT64:
+			return general_inplace_op<I,J,double,P>(B,conjugate,transpose,op_list,indx_list,J_list,full_basis,Ns,nvecs,basis,n,basis_begin,basis_end,N_p,(const double *)v_in,(double *)v_out);
+		case NPY_COMPLEX64:
+			return general_inplace_op<I,J,std::complex<float>,P>(B,conjugate,transpose,op_list,indx_list,J_list,full_basis,Ns,nvecs,basis,n,basis_begin,basis_end,N_p,(const std::complex<float> *)v_in,(std::complex<float> *)v_out);
+		case NPY_FLOAT32:
+			return general_inplace_op<I,J,float,P>(B,conjugate,transpose,op_list,indx_list,J_list,full_basis,Ns,nvecs,basis,n,basis_begin,basis_end,N_p,(const float *)v_in,(float *)v_out);
+		default:
+	        return -2;
+	}	
+}
+
+*/
+
+
+
+
+
+
+
+
+
+
+/*
+
+template<class I, class J, class K, class T,class P=signed char>
+int general_op(general_basis_core<I,P> *B,
+						  const int n_op,
+						  const char opstr[],
+						  const int indx[],
+						  const std::complex<double> A,
+						  const bool full_basis,
+						  const npy_intp Ns,
+						  const I basis[],
+						  const J n[],
+						  		K row[],
+						  		K col[],
+						  		T M[]
+						  )
+{
+	int err = 0;
+	#pragma omp parallel 
+	{
+		const int nt = B->get_nt();
+		const int N = B->get_N();
+		const npy_intp chunk = std::max(Ns/(1000*omp_get_num_threads()),(npy_intp)1);
+		int g[__GENERAL_BASIS_CORE__max_nt];
+		double kk[__GENERAL_BASIS_CORE__max_nt];
+
+		for(int k=0;k<nt;k++)
+			kk[k] = 2.0*M_PI*B->qs[k]/B->pers[k];
+
+
+		#pragma omp for schedule(dynamic,chunk)
+		for(npy_intp i=0;i<Ns;i++){
+			if(err != 0){
+				continue;
+			}
+
+			I r = basis[i];
+			std::complex<double> m = A;
+			int local_err = B->op(r,m,n_op,opstr,indx);
+
+			if(local_err == 0){
+				P sign = 1;
+
+				for(int k=0;k<nt;k++){
+					g[k]=0;
+				}
+
+				K j = i;
+				if(r != basis[i]){
+					I rr = B->ref_state(r,g,sign);
+					if(full_basis){
+						j = Ns - (npy_intp)rr - 1;
+					}
+					else{
+						j = rep_position(Ns,basis,rr);
+					}
+					
+				}
+				if(j >= 0){
+					double q = 0;
+					for(int k=0;k<nt;k++){
+						q += kk[k]*g[k];
+					}
+					m *= sign * std::sqrt(double(n[j])/double(n[i])) * std::exp(std::complex<double>(0,-q));
+					
+					local_err = check_imag(m,&M[i]);
+					col[i]=i;
+					row[i]=j;
+				}
+				else{
+					col[i] = i;
+					row[i] = i;
+					M[i] = std::numeric_limits<T>::quiet_NaN();
+				}
+			}
+			else{
+				#pragma omp critical
+				err = local_err;
+			}
+		}
+
+		
+	}
+	return err;
+}
+
+
+template<class I, class J, class K, class T,class P=signed char>
+int general_op(general_basis_core<I,P> *B,
+						  const int n_op,
+						  const char opstr[],
+						  const int indx[],
+						  const std::complex<double> A,
+						  const bool full_basis,
+						  const npy_intp Ns,
+						  const I basis[],
+						  const J n[],
+						  const npy_intp basis_begin[],
+						  const npy_intp basis_end[],
+						  const int N_p,
+						  		K row[],
+						  		K col[],
+						  		T M[]
+						  )
+{
+	int err = 0;
+
+	#pragma omp parallel 
+	{
+		const int N = B->get_N();
+		const int nt = B->get_nt();
+
+		const npy_intp chunk = std::max(Ns/(1000*omp_get_num_threads()),(npy_intp)1);
+		int g[__GENERAL_BASIS_CORE__max_nt];
+		double kk[__GENERAL_BASIS_CORE__max_nt];
+
+		for(int k=0;k<nt;k++)
+			kk[k] = 2.0*M_PI*B->qs[k]/B->pers[k];
+
+
+		#pragma omp for schedule(dynamic,chunk)
+		for(npy_intp i=0;i<Ns;i++){
+			if(err != 0){
+				continue;
+			}
+
+			I r = basis[i];
+			const I s = r;
+			std::complex<double> m = A;
+			int local_err = B->op(r,m,n_op,opstr,indx);
+
+			if(local_err == 0){
+				P sign = 1;
+
+				for(int k=0;k<nt;k++){
+					g[k]=0;
+				}
+
+				K j = i;
+				const bool not_diag = r != s;
+				if(r != basis[i]){
+					I rr = B->ref_state(r,g,sign);
+					if(full_basis){
+						j = Ns - (K)rr - 1;
+					}
+					else{
+						npy_intp rr_prefix = B->get_prefix(rr,N_p);
+						j = rep_position<K,I>(basis_begin,basis_end,basis,rr_prefix,rr);
+					}
+					
+				}
+	
+				if(j >= 0){
+					if(not_diag){
+						double q = 0;
+						for(int k=0;k<nt;k++){
+							q += kk[k]*g[k];
+						}
+						m *= sign * std::sqrt(double(n[j])/double(n[i])) * std::exp(std::complex<double>(0,-q));						
+					}
+
+					
+					local_err = check_imag(m,&M[i]);
+					col[i] = i;
+					row[i] = j;
+				}
+				else{
+					col[i] = i;
+					row[i] = i;
+					M[i] = std::numeric_limits<double>::quiet_NaN();
+				}
+			}
+			else{
+				#pragma omp critical
+				err = local_err;
+			}
+		}
+
+		
+	}
+	return err;
+}
+*/
+
+
 
 
 
@@ -630,7 +1100,7 @@ int general_op_bra_ket(general_basis_core<I,P> *B,
 						  const int n_op,
 						  const char opstr[],
 						  const int indx[],
-						  const npy_cdouble_wrapper A,
+						  const std::complex<double> A,
 						  const npy_intp Ns,
 						  const I ket[], // col
 						  		I bra[], // row
@@ -649,7 +1119,7 @@ int general_op_bra_ket(general_basis_core<I,P> *B,
 				continue;
 			}
 
-			npy_cdouble_wrapper m = A;
+			std::complex<double> m = A;
 			const I s = ket[i];
 			I r = ket[i];
 			
@@ -667,7 +1137,7 @@ int general_op_bra_ket(general_basis_core<I,P> *B,
 
 						for(int k=0;k<nt;k++){
 							double q = (2.0*M_PI*B->qs[k]*g[k])/B->pers[k];
-							m *= std::exp(npy_cdouble_wrapper(0,-q));
+							m *= std::exp(std::complex<double>(0,-q));
 						}
 
 						double norm_s = B->check_state(s);
@@ -710,7 +1180,7 @@ int general_op_bra_ket_pcon(general_basis_core<I,P> *B,
 						  const int n_op,
 						  const char opstr[],
 						  const int indx[],
-						  const npy_cdouble_wrapper A,
+						  const std::complex<double> A,
 						  const npy_intp Ns,
 						  const std::set<std::vector<int>> &Np_set, // array with particle conserving sectors
 						  const	I ket[], // col
@@ -732,7 +1202,7 @@ int general_op_bra_ket_pcon(general_basis_core<I,P> *B,
 				continue;
 			}
 
-			npy_cdouble_wrapper m = A;
+			std::complex<double> m = A;
 			const I s = ket[i];
 			I r = ket[i];
 			
@@ -756,7 +1226,7 @@ int general_op_bra_ket_pcon(general_basis_core<I,P> *B,
 
 							for(int k=0;k<nt;k++){
 								double q = (2.0*M_PI*B->qs[k]*g[k])/B->pers[k];
-								m *= std::exp(npy_cdouble_wrapper(0,-q));
+								m *= std::exp(std::complex<double>(0,-q));
 							}
 
 							double norm_s = B->check_state(s);
@@ -783,7 +1253,7 @@ int general_op_bra_ket_pcon(general_basis_core<I,P> *B,
 
 					for(int k=0;k<nt;k++){
 						double q = (2.0*M_PI*B->qs[k]*g[k])/B->pers[k];
-						m *= std::exp(npy_cdouble_wrapper(0,-q));
+						m *= std::exp(std::complex<double>(0,-q));
 					}
 
 					m *= sign;

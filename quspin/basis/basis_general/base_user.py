@@ -463,6 +463,7 @@ class user_basis(basis_general):
 				raise TypeError("Ns_block_est must be integer value.")
 				
 			Ns = Ns_block_est
+
 		self._basis_dtype = basis_dtype
 		self._core_args = (Ns_full, basis_dtype, N, sps, map_funcs, pers, qs, map_args,
 								n_sectors, get_Ns_pcon, get_s0_pcon, next_state,
@@ -472,6 +473,7 @@ class user_basis(basis_general):
 
 		self._N = N
 		self._Ns = Ns
+		self._Ns_block_est = self._Ns
 		self._Np = Np
 		self._sps=sps
 		self._allowed_ops=set(allowed_ops)
@@ -490,7 +492,6 @@ class user_basis(basis_general):
 			ind = _np.argsort(self._basis,kind="heapsort")[::-1]
 			self._basis = self._basis[ind]
 			self._n = self._n[ind]
-
 
 		if allowed_ops is None:
 			allowed_ops = set([chr(i) for i in range(256)]) # all characters allowed.

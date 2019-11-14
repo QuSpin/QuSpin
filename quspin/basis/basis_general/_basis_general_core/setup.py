@@ -45,7 +45,7 @@ def configuration(parent_package='', top_path=None):
     if sys.platform == "win32":
         extra_compile_args=[]
     else:
-        extra_compile_args=["-fno-strict-aliasing","-Wno-unused-variable","-Wno-unknown-pragmas"]
+        extra_compile_args=["-fno-strict-aliasing","-Wno-unused-variable","-Wno-unknown-pragmas","-std=c++11"]
         
     extra_link_args=[]  
       
@@ -80,40 +80,40 @@ def configuration(parent_package='', top_path=None):
     config.add_extension('hcb_core',sources=hcp_src,
         depends=depends,**extension_kwargs)
 
-    # boson_src = os.path.join(package_dir,"boson_core.cpp")
-    # boson_src_header = os.path.join(package_dir,"source","boson_basis_core.h")
-    # depends = global_headers+[boson_src_header]
-    # config.add_extension('boson_core',sources=boson_src,
-    #     depends=depends,**extension_kwargs)
+    higher_spin_src = os.path.join(package_dir,"higher_spin_core.cpp") 
+    higher_spin_src_header = os.path.join(package_dir,"source","higher_spin_basis_core.h")
+    depends = global_headers+[higher_spin_src_header]
+    config.add_extension('higher_spin_core',sources=higher_spin_src,
+        depends=depends,**extension_kwargs)
 
-    # higher_spin_src = os.path.join(package_dir,"higher_spin_core.cpp") 
-    # higher_spin_src_header = os.path.join(package_dir,"source","higher_spin_basis_core.h")
-    # depends = global_headers+[higher_spin_src_header]
-    # config.add_extension('higher_spin_core',sources=higher_spin_src,
-    #     depends=depends,**extension_kwargs)
+    boson_src = os.path.join(package_dir,"boson_core.cpp")
+    boson_src_header = os.path.join(package_dir,"source","boson_basis_core.h")
+    depends = global_headers+[boson_src_header]
+    config.add_extension('boson_core',sources=boson_src,
+        depends=depends,**extension_kwargs)
 
-    # spinless_fermion_src = os.path.join(package_dir,"spinless_fermion_core.cpp") 
-    # spinless_fermion_src_header = os.path.join(package_dir,"source","spinless_fermion_basis_core.h")
-    # depends = global_headers+[spinless_fermion_src_header]
-    # config.add_extension('spinless_fermion_core',sources=spinless_fermion_src,
-    #     depends=depends,**extension_kwargs)
+    spinless_fermion_src = os.path.join(package_dir,"spinless_fermion_core.cpp") 
+    spinless_fermion_src_header = os.path.join(package_dir,"source","spinless_fermion_basis_core.h")
+    depends = global_headers+[spinless_fermion_src_header]
+    config.add_extension('spinless_fermion_core',sources=spinless_fermion_src,
+        depends=depends,**extension_kwargs)
 
-    # spinful_fermion_src = os.path.join(package_dir,"spinful_fermion_core.cpp") 
-    # spinful_fermion_src_header = os.path.join(package_dir,"source","spinful_fermion_basis_core.h")
-    # depends = global_headers+[spinful_fermion_src_header]
-    # config.add_extension('spinful_fermion_core',sources=spinful_fermion_src,
-    #     depends=depends,**extension_kwargs)
+    spinful_fermion_src = os.path.join(package_dir,"spinful_fermion_core.cpp") 
+    spinful_fermion_src_header = os.path.join(package_dir,"source","spinful_fermion_basis_core.h")
+    depends = global_headers+[spinful_fermion_src_header]
+    config.add_extension('spinful_fermion_core',sources=spinful_fermion_src,
+        depends=depends,**extension_kwargs)
 
-    # user_src = os.path.join(package_dir,"user_core.cpp") 
-    # user_src_header = os.path.join(package_dir,"source","user_basis_core.h")
-    # depends = global_headers+[user_src_header]
-    # config.add_extension('user_core',sources=user_src,depends=depends,**extension_kwargs)
+    user_src = os.path.join(package_dir,"user_core.cpp") 
+    user_src_header = os.path.join(package_dir,"source","user_basis_core.h")
+    depends = global_headers+[user_src_header]
+    config.add_extension('user_core',sources=user_src,depends=depends,**extension_kwargs)
 
-    # utils_src = os.path.join(package_dir,"general_basis_utils.cpp")
-    # utils_src_header = os.path.join(package_dir,"source","general_basis_bitops.h")
-    # depends = global_headers+[utils_src_header]
-    # config.add_extension('general_basis_utils',sources=utils_src,
-    #     depends=depends,**extension_kwargs)
+    utils_src = os.path.join(package_dir,"general_basis_utils.cpp")
+    utils_src_header = os.path.join(package_dir,"source","general_basis_bitops.h")
+    depends = global_headers+[utils_src_header]
+    config.add_extension('general_basis_utils',sources=utils_src,
+        depends=depends,**extension_kwargs)
 
 
     return config

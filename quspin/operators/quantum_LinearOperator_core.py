@@ -309,11 +309,10 @@ class quantum_LinearOperator(LinearOperator):
 			if self.diagonal is not None:
 				_np.multiply(other.T,self.diagonal,out=out.T)
 
-			for opstr,indx,J in self._static_list:
-				self.basis.inplace_Op(other,opstr, indx, J, self._dtype,
-									self._conjugated,self._transposed,v_out=out)
+			self.basis.inplace_Op(other, self._static_list, self._dtype,
+				self._conjugated,self._transposed,v_out=out,a=a)
 
-			return a*out
+			return out
 		else:
 			return a * (self * other)
 
@@ -489,13 +488,13 @@ class quantum_LinearOperator(LinearOperator):
 		result_dtype = _np.result_type(self._dtype,other.dtype)
 		other = _np.ascontiguousarray(other,dtype=result_dtype)
 		new_other = _np.zeros_like(other,dtype=result_dtype)
-		
+
 		if self.diagonal is not None:
 			_np.multiply(other.T,self.diagonal,out=new_other.T)
 
-		for opstr,indx,J in self._static_list:
-			self.basis.inplace_Op(other,opstr, indx, J, self._dtype,
-								self._conjugated,self._transposed,v_out=new_other)
+		self.basis.inplace_Op(other,self._static_list, self._dtype,
+							self._conjugated,self._transposed,v_out=new_other)
+
 		return new_other
 
 	def _rmatvec(self,other):

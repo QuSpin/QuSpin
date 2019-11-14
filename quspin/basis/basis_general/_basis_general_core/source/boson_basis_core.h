@@ -154,7 +154,7 @@ class boson_basis_core : public general_basis_core<I,P>
 						return -1;
 				}
 
-				if(std::abs(me_diag*me_offdiag)==0){
+				if(me_diag==0 || me_offdiag==0){
 					r = s;
 					break;
 				}

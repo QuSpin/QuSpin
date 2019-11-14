@@ -42,7 +42,7 @@ class user_basis_core : public general_basis_core<I,P>
 		std::vector<I> M;
 
 
-		user_basis_core(const int _N,const int _nt,const int _sps,
+		user_basis_core(const int _N,const int _sps,const int _nt,
 			void * _map_funcs, const int _pers[], const int _qs[], I** _maps_args, 
 			const int _n_sectors,size_t _next_state,I *_ns_args,size_t _pre_check_state,
 			I* _precs_args,size_t _count_particles,I *_count_particles_args,size_t _op_func,I *_op_args) : \
@@ -59,10 +59,9 @@ class user_basis_core : public general_basis_core<I,P>
 			precs_args = _precs_args;
 			count_particles_args = _count_particles_args;
 
-			M.resize(_N);
-			M[0] = (I)1;
-			for(int i=1;i<_N;i++){
-				M[i] = (M[i-1] * (I)_sps);
+			M.push_back((I)1);
+			for(int i=1;i<_N+1;i++){
+				M.push_back(M[i-1] * (I)_sps);
 			}
 		}
 
@@ -138,7 +137,7 @@ class user_basis_core : public general_basis_core<I,P>
 				if(err!=0){
 					return err;
 				}
-				if(std::abs(res.m)==0){
+				if(res.m.real()==0 && res.m.imag()==0){
 					res.r = s;
 					break;
 				}
