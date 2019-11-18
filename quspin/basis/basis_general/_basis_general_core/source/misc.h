@@ -35,6 +35,8 @@ struct compare : std::binary_function<I,I,bool>
 	inline bool operator()(const I &a,const I &b){return a > b;}
 };
 
+
+
 template<class K,class I>
 K rep_position(const npy_intp A_begin[],const npy_intp A_end[],const I A[],const npy_intp s_p,const I s){
 
@@ -71,6 +73,17 @@ bool inline check_nan(double val){
 	return std::isnan(val);
 #endif
 }
+
+template<class T>
+inline bool equal_zero(std::complex<T> a){
+	return (a.real() == 0 && a.imag() == 0);
+}
+
+template<class T>
+inline bool equal_zero(T a){
+	return (a == 0);
+}
+
 
 template<class T>
 inline std::complex<double> mul(std::complex<T> a,std::complex<double> z){

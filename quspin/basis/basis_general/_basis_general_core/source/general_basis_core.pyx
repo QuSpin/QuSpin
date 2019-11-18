@@ -236,27 +236,27 @@ cdef class general_basis_core_wrap:
         if basis.dtype == uint32:
             with nogil:
                 err = general_op(<general_basis_core[uint32_t]*>B,n_op,&c_opstr[0],&indx[0],JJ,
-                    basis_full,Ns,<uint32_t*>basis_ptr,&n[0],&basis_begin[0],&basis_end[0],N_p,&row[0],&col[0],&M[0])
+                    basis_full,Ns,<uint32_t*>basis_ptr,&n[0],&basis_begin[0],&basis_end[0],N_p,N_me,&row[0],&col[0],&M[0])
         elif basis.dtype == uint64:
             with nogil:
                 err = general_op(<general_basis_core[uint64_t]*>B,n_op,&c_opstr[0],&indx[0],JJ,
-                    basis_full,Ns,<uint64_t*>basis_ptr,&n[0],&basis_begin[0],&basis_end[0],N_p,&row[0],&col[0],&M[0])
+                    basis_full,Ns,<uint64_t*>basis_ptr,&n[0],&basis_begin[0],&basis_end[0],N_p,N_me,&row[0],&col[0],&M[0])
         elif basis.dtype == uint256:
             with nogil:
                 err = general_op(<general_basis_core[uint256_t]*>B,n_op,&c_opstr[0],&indx[0],JJ,
-                    basis_full,Ns,<uint256_t*>basis_ptr,&n[0],&basis_begin[0],&basis_end[0],N_p,&row[0],&col[0],&M[0])
+                    basis_full,Ns,<uint256_t*>basis_ptr,&n[0],&basis_begin[0],&basis_end[0],N_p,N_me,&row[0],&col[0],&M[0])
         elif basis.dtype == uint1024:
             with nogil:
                 err = general_op(<general_basis_core[uint1024_t]*>B,n_op,&c_opstr[0],&indx[0],JJ,
-                    basis_full,Ns,<uint1024_t*>basis_ptr,&n[0],&basis_begin[0],&basis_end[0],N_p,&row[0],&col[0],&M[0])
+                    basis_full,Ns,<uint1024_t*>basis_ptr,&n[0],&basis_begin[0],&basis_end[0],N_p,N_me,&row[0],&col[0],&M[0])
         elif basis.dtype == uint4096:
             with nogil:
                 err = general_op(<general_basis_core[uint4096_t]*>B,n_op,&c_opstr[0],&indx[0],JJ,
-                    basis_full,Ns,<uint4096_t*>basis_ptr,&n[0],&basis_begin[0],&basis_end[0],N_p,&row[0],&col[0],&M[0])
+                    basis_full,Ns,<uint4096_t*>basis_ptr,&n[0],&basis_begin[0],&basis_end[0],N_p,N_me,&row[0],&col[0],&M[0])
         elif basis.dtype == uint16384:
             with nogil:
                 err = general_op(<general_basis_core[uint16384_t]*>B,n_op,&c_opstr[0],&indx[0],JJ,
-                    basis_full,Ns,<uint16384_t*>basis_ptr,&n[0],&basis_begin[0],&basis_end[0],N_p,&row[0],&col[0],&M[0])
+                    basis_full,Ns,<uint16384_t*>basis_ptr,&n[0],&basis_begin[0],&basis_end[0],N_p,N_me,&row[0],&col[0],&M[0])
         else:
             raise TypeError("basis dtype {} not recognized.".format(basis.dtype))
 

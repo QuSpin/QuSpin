@@ -21,7 +21,7 @@ cdef extern from "make_general_basis.h" namespace "basis_general":
 cdef extern from "general_basis_op.h" namespace "basis_general":
     int general_op[I,J,K,T](general_basis_core[I] *B,const int,const char[], const int[],
                           const double complex, const bool, const npy_intp, const I[], const J[],
-                          const npy_intp[],const npy_intp[],const int, K[], K[], T[]) nogil
+                          const npy_intp[],const npy_intp[],const int,npy_intp&, K[], K[], T[]) nogil
 
     int general_inplace_op_impl[I,J](general_basis_core[I] *B,const bool,const bool,const int,const char[], 
                           const int[],void*, const bool, const npy_intp,const npy_intp, const I[], const J[],

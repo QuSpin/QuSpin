@@ -1,6 +1,6 @@
 import numpy as _np
 import scipy.sparse as _sp
-import os
+import os,numexpr
 from ._basis_general_core.general_basis_utils import basis_int_to_python_int,_get_basis_index
 from ._basis_general_core import basis_zeros
 from ..lattice import lattice_basis
@@ -262,14 +262,23 @@ class basis_general(lattice_basis):
 		if self._Ns <= 0:
 			return _np.array([],dtype=dtype),_np.array([],dtype=self._index_type),_np.array([],dtype=self._index_type)
 	
-		col = _np.zeros(self._Ns,dtype=self._index_type)
-		row = _np.zeros(self._Ns,dtype=self._index_type)
-		ME = _np.zeros(self._Ns,dtype=dtype)
-
-		self._core.op(row,col,ME,opstr,indx,J,self._basis,self._n,
+		col = _np.empty(self._Ns,dtype=self._index_type)
+		row = _np.empty(self._Ns,dtype=self._index_type)
+		ME = _np.empty(self._Ns,dtype=dtype)
+		# print(self._Ns)
+		N_me = self._core.op(row,col,ME,opstr,indx,J,self._basis,self._n,
 			self._basis_begin,self._basis_end,self._N_p)
 
-		mask = _np.logical_not(_np.logical_or(_np.isnan(ME),_np.abs(ME)==0.0))
+		if _np.iscomplexobj(ME):
+			if ME.dtype == _np.complex64:
+				mask = ME.real != 0
+				mask1 = ME.imag != 0
+				_np.logical_or(mask,mask1,out=mask)
+			else:
+				mask = numexpr.evaluate("(real(ME)!=0) | (imag(ME)!=0)")
+		else:
+			mask = numexpr.evaluate("ME!=0")
+
 		col = col[mask]
 		row = row[mask]
 		ME = ME[mask]
@@ -536,7 +545,7 @@ class basis_general(lattice_basis):
 
 		if Ns < 0:
 				raise ValueError("estimate for size of reduced Hilbert-space is too low, please double check that transformation mappings are correct or use 'Ns_block_est' argument to give an upper bound of the block size.")
-		print("here")
+
 		# sort basis
 		if type(self._Np) is int or type(self._Np) is tuple or self._Np is None:
 			if Ns > 0:
@@ -609,7 +618,7 @@ class basis_general(lattice_basis):
 
 		if len(self._pers) == 0 and self._Np is None:
 			N_p = 0 # do not use blocks for full basis
-		print(N_p)
+
 		self._N_p = min(max(N_p,0),self.N)
 
 		if self._N_p > 0:
