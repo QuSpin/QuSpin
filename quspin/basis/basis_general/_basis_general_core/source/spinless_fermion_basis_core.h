@@ -197,7 +197,7 @@ class spinless_fermion_basis_core : public hcb_basis_core<I,P>
 						return -1;
 				}
 
-				if(std::abs(m)==0){
+				if(m.real()==0 && m.imag()==0){
 					r = s;
 					break;
 				}

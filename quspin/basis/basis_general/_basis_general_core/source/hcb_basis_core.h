@@ -71,6 +71,10 @@ class hcb_basis_core : public general_basis_core<I,P>
 
 		~hcb_basis_core() {}
 
+		npy_intp get_prefix(const I s,const int N_p){
+			return integer_cast<npy_intp,I>(s >> (general_basis_core<I,P>::N - N_p));
+		}
+
 		I map_state(I s,int n_map,P &sign){
 			if(general_basis_core<I,P>::nt<=0){
 				return s;
@@ -126,9 +130,10 @@ class hcb_basis_core : public general_basis_core<I,P>
 		int op(I &r,std::complex<double> &m,const int n_op,const char opstr[],const int indx[]){
 			const I s = r;
 			const I one = 1;
+			const int NN = general_basis_core<I,P>::N;
 			for(int j=n_op-1;j>-1;j--){
 
-				const int ind = general_basis_core<I,P>::N-indx[j]-1;
+				const int ind = NN-indx[j]-1;
 				const I b = (one << ind);
 				const bool a = (bool)((r >> ind)&one);
 				const char op = opstr[j];
@@ -161,7 +166,7 @@ class hcb_basis_core : public general_basis_core<I,P>
 						return -1;
 				}
 
-				if(std::abs(m)==0){
+				if(m.real()==0 && m.imag()==0){
 					r = s;
 					break;
 				}

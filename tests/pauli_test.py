@@ -51,8 +51,9 @@ def compare_inplace_Op(static_list,basis_1,basis_2,ratio_12,test_ratio=True):
 		v_in=np.random.uniform(size=basis_1.Ns)
 		#v_in/=np.linalg.norm(v_in)
 
-		v_out_1=basis_1.inplace_Op(v_in,opstr,indx,J,dtype,transposed=False,conjugated=False,v_out=None)
-		v_out_2=basis_2.inplace_Op(v_in,opstr,indx,J,dtype,transposed=False,conjugated=False,v_out=None)
+		op_list = [[opstr,indx,J]]
+		v_out_1=basis_1.inplace_Op(v_in,op_list,dtype,transposed=False,conjugated=False,v_out=None)
+		v_out_2=basis_2.inplace_Op(v_in,op_list,dtype,transposed=False,conjugated=False,v_out=None)
 
 		if test_ratio and (opstr=='+-' or opstr=='-+'):
 			v_out_2/=ratio_12

@@ -37,8 +37,7 @@ print('constructed hexagonal lattice with {0:d} sites.\n'.format(N))
 # visualise graph
 pos = nx.spring_layout(hex_graph, seed=42, iterations=100)
 nx.draw(hex_graph, pos=pos, with_labels=True)
-plt.show()
-plt.close() # disable to see graph
+plt.show(block=False)
 #
 ###### model parameters
 #

@@ -1,7 +1,8 @@
 import numpy as _np
 import scipy.sparse as _sp
-import os
+import os,numexpr
 from ._basis_general_core.general_basis_utils import basis_int_to_python_int,_get_basis_index
+from ._basis_general_core import basis_zeros
 from ..lattice import lattice_basis
 import warnings
 
@@ -261,20 +262,32 @@ class basis_general(lattice_basis):
 		if self._Ns <= 0:
 			return _np.array([],dtype=dtype),_np.array([],dtype=self._index_type),_np.array([],dtype=self._index_type)
 	
-		col = _np.zeros(self._Ns,dtype=self._index_type)
-		row = _np.zeros(self._Ns,dtype=self._index_type)
-		ME = _np.zeros(self._Ns,dtype=dtype)
+		col = _np.empty(self._Ns,dtype=self._index_type)
+		row = _np.empty(self._Ns,dtype=self._index_type)
+		ME = _np.empty(self._Ns,dtype=dtype)
+		# print(self._Ns)
+		N_me = self._core.op(row,col,ME,opstr,indx,J,self._basis,self._n,
+			self._basis_begin,self._basis_end,self._N_p)
 
-		self._core.op(row,col,ME,opstr,indx,J,self._basis,self._n)
+		if _np.iscomplexobj(ME):
+			if ME.dtype == _np.complex64:
+				mask = ME.real != 0
+				mask1 = ME.imag != 0
+				_np.logical_or(mask,mask1,out=mask)
+			else:
+				mask = numexpr.evaluate("(real(ME)!=0) | (imag(ME)!=0)")
+		else:
+			mask = numexpr.evaluate("ME!=0")
 
-		mask = _np.logical_not(_np.logical_or(_np.isnan(ME),_np.abs(ME)==0.0))
 		col = col[mask]
 		row = row[mask]
 		ME = ME[mask]
 
 		return ME,row,col
 
-	def _inplace_Op(self,v_in,opstr,indx,J,dtype,transposed=False,conjugated=False,v_out=None):
+	
+	def _inplace_Op(self,v_in,op_list,dtype,transposed=False,conjugated=False,v_out=None,a=1.0):
+
 		v_in = _np.asanyarray(v_in)
 		
 		result_dtype = _np.result_type(v_in.dtype,dtype)
@@ -287,18 +300,24 @@ class basis_general(lattice_basis):
 			v_out = _np.zeros_like(v_in,dtype=result_dtype,order="C")
 		else:
 			if v_out.dtype != result_dtype:
-				raise TypeError
+				raise TypeError("v_out does not have the correct data type.")
 			if not v_out.flags["CARRAY"]:
-				raise ValueError
+				raise ValueError("v_out is not a writable C-contiguous array")
 			if v_out.shape != v_in.shape:
-				raise ValueError("v_in.shape != v_out.shape")
+				raise ValueError("invalid shape for v_out and v_in: v_in.shape != v_out.shape")
 
-		indx = _np.ascontiguousarray(indx,dtype=_np.int32)
+		v_out = v_out.reshape((self.Ns,-1))
+		v_in = v_in.reshape((self.Ns,-1))
 
-		self._core.inplace_op(v_in.reshape((self._Ns,-1)),v_out.reshape((self._Ns,-1)),conjugated,transposed,opstr,indx,J,self._basis,self._n)
+		for opstr,indx,J in op_list:
+			indx = _np.ascontiguousarray(indx,dtype=_np.int32)
 
-		return v_out
-	
+			self._core.inplace_op(v_in,v_out,conjugated,transposed,opstr,indx,a*J,
+				self._basis,self._n,self._basis_begin,self._basis_end,self._N_p)
+
+		return v_out.squeeze()
+
+
 	def get_proj(self,dtype,pcon=False):
 		"""Calculates transformation/projector from symmetry-reduced basis to full (symmetry-free) basis.
 
@@ -394,7 +413,8 @@ class basis_general(lattice_basis):
 
 		if pcon==True:
 			if self._basis_pcon is None:
-				self._basis_pcon = self.__class__(**self._pcon_args)
+				self._basis_pcon = self.__class__(**self._pcon_args,make_basis=False)
+				self._basis_pcon.make(N_p=0)
 
 			basis_pcon = self._basis_pcon._basis
 
@@ -471,18 +491,26 @@ class basis_general(lattice_basis):
 		return static_blocks,dynamic_blocks
 
 
-	def make(self,Ns_block_est=None):
+	def make(self,Ns_block_est=None,N_p=None):
 		"""Creates the entire basis by calling the basis constructor.
 
 		Parameters
 		-----------
 		Ns_block_est: int, optional
 			Overwrites the internal estimate of the size of the reduced Hilbert space for the given symmetries. This can be used to help conserve memory if the exact size of the H-space is known ahead of time. 
-				
+		N_p: int, optional
+			number of bits to use in the prefix label used to generate blocks for searching positions of representatives.
+
 		Returns
 		--------
 		int
 			Total number of states in the (symmetry-reduced) Hilbert space.
+
+		Notes
+		-----
+		The memory stored in the basis grows exponentially as exactly :math:`2^{N_p+1}`. The default behavior is to use `N_p` such that 
+		the size of the stored information for the representative bounds is approximately as large as the basis. This is not as effective
+		for basis which small particle numbers as the blocks have very uneven sizes. To not use the blocks just set N_p=0. 
 
 		Examples
 		--------
@@ -501,10 +529,10 @@ class basis_general(lattice_basis):
 			else:
 				Ns = self._Ns_block_est
 		else:
-			Ns = max(self._Ns,1000)
-		
+			Ns = max([self._Ns,1000,self._Ns_block_est])
+
 		# preallocate variables
-		basis = _np.zeros(Ns,dtype=self._basis_dtype)
+		basis = basis_zeros(Ns,dtype=self._basis_dtype)
 		n = _np.zeros(Ns,dtype=self._n_dtype)
 
 		# make basis
@@ -521,9 +549,12 @@ class basis_general(lattice_basis):
 		# sort basis
 		if type(self._Np) is int or type(self._Np) is tuple or self._Np is None:
 			if Ns > 0:
-				self._basis = basis[Ns-1::-1].copy()
-				self._n = n[Ns-1::-1].copy()
-				if Np_list is not None: self._Np_list = Np_list[Ns-1::-1].copy()
+				# self._basis = basis[Ns-1::-1].copy()
+				# self._n = n[Ns-1::-1].copy()
+				# if Np_list is not None: self._Np_list = Np_list[Ns-1::-1].copy()
+				self._basis = basis[:Ns].copy()
+				self._n = n[:Ns].copy()
+				if Np_list is not None: self._Np_list = Np_list[:Ns].copy()
 			else:
 				self._basis = _np.array([],dtype=basis.dtype)
 				self._n = _np.array([],dtype=n.dtype)
@@ -547,6 +578,55 @@ class basis_general(lattice_basis):
 		self._reduce_n_dtype()
 
 		self._made_basis = True
+		self.make_basis_blocks(N_p=N_p)
+
+	def make_basis_blocks(self,N_p=None):
+		"""Creates/modifies the bounds for representatives based on prefix tages.
+
+		Parameters
+		-----------
+		N_p: int, optional
+			number of bits to use in the prefix label used to generate blocks for searching positions of representatives.
+
+		Notes
+		-----
+		The memory stored in the basis grows exponentially as exactly :math:`2^{N_p+1}`. The default behavior is to use `N_p` such that 
+		the size of the stored information for the representative bounds is approximately as large as the basis. This is not as effective
+		for basis which small particle numbers as the blocks have very uneven sizes. To not use the blocks just set N_p=0. 
+
+		Examples
+		--------
+		
+		>>> N, Nup = 8, 4
+		>>> basis=spin_basis_general(N,Nup=Nup,make_basis=False)
+		>>> print(basis)
+		>>> basis.make()
+		>>> print(basis)
+
+		"""
+		if not self._made_basis:
+			raise ValueError("reference states are not constructed yet. basis must be constructed before calculating blocks")
+
+		sps = self.sps
+		if sps is None:
+			sps = 2
+
+		if N_p is None:
+			N_p = int(_np.floor(_np.log(self._Ns//2+1)/_np.log(sps)))
+		else:
+			N_p = int(N_p)
+
+		if len(self._pers) == 0 and self._Np is None:
+			N_p = 0 # do not use blocks for full basis
+
+		self._N_p = min(max(N_p,0),self.N)
+
+		if self._N_p > 0:
+			self._basis_begin,self._basis_end = self._core.make_basis_blocks(self._N_p,self._basis)
+		else:
+			self._basis_begin = _np.array([],dtype=_np.intp)
+			self._basis_end   = _np.array([],dtype=_np.intp)
+
 
 	def Op_bra_ket(self,opstr,indx,J,dtype,ket_states,reduce_output=True):
 		"""Finds bra states which connect given ket states by operator from a site-coupling list and an operator string.
@@ -775,7 +855,6 @@ class basis_general(lattice_basis):
 			out_dtype = _np.min_scalar_type(out.max())
 			out = out.astype(out_dtype)
 		
-
 	def get_amp(self,states,out=None,amps=None,mode='representative'):
 		"""Computes the rescale factor of state amplitudes between the symmetry-reduced and full basis.
 
