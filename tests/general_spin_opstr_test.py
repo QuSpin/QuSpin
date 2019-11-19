@@ -15,16 +15,20 @@ try:
 except NameError:
 	S_dict = {(str(i)+"/2" if i%2==1 else str(i//2)):(i+1,i/2.0) for i in range(1,10001)}
 
-def check_ME(b1,b2,opstr,indx,dtype,err_msg):
+def check_ME(basis_1d,basis_gen,opstr,indx,dtype,err_msg):
 
-	ME1,row1,col1=b1.Op(opstr,indx,1.0,dtype)
-	ME2,row2,col2=b2.Op(opstr,indx,1.0,dtype)
+	ME1,row1,col1=basis_1d.Op(opstr,indx,1.0,dtype)
+	ME2,row2,col2=basis_gen.Op(opstr,indx,1.0,dtype)
 
 	if len(ME1) != len(ME2):
+		print(opstr,list(indx))
+		print(basis_1d)
+		print("spin_basis_1d:")
 		print(ME1)
 		print(row1)
 		print(col1)
 		print()
+		print("spin_basis_general")
 		print(ME2)
 		print(row2)
 		print(col2)
@@ -41,7 +45,7 @@ def check_ME(b1,b2,opstr,indx,dtype,err_msg):
 			np.testing.assert_allclose(ME1,ME2,atol=1e-6,err_msg=err_msg)
 		except AssertionError:
 			print(err_msg)
-			print(b1)
+			print(basis_1d)
 			print("difference:")
 			print(ME1-ME2)
 			print(row1-row2)
@@ -123,7 +127,7 @@ def test_gen_basis_spin(l_max,S="1/2"):
 
 		try:
 			np.testing.assert_allclose(basis_1d.states-gen_basis.states,0,atol=1e-6)
-			np.testing.assert_allclose(n-n_gen ,0,atol=1e-6)
+			np.testing.assert_allclose(n , n_gen,atol=1e-6)
 		except:
 			print(basis_1d.states)
 			print(gen_basis.states)

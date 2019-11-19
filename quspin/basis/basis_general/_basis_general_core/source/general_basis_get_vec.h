@@ -65,7 +65,7 @@ bool get_vec_rep(general_basis_core<I,P> *B,
 							 const T in[],
 							 std::complex<double> c,
 							 	   T out[],
-							 const int depth)
+							 const int depth = 0)
 {
 	bool err = true;
 	if(nt<=0){
@@ -99,21 +99,21 @@ bool get_vec_rep(general_basis_core<I,P> *B,
 
 
 template<class I,class T,class P=signed char>
-bool get_vec_rep_pcon(general_basis_core<I,P> *B,
+bool get_vec_rep_basis(general_basis_core<I,P> *B,
 									 I s,
 								   P &phase,
 							 const int nt,
 							 const npy_intp n_vec,
-							 const I basis_pcon[],
-							 const npy_intp Ns_full,
+							 const I basis[],
+							 const npy_intp Ns,
 							 const T in[],
 							 std::complex<double> c,
 							 	   T out[],
-							 const int depth)
+							 const int depth = 0)
 {
 	bool err = true;
 	if(nt<=0){
-		const npy_intp full = binary_search(Ns_full,basis_pcon,s)*n_vec;
+		const npy_intp full = rep_position(Ns,basis,s)*n_vec;
 		err = update_out_dense(c,phase,n_vec,in,&out[full]);		
 		return err;
 	}
@@ -123,7 +123,7 @@ bool get_vec_rep_pcon(general_basis_core<I,P> *B,
 
 	if(depth < nt-1){
 		for(int j=0;j<per && err;j++){
-			err = get_vec_rep_pcon(B,s,phase,nt,n_vec,basis_pcon,Ns_full,in,c,out,depth+1);
+			err = get_vec_rep_basis(B,s,phase,nt,n_vec,basis,Ns,in,c,out,depth+1);
 			c *= cc;
 			s = B->map_state(s,depth,phase);
 		}
@@ -131,7 +131,7 @@ bool get_vec_rep_pcon(general_basis_core<I,P> *B,
 	}
 	else{
 		for(int j=0;j<per && err;j++){
-			const npy_intp full = binary_search(Ns_full,basis_pcon,s)*n_vec;
+			const npy_intp full = rep_position(Ns,basis,s)*n_vec;
 			err = update_out_dense(c,phase,n_vec,in,&out[full]);
 			c *= cc;
 			s = B->map_state(s,depth,phase);
@@ -168,7 +168,7 @@ bool get_vec_general_pcon_dense(general_basis_core<I,P> *B,
 
 			std::complex<double> c = 1.0/std::sqrt(n[k]*norm);
 			P phase = 1;
-			bool local_err = get_vec_rep_pcon(B,basis[k],phase,nt,n_vec,basis_pcon,Ns_full,&in[k*n_vec],c,out,0);
+			bool local_err = get_vec_rep_basis(B,basis[k],phase,nt,n_vec,basis_pcon,Ns_full,&in[k*n_vec],c,out);
 			if(!local_err){
 				#pragma omp critical
 				err = local_err;
@@ -205,7 +205,7 @@ bool get_vec_general_dense(general_basis_core<I,P> *B,
 
 		std::complex<double> c = 1.0/std::sqrt(n[k]*norm);
 		P phase = 1;
-		bool local_err = get_vec_rep(B,basis[k],phase,nt,n_vec,Ns_full,&in[k*n_vec],c,out,0);
+		bool local_err = get_vec_rep(B,basis[k],phase,nt,n_vec,Ns_full,&in[k*n_vec],c,out);
 		if(!local_err){
 			#pragma omp critical
 			err = local_err;
@@ -214,6 +214,10 @@ bool get_vec_general_dense(general_basis_core<I,P> *B,
 
 	return err;
 }
+
+
+
+
 
 }
 
