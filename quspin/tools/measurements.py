@@ -742,12 +742,8 @@ def obs_vs_time(psi_t,times,Obs_dict,return_state=False,Sent_args={},enforce_pur
 		time = times[0]
 
 		for key,Obs in Obs_dict.items():
-			
 			val = Obs.expt_value(psi,time=time,check=False)
-			dtype = val.dtype #_np.dtype(val)
-			shape = (len(times),) + val.shape
-			Expt_time[key] = _np.zeros(shape,dtype=dtype)
-			Expt_time[key][0] = val
+			Expt_time[key] = [val]
 
 
 
@@ -771,7 +767,7 @@ def obs_vs_time(psi_t,times,Obs_dict,return_state=False,Sent_args={},enforce_pur
 			if verbose: print("obs_vs_time integrated to t={:.4f}".format(time))
 
 			for key,Obs in Obs_dict.items():
-				Expt_time[key][m+1] = Obs.expt_value(psi,time=time,check=False)
+				Expt_time[key].append(Obs.expt_value(psi,time=time,check=False))
 
 			if calc_Sent:
 				Sent_time_update = calc_ent_entropy(psi,**Sent_args)

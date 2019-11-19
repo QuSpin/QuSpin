@@ -104,7 +104,7 @@ class basis(object):
 	def _Op(self,opstr,indx,J,dtype):
 		raise NotImplementedError("basis class: {0} missing implementation of '_Op' required for calculating matrix elements!".format(self.__class__))	
 
-	def _inplace_Op(self,v_in,opstr,indx,J,dtype,transposed=False,conjugated=False,v_out=None):
+	def _inplace_Op(self,v_in,op_list,dtype,transposed=False,conjugated=False,v_out=None,a=1.0):
 		""" default version for all basis classes which works so long as _Op is implemented."""
 
 		v_in = _np.asanyarray(v_in)
@@ -116,27 +116,25 @@ class basis(object):
 
 		if v_out is None:
 			v_out = _np.zeros_like(v_in,dtype=result_dtype)
-		else:
-			v_out = _np.asanyarray(v_out)
 
-			if v_out.shape != v_in.shape:
-				raise ValueError("v_in.shape != v_out.shape")
+		v_out = v_out.reshape((self.Ns,-1))
+		v_in = v_in.reshape((self.Ns,-1))
 
+		for opstr,indx,J in op_list:
 
+			if not transposed:
+				ME, row, col = self.Op(opstr, indx, a*J, dtype)
+			else:
+				ME, col, row = self.Op(opstr, indx, a*J, dtype)
 
-		if not transposed:
-			ME, row, col = self.Op(opstr, indx, J, dtype)
-		else:
-			ME, col, row = self.Op(opstr, indx, J, dtype)
+			if conjugated:
+				ME = ME.conj()
 
-		if conjugated:
-			ME = ME.conj()
+			_coo_dot(v_in,v_out,row,col,ME)
 
-		_coo_dot(v_in.reshape((self.Ns,-1)),v_out.reshape((self.Ns,-1)),row,col,ME)
+		return v_out.squeeze()		
 
-		return v_out			
-
-	def inplace_Op(self,v_in,opstr,indx,J,dtype,transposed=False,conjugated=False,v_out=None):
+	def inplace_Op(self,v_in,op_list,dtype,transposed=False,conjugated=False,v_out=None):
 		"""Calculates the action of an operator on a state.
 
 		Notes
@@ -184,7 +182,7 @@ class basis(object):
 		>>> ME, row, col = Op(opstr,indx,J,dtype)
 
 		"""
-		return self._inplace_Op(v_in,opstr,indx,J,dtype,transposed=transposed,conjugated=conjugated,v_out=v_out)
+		return self._inplace_Op(v_in,op_list,dtype,transposed=transposed,conjugated=conjugated,v_out=v_out)
 
 	def Op(self,opstr,indx,J,dtype):
 		"""Constructs operator from a site-coupling list and an operator string in a lattice basis.
