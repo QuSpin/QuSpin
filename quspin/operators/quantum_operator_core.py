@@ -557,10 +557,10 @@ class quantum_operator(object):
 		return self.transpose().dot(V.transpose(),pars=pars,check=check,out=out.T,overwrite_out=overwrite_out,a=a).transpose()
 
 	def quant_fluct(self,V,pars={},check=True,enforce_pure=False):
-		"""Calculates the quantum fluctuations (variance) of `hamiltonian` operator at time `time`, in state `V`.
+		"""Calculates the quantum fluctuations (variance) of `quantum_operator` object for parameters `pars`, in state `V`.
 
 		.. math::
-			\\langle V|H^2(t=\\texttt{time})|V\\rangle - \\langle V|H(t=\\texttt{time})|V\\rangle^2
+			\\langle V|H(\\lambda)^2|V\\rangle - \\langle V|H(\\lambda)|V\\rangle^2
 
 		Parameters
 		-----------
@@ -614,10 +614,10 @@ class quantum_operator(object):
 		return sq_expt_value - expt_value_sq
 
 	def expt_value(self,V,pars={},check=True,enforce_pure=False):
-		"""Calculates expectation value of `hamiltonian` operator at time `time`, in state `V`.
+		"""Calculates expectation value of of `quantum_operator` object for parameters `pars`, in state `V`.
 
 		.. math::
-			\\langle V|H(t=\\texttt{time})|V\\rangle
+			\\langle V|H(\\lambda)|V\\rangle
 
 		Parameters
 		-----------
@@ -675,7 +675,7 @@ class quantum_operator(object):
 				return V_right.trace()
 
 	def matrix_ele(self,Vl,Vr,pars={},diagonal=False,check=True):
-		"""Calculates matrix element of `quantum_operator` quantum_operator for parameters `pars` in states `Vl` and `Vr`.
+		"""Calculates matrix element of `quantum_operator` object for parameters `pars` in states `Vl` and `Vr`.
 
 		.. math::
 			\\langle V_l|H(\\lambda)|V_r\\rangle

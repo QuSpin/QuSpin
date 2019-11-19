@@ -65,7 +65,8 @@ class higher_spin_basis_general(basis_general):
 		self._N = N
 		self._Ns_block_est=self._Ns
 		self._Np = Nup
-		
+		self._sps=sps
+		self._allowed_ops=set(["I","z","+","-"])
 
 		# make the basisl; make() is function method of base_general
 		if _make_basis:		
@@ -75,8 +76,7 @@ class higher_spin_basis_general(basis_general):
 			self._basis=basis_zeros(self._Ns,dtype=self._basis_dtype)
 			self._n=_np.zeros(self._Ns,dtype=self._n_dtype)
 
-		self._sps=sps
-		self._allowed_ops=set(["I","z","+","-"])
+
 		
 	def __setstate__(self,state):
 		self.__dict__.update(state)

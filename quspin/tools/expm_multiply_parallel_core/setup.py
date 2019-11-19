@@ -45,6 +45,7 @@ def configuration(parent_package='', top_path=None):
         extra_compile_args=[]
     else:
         extra_compile_args=["-fno-strict-aliasing"]
+
     extra_link_args = []
     if sys.platform == "darwin":
         extra_compile_args.append("-std=c++11")

@@ -5,6 +5,11 @@
 #include "complex_ops.h"
 #include <stdio.h>
 
+
+// #include "iterators.h"
+// #include <algorithm>
+// #include <numeric>
+
 #include "openmp.h"
 #if defined(_OPENMP)
 #include "csrmv_merge.h"
@@ -92,7 +97,8 @@ void expm_multiply(const I n,
 		for(I k=begin;k<end;k++){ 
 			T3 f = F[k];
 			B1[k] = f;
-			c1_thread = std::max(c1_thread,math_functions::abs(f));
+			// c1_thread = std::max(c1_thread,math_functions::abs(f));
+			c1_thread = math_functions::compare_abs(c1_thread,f);
 		}
 
 		#pragma omp barrier 
@@ -123,8 +129,10 @@ void expm_multiply(const I n,
 					T3 f  = F[k] += b2;
 					B1[k] = b2;
 					// used cached values to compute comparisons for infinite norm
-					c2_thread = std::max(c2_thread,math_functions::abs(b2));
-					c3_thread = std::max(c3_thread,math_functions::abs(f));
+					// c2_thread = std::max(c2_thread,math_functions::abs(b2));
+					// c3_thread = std::max(c3_thread,math_functions::abs(f));
+					c2_thread = math_functions::compare_abs(c2_thread,b2);
+					c3_thread = math_functions::compare_abs(c3_thread,f);
 				}
 				c2_threads[tid] = c2_thread;
 				c3_threads[tid] = c3_thread;
@@ -147,7 +155,8 @@ void expm_multiply(const I n,
 				T3 f = F[k] *= eta;
 				B1[k] = f;
 				// used cached values to compute comparisons for infinite norm
-				c1_thread = std::max(c1_thread,math_functions::abs(f));
+				// c1_thread = std::max(c1_thread,math_functions::abs(f));
+				c1_thread = math_functions::compare_abs(c1_thread,f);
 			}
 			c1_threads[tid] = c1_thread;
 
