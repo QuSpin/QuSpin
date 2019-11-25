@@ -5,6 +5,15 @@ from libcpp cimport bool
 
 
 cdef extern from "bits_info.h" namespace "basis_general":
+    cdef cppclass uint128_t:
+        uint128_t operator&(int)
+        uint128_t operator>>(int)
+        uint128_t operator<<(int)
+        uint128_t operator^(uint128_t)
+        bool operator==(uint128_t)
+        bool operator!=(uint128_t)
+        bool operator!=(int)
+
     cdef cppclass uint256_t:
         uint256_t operator&(int)
         uint256_t operator>>(int)
@@ -12,6 +21,15 @@ cdef extern from "bits_info.h" namespace "basis_general":
         uint256_t operator^(uint256_t)
         bool operator==(uint256_t)
         bool operator!=(uint256_t)
+        bool operator!=(int)
+
+    cdef cppclass uint512_t:
+        uint512_t operator&(int)
+        uint512_t operator>>(int)
+        uint512_t operator<<(int)
+        uint512_t operator^(uint512_t)
+        bool operator==(uint512_t)
+        bool operator!=(uint512_t)
         bool operator!=(int)
 
     cdef cppclass uint1024_t:

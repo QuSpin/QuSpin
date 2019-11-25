@@ -62,6 +62,7 @@ def configuration(parent_package='', top_path=None):
     src_spec_headers = set(glob.glob(os.path.join(package_dir,"source","*_basis_core.h")))
     # needed for utils.
     src_spec_headers.add(os.path.join(package_dir,"source","general_basis_bitops.h"))
+    src_spec_headers.add(os.path.join(package_dir,"source","nlce_utils.h"))
     # remove as it is actually a global header.
     src_spec_headers.remove(os.path.join(package_dir,"source","general_basis_core.h"))
 
@@ -109,11 +110,19 @@ def configuration(parent_package='', top_path=None):
     depends = global_headers+[user_src_header]
     config.add_extension('user_core',sources=user_src,depends=depends,**extension_kwargs)
 
-    utils_src = os.path.join(package_dir,"general_basis_utils.cpp")
-    utils_src_header = os.path.join(package_dir,"source","general_basis_bitops.h")
-    depends = global_headers+[utils_src_header]
-    config.add_extension('general_basis_utils',sources=utils_src,
+    basis_utils_src = os.path.join(package_dir,"general_basis_utils.cpp")
+    basis_utils_src_header = os.path.join(package_dir,"source","general_basis_bitops.h")
+    depends = global_headers+[basis_utils_src_header]
+    config.add_extension('general_basis_utils',sources=basis_utils_src,
         depends=depends,**extension_kwargs)
+
+    nlce_src = os.path.join(package_dir,"nlce_core.cpp")
+    nlce_src_header = [os.path.join(package_dir,"source","nlce_basis_core.h"),
+    				   os.path.join(package_dir,"source","nlce_utils.h")]
+    depends = global_headers + nlce_src_header
+    config.add_extension('nlce_core',sources=nlce_src,
+        depends=nlce_src_header,**extension_kwargs)
+
 
 
     return config

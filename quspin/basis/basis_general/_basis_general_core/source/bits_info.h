@@ -17,6 +17,25 @@ typedef boost::multiprecision::number<boost::multiprecision::cpp_int_backend<409
 typedef boost::multiprecision::number<boost::multiprecision::cpp_int_backend<8192, 8192, boost::multiprecision::unsigned_magnitude, boost::multiprecision::unchecked, void> > uint8192_t;
 typedef boost::multiprecision::number<boost::multiprecision::cpp_int_backend<16384, 16384, boost::multiprecision::unsigned_magnitude, boost::multiprecision::unchecked, void> > uint16384_t;
 
+template<class I>
+struct gen_greater
+{
+  constexpr bool operator()(const I &lhs, const I &rhs) const 
+  {
+      return lhs > rhs;
+  }
+};
+
+
+template<class I>
+struct gen_less
+{
+  constexpr bool operator()(const I &lhs, const I &rhs) const 
+  {
+      return lhs < rhs;
+  }
+};
+
 template<class J,class I>
 inline J integer_cast(I s){
   try 

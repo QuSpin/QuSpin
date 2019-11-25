@@ -7,6 +7,7 @@
 #include <limits>
 #include <complex>
 #include <vector>
+#include <functional>
 #include <stdlib.h>
 #include "numpy/ndarraytypes.h"
 #include "bits_info.h"
@@ -39,6 +40,7 @@ class general_basis_core{
 		bool check_pcon(const I,const std::set<std::vector<int>>&);
 		virtual double check_state(I);
 		I ref_state(I,int[],P&);
+		I ref_state_less(I,int[],P&);
 		virtual I next_state_pcon(I,I) = 0;
 		virtual int op(I&,std::complex<double>&,const int,const char[],const int[]) = 0;
 		virtual void map_state(I[],npy_intp,int,P[]) = 0;
@@ -67,8 +69,8 @@ inline double get_real(std::complex<double> val){
 
 
 
-template<class I,class P=signed char>
-double check_state_core_unrolled(general_basis_core<I,P> *B,const I s,const int nt){
+template<class I,class P,class Compare>
+double check_state_core_unrolled(general_basis_core<I,P> *B,const I s,const int nt,Compare comp){
 
 	if(nt <= 0 || nt > __GENERAL_BASIS_CORE__max_nt){
 		return 1;
@@ -119,7 +121,7 @@ double check_state_core_unrolled(general_basis_core<I,P> *B,const I s,const int 
 			if(depth == (nt-1) && t==s){norm += get_real(phase) * std::cos(k);}
 			k += ks[depth];
 			t = B->map_state(t,depth,phase);
-			if(t > s){
+			if(comp(t,s)){
 				return std::numeric_limits<double>::quiet_NaN();
 			}
 
@@ -131,8 +133,8 @@ double check_state_core_unrolled(general_basis_core<I,P> *B,const I s,const int 
 }
 
 
-template<class I,class P=signed char>
-I ref_state_core_unrolled(general_basis_core<I,P> *B, const I s,int g[],P &phase,const int nt){
+template<class I,class P,class Compare>
+I ref_state_core_unrolled(general_basis_core<I,P> *B, const I s,int g[],P &phase,const int nt,Compare comp){
 
 	if(nt <= 0 || nt > __GENERAL_BASIS_CORE__max_nt){
 		for(int i=0;i<std::min((int)__GENERAL_BASIS_CORE__max_nt,nt);i++){g[i]=0;}
@@ -167,7 +169,7 @@ I ref_state_core_unrolled(general_basis_core<I,P> *B, const I s,int g[],P &phase
 		bool change = true;
 		int depth = nt-1;  // start from innermost loop
 		while (change && depth>=0) {
-			if(t>r){
+			if(comp(t,r)){
 				r = t;
 				phase = temp_phase;
 				for(int j=0;j<nt;j++){
@@ -199,14 +201,17 @@ I ref_state_core_unrolled(general_basis_core<I,P> *B, const I s,int g[],P &phase
 
 template<class I,class P>
 I general_basis_core<I,P>::ref_state(I s,int g[],P &phase){
-	return ref_state_core_unrolled<I,P>(this,s,g,phase,nt);
+	return ref_state_core_unrolled(this,s,g,phase,nt,gen_greater<I>());
 }
 
-
+template<class I,class P>
+I general_basis_core<I,P>::ref_state_less(I s,int g[],P &phase){
+	return ref_state_core_unrolled(this,s,g,phase,nt,gen_less<I>());
+}
 
 template<class I,class P>
 double general_basis_core<I,P>::check_state(I s){
-	return check_state_core_unrolled<I,P>(this,s,nt);
+	return check_state_core_unrolled(this,s,nt,gen_greater<I>());
 }
 
 

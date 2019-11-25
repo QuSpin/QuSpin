@@ -93,7 +93,7 @@ class spinful_fermion_basis_core : public spinless_fermion_basis_core<I,P>
 				return std::numeric_limits<double>::quiet_NaN();
 			}
 			else{
-				return check_state_core_unrolled<I,P>(this,s,general_basis_core<I,P>::nt);
+				return check_state_core_unrolled<I,P>(this,s,general_basis_core<I,P>::nt,gen_greater<I>());
 			}
 		}
 

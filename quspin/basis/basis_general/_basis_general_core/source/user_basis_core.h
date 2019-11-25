@@ -122,7 +122,7 @@ class user_basis_core : public general_basis_core<I,P>
 			}			
 			
 			if(ns_check){
-				return check_state_core_unrolled<I>(this,s,general_basis_core<I,P>::nt);
+				return check_state_core_unrolled<I>(this,s,general_basis_core<I,P>::nt,gen_greater<I>());
 			}
 			else{
 				return std::numeric_limits<double>::quiet_NaN();
