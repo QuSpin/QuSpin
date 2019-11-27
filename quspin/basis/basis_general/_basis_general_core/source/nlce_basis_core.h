@@ -15,10 +15,10 @@ namespace nlce {
 
 
 
-typedef std::pair<int,UndirectedGraph> pair;
+typedef std::pair<npy_intp,UndirectedGraph> pair;
 
 template<class I>
-using map_type1 = std::map<I,int>;
+using map_type1 = std::map<I,npy_intp>;
 
 template<class I>
 using map_type2 = std::map<I,pair>;
@@ -34,7 +34,7 @@ private:
 	basis_general::general_basis_core<I> *B_f,*B_p,*B_t;
 	basis_general::general_basis_core<uint32_t> *B_pcon;
 	const int * nn_list;
-	const int N,Ncl,Nnn,L;
+	const int N,Ncl,Nnn;
 	std::vector<map_type1<I>> symm_clusters;
 	std::vector<map_type2<I>> topo_clusters;
 	std::map<I,npy_intp> index;
@@ -44,7 +44,7 @@ private:
 public:
 	nlce_basis_core(const int _Ncl,const int _N,const int _Nnn,const int _nn_list[],
 		const int nt_p,const int nt_t,const int maps[],const int pers[],const int qs[]) :
-		nn_list(_nn_list), N(_N), Ncl(_Ncl), Nnn(_Nnn), L(_Ncl+1)
+		nn_list(_nn_list), N(_N), Ncl(_Ncl), Nnn(_Nnn)
 	{
 		B_f = new basis_general::hcb_basis_core<I>(_N,nt_p+nt_t,maps,pers,qs);
 		B_p = new basis_general::hcb_basis_core<I>(_N,nt_p,maps,pers,qs);
@@ -62,6 +62,7 @@ public:
 	}
 
 	void clusters_calc();
+	// void topo_clusters_calc();
 	void calc_subclusters();
 
 	npy_intp symm_cluster_size(int);
@@ -72,7 +73,29 @@ public:
 
 	void get_Y_matrix_dims(npy_intp&,npy_intp&);
 	void get_Y_matrix(npy_intp[],npy_intp[],npy_intp[]);
-	void cluster_copy(I[],int[],int[]);
+
+	template<class J,class K>
+	void cluster_copy(J c[],K ncl[],npy_intp L[]){
+		int nc = 1;
+		for(auto topo_cluster : topo_clusters){
+			for(auto cluster : topo_cluster){
+				I s = cluster.first;
+				npy_intp i = index[s];
+				L[i] = cluster.second.first;
+				ncl[i] = nc;
+
+				J pos = 0;
+				npy_intp j = Ncl*i;
+				do {
+					if(s&1){
+						c[j++] = pos;
+					}
+					pos++;
+				} while(s >>= 1);
+			}
+			nc++;
+		}
+	};
 };
 
 
@@ -166,7 +189,7 @@ void nlce_basis_core<I>::get_Y_matrix_dims(npy_intp &row,npy_intp &nnz){
 	for(auto topo_cluster : topo_clusters){
 		row += topo_cluster.size();
 		for(auto cluster : topo_cluster){
-			nnz += 1 + sub_clusters[cluster.first].size();
+			nnz += sub_clusters[cluster.first].size();
 		}
 	}
 
@@ -191,28 +214,12 @@ void nlce_basis_core<I>::get_Y_matrix(npy_intp data[],npy_intp indices[],npy_int
 				data[nnz++] = -sub.second;
 			}
 
-			indices[nnz] = index[s];
-			data[nnz++] = 1;
-
 			indptr[nr] = nnz;
 		}
 	}
 }
 
 
-template<class I>
-void nlce_basis_core<I>::cluster_copy(I c[],int L[],int ncl[]){
-	int nc = 1;
-	for(auto topo_cluster : topo_clusters){
-		for(auto cluster : topo_cluster){
-			npy_intp i = index[cluster.first];
-			c[i] = cluster.first;
-			L[i] = cluster.second.first;
-			ncl[i] = nc;
-		}
-		nc++;
-	}
-}
 
 
 

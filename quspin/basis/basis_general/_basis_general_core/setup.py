@@ -45,7 +45,7 @@ def configuration(parent_package='', top_path=None):
     if sys.platform == "win32":
         extra_compile_args=[]
     else:
-        extra_compile_args=["-fno-strict-aliasing","-Wno-unused-variable","-Wno-unknown-pragmas","-std=c++11"]
+        extra_compile_args=["-fno-strict-aliasing","-Wno-unused-variable","-Wno-unknown-pragmas"]
         
     extra_link_args=[]  
       

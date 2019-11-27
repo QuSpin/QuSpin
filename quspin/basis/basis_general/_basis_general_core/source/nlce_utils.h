@@ -13,7 +13,7 @@
 #include <stack>
 
 #include "general_basis_core.h"
-
+#include "openmp.h"
 
 namespace nlce {
 
@@ -53,15 +53,14 @@ void mult_core(basis_general::general_basis_core<I> * B_p,
 	}
 }
 
-template<class I,class Set>
+template<class I>
 int mult(basis_general::general_basis_core<I> * B_p,
 		 basis_general::general_basis_core<I> * B_t,
-		 Set &clusters,
 		 int g[],
 		 signed char sign,
 		 I s)
 {
-	clusters.clear();
+	std::unordered_set<I> clusters = {};
 
 	mult_core(B_p,B_t,clusters,g,sign,s);
 	return clusters.size();
@@ -78,47 +77,66 @@ void build_new_symm_clusters(basis_general::general_basis_core<I> * B_f,
 			 				 	   map_type &new_clusters)
 
 {
-	int g[__GENERAL_BASIS_CORE__max_nt];
-	signed char sign=0;
-	std::unordered_set<I> clusters;
+	const int nthread = omp_get_max_threads();
+	std::vector<map_type> new_clusters_thread_vec(nthread);
+	map_type * new_clusters_thread = &new_clusters_thread_vec[0];
 
-	for(auto pair=seed_clusters.begin();pair!=seed_clusters.end();pair++)
+	#pragma omp parallel 
 	{
-		I seed = pair->first;
-		const int * nn_begin = nn_list;
-		const int * nn_end   = nn_list + Nnn;
+		int g[__GENERAL_BASIS_CORE__max_nt];
+		signed char sign=0;
+		const int threadn = omp_get_thread_num();
 
-		I s = seed;
+		npy_intp cnt = 0;
 
-		do {
-			if(s&1){
-				for(const int * nn_p = nn_begin; nn_p != nn_end;nn_p++){
-					int nn = *nn_p;
 
-					if(nn < 0)
-						continue;
+		for(auto pair=seed_clusters.begin();pair!=seed_clusters.end();pair++,cnt++)
+		{
+			if(cnt%nthread != threadn) continue;
 
-					bool occ = (seed>>nn)&1;
-					
-					if(!occ){
-						I r = seed ^ ((I)1 << nn);
+			const I seed = pair->first;
+			const int * nn_begin = nn_list;
+			const int * nn_end   = nn_list + Nnn;
 
-						r = B_f->ref_state_less(r,g,sign);
+			I s = seed;
 
-						auto pos = new_clusters.find(r);
-						if(pos == new_clusters.end()){
-							int mul = mult(B_p,B_t,clusters,g,sign,r);
-							new_clusters[r] = mul;
+			do {
+				if(s&1){
+					for(const int * nn_p = nn_begin; nn_p != nn_end;nn_p++){
+						int nn = *nn_p;
+
+						if(nn < 0)
+							continue;
+
+						bool occ = (seed>>nn)&1;
+						
+						if(!occ){
+							I r = seed ^ ((I)1 << nn);
+
+							r = B_f->ref_state_less(r,g,sign);
+
+							auto pos = new_clusters_thread[threadn].find(r);
+							if(pos == new_clusters_thread[threadn].end()){
+								int mul = mult(B_p,B_t,g,sign,r);
+								new_clusters_thread[threadn][r] = mul;
+							}
 						}
 					}
 				}
-			}
 
-			nn_begin += Nnn;
-			nn_end += Nnn;
+				nn_begin += Nnn;
+				nn_end += Nnn;
 
-		} while(s >>= 1);
+			} while(s >>= 1);
+
+		}
 	}
+
+	for(auto list : new_clusters_thread_vec){
+		new_clusters.insert(list.begin(),list.end());
+	}
+
+
 }
 
 typedef boost::adjacency_list<boost::setS,boost::vecS,boost::undirectedS> UndirectedGraph;
