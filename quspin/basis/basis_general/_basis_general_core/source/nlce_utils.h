@@ -115,8 +115,7 @@ void build_new_symm_clusters(basis_general::general_basis_core<I> * B_f,
 
 							r = B_f->ref_state_less(r,g,sign);
 
-							auto pos = new_clusters_thread[threadn].find(r);
-							if(pos == new_clusters_thread[threadn].end()){
+							if(new_clusters_thread[threadn].count(r)==0){
 								int mul = mult(B_p,B_t,g,sign,r);
 								new_clusters_thread[threadn][r] = mul;
 							}
@@ -143,62 +142,53 @@ typedef boost::adjacency_list<boost::setS,boost::vecS,boost::undirectedS> Undire
 typedef boost::graph_traits<UndirectedGraph>::vertex_descriptor VertexDescr;
 
 
-template<class I,class Stack,class VertexList,class Graph>
+template<class I,class Stack,class VertexList,class Graph,class Set>
 void build_adj(Stack &stack,
 			   VertexList &verts,
 			   Graph &graph,
+			   Set &visited,
 			   const I s,
 			   const int Nnn,
 			   const int nn_list[])
 {
 	graph.clear();
 	verts.clear();
+	visited.clear();
 
 	while(!stack.empty()){
 		stack.pop();
 	}
 
-	if(s==0){
-		return;
-	}
-
 	I r = s;
 
-	int site = 0;
+	int pos = 0;
 
 	do {
 		if(r&1){
-			verts[site] = boost::add_vertex(graph);
+			verts[pos] = boost::add_vertex(graph);
 		}
-		site++;
+		pos++;
 	} while(r >>= 1);
 
 	stack.push(verts.begin()->first);
 
-	r = s;
-
-	while(!verts.empty()){
-
-		site = stack.top(); stack.pop();
-		
-		int shift = site * Nnn;
-		const int * nn_begin = nn_list  + shift;
+	while(!stack.empty()){
+		const int pos = stack.top(); stack.pop();
+		const int * nn_begin = nn_list  + pos * Nnn;
 		const int * nn_end   = nn_begin + Nnn;
+		visited.insert(pos);
 
 		for(const int * nn_p = nn_begin; nn_p != nn_end; nn_p++){
-			int nn = *nn_p;
+			const int nn_pos = *nn_p;
 
-			if(nn < 0)
+			if(nn_pos < 0)
 				continue;
 
-			auto iter = verts.find(nn);
-			if(iter != verts.end()){
-				boost::add_edge(verts[site],verts[nn],graph);
-				stack.push(nn);
+			if(visited.count(nn_pos)==0 && verts.count(nn_pos)!=0){
+				boost::add_edge(verts[pos],verts[nn_pos],graph);
+				stack.push(nn_pos);					
 			}
 		}
-
-		verts.erase(site);
 	}
 }
 
@@ -211,12 +201,13 @@ void build_topo_clusters(const int Nnn,
 	std::unordered_map<int,VertexDescr> verts;
 	UndirectedGraph graph;
 	std::stack<int> stack;
+	std::unordered_set<int> visited;
 
 	for(auto pair : symm_clusters)
 	{	
 		I s = pair.first;
 
-		build_adj(stack,verts,graph,s,Nnn,nn_list);
+		build_adj(stack,verts,graph,visited,s,Nnn,nn_list);
 
 		bool found = false;
 		for(auto cls : topo_clusters)
@@ -238,40 +229,37 @@ void build_topo_clusters(const int Nnn,
 }
 
 
-template<class I,class Vec,class Map>
+template<class I,class Vec>
 void get_ind_pos_map(const I s,
-					 Vec &ind_to_pos,
-					 Map &pos_to_ind)
+					 Vec &ind_to_pos)
 {
 	I r = s;
-	pos_to_ind.clear();
 	ind_to_pos.clear();
 
 	int pos = 0;
-	int ind = 0;
 
 	do {
 		if(r&1){
-			pos_to_ind[pos] = ind++;
 			ind_to_pos.push_back(pos);
 		}
 		pos++;
 	} while(r >>= 1);
 }
 
-template<class I,class Vec,class Map,
-	class Stack,class VertexList,class Graph>
+template<class I,class Vec,
+	class Stack,class VertexList,class Graph,class Set>
 bool is_connected(const I c,
 				  const int Nnn,
 				  const int nn_list[],
 				  const Vec &ind_to_pos,
-				  const Map &pos_to_ind,
 				  Stack &stack,
 				  VertexList &verts,
-				  Graph &graph)
+				  Graph &graph,
+				  Set &visited)
 {
 	verts.clear();
 	graph.clear();
+	visited.clear();
 
 	while(!stack.empty()){
 		stack.pop();
@@ -281,20 +269,13 @@ bool is_connected(const I c,
 	// ind: position of bit in the integer, not correspinding to the index in space.
 	// pos: position of bit in space as mapped into the cluster we are checking. 
 
-	// start at some initially occupied point
-	// remove sites from a cluster starting from
-	// that position until no neighboring sites
-	// are occupied. If cluster is connected,
-	// then the result should have no sites and
-	// the integer should be 0.
-
 	I r = c;
 
 	int ind = 0;
 
 	do {
 		if(r&1){
-			verts[ind] = boost::add_vertex(graph);
+			verts[ind_to_pos[ind]] = boost::add_vertex(graph);
 		}
 		ind++;
 	} while(r >>= 1);
@@ -302,98 +283,68 @@ bool is_connected(const I c,
 
 	// add that ind to stack
 	stack.push(verts.begin()->first);
-	// reset integer.
-	r = c;
 
 	while(!stack.empty()){
-		int ind = stack.top(); stack.pop();
-		int pos = ind_to_pos[ind];
-
-		int shift = pos * Nnn;
-		const int * nn_begin = nn_list  + shift;
+		const int pos = stack.top(); stack.pop();
+		const int * nn_begin = nn_list  + pos * Nnn;
 		const int * nn_end   = nn_begin + Nnn;
+		visited.insert(pos);
 
-		for(const int * nn_p=nn_begin;nn_p!=nn_end;nn_p++){
-			int nn_pos = *nn_p;
+		for(const int * nn_p = nn_begin; nn_p != nn_end; nn_p++){
+			const int nn_pos = *nn_p;
+
 			if(nn_pos < 0)
 				continue;
 
-			// check if pos maps to cluster
-			auto iter2 = pos_to_ind.find(nn_pos);
-			if(iter2 != pos_to_ind.end()){ 
-
-				// get ind for given pos
-				int nn_ind = iter2->second; 
-				
-				if((r>>nn_ind)&1){ 
-				// if position is occupied 
-				// add to stack and add edge to graph
-
-					stack.push(nn_ind);
-					boost::add_edge(verts[ind],verts[nn_ind],graph);
-				}
+			if(visited.count(nn_pos)==0 && verts.count(nn_pos)!=0){
+				boost::add_edge(verts[pos],verts[nn_pos],graph);
+				stack.push(nn_pos);					
 			}
 		}
-
-		r ^= ((I)1 << ind); // remove site from cluster
-
 	}
 
-	return (r==0);
+	return visited.size() == verts.size();
 }
 
 
 
 
-template<class J,class Vec,class Map,
-			class map_type1,class map_type2>
-void subclusters(basis_general::general_basis_core<J> * B,
-				 const int ClusterSize,
+template<class Vec,class map_type1,class map_type2>
+void subclusters(const int ClusterSize,
 				 const int MaxClusterSize,
 				 const int Nnn,
 				 const int nn_list[],
 				 const Vec &ind_to_pos,
-				 const Map &pos_to_ind,
 				 const map_type1 &topo_clusters,
 					   map_type2 &sub_clusters)
 {
 	std::unordered_map<int,VertexDescr> verts;
 	UndirectedGraph graph;
 	std::stack<int> stack;
-	int g[__GENERAL_BASIS_CORE__max_nt];
-	signed char sign=0;
+	std::unordered_set<int> visited;
 
-
-	J c_max = 0;
-	J c = 0;
+	uint_fast32_t c_max = (uint_fast32_t)1 << MaxClusterSize;
+	uint_fast32_t c = 0, t = 0;
 	for(int i=0;i<ClusterSize;i++){
-		c_max += ((J)1 << (MaxClusterSize - i - 1));
-		c += ((J)1 << i);
+		c += ((uint_fast32_t)1 << i);
 	}
 
-	while(c <= c_max){
-		
-		bool connected = is_connected(c,Nnn,nn_list,ind_to_pos,pos_to_ind,stack,verts,graph);
-
+	while(c < c_max){
+		bool connected = is_connected(c,Nnn,nn_list,ind_to_pos,stack,verts,graph,visited);
 		if(connected){
 			// check to see if this subcluster has been encountered, using graph.
 			bool found = false;
 			for(auto cls : topo_clusters){
-
 				found = boost::isomorphism(cls.second.second,graph);
 				if(found){
 					sub_clusters[cls.first] += 1;
 					break;
 				}
 			}
-
-			// if(!found){
-			// 	std::cout << "not found!" << std::endl;
-			// }
 		}
-		c = B->next_state_pcon(c,0);
+		t = (c | (c - 1)) + 1;
+		c = t | ((((t & (0-t)) / (c & (0-c))) >> 1) - 1);
 	}
-	// std::cout << std::endl;
 }
 
 

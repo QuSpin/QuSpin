@@ -32,7 +32,6 @@ class nlce_basis_core
 {
 private:
 	basis_general::general_basis_core<I> *B_f,*B_p,*B_t;
-	basis_general::general_basis_core<uint32_t> *B_pcon;
 	const int * nn_list;
 	const int N,Ncl,Nnn;
 	std::vector<map_type1<I>> symm_clusters;
@@ -49,7 +48,6 @@ public:
 		B_f = new basis_general::hcb_basis_core<I>(_N,nt_p+nt_t,maps,pers,qs);
 		B_p = new basis_general::hcb_basis_core<I>(_N,nt_p,maps,pers,qs);
 		B_t = new basis_general::hcb_basis_core<I>(_N,nt_t,maps+nt_p*_N,pers+nt_p,qs+nt_p);
-		B_pcon = new basis_general::hcb_basis_core<uint32_t>(32);
 		symm_clusters.resize(_Ncl);
 		topo_clusters.resize(_Ncl);
 	}
@@ -58,7 +56,6 @@ public:
 		delete[] B_f;
 		delete[] B_p;
 		delete[] B_t;
-		delete[] B_pcon;
 	}
 
 	void clusters_calc();
@@ -162,22 +159,20 @@ void nlce_basis_core<I>::topo_cluster_copy(int c,I *c_data, int * mul_data){
 template<class I>
 void nlce_basis_core<I>::calc_subclusters()
 {
-	std::unordered_map<int,int> pos_to_ind;
 	std::vector<int> ind_to_pos;
+	int MaxClusterSize = 1;
 
-	for(auto topo_cluster=topo_clusters.begin();topo_cluster!=topo_clusters.end();topo_cluster++){
+	for(auto topo_cluster : topo_clusters){
+		for(auto cluster : topo_cluster){
+			const I s = cluster.first;
+			get_ind_pos_map(s,ind_to_pos);
 
-		const int max_cluster_size = topo_cluster - topo_clusters.begin() + 1;
-
-		for(auto cluster : *topo_cluster){
-			I s = cluster.first;
-			get_ind_pos_map(s,ind_to_pos,pos_to_ind);
-
-			for(int cluster_size=1;cluster_size<max_cluster_size;cluster_size++){
-				subclusters(B_pcon,cluster_size,max_cluster_size,Nnn,nn_list,ind_to_pos,
-					pos_to_ind,topo_clusters[cluster_size-1],sub_clusters[s]);
+			for(int ClusterSize=1;ClusterSize<MaxClusterSize;ClusterSize++){
+				subclusters(ClusterSize,MaxClusterSize,Nnn,nn_list,ind_to_pos,
+					topo_clusters[ClusterSize-1],sub_clusters[s]);
 			}
 		}
+		MaxClusterSize++;
 	}
 }
 
