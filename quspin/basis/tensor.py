@@ -169,16 +169,18 @@ class tensor_basis(basis):
 		n1 = row_left.shape[0]
 		n2 = row_right.shape[0]
 
-
 		if n1 > 0 and n2 > 0:
-			row_left = row_left.astype(self._dtype)
+			row_left = row_left.astype(self._dtype,copy=False)
+			row_right = row_right.astype(self._dtype,copy=False)
 			row_left *= self._basis_right.Ns
+
 			row = _np.kron(row_left,_np.ones_like(row_right,dtype=_np.int8))
 			row += _np.kron(_np.ones_like(row_left,dtype=_np.int8),row_right)
 
 			del row_left,row_right
 
-			col_left = col_left.astype(self._dtype)
+			col_left = col_left.astype(self._dtype,copy=False)
+			col_right = col_right.astype(self._dtype,copy=False)
 			col_left *= self._basis_right.Ns
 			col = _np.kron(col_left,_np.ones_like(col_right,dtype=_np.int8))
 			col += _np.kron(_np.ones_like(col_left,dtype=_np.int8),col_right)

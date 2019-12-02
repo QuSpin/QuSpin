@@ -289,7 +289,6 @@ class quantum_operator(object):
 
 		self.update_matrix_formats(matrix_formats)
 
-	@property
 	def get_operators(self,key):
 		return self._quantum_operator[key]
 	
