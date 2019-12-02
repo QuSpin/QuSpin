@@ -107,6 +107,14 @@ class tensor_basis(basis):
 		""":obj:`basis`: all others basis constructors except for the first one of the `basis` objects list to be tensored."""
 		return self._basis_right
 
+	@property
+	def N(self):
+		"""tuple: the value of `N` attribute from all the basis objects tensored together in a tuple ordered according to the input basis list."""
+		if not isinstance(self._basis_right,tensor_basis):
+			return (self._basis_left.N,)+(self._basis_right.N,)
+		else:
+			return (self._basis_left.N,)+self._basis_right.N
+	
 
 
 	def Op(self,opstr,indx,J,dtype):
