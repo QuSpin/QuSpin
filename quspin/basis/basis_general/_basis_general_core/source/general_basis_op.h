@@ -1168,8 +1168,9 @@ int general_op_bra_ket(general_basis_core<I,P> *B,
                     r = B->ref_state(r,g,sign);
                     // use check_state to determine if state is a representative (same routine as in make-general_basis)
                     double norm_r = B->check_state(r);
-
-                    if(!check_nan(norm_r) && norm_r > 0){ // ref_state is a representative
+                    npy_intp int_norm = norm;
+                    
+                    if(!check_nan(norm_r) && int_norm > 0){ // ref_state is a representative
 
                         for(int k=0;k<nt;k++){
                             double q = (2.0*M_PI*B->qs[k]*g[k])/B->pers[k];
