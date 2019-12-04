@@ -1127,6 +1127,97 @@ int general_op(general_basis_core<I,P> *B,
 }
 */
 
+#include <iomanip>
+
+template<class I1,class J1,class I2,class J2,class K,class P=signed char>
+int general_op_shift_sectors(general_basis_core<I1,P> *B_out,
+                             const int n_op,
+                             const char opstr[],
+                             const int indx[],
+                             const std::complex<double> A,
+                             const npy_intp Ns_out,
+                             const I1 basis_out[],
+                             const J1 n_out[],
+                             const npy_intp Ns_in,
+                             const I2 basis_in[],
+                             const J2 n_in[],
+                             const npy_intp nvecs,
+                             const K v_in[],
+                                   K v_out[])
+{
+    int err = 0;
+    #pragma omp parallel firstprivate(A)
+    {
+        const int nt = B_out->get_nt();
+        const int nthread = omp_get_num_threads();
+        const npy_intp dyn_chunk = std::max(Ns_in/(1000*nthread),(npy_intp)1);
+        int g[__GENERAL_BASIS_CORE__max_nt];
+        double kk[__GENERAL_BASIS_CORE__max_nt];
+
+        for(int k=0;k<nt;k++){
+            kk[k] = (2.0*M_PI*B_out->qs[k])/B_out->pers[k];
+        }
+
+        #pragma omp for schedule(dynamic,dyn_chunk)
+        for(npy_intp i=0;i<Ns_in;i++){
+
+            std::complex<double> m = A;
+            const I1 s = (I1)basis_in[i];
+            I1 r = s;
+            
+            int local_err = B_out->op(r,m,n_op,opstr,indx);
+
+            if(local_err == 0){
+                P sign = 1;
+
+                if(r != s){ // off-diagonal matrix element
+                    for(int k=0;k<nt;k++){g[k]=0;}
+                    r = B_out->ref_state(r,g,sign);
+                }
+                
+                npy_intp j = rep_position<npy_intp,I1>(Ns_out,basis_out,r);
+
+                if(j>=0){ // ref_state is a representative
+
+                    if(r != s){
+                        double q = 0;
+                        for(int k=0;k<nt;k++){
+                            q += kk[k]*g[k];                              
+                        }
+                        m *= (double)sign * std::exp(std::complex<double>(0,-q));    
+                    }
+                    
+                    // std::cout << std::setw(20) << m << std::setw(4) << j << std::setw(4) << s << std::setw(4) << r << std::endl;
+                    m *= std::sqrt(double(n_out[j])/double(n_in[i]));
+                    // std::cout << std::setw(20) << m << std::setw(4) << j << std::setw(4) << s << std::setw(4) << r << std::endl;
+                    // std::cout << std::endl;
+                    const K * v_in_col  = v_in  + i * nvecs;
+                          K * v_out_row = v_out + j * nvecs;
+
+                    local_err = check_imag<K>(m);
+
+                    if(local_err && err==0){
+                        #pragma omp atomic write
+                        err = local_err;                       
+                    }
+
+                    for(int k=0;k<nvecs;k++){
+                        const std::complex<double> M = mul(v_in_col[k],m);
+                        atomic_add(M,&v_out_row[k]);
+                    }
+                }
+            }
+            else if(err==0){
+                #pragma omp atomic write
+                err = local_err;                    
+            }
+        }
+
+        
+    }
+    return err;
+}
+
 
 
 
@@ -1168,8 +1259,8 @@ int general_op_bra_ket(general_basis_core<I,P> *B,
                     r = B->ref_state(r,g,sign);
                     // use check_state to determine if state is a representative (same routine as in make-general_basis)
                     double norm_r = B->check_state(r);
-                    npy_intp int_norm = norm;
-                    
+                    npy_intp int_norm = norm_r;
+
                     if(!check_nan(norm_r) && int_norm > 0){ // ref_state is a representative
 
                         for(int k=0;k<nt;k++){

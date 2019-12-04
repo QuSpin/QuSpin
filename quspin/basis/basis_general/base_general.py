@@ -318,6 +318,45 @@ class basis_general(lattice_basis):
 		return v_out.squeeze()
 
 
+	def Op_shift_sector(self,other_basis,op_list,v_in,v_out=None):
+		if not isinstance(other_basis,self.__class__):
+			raise ValueError("other_basis must be the same type as the given basis.")
+
+		_,_,J_list = zip(*op_list)
+
+		J_list = _np.asarray(J_list)
+		v_in = _np.asanyarray(v_in)
+
+		result_dtype = _np.result_type(_np.float32,J_list.dtype,v_in.dtype)
+
+		v_in = _np.ascontiguousarray(v_in,dtype=result_dtype)
+		v_in = v_in.reshape((other_basis.Ns,-1))
+
+		nvecs = v_in.shape[1]
+
+
+		if v_in.shape[0] != other_basis.Ns:
+			raise ValueError("invalid shape for v_in")
+
+		if v_out is None:
+			v_out = _np.zeros((self.Ns,nvecs),dtype=result_dtype,order="C")
+		else:
+			if v_out.dtype != result_dtype:
+				raise TypeError("v_out does not have the correct data type.")
+			if not v_out.flags["CARRAY"]:
+				raise ValueError("v_out is not a writable C-contiguous array")
+			if v_out.shape != (self.Ns,nvecs):
+				raise ValueError("invalid shape for v_out")
+
+
+		for opstr,indx,J in op_list:
+			indx = _np.ascontiguousarray(indx,dtype=_np.int32)
+			self._core.op_shift_sector(v_in,v_out,opstr,indx,J,
+				self._basis,self._n,other_basis._basis,other_basis._n)
+
+		return v_out.squeeze()		
+
+
 	def get_proj(self,dtype,pcon=False):
 		"""Calculates transformation/projector from symmetry-reduced basis to full (symmetry-free) basis.
 
