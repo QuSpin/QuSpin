@@ -8,6 +8,34 @@ except NameError:
 	S_dict = {(str(i)+"/2" if i%2==1 else str(i//2)):(i+1,i/2.0) for i in range(1,10001)}
 
 
+def get_Nup_list(N,S="1/2"):
+	"""returns a list of all 'Nup' sectors for a given spin-S. 
+	Parameters
+	-----------
+	N: int
+		number of sites
+
+	S: str, optional
+		Size of local spin degrees of freedom. Can be any (half-)integer from:
+		"1/2","1","3/2",...,"9999/2","5000".
+
+	Returns
+	--------
+
+	Nup_list: ndarray
+		list of all possible Nup sectors for your system.
+
+	Example
+	-------
+	>>> Nup_list = get_Nup_list(10,S="1")
+	>>> print(Nup_list)
+
+	"""
+	sps,S = S_dict[S]
+	return _np.arange((sps-1)*N+1)
+
+
+
 class spin_basis_general(hcb_basis_general,higher_spin_basis_general):
 	"""Constructs basis for spin operators for USER-DEFINED symmetries.
 

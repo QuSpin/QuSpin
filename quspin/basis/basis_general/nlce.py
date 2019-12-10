@@ -1,8 +1,15 @@
-from ._basis_general_core import nlce_core_wrap
+from ._basis_general_core import nlce_site_core_wrap
 from ._perm_checks import process_map
 import numpy as _np
 from numba import njit
 from builtins import range
+
+@njit
+def _get_Nc(nmax,N):
+	for i in range(N.size):
+		if nmax > N[i]:
+			return i
+	return N.size
 
 
 @njit
@@ -37,15 +44,36 @@ def _get_Sn(W,L,N):
 	return Sn
 
 
+def wynn_eps_method(p,ncycle):
+	nmax = p.shape[0]
+
+	if 2*ncycle >= nmax:
+		raise ValueError
+
+	e0 = _np.zeros_like(p)
+	e1 = p.copy()
+	e2 = _np.zeros_like(e1)
+
+	for k in range(1,2*ncycle+1,1):
+		de = _np.diff(e1,axis=0)[0:nmax-k,...]
+		e2[0:nmax-k,...] = e0[1:nmax-k+1,...] + de/(de**2+1e-300)
+
+		e0[:] = e1[:]
+		e1[:] = e2[:]
+		e2[:] = 0
+
+	return e1[:nmax-2*ncycle,...]
 
 
-class _ncle(object):
+
+class _ncle_site(object):
 	def __init__(self,N_cl,N_lat,
-				 nn_list,cluster_list,
+				 nn_list,nn_weight,cluster_list,
 				 L_list,Ncl_list,Y):
 		self._N_cl = N_cl
 		self._N_lat = N_lat
 		self._nn_list = nn_list
+		self._nn_weight = nn_weight
 		self._cluster_list = cluster_list
 		self._L_list = L_list
 		self._Ncl_list = Ncl_list
@@ -55,12 +83,24 @@ class _ncle(object):
 	@property
 	def Nc(self):
 		return self._L_list.shape[0]
-	
 
-	def get_W(self,O,out=None):
+
+	def get_Nc(self,Ncl):
+		return _get_Nc(Ncl,self._Ncl_list)
+
+	def get_W(self,O,out=None,Ncl_max=None):
+		if Ncl_max is not None:
+			if Ncl_max > self._N_cl:
+				raise ValueError
+
+			Nc = self.get_Nc(Ncl_max)
+
+		else:
+			Nc = self._L_list.shape[0]
+
 		result_dtype = _np.result_type(self._Y.dtype,O.dtype)
 
-		if O.shape[0] != self._L_list.shape[0]:
+		if O.shape[0] != Nc:
 			raise ValueError
 
 		shape0 = O.shape
@@ -82,36 +122,19 @@ class _ncle(object):
 
 		return out.reshape(shape0)
 
-	def partial_sums(self,O):
-		W = self.get_W(O)
+	def partial_sums(self,O,Ncl_max=None):
+		W = self.get_W(O,Ncl_max=Ncl_max)
 		shape = W.shape[:1]+(-1,)
-		Sn = _get_Sn(W.reshape(shape),self._L_list,self._Ncl_list)
+		Nc = W.shape[0]
+		Sn = _get_Sn(W.reshape(shape),self._L_list[:Nc],self._Ncl_list[:Nc])
 		return Sn
 
-	def bare_sums(self,O):
-		return self.partial_sums(O).cumsum(axis=0)
+	def bare_sums(self,O,Ncl_max=None):
+		return self.partial_sums(O,Ncl_max=Ncl_max).cumsum(axis=0)
 
-	def wynn_sums(self,O,ncycle):
-		if 2*ncycle >= O.shape[0]:
-			raise ValueError
-
-		p = self.bare_sums(O)
-
-		nmax = p.shape[0]
-
-		e0 = _np.zeros_like(p)
-		e1 = p.copy()
-		e2 = _np.zeros_like(e1)
-
-		for k in range(1,2*ncycle+1,1):
-			e2[0:nmax-k,...] = e0[1:nmax-k+1,...] + 1/(_np.diff(e1,axis=0)[0:nmax-k,...]+1.1e-15)
-
-			e0[:] = e1[:]
-			e1[:] = e2[:]
-			e2[:] = 0
-
-
-		return e1[:nmax-2*ncycle,...]
+	def wynn_sums(self,O,ncycle,Ncl_max=None):
+		p = self.bare_sums(O,Ncl_max=Ncl_max)
+		return wynn_eps_method(p,ncycle)
 
 	def get_cluster_graph(self,ic):
 		if type(ic) is not int:
@@ -127,18 +150,30 @@ class _ncle(object):
 		sites.sort()
 		visited = set([])
 		stack.append(sites[0])
+		if self._nn_weight is not None:
+			while(stack):
+				i = stack.pop()
+				a = _np.searchsorted(sites,i)
 
-		while(stack):
-			i = stack.pop()
-			a = _np.searchsorted(sites,i)
+				for j,nn in enumerate(self._nn_list[i,:]):
+					if nn not in visited and nn in sites:
+						b = _np.searchsorted(sites,nn)
+						graph.append((self._nn_weight[j],a,b))
+						stack.append(nn)
 
-			for nn in self._nn_list[i,:]:
-				if nn not in visited and nn in sites:
-					b = _np.searchsorted(sites,nn)
-					graph.append((a,b))
-					stack.append(nn)
+				visited.add(i)
+		else:
+			while(stack):
+				i = stack.pop()
+				a = _np.searchsorted(sites,i)
 
-			visited.add(i)
+				for nn in self._nn_list[i,:]:
+					if nn not in visited and nn in sites:
+						b = _np.searchsorted(sites,nn)
+						graph.append((a,b))
+						stack.append(nn)
+
+				visited.add(i)			
 
 		return ic,_np.array(sites),self._Ncl_list[ic],frozenset(graph)
 
@@ -174,8 +209,8 @@ class _ncle(object):
 				yield self.get_cluster_graph(i)
 
 
-class NLCE(_ncle):
-	def __init__(self,N_cl,N_lat,nn_list,tr,pg):
+class NLCE_site(_ncle_site):
+	def __init__(self,N_cl,N_lat,nn_list,tr,pg,nn_weight=None):
 	
 		if nn_list.shape[0] != N_lat:
 			raise ValueError
@@ -184,6 +219,9 @@ class NLCE(_ncle):
 			raise ValueError
 
 		if pg.shape[1] != N_lat:
+			raise ValueError
+
+		if nn_weight is not None and nn_weight.shape[0] != nn_list.shape[1]:
 			raise ValueError
 
 		nt_point = pg.shape[0]
@@ -205,11 +243,11 @@ class NLCE(_ncle):
 				if _np.all(maps[j]==maps[i]):
 					ValueError("repeated transformations in list of permutations for point group/translations.")
 
-		nlce_core = nlce_core_wrap(N_cl,nt_point,nt_trans,maps,pers,qs,nn_list)
+		nlce_core = nlce_site_core_wrap(N_cl,nt_point,nt_trans,maps,pers,qs,nn_list,nn_weight)
 
 		clusters_list,L_list,Ncl_list,Y = nlce_core.calc_clusters()
 
-		_ncle.__init__(self,N_cl,N_lat,nn_list,clusters_list,L_list,Ncl_list,Y)
+		_ncle_site.__init__(self,N_cl,N_lat,nn_list,nn_weight,clusters_list,L_list,Ncl_list,Y)
 		
 
 

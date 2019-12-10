@@ -39,14 +39,14 @@ class higher_spin_basis_general(basis_general):
 			self._basis_dtype = get_basis_type(N,Nup,sps)
 		else:
 			try:
-				Np_iter = iter(Nup)
+				Np_iter = list(Nup)
 			except TypeError:
 				raise TypeError("Nup must be integer or iteratable object.")
 			self._Ns = 0
-			for Nup in Np_iter:
-				self._Ns += H_dim(Nup,N,sps-1)
+			for Np in Np_iter:
+				self._Ns += H_dim(Np,N,sps-1)
 
-			self._basis_dtype = get_basis_type(N,max(iter(Nup)),sps)
+			self._basis_dtype = get_basis_type(N,Np_iter,sps)
 
 		if len(self._pers)>0:
 			if Ns_block_est is None:

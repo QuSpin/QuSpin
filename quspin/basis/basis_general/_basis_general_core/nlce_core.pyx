@@ -14,8 +14,10 @@ from numpy cimport int8_t,int16_t,int32_t,npy_intp
 
 # specialized code 
 cdef extern from "nlce_basis_core.h" namespace "nlce":
-    cdef cppclass nlce_basis_core[I]:
-        nlce_basis_core(const int,const int,const int,const int[],
+    cdef cppclass nlce_site_basis_core[I]:
+        nlce_site_basis_core(const int,const int,const int,const int[],
+            const int,const int,const int[],const int[],const int[])
+        nlce_site_basis_core(const int,const int,const int,const int[],const int[],
             const int,const int,const int[],const int[],const int[])
         void clusters_calc()
         void calc_subclusters()
@@ -24,7 +26,7 @@ cdef extern from "nlce_basis_core.h" namespace "nlce":
         void cluster_copy[J,K](J[],K[],npy_intp[])
 
 
-cdef class nlce_core_wrap:
+cdef class nlce_site_core_wrap:
     cdef int _Ncl
     cdef int _N
     cdef void * _nlce_core
@@ -35,35 +37,50 @@ cdef class nlce_core_wrap:
                       ,int[:,::1] maps
                       ,int[::1] pers
                       ,int[::1] qs
-                      ,int[:,::1] nn_list):
+                      ,int[:,::1] nn_list
+                      ,int[::1] nn_weight=None):
         
         cdef int N = maps.shape[1]
         cdef int Nnn = nn_list.shape[1]
         self._Ncl = Ncl
         self._N = N
 
-        if N <= 64:
-            self._nlce_core = <void*> new nlce_basis_core[uint64_t](Ncl,N,Nnn,&nn_list[0,0],nt_point,nt_tran,&maps[0,0],&pers[0],&qs[0])        
-        elif N <= 128:
-            self._nlce_core = <void*> new nlce_basis_core[uint128_t](Ncl,N,Nnn,&nn_list[0,0],nt_point,nt_tran,&maps[0,0],&pers[0],&qs[0])
-        elif N <= 256:
-            self._nlce_core = <void*> new nlce_basis_core[uint256_t](Ncl,N,Nnn,&nn_list[0,0],nt_point,nt_tran,&maps[0,0],&pers[0],&qs[0])
-        elif N <= 512:
-            self._nlce_core = <void*> new nlce_basis_core[uint512_t](Ncl,N,Nnn,&nn_list[0,0],nt_point,nt_tran,&maps[0,0],&pers[0],&qs[0])
-        elif N <= 1024:
-            self._nlce_core = <void*> new nlce_basis_core[uint1024_t](Ncl,N,Nnn,&nn_list[0,0],nt_point,nt_tran,&maps[0,0],&pers[0],&qs[0])
+        if nn_weight is None:
+            if N <= 64:
+                self._nlce_core = <void*> new nlce_site_basis_core[uint64_t](Ncl,N,Nnn,&nn_list[0,0],nt_point,nt_tran,&maps[0,0],&pers[0],&qs[0])        
+            elif N <= 128:
+                self._nlce_core = <void*> new nlce_site_basis_core[uint128_t](Ncl,N,Nnn,&nn_list[0,0],nt_point,nt_tran,&maps[0,0],&pers[0],&qs[0])
+            elif N <= 256:
+                self._nlce_core = <void*> new nlce_site_basis_core[uint256_t](Ncl,N,Nnn,&nn_list[0,0],nt_point,nt_tran,&maps[0,0],&pers[0],&qs[0])
+            elif N <= 512:
+                self._nlce_core = <void*> new nlce_site_basis_core[uint512_t](Ncl,N,Nnn,&nn_list[0,0],nt_point,nt_tran,&maps[0,0],&pers[0],&qs[0])
+            elif N <= 1024:
+                self._nlce_core = <void*> new nlce_site_basis_core[uint1024_t](Ncl,N,Nnn,&nn_list[0,0],nt_point,nt_tran,&maps[0,0],&pers[0],&qs[0])
+            else:
+                raise ValueError
         else:
-            raise ValueError
+            if N <= 64:
+                self._nlce_core = <void*> new nlce_site_basis_core[uint64_t](Ncl,N,Nnn,&nn_list[0,0],&nn_weight[0],nt_point,nt_tran,&maps[0,0],&pers[0],&qs[0])        
+            elif N <= 128:
+                self._nlce_core = <void*> new nlce_site_basis_core[uint128_t](Ncl,N,Nnn,&nn_list[0,0],&nn_weight[0],nt_point,nt_tran,&maps[0,0],&pers[0],&qs[0])
+            elif N <= 256:
+                self._nlce_core = <void*> new nlce_site_basis_core[uint256_t](Ncl,N,Nnn,&nn_list[0,0],&nn_weight[0],nt_point,nt_tran,&maps[0,0],&pers[0],&qs[0])
+            elif N <= 512:
+                self._nlce_core = <void*> new nlce_site_basis_core[uint512_t](Ncl,N,Nnn,&nn_list[0,0],&nn_weight[0],nt_point,nt_tran,&maps[0,0],&pers[0],&qs[0])
+            elif N <= 1024:
+                self._nlce_core = <void*> new nlce_site_basis_core[uint1024_t](Ncl,N,Nnn,&nn_list[0,0],&nn_weight[0],nt_point,nt_tran,&maps[0,0],&pers[0],&qs[0])
+            else:
+                raise ValueError
 
 
 
     def _calc_topo_clusters(self):
         cdef void * nlce_core = self._nlce_core
-        cdef nlce_basis_core[uint64_t]* nlce_64 = <nlce_basis_core[uint64_t]*>nlce_core
-        cdef nlce_basis_core[uint128_t]* nlce_128 = <nlce_basis_core[uint128_t]*>nlce_core
-        cdef nlce_basis_core[uint256_t]* nlce_256 = <nlce_basis_core[uint256_t]*>nlce_core
-        cdef nlce_basis_core[uint512_t]* nlce_512 = <nlce_basis_core[uint512_t]*>nlce_core
-        cdef nlce_basis_core[uint1024_t]* nlce_1024 = <nlce_basis_core[uint1024_t]*>nlce_core       
+        cdef nlce_site_basis_core[uint64_t]* nlce_64 = <nlce_site_basis_core[uint64_t]*>nlce_core
+        cdef nlce_site_basis_core[uint128_t]* nlce_128 = <nlce_site_basis_core[uint128_t]*>nlce_core
+        cdef nlce_site_basis_core[uint256_t]* nlce_256 = <nlce_site_basis_core[uint256_t]*>nlce_core
+        cdef nlce_site_basis_core[uint512_t]* nlce_512 = <nlce_site_basis_core[uint512_t]*>nlce_core
+        cdef nlce_site_basis_core[uint1024_t]* nlce_1024 = <nlce_site_basis_core[uint1024_t]*>nlce_core       
 
         if self._N <= 64:
             nlce_64.clusters_calc()
@@ -79,11 +96,11 @@ cdef class nlce_core_wrap:
 
     def _calc_sub_clusters(self):
         cdef void * nlce_core = self._nlce_core
-        cdef nlce_basis_core[uint64_t]* nlce_64 = <nlce_basis_core[uint64_t]*>nlce_core
-        cdef nlce_basis_core[uint128_t]* nlce_128 = <nlce_basis_core[uint128_t]*>nlce_core
-        cdef nlce_basis_core[uint256_t]* nlce_256 = <nlce_basis_core[uint256_t]*>nlce_core
-        cdef nlce_basis_core[uint512_t]* nlce_512 = <nlce_basis_core[uint512_t]*>nlce_core
-        cdef nlce_basis_core[uint1024_t]* nlce_1024 = <nlce_basis_core[uint1024_t]*>nlce_core       
+        cdef nlce_site_basis_core[uint64_t]* nlce_64 = <nlce_site_basis_core[uint64_t]*>nlce_core
+        cdef nlce_site_basis_core[uint128_t]* nlce_128 = <nlce_site_basis_core[uint128_t]*>nlce_core
+        cdef nlce_site_basis_core[uint256_t]* nlce_256 = <nlce_site_basis_core[uint256_t]*>nlce_core
+        cdef nlce_site_basis_core[uint512_t]* nlce_512 = <nlce_site_basis_core[uint512_t]*>nlce_core
+        cdef nlce_site_basis_core[uint1024_t]* nlce_1024 = <nlce_site_basis_core[uint1024_t]*>nlce_core       
 
         if self._N <= 64:
             nlce_64.calc_subclusters()
@@ -98,11 +115,11 @@ cdef class nlce_core_wrap:
 
     def _calc_Y_dims(self):
         cdef void * nlce_core = self._nlce_core
-        cdef nlce_basis_core[uint64_t]* nlce_64 = <nlce_basis_core[uint64_t]*>nlce_core
-        cdef nlce_basis_core[uint128_t]* nlce_128 = <nlce_basis_core[uint128_t]*>nlce_core
-        cdef nlce_basis_core[uint256_t]* nlce_256 = <nlce_basis_core[uint256_t]*>nlce_core
-        cdef nlce_basis_core[uint512_t]* nlce_512 = <nlce_basis_core[uint512_t]*>nlce_core
-        cdef nlce_basis_core[uint1024_t]* nlce_1024 = <nlce_basis_core[uint1024_t]*>nlce_core       
+        cdef nlce_site_basis_core[uint64_t]* nlce_64 = <nlce_site_basis_core[uint64_t]*>nlce_core
+        cdef nlce_site_basis_core[uint128_t]* nlce_128 = <nlce_site_basis_core[uint128_t]*>nlce_core
+        cdef nlce_site_basis_core[uint256_t]* nlce_256 = <nlce_site_basis_core[uint256_t]*>nlce_core
+        cdef nlce_site_basis_core[uint512_t]* nlce_512 = <nlce_site_basis_core[uint512_t]*>nlce_core
+        cdef nlce_site_basis_core[uint1024_t]* nlce_1024 = <nlce_site_basis_core[uint1024_t]*>nlce_core       
 
         cdef npy_intp row=0
         cdef npy_intp nnz=0
@@ -123,11 +140,11 @@ cdef class nlce_core_wrap:
 
     def _get_cluster_data(self,_npc.ndarray clusters,_npc.ndarray ncl,_npc.ndarray L):
         cdef void * nlce_core = self._nlce_core
-        cdef nlce_basis_core[uint64_t]* nlce_64 = <nlce_basis_core[uint64_t]*>nlce_core
-        cdef nlce_basis_core[uint128_t]* nlce_128 = <nlce_basis_core[uint128_t]*>nlce_core
-        cdef nlce_basis_core[uint256_t]* nlce_256 = <nlce_basis_core[uint256_t]*>nlce_core
-        cdef nlce_basis_core[uint512_t]* nlce_512 = <nlce_basis_core[uint512_t]*>nlce_core
-        cdef nlce_basis_core[uint1024_t]* nlce_1024 = <nlce_basis_core[uint1024_t]*>nlce_core   
+        cdef nlce_site_basis_core[uint64_t]* nlce_64 = <nlce_site_basis_core[uint64_t]*>nlce_core
+        cdef nlce_site_basis_core[uint128_t]* nlce_128 = <nlce_site_basis_core[uint128_t]*>nlce_core
+        cdef nlce_site_basis_core[uint256_t]* nlce_256 = <nlce_site_basis_core[uint256_t]*>nlce_core
+        cdef nlce_site_basis_core[uint512_t]* nlce_512 = <nlce_site_basis_core[uint512_t]*>nlce_core
+        cdef nlce_site_basis_core[uint1024_t]* nlce_1024 = <nlce_site_basis_core[uint1024_t]*>nlce_core   
 
 
         cdef int16_t * clusters_ptr = <int16_t*>_npc.PyArray_DATA(clusters)
@@ -149,11 +166,11 @@ cdef class nlce_core_wrap:
 
     def _get_Y_data(self,_npc.ndarray data,_npc.ndarray indices,_npc.ndarray indptr):
         cdef void * nlce_core = self._nlce_core
-        cdef nlce_basis_core[uint64_t]* nlce_64 = <nlce_basis_core[uint64_t]*>nlce_core
-        cdef nlce_basis_core[uint128_t]* nlce_128 = <nlce_basis_core[uint128_t]*>nlce_core
-        cdef nlce_basis_core[uint256_t]* nlce_256 = <nlce_basis_core[uint256_t]*>nlce_core
-        cdef nlce_basis_core[uint512_t]* nlce_512 = <nlce_basis_core[uint512_t]*>nlce_core
-        cdef nlce_basis_core[uint1024_t]* nlce_1024 = <nlce_basis_core[uint1024_t]*>nlce_core   
+        cdef nlce_site_basis_core[uint64_t]* nlce_64 = <nlce_site_basis_core[uint64_t]*>nlce_core
+        cdef nlce_site_basis_core[uint128_t]* nlce_128 = <nlce_site_basis_core[uint128_t]*>nlce_core
+        cdef nlce_site_basis_core[uint256_t]* nlce_256 = <nlce_site_basis_core[uint256_t]*>nlce_core
+        cdef nlce_site_basis_core[uint512_t]* nlce_512 = <nlce_site_basis_core[uint512_t]*>nlce_core
+        cdef nlce_site_basis_core[uint1024_t]* nlce_1024 = <nlce_site_basis_core[uint1024_t]*>nlce_core   
 
         cdef npy_intp * data_ptr = <npy_intp*>_npc.PyArray_DATA(data)
         cdef npy_intp * indices_ptr = <npy_intp*>_npc.PyArray_DATA(indices)
