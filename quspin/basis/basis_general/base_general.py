@@ -319,8 +319,20 @@ class basis_general(lattice_basis):
 
 
 	def Op_shift_sector(self,other_basis,op_list,v_in,v_out=None,dtype=None):
+		"""
+
+		"""
+		
+		# consider flag to do calc with projectors instead to use as a check. 
+
 		if not isinstance(other_basis,self.__class__):
 			raise ValueError("other_basis must be the same type as the given basis.")
+
+		if not self._made_basis:
+			raise AttributeError('this function requires the basis to be constructed first; use basis.make().')
+
+		if not other_basis._made_basis:
+			raise AttributeError('this function requires the basis to be constructed first; use basis.make().')
 
 		_,_,J_list = zip(*op_list)
 

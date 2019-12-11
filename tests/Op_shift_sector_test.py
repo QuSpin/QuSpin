@@ -14,6 +14,9 @@ L = 13
 for k in range(L):
 	for q in range(L):
 		print("testing k={} -> k+q={}".format(k,(k+q)%L))
+
+		# use standard static list for this. 
+		# use generators to generate coupling list
 		op_list = [["z",[i],np.exp(-2j*np.pi*q*i/L)] for i in range(L)]
 
 
@@ -39,6 +42,7 @@ for k in range(L):
 		v_out_full = b.inplace_Op(v_in_full,op_list,np.complex128)
 		v_out_proj = P2.H.dot(v_out_full)
 
+		# swap b1 with op_list in arguments. 
 		v_out = b2.Op_shift_sector(b1,op_list,v_in)
 
 		np.testing.assert_allclose(v_out,v_out_proj,rtol=0, atol=1e-13)

@@ -55,7 +55,6 @@ def corr_symm(L,times,S="1/2"):
 	for q in range(L):
 
 		op_pq = [["z",[i],(2.0/L)*np.exp(-2j*np.pi*q*i/L)] for i in range(L)]
-		op_mq = [["z",[i],(2.0/L)*np.exp(+2j*np.pi*q*i/L)] for i in range(L)]
 
 		basis_q = spin_basis_general(L,S=S,m=0,kblock=(t,q0+q),pauli=False)
 

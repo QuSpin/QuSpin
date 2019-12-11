@@ -602,6 +602,12 @@ class spinful_fermion_basis_general(spinless_fermion_basis_general):
 
 	def state_to_int(self,*args):
 		""" Not Implemented."""
+
+
+	#################################################
+	# override for _inplace_Op and Op_shift_sector. #
+	#################################################
+
 	def Op_bra_ket(self,opstr,indx,J,dtype,ket_states,reduce_output=True):
 		
 		if self._simple_symm:
