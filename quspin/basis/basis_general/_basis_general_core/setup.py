@@ -117,7 +117,7 @@ def configuration(parent_package='', top_path=None):
         depends=depends,**extension_kwargs)
 
     nlce_src = os.path.join(package_dir,"nlce_core.cpp")
-    nlce_src_header = [os.path.join(package_dir,"source","nlce_basis_core.h"),
+    nlce_src_header = [os.path.join(package_dir,"source","nlce_site_basis_core.h"),
     				   os.path.join(package_dir,"source","nlce_utils.h")]
     depends = global_headers + nlce_src_header
     config.add_extension('nlce_core',sources=nlce_src,

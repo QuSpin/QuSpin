@@ -13,7 +13,7 @@ from numpy cimport int8_t,int16_t,int32_t,npy_intp
 
 
 # specialized code 
-cdef extern from "nlce_basis_core.h" namespace "nlce":
+cdef extern from "nlce_site_basis_core.h" namespace "nlce_site":
     cdef cppclass nlce_site_basis_core[I]:
         nlce_site_basis_core(const int,const int,const int,const int[],
             const int,const int,const int[],const int[],const int[])
