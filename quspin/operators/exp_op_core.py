@@ -421,7 +421,7 @@ class exp_op(object):
 
 		"""
 		if self.O.is_dense or dense:
-			return _la.expm(self._a * self.O.todense(**call_kwargs))
+			return _la.expm(self._a * self.O.toarray(**call_kwargs))
 		else:
 			return _la.expm(self._a * self.O.tocsc(**call_kwargs))
 
