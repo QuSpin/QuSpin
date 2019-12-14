@@ -58,7 +58,7 @@ def test_ramdom_matrix(N=3500,ntest=10,seed=0):
 		print("testing random matrix {}".format(i+1))
 		A = (random(N,N,density=np.log(N)/N) + 1j*random(N,N,density=np.log(N)/N))
 		A = A.tocsr()
-		# A = (A + A.H)/2.0
+
 		v = np.random.normal(0,1,size=N) + 1j * np.random.normal(0,1,size=N)
 		v /= np.linalg.norm(v)
 
@@ -68,8 +68,27 @@ def test_ramdom_matrix(N=3500,ntest=10,seed=0):
 		np.testing.assert_allclose(v1,v2,rtol=0,atol=1e-15,err_msg='random matrix test failed, seed {:d}'.format(seed) )
 		i += 1
 
+def test_ramdom_int_matrix(N=3500,ntest=10,seed=0):
+	np.random.seed(seed)
+	i = 0
+	while(i<ntest):
+		print("testing random integer matrix {}".format(i+1))
+		data_rvs = lambda n:np.random.randint(-100,100,size=n)
+		A = random(N,N,density=np.log(N)/N,data_rvs=data_rvs).astype(np.int8)
+		A = A.tocsr()
+
+		v = np.random.normal(0,1,size=N) + 1j * np.random.normal(0,1,size=N)
+		v /= np.linalg.norm(v)
+
+		v1 = expm_multiply(-0.01j*A,v)
+		v2 = expm_multiply_parallel(A,a=-0.01j,dtype=np.complex128).dot(v)
+		
+		np.testing.assert_allclose(v1,v2,rtol=0,atol=1e-13,err_msg='random matrix test failed, seed {:d}'.format(seed) )
+		i += 1
+
 test_imag_time()
 test_ramdom_matrix()
+test_ramdom_int_matrix()
 print("expm_multiply_parallel tests passed!")
 
 

@@ -131,19 +131,26 @@ void csr_shift_diag_pass2(const T shift,
 #include <algorithm>
 
 // _np.max(_np.abs(self._A).sum(axis=0)) 
-template<class I,class T,class realT>
-realT csr_1_norm(const I n_row,
+template<class I,class T>
+double csr_1_norm(const I n_row,
 				 const I n_col, 
 				 const I Ap[], 
-				 const I Aj[], 
-			 		   T Ax[])
+				 const I Aj[],
+				 const std::complex<double> shift, // shift of diagonal matrix elements. 
+			 	 const T Ax[])
 {
-	std::vector<realT> col_sums(n_col);
+	std::vector<double> col_sums(n_col);
 
 	for(I i = 0; i < n_row; i++){
-		realT sum = 0;
+		double sum = 0;
 		for(I jj = Ap[i]; jj < Ap[i+1]; jj++){
-			sum += std::abs(Ax[jj]);
+			if(Aj[jj]==i){
+				sum += std::abs(shift + std::complex<double>(Ax[jj]));
+			}
+			else{
+				sum += std::abs(Ax[jj]);
+			}
+			
 		}
 		col_sums[i] = sum;
 	}
