@@ -36,9 +36,9 @@ class expm_multiply_parallel(object):
             The operator (matrix) whose exponential is to be calculated.
         a : scalar, optional
             scalar value multiplying generator matrix :math:`A` in matrix exponential: :math:`\\mathrm{e}^{aA}`.
-        dtype: numpy.dtype, optional
+        dtype : numpy.dtype, optional
             dtype specified for this operator. Default is: result_type(A.dtype,min_scalar_type(a),float64)
-        copy: bool, optional
+        copy : bool, optional
             if `True` the matrix is copied otherwise the matrix is stored by reference. 
 
         Note
@@ -93,8 +93,14 @@ class expm_multiply_parallel(object):
         return self._A
 
 
-    def set_a(self,a):
+    def set_a(self,a,dtype=None):
         """Sets the value of the property `a`.
+        Parameters
+        -----------
+        a : scalar
+            new value of `a`.
+        dtype : numpy.dtype, optional
+            dtype specified for this operator. Default is: result_type(A.dtype,min_scalar_type(a),float64)
 
         Examples
         --------
@@ -104,15 +110,28 @@ class expm_multiply_parallel(object):
             :language: python
             :lines: 32-35
             
-        Parameters
-        -----------
-        a : scalar
-            new value of `a`.
-
         """
 
         if _np.array(a).ndim == 0:
             self._a = a
+
+             a_dtype_min = _np.min_scalar_type(self._a)
+
+            # use double precision by default. 
+            if dtype is None:
+                self._dtype = _np.result_type(A.dtype,a_dtype_min,_np.float64)
+            else:
+                min_dtype = _np.result_type(A.dtype,a_dtype_min,_np.float32)
+                if not _np.can_cast(min_dtype,dtype):
+                    raise ValueError("dtype not sufficient to represent a*A to at least float32 precision.")
+
+                self._dtype = dtype
+
+            tol = _np.finfo(self._dtype).eps/2
+            tol_dtype = _np.finfo(self._dtype).eps.dtype
+            self._tol = _np.array(tol,dtype=tol_dtype)
+            self._mu = _np.array(self._mu,dtype=self._dtype)
+
             self._calculate_partition()
         else:
             raise ValueError("expecting 'a' to be scalar.")
