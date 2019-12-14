@@ -27,7 +27,7 @@ class expm_multiply_parallel(object):
         :lines: 7-30
     
     """
-    def __init__(self,A,a=1.0):
+    def __init__(self,A,a=1.0,dtype=None,copy=False):
         """Initializes `expm_multiply_parallel`. 
 
         Parameters
@@ -36,31 +36,50 @@ class expm_multiply_parallel(object):
             The operator (matrix) whose exponential is to be calculated.
         a : scalar, optional
             scalar value multiplying generator matrix :math:`A` in matrix exponential: :math:`\\mathrm{e}^{aA}`.
-            
+        dtype : numpy.dtype, optional
+            dtype specified for this operator. Default is: result_type(A.dtype,min_scalar_type(a),float64)
+        copy : bool, optional
+            if `True` the matrix is copied otherwise the matrix is stored by reference. 
+
+        Note
+        ----
+        The `dtype` need not be the same dtype of `A` or `a`, however it must be possible to cast the result of a*A to this dtype. 
+
         """
         if _np.array(a).ndim == 0:
             self._a = a
         else:
             raise ValueError("a must be scalar value.")
 
-        self._A = _sp.csr_matrix(A,copy=False)
-        # self._A = _sp.csr_matrix(A,copy=True)
+        self._A = _sp.csr_matrix(A,copy=copy)
 
         if A.shape[0] != A.shape[1]:
             raise ValueError("A must be a square matrix.")
 
-        tol = _np.finfo(A.dtype).eps/2
-        tol_dtype = _np.finfo(A.dtype).eps.dtype
+        a_dtype_min = _np.min_scalar_type(self._a)
+
+        # use double precision by default. 
+        if dtype is None:
+            self._dtype = _np.result_type(A.dtype,a_dtype_min,_np.float64)
+        else:
+            min_dtype = _np.result_type(A.dtype,a_dtype_min,_np.float32)
+            if not _np.can_cast(min_dtype,dtype):
+                raise ValueError("dtype not sufficient to represent a*A to at least float32 precision.")
+
+            self._dtype = dtype
+
+        tol = _np.finfo(self._dtype).eps/2
+        tol_dtype = _np.finfo(self._dtype).eps.dtype
         self._tol = _np.array(tol,dtype=tol_dtype)
 
         mu = _wrapper_csr_trace(self._A.indptr,self._A.indices,self._A.data)/self._A.shape[0]
-        self._mu = _np.array(mu,dtype=A.dtype)
-
-        shift = eye(A.shape[0],format="csr",dtype=A.dtype)
-        shift.data *= mu
-        self._A = self._A - shift
-        self._A_1_norm = _wrapper_csr_1_norm(self._A.indptr,self._A.indices,self._A.data)
+        self._mu = _np.array(mu,dtype=self._dtype)
+        self._A_1_norm = _wrapper_csr_1_norm(self._A.indptr,self._A.indices,self._A.data,self._mu)
         self._calculate_partition()
+
+        # shift = eye(A.shape[0],format="csr",dtype=A.dtype)
+        # shift.data *= mu
+        # self._A = self._A - shift
 
 
     @property
@@ -74,8 +93,14 @@ class expm_multiply_parallel(object):
         return self._A
 
 
-    def set_a(self,a):
+    def set_a(self,a,dtype=None):
         """Sets the value of the property `a`.
+        Parameters
+        -----------
+        a : scalar
+            new value of `a`.
+        dtype : numpy.dtype, optional
+            dtype specified for this operator. Default is: result_type(A.dtype,min_scalar_type(a),float64)
 
         Examples
         --------
@@ -85,15 +110,28 @@ class expm_multiply_parallel(object):
             :language: python
             :lines: 32-35
             
-        Parameters
-        -----------
-        a : scalar
-            new value of `a`.
-
         """
 
         if _np.array(a).ndim == 0:
             self._a = a
+
+            a_dtype_min = _np.min_scalar_type(self._a)
+
+            # use double precision by default. 
+            if dtype is None:
+                self._dtype = _np.result_type(self._A.dtype,a_dtype_min,_np.float64)
+            else:
+                min_dtype = _np.result_type(A.dtype,a_dtype_min,_np.float32)
+                if not _np.can_cast(min_dtype,dtype):
+                    raise ValueError("dtype not sufficient to represent a*A to at least float32 precision.")
+
+                self._dtype = dtype
+
+            tol = _np.finfo(self._dtype).eps/2
+            tol_dtype = _np.finfo(self._dtype).eps.dtype
+            self._tol = _np.array(tol,dtype=tol_dtype)
+            self._mu = _np.array(self._mu,dtype=self._dtype)
+
             self._calculate_partition()
         else:
             raise ValueError("expecting 'a' to be scalar.")
@@ -136,9 +174,7 @@ class expm_multiply_parallel(object):
 
 
 
-        a_dtype_min = _np.min_scalar_type(self._a)
-        a_dtype = _np.result_type(self._A.dtype,a_dtype_min)
-        v_dtype = _np.result_type(self._A.dtype,a_dtype,v.dtype)
+        v_dtype = _np.result_type(self._dtype,v.dtype)
 
 
         if overwrite_v:
@@ -163,8 +199,10 @@ class expm_multiply_parallel(object):
                 raise ValueError("work_array must be array of dtype which matches the result of the matrix-vector multiplication.")
 
         a = _np.array(self._a,dtype=v_dtype)
+        mu = _np.array(self._mu,dtype=v_dtype)
+        tol = _np.array(self._tol,dtype=mu.real.dtype)
         _wrapper_expm_multiply(self._A.indptr,self._A.indices,self._A.data,
-                    self._s,self._m_star,a,self._tol,self._mu,v,work_array)
+                    self._s,self._m_star,a,tol,mu,v,work_array)
 
         return v
 
@@ -173,11 +211,18 @@ class expm_multiply_parallel(object):
             self._m_star, self._s = 0, 1
         else:
             ell = 2
-            norm_info = LazyOperatorNormInfo(self._A, self._A_1_norm, self._a, ell=ell)
+            norm_info = LazyOperatorNormInfo(self._A, self._A_1_norm, self._a, self._mu, self._dtype, ell=ell)
             self._m_star, self._s = _fragment_3_1(norm_info, 1, self._tol, ell=ell)
 
 
 ##### code below is copied from scipy.sparse.linalg._expm_multiply_core and modified slightly.
+
+
+def matvec_p(v,A,a,mu,p):
+    for i in range(p):
+        v = a * (A.dot(v) - mu*v)
+
+    return v
 
 
 class LazyOperatorNormInfo:
@@ -191,7 +236,7 @@ class LazyOperatorNormInfo:
     outside of this module.
 
     """
-    def __init__(self, A, A_1_norm, a, ell=2):
+    def __init__(self, A, A_1_norm, a, mu, dtype, ell=2):
         """
         Provide the operator and some norm-related information.
 
@@ -207,6 +252,8 @@ class LazyOperatorNormInfo:
         """
         self._A = A
         self._a = a
+        self._mu = mu
+        self._dtype = dtype
         self._A_1_norm = A_1_norm
         self._ell = ell
         self._d = {}
@@ -222,8 +269,15 @@ class LazyOperatorNormInfo:
         Lazily estimate d_p(A) ~= || A^p ||^(1/p) where ||.|| is the 1-norm.
         """
         if p not in self._d:
-            est = onenormest((self._a * aslinearoperator(self._A))**p)
+            matvec = lambda v: self._a * (self._A.dot(v) - self._mu*v)
+            rmatvec = lambda v: _np.conj(self._a) * (self._A.H.dot(v) - _np.conj(self._mu)*v)
+            LO = LinearOperator(self._A.shape,dtype=self._dtype,matvec=matvec,rmatvec=rmatvec)
+
+            est = onenormest(LO**p)
+
+            # est = onenormest((self._a * aslinearoperator(self._A))**p)
             self._d[p] = est ** (1.0 / p)
+
         return self._d[p]
 
     def alpha(self, p):

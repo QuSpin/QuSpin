@@ -143,6 +143,7 @@ inline npy_cdouble_wrapper operator*(const npy_cfloat_wrapper& A, const npy_cdou
   return npy_cdouble_wrapper(A.real * B.real - A.imag * B.imag, 
                              A.real * B.imag + A.imag * B.real);
 }
+
 template<typename c_type>
 inline npy_cdouble_wrapper operator*(const npy_cdouble_wrapper& A, const c_type& B) {
   return npy_cdouble_wrapper(A.real * B, A.imag * B);
@@ -151,12 +152,14 @@ template<typename c_type>
 inline npy_cdouble_wrapper operator*(const c_type& B, const npy_cdouble_wrapper& A) {
   return npy_cdouble_wrapper(A.real * B, A.imag * B);
 }
+
 inline npy_cdouble_wrapper operator*(const npy_cfloat_wrapper& A, const double& B) {
   return npy_cdouble_wrapper(A.real * B, A.imag * B);
 }
 inline npy_cdouble_wrapper operator*(const double& B, const npy_cfloat_wrapper& A) {
   return npy_cdouble_wrapper(A.real * B, A.imag * B);
 }
+
 inline npy_cfloat_wrapper operator*(const npy_cfloat_wrapper& A, const float& B) {
   return npy_cfloat_wrapper(A.real * B, A.imag * B);
 }
@@ -164,6 +167,18 @@ inline npy_cfloat_wrapper operator*(const float& B, const npy_cfloat_wrapper& A)
   return npy_cfloat_wrapper(A.real * B, A.imag * B);
 }
 
+inline npy_cfloat_wrapper operator*(const signed char& B, const npy_cfloat_wrapper& A) {
+  return npy_cfloat_wrapper(A.real * B, A.imag * B);
+}
+inline npy_cfloat_wrapper operator*(const npy_cfloat_wrapper& A, const signed char& B) {
+  return npy_cfloat_wrapper(A.real * B, A.imag * B);
+}
+inline npy_cfloat_wrapper operator*(const signed short& B, const npy_cfloat_wrapper& A) {
+  return npy_cfloat_wrapper(A.real * B, A.imag * B);
+}
+inline npy_cfloat_wrapper operator*(const npy_cfloat_wrapper& A, const signed short& B) {
+  return npy_cfloat_wrapper(A.real * B, A.imag * B);
+}
 
 template<typename c_type>
 inline npy_cdouble_wrapper operator/(const npy_cdouble_wrapper& A, const c_type& B) {

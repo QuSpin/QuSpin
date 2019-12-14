@@ -116,6 +116,10 @@ int inline check_imag<float>(const std::complex<double> m){
 	return (std::abs(m.imag())>1.1e-15 ? 1 : 0);
 }
 
+
+
+
+
 template<class T>
 int inline check_imag(const std::complex<double> m,std::complex<T> *M){
 	M->real(m.real());
@@ -128,6 +132,40 @@ int inline check_imag(const std::complex<double> m,T *M){
 	(*M) = m.real();
 	return (std::abs(m.imag())>1.1e-15 ? 1 : 0);
 }
+
+// template<>
+// int inline check_imag<signed char>(const std::complex<double> m,signed char *M){
+// 	const double real = m.real();
+// 	*M = (signed char) real;
+
+// 	if(real > std::numeric_limits<signed char>::max()){
+// 		return 4; // check for overflow in integer
+// 	}
+// 	if(std::abs(std::floor(real)-real)>1.1e-15){
+// 		return 3; // check check if value is whole number
+// 	}
+// 	if(std::abs(m.imag())>1.1e-15){
+// 		return 1; // check if imaginary part is zero
+// 	}
+// 	return 0;
+// }
+
+// template<>
+// int inline check_imag<signed short>(const std::complex<double> m,signed short *M){
+// 	const double real = m.real();
+// 	*M = (signed short) real;
+
+// 	if(real > std::numeric_limits<signed short>::max()){
+// 		return 4; // check for overflow in integer
+// 	}
+// 	if(std::abs(std::floor(real)-real)>1.1e-15){
+// 		return 3; // check check if value is whole number
+// 	}
+// 	if(std::abs(m.imag())>1.1e-15){
+// 		return 1; // check if imaginary part is zero
+// 	}
+// 	return 0;
+// }
 
 
 template<class T>
@@ -143,6 +181,7 @@ int inline check_imag(std::complex<double> m,const T v,T *M){
 	return (std::abs(m.imag())>1.1e-15 ? 1 : 0);
 
 }
+
 
 
 
