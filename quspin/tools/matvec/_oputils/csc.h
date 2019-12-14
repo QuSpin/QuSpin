@@ -68,14 +68,14 @@ void csc_matvecs_noomp_strided(const bool overwrite_y,
                         const I n_col,
                         const npy_intp n_vecs,
                         const I Ap[],
-                        const I Ai[],
+                        const I Ai[], // indices for row elements in each column
                         const T1 Ax[],
                         const T2 a,
-                        const npy_intp x_stride_row,
-                        const npy_intp x_stride_col,
+                        const npy_intp x_stride_row, // X_n_row == n_col
+                        const npy_intp x_stride_col, // X_n_col == n_vecs
                         const T3 x[],
-                        const npy_intp y_stride_row,
-                        const npy_intp y_stride_col,
+                        const npy_intp y_stride_row, // Y_n_row == n_row
+                        const npy_intp y_stride_col, // Y_n_col == n_vecs
                               T3 y[])
 {
     if(overwrite_y){
@@ -86,9 +86,8 @@ void csc_matvecs_noomp_strided(const bool overwrite_y,
         }
     }
 
-    
-
-    if(y_stride_col < y_stride_row){
+    // preference ordering of 'y' as it is being written to. 
+    if(y_stride_col < y_stride_row){ 
         for(I j = 0; j < n_col; j++){
             I col_start = Ap[j];
             I col_end   = Ap[j+1];
@@ -389,10 +388,10 @@ inline void csc_matvecs_noomp(const bool overwrite_y,
     }
     else if(y_stride_row==1){
         if(x_stride_col==1){
-            csc_matvecs_noomp_strided(overwrite_y,n_row,n_col,n_vecs,Ap,Aj,Ax,a,x_stride_row,1,x,y_stride_row,1,y);
+            csc_matvecs_noomp_strided(overwrite_y,n_row,n_col,n_vecs,Ap,Aj,Ax,a,x_stride_row,1,x,1,y_stride_col,y);
         }
         else if(x_stride_row==1){
-            csc_matvecs_noomp_strided(overwrite_y,n_row,n_col,n_vecs,Ap,Aj,Ax,a,1,x_stride_col,x,y_stride_row,1,y);
+            csc_matvecs_noomp_strided(overwrite_y,n_row,n_col,n_vecs,Ap,Aj,Ax,a,1,x_stride_col,x,1,y_stride_col,y);
         }
         else{
             csc_matvecs_noomp_strided(overwrite_y,n_row,n_col,n_vecs,Ap,Aj,Ax,a,x_stride_row,x_stride_col,x,1,y_stride_col,y);
