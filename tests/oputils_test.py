@@ -22,9 +22,13 @@ def func_cmplx(t):
 	return 1j*t
 
 
-N = 1000
+N = 50
+M = 2
 for fmt in formats:
 	for dtype1,dtype2 in product(dtypes,dtypes):
+		# if dtype1!=dtype2:
+		# 	continue
+
 		for i in range(5):
 			print("testing {} {} {} {}".format(fmt,dtype1,dtype2,i+1))
 			if fmt in ["csr","csc"]:
@@ -87,7 +91,7 @@ for fmt in formats:
 
 			# testing multi vector C to C
 
-			v = np.random.uniform(-1,1,size=(N,30)) + 1j * np.random.uniform(-1,1,size=(N,30))
+			v = np.random.uniform(-1,1,size=(N,M)) + 1j * np.random.uniform(-1,1,size=(N,M))
 			v = v.astype(dtype2)
 
 			out = np.zeros_like(v,dtype=np.result_type(dtype1,dtype2))
@@ -125,7 +129,7 @@ for fmt in formats:
 			
 			# testing multi vector F to F
 
-			v = np.random.uniform(-1,1,size=(N,30)) + 1j * np.random.uniform(-1,1,size=(N,30))
+			v = np.random.uniform(-1,1,size=(N,M)) + 1j * np.random.uniform(-1,1,size=(N,M))
 			v = v.astype(dtype2,order="F")
 
 			out = np.zeros_like(v,dtype=np.result_type(dtype1,dtype2),order="F")
@@ -152,7 +156,7 @@ for fmt in formats:
 			try:
 				np.testing.assert_allclose(res1,out,atol=atol)
 			except AssertionError as e:
-				print(res1-out, atol,res1.shape)
+				print(res1,"\n",out, atol,res1.shape,out.shape)
 				raise AssertionError(e)
 
 			try:
@@ -164,7 +168,7 @@ for fmt in formats:
 			continue
 			# testing multi vector C to F
 
-			v = np.random.uniform(-1,1,size=(N,30)) + 1j * np.random.uniform(-1,1,size=(N,30))
+			v = np.random.uniform(-1,1,size=(N,M)) + 1j * np.random.uniform(-1,1,size=(N,M))
 			v = v.astype(dtype2,order="C")
 
 			out = np.zeros_like(v,dtype=np.result_type(dtype1,dtype2),order="F")
@@ -202,7 +206,7 @@ for fmt in formats:
 
 			# testing multi vector F to C
 
-			v = np.random.uniform(-1,1,size=(N,30)) + 1j * np.random.uniform(-1,1,size=(N,30))
+			v = np.random.uniform(-1,1,size=(N,M)) + 1j * np.random.uniform(-1,1,size=(N,M))
 			v = v.astype(dtype2,order="F")
 
 			out = np.zeros_like(v,dtype=np.result_type(dtype1,dtype2),order="C")
@@ -240,7 +244,7 @@ for fmt in formats:
 
 			# testing single vector C to C strided
 
-			v = np.random.uniform(-1,1,size=(N,30)) + 1j * np.random.uniform(-1,1,size=(N,30))
+			v = np.random.uniform(-1,1,size=(N,M)) + 1j * np.random.uniform(-1,1,size=(N,M))
 			v = v.astype(dtype2,order="C")
 
 			out = np.zeros_like(v,dtype=np.result_type(dtype1,dtype2),order="C")
@@ -279,7 +283,7 @@ for fmt in formats:
 
 			# testing single vector F to C strided
 
-			v = np.random.uniform(-1,1,size=(N,30)) + 1j * np.random.uniform(-1,1,size=(N,30))
+			v = np.random.uniform(-1,1,size=(N,M)) + 1j * np.random.uniform(-1,1,size=(N,M))
 			v = v.astype(dtype2,order="F")
 
 			out = np.zeros_like(v,dtype=np.result_type(dtype1,dtype2),order="C")
@@ -317,7 +321,7 @@ for fmt in formats:
 
 			# testing single vector C to F strided
 
-			v = np.random.uniform(-1,1,size=(N,30)) + 1j * np.random.uniform(-1,1,size=(N,30))
+			v = np.random.uniform(-1,1,size=(N,M)) + 1j * np.random.uniform(-1,1,size=(N,M))
 			v = v.astype(dtype2,order="C")
 
 			out = np.zeros_like(v,dtype=np.result_type(dtype1,dtype2),order="F")
