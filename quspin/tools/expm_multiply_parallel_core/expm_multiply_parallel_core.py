@@ -115,11 +115,11 @@ class expm_multiply_parallel(object):
         if _np.array(a).ndim == 0:
             self._a = a
 
-             a_dtype_min = _np.min_scalar_type(self._a)
+            a_dtype_min = _np.min_scalar_type(self._a)
 
             # use double precision by default. 
             if dtype is None:
-                self._dtype = _np.result_type(A.dtype,a_dtype_min,_np.float64)
+                self._dtype = _np.result_type(self._A.dtype,a_dtype_min,_np.float64)
             else:
                 min_dtype = _np.result_type(A.dtype,a_dtype_min,_np.float32)
                 if not _np.can_cast(min_dtype,dtype):
