@@ -37,7 +37,7 @@ class expm_multiply_parallel(object):
         a : scalar, optional
             scalar value multiplying generator matrix :math:`A` in matrix exponential: :math:`\\mathrm{e}^{aA}`.
         dtype: numpy.dtype, optional
-            dtype specified for this operator. Default is: result_type(A.dtype,min_scalar_type(a),float32)
+            dtype specified for this operator. Default is: result_type(A.dtype,min_scalar_type(a),float64)
         copy: bool, optional
             if `True` the matrix is copied otherwise the matrix is stored by reference. 
 
@@ -57,11 +57,12 @@ class expm_multiply_parallel(object):
             raise ValueError("A must be a square matrix.")
 
         a_dtype_min = _np.min_scalar_type(self._a)
-        min_dtype = _np.result_type(A.dtype,a_dtype_min,_np.float32)
 
+        # use double precision by default. 
         if dtype is None:
-            self._dtype = min_dtype
+            self._dtype = _np.result_type(A.dtype,a_dtype_min,_np.float64)
         else:
+            min_dtype = _np.result_type(A.dtype,a_dtype_min,_np.float32)
             if not _np.can_cast(min_dtype,dtype):
                 raise ValueError("dtype not sufficient to represent a*A to at least float32 precision.")
 
@@ -250,7 +251,7 @@ class LazyOperatorNormInfo:
         """
         if p not in self._d:
             matvec = lambda v: self._a * (self._A.dot(v) - self._mu*v)
-            rmatvec = lambda v: self._a * (self._A.H.dot(v) - self._mu*v)
+            rmatvec = lambda v: _np.conj(self._a) * (self._A.H.dot(v) - _np.conj(self._mu)*v)
             LO = LinearOperator(self._A.shape,dtype=self._dtype,matvec=matvec,rmatvec=rmatvec)
 
             est = onenormest(LO**p)
