@@ -3,8 +3,6 @@ from __future__ import print_function, division, absolute_import
 from ..basis import spin_basis_1d as _default_basis
 from ..basis import isbasis as _isbasis
 
-#from ._oputils import _get_matvec_function, matvec as _matvec
-
 from ..tools.matvec import _matvec
 from ..tools.matvec import _get_matvec_function
 

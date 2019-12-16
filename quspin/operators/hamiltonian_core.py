@@ -8,10 +8,7 @@ from ..tools.evolution import evolve
 from ..tools.matvec import _matvec
 from ..tools.matvec import _get_matvec_function
 
-# from ._oputils import matvec as _matvec
-# from ._oputils import _get_matvec_function
-
-# from .exp_op_core import isexp_op,exp_op
+from .exp_op_core import isexp_op,exp_op
 
 from ._make_hamiltonian import make_static
 from ._make_hamiltonian import make_dynamic
@@ -118,6 +115,8 @@ class HamiltonianEfficiencyWarning(Warning):
 #global names:
 supported_dtypes=tuple([_np.float32, _np.float64, _np.complex64, _np.complex128])
 
+# supported_mat_dtypes = supported_dtypes + tuple([_np.int8,np.int16])
+
 def _check_static(sub_list):
 	"""Checks format of static list. """
 	if (type(sub_list) in [list,tuple]) and (len(sub_list) == 2):
@@ -158,6 +157,36 @@ def _check_dynamic(sub_list):
 			return False
 	else:
 		raise TypeError('expecting list with object, driving function, and function arguments')
+
+
+def _process_lists_old_stype(static_list,dynamic_list):
+		if type(static_list) in [list,tuple]:
+			static_opstr_list=[]
+			static_other_list=[]
+			for ele in static_list:
+				if _check_static(ele):
+					static_opstr_list.append(ele)
+				else:
+					static_other_list.append(ele)
+		else: 
+			raise TypeError('expecting list/tuple of lists/tuples containing opstr and list of indx')
+
+		if type(dynamic_list) in [list,tuple]:
+			dynamic_opstr_list=[]
+			dynamic_other_list=[]
+			for ele in dynamic_list:
+				if _check_dynamic(ele):
+					dynamic_opstr_list.append(ele)
+				else: 
+					dynamic_other_list.append(ele)					
+		else: 
+			raise TypeError('expecting list/tuple of lists/tuples containing opstr and list of indx, functions, and function args')
+
+
+		return static_opstr_list,static_other_list,dynamic_opstr_list,dynamic_other_list
+
+def _process_lists(operator_list):
+	raise NotImplementedError("new style operator inputs not implemented yet.")
 
 
 
@@ -201,7 +230,7 @@ class hamiltonian(object):
 
 	"""
 
-	def __init__(self,static_list,dynamic_list,N=None,basis=None,shape=None,dtype=_np.complex128,static_fmt=None,dynamic_fmt=None,copy=True,check_symm=True,check_herm=True,check_pcon=True,**basis_kwargs):
+	def __init__(self,*input_list,N=None,basis=None,shape=None,dtype=_np.complex128,static_fmt=None,dynamic_fmt=None,copy=True,check_symm=True,check_herm=True,check_pcon=True,**basis_kwargs):
 		"""Intializes the `hamtilonian` object (any quantum operator).
 
 		Parameters
@@ -257,35 +286,17 @@ class hamiltonian(object):
 			raise TypeError('hamiltonian does not support type: '+str(dtype))
 		else:
 			self._dtype=dtype
-		
 
-
-		if type(static_list) in [list,tuple]:
-			static_opstr_list=[]
-			static_other_list=[]
-			for ele in static_list:
-				if _check_static(ele):
-					static_opstr_list.append(ele)
-				else:
-					static_other_list.append(ele)
-		else: 
-			raise TypeError('expecting list/tuple of lists/tuples containing opstr and list of indx')
-
-		if type(dynamic_list) in [list,tuple]:
-			dynamic_opstr_list=[]
-			dynamic_other_list=[]
-			for ele in dynamic_list:
-				if _check_dynamic(ele):
-					dynamic_opstr_list.append(ele)
-				else: 
-					dynamic_other_list.append(ele)					
-		else: 
-			raise TypeError('expecting list/tuple of lists/tuples containing opstr and list of indx, functions, and function args')
+		if len(input_list) == 1:
+			static_opstr_list,static_other_list,dynamic_opstr_list,dynamic_other_list = _process_lists(input_lists)
+		elif len(input_list) == 2:
+			static_opstr_list,static_other_list,dynamic_opstr_list,dynamic_other_list = _process_lists_old_stype(*input_list)
+		else:
+			raise ValueError("cannot parse input_list.")
 
 		# need for check_symm
 		self._static_opstr_list = static_opstr_list
 		self._dynamic_opstr_list = dynamic_opstr_list
-
 
 		# if any operator strings present must get basis.
 		if static_opstr_list or dynamic_opstr_list:
@@ -317,8 +328,6 @@ class hamiltonian(object):
 			if check_pcon:
 				self._basis.check_pcon(static_opstr_list,dynamic_opstr_list)
 
-
-
 			self._static=make_static(self._basis,static_opstr_list,dtype)
 			self._dynamic=make_dynamic(self._basis,dynamic_opstr_list,dtype)
 			self._shape = self._static.shape
@@ -337,13 +346,8 @@ class hamiltonian(object):
 
 					if not found:
 						for tup in dynamic_other_list:
-							if len(tup) == 2:
-								O,_ = tup
-							else:
-								O,_,_ = tup
-								
 							try:
-								shape = O.shape
+								shape = tup[0].shape
 								found = True
 								break
 							except AttributeError:
@@ -557,12 +561,6 @@ class hamiltonian(object):
 
 		self._is_dense = not is_sparse
 
-	def _get_matvecs(self):
-		self._static_matvec = _get_matvec_function(self._static)
-		self._dynamic_matvec = {}
-		for func,Hd in iteritems(self._dynamic):
-			self._dynamic_matvec[func] = _get_matvec_function(Hd)
-
 	### state manipulation/observable routines
 
 	def dot(self,V,time=0,check=True,out=None,overwrite_out=True,a=1.0):
@@ -612,11 +610,9 @@ class hamiltonian(object):
 	
 		"""
 
-		from .exp_op_core import isexp_op
-
-		
 		if ishamiltonian(V):
 			return a*(self * V)
+
 		elif isexp_op(V):
 			raise ValueError("This is an ambiguous operation. Use the .rdot() method of the `exp_op` class instead.")
 
@@ -637,7 +633,7 @@ class hamiltonian(object):
 
 
 		result_dtype = _np.result_type(V.dtype,self._dtype)
-		
+
 		if result_dtype not in supported_dtypes:
 			raise TypeError("resulting dtype is not supported.")
 
@@ -656,7 +652,7 @@ class hamiltonian(object):
 
 				# allocate C-contiguous array to output results in.
 				out = _np.zeros(V.shape[-1:]+V.shape[:-1],dtype=result_dtype)
-				
+				a = _np.array(a,dtype=_np.result_type(a,out.real.dtype,self._dtype))
 				for i,t in enumerate(time):
 					v = _np.ascontiguousarray(V[...,i],dtype=result_dtype)
 					self._static_matvec(self._static,v,overwrite_out=True,out=out[i,...],a=a)
@@ -815,8 +811,6 @@ class hamiltonian(object):
 			 
 		"""
 
-		from .exp_op_core import isexp_op
-
 		if self.Ns <= 0:
 			return _np.asarray([])
 
@@ -875,7 +869,6 @@ class hamiltonian(object):
 		corresponds to :math:`H_{expt} = \\langle V|H(t=0)|V\\rangle`. 
 			 
 		"""
-		from .exp_op_core import isexp_op
 
 		if self.Ns <= 0:
 			return _np.asarray([])
@@ -1034,8 +1027,6 @@ class hamiltonian(object):
 		correponds to :math:`V^\\dagger H V`.
 
 		"""
-		from .exp_op_core import isexp_op
-
 
 		if ishamiltonian(proj):
 			new = self._rmul_hamiltonian(proj.getH())
@@ -1140,7 +1131,7 @@ class hamiltonian(object):
 		corresponds to :math:`\\exp(K^\\dagger) H \\exp(K)`.
 
 		"""
-		from .exp_op_core import exp_op 
+		# from .exp_op_core import exp_op 
 
 		if generator:
 			return exp_op(other,**exp_op_kwargs).sandwich(self)
@@ -1286,7 +1277,6 @@ class hamiltonian(object):
 
 		rho_out *= -1j
 		return rho_out.ravel()
-
 
 	def __ISO(self,time,V,V_out):
 		"""
@@ -1991,16 +1981,15 @@ class hamiltonian(object):
 		dynamic = [[M.astype(dtype,copy=copy,casting=casting),func] for func,M in iteritems(self.dynamic)]
 		return hamiltonian([static],dynamic,basis=self._basis,dtype=dtype,copy=False)
 
+	###################
+	# special methods #
+	###################
 
 	def copy(self):
 		"""Returns a copy of `hamiltonian` object."""
 		dynamic = [[M,func] for func,M in iteritems(self.dynamic)]
 		return hamiltonian([self.static],dynamic,
 					basis=self._basis,dtype=self._dtype,copy=True)
-
-	###################
-	# special methods #
-	###################
 
 	def __getitem__(self,key):
 		if len(key) != 3:
@@ -2323,6 +2312,12 @@ class hamiltonian(object):
 	##########################################################################################
 	##########################################################################################
 
+	def _get_matvecs(self):
+		self._static_matvec = _get_matvec_function(self._static)
+		self._dynamic_matvec = {}
+		for func,Hd in iteritems(self._dynamic):
+			self._dynamic_matvec[func] = _get_matvec_function(Hd)
+
 	# checks
 	def _mat_checks(self,other,casting="same_kind"):
 		try:
@@ -2334,7 +2329,7 @@ class hamiltonian(object):
 			if other._shape != self._shape: # only accepts square matricies 
 				raise ValueError('shapes do not match')
 			if not _np.can_cast(other.dtype,self._dtype,casting=casting):
-				raise ValueError('cannot cast types')			
+				raise ValueError('cannot cast types')	
 
 	##########################
 	# hamiltonian operations #

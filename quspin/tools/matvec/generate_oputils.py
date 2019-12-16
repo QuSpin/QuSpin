@@ -17,14 +17,14 @@ numpy_numtypes={float32:"NPY_FLOAT32",float64:"NPY_FLOAT64",complex64:"NPY_COMPL
 
 
 I_types = [int32,int64]
-T_types = [complex128,float64,complex64,float32]
+T_types = [complex128,float64,complex64,float32,int16,int8]
 F_types = [complex128,float64,complex64,float32]
-
-
 
 
 get_switch_body = """
 #include <iostream>
+
+{lookup:s}
 
 int get_switch_num(PyArray_Descr * dtype1,PyArray_Descr * dtype2,PyArray_Descr * dtype3,PyArray_Descr * dtype4){{
 	int I = dtype1->type_num;
@@ -32,36 +32,45 @@ int get_switch_num(PyArray_Descr * dtype1,PyArray_Descr * dtype2,PyArray_Descr *
 	int T2 = dtype3->type_num;
 	int T3 = dtype4->type_num;
 	
-	{}
+	const signed char * l = lookups + {nlook:d}*(24*T2+T3);
+	signed char lookup[{nlook:d}];
+
+	std::copy(l,l+{nlook:d},lookup);
+
+	{body:s}
 	return -1;
 }}"""
 
-
 def generate_get_switch():
 	switch_num = 0
+	lookup = 0
+	nlook = len(I_types)*len(T_types)
+	lookup_table_size = 24*24*nlook
+	lookup_table = -np.ones(lookup_table_size,dtype=np.int8)
 	body = "if(0){}\n"
 	for I in I_types:
-		body = body + "\telse if(PyArray_EquivTypenums(I,{})){{\n\t\t if(0){{}}\n".format(numpy_numtypes[I])
+		body = body + "\telse if(PyArray_EquivTypenums(I,{})){{\n\t\tif(0){{}}\n".format(numpy_numtypes[I])
 		for T1 in T_types:
-			if T1 in [int8,int16]:
-				T2_types = F_types
+			if T1  in [int8,int16]:
+				body += "\t\telse if(PyArray_EquivTypenums(T1,{})){{return lookup[{}];}}\n".format(numpy_numtypes[T1],lookup)
 			else:
-				T2_types = [T1]
+				body += "\t\telse if(T1=={}){{return lookup[{}];}}\n".format(numpy_numtypes[T1],lookup)
 
-			for T2 in T2_types:
+			for T2 in F_types:
 				for T3 in F_types:
 					R = np.result_type(T1,T2)
 					if np.can_cast(R,T3) and np.can_cast(R,T2):
-						if T1  in [int8,int16]:
-							body = body + "\t\telse if(PyArray_EquivTypenums(T1,{}) && T2=={} && T3=={}){{return {};}}\n".format(numpy_numtypes[T1],numpy_numtypes[T2],numpy_numtypes[T3],switch_num)
-						else:
-							body = body + "\t\telse if(T1=={} && T2=={} && T3=={}){{return {};}}\n".format(numpy_numtypes[T1],numpy_numtypes[T2],numpy_numtypes[T3],switch_num)
+						lookup_num = 24*np.dtype(T2).num + np.dtype(T3).num
+						lookup_table[nlook*lookup_num+lookup] = switch_num
 						switch_num += 1
 
+			lookup += 1
 		body = body + "\t\telse {return -1;}\n\t}\n"
 	body = body + "\telse {return -1;}\n"
 
-	return get_switch_body.format(body)
+	lookup_txt = ("static signed char lookups[{}] = ".format(lookup_table_size)) + str(list(lookup_table)).replace("[","{").replace("]","};\n")
+	return get_switch_body.format(body=body,lookup=lookup_txt,nlook=nlook)
+
 
 
 comp_body = """
@@ -161,12 +170,7 @@ def generate_csr():
 	matvecs_tmp = "{fmt}_matvecs_{omp}<{I},{T1},{T2},{T3}>(overwrite_y,(const {I})n_row,(const {I})n_col,n_vecs,(const {I}*)Ap,(const {I}*)Aj,(const {T1}*)Ax,*(const {T2}*)a,x_stride_row_byte,x_stride_col_byte,(const {T3}*)x,y_stride_row_byte,y_stride_col_byte,({T3}*)y);"
 	for I in I_types:
 		for T1 in T_types:
-			if T1 in [int8,int16]:
-				T2_types = F_types
-			else:
-				T2_types = [T1]
-
-			for T2 in T2_types:
+			for T2 in F_types:
 				for T3 in F_types:
 					R = np.result_type(T1,T2)
 					if np.can_cast(R,T3) and np.can_cast(R,T2):
@@ -201,12 +205,7 @@ def generate_csc():
 	matvecs_tmp = "{fmt}_matvecs_{omp}<{I},{T1},{T2},{T3}>(overwrite_y,(const {I})n_row,(const {I})n_col,n_vecs,(const {I}*)Ap,(const {I}*)Aj,(const {T1}*)Ax,*(const {T2}*)a,x_stride_row_byte,x_stride_col_byte,(const {T3}*)x,y_stride_row_byte,y_stride_col_byte,({T3}*)y);"
 	for I in I_types:
 		for T1 in T_types:
-			if T1 in [int8,int16]:
-				T2_types = F_types
-			else:
-				T2_types = [T1]
-
-			for T2 in T2_types:
+			for T2 in F_types:
 				for T3 in F_types:
 					R = np.result_type(T1,T2)
 					if np.can_cast(R,T3) and np.can_cast(R,T2):
@@ -330,12 +329,7 @@ def generate_dia():
 	matvecs_tmp = "dia_matvecs_{omp}<{I},{T1},{T2},{T3}>(overwrite_y,(const {I})n_row,(const {I})n_col,n_vecs,(const {I})n_diags,(const {I})L,(const {I}*)offsets,(const {T1}*)diags,*(const {T2}*)a,x_stride_row_byte,x_stride_col_byte,(const {T3}*)x,y_stride_row_byte,y_stride_col_byte,({T3}*)y);"
 	for I in I_types:
 		for T1 in T_types:
-			if T1 in [int8,int16]:
-				T2_types = F_types
-			else:
-				T2_types = [T1]
-
-			for T2 in T2_types:
+			for T2 in F_types:
 				for T3 in F_types:
 					R = np.result_type(T1,T2)
 					if np.can_cast(R,T3) and np.can_cast(R,T2):
