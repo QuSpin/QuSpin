@@ -183,15 +183,14 @@ class spin_basis_general(hcb_basis_general,higher_spin_basis_general):
 	def _Op(self,opstr,indx,J,dtype):
 		
 		if self._S == "1/2":
-			ME,row,col = hcb_basis_general._Op(self,opstr,indx,J,dtype)
 			if self._pauli==1:
 				n = len(opstr.replace("I",""))
-				ME *= (1<<n)
+				J *= (1<<n)
 			elif self._pauli==-1:
 				n = len(opstr.replace("I","").replace("+","").replace("-",""))
-				ME *= (1<<n)
+				J *= (1<<n)
 
-			return ME,row,col
+			return hcb_basis_general._Op(self,opstr,indx,J,dtype)
 
 		else:
 			return higher_spin_basis_general._Op(self,opstr,indx,J,dtype)

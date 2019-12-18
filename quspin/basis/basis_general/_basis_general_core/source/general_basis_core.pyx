@@ -218,7 +218,7 @@ cdef class general_basis_core_wrap:
         pass
 
     @cython.boundscheck(False)
-    def op(self,index_type[::1] row,index_type[::1] col,dtype[::1] M,object opstr,
+    def op(self,index_type[::1] row,index_type[::1] col,dtype_op[::1] M,object opstr,
             int[::1] indx,object J,_np.ndarray basis,norm_type[::1] n,npy_intp[::1] basis_begin,npy_intp[::1] basis_end,int N_p):
         cdef char[::1] c_opstr = bytearray(opstr,"utf-8")
         cdef int n_op = indx.shape[0]
@@ -265,6 +265,10 @@ cdef class general_basis_core_wrap:
             raise ValueError("operator not recognized.")
         elif err == 1:
             raise TypeError("attemping to use real type for complex matrix elements.")
+        elif err == 2:
+            raise TypeError("attemping to use integer type for non-integer matrix elements.")
+        elif err == 3:
+            raise ValueError("matrix element is overflowing integer value.")
         elif err != 0:
             raise RuntimeError("user defined error code: {}".format(err))
 

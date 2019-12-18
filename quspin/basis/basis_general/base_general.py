@@ -6,6 +6,7 @@ from ._basis_general_core import basis_zeros
 from ..lattice import lattice_basis
 import warnings
 
+_dtypes = tuple([_np.complex128,_np.float64,_np.complex64,_np.float32,_np.int16,_np.int8])
 
 class GeneralBasisWarning(Warning):
 	pass
@@ -258,6 +259,9 @@ class basis_general(lattice_basis):
 		extra_ops = set(opstr) - self._allowed_ops
 		if extra_ops:
 			raise ValueError("unrecognized characters {} in operator string.".format(extra_ops))
+
+		if dtype not in _dtypes:
+			raise ValueError("dtype {} not supported by basis: {}".format(dtype,self.__class__.__name__))
 
 		if self._Ns <= 0:
 			return _np.array([],dtype=dtype),_np.array([],dtype=self._index_type),_np.array([],dtype=self._index_type)

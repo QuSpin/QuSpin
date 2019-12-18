@@ -485,17 +485,6 @@ int general_inplace_op_impl(general_basis_core<I,P> *B,
 // };
 
 
-template<class T,class K>
-using Tuple = boost::tuple<T&,K&,K&>;
-
-template<class T>
-struct nonzero : std::unary_function<T,bool>
-{
-    inline bool operator()(const T& tup) const {
-        return equal_zero(boost::get<0>(tup));
-    }
-};
-
 
 template<class I, class J, class K, class T,class P=signed char,
         bool full_basis,bool symmetries,bool bracket_basis>

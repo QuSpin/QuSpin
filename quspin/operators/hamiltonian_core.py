@@ -115,7 +115,7 @@ class HamiltonianEfficiencyWarning(Warning):
 #global names:
 supported_dtypes=tuple([_np.float32, _np.float64, _np.complex64, _np.complex128])
 
-# supported_mat_dtypes = supported_dtypes + tuple([_np.int8,np.int16])
+supported_mat_dtypes = supported_dtypes + tuple([_np.int8,np.int16,_np.float32, _np.float64, _np.complex64, _np.complex128])
 
 def _check_static(sub_list):
 	"""Checks format of static list. """
@@ -230,7 +230,7 @@ class hamiltonian(object):
 
 	"""
 
-	def __init__(self,*input_list,N=None,basis=None,shape=None,dtype=_np.complex128,static_fmt=None,dynamic_fmt=None,copy=True,check_symm=True,check_herm=True,check_pcon=True,**basis_kwargs):
+	def __init__(self,*input_list,N=None,basis=None,shape=None,dtype=_np.complex128,mat_dtype=None,static_fmt=None,dynamic_fmt=None,copy=True,check_symm=True,check_herm=True,check_pcon=True,**basis_kwargs):
 		"""Intializes the `hamtilonian` object (any quantum operator).
 
 		Parameters
@@ -286,6 +286,9 @@ class hamiltonian(object):
 			raise TypeError('hamiltonian does not support type: '+str(dtype))
 		else:
 			self._dtype=dtype
+
+		if mat_dtype is None:
+			self._mat_dtype = mat_dtype
 
 		if len(input_list) == 1:
 			static_opstr_list,static_other_list,dynamic_opstr_list,dynamic_other_list = _process_lists(input_lists)
@@ -1670,7 +1673,7 @@ class hamiltonian(object):
 			out = _np.zeros(self._shape,dtype=self.dtype)
 
 		if _sp.issparse(self._static):
-			self._static.toarray(order=order,out=out)
+			self._static.astype(self._dtype,copy=False).toarray(order=order,out=out)
 		else:
 			out[:] = self._static[:]
 
