@@ -11,7 +11,10 @@ from six import iteritems
 
 def _check_almost_zero(matrix):
 	""" Check if matrix is almost zero. """
-	atol = 100*_np.finfo(matrix.dtype).eps
+	try:
+		atol = 100*_np.finfo(matrix.dtype).eps
+	except ValueError:
+		atol = 100*_np.finfo(_np.float64).eps
 
 	if _sp.issparse(matrix):
 		return _np.allclose(matrix.data,0,atol=atol)
@@ -114,7 +117,7 @@ def make_static(basis,static_list,dtype):
 
 
 
-def make_dynamic(basis,dynamic_list,dtype):
+def make_dynamic(basis,dynamic_list,dtype,mat_dtype):
 	"""
 	args:
 	dynamic=[[opstr_1,indx_1,func_1,func_1_args],...,[opstr_n,indx_n,func_n,func_n_args]], list of opstr,indx and functions to drive with
@@ -136,11 +139,11 @@ def make_dynamic(basis,dynamic_list,dtype):
 	dynamic={}
 	dynamic_list = _consolidate_dynamic(dynamic_list)
 	for (f,f_args),ops_list in iteritems(dynamic_list):
-		if _np.isscalar(f_args): raise TypeError("function arguments must be array type")
+		if _np.isscalar(f_args): raise TypeError("function arguments must be array like")
 		test_function(f,f_args,dtype)
 
 		func = function(f,f_args)
-		Hd = basis._make_matrix(ops_list,dtype)
+		Hd = basis._make_matrix(ops_list,mat_dtype)
 		if not _check_almost_zero(Hd):
 			dynamic[func] = Hd
 

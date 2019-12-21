@@ -283,7 +283,7 @@ class quantum_operator(object):
 		keys = list(self._quantum_operator.keys())
 		for key in keys:
 			if _check_almost_zero(self._quantum_operator[key]):
-				self._quantum_operator.pop(key)
+				self._quantum_operator[key] = _sp.dia_matrix(shape=self._shape,dtype=self._dtype)
 
 		self.update_matrix_formats(matrix_formats)
 
@@ -1219,6 +1219,11 @@ class quantum_operator(object):
 
 		return quantum_operator(new_dict,basis=self._basis,dtype=dtype,shape=self._shape,copy=copy)
 
+	def clear_empty_matrices(self):
+		""" Remove keys attached to operators that are almost zero."""
+		for key in self._quantum_operator.keys():
+			if _check_almost_zero(self._quantum_operator[key]):
+				self._quantum_operator.pop(key)
 
 	### lin-alg operations
 
@@ -1307,7 +1312,7 @@ class quantum_operator(object):
 					self._quantum_operator[key] = value
 
 				if _check_almost_zero(self._quantum_operator[key]):
-					self._quantum_operator.pop(key)
+					self._quantum_operator[key] = _sp.dia_matrix(shape=self._shape,dtype=self._dtype)
 
 			self._update_matvecs()
 			return self
@@ -1332,7 +1337,7 @@ class quantum_operator(object):
 					self._quantum_operator[key] = -value
 
 				if _check_almost_zero(self._quantum_operator[key]):
-					self._quantum_operator.pop(key)
+					self._quantum_operator[key] = _sp.dia_matrix(shape=self._shape,dtype=self._dtype)
 
 			self._update_matvecs()
 			return self
