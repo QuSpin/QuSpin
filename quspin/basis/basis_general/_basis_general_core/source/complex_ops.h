@@ -4,8 +4,44 @@
 /*
  *  Functions to handle arithmetic operations on NumPy complex values
  */
-
 #include <numpy/arrayobject.h>
+#include <complex>
+
+namespace basis_general
+{
+
+typedef std::complex<double> npy_cdouble_wrapper;
+typedef std::complex<float> npy_cfloat_wrapper;
+
+namespace complex_ops
+{
+
+inline npy_cdouble_wrapper exp(npy_cdouble_wrapper z){
+  return std::exp(z);
+}
+
+inline npy_cfloat_wrapper exp(npy_cfloat_wrapper z){
+  return std::exp(z);
+}
+
+inline npy_cdouble_wrapper conj(npy_cdouble_wrapper z){
+  return std::conj(z);
+}
+
+inline npy_cfloat_wrapper conj(npy_cfloat_wrapper z){
+  return std::conj(z);
+} 
+
+
+}
+
+
+}
+
+namespace basis_general_addition 
+{
+
+
 
 template <class c_type, class npy_type>
 class complex_wrapper : public npy_type {
@@ -82,16 +118,32 @@ class complex_wrapper : public npy_type {
           return npy_type::real != B.real || npy_type::imag != B.imag;
         }
         bool operator<(const complex_wrapper& B) const{
-          return (npy_type::real == B.real?npy_type::imag < B.imag:npy_type::real < B.real);
+            if (npy_type::real == B.real){
+                return npy_type::imag < B.imag;
+            } else {
+                return npy_type::real < B.real;
+            }
         }
         bool operator>(const complex_wrapper& B) const{
-          return (npy_type::real == B.real?npy_type::imag > B.imag:npy_type::real > B.real);
+            if (npy_type::real == B.real){
+                return npy_type::imag > B.imag;
+            } else {
+                return npy_type::real > B.real;
+            }
         }
         bool operator<=(const complex_wrapper& B) const{
-          return (npy_type::real == B.real?npy_type::imag <= B.imag:npy_type::real <= B.real);
+            if (npy_type::real == B.real){
+                return npy_type::imag <= B.imag;
+            } else {
+                return npy_type::real <= B.real;
+            }
         }
         bool operator>=(const complex_wrapper& B) const{
-          return (npy_type::real == B.real?npy_type::imag >= B.imag:npy_type::real >= B.real);
+            if (npy_type::real == B.real){
+                return npy_type::imag >= B.imag;
+            } else {
+                return npy_type::real >= B.real;
+            }
         }
         template <class T>
         bool operator==(const T& B) const{
@@ -103,19 +155,35 @@ class complex_wrapper : public npy_type {
         }
         template <class T>
         bool operator<(const T& B) const{
-          return (npy_type::real == B?npy_type::imag < T(0):npy_type::real < B);
+            if (npy_type::real == B) {
+                return npy_type::imag < T(0);
+            } else {
+                return npy_type::real < B;
+            }
         }
         template <class T>
         bool operator>(const T& B) const{
-          return (npy_type::real == B?npy_type::imag > T(0):npy_type::real > B);
+            if (npy_type::real == B) {
+                return npy_type::imag > T(0);
+            } else {
+                return npy_type::real > B;
+            }
         }
         template <class T>
         bool operator<=(const T& B) const{
-          return (npy_type::real == B?npy_type::imag <= T(0):npy_type::real <= B);
+            if (npy_type::real == B) {
+                return npy_type::imag <= T(0);
+            } else {
+                return npy_type::real <= B;
+            }
         }
         template <class T>
         bool operator>=(const T& B) const{
-          return (npy_type::real == B?npy_type::imag >= T(0):npy_type::real >= B);
+            if (npy_type::real == B) {
+                return npy_type::imag >= T(0);
+            } else {
+                return npy_type::real >= B;
+            }
         }
         template<class _c_type,class _npy_type>
         complex_wrapper& operator=(const complex_wrapper<_c_type,_npy_type>& B){
@@ -134,60 +202,68 @@ class complex_wrapper : public npy_type {
 typedef complex_wrapper<float,npy_cfloat> npy_cfloat_wrapper;
 typedef complex_wrapper<double,npy_cdouble> npy_cdouble_wrapper;
 
-inline npy_cdouble_wrapper operator*(const npy_cdouble_wrapper& A, const npy_cfloat_wrapper& B) {
+npy_cdouble_wrapper operator*(const npy_cdouble_wrapper& A, const npy_cfloat_wrapper& B) {
   return npy_cdouble_wrapper(A.real * B.real - A.imag * B.imag, 
                              A.real * B.imag + A.imag * B.real);
 }
 
-inline npy_cdouble_wrapper operator*(const npy_cfloat_wrapper& A, const npy_cdouble_wrapper& B) {
+npy_cdouble_wrapper operator*(const npy_cfloat_wrapper& A, const npy_cdouble_wrapper& B) {
   return npy_cdouble_wrapper(A.real * B.real - A.imag * B.imag, 
                              A.real * B.imag + A.imag * B.real);
 }
+template<typename c_type>
+npy_cdouble_wrapper operator*(const npy_cdouble_wrapper& A, const c_type& B) {
+  return npy_cdouble_wrapper(A.real * B, A.imag * B);
+}
+template<typename c_type>
+npy_cdouble_wrapper operator*(const c_type& B, const npy_cdouble_wrapper& A) {
+  return npy_cdouble_wrapper(A.real * B, A.imag * B);
+}
+npy_cdouble_wrapper operator*(const npy_cfloat_wrapper& A, const double& B) {
+  return npy_cdouble_wrapper(A.real * B, A.imag * B);
+}
+npy_cdouble_wrapper operator*(const double& B, const npy_cfloat_wrapper& A) {
+  return npy_cdouble_wrapper(A.real * B, A.imag * B);
+}
+npy_cfloat_wrapper operator*(const npy_cfloat_wrapper& A, const float& B) {
+  return npy_cfloat_wrapper(A.real * B, A.imag * B);
+}
+npy_cfloat_wrapper operator*(const float& B, const npy_cfloat_wrapper& A) {
+  return npy_cfloat_wrapper(A.real * B, A.imag * B);
+}
+
 
 template<typename c_type>
-inline npy_cdouble_wrapper operator*(const npy_cdouble_wrapper& A, const c_type& B) {
-  return npy_cdouble_wrapper(A.real * B, A.imag * B);
-}
-template<typename c_type>
-inline npy_cdouble_wrapper operator*(const c_type& B, const npy_cdouble_wrapper& A) {
-  return npy_cdouble_wrapper(A.real * B, A.imag * B);
-}
-
-inline npy_cdouble_wrapper operator*(const npy_cfloat_wrapper& A, const double& B) {
-  return npy_cdouble_wrapper(A.real * B, A.imag * B);
-}
-inline npy_cdouble_wrapper operator*(const double& B, const npy_cfloat_wrapper& A) {
-  return npy_cdouble_wrapper(A.real * B, A.imag * B);
-}
-
-inline npy_cfloat_wrapper operator*(const npy_cfloat_wrapper& A, const float& B) {
-  return npy_cfloat_wrapper(A.real * B, A.imag * B);
-}
-inline npy_cfloat_wrapper operator*(const float& B, const npy_cfloat_wrapper& A) {
-  return npy_cfloat_wrapper(A.real * B, A.imag * B);
-}
-
-inline npy_cfloat_wrapper operator*(const signed char& B, const npy_cfloat_wrapper& A) {
-  return npy_cfloat_wrapper(A.real * B, A.imag * B);
-}
-inline npy_cfloat_wrapper operator*(const npy_cfloat_wrapper& A, const signed char& B) {
-  return npy_cfloat_wrapper(A.real * B, A.imag * B);
-}
-inline npy_cfloat_wrapper operator*(const signed short& B, const npy_cfloat_wrapper& A) {
-  return npy_cfloat_wrapper(A.real * B, A.imag * B);
-}
-inline npy_cfloat_wrapper operator*(const npy_cfloat_wrapper& A, const signed short& B) {
-  return npy_cfloat_wrapper(A.real * B, A.imag * B);
-}
-
-template<typename c_type>
-inline npy_cdouble_wrapper operator/(const npy_cdouble_wrapper& A, const c_type& B) {
+npy_cdouble_wrapper operator/(const npy_cdouble_wrapper& A, const c_type& B) {
   return npy_cdouble_wrapper(A.real / B, A.imag / B);
 }
 
 template<typename c_type>
-inline npy_cfloat_wrapper operator/(const npy_cfloat_wrapper& A, const c_type& B) {
+npy_cfloat_wrapper operator/(const npy_cfloat_wrapper& A, const c_type& B) {
   return npy_cfloat_wrapper(A.real / B, A.imag / B);
+}
+
+npy_cdouble_wrapper conj(const npy_cdouble_wrapper& A) {
+  return npy_cdouble_wrapper(A.real, -A.imag);
+}
+
+npy_cfloat_wrapper conj(const npy_cfloat_wrapper& A) {
+  return npy_cfloat_wrapper(A.real, -A.imag);
+}
+
+
+
+inline npy_cdouble_wrapper exp(npy_cdouble_wrapper z){
+  std::complex<double> res = std::exp(std::complex<double>(z.real,z.imag));
+  return npy_cdouble_wrapper(res.real(),res.imag());
+}
+
+
+inline npy_cfloat_wrapper exp(npy_cfloat_wrapper z){
+  std::complex<float> res = std::exp(std::complex<float>(z.real,z.imag));
+  return npy_cfloat_wrapper(res.real(),res.imag());
+}
+
 }
 
 
