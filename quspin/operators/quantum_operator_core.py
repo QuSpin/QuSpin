@@ -8,6 +8,7 @@ from ..tools.matvec import _get_matvec_function
 
 from ._make_hamiltonian import make_static
 from ._make_hamiltonian import _check_almost_zero
+from ._make_hamiltonian import supported_dtypes
 
 from . import hamiltonian_core
 
@@ -97,7 +98,7 @@ class quantum_operator(object):
 
 
 
-		if not (dtype in hamiltonian_core.supported_dtypes):
+		if not (dtype in supported_dtypes):
 			raise TypeError('hamiltonian does not support type: '+str(dtype))
 		else:
 			self._dtype=dtype
@@ -474,7 +475,7 @@ class quantum_operator(object):
 
 		result_dtype = _np.result_type(V.dtype,self._dtype)
 
-		if not (result_dtype in hamiltonian_core.supported_dtypes):
+		if not (result_dtype in supported_dtypes):
 			raise TypeError('hamiltonian does not support type: '+str(dtype))
 
 		if self.Ns <= 0:
@@ -1212,7 +1213,7 @@ class quantum_operator(object):
 		>>> H_cpx=H.astype(np.complex128)
 
 		"""
-		if dtype not in hamiltonian_core.supported_dtypes:
+		if dtype not in supported_dtypes:
 			raise ValueError("quantum_operator can only be cast to floating point types")
 
 		new_dict = {key:[op.astype(dtype,copy=copy,casting=casting)] for key,op in iteritems(self._quantum_operator)}

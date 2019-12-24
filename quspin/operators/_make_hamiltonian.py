@@ -8,6 +8,10 @@ from ._functions import function
 from six import iteritems
 
 
+supported_dtypes=tuple([_np.float32, _np.float64, _np.complex64, _np.complex128])
+
+supported_mat_dtypes = supported_dtypes + tuple([_np.int8,_np.int16])
+
 
 def _check_almost_zero(matrix):
 	""" Check if matrix is almost zero. """

@@ -14,6 +14,8 @@ from ._make_hamiltonian import make_static
 from ._make_hamiltonian import make_dynamic
 from ._make_hamiltonian import test_function
 from ._make_hamiltonian import _check_almost_zero
+from ._make_hamiltonian import supported_dtypes
+
 from ._functions import function
 
 # need linear algebra packages
@@ -112,10 +114,7 @@ def anti_commutator(H1,H2):
 class HamiltonianEfficiencyWarning(Warning):
 	pass
 
-#global names:
-supported_dtypes=tuple([_np.float32, _np.float64, _np.complex64, _np.complex128])
 
-supported_mat_dtypes = supported_dtypes + tuple([_np.int8,_np.int16])
 
 def _check_static(sub_list):
 	"""Checks format of static list. """
@@ -230,7 +229,9 @@ class hamiltonian(object):
 
 	"""
 
-	def __init__(self,*input_list,N=None,basis=None,shape=None,dtype=_np.complex128,mat_dtype=None,static_fmt=None,dynamic_fmt=None,copy=True,check_symm=True,check_herm=True,check_pcon=True,**basis_kwargs):
+	def __init__(self,*input_list,N=None,basis=None,shape=None,dtype=_np.complex128,
+				static_fmt=None,dynamic_fmt=None,copy=True,check_symm=True,
+				check_herm=True,check_pcon=True,**basis_kwargs):
 		"""Intializes the `hamtilonian` object (any quantum operator).
 
 		Parameters
@@ -287,11 +288,6 @@ class hamiltonian(object):
 		else:
 			self._dtype=dtype
 
-		self._mat_dtype=mat_dtype
-
-		if mat_dtype is None:
-			mat_dtype = dtype
-
 		if len(input_list) == 1:
 			static_opstr_list,static_other_list,dynamic_opstr_list,dynamic_other_list = _process_lists(input_lists)
 		elif len(input_list) == 2:
@@ -333,8 +329,8 @@ class hamiltonian(object):
 			if check_pcon:
 				self._basis.check_pcon(static_opstr_list,dynamic_opstr_list)
 
-			self._static=make_static(self._basis,static_opstr_list,mat_dtype)
-			self._dynamic=make_dynamic(self._basis,dynamic_opstr_list,dtype,mat_dtype)
+			self._static=make_static(self._basis,static_opstr_list,dtype)
+			self._dynamic=make_dynamic(self._basis,dynamic_opstr_list,dtype,dtype)
 			self._shape = self._static.shape
 
 		if static_other_list or dynamic_other_list:
@@ -366,35 +362,35 @@ class hamiltonian(object):
 					raise ValueError('hamiltonian must be square matrix')
 
 				self._shape=shape
-				self._static = _sp.dia_matrix(self._shape,dtype=mat_dtype)
+				self._static = _sp.dia_matrix(self._shape,dtype=dtype)
 				self._dynamic = {}
 
 			for O in static_other_list:
 				if _sp.issparse(O):
 					self._mat_checks(O)
 					if self._static is None:
-						self._static = O.astype(mat_dtype,copy=copy)
+						self._static = O.astype(dtype,copy=copy)
 						continue
 
 					try:
-						self._static += O.astype(mat_dtype)
+						self._static += O.astype(dtype)
 					except NotImplementedError:
-						self._static = self._static + O.astype(mat_dtype)
+						self._static = self._static + O.astype(dtype)
 
 				else:
-					O = _np.asarray(O,dtype=mat_dtype)
+					O = _np.asarray(O,dtype=dtype)
 					self._mat_checks(O)
 
 					self._is_dense=True
 
 					if self._static is None:
-						self._static = O.astype(mat_dtype,copy=copy)
+						self._static = O.astype(dtype,copy=copy)
 						continue
 
 					try:
 						self._static += O
 					except NotImplementedError:
-						self._static = self._static + O.astype(mat_dtype)
+						self._static = self._static + O.astype(dtype)
 
 			if not _sp.issparse(self._static):
 				self._static = _np.asarray(self._static)
@@ -418,9 +414,9 @@ class hamiltonian(object):
 				if _sp.issparse(O):
 					self._mat_checks(O)
 
-					O = O.astype(mat_dtype,copy=copy)
+					O = O.astype(dtype,copy=copy)
 				else:
-					O = _np.array(O,copy=copy,dtype=mat_dtype)
+					O = _np.array(O,copy=copy,dtype=dtype)
 					self._mat_checks(O)
 					self._is_dense=True
 
@@ -463,7 +459,7 @@ class hamiltonian(object):
 					raise ValueError('hamiltonian must be square matrix')
 
 				self._shape=shape
-				self._static = _sp.dia_matrix(self._shape,dtype=mat_dtype)
+				self._static = _sp.dia_matrix(self._shape,dtype=dtype)
 				self._dynamic = {}
 
 
@@ -1792,7 +1788,7 @@ class hamiltonian(object):
 						for func,M in iteritems(self.dynamic)]
 
 		return hamiltonian([new_static],dynamic,basis=self._basis,
-			dtype=self._dtype,mat_dtype=self._mat_dtype,copy=copy)
+			dtype=self._dtype,copy=copy)
 
 	def as_sparse_format(self,static_fmt="csr",dynamic_fmt={},copy=False):
 		"""Casts `hamiltonian` operator to SPARSE format(s).
@@ -1823,7 +1819,7 @@ class hamiltonian(object):
 		"""
 		dynamic = [[M,func] for func,M in iteritems(self.dynamic)]
 		return hamiltonian([self.static],dynamic,basis=self._basis,
-			dtype=self._dtype,mat_dtype=self._mat_dtype,
+			dtype=self._dtype,
 			static_fmt=static_fmt,dynamic_fmt=dynamic_fmt,copy=copy)
 
 	### algebra operations
@@ -1848,7 +1844,7 @@ class hamiltonian(object):
 		"""
 		dynamic = [[M.T,func] for func,M in iteritems(self.dynamic)]
 		return hamiltonian([self.static.T],dynamic,basis=self._basis,
-			dtype=self._dtype,mat_dtype=self._mat_dtype,copy=copy)
+			dtype=self._dtype,copy=copy)
 
 	def conjugate(self):
 		"""Conjugates `hamiltonian` operator.
@@ -1870,7 +1866,7 @@ class hamiltonian(object):
 		"""
 		dynamic = [[M.conj(),func.conj()] for func,M in iteritems(self.dynamic)]
 		return hamiltonian([self.static.conj()],dynamic,basis=self._basis,
-			dtype=self._dtype,mat_dtype=self._mat_dtype)		
+			dtype=self._dtype)		
 
 	def conj(self):
 		"""Same functionality as :func:`conjugate`."""
@@ -1986,7 +1982,7 @@ class hamiltonian(object):
 
 		dynamic = [[M,func] for func,M in iteritems(self.dynamic)]
 		return hamiltonian([self.static],dynamic,basis=self._basis,
-			dtype=dtype,mat_dtype=self._mat_dtype,copy=False)
+			dtype=dtype,copy=False)
 
 	###################
 	# special methods #
@@ -1996,7 +1992,7 @@ class hamiltonian(object):
 		"""Returns a copy of `hamiltonian` object."""
 		dynamic = [[M,func] for func,M in iteritems(self.dynamic)]
 		return hamiltonian([self.static],dynamic,basis=self._basis,
-					dtype=self._dtype,mat_dtype=self._mat_dtype,copy=True)
+					dtype=self._dtype,copy=True)
 
 	def __getitem__(self,key):
 		if len(key) != 3:
@@ -2048,7 +2044,7 @@ class hamiltonian(object):
 	def __neg__(self): # -self
 		dynamic = [[-M,func] for func,M in iteritems(self.dynamic)]		
 		return hamiltonian([-self.static],dynamic,basis=self._basis,
-			dtype=self._dtype,mat_dtype=self._mat_dtype)
+			dtype=self._dtype)
 
 	def __call__(self,time=0): # self(time)
 		"""Return hamiltonian as a sparse or dense matrix at specific time
@@ -2382,7 +2378,7 @@ class hamiltonian(object):
 			self._static = self._static + other._static 
 
 		if _check_almost_zero(self._static):
-			self._static = _sp.dia_matrix(self._shape,dtype=self._mat_dtype)
+			self._static = _sp.dia_matrix(self._shape,dtype=self._dtype)
 
 		for func,Hd in iteritems(other._dynamic):
 			if func in self._dynamic:
@@ -2449,7 +2445,7 @@ class hamiltonian(object):
 			self._static = self._static - other._static 
 
 		if _check_almost_zero(self._static):
-			self._static = _sp.dia_matrix(self._shape,dtype=self._mat_dtype)
+			self._static = _sp.dia_matrix(self._shape,dtype=self._dtype)
 
 		for func,Hd in iteritems(other._dynamic):
 			if func in self._dynamic:
@@ -2609,7 +2605,7 @@ class hamiltonian(object):
 			self._static = self._static + other
 
 		if _check_almost_zero(self._static):
-			self._static = _sp.csr_matrix(self._shape,dtype=self._mat_dtype)
+			self._static = _sp.csr_matrix(self._shape,dtype=self._dtype)
 
 		self.check_is_dense()
 		self._get_matvecs()
@@ -2641,7 +2637,7 @@ class hamiltonian(object):
 			self._static = self._static - other
 
 		if _check_almost_zero(self._static):
-			self._static = _sp.dia_matrix(self._shape,dtype=self._mat_dtype)
+			self._static = _sp.dia_matrix(self._shape,dtype=self._dtype)
 
 		self.check_is_dense()
 		self._get_matvecs()
@@ -2706,7 +2702,7 @@ class hamiltonian(object):
 		self._static =self._static * other
 
 		if _check_almost_zero(self._static):
-			self._static = _sp.dia_matrix(self._shape,dtype=self._mat_dtype)
+			self._static = _sp.dia_matrix(self._shape,dtype=self._dtype)
 
 		for func in list(self._dynamic):
 			self._dynamic[func] = other.dot(self._dynamic[func])
@@ -2763,7 +2759,7 @@ class hamiltonian(object):
 			self._static = self._static * other
 
 		if _check_almost_zero(self._static):
-			self._static = _sp.dia_matrix(self._shape,dtype=self._mat_dtype)
+			self._static = _sp.dia_matrix(self._shape,dtype=self._dtype)
 
 		for func in list(self._dynamic):
 			try:
@@ -2821,7 +2817,7 @@ class hamiltonian(object):
 			self._static = new._static + other
 
 		if _check_almost_zero(self._static):
-			self._static = _sp.dia_matrix(self._shape,dtype=self._mat_dtype)
+			self._static = _sp.dia_matrix(self._shape,dtype=self._dtype)
 
 		self.check_is_dense()
 		self._get_matvecs()
@@ -2953,7 +2949,7 @@ class hamiltonian(object):
 		self._static = _np.asarray(self._static.dot(other))
 
 		if _check_almost_zero(self._static):
-			self._static = _sp.dia_matrix(self._shape,dtype=self._mat_dtype)
+			self._static = _sp.dia_matrix(self._shape,dtype=self._dtype)
 
 		for func in list(self._dynamic):
 			self._dynamic[func] = _np.asarray(self._dynamic[func].dot(other))
