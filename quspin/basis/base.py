@@ -241,7 +241,6 @@ class basis(object):
 				if _is_diagonal(row,col):
 					if diag is None:
 						diag = _np.zeros(self.Ns,dtype=dtype)
-
 					_update_diag(diag,row,ME)
 				else:
 					if off_diag is None:
@@ -663,8 +662,6 @@ class basis(object):
 						if static_list[i] not in odd_ops:
 							odd_ops.append(static_list[i])
 
-
-	
 			if odd_ops:
 				unique_opstrs = list(set( next(iter(zip(*tuple(odd_ops))))) )
 				unique_odd_ops = []
@@ -694,7 +691,7 @@ class basis(object):
 						if dynamic_list[i] not in odd_ops:
 							odd_ops.append(dynamic_list[i])
 
-	
+
 			if odd_ops:
 				unique_opstrs = list(set( next(iter(zip(*tuple(odd_ops))))))
 				unique_odd_ops = []

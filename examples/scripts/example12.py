@@ -40,7 +40,7 @@ def run_computation():
 	T_d = (x-1)%Lx + Lx*((y+1)%Ly) # translation along diagonal
 	#
 	###### setting up bases ######
-	basis_2d = spin_basis_general(N_2d,pauli=False) # making the basis sped up by OpenMP
+	basis_2d = spin_basis_general(N_2d,pauli=False) # making the basis: sped up by OpenMP if symmetries are on
 	print('finished computing basis')
 	#
 	###### setting up hamiltonian ######
