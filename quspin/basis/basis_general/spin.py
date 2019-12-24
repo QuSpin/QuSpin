@@ -218,7 +218,7 @@ class spin_basis_general(hcb_basis_general,higher_spin_basis_general):
 				transposed=transposed,conjugated=conjugated,v_out=v_out,a=a)
 
 
-	def Op_shift_sector(self,other_basis,op_list,v_in,v_out=None):
+	def Op_shift_sector(self,other_basis,op_list,v_in,v_out=None,dtype=None):
 		if self._S == "1/2":
 
 			if self._pauli==1:
@@ -230,10 +230,10 @@ class spin_basis_general(hcb_basis_general,higher_spin_basis_general):
 
 			op_list = [[op,indx,J*scale(op)] for op,indx,J in op_list]
 
-			return hcb_basis_general.Op_shift_sector(self,other_basis,op_list,v_in,v_out=v_out)
+			return hcb_basis_general.Op_shift_sector(self,other_basis,op_list,v_in,v_out=v_out,dtype=dtype)
 
 		else:
-			return higher_spin_basis_general.Op_shift_sector(self,other_basis,op_list,v_in,v_out=v_out)	
+			return higher_spin_basis_general.Op_shift_sector(self,other_basis,op_list,v_in,v_out=v_out,dtype=dtype)	
 
 	def __type__(self):
 		return "<type 'qspin.basis.general_hcb'>"

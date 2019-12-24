@@ -1,3 +1,7 @@
+import sys,os
+qspin_path = os.path.join(os.getcwd(),"../")
+sys.path.insert(0,qspin_path)
+
 from quspin.basis import spin_basis_general
 from quspin.operators import hamiltonian
 from quspin.tools.evolution import expm_multiply_parallel
@@ -21,6 +25,9 @@ def corr_nosymm(L,times,S="1/2"):
 	
 
 	op_list = [["z",[0],2.0]]
+
+	# import inspect
+	# print(inspect.getsource(basis.inplace_Op))
 
 	psi1 = basis.inplace_Op(psi0,op_list,np.float64)
 	psi1_t = H.evolve(psi1,0,times)
