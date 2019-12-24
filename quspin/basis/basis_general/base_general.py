@@ -309,6 +309,7 @@ class basis_general(lattice_basis):
 		v_out = v_out.reshape((self.Ns,-1))
 		v_in = v_in.reshape((self.Ns,-1))
 
+
 		for opstr,indx,J in op_list:
 			indx = _np.ascontiguousarray(indx,dtype=_np.int32)
 
@@ -319,9 +320,50 @@ class basis_general(lattice_basis):
 
 
 	def Op_shift_sector(self,other_basis,op_list,v_in,v_out=None,dtype=None):
-		"""
+		"""Applies symmetry non-conserving operator to state in symmetry-reduced basis.
+
+		An operator, which does not conserve a symmetry, induces a change in the quantum number of a state defined in the corresponding symmetry sector. Hence, when the operator is applied on a quantum state, the state shifts the symmetry sector. `Op_shift_sector()` handles this automatically.
+
+		Formally  equivalent to:
+
+		>>> P1 = basis_sector_1.get_proj(np.complex128) # projector between full and initial basis
+		>>> P2 = basis_sector_2.get_proj(np.complex128) # projector between full and target basis
+		>>> v_in_full = P1.dot(v_in) # go from initial basis to to full basis
+		>>> v_out_full = basis_full.inplace_Op(v_in_full,op_list,np.complex128) # apply Op
+		>>> v_out = P2.H.dot(v_out_full) # project to target basis
+
+		Notes
+		-----
+		* particularly useful when computing correlation functions.
+		* supports parallelization to multiple states listed in the columns of `v_in`.
+
+		Parameters
+		-----------
+		other_basis : `*basis_general*` object
+			General basis object for the initial symmetry sector.
+		op_list : list
+			Operator string list which defines the operator to apply. Follows the format `[["z",[i],Jz[i]] for i in range(L)], ["x",[i],Jx[j]] for j in range(L)],...]`. 
+		v_in : np.ndarray
+			Initial state to apply the symmetry non-conserving operator on. Must have the same length as `other_basis.Ns`. 
+		v_out : np.ndarray, optional
+			Optional array to write the result for the final/target state in. 
+		dtype : 'type'
+			Data type (e.g. `numpy.float64`) to construct the operator with.
+
+		Returns
+		--------
+		numpy.ndarray
+			Array containing the state `v_out` in the current basis, i.e. the basis in `basis.Op_shift_sector()`.
+
+		Examples
+		--------
+
+		>>> v_out = basis.Op_shift_sector(initial_basis, op_list, v_in)
+		>>> print(v_out.shape, basis.Ns, v_in.shape, initial_basis.Ns)
 
 		"""
+
+
 		
 		# consider flag to do calc with projectors instead to use as a check. 
 
@@ -333,6 +375,7 @@ class basis_general(lattice_basis):
 
 		if not other_basis._made_basis:
 			raise AttributeError('this function requires the basis to be constructed first; use basis.make().')
+
 
 		_,_,J_list = zip(*op_list)
 
@@ -380,15 +423,14 @@ class basis_general(lattice_basis):
 
 		Notes
 		-----
-		Particularly useful when a given operation canot be carried away in the symmetry-reduced basis
+		* particularly useful when a given operation canot be carried away in the symmetry-reduced basis
 		in a straightforward manner.
+		* see also `Op_shift_sector()`.
 
 		Parameters
 		-----------
 		dtype : 'type'
 			Data type (e.g. numpy.float64) to construct the projector with.
-		sparse : bool, optional
-			Whether or not the output should be in sparse format. Default is `True`.
 		pcon : bool, optional
 			Whether or not to return the projector to the particle number (magnetisation) conserving basis 
 			(useful in bosonic/single particle systems). Default is `pcon=False`.

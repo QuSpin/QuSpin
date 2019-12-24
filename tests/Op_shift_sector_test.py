@@ -19,6 +19,8 @@ for k in range(L):
 		# use generators to generate coupling list
 		op_list = [["z",[i],np.exp(-2j*np.pi*q*i/L)] for i in range(L)]
 
+		#coupling=[[np.exp(-2j*np.pi*q*i/L),i] for i in range(L)]
+		#op_list = [["z",coupling]]
 
 		t = (np.arange(L)+1)%L
 
