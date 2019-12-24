@@ -287,6 +287,8 @@ class basis_general(lattice_basis):
 
 	
 	def _inplace_Op(self,v_in,op_list,dtype,transposed=False,conjugated=False,v_out=None,a=1.0):
+		if not self._made_basis:
+			raise AttributeError('this function requires the basis to be constructed first; use basis.make().')
 
 		v_in = _np.asanyarray(v_in)
 		

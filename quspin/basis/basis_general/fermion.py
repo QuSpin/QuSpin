@@ -507,43 +507,22 @@ class spinful_fermion_basis_general(spinless_fermion_basis_general):
 
 	def _Op(self,opstr,indx,J,dtype):
 
-		if not self._made_basis:
-			raise AttributeError('this function requires the basis to be constructed first; use basis.make().')
-
-
 		if self._simple_symm:
 			opstr,indx = self._simple_to_adv((opstr,indx))
 
-		'''
-		if len(opstr) != len(indx):
-			raise ValueError('length of opstr does not match length of indx')
-
-		if _np.any(indx >= 2*self._N) or _np.any(indx < 0):
-			raise ValueError('values in indx falls outside of system')
-
-		extra_ops = set(opstr) - self._allowed_ops
-		if extra_ops:
-			raise ValueError("unrecognized characters {} in operator string.".format(extra_ops))
-
-		if self._Ns <= 0:
-			return _np.array([],dtype=dtype),_np.array([],dtype=self._index_type),_np.array([],dtype=self._index_type)
-	
-		col = _np.zeros(self._Ns,dtype=self._index_type)
-		row = _np.zeros(self._Ns,dtype=self._index_type)
-		ME = _np.zeros(self._Ns,dtype=dtype)
-
-		self._core.op(row,col,ME,opstr,indx,J,self._basis,self._n)
-
-		mask = _np.logical_not(_np.logical_or(_np.isnan(ME),_np.abs(ME)==0.0))
-		col = col[mask]
-		row = row[mask]
-		ME = ME[mask]
-		
-
-		return ME,row,col
-		'''
 		return spinless_fermion_basis_general._Op(self,opstr,indx,J,dtype)
 
+	def _inplace_Op(self,v_in,op_list,dtype,transposed=False,conjugated=False,v_out=None,a=1.0):
+		if self._simple_symm:
+			new_op_list = []
+			for opstr,indx,J in op_list:
+				new_opstr,new_indx = self._simple_to_adv((opstr,indx))
+				new_op_list.append((new_opstr,new_indx,J))
+		else:
+			new_op_list = op_list
+
+		return spinless_fermion_basis_general._inplace_Op(self,v_in,new_op_list,dtype,
+			transposed=transposed,conjugated=conjugated,v_out=v_out,a=a)
 
 	def index(self,up_state,down_state):
 		"""Finds the index of user-defined Fock state in spinful fermion basis.
