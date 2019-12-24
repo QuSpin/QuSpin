@@ -293,7 +293,7 @@ class basis_general(lattice_basis):
 		v_in = _np.asanyarray(v_in)
 		
 		result_dtype = _np.result_type(v_in.dtype,dtype)
-		v_in = _np.ascontiguousarray(v_in,dtype=result_dtype)
+		v_in = v_in.astype(result_dtype,order="C",copy=False)
 
 		if v_in.shape[0] != self.Ns:
 			raise ValueError("dimension mismatch")
@@ -390,8 +390,7 @@ class basis_general(lattice_basis):
 
 		result_dtype = _np.result_type(_np.float32,J_list.dtype,v_in.dtype)
 
-		v_in = _np.ascontiguousarray(v_in,dtype=result_dtype)
-
+		v_in = v_in.astype(result_dtype,order="C",copy=False)
 		v_in = v_in.reshape((other_basis.Ns,-1))
 		nvecs = v_in.shape[1]
 
