@@ -25,6 +25,7 @@ The following Python scripts demonstrate basic and advanced functionality of QuS
 	* :math:`{\color{red} {NEW}}`: :ref:`example16-label`, :download:`download script <../../examples/scripts/example16.py>`
 	* :math:`{\color{red} {NEW}}`: :ref:`example17-label`, :download:`download script <../../examples/scripts/example17.py>`
 	* :math:`{\color{red} {NEW}}`: :ref:`example18-label`, :download:`download script <../../examples/scripts/example18.py>`
+	* :math:`{\color{blue} {NEW}}`: :ref:`example19-label`, :download:`download script <../../examples/scripts/example19.py>`
 
 Tutorials
 ---------
