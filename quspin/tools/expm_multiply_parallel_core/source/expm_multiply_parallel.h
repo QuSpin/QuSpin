@@ -60,7 +60,7 @@ void expm_multiply(const I n,
 					const int s,
 					const int m_star,
 					const T2 tol,
-					const T1 mu,
+					const T3 mu,
 					const T3 a,
 			 			  T3 F[],
 						  T3 work[]
@@ -97,7 +97,6 @@ void expm_multiply(const I n,
 		for(I k=begin;k<end;k++){ 
 			T3 f = F[k];
 			B1[k] = f;
-			// c1_thread = std::max(c1_thread,math_functions::abs(f));
 			c1_thread = math_functions::compare_abs(c1_thread,f);
 		}
 
@@ -123,14 +122,13 @@ void expm_multiply(const I n,
 				#endif
 
 				c2_thread = 0; c3_thread = 0;
+				const T3 b = a * mu / T2(j*s);
 
 				for(I k=begin;k<end;k++){
-					T3 b2 = B2[k];
+					T3 b2 = B2[k] - b * B1[k];
 					T3 f  = F[k] += b2;
 					B1[k] = b2;
 					// used cached values to compute comparisons for infinite norm
-					// c2_thread = std::max(c2_thread,math_functions::abs(b2));
-					// c3_thread = std::max(c3_thread,math_functions::abs(f));
 					c2_thread = math_functions::compare_abs(c2_thread,b2);
 					c3_thread = math_functions::compare_abs(c3_thread,f);
 				}
@@ -143,7 +141,6 @@ void expm_multiply(const I n,
 					c2 = *std::max_element(c2_threads,c2_threads+num_threads);
 					c3 = *std::max_element(c3_threads,c3_threads+num_threads);
 					exit_loop = ((c1+c2)<=(tol*c3));
-
 					c1 = c2;
 				}
 
@@ -155,7 +152,6 @@ void expm_multiply(const I n,
 				T3 f = F[k] *= eta;
 				B1[k] = f;
 				// used cached values to compute comparisons for infinite norm
-				// c1_thread = std::max(c1_thread,math_functions::abs(f));
 				c1_thread = math_functions::compare_abs(c1_thread,f);
 			}
 			c1_threads[tid] = c1_thread;

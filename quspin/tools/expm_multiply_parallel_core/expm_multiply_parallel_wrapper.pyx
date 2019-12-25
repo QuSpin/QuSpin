@@ -21,6 +21,8 @@ ctypedef fused indtype_B:
 	_np.int64_t
 
 ctypedef fused T1:
+	_np.int8_t
+	_np.int16_t
 	float
 	float complex
 	double
@@ -28,45 +30,21 @@ ctypedef fused T1:
 
 ctypedef fused T2:
 	float
-	double
-
-ctypedef fused T3:
-	float
 	float complex
 	double
 	double complex
 
+
+
 cdef extern from "csr_utils.h":
 	T csr_trace[I,T](const I,const I,const I[],const I[],const T[]) nogil
-	realT csr_1_norm[I,T,realT](const I,const I,const I[],const I[],const T[]) nogil
+	double csr_1_norm[I,T](const I,const I,const I[],const I[],const double complex,const T[]) nogil
 	# npy_intp csr_shift_diag_pass1[I,T](const T,const I,const I,const I[],const I[],T[]) nogil
 	# void csr_shift_diag_pass2[I,J,T](const T,const I,const I,const I[],const I[],
 	# 	const T[],J[],J[],T[]) nogil
 
 
-# @cython.boundscheck(False)
-# def _wrapper_csr_shift_diag_pass1(shift,indtype[:] Ap, indtype[:] Aj, T1[:] Ax):
-# 	cdef T1 shiftc = shift
-# 	cdef indtype n_row = Ap.shape[0] - 1
-# 	return csr_shift_diag_pass1(shiftc,n_row,n_row,&Ap[0],&Aj[0],&Ax[0])
 
-
-# @cython.boundscheck(False)
-# def _wrapper_csr_shift_diag_pass2(shift,indtype[:] Ap, indtype[:] Aj, T1[:] Ax,indtype_B[:] Bp, indtype_B[:] Bj, T1[:] Bx):
-# 	cdef T1 shiftc = shift
-# 	cdef indtype n_row = Ap.shape[0] - 1
-# 	csr_shift_diag_pass2(shiftc,n_row,n_row,&Ap[0],&Aj[0],&Ax[0],&Bp[0],&Bj[0],&Bx[0])
-
-# def _wrapper_csr_shift_diag(shift,A):
-# 	A = _sp.csr_matrix(A,copy=False)
-# 	nnz = _wrapper_csr_shift_diag_pass1(shift,A.indptr,A.indices,A.data)
-# 	inddtype = _np.result_type(_np.int32,_np.min_scalar_type(nnz))
-# 	Bp = _np.zeros(A.indptr.shape,dtype=inddtype)
-# 	Bj = _np.zeros(nnz,dtype=inddtype)
-# 	Bx = _np.zeros(nnz,dtype=A.dtype)
-# 	_wrapper_csr_shift_diag_pass2(shift,A.indptr,A.indices,A.data,Bp,Bj,Bx)
-
-# 	return _sp.csr_matrix((Bx,Bj,Bp),shape=A.shape,dtype=A.dtype)
 
 
 @cython.boundscheck(False)
@@ -75,26 +53,11 @@ def _wrapper_csr_trace(indtype[:] Ap, indtype[:] Aj, T1[:] Ax):
 	return csr_trace(n_row,n_row,&Ap[0],&Aj[0],&Ax[0])
 
 @cython.boundscheck(False)
-def _wrapper_csr_1_norm(indtype[:] Ap, indtype[:] Aj, T1[:] Ax):
+def _wrapper_csr_1_norm(indtype[:] Ap, indtype[:] Aj, T1[:] Ax,mu):
 	cdef indtype n_row = Ap.shape[0] - 1
-	if indtype is _np.int32_t:
-		if T1 is doublecomplex:
-			return csr_1_norm[_np.int32_t,doublecomplex,double](n_row,n_row,&Ap[0],&Aj[0],&Ax[0])
-		elif T1 is double:
-			return csr_1_norm[_np.int32_t,double,double](n_row,n_row,&Ap[0],&Aj[0],&Ax[0])
-		elif T1 is floatcomplex:
-			return csr_1_norm[_np.int32_t,floatcomplex,float](n_row,n_row,&Ap[0],&Aj[0],&Ax[0])
-		else:
-			return csr_1_norm[_np.int32_t,float,float](n_row,n_row,&Ap[0],&Aj[0],&Ax[0])
-	else:
-		if T1 is doublecomplex:
-			return csr_1_norm[_np.int64_t,doublecomplex,double](n_row,n_row,&Ap[0],&Aj[0],&Ax[0])
-		elif T1 is double:
-			return csr_1_norm[_np.int64_t,double,double](n_row,n_row,&Ap[0],&Aj[0],&Ax[0])
-		elif T1 is floatcomplex:
-			return csr_1_norm[_np.int64_t,floatcomplex,float](n_row,n_row,&Ap[0],&Aj[0],&Ax[0])
-		else:
-			return csr_1_norm[_np.int64_t,float,float](n_row,n_row,&Ap[0],&Aj[0],&Ax[0])		
+	cdef double complex mu_in = mu
+	return csr_1_norm(n_row,n_row,&Ap[0],&Aj[0],mu_in,&Ax[0])
+
 
 cdef extern from "expm_multiply_parallel_impl.h":
 	int get_switch_expm_multiply(PyArray_Descr*,PyArray_Descr*,PyArray_Descr*,PyArray_Descr*)
@@ -136,7 +99,7 @@ def _wrapper_expm_multiply(ndarray Ap,ndarray Aj,ndarray Ax,int s,int m_star,nda
 
 	arg_fail = arg_fail or (switch_num < 0)
 	arg_fail = arg_fail or (not EquivTypes(dtype1,dtype2))
-	arg_fail = arg_fail or (not EquivTypes(dtype3,dtype6))
+	arg_fail = arg_fail or (not EquivTypes(dtype4,dtype6))
 	arg_fail = arg_fail or (not EquivTypes(dtype4,dtype7))
 	arg_fail = arg_fail or (not EquivTypes(dtype7,dtype8))
 
