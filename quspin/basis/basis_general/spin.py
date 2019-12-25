@@ -266,9 +266,9 @@ class spin_basis_general(hcb_basis_general,higher_spin_basis_general):
 		indx = _np.array(op[1])
 		if _np.any(indx):
 			indx_p = indx[opstr == "+"].tolist()
-			p = not any(indx_p.count(x) > 1 for x in indx_p)
+			p = not any(indx_p.count(x) > self.sps-1 for x in indx_p)
 			indx_p = indx[opstr == "-"].tolist()
-			m = not any(indx_p.count(x) > 1 for x in indx_p)
+			m = not any(indx_p.count(x) > self.sps-1 for x in indx_p)
 			return (p and m)
 		else:
 			return True

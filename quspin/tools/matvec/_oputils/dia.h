@@ -11,7 +11,7 @@
 
 
 
-template <typename I, typename T1, typename T2>
+template<typename I, typename T1, typename T2,typename T3>
 void dia_matvec_noomp_contig(const bool overwrite_y,
                         const I n_row,
                         const I n_col,
@@ -19,9 +19,9 @@ void dia_matvec_noomp_contig(const bool overwrite_y,
                         const I L,
                         const I offsets[], 
                         const T1 diags[], 
-                        const T1 a,
-                        const T2 x[],
-                              T2 y[])
+                        const T2 a,
+                        const T3 x[],
+                              T3 y[])
 {
 
     if(overwrite_y){
@@ -40,8 +40,8 @@ void dia_matvec_noomp_contig(const bool overwrite_y,
         const I N = j_end - j_start;  //number of elements to process
 
         const T1 * diag = diags + (npy_intp)i*L + j_start;
-        const T2 * x_row = x + j_start;
-              T2 * y_row = y + i_start;
+        const T3 * x_row = x + j_start;
+              T3 * y_row = y + i_start;
 
         for(I n = 0; n < N; n++){
             y_row[n] += (a * diag[n]) * x_row[n]; 
@@ -49,7 +49,7 @@ void dia_matvec_noomp_contig(const bool overwrite_y,
     }
 }
 
-template <typename I, typename T1, typename T2>
+template<typename I, typename T1, typename T2,typename T3>
 void dia_matvec_noomp_strided(const bool overwrite_y,
                         const I n_row,
                         const I n_col,
@@ -57,16 +57,16 @@ void dia_matvec_noomp_strided(const bool overwrite_y,
                         const I L,
                         const I offsets[], 
                         const T1 diags[], 
-                        const T1 a,
+                        const T2 a,
                         const npy_intp x_stride,
-                        const T2 x[],
+                        const T3 x[],
                         const npy_intp y_stride,
-                              T2 y[])
+                              T3 y[])
 {
 
     if(overwrite_y){
         for(I i = 0; i < n_row; i++){
-            y[i] = 0;
+            y[i * y_stride] = 0;
         }
     }
 
@@ -80,8 +80,8 @@ void dia_matvec_noomp_strided(const bool overwrite_y,
         const I N = j_end - j_start;  //number of elements to process
 
         const T1 * diag = diags + (npy_intp)i*L + j_start;
-        const T2 * x_row = x + j_start * x_stride;
-              T2 * y_row = y + i_start * y_stride;
+        const T3 * x_row = x + j_start * x_stride;
+              T3 * y_row = y + i_start * y_stride;
 
         for(I n = 0; n < N; n++){
             y_row[n * y_stride] += (a * diag[n]) * x_row[n * x_stride]; 
@@ -90,7 +90,7 @@ void dia_matvec_noomp_strided(const bool overwrite_y,
 }
 
 
-template <typename I, typename T1, typename T2>
+template<typename I, typename T1, typename T2,typename T3>
 void dia_matvecs_noomp_strided(const bool overwrite_y,
                         const I n_row,
                         const I n_col,
@@ -99,22 +99,21 @@ void dia_matvecs_noomp_strided(const bool overwrite_y,
                         const I L,
                         const I offsets[], 
                         const T1 diags[], 
-                        const T1 a,
+                        const T2 a,
                         const npy_intp x_stride_row,
                         const npy_intp x_stride_col,
-                        const T2 x[],
+                        const T3 x[],
                         const npy_intp y_stride_row,
                         const npy_intp y_stride_col,
-                              T2 y[])
+                              T3 y[])
 {
     if(overwrite_y){
-        const npy_intp n = (npy_intp)n_row * n_vecs;
-
-        for(npy_intp i = 0; i < n; i++){
-            y[i] = 0;
+        for(npy_intp i = 0; i < n_row; i++){
+            for(npy_intp j = 0; j < n_vecs; j++){
+                y[i * y_stride_row + j * y_stride_col] = 0;
+            }
         }
     }
-
 
     if(y_stride_col < y_stride_row){
         for(I i = 0; i < n_diags; i++){
@@ -127,11 +126,11 @@ void dia_matvecs_noomp_strided(const bool overwrite_y,
             const I N = j_end - j_start;  //number of elements to process
 
             const T1 * diag = diags + (npy_intp)i*L + j_start;
-            const T2 * x_row = x + j_start * x_stride_row;
-                  T2 * y_row = y + i_start * y_stride_row;
+            const T3 * x_row = x + j_start * x_stride_row;
+                  T3 * y_row = y + i_start * y_stride_row;
 
             for(I n = 0; n < N; n++){
-                axpy_strided((npy_intp)n_vecs,T2(a * diag[n]),x_stride_col,x_row,y_stride_col,y_row);
+                axpy_strided((npy_intp)n_vecs,T3(a * diag[n]),x_stride_col,x_row,y_stride_col,y_row);
                 x_row += x_stride_row;
                 y_row += y_stride_row;
             }
@@ -148,12 +147,12 @@ void dia_matvecs_noomp_strided(const bool overwrite_y,
             const I N = j_end - j_start;  //number of elements to process
 
             const T1 * diag = diags + (npy_intp)i*L + j_start;
-            const T2 * x_start = x + j_start * x_stride_row;
-                  T2 * y_start = y + i_start * y_stride_row;
+            const T3 * x_start = x + j_start * x_stride_row;
+                  T3 * y_start = y + i_start * y_stride_row;
 
             for(I m=0;m<n_vecs;m++){
-                const T2 * x_row = x_start;
-                      T2 * y_row = y_start;
+                const T3 * x_row = x_start;
+                      T3 * y_row = y_start;
 
                 for(I n = 0; n < N; n++){
                     (*y_row) += (a * diag[n]) * (*x_row);
@@ -175,7 +174,7 @@ void dia_matvecs_noomp_strided(const bool overwrite_y,
 #include "csrmv_merge.h"
 #include "openmp.h"
 
-template <typename I, typename T1, typename T2>
+template<typename I, typename T1, typename T2,typename T3>
 void dia_matvec_omp_contig(const bool overwrite_y,
                 const I n_row,
                 const I n_col,
@@ -183,9 +182,9 @@ void dia_matvec_omp_contig(const bool overwrite_y,
                 const I L,
                 const I offsets[], 
                 const T1 diags[], 
-                const T1 a,
-                const T2 x[],
-                      T2 y[])
+                const T2 a,
+                const T3 x[],
+                      T3 y[])
 {
     #pragma omp parallel
     {
@@ -205,8 +204,8 @@ void dia_matvec_omp_contig(const bool overwrite_y,
 
             const I N = j_end - j_start;  //number of elements to process
             const T1 * diag = diags + i*L + j_start;
-            const T2 * x_row = x + j_start;
-                  T2 * y_row = y + i_start;
+            const T3 * x_row = x + j_start;
+                  T3 * y_row = y + i_start;
 
             #pragma omp for schedule(static)
             for(I n=0;n<N;n++){
@@ -216,7 +215,7 @@ void dia_matvec_omp_contig(const bool overwrite_y,
     }
 }
 
-template <typename I, typename T1, typename T2>
+template<typename I, typename T1, typename T2,typename T3>
 void dia_matvec_omp_strided(const bool overwrite_y,
                 const I n_row,
                 const I n_col,
@@ -224,11 +223,11 @@ void dia_matvec_omp_strided(const bool overwrite_y,
                 const I L,
                 const I offsets[], 
                 const T1 diags[], 
-                const T1 a,
+                const T2 a,
                 const npy_intp x_stride,
-                const T2 x[],
+                const T3 x[],
                 const npy_intp y_stride,
-                      T2 y[])
+                      T3 y[])
 {
     #pragma omp parallel
     {
@@ -248,8 +247,8 @@ void dia_matvec_omp_strided(const bool overwrite_y,
 
             const I N = j_end - j_start;  //number of elements to process
             const T1 * diag = diags + i*L + j_start;
-            const T2 * x_row = x + j_start * x_stride;
-                  T2 * y_row = y + i_start * y_stride;
+            const T3 * x_row = x + j_start * x_stride;
+                  T3 * y_row = y + i_start * y_stride;
 
             #pragma omp for schedule(static)
             for(I n=0;n<N;n++){
@@ -260,7 +259,7 @@ void dia_matvec_omp_strided(const bool overwrite_y,
 }
 
 
-template <typename I, typename T1, typename T2>
+template<typename I, typename T1, typename T2,typename T3>
 inline void dia_matvecs_omp_strided(const bool overwrite_y,
                         const I n_row,
                         const I n_col,
@@ -269,13 +268,13 @@ inline void dia_matvecs_omp_strided(const bool overwrite_y,
                         const I L,
                         const I offsets[], 
                         const T1 diags[], 
-                        const T1 a,
+                        const T2 a,
                         const npy_intp x_stride_row,
                         const npy_intp x_stride_col,
-                        const T2 x[],
+                        const T3 x[],
                         const npy_intp y_stride_row,
                         const npy_intp y_stride_col,
-                              T2 y[])
+                              T3 y[])
 {
     dia_matvecs_noomp_strided(overwrite_y,n_row,n_col,n_vecs,n_diags,L,offsets,diags,a,x_stride_row,x_stride_col,x,y_stride_row,y_stride_col,y);
 }
@@ -285,7 +284,7 @@ inline void dia_matvecs_omp_strided(const bool overwrite_y,
 
 
 
-template <typename I, typename T1, typename T2>
+template<typename I, typename T1, typename T2,typename T3>
 inline void dia_matvec_omp_contig(const bool overwrite_y,
                         const I n_row,
                         const I n_col,
@@ -293,14 +292,14 @@ inline void dia_matvec_omp_contig(const bool overwrite_y,
                         const I L,
                         const I offsets[], 
                         const T1 diags[], 
-                        const T1 a,
-                        const T2 x[],
-                              T2 y[])
+                        const T2 a,
+                        const T3 x[],
+                              T3 y[])
 {
     dia_matvec_noomp_contig(overwrite_y,n_row,n_col,n_diags,L,offsets,diags,a,x,y);
 }
 
-template <typename I, typename T1, typename T2>
+template<typename I, typename T1, typename T2,typename T3>
 inline void dia_matvec_omp_strided(const bool overwrite_y,
                         const I n_row,
                         const I n_col,
@@ -308,17 +307,17 @@ inline void dia_matvec_omp_strided(const bool overwrite_y,
                         const I L,
                         const I offsets[], 
                         const T1 diags[], 
-                        const T1 a,
+                        const T2 a,
                         const npy_intp x_stride,
-                        const T2 x[],
+                        const T3 x[],
                         const npy_intp y_stride,
-                              T2 y[])
+                              T3 y[])
 {
     dia_matvec_noomp_strided(overwrite_y,n_row,n_col,n_diags,L,offsets,diags,a,x_stride,x,y_stride,y);
 }
 
 
-template <typename I, typename T1, typename T2>
+template<typename I, typename T1, typename T2,typename T3>
 inline void dia_matvecs_omp_strided(const bool overwrite_y,
                         const I n_row,
                         const I n_col,
@@ -327,20 +326,20 @@ inline void dia_matvecs_omp_strided(const bool overwrite_y,
                         const I L,
                         const I offsets[], 
                         const T1 diags[], 
-                        const T1 a,
+                        const T2 a,
                         const npy_intp x_stride_row,
                         const npy_intp x_stride_col,
-                        const T2 x[],
+                        const T3 x[],
                         const npy_intp y_stride_row,
                         const npy_intp y_stride_col,
-                              T2 y[])
+                              T3 y[])
 {
     dia_matvecs_noomp_strided(overwrite_y,n_row,n_col,n_vecs,n_diags,L,offsets,diags,a,x_stride_row,x_stride_col,x,y_stride_row,y_stride_col,y);
 }
 
 #endif
 
-template <typename I, typename T1, typename T2>
+template<typename I, typename T1, typename T2,typename T3>
 void dia_matvec_omp(const bool overwrite_y,
                         const I n_row,
                         const I n_col,
@@ -348,14 +347,14 @@ void dia_matvec_omp(const bool overwrite_y,
                         const I L,
                         const I offsets[], 
                         const T1 diags[], 
-                        const T1 a,
+                        const T2 a,
                         const npy_intp x_stride_bytes,
-                        const T2 x[],
+                        const T3 x[],
                         const npy_intp y_stride_bytes,
-                              T2 y[])
+                              T3 y[])
 {
-    const npy_intp x_stride = x_stride_bytes/sizeof(T2);
-    const npy_intp y_stride = y_stride_bytes/sizeof(T2);
+    const npy_intp x_stride = x_stride_bytes/sizeof(T3);
+    const npy_intp y_stride = y_stride_bytes/sizeof(T3);
     if(y_stride==1){
         if(x_stride==1){
             dia_matvec_omp_contig(overwrite_y,n_row,n_col,n_diags,L,offsets,diags,a,x,y);
@@ -376,7 +375,7 @@ void dia_matvec_omp(const bool overwrite_y,
 
 }
 
-template <typename I, typename T1, typename T2>
+template<typename I, typename T1, typename T2,typename T3>
 void dia_matvec_noomp(const bool overwrite_y,
                         const I n_row,
                         const I n_col,
@@ -384,14 +383,14 @@ void dia_matvec_noomp(const bool overwrite_y,
                         const I L,
                         const I offsets[], 
                         const T1 diags[], 
-                        const T1 a,
+                        const T2 a,
                         const npy_intp x_stride_bytes,
-                        const T2 x[],
+                        const T3 x[],
                         const npy_intp y_stride_bytes,
-                              T2 y[])
+                              T3 y[])
 {
-    const npy_intp x_stride = x_stride_bytes/sizeof(T2);
-    const npy_intp y_stride = y_stride_bytes/sizeof(T2);
+    const npy_intp x_stride = x_stride_bytes/sizeof(T3);
+    const npy_intp y_stride = y_stride_bytes/sizeof(T3);
     if(y_stride==1){
         if(x_stride==1){
             dia_matvec_noomp_contig(overwrite_y,n_row,n_col,n_diags,L,offsets,diags,a,x,y);
@@ -412,7 +411,7 @@ void dia_matvec_noomp(const bool overwrite_y,
 
 }
 
-template<typename I, typename T1,typename T2>
+template<typename I, typename T1, typename T2,typename T3>
 inline void dia_matvecs_omp(const bool overwrite_y,
                         const I n_row,
                         const I n_col,
@@ -421,18 +420,18 @@ inline void dia_matvecs_omp(const bool overwrite_y,
                         const I L,
                         const I offsets[], 
                         const T1 diags[], 
-                        const T1 a,
+                        const T2 a,
                         const npy_intp x_stride_row_byte,
                         const npy_intp x_stride_col_byte,
-                        const T2 x[],
+                        const T3 x[],
                         const npy_intp y_stride_row_byte,
                         const npy_intp y_stride_col_byte,
-                              T2 y[])
+                              T3 y[])
 {
-    const npy_intp y_stride_row = y_stride_row_byte/sizeof(T2);
-    const npy_intp y_stride_col = y_stride_col_byte/sizeof(T2);
-    const npy_intp x_stride_row = x_stride_row_byte/sizeof(T2);
-    const npy_intp x_stride_col = x_stride_col_byte/sizeof(T2);
+    const npy_intp y_stride_row = y_stride_row_byte/sizeof(T3);
+    const npy_intp y_stride_col = y_stride_col_byte/sizeof(T3);
+    const npy_intp x_stride_row = x_stride_row_byte/sizeof(T3);
+    const npy_intp x_stride_col = x_stride_col_byte/sizeof(T3);
 
     if(y_stride_col==1){
         if(x_stride_col==1){
@@ -463,7 +462,7 @@ inline void dia_matvecs_omp(const bool overwrite_y,
 
 
 
-template<typename I, typename T1,typename T2>
+template<typename I, typename T1, typename T2,typename T3>
 inline void dia_matvecs_noomp(const bool overwrite_y,
                         const I n_row,
                         const I n_col,
@@ -472,18 +471,18 @@ inline void dia_matvecs_noomp(const bool overwrite_y,
                         const I L,
                         const I offsets[], 
                         const T1 diags[], 
-                        const T1 a,
+                        const T2 a,
                         const npy_intp x_stride_row_byte,
                         const npy_intp x_stride_col_byte,
-                        const T2 x[],
+                        const T3 x[],
                         const npy_intp y_stride_row_byte,
                         const npy_intp y_stride_col_byte,
-                              T2 y[])
+                              T3 y[])
 {
-    const npy_intp y_stride_row = y_stride_row_byte/sizeof(T2);
-    const npy_intp y_stride_col = y_stride_col_byte/sizeof(T2);
-    const npy_intp x_stride_row = x_stride_row_byte/sizeof(T2);
-    const npy_intp x_stride_col = x_stride_col_byte/sizeof(T2);
+    const npy_intp y_stride_row = y_stride_row_byte/sizeof(T3);
+    const npy_intp y_stride_col = y_stride_col_byte/sizeof(T3);
+    const npy_intp x_stride_row = x_stride_row_byte/sizeof(T3);
+    const npy_intp x_stride_col = x_stride_col_byte/sizeof(T3);
 
     if(y_stride_col==1){
         if(x_stride_col==1){
