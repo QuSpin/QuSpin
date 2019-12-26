@@ -21,7 +21,7 @@ For the purpose of computing the autocorrelation function, it is advantageous to
 .. math::
 	C(t) = \langle\psi_\mathrm{GS}(t)|\mathcal{O}|(\mathcal{O}\psi_\mathrm{GS})(t)\rangle,
 
-where :math:`|\psi_\mathrm{GS}(t)\rangle = e^{-i t H}|\psi_\mathrm{GS}\rangle`, and :math:`|(\mathcal{O}\psi_\mathrm{GS})(t)\rangle = e^{-i t H}\mathcal{O}|\psi_\mathrm{GS}\rangle`.
+where :math:`|\psi_\mathrm{GS}(t)\rangle = e^{-i t H}|\psi_\mathrm{GS}\rangle` (this is a trivial phase factor, but we keep it here for generality), and :math:`|(\mathcal{O}\psi_\mathrm{GS})(t)\rangle = e^{-i t H}\mathcal{O}|\psi_\mathrm{GS}\rangle`.
 
 
 In the example below, we compute :math:`C(t)` (i) in real space, and (ii) in momentum space. 
