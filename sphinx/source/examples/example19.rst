@@ -1,9 +1,9 @@
 .. _example19-label:
 
-Autocorrelation functions using symmetries: the Heisenberg Model
+Autocorrelation functions using symmetries: Op_shift_sector
 ----------------------------------------------------------------
 
-This example demonstrates how to use the basis general function method `Op_shift_sector()` to compute autocorrelation functions of operators in the Heisenberg model on a 1d chain.
+This example demonstrates how to use the general basis function method `Op_shift_sector()` to compute autocorrelation functions of operators in the Heisenberg model on a 1d chain.
 
 
 .. math::
