@@ -26,7 +26,7 @@ np.random.seed(17) # set random seed, cf initial state below
 L = 20 # system size
 dt= 0.1 # unitary evolution time step
 # basis object
-basis = spin_basis_1d(L,m=0,kblock=0,pblock=1,zblock=1)
+basis = spin_basis_1d(L,m=0,kblock=0,pblock=1,zblock=1,pauli=False)
 print("\nHilbert space dimension: {}.\n".format(basis.Ns))
 # Heisenberg Hamiltonian
 J_list = [[1.0,i,(i+1)%L] for i in range(L)]
@@ -41,21 +41,22 @@ m_evo=20 # Krylov subspace dimension
 v0 = np.random.normal(0,1,size=basis.Ns)
 v0 /= np.linalg.norm(v0)
 # make copies to test the lanczos routines independently
-v0_lanczos_full = v0.copy()
-v0_lanczos_iter = v0.copy()
+v_expm_multiply = v0.copy()
+v_lanczos_full  = v0.copy()
+v_lanczos_iter  = v0.copy()
 #
 print("\nchecking lanczos matrix exponential calculation:\n")
 for i in range(100):
 	# compute Lanczos decomposition
-	E1,V1,Q_full = lanczos_full(H,v0_lanczos_full,m_evo) # all Lanczps vectors at once
-	E2,V2,Q_iter = lanczos_iter(H,v0_lanczos_iter,m_evo) # Lanczos vectors as an iterator
+	E_full,V_full,Q_full = lanczos_full(H,v_lanczos_full,m_evo) # all Lanczps vectors at once
+	E_iter,V_iter,Q_iter = lanczos_iter(H,v_lanczos_iter,m_evo) # Lanczos vectors as an iterator
 	# evolve quantum state using different routines
-	v_expm_multiply_t = expm_multiply(-1j*dt*H.static,v0) # cf tools.expm_multiply_parallel with OMP speedup
-	v_lanczos_full_t = expm_lanczos(E1,V1,Q_full,a=-1j*dt)
-	v_lanczos_iter_t = expm_lanczos(E2,V2,Q_iter,a=-1j*dt)
+	v_expm_multiply = expm_multiply(-1j*dt*H.static,v_expm_multiply) # cf tools.expm_multiply_parallel with OMP speedup
+	v_lanczos_full = expm_lanczos(E_full,V_full,Q_full,a=-1j*dt)
+	v_lanczos_iter = expm_lanczos(E_iter,V_iter,Q_iter,a=-1j*dt)
 	# test results against each other
-	np.testing.assert_allclose(v_lanczos_full_t,v_expm_multiply_t,atol=1e-10,rtol=0)
-	np.testing.assert_allclose(v_lanczos_iter_t,v_expm_multiply_t,atol=1e-10,rtol=0)
+	np.testing.assert_allclose(v_lanczos_full,v_expm_multiply,atol=1e-10,rtol=0)
+	np.testing.assert_allclose(v_lanczos_iter,v_expm_multiply,atol=1e-10,rtol=0)
 	#
 	print("finished unitary evolution step: {0:d}.".format(i))
 #
@@ -63,37 +64,38 @@ print("\ntime evolution complete.\n")
 #
 ###### Lanczos ground state calculation
 #
-m_GS=50 # Krylov subspace dimension
-#
+# compute exact GS data
 E_GS,psi_GS = H.eigsh(k=1,which="SA")
-
 psi_GS = psi_GS.ravel()
-
+#
+###### apply Lanczos
+# initial state for Lanczos algorithm 
 v0 = np.random.normal(0,1,size=basis.Ns)
 v0 /= np.linalg.norm(v0)
-
+#
+m_GS=50 # Krylov subspace dimension
+#
+# Lanczos finds the largest-magnitude eigenvalue: apply on -H and then revert sign of E
 E,V,Q = lanczos_full(-H,v0,m_GS,full_ortho=False)
-E=-E[::-1]
-V=V[:,::-1]
-
-
+E=-E[::-1] # revert negative sign and re-order E'values
+V=V[:,::-1] # re-order e'vectors
+#
+# check GS energy convergence
 try:
+	# compute difference to exact GS energy value
 	dE = np.abs(E[0]-E_GS[0])
 	assert(dE < 1e-10)
 except AssertionError:
 	raise AssertionError("Energy failed to converge |E_lanczos-E_exact| = {} > 1e-10".format(dE))
-
-v1 = lin_comb_Q(V[:,0],Q)
+#
+# compute ground state vector
+psi_GS_lanczos = lin_comb_Q(V[:,0],Q)
+# check ground state convergence
 try:
-	F = np.abs(np.log(np.abs(np.vdot(v1,psi_GS))))
+	# compute fidelity of being in exact GS
+	F = np.abs(np.log(np.abs(np.vdot(psi_GS_lanczos,psi_GS))))
 	assert(F < 1e-10)
 except AssertionError:
-	raise AssertionError("wavefunction failed to converge Fedility = {} > 1e-10".format(F))
-
-E,V,Q_iter = lanczos_iter(H,v0,m_GS,return_vec_iter=True)
-
-v2 = lin_comb_Q(V[:,0],Q_iter)
-
-np.testing.assert_allclose(v2,v1,atol=1e-10,rtol=0)
-
-
+	raise AssertionError("wavefunction failed to converge to fidelity = {} > 1e-10".format(F))
+#
+print("\nground state calculation complete.\n")

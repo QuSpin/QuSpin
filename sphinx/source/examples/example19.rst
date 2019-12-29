@@ -7,7 +7,7 @@ This example demonstrates how to use the general basis function method `Op_shift
 
 
 .. math::
-	H = -J\sum_{j=0}^{N-1} S^+_{j+1}S^-_{j} + \mathrm{h.c.} + S^z_{j+1}S^z_j.
+	H = J\sum_{j=0}^{N-1} S^+_{j+1}S^-_{j} + \mathrm{h.c.} + S^z_{j+1}S^z_j.
 
 where :math:`S_j` is the spin-1/2 operator on lattice site :math:`j`; we use periodic boundary conditions. We are interested in the following autocorrelation function:
 
