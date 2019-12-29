@@ -6,7 +6,7 @@ import numpy as _np
 __all__ = ["LTLM_static_iteration"]
 
 
-def LTLM_static_iteration(A_dict,E,V,lv_iter,beta=0):
+def LTLM_static_iteration(A_dict,E,V,Q_iter,beta=0):
 
 	nv = E.size
 
@@ -19,12 +19,12 @@ def LTLM_static_iteration(A_dict,E,V,lv_iter,beta=0):
 
 	Ame_dict = {}
 
-	lv_row = iter(lv_iter)
+	lv_row = iter(Q_iter)
 	for i,lv_r in enumerate(lv_row):
 		if i >= nv:
 			break
 
-		lv_col = iter(lv_iter)
+		lv_col = iter(Q_iter)
 		Ar_dict = {key:A.dot(lv_r) for key,A in iteritems(A_dict)}
 		
 		for j,lv_c in enumerate(lv_col):

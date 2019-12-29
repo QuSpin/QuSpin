@@ -29,8 +29,9 @@ Lanczos
    lanczos_full
    lanczos_iter
    expm_lanczos
-   combine_lv
-   LTLM_static_iteration   
+   lin_comb_Q
+   # LTLM_static_iteration
+   # FTLM_static_iteration      
 
 Floquet
 --------

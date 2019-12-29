@@ -8,15 +8,13 @@ sys.path.insert(0,quspin_path)
 from quspin.basis import spin_basis_1d
 from quspin.operators import hamiltonian
 from scipy.sparse.linalg import expm_multiply
-from quspin.tools.lanczos import lanczos_full,lanczos_iter,combine_lv,expm_lanczos
+from quspin.tools.lanczos import lanczos_full,lanczos_iter,lin_comb_Q,expm_lanczos
 import numpy as np
 import scipy.linalg as sla
 
+np.random.seed(0)
 
 L = 20
-
-
-np.random.seed(0)
 
 basis = spin_basis_1d(L,m=0,kblock=0,pblock=1,zblock=1)
 
@@ -59,9 +57,9 @@ psi_GS = psi_GS.ravel()
 v0 = np.random.normal(0,1,size=basis.Ns)
 v0 /= np.linalg.norm(v0)
 
-E,V,lv = lanczos_full(H,v0,nvec,full_ortho=False)
+E,V,Q = lanczos_full(H,v0,nvec,full_ortho=False)
 
-v1 = combine_lv(V[:,-1],lv)
+v1 = lin_comb_Q(V[:,-1],Q)
 
 try:
 	dE = np.abs(E[-1]-E_GS[-1])
@@ -75,9 +73,9 @@ try:
 except AssertionError:
 	raise AssertionError("wavefunction failed to converge Fedility = {} > 1e-10".format(F))
 
-E,V,lv_iter = lanczos_iter(H,v0,nvec,return_vec_iter=True)
+E,V,Q_iter = lanczos_iter(H,v0,nvec,return_vec_iter=True)
 
-v2 = combine_lv(V[:,-1],lv_iter)
+v2 = lin_comb_Q(V[:,-1],Q_iter)
 
 np.testing.assert_allclose(v2,v1,atol=1e-10,rtol=0)
 

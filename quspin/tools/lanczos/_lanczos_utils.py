@@ -4,7 +4,7 @@ from scipy.linalg import eigh_tridiagonal
 from copy import deepcopy
 
 
-__all__ = ["lanczos_full","lanczos_iter","combine_lv"]
+__all__ = ["lanczos_full","lanczos_iter","lin_comb_Q"]
 
 
 def _lanczos_vec_iter_core(A,v0,a,b):
@@ -21,7 +21,7 @@ def _lanczos_vec_iter_core(A,v0,a,b):
 
 	yield q_view # return non-writable array
 
-	nv = a.size
+	m = a.size
 	n = q.size
 	axpy = get_blas_funcs('axpy', arrays=(q,))
 
@@ -37,7 +37,7 @@ def _lanczos_vec_iter_core(A,v0,a,b):
 
 	axpy(q,r,n,-a[0])
 
-	for i in range(1,nv,1):
+	for i in range(1,m,1):
 		v[:] = q[:]
 
 		_np.divide(r,b[i-1],out=q)
@@ -65,19 +65,20 @@ class _lanczos_vec_iter(object):
 
 
 
-def lanczos_full(A,v0,nv,full_ortho=False,out=None,eps=None):
+def lanczos_full(A,v0,m,full_ortho=False,out=None,eps=None):
 	""" Creates Lanczos basis; diagonalizes Krylov subspace in Lanczos basis.
 
-	Given a hermitian matrix `A` of size :math:`n\\times n` and an integer `nv`, the Lanczos algorithm returns 
+	Given a hermitian matrix `A` of size :math:`n\\times n` and an integer `m`, the Lanczos algorithm returns 
 	
-	* an :math:`n\\times nv` matrix  :math:`Q`, and 
-	* a real symmetric tridiagonal matrix :math:`T=Q^\\dagger A Q` of size :math:`nv\\times nv`. The matrix :math:`T` can be represented via its eigendecomposition `E,V`. 
+	* an :math:`n\\times m` matrix  :math:`Q`, and 
+	* a real symmetric tridiagonal matrix :math:`T=Q^\\dagger A Q` of size :math:`m\\times m`. The matrix :math:`T` can be represented via its eigendecomposition `(E,V)`: :math:`T=V^T\\mathrm{diag}(E)V`. 
 	This function computes the triple `(E,V,Q)`. 
  
-
 	Notes
 	-----
-	* the functions allows for full reorthogonalization, see `full_ortho`. 
+
+	* the function allows for full reorthogonalization, see `full_ortho`. 
+	* `V` is always real-valued, since :math:`T` is real and symmetric.
 
 	Parameters
 	-----------
@@ -85,7 +86,7 @@ def lanczos_full(A,v0,nv,full_ortho=False,out=None,eps=None):
 		Python object representing a linear map to compute the Lanczos approximation to the largest eigenvalues/vectors of. Must contain a dot-product method, used as `A.dot(v)`, e.g. `hamiltonian`, `quantum_operator`, `quantum_LinearOperator`, sparse or dense matrix.
 	v0 : np.ndarray
 		initial vector to start the Lanczos algorithm from.
-	nv : int
+	m : int
 		Number of Lanczos vectors (size of the Krylov subspace)
 	full_ortho : bool, optional
 		Toggles normalization of the Krylov eigenvectors `V`
@@ -117,7 +118,7 @@ def lanczos_full(A,v0,nv,full_ortho=False,out=None,eps=None):
 	n = v0.size
 
 	if out is not None:
-		if out.shape != (nv,n):
+		if out.shape != (m,n):
 			raise ValueError
 		if out.dtype != dtype:
 			raise ValueError
@@ -126,14 +127,14 @@ def lanczos_full(A,v0,nv,full_ortho=False,out=None,eps=None):
 
 		Q = out
 	else:
-		Q = _np.zeros((nv,n),dtype=dtype)
+		Q = _np.zeros((m,n),dtype=dtype)
 
 	Q[0,:] = v0[:]
 	v = _np.zeros_like(v0,dtype=dtype)
 	r = _np.zeros_like(v0,dtype=dtype)
 
-	b = _np.zeros((nv,),dtype=v.real.dtype)
-	a = _np.zeros((nv,),dtype=v.real.dtype)
+	b = _np.zeros((m,),dtype=v.real.dtype)
+	a = _np.zeros((m,),dtype=v.real.dtype)
 
 	# get function : y <- y + a * x
 	axpy = get_blas_funcs('axpy', arrays=(r, v))
@@ -159,7 +160,7 @@ def lanczos_full(A,v0,nv,full_ortho=False,out=None,eps=None):
 	b[0] = _np.linalg.norm(r)
 
 	i = 0
-	for i in range(1,nv,1):
+	for i in range(1,m,1):
 		v[:] = Q[i-1,:]
 
 		_np.divide(r,b[i-1],out=Q[i,:])
@@ -176,7 +177,7 @@ def lanczos_full(A,v0,nv,full_ortho=False,out=None,eps=None):
 
 		b[i] = _np.linalg.norm(r)
 		if b[i] < eps:
-			nv = i
+			m = i
 			break
 
 
@@ -185,9 +186,9 @@ def lanczos_full(A,v0,nv,full_ortho=False,out=None,eps=None):
 
 		Q[:i+1,:] = q.T[...]
 
-		h = _np.zeros((nv,nv),dtype=a.dtype)
+		h = _np.zeros((m,m),dtype=a.dtype)
 
-		for i in range(nv):
+		for i in range(m):
 			if use_out:
 				A.dot(Q[i,:],out=r) # call if operator supports 'out' argument
 			else:
@@ -199,10 +200,10 @@ def lanczos_full(A,v0,nv,full_ortho=False,out=None,eps=None):
 		E,V = _np.linalg.eigh(h,UPLO="U")
 
 	else:
-		E,V = eigh_tridiagonal(a[:nv],b[:nv-1])
+		E,V = eigh_tridiagonal(a[:m],b[:m-1])
 
 
-	return E,V,Q[:nv]
+	return E,V,Q[:m]
 
 
 
@@ -229,18 +230,20 @@ def lanczos_full(A,v0,nv,full_ortho=False,out=None,eps=None):
 # 	return _lanczos_vec_iter(A,v0,a.copy(),b.copy())
 
 
-def lanczos_iter(A,v0,nv,return_vec_iter=True,copy_v0=True,copy_A=False,eps=None):
+def lanczos_iter(A,v0,m,return_vec_iter=True,copy_v0=True,copy_A=False,eps=None):
 	""" Creates generator for Lanczos basis; diagonalizes Krylov subspace in Lanczos basis.
 
-	Given a hermitian matrix `A` of size :math:`n\\times n` and an integer `nv`, the Lanczos algorithm returns 
+	Given a hermitian matrix `A` of size :math:`n\\times n` and an integer `m`, the Lanczos algorithm returns 
 	
-	* an :math:`n\\times nv` matrix  :math:`Q`, and 
-	* a real symmetric tridiagonal matrix :math:`T=Q^\\dagger A Q` of size :math:`nv\\times nv`. The matrix :math:`T` can be represented via its eigendecomposition `E,V`. 
+	* an :math:`n\\times m` matrix  :math:`Q`, and 
+	* a real symmetric tridiagonal matrix :math:`T=Q^\\dagger A Q` of size :math:`m\\times m`. The matrix :math:`T` can be represented via its eigendecomposition `(E,V)`: :math:`T=V^T\\mathrm{diag}(E)V`. 
 	This function computes the triple `(E,V,Q)`. 
  
- 	Note
- 	----
+ 	Notes
+ 	-----
+
  	* this function is useful to minimize any memory requirements in the calculation of the Lanczos basis. 
+ 	* `V` is always real-valued, since :math:`T` is real and symmetric.
 
 	Parameters
 	-----------
@@ -248,7 +251,7 @@ def lanczos_iter(A,v0,nv,return_vec_iter=True,copy_v0=True,copy_A=False,eps=None
 		Python object representing a linear map to compute the Lanczos approximation to the largest eigenvalues/vectors of. Must contain a dot-product method, used as `A.dot(v)`, e.g. `hamiltonian`, `quantum_operator`, `quantum_LinearOperator`, sparse or dense matrix.
 	v0 : np.ndarray
 		initial vector to start the Lanczos algorithm from.
-	nv : int
+	m : int
 		Number of Lanczos vectors (size of the Krylov subspace)
 	return_vec_iter : bool, optional
 		Toggles whether or not to return the Lanczos basis iterator.
@@ -291,8 +294,8 @@ def lanczos_iter(A,v0,nv,return_vec_iter=True,copy_v0=True,copy_A=False,eps=None
 
 	n = v0.size
 
-	b = _np.zeros((nv,),dtype=q.real.dtype)
-	a = _np.zeros((nv,),dtype=q.real.dtype)
+	b = _np.zeros((m,),dtype=q.real.dtype)
+	a = _np.zeros((m,),dtype=q.real.dtype)
 
 	# get function : y <- y + a * x
 	axpy = get_blas_funcs('axpy', arrays=(q, v))
@@ -317,7 +320,7 @@ def lanczos_iter(A,v0,nv,return_vec_iter=True,copy_v0=True,copy_A=False,eps=None
 	b[0] = _np.linalg.norm(r)
 
 	i = 0
-	for i in range(1,nv,1):
+	for i in range(1,m,1):
 		v[:] = q[:]
 
 		_np.divide(r,b[i-1],out=q)
@@ -347,19 +350,19 @@ def lanczos_iter(A,v0,nv,return_vec_iter=True,copy_v0=True,copy_A=False,eps=None
 		return E,V
 
 
-def _get_first_lv_iter(r,lv_iter):
+def _get_first_lv_iter(r,Q_iter):
 	yield r
-	for lv in lv_iter:
-		yield lv
+	for Q in Q_iter:
+		yield Q
 
 
-def _get_first_lv(lv_iter):
-	r = next(lv_iter)
-	return r,_get_first_lv_iter(r,lv_iter)
+def _get_first_lv(Q_iter):
+	r = next(Q_iter)
+	return r,_get_first_lv_iter(r,Q_iter)
 
 
-# I suggest the name `lv_average()` or `lv_linearcomb` or `lincombine_lv()` instead of `combine_lv()`
-def combine_lv(weights,lv,out=None):
+# I suggest the name `lv_average()` or `lv_linearcomb` or `linear_combine_Q()` instead of `lin_comb_Q()`
+def lin_comb_Q(weights,Q,out=None):
 	""" Computes a (weighted) linear combination of the Lanczos basis vectors. 
 
 	
@@ -367,7 +370,7 @@ def combine_lv(weights,lv,out=None):
 	-----------
 	weights : array_like
 		list of weights to compute the linear combination of Lanczos basis vectors with.
-	lv : np.ndarray, generator
+	Q : np.ndarray, generator
 		Lanczos basis vectors or a generator for the Lanczos basis.
 	out : np.ndarray, optional
 		Array to store the result in.
@@ -380,39 +383,39 @@ def combine_lv(weights,lv,out=None):
 	Examples
 	--------
 
-	>>> Lanczos_lin_comb = combine_lv(weights,lv)
+	>>> result = lin_comb_Q(weights,Q)
 
 	"""
 
 
 	weights = _np.asanyarray(weights)
 
-	if isinstance(lv,_np.ndarray):
-		lv_iter = iter(lv[:])
+	if isinstance(Q,_np.ndarray):
+		Q_iter = iter(Q[:])
 	else:
-		lv_iter = iter(lv)
+		Q_iter = iter(Q)
 
-	vl = next(lv_iter)
+	q = next(Q_iter)
 
-	dtype = _np.result_type(vl.dtype,weights.dtype)
+	dtype = _np.result_type(q.dtype,weights.dtype)
 
 	if out is not None:
-		if out.shape != vl.shape:
+		if out.shape != q.shape:
 			raise ValueError("'out' must have same shape as a Lanczos vector.")
 		if out.dtype != dtype:
 			raise ValueError("dtype for 'out' does not match dtype for result.")
 		if not out.flags["CARRAY"]:
 			raise ValueError("'out' must be a contiguous array.")
 	else:
-		out = _np.zeros(vl.shape,dtype=dtype)
+		out = _np.zeros(q.shape,dtype=dtype)
 
 	# get function : y <- y + a * x
-	axpy = get_blas_funcs('axpy', arrays=(out,vl))	
+	axpy = get_blas_funcs('axpy', arrays=(out,q))	
 	
-	n = vl.size
+	n = q.size
 
-	_np.multiply(vl,weights[0],out=out)
-	for weight,vl in zip(weights[1:],lv_iter):
-		axpy(vl,out,n,weight)
+	_np.multiply(q,weights[0],out=out)
+	for weight,q in zip(weights[1:],Q_iter):
+		axpy(q,out,n,weight)
 
 	return out
