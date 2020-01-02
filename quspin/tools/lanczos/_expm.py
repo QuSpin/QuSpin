@@ -40,6 +40,6 @@ def expm_lanczos(E,V,Q,a=1.0,out=None):
 	>>> expH_v0 = expm_lanczos(E,V,Q,a=-1j)
 
 	"""
-	c = V.dot(_np.exp(a*E)*V[0,:]) # use matvec instead of dot to gain from OMP? No conj?
+	c = V.dot(_np.exp(a*E)*V[0,:]) 
 	return lin_comb_Q(c,Q,out=out)
 
