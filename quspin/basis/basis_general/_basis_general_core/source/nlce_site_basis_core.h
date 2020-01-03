@@ -10,29 +10,9 @@
 #include <utility>
 #include <iomanip>
 
+namespace nlce {
+
 namespace nlce_site {
-
-
-
-template<class Graph>
-using pair = std::pair<npy_intp,Graph>;
-
-template<class I>
-using map_type1 = std::map<I,npy_intp>;
-
-template<class I,class Graph>
-using map_type2 = std::map<I,pair<Graph>>;
-
-template<class I>
-using map_type3 = std::vector<map_type1<I>>;
-
-template<class I,class Graph>
-using map_type4 = std::vector<map_type2<I,Graph>>;
-
-template<class I>
-using map_type5 = std::map<I,map_type1<I>>;
-
-
 
 template<class I>
 class nlce_site_basis_core
@@ -262,9 +242,7 @@ void nlce_site_basis_core<I>::get_Y_matrix(npy_intp data[],npy_intp indices[],np
 
 }
 
-
-
-
+}
 
 }
 

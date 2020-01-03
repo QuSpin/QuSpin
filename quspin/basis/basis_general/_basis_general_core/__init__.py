@@ -5,4 +5,4 @@ from .spinless_fermion_core import spinless_fermion_basis_core_wrap
 from .spinful_fermion_core import spinful_fermion_basis_core_wrap
 from .user_core import user_core_wrap
 from .general_basis_utils import *
-from .nlce_core import nlce_site_core_wrap
+from .nlce_core import nlce_site_core_wrap,nlce_plaquet_core_wrap

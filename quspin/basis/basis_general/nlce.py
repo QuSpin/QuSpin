@@ -1,4 +1,4 @@
-from ._basis_general_core import nlce_site_core_wrap
+from ._basis_general_core import nlce_site_core_wrap,nlce_plaquet_core_wrap
 from ._perm_checks import process_map
 import numpy as _np
 from numba import njit
