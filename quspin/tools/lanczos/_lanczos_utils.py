@@ -77,12 +77,14 @@ def lanczos_full(A,v0,m,full_ortho=False,out=None,eps=None):
 	Notes
 	-----
 
-	* the function allows for full reorthogonalization, see `full_ortho`. 
+	* the function allows for full reorthogonalization, see `full_ortho`. The resulting :math:`T` will not neccesarily be tridiagonal.
 	* `V` is always real-valued, since :math:`T` is real and symmetric.
+	* `A` must have a 'dot' method to perform calculation, 
+	* The 'out' argument to pass back the results of the matrix-vector product will be used if the 'dot' function supports this argument.
 
 	Parameters
 	-----------
-	A : LinearOperator, hamiltonian, np.ndarray, etc.
+	A : LinearOperator, hamiltonian, np.ndarray, or object with a 'dot' method.
 		Python object representing a linear map to compute the Lanczos approximation to the largest eigenvalues/vectors of. Must contain a dot-product method, used as `A.dot(v)`, e.g. `hamiltonian`, `quantum_operator`, `quantum_LinearOperator`, sparse or dense matrix.
 	v0 : np.ndarray
 		initial vector to start the Lanczos algorithm from.
@@ -106,6 +108,8 @@ def lanczos_full(A,v0,m,full_ortho=False,out=None,eps=None):
 	--------
 
 	>>> E, V, Q = lanczos_full(H,v0,20)
+
+
 	
 	"""
 
