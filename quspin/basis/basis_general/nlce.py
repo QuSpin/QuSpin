@@ -27,8 +27,9 @@ def _get_W(O,W,data,indices,indptr):
 		W[i,:] = w
 
 @njit
-def _get_Sn(W,L,N):
-	Ncl = N[-1]
+def _get_Sn(Ncl,W,L,N):
+	
+	index_shift = N[0]
 
 	Nsum = W.shape[0]
 	Nobs = W.shape[1]
@@ -36,7 +37,7 @@ def _get_Sn(W,L,N):
 	Sn = W[:Ncl,:].copy()
 	Sn[:,:] = 0
 	for i in range(Nsum):
-		n = N[i]-1
+		n = N[i] - index_shift
 		l = L[i]
 		for j in range(Nobs):
 			Sn[n,j] += W[i,j]*l
@@ -66,7 +67,7 @@ def wynn_eps_method(p,ncycle):
 
 class _nlce(object):
 	def __init__(self,N_cl,
-				 cluster_list, L_list,Ncl_list,Y):
+				 cluster_list,L_list,Ncl_list,Y):
 		self._N_cl = N_cl
 		self._cluster_list = cluster_list
 		self._L_list = L_list
@@ -120,7 +121,7 @@ class _nlce(object):
 		W = self.get_W(O,Ncl_max=Ncl_max)
 		shape = W.shape[:1]+(-1,)
 		Nc = W.shape[0]
-		Sn = _get_Sn(W.reshape(shape),self._L_list[:Nc],self._Ncl_list[:Nc])
+		Sn = _get_Sn(self._N_cl,W.reshape(shape),self._L_list[:Nc],self._Ncl_list[:Nc])
 		return Sn
 
 	def bare_sums(self,O,Ncl_max=None):
@@ -216,10 +217,6 @@ class _ncle_site(_nlce):
 
 		return ic,_np.array(sites),self._Ncl_list[ic],frozenset(graph)
 
-
-
-
-
 class NLCE_site(_ncle_site):
 	def __init__(self,N_cl,N_lat,nn_list,tr,pg,nn_weight=None):
 	
@@ -260,8 +257,6 @@ class NLCE_site(_ncle_site):
 
 		_ncle_site.__init__(self,N_cl,N_lat,nn_list,nn_weight,clusters_list,L_list,Ncl_list,Y)
 		
-
-
 class _ncle_plaquet(_nlce):
 	def __init__(self,N_cl,N_plaquet,
 				 plaquet_sites,plaquet_edges,edge_weights,
@@ -271,6 +266,7 @@ class _ncle_plaquet(_nlce):
 		self._plaquet_sites = plaquet_sites
 		self._plaquet_edges = plaquet_edges
 		self._edge_weights = edge_weights
+
 		_nlce.__init__(self,N_cl,cluster_list,L_list,Ncl_list,Y)
 
 	def get_cluster_graph(self,ic):
@@ -394,10 +390,11 @@ class NLCE_plaquet(_ncle_plaquet):
 		nlce_core = nlce_plaquet_core_wrap(N_cl,nt_point,nt_trans,maps,pers,qs,
 			plaquet_sites,plaquet_edges,edge_weights)
 
-		clusters_list,L_list,Ncl_list,Y = nlce_core.calc_clusters()
+		cluster_list,L_list,Ncl_list,Y = nlce_core.calc_clusters()
 
-		_ncle_plaquet.__init__(self,N_cl,N_plaquet,plaquet_sites,
-			plaquet_edges,edge_weights,clusters_list,L_list,Ncl_list,Y)
+		_ncle_plaquet.__init__(self,N_cl,N_plaquet,
+				 plaquet_sites,plaquet_edges,edge_weights,
+				 cluster_list,L_list,Ncl_list,Y)
 		
 
 
