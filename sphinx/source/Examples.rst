@@ -17,14 +17,15 @@ The following Python scripts demonstrate basic and advanced functionality of QuS
 	* :ref:`example8-label`, :download:`download script <../../examples/scripts/example8.py>`
 	* :ref:`example9-label`, :download:`download script <../../examples/scripts/example9.py>`
 	* :ref:`example10-label`, :download:`download script <../../examples/scripts/example10.py>`
-	* :ref:`example11-label` (:math:`{\color{orange} {updated\ in\ v.~0.3.3}}`), :download:`download script <../../examples/scripts/example11.py>`
+	* :ref:`example11-label`, :download:`download script <../../examples/scripts/example11.py>`
 	* :ref:`example12-label`, :download:`download script <../../examples/scripts/example12.py>`
-	* :math:`{\color{red} {NEW}}`: :ref:`example13-label`, :download:`download script <../../examples/scripts/example13.py>`
-	* :math:`{\color{red} {NEW}}`: :ref:`example14-label`, :download:`download script <../../examples/scripts/example14.py>`
-	* :math:`{\color{red} {NEW}}`: :ref:`example15-label`, :download:`download script <../../examples/scripts/example15.py>`
-	* :math:`{\color{red} {NEW}}`: :ref:`example16-label`, :download:`download script <../../examples/scripts/example16.py>`
-	* :math:`{\color{red} {NEW}}`: :ref:`example17-label`, :download:`download script <../../examples/scripts/example17.py>`
-	* :math:`{\color{red} {NEW}}`: :ref:`example18-label`, :download:`download script <../../examples/scripts/example18.py>`
+	* :ref:`example13-label`, :download:`download script <../../examples/scripts/example13.py>`
+	* :ref:`example14-label`, :download:`download script <../../examples/scripts/example14.py>`
+	* :ref:`example15-label`, :download:`download script <../../examples/scripts/example15.py>`
+	* :ref:`example16-label`, :download:`download script <../../examples/scripts/example16.py>`
+	* :ref:`example17-label`, :download:`download script <../../examples/scripts/example17.py>`
+	* :ref:`example18-label`, :download:`download script <../../examples/scripts/example18.py>`
+	* :math:`{\color{red} {NEW}}`: :ref:`example19-label`, :download:`download script <../../examples/scripts/example19.py>`
 
 Tutorials
 ---------
