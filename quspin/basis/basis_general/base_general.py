@@ -338,6 +338,7 @@ class basis_general(lattice_basis):
 		-----
 		* particularly useful when computing correlation functions.
 		* supports parallelization to multiple states listed in the columns of `v_in`.
+		* One has to make sure that the operator moves the state between the two sectors, this function will not give the correct results otherwise.
 
 		Parameters
 		-----------
