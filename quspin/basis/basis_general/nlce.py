@@ -64,16 +64,10 @@ def wynn_eps_method(p,ncycle):
 
 	return e1[:nmax-2*ncycle,...]
 
-
-
-class _ncle_site(object):
-	def __init__(self,N_cl,N_lat,
-				 nn_list,nn_weight,cluster_list,
-				 L_list,Ncl_list,Y):
+class _nlce(object):
+	def __init__(self,N_cl,
+				 cluster_list, L_list,Ncl_list,Y):
 		self._N_cl = N_cl
-		self._N_lat = N_lat
-		self._nn_list = nn_list
-		self._nn_weight = nn_weight
 		self._cluster_list = cluster_list
 		self._L_list = L_list
 		self._Ncl_list = Ncl_list
@@ -136,6 +130,51 @@ class _ncle_site(object):
 		p = self.bare_sums(O,Ncl_max=Ncl_max)
 		return wynn_eps_method(p,ncycle)
 
+	def __getitem__(self,key=None):
+		if type(key) is int:
+			yield self.get_cluster_graph(key)
+		elif type(key) is slice:
+			if key.start is None:
+				start = 0
+			else:
+				start = (key.start)%len(self._L_list)
+
+			if key.stop is None:
+				stop = len(self._L_list)
+			else:
+				stop = (key.stop)%len(self._L_list)
+
+			if key.step is None:
+				step = 1
+			else:
+				step = key.step
+
+			for i in range(start,stop,step):
+				yield self.get_cluster_graph(i)
+		else:
+			try:
+				iter_key = iter(key)
+			except:
+				raise ValueError("cannot interpret input: {}".format(key))
+
+			for i in iter_key:
+				yield self.get_cluster_graph(i)
+
+	def get_cluster_graph(self,ic):
+		raise NotImplementedError
+
+
+class _ncle_site(_nlce):
+	def __init__(self,N_cl,N_lat,
+				 nn_list,nn_weight,cluster_list,
+				 L_list,Ncl_list,Y):
+		
+		self._N_lat = N_lat
+		self._nn_list = nn_list
+		self._nn_weight = nn_weight
+		_nlce.__init__(self,N_cl,cluster_list,L_list,Ncl_list,Y)
+
+
 	def get_cluster_graph(self,ic):
 		if type(ic) is not int:
 			raise ValueError
@@ -178,35 +217,7 @@ class _ncle_site(object):
 		return ic,_np.array(sites),self._Ncl_list[ic],frozenset(graph)
 
 
-	def __getitem__(self,key=None):
-		if type(key) is int:
-			yield self.get_cluster_graph(key)
-		elif type(key) is slice:
-			if key.start is None:
-				start = 0
-			else:
-				start = (key.start)%len(self._L_list)
 
-			if key.stop is None:
-				stop = len(self._L_list)
-			else:
-				stop = (key.stop)%len(self._L_list)
-
-			if key.step is None:
-				step = 1
-			else:
-				step = key.step
-
-			for i in range(start,stop,step):
-				yield self.get_cluster_graph(i)
-		else:
-			try:
-				iter_key = iter(key)
-			except:
-				raise ValueError("cannot interpret input: {}".format(key))
-
-			for i in iter_key:
-				yield self.get_cluster_graph(i)
 
 
 class NLCE_site(_ncle_site):
@@ -251,5 +262,142 @@ class NLCE_site(_ncle_site):
 		
 
 
+class _ncle_plaquet(_nlce):
+	def __init__(self,N_cl,N_plaquet,
+				 plaquet_sites,plaquet_edges,edge_weights,
+				 cluster_list,L_list,Ncl_list,Y):
+
+		self._N_plaquet = N_plaquet
+		self._plaquet_sites = plaquet_sites
+		self._plaquet_edges = plaquet_edges
+		self._edge_weights = edge_weights
+		_nlce.__init__(self,N_cl,cluster_list,L_list,Ncl_list,Y)
+
+	def get_cluster_graph(self,ic):
+		if type(ic) is not int:
+			raise ValueError
+
+		if ic < 0 or ic >= self.Nc:
+			raise ValueError
+
+		graph = []
+		stack = []
+
+		plaquets = list(self._cluster_list[ic,:].compressed())
+
+		if ic==0:
+			sites = set([0])
+		else:
+			sites = set([])
+			
+		for plaquet in plaquets:
+			for site in self._plaquet_sites[plaquet]:
+				sites.add(site)
+
+		sites = _np.array(list(sites))
+		sites.sort()
+
+		visited = set([])
+
+		try:
+			stack.append(plaquets[0])
+		except IndexError:
+			pass
+
+		if self._edge_weights is not None:
+			while(stack):
+				pos = stack.pop()
+
+				for new_pos,edge_set in self._plaquet_edges[pos].items():
+					if new_pos not in visited and new_pos in plaquets:
+						for i,j in edge_set:
+							ww = self._edge_weights[i][j]
+							ii = _np.searchsorted(sites,i)
+							jj = _np.searchsorted(sites,j)
+							graph.append((ww,ii,jj))
+
+						stack.append(new_pos)
+
+				visited.add(pos)
+
+		else:
+			while(stack):
+				pos = stack.pop()
+
+				for new_pos,edge_set in self._plaquet_edges[pos].items():
+					if new_pos not in visited and new_pos in plaquets:
+						for i,j in edge_set:
+							ii = _np.searchsorted(sites,i)
+							jj = _np.searchsorted(sites,j)
+							graph.append((ii,jj))
+
+						stack.append(new_pos)
+
+				visited.add(pos)		
+
+		return ic,sites,self._Ncl_list[ic],frozenset(graph)
+
+
+
+
+class NLCE_plaquet(_ncle_plaquet):
+	def __init__(self,N_cl,plaquet_sites,plaquet_edges,tr,pg,edge_weights=None):
+		
+		plaquet_sites = _np.asanyarray(plaquet_sites)
+		plaquet_sites = plaquet_sites.astype(_np.int32,order="C",copy=True)
+
+		tr = _np.asanyarray(tr)
+		pg = _np.asanyarray(pg)
+
+		N_plaquet = len(plaquet_edges)
+
+		if not isinstance(plaquet_edges,dict):
+			raise TypeError
+		else:
+			for a,edge_dict in plaquet_edges.items():
+				if not isinstance(edge_dict,dict):
+					raise TypeError
+
+				for b,edge_set in edge_dict.items():
+					if type(edge_set) not in [set,frozenset]:
+						raise TypeError
+
+
+		if plaquet_sites.shape[0] != N_plaquet:
+			raise ValueError
+
+		if tr.shape[1] != N_plaquet:
+			raise ValueError
+
+		if pg.shape[1] != N_plaquet:
+			raise ValueError
+
+		nt_point = pg.shape[0]
+		nt_trans = tr.shape[0]
+
+		symm_list = ([process_map(p,0) for p in pg[:]]+
+					 [process_map(p,0) for p in tr[:]] )
+
+		maps,pers,qs,_ = zip(*symm_list)
+
+		maps = _np.vstack(maps).astype(_np.int32)
+		pers = _np.array(pers,dtype=_np.int32)
+		qs   = _np.array(qs,dtype=_np.int32)
+
+		n_maps = maps.shape[0]
+
+		for j in range(n_maps-1):
+			for i in range(j+1,n_maps,1):
+				if _np.all(maps[j]==maps[i]):
+					ValueError("repeated transformations in list of permutations for point group/translations.")
+
+		nlce_core = nlce_plaquet_core_wrap(N_cl,nt_point,nt_trans,maps,pers,qs,
+			plaquet_sites,plaquet_edges,edge_weights)
+
+		clusters_list,L_list,Ncl_list,Y = nlce_core.calc_clusters()
+
+		_ncle_plaquet.__init__(self,N_cl,N_plaquet,plaquet_sites,
+			plaquet_edges,edge_weights,clusters_list,L_list,Ncl_list,Y)
+		
 
 
