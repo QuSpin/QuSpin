@@ -99,7 +99,7 @@ void get_ind_pos_map(const I s,
 			ind_to_pos.push_back(pos);
 		}
 		pos++;
-	} while(r >>= 1);
+	} while((r >>= 1) > 0);
 }
 
 
@@ -139,14 +139,14 @@ void build_new_symm_clusters(basis_general::general_basis_core<I> * B_f,
 			I s = seed;
 
 			do {
-				if(s&1){
+				if((s&1)==1){
 					for(const int * nn_p = nn_begin; nn_p != nn_end;nn_p++){
 						int nn = *nn_p;
 
 						if(nn < 0)
 							continue;
 
-						bool occ = (seed>>nn)&1;
+						bool occ = ((seed>>nn)&1) == 1;
 						
 						if(!occ){
 							I r = seed ^ ((I)1 << nn);
@@ -164,7 +164,7 @@ void build_new_symm_clusters(basis_general::general_basis_core<I> * B_f,
 				nn_begin += Nnn;
 				nn_end += Nnn;
 
-			} while(s >>= 1);
+			} while((s >>= 1) > 0);
 
 		}
 	}
@@ -212,7 +212,7 @@ void build_adj(Stack &stack,
 			verts[pos] = boost::add_vertex(graph);
 		}
 		pos++;
-	} while(r >>= 1);
+	} while((r >>= 1) > 0);
 
 	stack.push(verts.begin()->first);
 
@@ -339,7 +339,7 @@ bool is_connected(Stack &stack,
 			verts[ind_to_pos[ind]] = boost::add_vertex(graph);
 		}
 		ind++;
-	} while(r >>= 1);
+	} while((r >>= 1) > 0);
 
 
 	// add that ind to stack
@@ -500,7 +500,7 @@ void build_adj(Stack &stack,
 			verts[pos] = boost::add_vertex(graph);
 		}
 		pos++;
-	} while(r >>= 1);
+	} while((r >>= 1) > 0);
 
 	stack.push(verts.begin()->first);
 
@@ -627,7 +627,7 @@ bool is_connected(Stack &stack,
 			verts[ind_to_pos[ind]] = boost::add_vertex(graph);
 		}
 		ind++;
-	} while(r >>= 1);
+	} while((r >>= 1) > 0);
 
 
 	// add that ind to stack
@@ -786,12 +786,12 @@ void build_new_symm_clusters(basis_general::general_basis_core<I> * B_f,
 			else{
 				int pos = 0;
 				do {
-					if(s&1){
+					if((s&1)==1){
 						const auto * edge_dict = &plaquet_edges.at(pos);
 						for(auto it = edge_dict->begin();it!=edge_dict->end();it++){
 							int nn = it->first;
 							if(nn != pos){
-								bool occ = (seed>>nn)&1;
+								bool occ = ((seed>>nn)&1) == 1;
 								
 								if(!occ){
 									I r = seed ^ ((I)1 << nn);
@@ -809,7 +809,7 @@ void build_new_symm_clusters(basis_general::general_basis_core<I> * B_f,
 
 					pos++;
 
-				} while(s >>= 1);
+				} while((s >>= 1) > 0);
 			}
 
 		}
@@ -871,7 +871,7 @@ void build_adj(Stack &stack,
 			plaquet_pos = pos;
 		}
 		pos++;
-	} while(r >>= 1);
+	} while((r >>= 1) > 0);
 
 	stack.push(plaquet_pos);
 
@@ -1014,7 +1014,7 @@ bool is_connected(Stack &stack,
 			plaquet_pos = pos;
 		}
 		ind++;
-	} while(r >>= 1);
+	} while((r >>= 1) > 0);
 
 	stack.push(plaquet_pos);
 
@@ -1195,7 +1195,7 @@ void build_adj(Stack &stack,
 			plaquet_list.insert(pos);
 		}
 		pos++;
-	} while(r >>= 1);
+	} while((r >>= 1) > 0);
 
 	stack.push(*plaquet_list.begin());
 
@@ -1333,7 +1333,7 @@ bool is_connected(Stack &stack,
 			plaquet_pos = pos;
 		}
 		ind++;
-	} while(r >>= 1);
+	} while((r >>= 1) > 0);
 
 	stack.push(plaquet_pos);
 

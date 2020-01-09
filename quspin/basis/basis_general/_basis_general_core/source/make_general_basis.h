@@ -12,7 +12,16 @@
 #include <utility>
 #include <algorithm>
 #include <functional>
-#include <boost/sort/sort.hpp>
+
+#if defined(_WIN64)
+
+#elif defined(_WIN32)
+	
+#else
+	#include <boost/sort/sort.hpp>
+#endif
+
+
 
 
 
@@ -212,8 +221,14 @@ npy_intp make_basis_parallel(general_basis_core<I,P> *B,const npy_intp MAX,const
 
 			#pragma omp master
 			{
-				boost::sort::block_indirect_sort(master_block_data, master_block_data + Ns, compare_pair<I,J>(),nthread);
-				// std::sort(master_block_data, master_block_data + Ns, compare_pair<I,J>());
+				#if defined(_WIN64)
+					// x64 version
+					std::sort(master_block_data, master_block_data + Ns, compare_pair<I,J>());
+				#elif defined(_WIN32)
+					std::sort(master_block_data, master_block_data + Ns, compare_pair<I,J>());
+				#else
+					boost::sort::block_indirect_sort(master_block_data, master_block_data + Ns, compare_pair<I,J>(),nthread);
+				#endif
 			}
 
 			#pragma omp barrier
@@ -299,8 +314,14 @@ npy_intp make_basis_pcon_parallel(general_basis_core<I,P> *B,const npy_intp MAX,
 
 			#pragma omp master
 			{
-				boost::sort::block_indirect_sort(master_block_data, master_block_data + Ns, compare_pair<I,J>(),nthread);
-				// std::sort(master_block_data, master_block_data + Ns, compare_pair<I,J>());
+				#if defined(_WIN64)
+					// x64 version
+					std::sort(master_block_data, master_block_data + Ns, compare_pair<I,J>());
+				#elif defined(_WIN32)
+					std::sort(master_block_data, master_block_data + Ns, compare_pair<I,J>());
+				#else
+					boost::sort::block_indirect_sort(master_block_data, master_block_data + Ns, compare_pair<I,J>(),nthread);
+				#endif
 			}
 
 			#pragma omp barrier
