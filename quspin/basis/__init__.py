@@ -97,7 +97,6 @@ b) array initialization routines
    basis_ones
    basis_zeros
 
-
 c) utilities to use large integers
 ++++++++++++++++++++++++++++++++++
 
@@ -113,6 +112,18 @@ c) utilities to use large integers
    bitwise_xor
    bitwise_leftshift
    bitwise_rightshift
+
+
+d) Numerical Linked Cluster Expansion
++++++++++++++++++++++++++++++++++++++
+
+.. autosummary::
+   :toctree: generated/
+
+   NLCE_site
+   NLCE_plaquet
+   wynn_eps_method
+
 """
 from .basis_1d import *
 from .basis_general import *

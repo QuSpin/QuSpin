@@ -1,7 +1,7 @@
 from .spin import spin_basis_general,get_Nup_list
 from .boson import boson_basis_general
 from .fermion import spinless_fermion_basis_general,spinful_fermion_basis_general
-from .nlce import NLCE_site,NLCE_plaquet
+from .nlce import NLCE_site,NLCE_plaquet,wynn_eps_method
 from ._basis_general_core import (bitwise_not,bitwise_and,bitwise_or,bitwise_xor,
 						bitwise_leftshift,bitwise_rightshift,basis_zeros,basis_ones,
 						python_int_to_basis_int, basis_int_to_python_int,get_basis_type,
@@ -11,4 +11,4 @@ __all__=["spin_basis_general","boson_basis_general",
  			"bitwise_not","bitwise_and","bitwise_or","bitwise_xor","bitwise_leftshift","bitwise_rightshift",
  			"basis_zeros","basis_ones","get_basis_type","python_int_to_basis_int", "basis_int_to_python_int",
  			"get_basis_type","uint32","uint64","uint256","uint1024","uint4096","uint16384","NLCE_site",
- 			"NLCE_plaquet","get_Nup_list"]
+ 			"NLCE_plaquet","wynn_eps_method","get_Nup_list"]

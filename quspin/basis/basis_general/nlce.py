@@ -6,6 +6,7 @@ from builtins import range
 
 @njit
 def _get_Nc(nmax,N):
+	# helper function to get index of the last cluster of size nmax
 	for i in range(N.size):
 		if nmax > N[i]:
 			return i
@@ -14,6 +15,8 @@ def _get_Nc(nmax,N):
 
 @njit
 def _get_W(O,W,data,indices,indptr):
+	# helper function to get the weights for the bare sum 
+	# given the expecation values for the clusters.
 	nrow = O.shape[0]
 	nvec = O.shape[1]
 	w = O[0,:].copy()
@@ -28,7 +31,7 @@ def _get_W(O,W,data,indices,indptr):
 
 @njit
 def _get_Sn(Ncl,W,L,N):
-	
+	# helper function to get the bare partial sums
 	index_shift = N[0]
 
 	Nsum = W.shape[0]
@@ -46,10 +49,31 @@ def _get_Sn(Ncl,W,L,N):
 
 
 def wynn_eps_method(p,ncycle):
+	"""Perform the wynn extrapoation method on a series.
+
+	This function performs the wynn epsilon method to a given series.
+
+	Parameters
+	----------
+	p : array_like, (n,...)
+		input of one or more series to extrapolate
+
+	ncycle : integer, 
+		number of cycles of extrapolation to perform, must have: 2*ncycle < n
+
+	returns
+	-------
+
+	array_like, (n-2*ncycle,...)
+		the extrapolated series to the requested cycle.
+
+	"""
+	p = np.asanyarray(p)
+
 	nmax = p.shape[0]
 
 	if 2*ncycle >= nmax:
-		raise ValueError
+		raise ValueError("the number of cycles must satisfy: 2*ncycle < p.shape[0].")
 
 	e0 = _np.zeros_like(p)
 	e1 = p.copy()
@@ -76,37 +100,88 @@ class _nlce(object):
 
 
 	@property
-	def Nc(self):
+	def Ncl_max(self):
+		return self._N_cl
+	
+
+	@property
+	def Nc_max(self):
+		"""Total number of clusters for this particular object."""
 		return self._L_list.shape[0]
 
 
-	def get_Nc(self,Ncl):
-		return _get_Nc(Ncl,self._Ncl_list)
+	def get_Nc(self,Ncl=None):
+		""" Get the total number of cluster for cluster sizes up to requested cluster size. 
+		
+		Get the number of clusters up to cluster size `Ncl`.
 
-	def get_W(self,O,out=None,Ncl_max=None):
-		if Ncl_max is not None:
-			if Ncl_max > self._N_cl:
-				raise ValueError
+		Parameters
+		----------
+		Ncl : optional, integer
+			maximum cluster size. 
 
-			Nc = self.get_Nc(Ncl_max)
+		returns
+		-------
 
+		integer :
+			total number of clusters up to cluster size `Ncl`.
+
+		"""
+		if Ncl > self.Ncl_max:
+			raise ValueError("'Ncl' must be smaller or equal to the cluster size calculated for the NLCE object.")
+
+		if Ncl is not None:
+			return _get_Nc(Ncl,self._Ncl_list)
 		else:
-			Nc = self._L_list.shape[0]
+			return self.Nc_max
+
+	def get_W(self,O,Ncl_max=None,out=None):
+		""" Calculate Weights for expectation values over clusters. 
+
+		Calculate the weights for a given set of expectation values over clusters. The weights are calculated by removing contributions from subclusters. 
+
+		Parameters
+		----------
+
+		O : array_like, (M,...)
+			expectation values over clusters.
+
+		Ncl_max : optional, integer
+			Maximum cluster size, can be smaller than the maximum custer size of the calling object.
+
+		out : array_like, (M,...)
+			output array for the results of this function.
+
+		returns
+		-------
+
+		array_like, (M,...)
+			The weights the expecation values `O`.
+
+		"""
+
+		O = np.asanyarray(O)
+
+		Nc = get_Nc(Ncl_max)
 
 		result_dtype = _np.result_type(self._Y.dtype,O.dtype)
 
 		if O.shape[0] != Nc:
-			raise ValueError
+			raise ValueError("'O' must be array with shape (M,...) with M equal to the number of clusters for given 'Ncl_max'")
 
 		shape0 = O.shape
 		shape = shape0[:1] + (-1,)
 
 		if out is not None:
+			if not isinstance(out,_np.ndarray):
+				raise TypeError("'out' must be a numpy ndarray.")
+
 			if out.dtype != result_dtype:
-				raise ValueError
+				raise ValueError("'out' must have dtype: {}".format(result_dtype))
 
 			if out.shape != shape0:
-				raise ValueError
+				raise ValueError("'out' must have shape: {}".format(shape0))
+
 		else:
 			out = _np.zeros(shape0,dtype=result_dtype)
 
@@ -117,18 +192,83 @@ class _nlce(object):
 
 		return out.reshape(shape0)
 
-	def partial_sums(self,O,Ncl_max=None):
+	def cluster_sums(self,O,Ncl_max=None):
+		""" Calculate sums over cluster of a given size given the expecation values over clusters. 
+
+		Parameters
+		----------
+
+		O : array_like, (M,...)
+			expectation values over clusters.
+
+		Ncl_max : optional, integer
+			Maximum cluster size, can be smaller than the maximum custer size of the calling object. 
+			Default value is the maximum cluster size of the calling object. 
+
+		returns
+		-------
+
+		array_like, (Ncl_max,...)
+			The cluster sums for expectation values of `O`.
+
+		"""
+
 		W = self.get_W(O,Ncl_max=Ncl_max)
 		shape = W.shape[:1]+(-1,)
 		Nc = W.shape[0]
 		Sn = _get_Sn(self._N_cl,W.reshape(shape),self._L_list[:Nc],self._Ncl_list[:Nc])
 		return Sn
 
-	def bare_sums(self,O,Ncl_max=None):
-		return self.partial_sums(O,Ncl_max=Ncl_max).cumsum(axis=0)
+	def partial_sums(self,O,Ncl_max=None):
+		""" Calculate the bare sums given the expecation values over clusters. 
+
+		equivilant to calculating cumulative sums over the cluster sums. 
+
+		Parameters
+		----------
+
+		O : array_like, (M,...)
+			expectation values over clusters.
+
+		Ncl_max : optional, integer
+			Maximum cluster size, can be smaller than the maximum custer size of the calling object. 
+			Default value is the maximum cluster size of the calling object. 
+
+		returns
+		-------
+
+		array_like, (Ncl_max,...)
+			The partial sums for expectation values of `O`.
+
+		"""
+		return self.cluster_sums(O,Ncl_max=Ncl_max).cumsum(axis=0)
 
 	def wynn_sums(self,O,ncycle,Ncl_max=None):
-		p = self.bare_sums(O,Ncl_max=Ncl_max)
+		""" Calculate the bare sums and perform wynn extrapolation. 
+
+		calculates the partial sums and performs wynn extrapolation. 
+
+		Parameters
+		----------
+
+		O : array_like, (M,...)
+			expectation values over clusters.
+		
+		ncycle : integer, 
+			number of cycles of extrapolation to perform, must have: 2*ncycle < Ncl_max
+
+		Ncl_max : optional, integer
+			Maximum cluster size, can be smaller than the maximum custer size of the calling object. 
+			Default value is the maximum cluster size of the calling object. 
+
+		returns
+		-------
+
+		array_like, (Ncl_max-2*ncycle,...)
+			The extrapolated series to the requested cycle of the partial sums for expectation values of `O`.
+
+		"""
+		p = self.partial_sums(O,Ncl_max=Ncl_max)
 		return wynn_eps_method(p,ncycle)
 
 	def __getitem__(self,key=None):
@@ -162,6 +302,28 @@ class _nlce(object):
 				yield self.get_cluster_graph(i)
 
 	def get_cluster_graph(self,ic):
+		""" get connectivity list for a give cluster.
+
+		Parameters
+		----------
+
+		ic : integer
+			index for the requested cluster.
+
+		returns
+		-------
+
+		ic : integer
+			Same value as input `ic`.
+
+		sites : numpy.ndarray, (Ncl,)
+			The sites on the lattice that are included in this cluster.
+
+		graph : frozenset of tuples
+			The connectivity of the graph, w/ or w/o weights. The vertices of this graph are mapped to the full lattice
+			via `sites`. 
+
+		"""
 		raise NotImplementedError
 
 
@@ -177,6 +339,7 @@ class _ncle_site(_nlce):
 
 
 	def get_cluster_graph(self,ic):
+
 		if type(ic) is not int:
 			raise ValueError
 
@@ -217,9 +380,56 @@ class _ncle_site(_nlce):
 
 		return ic,_np.array(sites),self._Ncl_list[ic],frozenset(graph)
 
+	get_cluster_graph.__doc__ = _nlce.get_cluster_graph.__doc__
+
+
+
 class NLCE_site(_ncle_site):
+	""" Site based Numerical Linked Cluster Expansions. 
+
+	This class is a specifically implements an optimized calculation of the site based Numerical Linked Cluster Expansion (NLCE).
+
+	This particular type of NCLE calculation is over the infinite lattice. As the expansion has to be truncated at a finite order
+	and so the representation of the cluster is over a finite lattice that has to be defined by the user. This user-defined 
+	lattice must be periodic and must be large enough such that a cluster will not wrap around the boundaries of the system. As 
+	an example we show the cluster expansion over the infinite square lattice with nearest neighbor connections. 
+
+
+	"""
 	def __init__(self,N_cl,N_lat,nn_list,tr,pg,nn_weight=None):
-	
+		"""Initialize the `NLCE_site` object.
+		
+		Parameters
+		----------
+
+		N_cl: integer
+			Maximum cluster size to calculate to in the expansion.
+
+		N_lat: integer
+			Number of sites on the embedding lattice.
+
+		nn_list : array_like, (N_lat,N_nn)
+			array containing list of nearest neighbors for the sites. The row index corresponds to the given site
+
+		tr : array_like, (n_trans,N_lat)
+			array containing the permutation of the embedding sites that generates all the independent translations. 
+
+		pg : array_like, (n_point,N_lat)
+			array containing the permutation of the embedding sites that generates all of the independent point-group
+			symmetries of the embedding lattice. 
+
+		nn_weight : array_like, (N_lat,N_nn), optional
+			array containing the weights for the bonds connecting nearest neighbors.
+
+
+		Notes
+		-----
+
+		This class does not check if the input graph is consistent with the given translations or 
+		point-group symmetries, this has to be handled by the user to ensure these are correct. 
+
+
+		"""
 		if nn_list.shape[0] != N_lat:
 			raise ValueError
 
@@ -333,12 +543,57 @@ class _ncle_plaquet(_nlce):
 
 		return ic,sites,self._Ncl_list[ic],frozenset(graph)
 
-
+	get_cluster_graph.__doc__ = _nlce.get_cluster_graph.__doc__
 
 
 class NLCE_plaquet(_ncle_plaquet):
+	""" Generic user defined Numerical Linked Cluster Expansion.
+
+	This class can be used to generated a general linked cluster expansions on an infinite lattice with arbitrary building blocks
+	generically called plaquets.
+
+	As with the site based expansion, the finite lattice used to embed the clusters must be large enough to avoid wrapping. The 
+	expansion is defined through a dictionary that gives the connectivity of the individual plaquets on the finite lattice
+	as well as the which sites belong to given plquet(s). The symmetries of the lattice are define through the transformation
+	of the plaquets, but should represent the underlying symmetry of the sites. For translational symmetry one should generate 
+	translations that tranlate the plaquets, not the sites. As an example we discuss the square plaquet expansion of the 
+	square lattice. 
+
+
+	"""
 	def __init__(self,N_cl,plaquet_sites,plaquet_edges,tr,pg,edge_weights=None):
+		"""Initialize the `NLCE_site` object.
 		
+		Parameters
+		----------
+
+		N_cl: integer
+			Maximum cluster size to calculate to in the expansion.
+
+		plaquet_sites: array_like, (N_lat,N_sp)
+			Number of sites on the embedding lattice.
+
+		plaquet_edges : dictionary
+			dictionary of dictionaries of sets
+
+		tr : array_like, (n_trans,N_lat)
+			array containing the permutation of the plaquets over the embedding sites that generates all the independent translations. 
+
+		pg : array_like, (n_point,N_lat)
+			array containing the permutation of the plaquets over the embedding sites that generates all of the independent point-group
+			symmetries of the embedding lattice. 
+
+		edge_weights : array_like, (N_lat,N_nn), optional
+			dictionary of dictionaries that contains the weights of the bonds as indexed through the sites. 
+
+
+		Notes
+		-----
+
+		This class does not check if the input graph is consistent with the given translations or 
+		point-group symmetries, this has to be handled by the user to ensure these are correct.
+
+		"""
 		plaquet_sites = _np.asanyarray(plaquet_sites)
 		plaquet_sites = plaquet_sites.astype(_np.int32,order="C",copy=True)
 
