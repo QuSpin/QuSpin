@@ -12,7 +12,7 @@ from quspin.operators import hamiltonian # Hamiltonians and operators
 from quspin.basis import spinless_fermion_basis_1d # Hilbert space spin basis_1d
 from quspin.basis.user import user_basis # Hilbert space user basis
 from quspin.basis.user import next_state_sig_32,op_sig_32,map_sig_32,count_particles_sig_32 # user basis data types signatures
-from numba import carray,cfunc # numba helper functions
+from numba import carray,cfunc,jit # numba helper functions
 from numba import uint32,int32 # numba data types
 import numpy as np
 from scipy.special import comb
@@ -21,6 +21,15 @@ N=8	 # lattice sites
 Np=N//2 # total number of fermions
 #
 ############   create soinless fermion user basis object   #############
+#
+@jit(uint32(uint32,uint32),locals=dict(f_count=uint32,),nopython=True,nogil=True)
+def _count_particles_32(state,site_ind):
+	# auxiliary function to count number of fermions, i.e. 1's in bit configuration of the state, up to site site_ind
+	# CAUTION: 32-bit integers code only!
+	f_count = state & ((0x7FFFFFFF) >> (31 - site_ind));
+	f_count = f_count - ((f_count >> 1) & 0x55555555);
+	f_count = (f_count & 0x33333333) + ((f_count >> 2) & 0x33333333);
+	return (((f_count + (f_count >> 4)) & 0x0F0F0F0F) * 0x01010101) >> 24
 #
 @cfunc(op_sig_32,
 	locals=dict(s=int32,sign=int32,n=int32,b=uint32,f_count=uint32), )
@@ -31,12 +40,7 @@ def op(op_struct_ptr,op_str,site_ind,N,args):
 	#
 	site_ind = N - site_ind - 1 # convention for QuSpin for mapping from bits to sites.
 	#####
-	# count number of fermions, i.e. 1's in bit configuration of the state, up to site sit_ind
-	# CAUTION: 32-bit integers code only!
-	f_count = op_struct.state & ((0x7FFFFFFF) >> (31 - site_ind));
-	f_count = f_count - ((f_count >> 1) & 0x55555555);
-	f_count = (f_count & 0x33333333) + ((f_count >> 2) & 0x33333333);
-	f_count = (((f_count + (f_count >> 4)) & 0x0F0F0F0F) * 0x01010101) >> 24
+	f_count = _count_particles_32(op_struct.state,site_ind)
 	#####
 	sign = -1 if f_count&1 else 1
 	n = (op_struct.state>>site_ind)&1 # either 0 or 1
@@ -98,18 +102,9 @@ def translation(x,N,sign_ptr,args):
 	#
 	#####
 	# count number of fermions, i.e. 1's in bit configuration of x1
-	# CAUTION: 32-bit integers code only!
-	f_count1 = x1 & ((0x7FFFFFFF) >> (31 - period));
-	f_count1 = f_count1 - ((f_count1 >> 1) & 0x55555555);
-	f_count1 = (f_count1 & 0x33333333) + ((f_count1 >> 2) & 0x33333333);
-	f_count1 = (((f_count1 + (f_count1 >> 4)) & 0x0F0F0F0F) * 0x01010101) >> 24
-	#####
-	# count number of fermions, i.e. 1's in bit configuration of the state, up to site sit_ind
-	# CAUTION: 32-bit integers code only!
-	f_count2 = x2 & ((0x7FFFFFFF) >> (31 - period));
-	f_count2 = f_count2 - ((f_count2 >> 1) & 0x55555555);
-	f_count2 = (f_count2 & 0x33333333) + ((f_count2 >> 2) & 0x33333333);
-	f_count2 = (((f_count2 + (f_count2 >> 4)) & 0x0F0F0F0F) * 0x01010101) >> 24
+	f_count1 = _count_particles_32(x1,period)
+	# count number of fermions, i.e. 1's in bit configuration of x2
+	f_count2 = _count_particles_32(x1,period)
 	#####
 	# compute fermion sign
 	sign_ptr[0] *= (-1 if ((f_count1&1)&(f_count2&1)&1) else 1)
@@ -126,11 +121,7 @@ def parity(x,N,sign_ptr,args):
 	#
 	#####
 	# count number of fermions, i.e. 1's in bit configuration of the state
-	# CAUTION: 32-bit integers code only!
-	f_count = x & ((0x7FFFFFFF) >> (31 - N));
-	f_count = f_count - ((f_count >> 1) & 0x55555555);
-	f_count = (f_count & 0x33333333) + ((f_count >> 2) & 0x33333333);
-	f_count = (((f_count + (f_count >> 4)) & 0x0F0F0F0F) * 0x01010101) >> 24
+	f_count = _count_particles_32(x,N)
 	#####
 	sign_ptr[0] *= (-1 if (f_count&2)&1 else 1)
 	#
@@ -152,13 +143,7 @@ P_args=np.array([N-1],dtype=np.uint32)
 	locals=dict(f_count=uint32))
 def count_particles(x,p_number_ptr,args):
 	""" Counts number of particles/spin-ups in a state stored in integer representation for up to N=32 sites """
-	#
-	f_count = x & ((0x7FFFFFFF) >> (31 - args[0]));
-	f_count = f_count - ((f_count >> 1) & 0x55555555);
-	f_count = (f_count & 0x33333333) + ((f_count >> 2) & 0x33333333);
-	f_count = (((f_count + (f_count >> 4)) & 0x0F0F0F0F) * 0x01010101) >> 24
-	#
-	p_number_ptr[0] = f_count
+	p_number_ptr[0] = _count_particles_32(x,args[0]) 
 n_sectors=1 # number of particle sectors
 count_particles_args=np.array([N],dtype=np.int32)
 #
