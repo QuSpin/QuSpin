@@ -1,0 +1,48 @@
+branch: Lanczos_code
+
+TFLM and LTLM:
+	* Q_iter -> Q
+	* make sure notation with matrix dimensions are consistent. 
+	* A_dict -> O_dict
+	* remove 'with shape'
+	* N -> n
+	* n -> m
+	* get rid of '*' in notes
+	* take M -> n in notes
+	* in return: FTLM -> LTLM
+
+Lanczos_basis_full:
+	* discuss how Q is returned transposed. Add red note, modify return line.
+	* Add note on reorthogonalization, discuss the procedure. 
+	* Add note that this implements the classical Lanczos algorithm. Does not handle degeneracies. 
+	* change order of eigenvalue decompisition of matrix T in summary.
+	* define: eps in terms of inequalities
+	* fix return arguments. 
+
+Lanczos_basis_iter:
+	* make same changes as in Lanczos_basis_full.
+	* explain in more detail about 'copy_v0' and 'copy_A' flag.
+	* explain the generator feature better. 
+
+expm_lanczos:
+	* Q are not eigenvectors.
+	* 'mathrm' in front of exp in summary. 
+	* fix notation so that the sizes of arrays are shown. 
+
+
+lin_comb_Q:
+	* weights -> coefiicients.
+	* add explicit formula in summary. 
+	* add shapes to ndarrays.
+
+lanczos example code:
+	* flip daggers on Q everywhere, also flip dimensions of Q. 
+	* fix diagonalization of T.
+	* close bracket m << n
+
+branch: Op_shift_sector
+
+documentation:
+	* for parameter 'other_basis': Change '*general_basis*' to 'basis object' and then clarify that the basis must be the same type as the calling basis. 
+	* add shapes to ndarray
+	* add note on how to check if the Op_shift_sector is working properly. 
