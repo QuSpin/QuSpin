@@ -287,11 +287,13 @@ class basis_general(lattice_basis):
 
 	
 	def _inplace_Op(self,v_in,op_list,dtype,transposed=False,conjugated=False,v_out=None,a=1.0):
+		if not self._made_basis:
+			raise AttributeError('this function requires the basis to be constructed first; use basis.make().')
 
 		v_in = _np.asanyarray(v_in)
 		
 		result_dtype = _np.result_type(v_in.dtype,dtype)
-		v_in = _np.ascontiguousarray(v_in,dtype=result_dtype)
+		v_in = v_in.astype(result_dtype,order="C",copy=False)
 
 		if v_in.shape[0] != self.Ns:
 			raise ValueError("dimension mismatch")
@@ -309,6 +311,7 @@ class basis_general(lattice_basis):
 		v_out = v_out.reshape((self.Ns,-1))
 		v_in = v_in.reshape((self.Ns,-1))
 
+
 		for opstr,indx,J in op_list:
 			indx = _np.ascontiguousarray(indx,dtype=_np.int32)
 
@@ -318,20 +321,119 @@ class basis_general(lattice_basis):
 		return v_out.squeeze()
 
 
+	def Op_shift_sector(self,other_basis,op_list,v_in,v_out=None,dtype=None):
+		"""Applies symmetry non-conserving operator to state in symmetry-reduced basis.
+
+		An operator, which does not conserve a symmetry, induces a change in the quantum number of a state defined in the corresponding symmetry sector. Hence, when the operator is applied on a quantum state, the state shifts the symmetry sector. `Op_shift_sector()` handles this automatically. 
+
+		:math:`\\mathrm{\\color{red} {NOTE:\\,One\\,has\\,to\\,make\\,sure\\,that\\,the\\,operator\\,moves\\,the\\,state\\,between\\,the\\,two\\,sectors,\\,this\\,function\\,will\\,not\\,give\\,the\\,correct\\,results\\,otherwise.}}`
+
+		Formally  equivalent to:
+
+		>>> P1 = basis_sector_1.get_proj(np.complex128) # projector between full and initial basis
+		>>> P2 = basis_sector_2.get_proj(np.complex128) # projector between full and target basis
+		>>> v_in_full = P1.dot(v_in) # go from initial basis to to full basis
+		>>> v_out_full = basis_full.inplace_Op(v_in_full,op_list,np.complex128) # apply Op
+		>>> v_out = P2.H.dot(v_out_full) # project to target basis
+
+		Notes
+		-----
+		* particularly useful when computing correlation functions.
+		* supports parallelization to multiple states listed in the columns of `v_in`.
+
+		Parameters
+		-----------
+		other_basis : `*basis_general*` object
+			General basis object for the initial symmetry sector.
+		op_list : list
+			Operator string list which defines the operator to apply. Follows the format `[["z",[i],Jz[i]] for i in range(L)], ["x",[i],Jx[j]] for j in range(L)],...]`. 
+		v_in : np.ndarray
+			Initial state to apply the symmetry non-conserving operator on. Must have the same length as `other_basis.Ns`. 
+		v_out : np.ndarray, optional
+			Optional array to write the result for the final/target state in. 
+		dtype : 'type'
+			Data type (e.g. `numpy.float64`) to construct the operator with.
+
+		Returns
+		--------
+		numpy.ndarray
+			Array containing the state `v_out` in the current basis, i.e. the basis in `basis.Op_shift_sector()`.
+
+		Examples
+		--------
+
+		>>> v_out = basis.Op_shift_sector(initial_basis, op_list, v_in)
+		>>> print(v_out.shape, basis.Ns, v_in.shape, initial_basis.Ns)
+
+		"""
+
+
+		
+		# consider flag to do calc with projectors instead to use as a check. 
+
+		if not isinstance(other_basis,self.__class__):
+			raise ValueError("other_basis must be the same type as the given basis.")
+
+		if not self._made_basis:
+			raise AttributeError('this function requires the basis to be constructed first; use basis.make().')
+
+		if not other_basis._made_basis:
+			raise AttributeError('this function requires the basis to be constructed first; use basis.make().')
+
+
+		_,_,J_list = zip(*op_list)
+
+		J_list = _np.asarray(J_list)
+
+		if dtype is not None:
+			J_list = J_list.astype(dtype)
+
+		v_in = _np.asanyarray(v_in)
+
+		result_dtype = _np.result_type(_np.float32,J_list.dtype,v_in.dtype)
+
+		v_in = v_in.astype(result_dtype,order="C",copy=False)
+		v_in = v_in.reshape((other_basis.Ns,-1))
+		nvecs = v_in.shape[1]
+
+		if v_in.shape[0] != other_basis.Ns:
+			raise ValueError("invalid shape for v_in")
+
+		if v_out is None:
+			v_out = _np.zeros((self.Ns,nvecs),dtype=result_dtype,order="C")
+		else:
+			if v_out.dtype != result_dtype:
+				raise TypeError("v_out does not have the correct data type.")
+			if not v_out.flags["CARRAY"]:
+				raise ValueError("v_out is not a writable C-contiguous array")
+			if v_out.shape != (self.Ns,nvecs):
+				raise ValueError("invalid shape for v_out")
+
+
+		for opstr,indx,J in op_list:
+			indx = _np.ascontiguousarray(indx,dtype=_np.int32)
+			self._core.op_shift_sector(v_in,v_out,opstr,indx,J,
+				self._basis,self._n,other_basis._basis,other_basis._n)
+
+		if nvecs==1:
+			return v_out.squeeze()
+		else:
+			return v_out
+
+
 	def get_proj(self,dtype,pcon=False):
 		"""Calculates transformation/projector from symmetry-reduced basis to full (symmetry-free) basis.
 
 		Notes
 		-----
-		Particularly useful when a given operation canot be carried away in the symmetry-reduced basis
+		* particularly useful when a given operation canot be carried away in the symmetry-reduced basis
 		in a straightforward manner.
+		* see also `Op_shift_sector()`.
 
 		Parameters
 		-----------
 		dtype : 'type'
 			Data type (e.g. numpy.float64) to construct the projector with.
-		sparse : bool, optional
-			Whether or not the output should be in sparse format. Default is `True`.
 		pcon : bool, optional
 			Whether or not to return the projector to the particle number (magnetisation) conserving basis 
 			(useful in bosonic/single particle systems). Default is `pcon=False`.
