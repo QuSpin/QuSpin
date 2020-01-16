@@ -235,6 +235,9 @@ class spin_basis_general(hcb_basis_general,higher_spin_basis_general):
 		else:
 			return higher_spin_basis_general.Op_shift_sector(self,other_basis,op_list,v_in,v_out=v_out,dtype=dtype)	
 
+	Op_shift_sector.__doc__ = hcb_basis_general.Op_shift_sector.__doc__
+
+
 	def __type__(self):
 		return "<type 'qspin.basis.general_hcb'>"
 

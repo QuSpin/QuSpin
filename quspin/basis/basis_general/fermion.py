@@ -524,6 +524,20 @@ class spinful_fermion_basis_general(spinless_fermion_basis_general):
 		return spinless_fermion_basis_general._inplace_Op(self,v_in,new_op_list,dtype,
 			transposed=transposed,conjugated=conjugated,v_out=v_out,a=a)
 
+
+	def Op_shift_sector(self,other_basis,op_list,v_in,v_out=None,dtype=None):
+		if self._simple_symm:
+			new_op_list = []
+			for opstr,indx,J in op_list:
+				new_opstr,new_indx = self._simple_to_adv((opstr,indx))
+				new_op_list.append((new_opstr,new_indx,J))
+		else:
+			new_op_list = op_list
+
+		return spinless_fermion_basis_general.Op_shift_sector(other_basis,new_op_list,v_in,v_out=v_out,dtype=dtype)	
+
+	Op_shift_sector.__doc__ = spinless_fermion_basis_general.Op_shift_sector.__doc__
+
 	def index(self,up_state,down_state):
 		"""Finds the index of user-defined Fock state in spinful fermion basis.
 
