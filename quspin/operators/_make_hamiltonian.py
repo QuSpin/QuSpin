@@ -150,6 +150,5 @@ def make_dynamic(basis,dynamic_list,dtype,mat_dtype):
 		Hd = basis._make_matrix(ops_list,mat_dtype)
 		if not _check_almost_zero(Hd):
 			dynamic[func] = Hd
-
 	return dynamic
 

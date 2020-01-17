@@ -120,6 +120,7 @@ class basis(object):
 		v_out = v_out.reshape((self.Ns,-1))
 		v_in = v_in.reshape((self.Ns,-1))
 
+		
 		for opstr,indx,J in op_list:
 
 			if not transposed:
@@ -145,18 +146,8 @@ class basis(object):
 		-----------
 		v_in : array_like
 			state (or states stored in columns) to act on with the operator.
-		opstr : str
-			Operator string in the lattice basis format. For instance:
-
-			>>> opstr = "zz"
-
-		indx : list(int)
-			List of integers to designate the sites the lattice basis operator is defined on. For instance:
-			
-			>>> indx = [2,3]
-
-		J : scalar
-			Coupling strength.
+		op_list : list
+			Operator string list which defines the operator to apply. Follows the format `[["z",[i],Jz[i]] for i in range(L)], ["x",[i],Jx[j]] for j in range(L)],...]`. 
 		dtype : 'type'
 			Data type (e.g. `numpy.float64`) to construct the operator with.
 		transposed : bool, optional
@@ -179,9 +170,11 @@ class basis(object):
 		>>> indx = [2,3]
 		>>> opstr = "zz"
 		>>> dtype = np.float64
-		>>> ME, row, col = Op(opstr,indx,J,dtype)
+		>>> op_list=[[opstr,indx,J]]
+		>>> ME, row, col = inplace_Op(op_list,dtype)
 
 		"""
+
 		return self._inplace_Op(v_in,op_list,dtype,transposed=transposed,conjugated=conjugated,v_out=v_out)
 
 	def Op(self,opstr,indx,J,dtype):
@@ -239,7 +232,6 @@ class basis(object):
 				if _is_diagonal(row,col):
 					if diag is None:
 						diag = _np.zeros(self.Ns,dtype=dtype)
-
 					_update_diag(diag,row,ME)
 				else:
 					if off_diag is None:
@@ -661,8 +653,6 @@ class basis(object):
 						if static_list[i] not in odd_ops:
 							odd_ops.append(static_list[i])
 
-
-	
 			if odd_ops:
 				unique_opstrs = list(set( next(iter(zip(*tuple(odd_ops))))) )
 				unique_odd_ops = []
@@ -692,7 +682,7 @@ class basis(object):
 						if dynamic_list[i] not in odd_ops:
 							odd_ops.append(dynamic_list[i])
 
-	
+
 			if odd_ops:
 				unique_opstrs = list(set( next(iter(zip(*tuple(odd_ops))))))
 				unique_odd_ops = []
