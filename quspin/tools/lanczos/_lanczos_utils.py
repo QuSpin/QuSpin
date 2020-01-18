@@ -68,11 +68,16 @@ class _lanczos_vec_iter(object):
 def lanczos_full(A,v0,m,full_ortho=False,out=None,eps=None):
 	""" Creates Lanczos basis; diagonalizes Krylov subspace in Lanczos basis.
 
-	Given a hermitian matrix `A` of size :math:`n\\times n` and an integer `m`, the Lanczos algorithm returns 
+	Given a hermitian matrix `A` of size :math:`n\\times n` and an integer `m`, the Lanczos algorithm computes 
 	
 	* an :math:`n\\times m` matrix  :math:`Q`, and 
-	* a real symmetric tridiagonal matrix :math:`T=Q^\\dagger A Q` of size :math:`m\\times m`. The matrix :math:`T` can be represented via its eigendecomposition `(E,V)`: :math:`T=V^T\\mathrm{diag}(E)V`. 
-	This function computes the triple `(E,V,Q)`. 
+	* a real symmetric tridiagonal matrix :math:`T=Q^\\dagger A Q` of size :math:`m\\times m`. The matrix :math:`T` can be represented via its eigendecomposition `(E,V)`: :math:`T=V\\mathrm{diag}(E)V^T`. 
+	This function computes the triple :math:`(E,V,Q^T)`.
+
+	:math:`\\mathrm{\\color{red} {NOTE:\\,This\\,function\\,returns\\,Q^T;\\,Q^T\\,is\\,(in\\,general)\\,different\\,from\\,Q^\\dagger.}}`
+
+
+	  
  
 	Notes
 	-----
@@ -99,15 +104,15 @@ def lanczos_full(A,v0,m,full_ortho=False,out=None,eps=None):
 
 	Returns
 	--------
-	tuple(E,V,Q)
-		* E : numpy.ndarray[:]: eigenvalues of Krylov subspace tridiagonal matrix :math:`T`.
-		* V : numpy.ndarray[:,:]: eigenvectors of Krylov subspace tridiagonal matrix :math:`T`.
-		* Q : numpy.ndarray[:,:]: Lanczos eigenvectors. 
+	tuple(E,V,Q_T)
+		* E : (m,) numpy.ndarray: eigenvalues of Krylov subspace tridiagonal matrix :math:`T`.
+		* V : (m,m) numpy.ndarray: eigenvectors of Krylov subspace tridiagonal matrix :math:`T`.
+		* Q_T : (m,n) numpy.ndarray: matrix containing the `m` Lanczos vectors. This is :math:`Q^T` (not :math:`Q^\\dagger`)!
 
 	Examples
 	--------
 
-	>>> E, V, Q = lanczos_full(H,v0,20)
+	>>> E, V, Q_T = lanczos_full(H,v0,20)
 
 
 	
@@ -237,11 +242,14 @@ def lanczos_full(A,v0,m,full_ortho=False,out=None,eps=None):
 def lanczos_iter(A,v0,m,return_vec_iter=True,copy_v0=True,copy_A=False,eps=None):
 	""" Creates generator for Lanczos basis; diagonalizes Krylov subspace in Lanczos basis.
 
-	Given a hermitian matrix `A` of size :math:`n\\times n` and an integer `m`, the Lanczos algorithm returns 
+	Given a hermitian matrix `A` of size :math:`n\\times n` and an integer `m`, the Lanczos algorithm computes 
 	
 	* an :math:`n\\times m` matrix  :math:`Q`, and 
-	* a real symmetric tridiagonal matrix :math:`T=Q^\\dagger A Q` of size :math:`m\\times m`. The matrix :math:`T` can be represented via its eigendecomposition `(E,V)`: :math:`T=V^T\\mathrm{diag}(E)V`. 
-	This function computes the triple `(E,V,Q)`. 
+	* a real symmetric tridiagonal matrix :math:`T=Q^\\dagger A Q` of size :math:`m\\times m`. The matrix :math:`T` can be represented via its eigendecomposition `(E,V)`: :math:`T=V\\mathrm{diag}(E)V^T`. 
+	This function computes the triple :math:`(E,V,Q^T)`.
+
+	:math:`\\mathrm{\\color{red} {NOTE:\\,This\\,function\\,returns\\,Q^T;\\,Q^T\\,is\\,(in\\,general)\\,different\\,from\\,Q^\\dagger.}}`
+
  
  	Notes
  	-----
@@ -268,11 +276,11 @@ def lanczos_iter(A,v0,m,return_vec_iter=True,copy_v0=True,copy_A=False,eps=None)
 
 	Returns
 	--------
-	tuple(E,V) if return_vec_iter=False.
-	tuple(E,V,Q_iterator) if return_vec_iter=True.
-		* E : numpy.ndarray[:]: eigenvalues of Krylov subspace tridiagonal matrix :math:`T`.
-		* V : numpy.ndarray[:,:]: eigenvectors of Krylov subspace tridiagonal matrix :math:`T`.
-		* Q_iterator : generator[numpy.ndarray[:,:]]: generator to create the Lanczos eigenvectors on-the-fly. 
+	tuple(E,V,Q_T)
+		* E : (m,) numpy.ndarray: eigenvalues of Krylov subspace tridiagonal matrix :math:`T`.
+		* V : (m,m) numpy.ndarray: eigenvectors of Krylov subspace tridiagonal matrix :math:`T`.
+		* Q_T : (m,n) numpy.ndarray: matrix containing the `m` Lanczos vectors. This is :math:`Q^T` (not :math:`Q^\\dagger`)!
+
 
 	Examples
 	--------
@@ -366,33 +374,36 @@ def _get_first_lv(Q_iter):
 
 
 # I suggest the name `lv_average()` or `lv_linearcomb` or `linear_combine_Q()` instead of `lin_comb_Q()`
-def lin_comb_Q(weights,Q,out=None):
-	""" Computes a (weighted) linear combination of the Lanczos basis vectors. 
+def lin_comb_Q(coeff,Q,out=None):
+	""" Computes a linear combination of the Lanczos basis vectors:
+
+	.. math::
+		v_j = \\sum_{j=1}^{m} c_i Q_{ij} 
 
 	
 	Parameters
 	-----------
-	weights : array_like
-		list of weights to compute the linear combination of Lanczos basis vectors with.
-	Q : np.ndarray, generator
+	coeff : (m,) array_like
+		list of coefficients to compute the linear combination of Lanczos basis vectors with.
+	Q : (m,n) np.ndarray, generator
 		Lanczos basis vectors or a generator for the Lanczos basis.
-	out : np.ndarray, optional
+	out : (n,) np.ndarray, optional
 		Array to store the result in.
 	
 	Returns
 	--------
-	np.ndarray
-		Linear combination of Lanczos basis vectors. 
+	(n,) np.ndarray
+		Linear combination :math:`v` of Lanczos basis vectors. 
 
 	Examples
 	--------
 
-	>>> result = lin_comb_Q(weights,Q)
+	>>> v = lin_comb_Q(coeff,Q)
 
 	"""
 
 
-	weights = _np.asanyarray(weights)
+	coeff = _np.asanyarray(coeff)
 
 	if isinstance(Q,_np.ndarray):
 		Q_iter = iter(Q[:])
@@ -401,7 +412,7 @@ def lin_comb_Q(weights,Q,out=None):
 
 	q = next(Q_iter)
 
-	dtype = _np.result_type(q.dtype,weights.dtype)
+	dtype = _np.result_type(q.dtype,coeff.dtype)
 
 	if out is not None:
 		if out.shape != q.shape:
@@ -418,8 +429,8 @@ def lin_comb_Q(weights,Q,out=None):
 	
 	n = q.size
 
-	_np.multiply(q,weights[0],out=out)
-	for weight,q in zip(weights[1:],Q_iter):
+	_np.multiply(q,coeff[0],out=out)
+	for weight,q in zip(coeff[1:],Q_iter):
 		axpy(q,out,n,weight)
 
 	return out

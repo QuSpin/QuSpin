@@ -340,23 +340,24 @@ class basis_general(lattice_basis):
 		-----
 		* particularly useful when computing correlation functions.
 		* supports parallelization to multiple states listed in the columns of `v_in`.
+		* the user is strongly advised to use the code under "Formally equivalent" above to check the results of this function for small system sizes. 
 
 		Parameters
 		-----------
-		other_basis : `*basis_general*` object
-			General basis object for the initial symmetry sector.
+		other_basis : `basis` object
+			`basis_general` object for the initial symmetry sector. Must be the same `basis` class type as the basis whose instance is `Op_shift_sector()` (i.e. the basis in `basis.Op_shift_sector()`).  
 		op_list : list
 			Operator string list which defines the operator to apply. Follows the format `[["z",[i],Jz[i]] for i in range(L)], ["x",[i],Jx[j]] for j in range(L)],...]`. 
-		v_in : np.ndarray
+		v_in : (basis.Ns, ) np.ndarray
 			Initial state to apply the symmetry non-conserving operator on. Must have the same length as `other_basis.Ns`. 
-		v_out : np.ndarray, optional
+		v_out : (basis.Ns, ) np.ndarray, optional
 			Optional array to write the result for the final/target state in. 
 		dtype : 'type'
 			Data type (e.g. `numpy.float64`) to construct the operator with.
 
 		Returns
 		--------
-		numpy.ndarray
+		(basis.Ns, ) numpy.ndarray
 			Array containing the state `v_out` in the current basis, i.e. the basis in `basis.Op_shift_sector()`.
 
 		Examples
