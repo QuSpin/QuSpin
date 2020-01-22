@@ -10,21 +10,21 @@ __all__ = ["FTLM_static_iteration"]
 def FTLM_static_iteration(O_dict,E,V,Q_T,beta=0):
 	"""Calculate iteration for Finite-Temperature Lanczos method.
 
-    Here we give a brief overview of this method based on notes, `arXiv:1111.5931 <https://arxiv.org/abs/1111.5931>`_. 
+	Here we give a brief overview of this method based on notes, `arXiv:1111.5931 <https://arxiv.org/abs/1111.5931>`_. 
 
-    One would naively think that it would require full diagonalization to calculate thermodynamic expectation values 
-    for a quantum system as one has to fully diagonalize the Hamiltonian to evaluate:
+	One would naively think that it would require full diagonalization to calculate thermodynamic expectation values 
+	for a quantum system as one has to fully diagonalize the Hamiltonian to evaluate:
 
 	.. math::
 		\\langle O\\rangle_\\beta = \\frac{1}{Z}Tr\\left(e^{-\\beta H}O\\right)
 	
-    with the partition function defined as: :math:`Z=Tr\\left(e^{-\\beta H}\\right)`. The idea behind the 
-    Finite-Temperature Lanczos Method (FTLM) is to use quantum typicality as well as Krylov subspaces to 
-    simplify this calculation. Typicality states that the trace of an operator can be approximated as an 
-    average of that same operator with random vectors in the H-space samples with the Harr measure. 
-    As a corollary, it is known that the fluctuations of this corollary for any finite sample set will 
-    converge to 0 as the size of the Hilbert space increases. If you combine this with the Lanczos method 
-    to approximate the matrix exponential :math:`e^{-\\beta H}`. Mathematically this is expressed as:
+	with the partition function defined as: :math:`Z=Tr\\left(e^{-\\beta H}\\right)`. The idea behind the 
+	Finite-Temperature Lanczos Method (FTLM) is to use quantum typicality as well as Krylov subspaces to 
+	simplify this calculation. Typicality states that the trace of an operator can be approximated as an 
+	average of that same operator with random vectors in the H-space samples with the Harr measure. 
+	As a corollary, it is known that the fluctuations of this corollary for any finite sample set will 
+	converge to 0 as the size of the Hilbert space increases. If you combine this with the Lanczos method 
+	to approximate the matrix exponential :math:`e^{-\\beta H}`. Mathematically this is expressed as:
 
 	.. math::
 		\\langle O\\rangle_\\beta = \\frac{\\overline{\\langle O\\rangle_r}}{\\overline{\\langle Z\\rangle_r}}
@@ -37,34 +37,30 @@ def FTLM_static_iteration(O_dict,E,V,Q_T,beta=0):
 	.. math::
 		\\overline{\\langle Z\\rangle_r} = \\frac{1}{N_r}\\sum_{r} \\langle Z\\rangle_r =\\frac{1}{N_r}\\sum_{r}\\sum_{n}e^{-\\beta \\epsilon^{(r)}_n}|\\langle r|\\psi^{(r)}_n\\rangle|^2
 
-    The purpose of this function is to calculate :math:`\\langle O\\rangle_r` and :math:`\\langle Z\\rangle_r` 
-    for a Krylov subspace provided; this implies that to perform the full FTLM calculation this function 
-    must be called many times to perform the average over random initial states.
-
+	The purpose of this function is to calculate :math:`\\langle O\\rangle_r` and :math:`\\langle Z\\rangle_r` 
+	for a Krylov subspace provided; this implies that to perform the full FTLM calculation this function 
+	must be called many times to perform the average over random initial states.
 
 	Notes
 	-----
-
 	* The amount of memory used by this function scales like: :math:`nN_{op}` with :math:`n` being the size of the full Hilbert space and :math:`N_{op}` is the number of input operators. 
 	* FTLM does not converge very well at low temperatures, see function for low-temperature lanczos iterations. 
 
 	Parameters
 	-----------
-
-	O_dict : dictionary of Python Objects, 
-		These Objects must have a 'dot' method that calculates a matrix vector product on a numpy.ndarray[:]. The effective shape of these objects should be (n,n). 
+	O_dict : dictionary of Python Objects
+		These Objects must have a 'dot' method that calculates a matrix vector product on a numpy.ndarray[:], the effective shape of these objects should be (n,n). 
 	E : array_like, (m,)
 		Eigenvalues for the Krylow projection of some operator.
 	V : array_like, (m,m)
 		Eigenvectors for the Krylow projection of some operator.
 	Q_T : iterator over rows of Q_T
-		generator or ndarray that contains the lanczos basis associated with E, and V. 
+		generator or ndarray that contains the lanczos basis associated with E, and V.  
 	beta : scalar/array_like, any shape
 		Inverse temperature values to evaluate.
 
 	Returns
 	--------
-
 	Result_dict: dictionary
 		A dictionary storying the results for a single iteration of the FTLM. The results are stored in numpy.ndarrays 
 		that have the same shape as `beta`. The keys of `Result_dict` are the same as the keys in `O_dict` and the values 
