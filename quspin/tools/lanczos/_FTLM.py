@@ -7,7 +7,7 @@ from ._lanczos_utils import _get_first_lv
 __all__ = ["FTLM_static_iteration"]
 
 
-def FTLM_static_iteration(A_dict,E,V,Q_iter,beta=0):
+def FTLM_static_iteration(O_dict,E,V,Q_T,beta=0):
 	"""Calculate iteration for finite-temperature Lanczos method.
 
 	Here we give a brief overview of this method based on notes, `arXiv:1111.5931 <https://arxiv.org/abs/1111.5931>`_. 
@@ -45,7 +45,7 @@ def FTLM_static_iteration(A_dict,E,V,Q_iter,beta=0):
 	Notes
 	-----
 
-	* The amount of memory used by this function scales like: :math:`M*N_{op}` with :math:`M` being the size of the full Hilbert space and :math:`N_{op}` is the number of input operators. 
+	* The amount of memory used by this function scales like: :math:`nN_{op}` with :math:`n` being the size of the full Hilbert space and :math:`N_{op}` is the number of input operators. 
 	* FTLM does not converge very well at low temperatures, see function for low-temperature lanczos iterations. 
 
 
@@ -53,15 +53,15 @@ def FTLM_static_iteration(A_dict,E,V,Q_iter,beta=0):
 	Parameters
 	-----------
 
-	A_dict : dictionary of Python Objects, 
-		These Objects must have a 'dot' method that calculates a matrix vector product on a numpy.ndarray[:]. The effective shape of these objects should be (N,N). 
-	E: array_like with shape (n,)
+	O_dict : dictionary of Python Objects, 
+		These Objects must have a 'dot' method that calculates a matrix vector product on a numpy.ndarray[:]. The effective shape of these objects should be (n,n). 
+	E : array_like, (m,)
 		Eigenvalues for the Krylow projection of some operator.
-	V: array_like with shape (n,n)
+	V : array_like, (m,m)
 		Eigenvectors for the Krylow projection of some operator.
-	Q_iter: generator of array_like (N,)
-		generator/ndarray that contains the lanczos basis associated with E, and V. 
-	beta: scalar/array_like, any shape
+	Q_T : iterator over rows of Q_T
+		generator or ndarray that contains the lanczos basis associated with E, and V. 
+	beta : scalar/array_like, any shape
 		Inverse temperature values to evaluate.
 
 	Returns
@@ -69,8 +69,8 @@ def FTLM_static_iteration(A_dict,E,V,Q_iter,beta=0):
 
 	Result_dict: dictionary
 		A dictionary storying the results for a single iteration of the FTLM. The results are stored in numpy.ndarrays 
-		that have the same shape as `beta`. The keys of `Result_dict` are the same as the keys in `A_dict` and the values 
-		associated with the given key in `Result_dict` are the expectation values for the operator in `A_dict` with the same key.
+		that have the same shape as `beta`. The keys of `Result_dict` are the same as the keys in `O_dict` and the values 
+		associated with the given key in `Result_dict` are the expectation values for the operator in `O_dict` with the same key.
 	Z: numpy.ndarray, same shape as `beta`
 		The value of the partition function for the given iterator for each beta. 
 
@@ -90,14 +90,14 @@ def FTLM_static_iteration(A_dict,E,V,Q_iter,beta=0):
 	p = _np.exp(-_np.outer(E,_np.atleast_1d(beta)))
 	c = _np.einsum("j,aj,j...->a...",V[0,:],V,p)
 
-	r,Q_iter = _get_first_lv(iter(Q_iter))
+	r,Q_T = _get_first_lv(iter(Q_T))
 
 	results_dict = {}
 
-	Ar_dict = {key:A.dot(r) for key,A in iteritems(A_dict)}
+	Ar_dict = {key:A.dot(r) for key,A in iteritems(O_dict)}
 
-	for i,lv in enumerate(Q_iter): # nv matvecs
-		for key,A in iteritems(A_dict):
+	for i,lv in enumerate(Q_T): # nv matvecs
+		for key,A in iteritems(O_dict):
 			if key in results_dict:
 				results_dict[key] += _np.squeeze(c[i,...] * _np.vdot(lv,Ar_dict[key]))
 			else:

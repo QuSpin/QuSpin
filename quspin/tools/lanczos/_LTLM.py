@@ -6,7 +6,7 @@ import numpy as _np
 __all__ = ["LTLM_static_iteration"]
 
 
-def LTLM_static_iteration(A_dict,E,V,Q_iter,beta=0):
+def LTLM_static_iteration(O_dict,E,V,Q_iter,beta=0):
 	"""Calculate iteration for low-temperature Lanczos method.
 
 	Here we give a brief overview of this method based on notes, `arXiv:1111.5931 <https://arxiv.org/abs/1111.5931>`_. 
@@ -47,7 +47,7 @@ def LTLM_static_iteration(A_dict,E,V,Q_iter,beta=0):
 	Notes
 	-----
 
-	* The amount of memory used by this function scales like: :math:`M*N_{op}` with :math:`M` being the size of the full Hilbert space and :math:`N_{op}` is the number of input operators. 
+	* The amount of memory used by this function scales like: :math:`nN_{op}` with :math:`n` being the size of the full Hilbert space and :math:`N_{op}` is the number of input operators. 
 	* LTLM converges equally well for low and high temperatures however it is more expensive compared to the FTLM and hence we recomend that one should use that method when dealing with high temperatures.
 
 
@@ -55,24 +55,24 @@ def LTLM_static_iteration(A_dict,E,V,Q_iter,beta=0):
 	Parameters
 	-----------
 
-	A_dict : dictionary of Python Objects, 
-		These Objects must have a 'dot' method that calculates a matrix vector product on a numpy.ndarray[:]. The effective shape of these objects should be (N,N). 
-	E: array_like with shape (n,)
+	O_dict : dictionary of Python Objects, 
+		These Objects must have a 'dot' method that calculates a matrix vector product on a numpy.ndarray[:]. The effective shape of these objects should be (n,n). 
+	E : array_like, (m,)
 		Eigenvalues for the Krylow projection of some operator.
-	V: array_like with shape (n,n)
+	V : array_like, (m,m)
 		Eigenvectors for the Krylow projection of some operator.
-	Q_iter: generator of array_like (N,)
-		generator/ndarray that contains the lanczos basis associated with E, and V. 
-	beta: scalar/array_like, any shape
+	Q_T : iterator over rows of Q_T
+		generator or ndarray that contains the lanczos basis associated with E, and V. 
+	beta : scalar/array_like, any shape
 		Inverse temperature values to evaluate.
 
 	Returns
 	--------
 
 	Result_dict: dictionary
-		A dictionary storying the results for a single iteration of the FTLM. The results are stored in numpy.ndarrays 
-		that have the same shape as `beta`. The keys of `Result_dict` are the same as the keys in `A_dict` and the values 
-		associated with the given key in `Result_dict` are the expectation values for the operator in `A_dict` with the same key.
+		A dictionary storying the results for a single iteration of the LTLM. The results are stored in numpy.ndarrays 
+		that have the same shape as `beta`. The keys of `Result_dict` are the same as the keys in `O_dict` and the values 
+		associated with the given key in `Result_dict` are the expectation values for the operator in `O_dict` with the same key.
 	Z: numpy.ndarray, same shape as `beta`
 		The value of the partition function for the given iterator for each beta. 
 
@@ -95,7 +95,7 @@ def LTLM_static_iteration(A_dict,E,V,Q_iter,beta=0):
 	if _np.any(mask):
 		nv = _np.argmax(mask)
 
-	Ame_dict = {}
+	Ome_dict = {}
 
 	lv_row = iter(Q_iter)
 	for i,lv_r in enumerate(lv_row):
@@ -103,18 +103,18 @@ def LTLM_static_iteration(A_dict,E,V,Q_iter,beta=0):
 			break
 
 		lv_col = iter(Q_iter)
-		Ar_dict = {key:A.dot(lv_r) for key,A in iteritems(A_dict)}
+		Ar_dict = {key:A.dot(lv_r) for key,A in iteritems(O_dict)}
 		
 		for j,lv_c in enumerate(lv_col):
 			if j >= nv:
 				break
-			for key,A in iteritems(A_dict):
-				if key not in Ame_dict:
+			for key,A in iteritems(O_dict):
+				if key not in Ome_dict:
 					dtype = _np.result_type(lv_r.dtype,A.dtype)
-					Ame_dict[key] = _np.zeros((nv,nv),dtype=dtype)
+					Ome_dict[key] = _np.zeros((nv,nv),dtype=dtype)
 
 				me = _np.vdot(lv_c,Ar_dict[key])
-				Ame_dict[key][i,j] = me
+				Ome_dict[key][i,j] = me
 
 
 
@@ -128,7 +128,7 @@ def LTLM_static_iteration(A_dict,E,V,Q_iter,beta=0):
 	c = _np.einsum("j,j...->j...",V[0,:],p)
 
 	results_dict = {}
-	for key,Ame in iteritems(Ame_dict):
+	for key,Ame in iteritems(Ome_dict):
 		A_diag = V.T.dot(Ame.dot(V))
 		results_dict[key] = _np.squeeze(_np.einsum("j...,l...,jl->...",c,c,A_diag))
 
