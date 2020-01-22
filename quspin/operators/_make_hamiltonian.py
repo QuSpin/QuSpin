@@ -115,7 +115,7 @@ def make_static(basis,static_list,dtype):
 		to a csr_matrix class which has optimal sparse matrix vector multiplication.
 	"""
 	static_list = _consolidate_static(static_list)
-	return basis._make_matrix(static_list,dtype)
+	return basis.make_matrix(static_list,dtype)
 
 
 
@@ -147,7 +147,7 @@ def make_dynamic(basis,dynamic_list,dtype,mat_dtype):
 		test_function(f,f_args,dtype)
 
 		func = function(f,f_args)
-		Hd = basis._make_matrix(ops_list,mat_dtype)
+		Hd = basis.make_matrix(ops_list,mat_dtype)
 		if not _check_almost_zero(Hd):
 			dynamic[func] = Hd
 	return dynamic

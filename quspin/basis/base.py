@@ -217,8 +217,30 @@ class basis(object):
 		"""
 		return self._Op(opstr,indx,J,dtype)
 
-	def _make_matrix(self,op_list,dtype):
-		""" takes list of operator strings and couplings to create matrix."""
+	def make_matrix(self,op_list,dtype):
+		"""Create a sparse matrix from a list of operators.
+
+		If the operators provided is diagonal then this function returns a scipy.sparse.dia_matrix, otherwise this function returns a scipy.sparse.csr_matrix.
+		
+		Parameters
+		-----------
+		op_list : list
+			Operator string list which defines the operator to apply. Follows the format `[["z",[i],Jz[i]] for i in range(L)], ["x",[i],Jx[j]] for j in range(L)],...]`. 
+		dtype : 'type'
+			Data type (e.g. `numpy.float64`) to construct the operator with.
+
+		Returns
+		--------
+		matrix : sparse matrix in dia/csr format.
+
+
+		Examples
+		--------
+		>>> bonds = [[i,(i+1)%L] for i in range(L)]
+		>>> op_list = [["zz",[i,j],1.0] for i,j in bonds]
+		>>> O = basis.make_matrix(op_list,numpy.float64)
+
+		"""
 		off_diag = None
 		diag = None
 
