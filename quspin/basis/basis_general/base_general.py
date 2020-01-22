@@ -348,11 +348,11 @@ class basis_general(lattice_basis):
 			`basis_general` object for the initial symmetry sector. Must be the same `basis` class type as the basis whose instance is `Op_shift_sector()` (i.e. the basis in `basis.Op_shift_sector()`).  
 		op_list : list
 			Operator string list which defines the operator to apply. Follows the format `[["z",[i],Jz[i]] for i in range(L)], ["x",[i],Jx[j]] for j in range(L)],...]`. 
-		v_in : (basis.Ns, ) np.ndarray
+		v_in : array_like, (other_basis.Ns,...)
 			Initial state to apply the symmetry non-conserving operator on. Must have the same length as `other_basis.Ns`. 
-		v_out : (basis.Ns, ) np.ndarray, optional
+		v_out : array_like, (basis.Ns,...), optional
 			Optional array to write the result for the final/target state in. 
-		dtype : 'type'
+		dtype : numpy dtype for matrix elements, optional
 			Data type (e.g. `numpy.float64`) to construct the operator with.
 
 		Returns

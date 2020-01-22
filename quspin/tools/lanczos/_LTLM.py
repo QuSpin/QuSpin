@@ -9,29 +9,29 @@ __all__ = ["LTLM_static_iteration"]
 def LTLM_static_iteration(O_dict,E,V,Q_iter,beta=0):
 	"""Calculate iteration for low-temperature Lanczos method.
 
-	Here we give a brief overview of this method based on notes, `arXiv:1111.5931 <https://arxiv.org/abs/1111.5931>`_. 
+Here we give a brief overview of this method based on notes, `arXiv:1111.5931 <https://arxiv.org/abs/1111.5931>`_. 
 
-	One would niavely think that it would require full diagonalization to calculate thermodynamic expoectation values 
-	for a quantum system as one has to fully diagonalize the Hamiltonian to evaluate:
+    One would naively think that it would require full diagonalization to calculate thermodynamic expectation values 
+    for a quantum system as one has to fully diagonalize the Hamiltonian to evaluate:
 
 	.. math::
 		\\langle O\\rangle_\\beta = \\frac{1}{Z}Tr\\left(e^{-\\beta H}O\\right)
 	
-	with the partition function defined as: :math:`Z=Tr\\left(e^{-\\beta H}\\right)`. The idea behind the 
-	Low-Temperature Lanczos Method (LTLM) is to use quantum typicality as well as Krylov subspaces to 
-	simplify this calculation. Typicality states that trace of an operator can be approximated as an average 
-	of that same operator with random vectors in the H-space samples with the Harr measure. As a colloary it 
-	is know that the flucuations of this average for any finite sample set will converge to 0 as the size of 
-	the Hilbert space increases. If you combine this with the Lanczos method to approximate the matrix 
-	exponential :math:`e^{-\\beta H}`. Mathematically this is expressed as:
+    with the partition function defined as: :math:`Z=Tr\\left(e^{-\\beta H}\\right)`. The idea behind the 
+    Low-Temperature Lanczos Method (LTLM) is to use quantum typicality as well as Krylov subspaces to 
+    simplify this calculation. Typicality states that the trace of an operator can be approximated as an average 
+    of that same operator with random vectors in the H-space samples with the Harr measure. As a corollary, it 
+    is known that the fluctuations of this average for any finite sample set will converge to 0 as the size of 
+    the Hilbert space increases. If you combine this with the Lanczos method to approximate the matrix exponential 
+    :math:`e^{-\\beta H}`. Mathematically this is expressed as:
 
 	.. math::
 		\\langle O\\rangle_\\beta = \\frac{\\overline{\\langle O\\rangle_r}}{\\overline{\\langle Z\\rangle_r}}
 
-	with the two quaitites are defined as averages over quantities calculate with Lanczos vectors that start 
-	with random initial vectors :math:`|r\\rangle`. The difference between this method and the finte-temperature 
-	Lanczos method (FTLM) is that instead of expending the expression in an asymmetric way the density matrix 
-	is split up to create a symmetric form:
+    with the numerator and denominator being defined as averages over quantities calculate with Lanczos vectors that start 
+    with random initial vectors :math:`|r\\rangle`. The difference between this method and the Finite-Temperature 
+    Lanczos method (FTLM) is that instead of expending the expression in an asymmetric way, the density matrix 
+    is split up to create a symmetric form:
 
 	.. math::
 		\\overline{\\langle O\\rangle_r} = \\frac{1}{N_r}\\sum_{r} \\langle O\\rangle_r = \\frac{1}{N_r}\\sum_{r}\\sum_{nm}e^{-\\beta(\\epsilon^{(r)}_n+\\epsilon^{(r)}_m)/2}\\langle r|\\psi^{(r)}_n\\rangle\\langle\\psi^{(r)}_n|O|\\psi^{(r)}_m\\rangle\\langle\\psi^{(r)}_m|r\\rangle
@@ -39,9 +39,9 @@ def LTLM_static_iteration(O_dict,E,V,Q_iter,beta=0):
 	.. math::
 		\\overline{\\langle Z\\rangle_r} = \\frac{1}{N_r}\\sum_{r} \\langle Z\\rangle_r =\\frac{1}{N_r}\\sum_{r}\\sum_{n}e^{-\\beta \\epsilon^{(r)}_n}|\\langle r|\\psi^{(r)}_n\\rangle|^2
 
-	The purpose of this function is to calculate :math:`\\langle O\\rangle_r` and :math:`\\langle Z\\rangle_r` 
-	for a Krylov subspace provided. This implies that in order to perform the full LTLM calculation this function 
-	must be called many times to perform the average over random initial states.
+    The purpose of this function is to calculate :math:`\\langle O\\rangle_r` and :math:`\\langle Z\\rangle_r` 
+    for a Krylov subspace provided. This implies that in order to perform the full LTLM calculation, this function 
+    must be called many times to perform the average over random initial states.
 
 
 	Notes
@@ -49,8 +49,6 @@ def LTLM_static_iteration(O_dict,E,V,Q_iter,beta=0):
 
 	* The amount of memory used by this function scales like: :math:`nN_{op}` with :math:`n` being the size of the full Hilbert space and :math:`N_{op}` is the number of input operators. 
 	* LTLM converges equally well for low and high temperatures however it is more expensive compared to the FTLM and hence we recomend that one should use that method when dealing with high temperatures.
-
-
 
 	Parameters
 	-----------
@@ -83,7 +81,6 @@ def LTLM_static_iteration(O_dict,E,V,Q_iter,beta=0):
 	>>> beta = numpy.linspace(0,10,101)
 	>>> E, V, Q = lanczos_full(H,v0,20)
 	>>> Res,Z = FTLM_static_iteration(Obs_dict,E,V,Q,beta=beta)
-
 
 	"""
 	nv = E.size
