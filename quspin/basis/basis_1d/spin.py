@@ -235,15 +235,14 @@ class spin_basis_1d(basis_1d):
 
 
 	def _Op(self,opstr,indx,J,dtype):
-		ME,row,col = basis_1d._Op(self,opstr,indx,J,dtype)
 		if self._pauli==1:
 			n = len(opstr.replace("I",""))
-			ME *= (1<<n)
+			J *= (1<<n)
 		elif self._pauli==-1:
 			n = len(opstr.replace("I","").replace("+","").replace("-",""))
-			ME *= (1<<n)
+			J *= (1<<n)
 
-		return ME,row,col
+		return basis_1d._Op(self,opstr,indx,J,dtype)
 
 
 	def __type__(self):

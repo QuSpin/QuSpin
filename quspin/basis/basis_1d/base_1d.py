@@ -574,7 +574,7 @@ class basis_1d(lattice_basis):
 		if extra_ops:
 			raise ValueError("unrecognized characters {} in operator string.".format(extra_ops))
 
-		if dtype not in _dtypes:
+		if _np.dtype(dtype).char not in _dtypes:
 			raise ValueError("dtype {} not supported by basis: {}".format(dtype,self.__class__.__name__))
 
 		if self._Ns <= 0:

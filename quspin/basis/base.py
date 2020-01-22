@@ -220,7 +220,7 @@ class basis(object):
 	def make_matrix(self,op_list,dtype):
 		"""Create a sparse matrix from a list of operators.
 
-		If the operators provided is diagonal then this function returns a scipy.sparse.dia_matrix, otherwise this function returns a scipy.sparse.csr_matrix.
+		If the operators provided is diagonal then this function returns a `scipy.sparse.dia_matrix`, otherwise this function returns a `scipy.sparse.csr_matrix`.
 		
 		Parameters
 		-----------
