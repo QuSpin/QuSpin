@@ -37,13 +37,11 @@ with tempfile.TemporaryDirectory() as tmpdirname:
 	save_zip(file,op,save_basis=True)
 
 	new_op_1 = load_zip(file)
-	nnz = (op-new_op_1).nnz_total
-	assert(nnz==0)
+	assert((op-new_op_1).nnz_total == 0)
 
 	save_zip(file,op,save_basis=False)
 
 	new_op_2 = load_zip(file)
-	nnz = (op-new_op_1).nnz_total
-	assert(nnz==0)
+	assert((op-new_op_1).nnz_total == 0)
 
 	
