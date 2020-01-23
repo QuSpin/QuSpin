@@ -345,7 +345,11 @@ class quantum_operator(object):
 		""":obj:`quantum_operator`: transposes and conjugates the operator matrix: :math:`H_{ij}\\mapsto H_{ji}^*`."""
 		return self.getH()
 
-
+	@property
+	def nnz_total(self):
+		nnz_total = sum(O.nnz for k,O in iteritems(self._quantum_operator))
+		return nnz_total
+	
 
 
 	### state manipulation/observable routines
@@ -1338,7 +1342,7 @@ class quantum_operator(object):
 					self._quantum_operator[key] = -value
 
 				if _check_almost_zero(self._quantum_operator[key]):
-					self._quantum_operator[key] = _sp.dia_matrix(shape=self._shape,dtype=self._dtype)
+					self._quantum_operator[key] = _sp.dia_matrix(self._shape,dtype=self._dtype)
 
 			self._update_matvecs()
 			return self
