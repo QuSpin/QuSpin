@@ -68,7 +68,7 @@ def wynn_eps_method(p,ncycle):
 		the extrapolated series to the requested cycle.
 
 	"""
-	p = np.asanyarray(p)
+	p = _np.asanyarray(p)
 
 	nmax = p.shape[0]
 
@@ -101,6 +101,7 @@ class _nlce(object):
 
 	@property
 	def Ncl_max(self):
+		"""Maximum cluster size calculated."""
 		return self._N_cl
 	
 
@@ -109,9 +110,20 @@ class _nlce(object):
 		"""Total number of clusters for this particular object."""
 		return self._L_list.shape[0]
 
+	@property
+	def L_list(self):
+		view =  self._L_list[:]
+		view.flags["WRITEABLE"]=False
+		return view
+
+	@property
+	def Ncl_list(self):
+		view =  self._Ncl_list[:]
+		view.flags["WRITEABLE"]=False
+		return view
 
 	def get_Nc(self,Ncl=None):
-		""" Get the total number of cluster for cluster sizes up to requested cluster size. 
+		"""Get the total number of cluster for cluster sizes up to requested cluster size. 
 		
 		Get the number of clusters up to cluster size `Ncl`.
 
@@ -127,10 +139,12 @@ class _nlce(object):
 			total number of clusters up to cluster size `Ncl`.
 
 		"""
-		if Ncl > self.Ncl_max:
-			raise ValueError("'Ncl' must be smaller or equal to the cluster size calculated for the NLCE object.")
 
 		if Ncl is not None:
+
+			if Ncl > self.Ncl_max:
+				raise ValueError("'Ncl' must be smaller or equal to the cluster size calculated for the NLCE object.")
+
 			return _get_Nc(Ncl,self._Ncl_list)
 		else:
 			return self.Nc_max
@@ -149,7 +163,7 @@ class _nlce(object):
 		Ncl_max : optional, integer
 			Maximum cluster size, can be smaller than the maximum custer size of the calling object.
 
-		out : array_like, (M,...)
+		out : optional, array_like, (M,...)
 			output array for the results of this function.
 
 		returns
@@ -160,9 +174,9 @@ class _nlce(object):
 
 		"""
 
-		O = np.asanyarray(O)
+		O = _np.asanyarray(O)
 
-		Nc = get_Nc(Ncl_max)
+		Nc = self.get_Nc(Ncl_max)
 
 		result_dtype = _np.result_type(self._Y.dtype,O.dtype)
 
@@ -193,7 +207,7 @@ class _nlce(object):
 		return out.reshape(shape0)
 
 	def cluster_sums(self,O,Ncl_max=None):
-		""" Calculate sums over cluster of a given size given the expecation values over clusters. 
+		"""Calculate sums over cluster of a given size given the expecation values over clusters. 
 
 		Parameters
 		----------
@@ -220,7 +234,7 @@ class _nlce(object):
 		return Sn
 
 	def partial_sums(self,O,Ncl_max=None):
-		""" Calculate the bare sums given the expecation values over clusters. 
+		"""Calculate the bare sums given the expecation values over clusters. 
 
 		equivilant to calculating cumulative sums over the cluster sums. 
 
@@ -244,7 +258,7 @@ class _nlce(object):
 		return self.cluster_sums(O,Ncl_max=Ncl_max).cumsum(axis=0)
 
 	def wynn_sums(self,O,ncycle,Ncl_max=None):
-		""" Calculate the bare sums and perform wynn extrapolation. 
+		"""Calculate the bare sums and perform wynn extrapolation. 
 
 		calculates the partial sums and performs wynn extrapolation. 
 
@@ -302,7 +316,7 @@ class _nlce(object):
 				yield self.get_cluster_graph(i)
 
 	def get_cluster_graph(self,ic):
-		""" get connectivity list for a give cluster.
+		"""Get connectivity list for a give cluster.
 
 		Parameters
 		----------
@@ -343,7 +357,7 @@ class _ncle_site(_nlce):
 		if type(ic) is not int:
 			raise ValueError
 
-		if ic < 0 or ic >= self.Nc:
+		if ic < 0 or ic >= self.Nc_max:
 			raise ValueError
 
 		graph = []
@@ -385,7 +399,7 @@ class _ncle_site(_nlce):
 
 
 class NLCE_site(_ncle_site):
-	""" Site based Numerical Linked Cluster Expansions. 
+	"""Site based Numerical Linked Cluster Expansions. 
 
 	This class is a specifically implements an optimized calculation of the site based Numerical Linked Cluster Expansion (NLCE).
 
@@ -483,7 +497,7 @@ class _ncle_plaquet(_nlce):
 		if type(ic) is not int:
 			raise ValueError
 
-		if ic < 0 or ic >= self.Nc:
+		if ic < 0 or ic >= self.Nc_max:
 			raise ValueError
 
 		graph = []
@@ -561,7 +575,7 @@ class NLCE_plaquet(_ncle_plaquet):
 
 
 	"""
-	def __init__(self,N_cl,plaquet_sites,plaquet_edges,tr,pg,edge_weights=None):
+	def __init__(self,N_cl,plaquet_sites,plaquet_edges,tr,pg,edge_weights=None,plaquet_per_site=None):
 		"""Initialize the `NLCE_site` object.
 		
 		Parameters
@@ -586,6 +600,8 @@ class NLCE_plaquet(_ncle_plaquet):
 		edge_weights : array_like, (N_lat,N_nn), optional
 			dictionary of dictionaries that contains the weights of the bonds as indexed through the sites. 
 
+		plaquet_per_site : int, optional
+			number that specifies the scaling of the multiplicity of a plaquet cluster. If not specified this number is deduced from inputs. 
 
 		Notes
 		-----
@@ -594,8 +610,16 @@ class NLCE_plaquet(_ncle_plaquet):
 		point-group symmetries, this has to be handled by the user to ensure these are correct.
 
 		"""
-		plaquet_sites = _np.asanyarray(plaquet_sites)
-		plaquet_sites = plaquet_sites.astype(_np.int32,order="C",copy=True)
+
+		if plaquet_per_site is None:
+			_,counts = _np.unique(plaquet_sites,return_counts=True)
+
+			self._plaquets_per_site = _np.sum(counts)//len(counts)
+		else:
+			self._plaquets_per_site = plaquet_per_site
+
+		if _np.any(counts != self._plaquets_per_site):
+			raise ValueError("Number of plaquets per site is not equal for all plaquets")
 
 		tr = _np.asanyarray(tr)
 		pg = _np.asanyarray(pg)
@@ -650,6 +674,13 @@ class NLCE_plaquet(_ncle_plaquet):
 		_ncle_plaquet.__init__(self,N_cl,N_plaquet,
 				 plaquet_sites,plaquet_edges,edge_weights,
 				 cluster_list,L_list,Ncl_list,Y)
-		
 
+		plaquet_sites = _np.asanyarray(plaquet_sites)
+		plaquet_sites = plaquet_sites.astype(_np.int32,order="C",copy=True)
 
+	def get_W(self,O,Ncl_max=None,out=None):
+		res = _nlce.get_W(self,O,Ncl_max=Ncl_max,out=out)
+		res[1:] /= self._plaquets_per_site
+		return res
+
+	get_W.__doc__ = _nlce.get_W.__doc__

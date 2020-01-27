@@ -33,6 +33,7 @@ private:
 	Edges_t plaquet_edges;
 	const int * plaquet_sites;
  	const int N,Ncl,Nsp;
+ 	int Npg;
 
 	typedef map_type1<I> IndMap_t;
 	typedef map_type5<I> SubMap_t;
@@ -55,6 +56,11 @@ public:
 		Edges_t &_plaquet_edges,const int nt_p,const int nt_t,const int maps[],const int pers[],
 		const int qs[]) : plaquet_sites(_plaquet_sites), N(_N), Ncl(_Ncl), Nsp(_Nsp), weighted(false)
 	{
+		Npg = 1;
+		for(int i=0;i<nt_p;i++){
+			Npg *= pers[i];
+		}
+
 		B_f = new basis_general::hcb_basis_core<I>(_N,nt_p+nt_t,maps,pers,qs);
 		B_p = new basis_general::hcb_basis_core<I>(_N,nt_p,maps,pers,qs);
 		B_t = new basis_general::hcb_basis_core<I>(_N,nt_t,maps+nt_p*_N,pers+nt_p,qs+nt_p);
@@ -195,6 +201,7 @@ void nlce_plaquet_basis_core<I>::calc_subclusters()
 	}
 	else{
 		unweighted::calc_subclusters_parallel<I,Edges_t,UWTopoMap_t,SubMap_t>(Nsp,plaquet_sites,plaquet_edges,Ncl,unweighted_topo_clusters,sub_clusters);
+		// unweighted::calc_subclusters_parallel<I,Edges_t,UWTopoMap_t,SubMap_t>(Npg,Nsp,plaquet_sites,plaquet_edges,Ncl,unweighted_topo_clusters,sub_clusters);
 	}
 }
 

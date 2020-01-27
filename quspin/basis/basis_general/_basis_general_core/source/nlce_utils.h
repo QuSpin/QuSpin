@@ -5,6 +5,7 @@
 
 #include <boost/graph/adjacency_list.hpp>
 #include <boost/graph/isomorphism.hpp>
+#include <boost/graph/vf2_sub_graph_iso.hpp>
 #include <unordered_map>
 #include <unordered_set>
 #include <map>
@@ -36,6 +37,24 @@ using map_type4 = std::vector<map_type2<I,Graph>>;
 
 template<class I>
 using map_type5 = std::map<I,map_type1<I>>;
+
+class vf2_counter
+{
+
+	int * count;
+
+public:
+	
+	vf2_counter(int * _count) : count(_count) {}
+
+	template <typename CorrespondenceMap1To2,
+			  typename CorrespondenceMap2To1>
+	bool operator()(CorrespondenceMap1To2 f, CorrespondenceMap2To1 g) {
+		(*count)++;
+		return true;
+	}
+};
+
 
 
 
@@ -1411,6 +1430,7 @@ void subclusters(const int ClusterSize,
 	}
 }
 
+
 template<class I,class Edges_t,class map_type1,class map_type2>
 void calc_subclusters_parallel(const int Nsp,
 							   const int plaquet_sites[],
@@ -1460,6 +1480,86 @@ void calc_subclusters_parallel(const int Nsp,
 }
 
 
+/*
+
+template<class Graph,class map_type1,class map_type2>
+void subclusters(const int Npg,
+				 const Graph graph,
+				 const map_type1 &topo_clusters,
+					   map_type2 &sub_clusters)
+{
+
+	auto begin = topo_clusters.begin();
+	auto end   = topo_clusters.end();
+
+	for(auto pair=begin;pair!=end;pair++)
+	{
+		int count=0;
+
+		bool found_subgraph = boost::vf2_subgraph_iso(pair->second.second,graph,vf2_counter(&count));
+		
+		const int subgraph_size = boost::num_vertices(pair->second.second);
+
+		if(found_subgraph){
+			if(boost::num_vertices(pair->second.second) > 1){
+				sub_clusters[pair->first] = count/Npg;
+			}
+			else{
+				sub_clusters[pair->first] = count;
+			}
+			
+		}
+	}
+}
+
+template<class I,class Edges_t,class map_type1,class map_type2>
+void calc_subclusters_parallel(const int Npg,
+							   const int Nsp,
+							   const int plaquet_sites[],
+		 					   const Edges_t &plaquet_edges,
+							   const int Ncl,
+							   const map_type1 &topo_clusters,
+									 map_type2 &sub_clusters)
+{
+	const int nthread = omp_get_max_threads();
+
+	std::vector<map_type2> sub_clusters_thread_vec(nthread);
+	map_type2 * sub_clusters_thread = &sub_clusters_thread_vec[0];
+
+	#pragma omp parallel
+	{
+		const int threadn = omp_get_thread_num();
+		std::vector<int> ind_to_pos;
+
+
+		int mcs = 0;		
+		for(int j=0;j<Ncl;j++){
+			auto begin = topo_clusters[j].begin();
+			auto end   = topo_clusters[j].end();
+			npy_intp cnt = 0;
+
+
+
+			for(auto pair=begin;pair!=end;pair++,cnt++)
+			{
+				if(cnt%nthread != threadn) continue;
+				const I s = pair->first;
+
+				for(int cs=0;cs<mcs;cs++){
+					subclusters(Npg,pair->second.second,topo_clusters[cs],sub_clusters_thread[threadn][s]);
+				}
+
+			}
+			mcs++;
+		}
+	}
+
+	for(auto list : sub_clusters_thread_vec){
+		sub_clusters.insert(list.begin(),list.end());
+	}
+}
+
+*/
 
 }
 
