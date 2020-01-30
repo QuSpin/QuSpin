@@ -4,11 +4,12 @@ import numpy as _np
 from numba import njit
 from builtins import range
 
+
 @njit
 def _get_Nc(nmax,N):
 	# helper function to get index of the last cluster of size nmax
 	for i in range(N.size):
-		if nmax > N[i]:
+		if nmax < N[i]:
 			return i
 	return N.size
 
@@ -89,6 +90,13 @@ def wynn_eps_method(p,ncycle):
 
 	return e1[:nmax-2*ncycle,...]
 
+
+
+
+
+
+
+
 class _nlce(object):
 	def __init__(self,N_cl,
 				 cluster_list,L_list,Ncl_list,Y):
@@ -141,11 +149,12 @@ class _nlce(object):
 		"""
 
 		if Ncl is not None:
-
 			if Ncl > self.Ncl_max:
 				raise ValueError("'Ncl' must be smaller or equal to the cluster size calculated for the NLCE object.")
-
-			return _get_Nc(Ncl,self._Ncl_list)
+			elif Ncl == self.Ncl_max:
+				return self.Nc_max
+			else:
+				return _get_Nc(Ncl,self._Ncl_list)
 		else:
 			return self.Nc_max
 
@@ -289,20 +298,35 @@ class _nlce(object):
 		if type(key) is int:
 			yield self.get_cluster_graph(key)
 		elif type(key) is slice:
+
 			if key.start is None:
 				start = 0
+			elif key.start > self.Nc_max:
+				raise IndexError
+			elif key.start < -(self.Nc_max+1):
+				raise IndexError
+			elif key.start < 0:
+				start = self.Nc_max + key.start + 1
 			else:
-				start = (key.start)%len(self._L_list)
+				start = key.start
 
 			if key.stop is None:
 				stop = len(self._L_list)
+			elif key.stop > self.Nc_max:
+				raise IndexError
+			elif key.stop < -(self.Nc_max+1):
+				raise IndexError
+			elif key.stop < 0:
+				stop = self.Nc_max + key.stop + 1
 			else:
-				stop = (key.stop)%len(self._L_list)
+				stop = key.stop
 
 			if key.step is None:
 				step = 1
 			else:
 				step = key.step
+
+			print(start,stop,step)
 
 			for i in range(start,stop,step):
 				yield self.get_cluster_graph(i)
