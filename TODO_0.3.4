@@ -11,6 +11,7 @@ TFLM and LTLM:
 	x get rid of '*' in notes
 	x take M -> n in notes
 	x in return: FTLM -> LTLM
+	* `A` object must have `dtype` attribute
 
 Lanczos_basis_full:
 	x discuss how Q is returned transposed. Add red note, modify return line.
@@ -19,16 +20,19 @@ Lanczos_basis_full:
 	x change order of eigenvalue decompisition of matrix T in summary.
 	x define: eps in terms of inequalities
 	x fix return arguments. 
+	* `A` object must have `dtype` attribute
 
 Lanczos_basis_iter:
 	x make same changes as in Lanczos_basis_full.
 	x explain in more detail about 'copy_v0' and 'copy_A' flag.
 	x explain the generator feature better. 
+	* `A` object must have `dtype` attribute
 
 expm_lanczos:
 	x Q are not eigenvectors.
 	x 'mathrm' in front of exp in summary. 
 	x fix notation so that the sizes of arrays are shown. 
+
 
 
 lin_comb_Q:
@@ -40,6 +44,11 @@ lanczos example code:
 	* flip daggers on Q everywhere, also flip dimensions of Q. 
 	* fix diagonalization of T.
 	* close bracket m << n
+
+lanczos finite temperature lanczos doce
+	* add comments
+	* create example rst page example 21
+
 
 Op_shift_sector
 

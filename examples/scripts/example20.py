@@ -9,7 +9,7 @@ quspin_path = os.path.join(os.getcwd(),"../../")
 sys.path.insert(0,quspin_path)
 #######################################################################
 #                            example 20                               #	
-# This example shows how to use the `Lanczox` submodule of the        #
+# This example shows how to use the `Lanczos` submodule of the        #
 # `tools` module to compute the time evolution of a quantum state     #
 # and how to find ground states of hermitian Hamiltonians.            #
 #######################################################################
