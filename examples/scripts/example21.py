@@ -46,10 +46,6 @@ def get_operators(L):
 	h_list = [[-1.0,i] for i in range(L)]
 	M_list = [[1.0/L,i] for i in range(L)]
 
-	T = np.logspace(-3,3,51,base=10)
-	beta = 1.0/(T+1e-15)
-
-
 	ops_dict = dict(J=[["zz",J_list]],h=[["x",h_list]])
 	M = hamiltonian([["z",M_list]],[],basis=basis,dtype=np.float64)
 	M2 = M**2
@@ -78,9 +74,11 @@ np.random.seed(0)
 ##### define parameters #####
 #
 L = 10 
-nv = 30
-s = 0.5
+nv = 50
+s = 0.6
 nsample = 100
+T = np.logspace(-3,3,51,base=10)
+beta = 1.0/(T+1e-15)
 #
 ##### get operators #####
 #
@@ -106,7 +104,7 @@ for i in range(nsample):
 	r = np.random.normal(0,1,size=H.Ns)
 	r /= np.linalg.norm(r)
 	# get lanczos basis
-	E,V,lv = lanczos_full(H_w,r,nv,eps=1e-8,full_ortho=False)
+	E,V,lv = lanczos_full(H_w,r,nv,eps=1e-8,full_ortho=True)
 	# shift energy to avoid overflows
 	E -= E0
 	# calculate iteration
@@ -131,9 +129,9 @@ axinset = inset_axes(ax, width="45%", height="65%", loc="upper right")
 axs = [ax,axinset]
 #
 # plot results for FTLM and LTLM.
-for ax in axs:
-	ax.errorbar(T,m2_LT,dm2_LT,marker=".",label="LTLM",zorder=-1)
-	ax.errorbar(T,m2_FT,dm2_FT,marker=".",label="FTLM",zorder=-2)
+for a in axs:
+	a.errorbar(T,m2_LT,dm2_LT,marker=".",label="LTLM",zorder=-1)
+	a.errorbar(T,m2_FT,dm2_FT,marker=".",label="FTLM",zorder=-2)
 #
 if H.Ns < 2000: # hilbert space is not too big to diagonalize
 	#
@@ -154,12 +152,12 @@ if H.Ns < 2000: # hilbert space is not too big to diagonalize
 	# calculate trace
 	O = np.einsum("j...,j->...",W,O)/np.einsum("j...->...",W)
 	# plot results
-	for ax in axs:
-		ax.plot(T_new,O,label="exact",zorder=0)
+	for a in axs:
+		a.plot(T_new,O,label="exact",zorder=0)
 #
 # max axis log-scale along x-axis
-for ax in axs:
-	ax.set_xscale("log")
+for a in axs:
+	a.set_xscale("log")
 #
 # adding space for inset by expanding x limits.
 xmin,xmax = ax.get_xlim()

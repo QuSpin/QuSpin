@@ -12,6 +12,9 @@ TFLM and LTLM:
 	x take M -> n in notes
 	x in return: FTLM -> LTLM
 	* `A` object must have `dtype` attribute
+	* change <Z> to <I> and explain why.
+	* explicitly show where the approximation of the identities happen. 
+	* make the sum over lanczos vectors explicitly over 1 to m.
 
 Lanczos_basis_full:
 	x discuss how Q is returned transposed. Add red note, modify return line.
@@ -32,6 +35,8 @@ expm_lanczos:
 	x Q are not eigenvectors.
 	x 'mathrm' in front of exp in summary. 
 	x fix notation so that the sizes of arrays are shown. 
+	* explicitly show where the approximation of the identities happen. 
+	* make the sum over lanczos vectors explicitly over 1 to m.
 
 
 
@@ -44,11 +49,15 @@ lanczos example code:
 	x flip daggers on Q everywhere, also flip dimensions of Q. 
 	x fix diagonalization of T.
 	x close bracket m << n
-	* add more explanations
+	* discuss how to use lanczos to find the ground state efficiently compared to scipy. 
 
-lanczos finite temperature lanczos doce
+lanczos finite temperature lanczos code
 	* add comments
 	* create example rst page example 21
+	* 'nv' -> 'm'
+	* in bootstrap 'D' -> 'Ir' and 'N' -> 'Or'
+	* 'nsample' -> 'N_r' ?
+
 
 
 Op_shift_sector
