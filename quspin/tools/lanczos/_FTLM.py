@@ -51,9 +51,9 @@ def FTLM_static_iteration(O_dict,E,V,Q_T,beta=0):
 	O_dict : dictionary of Python Objects
 		These Objects must have a 'dot' method that calculates a matrix vector product on a numpy.ndarray[:], the effective shape of these objects should be (n,n). 
 	E : array_like, (m,)
-		Eigenvalues for the Krylow projection of some operator.
+		Eigenvalues for the Krylov projection of some operator.
 	V : array_like, (m,m)
-		Eigenvectors for the Krylow projection of some operator.
+		Eigenvectors for the Krylov projection of some operator.
 	Q_T : iterator over rows of Q_T
 		generator or ndarray that contains the lanczos basis associated with E, and V.  
 	beta : scalar/array_like, any shape

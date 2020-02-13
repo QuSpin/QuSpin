@@ -88,8 +88,8 @@ def lanczos_full(A,v0,m,full_ortho=False,out=None,eps=None):
 
 	Parameters
 	-----------
-	A : LinearOperator, hamiltonian, np.ndarray, or object with a 'dot' method.
-		Python object representing a linear map to compute the Lanczos approximation to the largest eigenvalues/vectors of. Must contain a dot-product method, used as `A.dot(v)`, e.g. `hamiltonian`, `quantum_operator`, `quantum_LinearOperator`, sparse or dense matrix.
+	A : LinearOperator, hamiltonian, np.ndarray, or object with a 'dot' method and a 'dtype' method.
+		Python object representing a linear map to compute the Lanczos approximation to the largest eigenvalues/vectors of. Must contain a dot-product method, used as `A.dot(v)` and a dtype method, used as `A.dtype`, e.g. `hamiltonian`, `quantum_operator`, `quantum_LinearOperator`, sparse or dense matrix.
 	v0 : array_like, (m,)
 		initial vector to start the Lanczos algorithm from.
 	m : int
@@ -229,8 +229,8 @@ def lanczos_iter(A,v0,m,return_vec_iter=True,copy_v0=True,copy_A=False,eps=None)
 
 	Parameters
 	-----------
-	A : LinearOperator, hamiltonian, np.ndarray, etc.
-		Python object representing a linear map to compute the Lanczos approximation to the largest eigenvalues/vectors of. Must contain a dot-product method, used as `A.dot(v)`, e.g. `hamiltonian`, `quantum_operator`, `quantum_LinearOperator`, sparse or dense matrix.
+	A : LinearOperator, hamiltonian, np.ndarray, etc. with a 'dot' method and a 'dtype' method.
+		Python object representing a linear map to compute the Lanczos approximation to the largest eigenvalues/vectors of. Must contain a dot-product method, used as `A.dot(v)` and a dtype method, used as `A.dtype`, e.g. `hamiltonian`, `quantum_operator`, `quantum_LinearOperator`, sparse or dense matrix.
 	v0 : array_like, (m,)
 		initial vector to start the Lanczos algorithm from.
 	m : int

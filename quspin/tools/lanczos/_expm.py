@@ -7,7 +7,14 @@ def expm_lanczos(E,V,Q,a=1.0,out=None):
 	""" Calculates action of matrix exponential on vector using Lanczos algorithm. 
 
 	The Lanczos decomposition `(E,V,Q)` with initial state `v0` of a hermitian matrix `A` can be used to compute the matrix exponential 
-	:math:`\\mathrm{exp}(aA)|v_0\\rangle` applied to the quantum state :math:`|v_0\\rangle`, without actually computing the exact matrix exponential.   
+	:math:`\\mathrm{exp}(aA)|v_0\\rangle` applied to the quantum state :math:`|v_0\\rangle`, without actually computing the exact matrix exponential:
+
+	Let :math:`H \\approx Q T Q^\\dagger` with :math:`T=V \\mathrm{diag}(E) V^T`. Then, we can compute an approximation to the matrix exponential, applied to a state :math:`|\\psi\\rangle` as follows:
+
+	.. math::
+		\\exp(-i a H)|\\psi\\rangle \\approx Q \\exp(-i a T) Q^\\dagger |\\psi\\rangle = Q V \\mathrm{diag}(e^{-i a E}) V^T Q^\\dagger |\\psi\\rangle.
+
+	If we use :math:`|\\psi\\rangle` as the (nondegenerate) initial state for the Lanczos algorithm, then :math:`\\sum_{j,k}V^T_{ij}Q^\\dagger_{jk}\\psi_k = \\sum_{j}V_{ji}\\delta_{0,j} = V_{i,0}` [by construction, :math:`\\psi_k` is the zero-th row of :math:`Q` and all the rows are orthonormal], and the expression simplifies further.   
 
 	Notes
 	-----

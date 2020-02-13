@@ -23,20 +23,20 @@ Lanczos_basis_full:
 	x change order of eigenvalue decompisition of matrix T in summary.
 	x define: eps in terms of inequalities
 	x fix return arguments. 
-	* `A` object must have `dtype` attribute
+	x `A` object must have `dtype` attribute
 
 Lanczos_basis_iter:
 	x make same changes as in Lanczos_basis_full.
 	x explain in more detail about 'copy_v0' and 'copy_A' flag.
 	x explain the generator feature better. 
-	* `A` object must have `dtype` attribute
+	x `A` object must have `dtype` attribute
 
 expm_lanczos:
 	x Q are not eigenvectors.
 	x 'mathrm' in front of exp in summary. 
 	x fix notation so that the sizes of arrays are shown. 
-	* explicitly show where the approximation of the identities happen. 
-	* make the sum over lanczos vectors explicitly over 1 to m.
+	x explicitly show where the approximation of the identities happen. 
+	x make the sum over lanczos vectors explicitly over 1 to m.
 
 
 
@@ -52,11 +52,11 @@ lanczos example code:
 	* discuss how to use lanczos to find the ground state efficiently compared to scipy. 
 
 lanczos finite temperature lanczos code
-	* add comments
+	x add comments
 	* create example rst page example 21
-	* 'nv' -> 'm'
-	* in bootstrap 'D' -> 'Ir' and 'N' -> 'Or'
-	* 'nsample' -> 'N_r' ?
+	x 'nv' -> 'm'
+	x in bootstrap 'D' -> 'Ir' and 'N' -> 'Or'
+	x 'nsample' -> 'N_r' ?
 
 
 
@@ -66,7 +66,7 @@ documentation:
 	x for parameter 'other_basis': Change '*general_basis*' to 'basis object' and then clarify that the basis must be the same type as the calling basis. 
 	x CHECK! add shapes to ndarray
 	x add note on how to check if the Op_shift_sector is working properly. 
-	* check for typo in fourier transform as well as generic expression in the last formula in the equations.
+	*x check for typo in fourier transform as well as generic expression in the last formula in the equations. (should be fixed, but check!)
 	* double check general formula for any symmetry. 
 
 example:
