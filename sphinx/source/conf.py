@@ -94,6 +94,7 @@ master_doc = 'index'
 project = u'QuSpin'
 copyright = u'2016, Phillip Weinberg and Marin Bukov'
 author = u'Phillip Weinberg and Marin Bukov'
+rst_prolog = open('global.rst', 'r').read()
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -115,7 +116,7 @@ language = None
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
 # This patterns also effect to html_static_path and html_extra_path
-exclude_patterns = []
+exclude_patterns =  [] #['_build', 'Thumbs.db', '.DS_Store', '.git']
 
 # The name of the Pygments (syntax highlighting) style to use.
 pygments_style = 'sphinx'

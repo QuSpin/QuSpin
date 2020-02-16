@@ -326,7 +326,7 @@ class basis_general(lattice_basis):
 
 		An operator, which does not conserve a symmetry, induces a change in the quantum number of a state defined in the corresponding symmetry sector. Hence, when the operator is applied on a quantum state, the state shifts the symmetry sector. `Op_shift_sector()` handles this automatically. 
 
-		:math:`\\mathrm{\\color{red} {NOTE:\\,One\\,has\\,to\\,make\\,sure\\,that\\,the\\,operator\\,moves\\,the\\,state\\,between\\,the\\,two\\,sectors,\\,this\\,function\\,will\\,not\\,give\\,the\\,correct\\,results\\,otherwise.}}`
+		:red:`NOTE: One has to make sure that the operator moves the state between the two sectors this function will not give the correct results otherwise.`
 
 		Formally  equivalent to:
 

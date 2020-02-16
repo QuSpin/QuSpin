@@ -74,7 +74,7 @@ def lanczos_full(A,v0,m,full_ortho=False,out=None,eps=None):
 	* a real symmetric tridiagonal matrix :math:`T=Q^\\dagger A Q` of size :math:`m\\times m`. The matrix :math:`T` can be represented via its eigendecomposition `(E,V)`: :math:`T=V\\mathrm{diag}(E)V^T`. 
 	This function computes the triple :math:`(E,V,Q^T)`.
 
-	:math:`\\mathrm{\\color{red} {NOTE:\\,This\\,function\\,returns\\,Q^T;\\,Q^T\\,is\\,(in\\,general)\\,different\\,from\\,Q^\\dagger.}}`
+	:red:`NOTE:` This function returns :math:`Q^T;\\,Q^T` is (in general) different from :math:`Q^\\dagger`.
 
  
 	Notes
@@ -223,8 +223,7 @@ def lanczos_iter(A,v0,m,return_vec_iter=True,copy_v0=True,copy_A=False,eps=None)
 	* a real symmetric tridiagonal matrix :math:`T=Q^\\dagger A Q` of size :math:`m\\times m`. The matrix :math:`T` can be represented via its eigendecomposition `(E,V)`: :math:`T=V\\mathrm{diag}(E)V^T`. 
 	This function computes the triple :math:`(E,V,Q^T)`.
 
-	:math:`\\mathrm{\\color{red} {NOTE:\\,This\\,function\\,returns\\,Q^T;\\,Q^T\\,is\\,(in\\,general)\\,different\\,from\\,Q^\\dagger.}}`
-
+	:red:`NOTE:` This function returns :math:`Q^T;\\,Q^T` is (in general) different from :math:`Q^\\dagger`.
  
 
 	Parameters
