@@ -69,40 +69,79 @@ void csrmv_merge(const bool overwrite_y,
 	I num_merge_items = num_rows + num_nonzeros; // Merge path total length
 	I items_per_thread = (num_merge_items + num_threads - 1) / num_threads; // Merge items per thread
 
-	// Spawn parallel threads
-	#pragma omp for schedule(static,1)
-	for (int tid = 0; tid < num_threads; tid++)
-	{
-		// Find starting and ending MergePath coordinates (row-idx, nonzero-idx) for each thread
-		I diagonal = std::min(items_per_thread * tid, num_merge_items);
-		I diagonal_end = std::min(diagonal + items_per_thread, num_merge_items);
-		CoordinateT<I> thread_coord = MergePathSearch(diagonal, num_rows, num_nonzeros, row_end_offsets, nz_indices);
-		CoordinateT<I> thread_coord_end = MergePathSearch(diagonal_end, num_rows, num_nonzeros,row_end_offsets, nz_indices);
-		if(overwrite_y){
-			for(I thd_x=thread_coord.x;thd_x<thread_coord_end.x;++thd_x)
-				y[thd_x] = T3(0);
-		}
-
-
-		// Consume merge items, whole rows first
-		T3 running_total = T3(0);
-		for (; thread_coord.x < thread_coord_end.x; ++thread_coord.x)
+	if(overwrite_y){
+		// Spawn parallel threads
+		#pragma omp for schedule(static,1)
+		for (int tid = 0; tid < num_threads; tid++)
 		{
-			for (; thread_coord.y < row_end_offsets[thread_coord.x]; ++thread_coord.y)
-			running_total += values[thread_coord.y] * x[column_indices[thread_coord.y]];
+			// Find starting and ending MergePath coordinates (row-idx, nonzero-idx) for each thread
+			I diagonal = std::min(items_per_thread * tid, num_merge_items);
+			I diagonal_end = std::min(diagonal + items_per_thread, num_merge_items);
+			CoordinateT<I> thread_coord = MergePathSearch(diagonal, num_rows, num_nonzeros, row_end_offsets, nz_indices);
+			CoordinateT<I> thread_coord_end = MergePathSearch(diagonal_end, num_rows, num_nonzeros,row_end_offsets, nz_indices);
+			// if(overwrite_y){
+			// 	std::fill(y+thread_coord.x,y+thread_coord_end.x,T3(0));
+			// }
 
-			y[thread_coord.x] += alpha * running_total;
-			running_total = T3(0);
+
+			// Consume merge items, whole rows first
+			T3 running_total = T3(0);
+			for (; thread_coord.x < thread_coord_end.x; ++thread_coord.x)
+			{	
+				I row_end_offset = row_end_offsets[thread_coord.x];
+				for (; thread_coord.y < row_end_offset; ++thread_coord.y)
+				running_total += values[thread_coord.y] * x[column_indices[thread_coord.y]];
+
+				y[thread_coord.x] = alpha * running_total;
+				running_total = T3(0);
+			}
+
+			// Consume partial portion of thread's last row
+			for (; thread_coord.y < thread_coord_end.y; ++thread_coord.y)
+				running_total += values[thread_coord.y] * x[column_indices[thread_coord.y]];
+
+			// Save carry-outs
+			row_carry_out[tid] = thread_coord_end.x;
+			value_carry_out[tid] = running_total;
 		}
-
-		// Consume partial portion of thread's last row
-		for (; thread_coord.y < thread_coord_end.y; ++thread_coord.y)
-			running_total += values[thread_coord.y] * x[column_indices[thread_coord.y]];
-
-		// Save carry-outs
-		row_carry_out[tid] = thread_coord_end.x;
-		value_carry_out[tid] = running_total;
 	}
+	else{
+		// Spawn parallel threads
+		#pragma omp for schedule(static,1)
+		for (int tid = 0; tid < num_threads; tid++)
+		{
+			// Find starting and ending MergePath coordinates (row-idx, nonzero-idx) for each thread
+			I diagonal = std::min(items_per_thread * tid, num_merge_items);
+			I diagonal_end = std::min(diagonal + items_per_thread, num_merge_items);
+			CoordinateT<I> thread_coord = MergePathSearch(diagonal, num_rows, num_nonzeros, row_end_offsets, nz_indices);
+			CoordinateT<I> thread_coord_end = MergePathSearch(diagonal_end, num_rows, num_nonzeros,row_end_offsets, nz_indices);
+			// if(overwrite_y){
+			// 	std::fill(y+thread_coord.x,y+thread_coord_end.x,T3(0));
+			// }
+
+
+			// Consume merge items, whole rows first
+			T3 running_total = T3(0);
+			for (; thread_coord.x < thread_coord_end.x; ++thread_coord.x)
+			{	
+				I row_end_offset = row_end_offsets[thread_coord.x];
+				for (; thread_coord.y < row_end_offset; ++thread_coord.y)
+				running_total += values[thread_coord.y] * x[column_indices[thread_coord.y]];
+
+				y[thread_coord.x] += alpha * running_total;
+				running_total = T3(0);
+			}
+
+			// Consume partial portion of thread's last row
+			for (; thread_coord.y < thread_coord_end.y; ++thread_coord.y)
+				running_total += values[thread_coord.y] * x[column_indices[thread_coord.y]];
+
+			// Save carry-outs
+			row_carry_out[tid] = thread_coord_end.x;
+			value_carry_out[tid] = running_total;
+		}
+	}
+
 
 	// Carry-out fix-up (rows spanning multiple threads)
 	#pragma omp single
@@ -136,40 +175,76 @@ void csrmv_merge_strided(const bool overwrite_y,
 	I num_merge_items = num_rows + num_nonzeros; // Merge path total length
 	I items_per_thread = (num_merge_items + num_threads - 1) / num_threads; // Merge items per thread
 
+	// if(overwrite_y){
+	// 	#pragma omp for schedule(static)
+	// 	for(I i=0;i<num_rows;i++){
+	// 		y[i * stride_y] = 0;
+	// 	}
+	// }
+	
 	if(overwrite_y){
-		#pragma omp for schedule(static)
-		for(I i=0;i<num_rows;i++){
-			y[i * stride_y] = 0;
+		// Spawn parallel threads
+		#pragma omp for schedule(static,1)
+		for (int tid = 0; tid < num_threads; tid++)
+		{
+			// Find starting and ending MergePath coordinates (row-idx, nonzero-idx) for each thread
+			I diagonal = std::min(items_per_thread * tid, num_merge_items);
+			I diagonal_end = std::min(diagonal + items_per_thread, num_merge_items);
+			CoordinateT<I> thread_coord = MergePathSearch(diagonal, num_rows, num_nonzeros, row_end_offsets, nz_indices);
+			CoordinateT<I> thread_coord_end = MergePathSearch(diagonal_end, num_rows, num_nonzeros,row_end_offsets, nz_indices);
+
+			// Consume merge items, whole rows first
+			T3 running_total = 0.0;
+			for (; thread_coord.x < thread_coord_end.x; ++thread_coord.x)
+			{
+				I row_end_offset = row_end_offsets[thread_coord.x];
+				for (; thread_coord.y < row_end_offset; ++thread_coord.y)
+				running_total += values[thread_coord.y] * x[column_indices[thread_coord.y] * stride_x];
+
+				y[thread_coord.x * stride_y] = alpha * running_total;  // assign vs. add in-place 
+				running_total = 0.0;
+			}
+
+			// Consume partial portion of thread's last row
+			for (; thread_coord.y < thread_coord_end.y; ++thread_coord.y)
+				running_total += values[thread_coord.y] * x[column_indices[thread_coord.y] * stride_x];
+
+			// Save carry-outs
+			row_carry_out[tid] = thread_coord_end.x;
+			value_carry_out[tid] = running_total;
 		}
 	}
-	// Spawn parallel threads
-	#pragma omp for schedule(static,1)
-	for (int tid = 0; tid < num_threads; tid++)
-	{
-		// Find starting and ending MergePath coordinates (row-idx, nonzero-idx) for each thread
-		I diagonal = std::min(items_per_thread * tid, num_merge_items);
-		I diagonal_end = std::min(diagonal + items_per_thread, num_merge_items);
-		CoordinateT<I> thread_coord = MergePathSearch(diagonal, num_rows, num_nonzeros, row_end_offsets, nz_indices);
-		CoordinateT<I> thread_coord_end = MergePathSearch(diagonal_end, num_rows, num_nonzeros,row_end_offsets, nz_indices);
-
-		// Consume merge items, whole rows first
-		T3 running_total = 0.0;
-		for (; thread_coord.x < thread_coord_end.x; ++thread_coord.x)
+	else{
+		// Spawn parallel threads
+		#pragma omp for schedule(static,1)
+		for (int tid = 0; tid < num_threads; tid++)
 		{
-			for (; thread_coord.y < row_end_offsets[thread_coord.x]; ++thread_coord.y)
-			running_total += values[thread_coord.y] * x[column_indices[thread_coord.y] * stride_x];
+			// Find starting and ending MergePath coordinates (row-idx, nonzero-idx) for each thread
+			I diagonal = std::min(items_per_thread * tid, num_merge_items);
+			I diagonal_end = std::min(diagonal + items_per_thread, num_merge_items);
+			CoordinateT<I> thread_coord = MergePathSearch(diagonal, num_rows, num_nonzeros, row_end_offsets, nz_indices);
+			CoordinateT<I> thread_coord_end = MergePathSearch(diagonal_end, num_rows, num_nonzeros,row_end_offsets, nz_indices);
 
-			y[thread_coord.x * stride_y] += alpha * running_total;
-			running_total = 0.0;
+			// Consume merge items, whole rows first
+			T3 running_total = 0.0;
+			for (; thread_coord.x < thread_coord_end.x; ++thread_coord.x)
+			{
+				I row_end_offset = row_end_offsets[thread_coord.x];
+				for (; thread_coord.y < row_end_offset; ++thread_coord.y)
+				running_total += values[thread_coord.y] * x[column_indices[thread_coord.y] * stride_x];
+
+				y[thread_coord.x * stride_y] += alpha * running_total; // add in-place vs. assign
+				running_total = 0.0;
+			}
+
+			// Consume partial portion of thread's last row
+			for (; thread_coord.y < thread_coord_end.y; ++thread_coord.y)
+				running_total += values[thread_coord.y] * x[column_indices[thread_coord.y] * stride_x];
+
+			// Save carry-outs
+			row_carry_out[tid] = thread_coord_end.x;
+			value_carry_out[tid] = running_total;
 		}
-
-		// Consume partial portion of thread's last row
-		for (; thread_coord.y < thread_coord_end.y; ++thread_coord.y)
-			running_total += values[thread_coord.y] * x[column_indices[thread_coord.y] * stride_x];
-
-		// Save carry-outs
-		row_carry_out[tid] = thread_coord_end.x;
-		value_carry_out[tid] = running_total;
 	}
 
 	// Carry-out fix-up (rows spanning multiple threads)

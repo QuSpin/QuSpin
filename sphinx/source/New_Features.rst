@@ -1,7 +1,8 @@
-<span style="color:orange">QuSpin 0.3.3</span> here (updated on 2019.10.15)
+<span style="color:orange">QuSpin 0.3.4</span> here (updated on 2020.??.??)
 ============================================================================
 
-<span style="color:red">Highlights</span>: OpenMP support here; Constrained Hilbert spaces support now here!
+
+<span style="color:red">Highlights</span>: OpenMP support here; Constrained Hilbert spaces support here; Lanczos module now here!
 ===================================================================
 
 Check out :ref:`parallelization-label` and the example script :ref:`example12-label`.
@@ -13,11 +14,29 @@ Complete list of the most recent features
 =========================================
 
 
+Added in v. 0.3.4 (2020.??.??)
+------------------------------
+
+Improved Functionality
+++++++++++++++++++++++
+
+* revised `user_basis` tutorial for spinless fermions: introduced function `_count_particles_32()`.
+* fixed bugs.
+
+
+New Attributes, Functions, Methods and Classes
+++++++++++++++++++++++++++++++++++++++++++++++
+* new `tools.Lanczos` module for Lanczos type calculations. 
+* new function method `Op_shift_sector` of the `*basis_general_` classes allows to apply operators, which do not preserve the symmetry sector, to quantum states in the reduced basis. Useful for computing correlation functions. See Example ??.
+* new required package for QuSpin: `numexpr` (ADD TO MANUAL INSTALL AND README).
+
+
 Added in v. 0.3.3 (2019.10.15)
 ------------------------------
 
 Improved Functionality
 ++++++++++++++++++++++
+
 * introducing improvements to Example 11 to perform Monte Carlo sampling in the symmetry-reduced Hilbert space.
 * new examples:
 	* Example 13 to showcase `double_occupancy` option of the `spinful_fermion_basis_*`.

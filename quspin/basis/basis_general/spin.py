@@ -197,23 +197,46 @@ class spin_basis_general(hcb_basis_general,higher_spin_basis_general):
 			return higher_spin_basis_general._Op(self,opstr,indx,J,dtype)
 
 		
-
-	def _inplace_Op(self,v_in,opstr,indx,J,dtype,transposed=False,conjugated=False,v_out=None):
+	
+	def _inplace_Op(self,v_in,op_list,dtype,transposed=False,conjugated=False,v_out=None,a=1.0):
 		if self._S == "1/2":
 
 			if self._pauli==1:
-				n = len(opstr.replace("I",""))
-				J *= (1<<n)
+				scale = lambda s:(1<<len(s.replace("I","")))
 			elif self._pauli==-1:
-				n = len(opstr.replace("I","").replace("+","").replace("-",""))
-				J *= (1<<n)
+				scale = lambda s:(1<<len(s.replace("I","").replace("+","").replace("-","")))
+			else:
+				scale = lambda s:1
 
-			return hcb_basis_general._inplace_Op(self,v_in,opstr,indx,J,dtype,transposed=transposed,conjugated=conjugated,v_out=v_out)
+			op_list = [[op,indx,J*scale(op)] for op,indx,J in op_list]
+
+			return hcb_basis_general._inplace_Op(self,v_in,op_list,dtype,
+				transposed=transposed,conjugated=conjugated,v_out=v_out,a=a)
 
 		else:
-			return higher_spin_basis_general._inplace_Op(self,v_in,opstr,indx,J,dtype,transposed=transposed,conjugated=conjugated,v_out=v_out)
+			return higher_spin_basis_general._inplace_Op(self,v_in,op_list,dtype,
+				transposed=transposed,conjugated=conjugated,v_out=v_out,a=a)
 
-		return ME,row,col		
+
+	def Op_shift_sector(self,other_basis,op_list,v_in,v_out=None,dtype=None):
+		if self._S == "1/2":
+
+			if self._pauli==1:
+				scale = lambda s:(1<<len(s.replace("I","")))
+			elif self._pauli==-1:
+				scale = lambda s:(1<<len(s.replace("I","").replace("+","").replace("-","")))
+			else:
+				scale = lambda s:1
+
+			op_list = [[op,indx,J*scale(op)] for op,indx,J in op_list]
+
+			return hcb_basis_general.Op_shift_sector(self,other_basis,op_list,v_in,v_out=v_out,dtype=dtype)
+
+		else:
+			return higher_spin_basis_general.Op_shift_sector(self,other_basis,op_list,v_in,v_out=v_out,dtype=dtype)	
+
+	Op_shift_sector.__doc__ = hcb_basis_general.Op_shift_sector.__doc__
+
 
 	def __type__(self):
 		return "<type 'qspin.basis.general_hcb'>"
@@ -246,9 +269,9 @@ class spin_basis_general(hcb_basis_general,higher_spin_basis_general):
 		indx = _np.array(op[1])
 		if _np.any(indx):
 			indx_p = indx[opstr == "+"].tolist()
-			p = not any(indx_p.count(x) > 1 for x in indx_p)
+			p = not any(indx_p.count(x) > self.sps-1 for x in indx_p)
 			indx_p = indx[opstr == "-"].tolist()
-			m = not any(indx_p.count(x) > 1 for x in indx_p)
+			m = not any(indx_p.count(x) > self.sps-1 for x in indx_p)
 			return (p and m)
 		else:
 			return True

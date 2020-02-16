@@ -18,6 +18,21 @@ evolution
    evolve
    expm_multiply_parallel
 
+Lanczos
+-------
+
+.. currentmodule:: quspin.tools.lanczos
+
+.. autosummary::
+   :toctree: generated/
+
+   lanczos_full
+   lanczos_iter
+   expm_lanczos
+   lin_comb_Q
+   LTLM_static_iteration
+   FTLM_static_iteration      
+
 Floquet
 --------
 
@@ -73,3 +88,4 @@ from . import Floquet
 from . import measurements
 from . import block_tools
 from . import misc
+from . import lanczos

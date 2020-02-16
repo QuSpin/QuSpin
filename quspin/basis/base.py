@@ -104,7 +104,7 @@ class basis(object):
 	def _Op(self,opstr,indx,J,dtype):
 		raise NotImplementedError("basis class: {0} missing implementation of '_Op' required for calculating matrix elements!".format(self.__class__))	
 
-	def _inplace_Op(self,v_in,opstr,indx,J,dtype,transposed=False,conjugated=False,v_out=None):
+	def _inplace_Op(self,v_in,op_list,dtype,transposed=False,conjugated=False,v_out=None,a=1.0):
 		""" default version for all basis classes which works so long as _Op is implemented."""
 
 		v_in = _np.asanyarray(v_in)
@@ -116,27 +116,26 @@ class basis(object):
 
 		if v_out is None:
 			v_out = _np.zeros_like(v_in,dtype=result_dtype)
-		else:
-			v_out = _np.asanyarray(v_out)
 
-			if v_out.shape != v_in.shape:
-				raise ValueError("v_in.shape != v_out.shape")
+		v_out = v_out.reshape((self.Ns,-1))
+		v_in = v_in.reshape((self.Ns,-1))
 
+		
+		for opstr,indx,J in op_list:
 
+			if not transposed:
+				ME, row, col = self.Op(opstr, indx, a*J, dtype)
+			else:
+				ME, col, row = self.Op(opstr, indx, a*J, dtype)
 
-		if not transposed:
-			ME, row, col = self.Op(opstr, indx, J, dtype)
-		else:
-			ME, col, row = self.Op(opstr, indx, J, dtype)
+			if conjugated:
+				ME = ME.conj()
 
-		if conjugated:
-			ME = ME.conj()
+			_coo_dot(v_in,v_out,row,col,ME)
 
-		_coo_dot(v_in.reshape((self.Ns,-1)),v_out.reshape((self.Ns,-1)),row,col,ME)
+		return v_out.squeeze()		
 
-		return v_out			
-
-	def inplace_Op(self,v_in,opstr,indx,J,dtype,transposed=False,conjugated=False,v_out=None):
+	def inplace_Op(self,v_in,op_list,dtype,transposed=False,conjugated=False,v_out=None):
 		"""Calculates the action of an operator on a state.
 
 		Notes
@@ -147,18 +146,8 @@ class basis(object):
 		-----------
 		v_in : array_like
 			state (or states stored in columns) to act on with the operator.
-		opstr : str
-			Operator string in the lattice basis format. For instance:
-
-			>>> opstr = "zz"
-
-		indx : list(int)
-			List of integers to designate the sites the lattice basis operator is defined on. For instance:
-			
-			>>> indx = [2,3]
-
-		J : scalar
-			Coupling strength.
+		op_list : list
+			Operator string list which defines the operator to apply. Follows the format `[["z",[i],Jz[i]] for i in range(L)], ["x",[i],Jx[j]] for j in range(L)],...]`. 
 		dtype : 'type'
 			Data type (e.g. `numpy.float64`) to construct the operator with.
 		transposed : bool, optional
@@ -181,10 +170,12 @@ class basis(object):
 		>>> indx = [2,3]
 		>>> opstr = "zz"
 		>>> dtype = np.float64
-		>>> ME, row, col = Op(opstr,indx,J,dtype)
+		>>> op_list=[[opstr,indx,J]]
+		>>> ME, row, col = inplace_Op(op_list,dtype)
 
 		"""
-		return self._inplace_Op(v_in,opstr,indx,J,dtype,transposed=transposed,conjugated=conjugated,v_out=v_out)
+
+		return self._inplace_Op(v_in,op_list,dtype,transposed=transposed,conjugated=conjugated,v_out=v_out)
 
 	def Op(self,opstr,indx,J,dtype):
 		"""Constructs operator from a site-coupling list and an operator string in a lattice basis.
@@ -241,7 +232,6 @@ class basis(object):
 				if _is_diagonal(row,col):
 					if diag is None:
 						diag = _np.zeros(self.Ns,dtype=dtype)
-
 					_update_diag(diag,row,ME)
 				else:
 					if off_diag is None:
@@ -663,8 +653,6 @@ class basis(object):
 						if static_list[i] not in odd_ops:
 							odd_ops.append(static_list[i])
 
-
-	
 			if odd_ops:
 				unique_opstrs = list(set( next(iter(zip(*tuple(odd_ops))))) )
 				unique_odd_ops = []
@@ -694,7 +682,7 @@ class basis(object):
 						if dynamic_list[i] not in odd_ops:
 							odd_ops.append(dynamic_list[i])
 
-	
+
 			if odd_ops:
 				unique_opstrs = list(set( next(iter(zip(*tuple(odd_ops))))))
 				unique_odd_ops = []

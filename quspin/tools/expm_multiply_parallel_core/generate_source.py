@@ -1,6 +1,6 @@
 
 import numpy as np
-from numpy import int32,int64,float32,float64,complex64,complex128
+from numpy import int8,int16,int32,int64,float32,float64,complex64,complex128
 import os
 
 
@@ -9,14 +9,18 @@ import os
 
 
 
-numpy_ctypes={float32:"float",float64:"double",complex64:"npy_cfloat_wrapper",complex128:"npy_cdouble_wrapper",int32:"npy_int32",int64:"npy_int64"}
-numpy_numtypes={float32:"NPY_FLOAT32",float64:"NPY_FLOAT64",complex64:"NPY_COMPLEX64",complex128:"NPY_COMPLEX128",int32:"NPY_INT32",int64:"NPY_INT64"}
+numpy_ctypes={float32:"float",float64:"double",complex64:"npy_cfloat_wrapper",complex128:"npy_cdouble_wrapper",
+                int32:"npy_int32",int64:"npy_int64",int8:"npy_int8",int16:"npy_int16"}
+
+numpy_numtypes={float32:"NPY_FLOAT32",float64:"NPY_FLOAT64",complex64:"NPY_COMPLEX64",complex128:"NPY_COMPLEX128",
+                int32:"NPY_INT32",int64:"NPY_INT64",int16:"NPY_INT16",int8:"NPY_INT8"}
 
 real_dtypes={float32:float32,float64:float64,complex64:float32,complex128:float64}
 
 
 I_types = [int32,int64]
-T_types = [complex128,float64,complex64,float32]
+T_types = [complex128,float64,complex64,float32,int16,int8]
+T3_types = [complex128,float64,complex64,float32]
 
 
 
@@ -42,9 +46,9 @@ def generate_get_switch_num():
         expm_multiply_body = expm_multiply_body + "\telse if(PyArray_EquivTypenums(I,{})){{\n\t\tif(0){{}}\n".format(numpy_numtypes[I])
         for T1 in T_types:
             for T2 in T_types:
-                for T3 in T_types:
-                    if np.can_cast(T1,T3) and T2 == real_dtypes[T1]:
-                        expm_multiply_body = expm_multiply_body + "\t\telse if(T1=={} && T2=={} && T3=={}){{return {};}}\n".format(numpy_numtypes[T1],numpy_numtypes[T2],numpy_numtypes[T3],switch_num)
+                for T3 in T3_types:
+                    if np.can_cast(T1,T3) and T2 == real_dtypes[T3]:
+                        expm_multiply_body = expm_multiply_body + "\t\telse if(PyArray_EquivTypenums(T1,{}) && PyArray_EquivTypenums(T2,{}) && PyArray_EquivTypenums(T3,{})){{return {};}}\n".format(numpy_numtypes[T1],numpy_numtypes[T2],numpy_numtypes[T3],switch_num)
                         switch_num += 1
 
         expm_multiply_body = expm_multiply_body + "\t\telse {return -1;}\n\t}\n"
@@ -84,11 +88,11 @@ def generate_expm_multiply():
     switch_num = 0
     switch_body = ""
     case_tmp = "\n\t\tcase {} :\n\t\t\t{}\n\t\t\tbreak;"
-    call_tmp = "expm_multiply<{I},{T1},{T2},{T3}>((const {I})n,(const {I}*)Ap,(const {I}*)Aj,(const {T1}*)Ax,s,m_star,*(const {T2}*)tol,*(const {T1}*)mu,*(const {T3}*)a,({T3}*)F,({T3}*)work);"
+    call_tmp = "expm_multiply<{I},{T1},{T2},{T3}>((const {I})n,(const {I}*)Ap,(const {I}*)Aj,(const {T1}*)Ax,s,m_star,*(const {T2}*)tol,*(const {T3}*)mu,*(const {T3}*)a,({T3}*)F,({T3}*)work);"
     for I in I_types:
         for T1 in T_types:
             for T2 in T_types:
-                for T3 in T_types:
+                for T3 in T3_types:
                     if np.can_cast(T1,T3) and T2 == real_dtypes[T3]:
                         call = call_tmp.format(I=numpy_ctypes[I],T1=numpy_ctypes[T1],T2=numpy_ctypes[T2],T3=numpy_ctypes[T3])
                         switch_body = switch_body + case_tmp.format(switch_num,call)

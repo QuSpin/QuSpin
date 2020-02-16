@@ -47,6 +47,8 @@ functions
    isquantum_operator
    isexp_op
    isquantum_LinearOperator
+   save_zip
+   load_zip
 
 """
 from .quantum_operator_core import *
