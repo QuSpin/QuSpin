@@ -1,7 +1,8 @@
-:math:`\mathrm{\color{orange} {QuSpin\ 0.3.4}}` here (updated on 2020.??.??)
+<span style="color:orange">QuSpin 0.3.4</span> here (updated on 2020.??.??)
 ============================================================================
 
-:math:`\mathrm{\color{red} {Highlights}}`: OpenMP support here; Constrained Hilbert spaces support here; Lanczos module now here!
+
+<span style="color:red">Highlights</span>: OpenMP support here; Constrained Hilbert spaces support here; Lanczos module now here!
 ===================================================================
 
 Check out :ref:`parallelization-label` and the example script :ref:`example12-label`.
@@ -75,7 +76,7 @@ Improved Functionality
 ++++++++++++++++++++++
 
 * support for python 3.7.
-* :math:`\mathrm{\color{red} {discontinued\ support}}` for python 3.5 on all platforms and python 2.7 on windows. QuSpin for these versions will remain available to download up to and including QuSpin 0.3.0, but they are no longer being maintained. 
+* <span style="color:red">discontinued support</span> for python 3.5 on all platforms and python 2.7 on windows. QuSpin for these versions will remain available to download up to and including QuSpin 0.3.0, but they are no longer being maintained. 
 * matplotlib is no longer a required package to install quspin. It is still required to run the examples, though.
 * parallelization: New parallel features added or improved + OpenMP support for osx. Requires a different build of QuSpin (see also :ref:`parallelization-label`).
 * new OpenMP features in operators module (see :ref:`parallelization-label` and example script :ref:`example12-label`).
