@@ -1,7 +1,7 @@
 .. _user-basis_example2-label:
 
 Bose-Hubbard model in 1d
---------
+------------------------
 
 This example makes use of the `user_basis` class of `basis_general` to show how to construct boson systems with symmetries.
 

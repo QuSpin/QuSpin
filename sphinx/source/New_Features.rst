@@ -1,11 +1,11 @@
 
 
 :red:`QuSpin 0.3.4` here (updated on 2020.??.??)
-============================================================================
+================================================
 
 
 :green:`Highlights:` OpenMP support here; Constrained Hilbert spaces support here; Lanczos module now here!
-===================================================================
+===========================================================================================================
 
 Check out :ref:`parallelization-label` and the example script :ref:`example12-label`.
 

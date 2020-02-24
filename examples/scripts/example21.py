@@ -15,12 +15,12 @@ sys.path.insert(0,quspin_path)
 #######################################################################
 from quspin.basis import spin_basis_1d
 from quspin.operators import hamiltonian,quantum_operator
-from quspin.tools.lanczos import lanczos_full,FTLM_static_iteration,LTLM_static_iteration
+from quspin.tools.lanczos import lanczos_full,lanczos_iter,FTLM_static_iteration,LTLM_static_iteration
 import numpy as np
 import matplotlib.pyplot as plt
 from mpl_toolkits.axes_grid1.inset_locator import inset_axes
 #
-np.random.seed(0) # fix seed
+np.random.seed(1203901) # fix seed
 #
 #
 def bootstrap_mean(O_r,Id_r,n_bootstrap=100):
@@ -137,16 +137,18 @@ for i in range(N_samples):
 	r /= np.linalg.norm(r)
 	# get lanczos basis
 	E,V,lv = lanczos_full(H_wrapped,r,m,eps=1e-8,full_ortho=True)
+	# E,V,lv = lanczos_full(H_wrapped,r,m,eps=1e-8,full_ortho=False)
+	# E,V,lv = lanczos_iter(H_wrapped,r,m,eps=1e-8)
 	# shift energy to avoid overflows
 	E -= E0
 	# calculate iteration
-	results_FT,Z_FT = FTLM_static_iteration({"M2":M2},E,V,lv,beta=beta)
-	results_LT,Z_LT = LTLM_static_iteration({"M2":M2},E,V,lv,beta=beta)
+	results_FT,Id_FT = FTLM_static_iteration({"M2":M2},E,V,lv,beta=beta)
+	results_LT,Id_LT = LTLM_static_iteration({"M2":M2},E,V,lv,beta=beta)
 	# save results to a list
 	M2_FT_list.append(results_FT["M2"])
-	Z_FT_list.append(Z_FT)
+	Z_FT_list.append(Id_FT)
 	M2_LT_list.append(results_LT["M2"])
-	Z_LT_list.append(Z_LT)
+	Z_LT_list.append(Id_LT)
 #
 # calculating error bars on the expectation values
 m2_FT,dm2_FT = bootstrap_mean(M2_FT_list,Z_FT_list)

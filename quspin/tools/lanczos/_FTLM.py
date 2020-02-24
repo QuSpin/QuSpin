@@ -20,31 +20,41 @@ def FTLM_static_iteration(O_dict,E,V,Q_T,beta=0):
 	
 	with the partition function defined as: :math:`Z=Tr\\left(e^{-\\beta H}\\right)`. The idea behind the 
 	Finite-Temperature Lanczos Method (FTLM) is to use quantum typicality as well as Krylov subspaces to 
-	simplify this calculation. Typicality states that the trace of an operator can be approximated as an 
-	average of that same operator with random vectors in the H-space samples with the Harr measure. 
-	As a corollary, it is known that the fluctuations of this corollary for any finite sample set will 
-	converge to 0 as the size of the Hilbert space increases. If you combine this with the Lanczos method 
-	to approximate the matrix exponential :math:`e^{-\\beta H}`. Mathematically this is expressed as:
+	simplify this calculation. Typicality states that the trace of an operator can be approximated as an average 
+	of that same operator with random vectors in the Hilbert-space sampled with the Harr measure. As a corollary, it 
+	is known that the fluctuations of this average for any finite sample set will converge to 0 as the size of 
+	the Hilbert space increases. Mathematically this is expressed as:
 
 	.. math::
-		\\langle O\\rangle_\\beta = \\frac{\\overline{\\langle O\\rangle_r}}{\\overline{\\langle Z\\rangle_r}}
+		\\frac{1}{\\dim\\mathcal{H}}Tr\\left(e^{-\\beta H}O\\right)\\approx \\frac{1}{N_r}\\sum_r\\langle r| e^{-\\beta H}O |r\\rangle
 
-	with the two quaitites are defined as averages over quantities calculate with Lanczos vectors that start with random initial vectors :math:`|r\\rangle`:
+	where :math:`|r\\rangle` is a random state from the Harr measure of hilbert space :math:`\\mathcal{H}` if the 
+	Hamiltonian. An issue can occur when the temperature goes to zero as the overlap :math:`\\langle r| e^{-\\beta H}O |r\\rangle` will 
+	be quite small for most states :math:`|r\\rangle`. Hence, this will require more random realizations to converge. Therefore, 
+	this method is really only useful at high temperatures. Next, the idea is to use Lanczos to approximate the matrix exponential. 
+	The eigenstates from the lanczos basis can effectively be inserted as an identity operator:
 
 	.. math::
-		\\overline{\\langle O\\rangle_r} = \\frac{1}{N_r}\\sum_{r} \\langle O\\rangle_r = \\frac{1}{N_r}\\sum_{r}\\sum_{n}e^{-\\beta \\epsilon^{(r)}_n}\\langle r|\\psi^{(r)}_n\\rangle\\langle\\psi^{(r)}_n|O|r\\rangle
+		\\frac{1}{\\dim\\mathcal{H}}Tr\\left(e^{-\\beta H}O\\right)\\approx \\frac{1}{N_r}\\sum_r\\langle r|e^{-\\beta H}O|r\\rangle\\approx \\frac{1}{N_r}\\sum_r\\sum_{i=1}^m e^{-\\beta\\epsilon^{(r)}_i}\\langle r|\\psi^{(r)}_i\\rangle\\langle\\psi^{(r)}_i|O|r\\rangle = \\frac{1}{N_r}\\sum_r \\langle O\\rangle_r \\equiv \\overline{\\langle O\\rangle_r}
+
+	Now going back to the thermal expecation value, we can use the expression above to calculate: :math:`\\frac{1}{Z}Tr\\left(e^{-\\beta H}O\\right)` 
+	by noting that the partition function is simply the expecation value of the identity operator: :math:`Z=Tr\\left(e^{-\\beta H}I\\right)` and hence 
+	the thermal expecation value is approximated by:
 
 	.. math::
-		\\overline{\\langle Z\\rangle_r} = \\frac{1}{N_r}\\sum_{r} \\langle Z\\rangle_r =\\frac{1}{N_r}\\sum_{r}\\sum_{n}e^{-\\beta \\epsilon^{(r)}_n}|\\langle r|\\psi^{(r)}_n\\rangle|^2
+		\\langle O\\rangle_\\beta \\approx \\frac{\\overline{\\langle O\\rangle_r}}{\\overline{\\langle I\\rangle_r}}
 
-	The purpose of this function is to calculate :math:`\\langle O\\rangle_r` and :math:`\\langle Z\\rangle_r` 
-	for a Krylov subspace provided; this implies that to perform the full FTLM calculation this function 
-	must be called many times to perform the average over random initial states.
+
+	The idea behind this function is to generate the the expecation value :math:`\\langle O\\rangle_r` and :math:`\\langle I\\rangle_r`
+	for a lanczos basis generated from an initial state :math:`|r\\rangle`. Therefore if the user would like to calculate the thermal expecation value all one 
+	has to do call this function for each lanczos basis generated from a random state :math:`|r\\rangle`. 
 
 	Notes
 	-----
 	* The amount of memory used by this function scales like: :math:`nN_{op}` with :math:`n` being the size of the full Hilbert space and :math:`N_{op}` is the number of input operators. 
 	* FTLM does not converge very well at low temperatures, see function for low-temperature lanczos iterations. 
+	* One has to be careful as typicality only applies to the trace operation over the entire Hilbert space. Using symmetries is possible, however it requires the user to keep track of the weights in the different sectors.
+
 
 	Parameters
 	-----------
@@ -65,8 +75,8 @@ def FTLM_static_iteration(O_dict,E,V,Q_T,beta=0):
 		A dictionary storying the results for a single iteration of the FTLM. The results are stored in numpy.ndarrays 
 		that have the same shape as `beta`. The keys of `Result_dict` are the same as the keys in `O_dict` and the values 
 		associated with the given key in `Result_dict` are the expectation values for the operator in `O_dict` with the same key.
-	Z: numpy.ndarray, same shape as `beta`
-		The value of the partition function for the given iterator for each beta. 
+	I_expt: numpy.ndarray, same shape as `beta`
+		The expecation value of the identity operator for each beta. 
 
 
 	Examples
@@ -74,15 +84,15 @@ def FTLM_static_iteration(O_dict,E,V,Q_T,beta=0):
 
 	>>> beta = numpy.linspace(0,10,101)
 	>>> E, V, Q = lanczos_full(H,v0,20)
-	>>> Res,Z = FTLM_static_iteration(Obs_dict,E,V,Q,beta=beta)
+	>>> Res,Id = FTLM_static_iteration(Obs_dict,E,V,Q,beta=beta)
 
 
 	"""
 	nv = E.size
 
 
-	p = _np.exp(-_np.outer(E,_np.atleast_1d(beta)))
-	c = _np.einsum("j,aj,j...->a...",V[0,:],V,p)
+	p = _np.exp(-_np.outer(_np.atleast_1d(beta),E))
+	c = _np.einsum("j,aj,...j->a...",V[0,:],V,p)
 
 	r,Q_T = _get_first_lv(iter(Q_T))
 
@@ -121,6 +131,6 @@ def _FTLM_dynamic_iteration(A_dagger,E_l,V_l,Q_iter_l,E_r,V_r,Q_iter_r,beta=0):
 	A_me_diag = V_l.T.dot(A_me.dot(V_r))
 	result = _np.einsum("ij,ij...->ij...",A_me_diag,c)
 	omegas = np.subtract.outer(E_l,E_r)
-	Z = _np.einsum("j,j...->...",V[0,:]**2,p)
+	Id = _np.einsum("j,j...->...",V[0,:]**2,p)
 
-	return result,omegas,Z
+	return result,omegas,Id

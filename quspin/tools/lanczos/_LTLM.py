@@ -20,33 +20,45 @@ def LTLM_static_iteration(O_dict,E,V,Q_T,beta=0):
 	with the partition function defined as: :math:`Z=Tr\\left(e^{-\\beta H}\\right)`. The idea behind the 
 	Low-Temperature Lanczos Method (LTLM) is to use quantum typicality as well as Krylov subspaces to 
 	simplify this calculation. Typicality states that the trace of an operator can be approximated as an average 
-	of that same operator with random vectors in the H-space samples with the Harr measure. As a corollary, it 
+	of that same operator with random vectors in the Hilbert-space sampled with the Harr measure. As a corollary, it 
 	is known that the fluctuations of this average for any finite sample set will converge to 0 as the size of 
-	the Hilbert space increases. If you combine this with the Lanczos method to approximate the matrix exponential 
-	:math:`e^{-\\beta H}`. Mathematically this is expressed as:
+	the Hilbert space increases. Mathematically this is expressed as:
 
 	.. math::
-		\\langle O\\rangle_\\beta = \\frac{\\overline{\\langle O\\rangle_r}}{\\overline{\\langle Z\\rangle_r}}
+		\\frac{1}{\\dim\\mathcal{H}}Tr\\left(e^{-\\beta H}O\\right)\\approx \\frac{1}{N_r}\\sum_r\\langle r| e^{-\\beta H}O |r\\rangle
 
-	with the numerator and denominator being defined as averages over quantities calculate with Lanczos vectors that start 
-	with random initial vectors :math:`|r\\rangle`. The difference between this method and the Finite-Temperature 
-	Lanczos method (FTLM) is that instead of expending the expression in an asymmetric way, the density matrix 
-	is split up to create a symmetric form:
-
-	.. math::
-		\\overline{\\langle O\\rangle_r} = \\frac{1}{N_r}\\sum_{r} \\langle O\\rangle_r = \\frac{1}{N_r}\\sum_{r}\\sum_{nm}e^{-\\beta(\\epsilon^{(r)}_n+\\epsilon^{(r)}_m)/2}\\langle r|\\psi^{(r)}_n\\rangle\\langle\\psi^{(r)}_n|O|\\psi^{(r)}_m\\rangle\\langle\\psi^{(r)}_m|r\\rangle
+	where :math:`|r\\rangle` is a random state from the Harr measure of hilbert space :math:`\\mathcal{H}` if the 
+	Hamiltonian. An issue can occur when the temperature goes to zero as the overlap :math:`\\langle r| e^{-\\beta H}O |r\\rangle` will 
+	be quite small for most states :math:`|r\\rangle`. Hence, this will require more random realizations to converge. 
+	Fortunately the trace is cyclical and therefore we can make the expression more symmetric:
 
 	.. math::
-		\\overline{\\langle Z\\rangle_r} = \\frac{1}{N_r}\\sum_{r} \\langle Z\\rangle_r =\\frac{1}{N_r}\\sum_{r}\\sum_{n}e^{-\\beta \\epsilon^{(r)}_n}|\\langle r|\\psi^{(r)}_n\\rangle|^2
+		\\frac{1}{\\dim\\mathcal{H}}Tr\\left(e^{-\\beta H}O\\right)=\\frac{1}{\\dim\\mathcal{H}}Tr\\left(e^{-\\beta H/2}O e^{-\\beta H/2}\\right)\\approx \\frac{1}{N_r}\\sum_r\\langle r|e^{-\\beta H/2}O e^{-\\beta H/2}|r\\rangle
 
-	The purpose of this function is to calculate :math:`\\langle O\\rangle_r` and :math:`\\langle Z\\rangle_r` 
-	for a Krylov subspace provided. This implies that in order to perform the full LTLM calculation, this function 
-	must be called many times to perform the average over random initial states.
+	Such that the expecation value is exact as :math:`\\beta\\rightarrow\\infty` at the cost of having to calculate
+	two matrix exponentials. Next we can approximate the matrix exponential using the Lanczos basis. The idea 
+	is that the eigenstates from the lanczos basis can effectively be inserted as an identity operator:
+
+	.. math::
+		\\frac{1}{\\dim\\mathcal{H}}Tr\\left(e^{-\\beta H/2}O e^{-\\beta H/2}\\right)\\approx \\frac{1}{N_r}\\sum_r\\langle r|e^{-\\beta H/2}O e^{-\\beta H/2}|r\\rangle\\approx \\frac{1}{N_r}\\sum_r\\sum_{i,j=1}^m e^{-\\beta(\\epsilon^{(r)}_i+\\epsilon^{(r)}_j)/2}\\langle r|\\psi^{(r)}_i\\rangle\\langle\\psi^{(r)}_i|O|\\psi^{(r)}_j\\rangle\\langle\\psi^{(r)}_j|r\\rangle = \\frac{1}{N_r}\\sum_r \\langle O\\rangle_r \\equiv \\overline{\\langle O\\rangle_r}
+
+	Now going back to the thermal expecation value, we can use the expression above to calculate: :math:`\\frac{1}{Z}Tr\\left(e^{-\\beta H}O\\right)` 
+	by noting that the partition function is simply the expecation value of the identity operator: :math:`Z=Tr\\left(e^{-\\beta H}I\\right)` and hence 
+	the thermal expecation value is approximated by:
+
+	.. math::
+		\\langle O\\rangle_\\beta \\approx \\frac{\\overline{\\langle O\\rangle_r}}{\\overline{\\langle I\\rangle_r}}
+
+
+	The idea behind this function is to generate the the expecation value :math:`\\langle O\\rangle_r` and :math:`\\langle I\\rangle_r`
+	for a lanczos basis generated from an initial state :math:`|r\\rangle`. Therefore if the user would like to calculate the thermal expecation value all one 
+	has to do call this function for each lanczos basis generated from a random state :math:`|r\\rangle`. 
 
 	Notes
 	-----
 	* The amount of memory used by this function scales like: :math:`nN_{op}` with :math:`n` being the size of the full Hilbert space and :math:`N_{op}` is the number of input operators. 
 	* LTLM converges equally well for low and high temperatures however it is more expensive compared to the FTLM and hence we recomend that one should use that method when dealing with high temperatures.
+	* One has to be careful as typicality only applies to the trace operation over the entire Hilbert space. Using symmetries is possible, however it requires the user to keep track of the weights in the different sectors.
 
 	Parameters
 	-----------
@@ -67,15 +79,15 @@ def LTLM_static_iteration(O_dict,E,V,Q_T,beta=0):
 		A dictionary storying the results for a single iteration of the LTLM. The results are stored in numpy.ndarrays 
 		that have the same shape as `beta`. The keys of `Result_dict` are the same as the keys in `O_dict` and the values 
 		associated with the given key in `Result_dict` are the expectation values for the operator in `O_dict` with the same key.
-	Z: numpy.ndarray, same shape as `beta`
-		The value of the partition function for the given iterator for each beta. 
+	I_expt: numpy.ndarray, same shape as `beta`
+		The expecation value of the identity operator for each beta. 
 
 	Examples
 	--------
 
 	>>> beta = numpy.linspace(0,10,101)
 	>>> E, V, Q = lanczos_full(H,v0,20)
-	>>> Res,Z = FTLM_static_iteration(Obs_dict,E,V,Q,beta=beta)
+	>>> Res,Id = FTLM_static_iteration(Obs_dict,E,V,Q,beta=beta)
 
 	"""
 	nv = E.size
@@ -108,8 +120,6 @@ def LTLM_static_iteration(O_dict,E,V,Q_T,beta=0):
 				me = _np.vdot(lv_c,Ar_dict[key])
 				Ome_dict[key][i,j] = me
 
-
-
 		del lv_col
 	del lv_row
 
@@ -125,6 +135,6 @@ def LTLM_static_iteration(O_dict,E,V,Q_T,beta=0):
 		results_dict[key] = _np.squeeze(_np.einsum("j...,l...,jl->...",c,c,A_diag))
 
 	p = _np.exp(-_np.outer(E[:nv],_np.atleast_1d(beta)))
-	Z = _np.einsum("j,j...->...",V[0,:]**2,p)
+	Id = _np.einsum("j,j...->...",V[0,:]**2,p)
 
-	return results_dict,_np.squeeze(Z)
+	return results_dict,_np.squeeze(Id)

@@ -15,6 +15,7 @@ quspin.basis.user\_basis
    
       ~user_basis.Op
       ~user_basis.Op_bra_ket
+      ~user_basis.Op_shift_sector
       ~user_basis.__init__
       ~user_basis.check_hermitian
       ~user_basis.check_pcon
@@ -28,6 +29,7 @@ quspin.basis.user\_basis
       ~user_basis.inplace_Op
       ~user_basis.int_to_state
       ~user_basis.make
+      ~user_basis.make_basis_blocks
       ~user_basis.normalization
       ~user_basis.partial_trace
       ~user_basis.representative

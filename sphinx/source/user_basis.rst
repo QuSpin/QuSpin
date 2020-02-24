@@ -2,7 +2,7 @@
 
 
 A tutorial on QuSpin's `user_basis`
-==================================
+===================================
 List of functionality features which `user_basis` allows the user to access, and which are **not** accessible in the `*_basis_1d` and `*_basis_general`:
 
 * Constrained Hilbert Spaces
@@ -84,7 +84,7 @@ To read off the particle occupation on site :math:`j` of the state :math:`s` (wi
 
 
 Flipping particle occupation on a given site:
-............................................`
+.............................................
 
 To flip the particle occupation on site :math:`j` of the state :math:`s` (with a total of :math:`N` sites), use the XOR operator `^` :
 
@@ -94,7 +94,7 @@ To flip the particle occupation on site :math:`j` of the state :math:`s` (with a
 
 
 Local Hilbert space dimension larger than two: bosons, higher spins, etc.
-````````````````````````````````````````````````````````
+````````````````````````````````````````````````````````````````````````````
 
 
 When dealing with bosons or higher spins, the binary representation is no longer convenient, since the local on-site occupation can be larger than one. 
@@ -325,13 +325,13 @@ We consider translation by `shift=1` sites, but the code can easily be generaliz
 
 
 Symmetries for fixed system sizes using precomputed masks
-``````````````````````````````````````````````````````````
+````````````````````````````````````````````````````````````
 The convenience to define symmetry maps which apply to all system sizes comes at a cost of speed. This can be circumvented by defining system-size specific maps, using integer masks to perform the bit operations. These masks also depend on the data type of the integer storing the state. 
 
 Luckily, there is a great tool to compute the symmetry maps, available at http://programming.sirrida.de/calcperm.php. All one needs to do is find the permutation of the lattice sites under the symmetry, and pass it to the tool to obain the symmetry map that acts on integers. Let us demonstrate how this works using two examples.
 
 parity in 1d for a fixed system size `N=10`
-........
+...........................................
 Consider a ladder of :math:`2\times 10` sites, labelled 0 through 19. The action of parity/reflection along the long ladder axis is easily defined on the lattice sites to be
 
 .. math::
@@ -372,7 +372,7 @@ corresponds to the bit operation (again, fixed system size and data type):
        return ((x & 0x0007fdff) << 1) | ((x & 0x00080200) >> 9)
 
 Symmetry `maps` dictionary
-``````````````````````````
+````````````````````````````
 In the `user_basis`, the functions encoding the symmetry action are referred to as maps. Every map has as its first argument the integer (state) to be tansformed, followed by the number of sites. For fermionic systems, the symmetry action can also modify the fermion sign of a given state. Therefore, the last argument is a `sign_ptr`. 
 
 
@@ -395,7 +395,7 @@ The function methods of `user_basis` discussed above, are passed to the `user_ba
 
 
 Data types
-``````````
+````````````
 Unlike python, C++ code requires the user to specify the data types of all variables (so-called strong typing). For this purpose, numba supports various data types, e.g. `uint32`, or `int32`. They are typically imported from numba in the beginning of the python script.
 
 Function decorators
@@ -453,7 +453,7 @@ The following three examples demonstrate how the `user_basis` recovers the funct
 
 
 Scripts to demonstrate the additional functionality introduced by the `user_basis`
-````````
+````````````````````````````````````````````````````````````````````````````````````
 * :ref:`example14-label`, :download:`download script <../../examples/scripts/example14.py>`
 * :ref:`example15-label`, :download:`download script <../../examples/scripts/example15.py>`
 * :ref:`example16-label`, :download:`download script <../../examples/scripts/example16.py>`

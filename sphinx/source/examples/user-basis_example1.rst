@@ -1,7 +1,7 @@
 .. _user-basis_example1-label:
 
 spinless fermions with nearest-neighbor interactions in 1d
---------
+----------------------------------------------------------
 
 This example makes use of the `user_basis` class of `basis_general` to show how to construct spinless fermion systems with symmetries.
 

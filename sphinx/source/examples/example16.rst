@@ -1,7 +1,7 @@
 .. _example16-label:
 
 Applying symmetries to reduce user-imported bases using QuSpin
---------
+--------------------------------------------------------------
 
 This example makes use of the `user_basis` class to take a user-imported basis consisting of integers, and apply QuSpin to
 reduce it to a desired symmetry sector. 
