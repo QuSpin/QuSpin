@@ -9,7 +9,7 @@ __all__ = ["LTLM_static_iteration"]
 def LTLM_static_iteration(O_dict,E,V,Q_T,beta=0):
 	"""Calculate iteration for low-temperature Lanczos method.
 
-	Here we give a brief overview of this method based on notes, `arXiv:1111.5931 <https://arxiv.org/abs/1111.5931>`_. 
+	Here we give a brief overview of this method based on `arXiv:1111.5931 <https://arxiv.org/abs/1111.5931>`_. 
 
 	One would naively think that it would require full diagonalization to calculate thermodynamic expectation values 
 	for a quantum system as one has to fully diagonalize the Hamiltonian to evaluate:
@@ -42,7 +42,7 @@ def LTLM_static_iteration(O_dict,E,V,Q_T,beta=0):
 	.. math::
 		\\frac{1}{\\dim\\mathcal{H}}Tr\\left(e^{-\\beta H/2}O e^{-\\beta H/2}\\right)\\approx \\frac{1}{N_r}\\sum_r\\langle r|e^{-\\beta H/2}O e^{-\\beta H/2}|r\\rangle\\approx \\frac{1}{N_r}\\sum_r\\sum_{i,j=1}^m e^{-\\beta(\\epsilon^{(r)}_i+\\epsilon^{(r)}_j)/2}\\langle r|\\psi^{(r)}_i\\rangle\\langle\\psi^{(r)}_i|O|\\psi^{(r)}_j\\rangle\\langle\\psi^{(r)}_j|r\\rangle = \\frac{1}{N_r}\\sum_r \\langle O\\rangle_r \\equiv \\overline{\\langle O\\rangle_r}
 
-	Now going back to the thermal expecation value, we can use the expression above to calculate: :math:`\\frac{1}{Z}Tr\\left(e^{-\\beta H}O\\right)` 
+	Now going back to the thermal expecation value, we can use the expression above to calculate :math:`\\frac{1}{Z}Tr\\left(e^{-\\beta H}O\\right)` 
 	by noting that the partition function is simply the expecation value of the identity operator: :math:`Z=Tr\\left(e^{-\\beta H}I\\right)` and hence 
 	the thermal expecation value is approximated by:
 

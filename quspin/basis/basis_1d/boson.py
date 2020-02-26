@@ -67,9 +67,9 @@ class boson_basis_1d(basis_1d):
 
 				**cblock** (*int*) - specifies particle-hole symmetry block.
 
-				**cAblock** (*int*) - specifies particle-hole symmetry block for sublattice A.
+				**cAblock** (*int*) - specifies particle-hole symmetry block for sublattice A (defined as all even lattice sites).
 
-				**cBblock** (*int*) - specifies particle-hole symmetry block for sublattice B.
+				**cBblock** (*int*) - specifies particle-hole symmetry block for sublattice B (defined as all odd lattice sites).
 
 		"""
 

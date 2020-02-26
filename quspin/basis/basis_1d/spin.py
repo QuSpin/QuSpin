@@ -86,9 +86,9 @@ class spin_basis_1d(basis_1d):
 
 				**pzblock** (*int*) - specifies parity followed by spin inversion symmetry block.
 
-				**zAblock** (*int*) - specifies spin inversion symmetry block for sublattice A.
+				**zAblock** (*int*) - specifies spin inversion symmetry block for sublattice A (defined as all even lattice sites).
 
-				**zBblock** (*int*) - specifies spin inversion symmetry block for sublattice B.
+				**zBblock** (*int*) - specifies spin inversion symmetry block for sublattice B (defined as all odd lattice sites).
 
 		"""
 		input_keys = set(blocks.keys())
