@@ -501,7 +501,7 @@ class spinful_fermion_basis_1d(spinless_fermion_basis_1d,basis_1d):
 					subsys_ordering=subsys_ordering,return_rdm=return_rdm,
 					enforce_pure=enforce_pure,sparse=sparse)
 
-	def ent_entropy(self,state,sub_sys_A=None,density=True,subsys_ordering=True,return_rdm=None,enforce_pure=False,return_rdm_EVs=False,sparse=False,alpha=1.0,sparse_diag=True,maxiter=None):
+	def ent_entropy(self,state,sub_sys_A=None,density=True,subsys_ordering=True,return_rdm=None,enforce_pure=False,return_rdm_EVs=False,sparse=False,alpha=1.0,sparse_diag=True,maxiter=None,svd_solver=_np.linalg.svd, svd_kwargs=dict(),):
 		"""Calculates entanglement entropy of subsystem A and the corresponding reduced density matrix
 
 		Notes
@@ -551,6 +551,11 @@ class spinful_fermion_basis_1d(spinless_fermion_basis_1d,basis_1d):
 		maxiter : int, optional
 			Specifies the number of iterations for Lanczos diagonalisation. Look up documentation for 
 			`scipy.sparse.linalg.eigsh() <https://docs.scipy.org/doc/scipy/reference/generated/generated/scipy.sparse.linalg.eigsh.html>`_.
+		svd_solver : object, optional
+			Specifies the svd solver to be used, e.g. `numpy.linalg.svd` or `scipy.linalg.svd`, or a custom solver. Effective when `enforce_pure=True` or `sparse=False`.
+		svd_kwargs : dict, optional
+			Specifies additional arguments for `svd_solver`. 
+
 
 		Returns
 		--------
@@ -589,7 +594,8 @@ class spinful_fermion_basis_1d(spinless_fermion_basis_1d,basis_1d):
 		return basis_1d._ent_entropy(self,state,sub_sys_A,density=density,
 						subsys_ordering=subsys_ordering,return_rdm=return_rdm,
 						enforce_pure=enforce_pure,return_rdm_EVs=return_rdm_EVs,
-						sparse=sparse,alpha=alpha,sparse_diag=sparse_diag,maxiter=maxiter)
+						sparse=sparse,alpha=alpha,sparse_diag=sparse_diag,maxiter=maxiter,
+						svd_solver=svd_solver, svd_kwargs=svd_kwargs, )
 
 	def __type__(self):
 		return "<type 'qspin.basis.fermion_basis_1d'>"
