@@ -63,7 +63,7 @@ For instance, if :math:`Q` is the translation operator then :math:`(Q^j)^\dagger
 	\times 
 	\left(\frac{1}{m_Q}\sum_{j'=0}^{m_Q-1}\mathrm{e}^{-i \frac{2\pi q}{m_Q} j' } (Q^{j'})^\dagger \mathcal{O}_{0}(l) Q^{j'}  \right)
 
-This allows to exploit more symmetries of the Heisenberg model, if needed.
+This allows to exploit more symmetries of the Heisenberg model, if needed. An example of how this works for `Op_shift_sector()`, for reflection symmetry, is shown `here <https://github.com/weinbe58/QuSpin/blob/dev_0.3.4/tests/Op_shift_sector_test.py#L58>`_.
 
 Script
 ------

@@ -26,6 +26,7 @@ quspin.operators.quantum\_LinearOperator
       ~quantum_LinearOperator.matrix_ele
       ~quantum_LinearOperator.matvec
       ~quantum_LinearOperator.quant_fluct
+      ~quantum_LinearOperator.rmatmat
       ~quantum_LinearOperator.rmatvec
       ~quantum_LinearOperator.set_diagonal
       ~quantum_LinearOperator.transpose

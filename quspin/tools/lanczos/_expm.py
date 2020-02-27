@@ -1,9 +1,9 @@
 import numpy as _np
-from ._lanczos_utils import lin_comb_Q
+from ._lanczos_utils import lin_comb_Q_T
 
 __all__ = ["expm_lanczos"]
 
-def expm_lanczos(E,V,Q,a=1.0,out=None):
+def expm_lanczos(E,V,Q_T,a=1.0,out=None):
 	""" Calculates action of matrix exponential on vector using Lanczos algorithm. 
 
 	The Lanczos decomposition `(E,V,Q)` with initial state `v0` of a hermitian matrix `A` can be used to compute the matrix exponential 
@@ -28,7 +28,7 @@ def expm_lanczos(E,V,Q,a=1.0,out=None):
 		eigenvalues of Krylov subspace tridiagonal matrix :math:`T`.
 	V : (m,m) np.ndarray
 		eigenvectors of Krylov subspace tridiagonal matrix :math:`T`.
-	Q : (m,n) np.ndarray, generator
+	Q_T : (m,n) np.ndarray, generator
 		Matrix containing the `m` Lanczos vectors in the rows. 
 	a : scalar, optional
 		Scale factor `a` for the generator of the matrix exponential :math:`\\mathrm{exp}(aA)`.
@@ -48,5 +48,5 @@ def expm_lanczos(E,V,Q,a=1.0,out=None):
 
 	"""
 	c = V.dot(_np.exp(a*E)*V[0,:]) 
-	return lin_comb_Q(c,Q,out=out)
+	return lin_comb_Q_T(c,Q_T,out=out)
 

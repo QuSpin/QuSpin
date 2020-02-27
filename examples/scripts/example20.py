@@ -76,7 +76,7 @@ v0 /= np.linalg.norm(v0)
 m_GS=50 # Krylov subspace dimension
 #
 # Lanczos finds the largest-magnitude eigenvalue: apply on -H and then revert sign of E
-E,V,Q = lanczos_full(-H,v0,m_GS,full_ortho=False)
+E,V,Q_T = lanczos_full(-H,v0,m_GS,full_ortho=False)
 E=-E[::-1] # revert negative sign and re-order E'values
 V=V[:,::-1] # re-order e'vectors
 #
@@ -89,7 +89,7 @@ except AssertionError:
 	raise AssertionError("Energy failed to converge |E_lanczos-E_exact| = {} > 1e-10".format(dE))
 #
 # compute ground state vector
-psi_GS_lanczos = lin_comb_Q(V[:,0],Q)
+psi_GS_lanczos = lin_comb_Q(V[:,0],Q_T)
 # check ground state convergence
 try:
 	# compute fidelity of being in exact GS

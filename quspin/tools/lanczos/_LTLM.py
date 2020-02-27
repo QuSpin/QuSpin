@@ -86,8 +86,8 @@ def LTLM_static_iteration(O_dict,E,V,Q_T,beta=0):
 	--------
 
 	>>> beta = numpy.linspace(0,10,101)
-	>>> E, V, Q = lanczos_full(H,v0,20)
-	>>> Res,Id = FTLM_static_iteration(Obs_dict,E,V,Q,beta=beta)
+	>>> E, V, Q_T = lanczos_full(H,v0,20)
+	>>> Res,Id = FTLM_static_iteration(Obs_dict,E,V,Q_T,beta=beta)
 
 	"""
 	nv = E.size

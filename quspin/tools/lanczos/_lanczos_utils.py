@@ -4,7 +4,7 @@ from scipy.linalg import eigh_tridiagonal
 from copy import deepcopy
 
 
-__all__ = ["lanczos_full","lanczos_iter","lin_comb_Q"]
+__all__ = ["lanczos_full","lanczos_iter","lin_comb_Q_T"]
 
 
 def _lanczos_vec_iter_core(A,v0,a,b):
@@ -261,7 +261,7 @@ def lanczos_iter(A,v0,m,return_vec_iter=True,copy_v0=True,copy_A=False,eps=None)
 	Examples
 	--------
 
-	>>> E, V, Q_iterator = lanczos_iter(H,v0,20)
+	>>> E, V, Q_T_iterator = lanczos_iter(H,v0,20)
 
 	"""
 
@@ -350,18 +350,18 @@ def _get_first_lv(Q_iter):
 
 
 # I suggest the name `lv_average()` or `lv_linearcomb` or `linear_combine_Q()` instead of `lin_comb_Q()`
-def lin_comb_Q(coeff,Q,out=None):
+def lin_comb_Q_T(coeff,Q_T,out=None):
 	""" Computes a linear combination of the Lanczos basis vectors:
 
 	.. math::
-		v_j = \\sum_{j=1}^{m} c_i Q_{ij} 
+		v_j = \\sum_{j=1}^{m} c_i \\left(Q^T\\right)_{ij} 
 
 	
 	Parameters
 	-----------
 	coeff : (m,) array_like
 		list of coefficients to compute the linear combination of Lanczos basis vectors with.
-	Q : (m,n) np.ndarray, generator
+	Q_T : (m,n) np.ndarray, generator
 		Lanczos basis vectors or a generator for the Lanczos basis.
 	out : (n,) np.ndarray, optional
 		Array to store the result in.
@@ -374,17 +374,17 @@ def lin_comb_Q(coeff,Q,out=None):
 	Examples
 	--------
 
-	>>> v = lin_comb_Q(coeff,Q)
+	>>> v = lin_comb_Q(coeff,Q_T)
 
 	"""
 
 
 	coeff = _np.asanyarray(coeff)
 
-	if isinstance(Q,_np.ndarray):
-		Q_iter = iter(Q[:])
+	if isinstance(Q_T,_np.ndarray):
+		Q_iter = iter(Q_T[:])
 	else:
-		Q_iter = iter(Q)
+		Q_iter = iter(Q_T)
 
 	q = next(Q_iter)
 
