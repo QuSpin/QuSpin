@@ -101,7 +101,7 @@ rst_prolog = open('global.rst', 'r').read()
 # built documents.
 #
 # The short X.Y version.
-version = u'0.3.3'
+version = u'0.3.4'
 # The full version, including alpha/beta/rc tags.
 release = version
 
