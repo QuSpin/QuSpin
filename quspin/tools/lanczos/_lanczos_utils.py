@@ -190,9 +190,9 @@ def lanczos_full(A,v0,m,full_ortho=False,out=None,eps=None):
 
 
 	if full_ortho:
-		q,_ = _np.linalg.qr(Q[:i+1].T)
+		q,_ = _np.linalg.qr(Q[:m+1].T)
 
-		Q[:i+1,:] = q.T[...]
+		Q[:m+1,:] = q.T[...]
 
 		h = _np.zeros((m,m),dtype=a.dtype)
 
