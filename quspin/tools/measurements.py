@@ -32,7 +32,7 @@ __all__ =  ["ent_entropy",
 def ent_entropy(system_state,basis,chain_subsys=None,DM=False,svd_return_vec=[False,False,False],**_basis_kwargs):
 	"""Calculates entanglement entropy of a subsystem using Singular Value Decomposition (svd).
 
-	:red:`Note: We recommend the use of the** `basis.ent_entropy()` **method instead of this function. This function is a wrapper.`
+	:red:`Note: we recommend the use of the "basis.ent_entropy()" method instead of this function. This function is now deprecated!`
 
 	"""
 
