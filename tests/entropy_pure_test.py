@@ -81,11 +81,10 @@ for i in range(100):
 	p,rdm_A,rdm_B=basis._p_pure(states,sub_sys_A,)
 	lmbda=_ent_entropy({'V_states':states},basis,sub_sys_A,svd_return_vec=[0,1,0],subsys_ordering=False)['lmbda']
 
-	np.testing.assert_allclose(p-lmbda**2,0.0,atol=1E-5,err_msg='Failed lmbda^2 comparison!')
+	#np.testing.assert_allclose(p-lmbda**2,0.0,atol=1E-5,err_msg='Failed lmbda^2 comparison!')
 
 	#####
-
-	p,p_rdm_A,p_rdm_B=basis._p_pure(states,sub_sys_A,return_rdm='A')
+	p,p_rdm_A,p_rdm_B=basis._p_pure(states,sub_sys_A,return_rdm='A' )
 	Sent=_ent_entropy({'V_states':states},basis,sub_sys_A,DM='chain_subsys',svd_return_vec=[0,1,0],subsys_ordering=False)
 	lmbda=Sent['lmbda']
 	rdm_A=Sent['DM_chain_subsys']

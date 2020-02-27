@@ -255,7 +255,7 @@ class lattice_basis(basis):
 		else:
 			return rdm_A,rdm_B
 
-	def _ent_entropy(self,state,sub_sys_A=None,density=True,subsys_ordering=True,return_rdm=None,enforce_pure=False,return_rdm_EVs=False,sparse=False,alpha=1.0,sparse_diag=True,maxiter=None,svd_solver=None, svd_kwargs=dict(),):
+	def _ent_entropy(self,state,sub_sys_A=None,density=True,subsys_ordering=True,return_rdm=None,enforce_pure=False,return_rdm_EVs=False,sparse=False,alpha=1.0,sparse_diag=True,maxiter=None,svd_solver=None, svd_kwargs=None,):
 		"""Calculates entanglement entropy of subsystem A and the corresponding reduced density matrix
 
 		"""
@@ -413,7 +413,10 @@ class lattice_basis(basis):
 
 	##### private methods
 
-	def _p_pure(self,state,sub_sys_A,svd_solver=None,svd_kwargs=dict(),return_rdm=None,): # default is None
+	def _p_pure(self,state,sub_sys_A,svd_solver=None,svd_kwargs=None,return_rdm=None,): # default is None
+		
+		if svd_kwargs is None:
+			svd_kwargs=dict()
 
 		# calculate full H-space representation of state
 		state=self.get_vec(state,sparse=False)
@@ -424,14 +427,11 @@ class lattice_basis(basis):
 		
 		rdm_A=None
 		rdm_B=None
-
 		
 		# perform SVD	
 		if return_rdm is None:
 			if (svd_solver is None) or (svd_solver==_np.linalg.svd):
-				# update dict args
-				svd_kwargs.update(dict(compute_uv=False,))
-				lmbda = _np.linalg.svd(v, **svd_kwargs) 
+				lmbda = _np.linalg.svd(v, compute_uv=False) 
 			else: # custom solver
 				# preallocate
 				lmbda=_np.zeros(v.shape[0:2],dtype=state.dtype)
@@ -440,8 +440,7 @@ class lattice_basis(basis):
 					lmbda[j,...] = svd_solver(v[j,...], **svd_kwargs)	
 		else:
 			if (svd_solver is None) or (svd_solver==_np.linalg.svd):
-				svd_kwargs.update(dict(full_matrices=False,))
-				U, lmbda, V =  _np.linalg.svd(v, **svd_kwargs)
+				U, lmbda, V =  _np.linalg.svd(v, full_matrices=False)
 			else: # custom solver
 				# preallocate
 				lmbda=_np.zeros(v.shape[0:2],dtype=state.dtype)
@@ -459,6 +458,7 @@ class lattice_basis(basis):
 				rdm_A = _np.einsum('...ij,...j,...kj->...ik',U,lmbda**2,U.conj() )
 				rdm_B = _np.einsum('...ji,...j,...jk->...ik',V.conj(),lmbda**2,V )
 
+		
 		return lmbda**2 + _np.finfo(lmbda.dtype).eps, rdm_A, rdm_B
 
 	def _p_pure_sparse(self,state,sub_sys_A,return_rdm=None,sparse_diag=True,maxiter=None):

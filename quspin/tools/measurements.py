@@ -32,95 +32,7 @@ __all__ =  ["ent_entropy",
 def ent_entropy(system_state,basis,chain_subsys=None,DM=False,svd_return_vec=[False,False,False],**_basis_kwargs):
 	"""Calculates entanglement entropy of a subsystem using Singular Value Decomposition (svd).
 
-	**Note: We recommend the use of the** `basis.ent_entropy()` **method instead of this function.
-	This function is a wrapper.**
-
-
-	The entanglement entropy is NORMALISED by the size of the reduced subsystem. 
-
-	Consider a quantum chain of :math:`N` sites in the state defined by the density matrix :math:`\\rho`.
-	Define a subsystem :math:`A` of :math:`N_A` sites and its complement :math:`A^c` containing :math:`N=N_A + N_{A^c}`
-	sites. Given the reduced density matrices 
-	
-	.. math::
-		\\rho_A = \\mathrm{tr}_B \\rho, \\qquad \\rho_{A^c} = \\mathrm{tr}_{A^c} \\rho 
-
-	the entanglement entropy densities of subsystems :math:`A` and :math:`B` (normalised w.r.t. their size, respectively) read 
-
-	.. math::
-		S_\\mathrm{ent}^A = -\\frac{1}{N_A}\\mathrm{tr}_A \\rho_A\\log\\rho_A,\\qquad S_\\mathrm{ent}^B = -\\frac{1}{N_A}\\mathrm{tr}_{A^c} \\rho_{A^c}\\log\\rho_{A^c}
-
-	For :math:`\\rho` pure, we have :math:`S_\\mathrm{ent}^A = S_\\mathrm{ent}^B`.
-
-	Examples
-	--------
-
-	The example below shows how to compute the entanglement entropy of a pure state. The state is chosen as one of
-	the eigenstates of the spin-1/2 Hamiltonian :math:`H=\\sum_j hS^x_j + g S^z_j`.
-
-	.. literalinclude:: ../../doc_examples/ent_entropy-example.py
-		:linenos:
-		:language: python
-		:lines: 7-
-
-
-
-	Parameters
-	-----------
-	system_state : {array_like,dict}
-		State of the quantum system; can be either of:
-
-			* numpy.ndarray: pure state, shape = (Ns,).
-			* numpy.ndarray: density matrix (DM), shape=(Ns,Ns).
-			* dict: diagonal DM as dictionary of the form {'V_rho': V_rho, 'rho_d': rho_d}, where 
-
-				-- numpy.ndarray: `rho_d` is a diagonal DM, shape = (Ns,).
-
-				-- numpy.ndarray: `V_rho` contains eigenbasis of the DM in the columns, shape = (Ns,Ns).
-
-				The dict keys CANNOT be chosen arbitrarily.
-			* dict: collection of pure states as dict of the form {'V_states': V_states}, contained
-				in the columns of V_states, shape = (Ns,Nvecs). 
-
-				Use this input to PARALLELISE the calculation of the entanglement entropy.
-	basis : :obj:`basis`
-		Basis used to construct `system_state` in. Must be instance of either one of QuSpin's `basis` classes. 
-	chain_subsys : list, optional 
-		Lattice sites to specify the chain subsystem of interest. Default is:
-
-		* [0,1,...,N/2-1,N/2] for `spin_basis_1d`, `fermion_basis_1d`, `boson_basis_1d`.
-		* [0,1,...,N-1,N] for `photon_basis`.
-	DM : str, optional 
-		Flag to enable the calculation of the reduced density matrix. Available string expressions are:
-
-		* "chain_subsys": calculates the reduced DM of the subsystem 'chain_subsys' and
-			returns it under the key "DM_chain_subsys".
-		* "other_subsys": calculates the reduced DM of the complement of 'chain_subsys' and
-			returns it under the key "DM_other_subsys".
-		* "both": calculates and returns both density matrices as defined above.
-
-		Default is "False". 	
-	alpha : float, optional 
-		Renyi :math:`\\alpha` parameter. Default is '1.0'. 
-
-		When `alpha` is different from unity, the output keys have attached "_Renyi" to their label.
-	svd_return_vec : list(bool), optional
-		Three booleans to determine which Singular Value Decomposition (svd) quantities are returned:
-
-		* `[ . ,True, . ]` svd singular values.
-		* `[ . , . ,True]` and `[True, . , . ]` are depricated.
-
-		Default is `[False,False,False]`.
-
-	Returns
-	--------
-	dict
-		The following keys of the output dict are available, depending on the choice of flags:
-
-		* "Sent": entanglement entropy.
-		* "DM_chain_subsys": (optional) reduced density matrix of chain subsystem.
-		* "DM_other_subsys": (optional) reduced density matrix of the complement subsystem.
-		* "lmbda": (optional) svd singular values.
+	:red:`Note: We recommend the use of the** `basis.ent_entropy()` **method instead of this function. This function is a wrapper.`
 
 	"""
 
@@ -165,6 +77,7 @@ def ent_entropy(system_state,basis,chain_subsys=None,DM=False,svd_return_vec=[Fa
 		state=system_state
 
 	translate_dict.update({"DM_chain_subsys":'rdm_A',"DM_other_subsys":'rdm_B',"both":'both','lmbda':"p_A"})
+	
 	
 	Sent = basis.ent_entropy(state,sub_sys_A=chain_subsys,**_basis_kwargs)
 	

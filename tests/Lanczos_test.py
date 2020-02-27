@@ -8,7 +8,7 @@ sys.path.insert(0,quspin_path)
 from quspin.basis import spin_basis_1d
 from quspin.operators import hamiltonian
 from scipy.sparse.linalg import expm_multiply
-from quspin.tools.lanczos import lanczos_full,lanczos_iter,lin_comb_Q,expm_lanczos
+from quspin.tools.lanczos import lanczos_full,lanczos_iter,lin_comb_Q_T,expm_lanczos
 import numpy as np
 import scipy.linalg as sla
 
@@ -59,7 +59,7 @@ v0 /= np.linalg.norm(v0)
 
 E,V,Q = lanczos_full(H,v0,nvec,full_ortho=False)
 
-v1 = lin_comb_Q(V[:,-1],Q)
+v1 = lin_comb_Q_T(V[:,-1],Q)
 
 try:
 	dE = np.abs(E[-1]-E_GS[-1])
@@ -75,7 +75,7 @@ except AssertionError:
 
 E,V,Q_iter = lanczos_iter(H,v0,nvec,return_vec_iter=True)
 
-v2 = lin_comb_Q(V[:,-1],Q_iter)
+v2 = lin_comb_Q_T(V[:,-1],Q_iter)
 
 np.testing.assert_allclose(v2,v1,atol=1e-10,rtol=0)
 

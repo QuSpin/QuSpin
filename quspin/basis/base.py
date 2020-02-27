@@ -293,7 +293,7 @@ class basis(object):
 					subsys_ordering=subsys_ordering,return_rdm=return_rdm,
 					enforce_pure=enforce_pure,sparse=sparse)
 
-	def ent_entropy(self,state,sub_sys_A=None,density=True,subsys_ordering=True,return_rdm=None,enforce_pure=False,return_rdm_EVs=False,sparse=False,alpha=1.0,sparse_diag=True,maxiter=None,svd_solver=None, svd_kwargs=dict(),):
+	def ent_entropy(self,state,sub_sys_A=None,density=True,subsys_ordering=True,return_rdm=None,enforce_pure=False,return_rdm_EVs=False,sparse=False,alpha=1.0,sparse_diag=True,maxiter=None,svd_solver=None, svd_kwargs=None ):
 		"""Calculates entanglement entropy of subsystem A and the corresponding reduced density matrix
 
 		.. math::
@@ -374,7 +374,7 @@ class basis(object):
 								subsys_ordering=subsys_ordering,return_rdm=return_rdm,
 								enforce_pure=enforce_pure,return_rdm_EVs=return_rdm_EVs,
 								sparse=sparse,alpha=alpha,sparse_diag=sparse_diag,maxiter=maxiter,
-								svd_solver=svd_solver, svd_kwargs=svd_kwargs, )
+								svd_solver=svd_solver, svd_kwargs=svd_kwargs )
 
 	def expanded_form(self,static=[],dynamic=[]):
 		"""Splits up operator strings containing "x" and "y" into operator combinations of "+" and "-". This function is useful for higher spin hamiltonians where "x" and "y" operators are not appropriate operators. 
