@@ -78,17 +78,17 @@ class spin_basis_1d(basis_1d):
 
 				**a** (*int*) - specifies unit cell size for translation.
 
-				**kblock** (*int*) - specifies momentum block.
+				**kblock** (*int*) - specifies momentum block. The physical manifestation of this symmetry transformation is translation by `a` lattice sites. 
 
-				**pblock** (*int*) - specifies parity block.
+				**pblock** (*int*) - specifies parity block. The physical manifestation of this symmetry transformation is reflection about the middle of the chain.
 
-				**zblock** (*int*) - specifies spin inversion symmetry block.
+				**zblock** (*int*) - specifies spin inversion symmetry block. The physical manifestation of this symmetry transformation is to flip the sign of the spin-z component.
 
-				**pzblock** (*int*) - specifies parity followed by spin inversion symmetry block.
+				**pzblock** (*int*) - specifies parity followed by spin inversion symmetry block. The physical manifestation of this symmetry transformation is reflection about the middle of the chain and a simultaneous flip of the sign of the spin-z component.
 
-				**zAblock** (*int*) - specifies spin inversion symmetry block for sublattice A (defined as all even lattice sites).
+				**zAblock** (*int*) - specifies spin inversion symmetry block for sublattice A (defined as all even lattice sites). The physical manifestation of this symmetry transformation is to flip the sign of the spin-z component on all even sites.
 
-				**zBblock** (*int*) - specifies spin inversion symmetry block for sublattice B (defined as all odd lattice sites).
+				**zBblock** (*int*) - specifies spin inversion symmetry block for sublattice B (defined as all odd lattice sites). The physical manifestation of this symmetry transformation is to flip the sign of the spin-z component on all odd sites.
 
 		"""
 		input_keys = set(blocks.keys())

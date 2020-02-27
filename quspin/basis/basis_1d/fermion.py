@@ -52,9 +52,9 @@ class spinless_fermion_basis_1d(basis_1d):
 
 				**a** (*int*) - specifies unit cell size for translation.
 
-				**kblock** (*int*) - specifies momentum block.
+				**kblock** (*int*) - specifies momentum block. The physical manifestation of this symmetry transformation is translation by `a` lattice sites.
 
-				**pblock** (*int*) - specifies parity block.
+				**pblock** (*int*) - specifies parity block. The physical manifestation of this symmetry transformation is reflection about the middle of the chain.
 
 		"""
 
@@ -215,13 +215,13 @@ class spinful_fermion_basis_1d(spinless_fermion_basis_1d,basis_1d):
 
 				**a** (*int*) - specifies unit cell size for translation.
 
-				**kblock** (*int*) - specifies momentum block.
+				**kblock** (*int*) - specifies momentum block. The physical manifestation of this symmetry transformation is translation by `a` lattice sites.
 
-				**pblock** (*int*) - specifies parity block.
+				**pblock** (*int*) - specifies parity block. The physical manifestation of this symmetry transformation is reflection about the middle of the chain.
 
-				**sblock** (*int*) - specifies fermion spin inversion block.
+				**sblock** (*int*) - specifies fermion spin inversion block. The physical manifestation of this symmetry transformation is the exchange of a spin-up and a spin-down fermion on a fixed lattice site.
 
-				**psblock** (*int*) - specifies parity followed by fermion spin inversion symmetry block.
+				**psblock** (*int*) - specifies parity followed by fermion spin inversion symmetry block. The physical manifestation of this symmetry transformation is reflection about the middle of the chain, and a simultaneous exchange of a spin-up and a spin-down fermion on a fixed lattice site.
 
 		"""
 

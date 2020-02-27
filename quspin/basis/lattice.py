@@ -28,6 +28,20 @@ class lattice_basis(basis):
 	def __iter__(self):
 		return self._basis.__iter__()
 
+	@property
+	def dtype(self):
+		"""numpy.dtype: data type of basis state integers."""
+		return self._basis.dtype
+	
+
+	@property
+	def states(self):
+		"""numpy.ndarray(int): basis states stored in their integer representation."""
+		basis_view=self._basis[:]
+		basis_view.setflags(write=0,uic=0)
+		return basis_view
+
+
 	def _int_to_state(self,*args,**kwargs):
 		raise NotImplementedError("basis class: {0} missing implementation of '_int_to_state' required for printing a child of lattice basis!".format(self.__class__))	
 
@@ -124,17 +138,8 @@ class lattice_basis(basis):
 		"""
 		return self._index(s)
 
-	@property
-	def dtype(self):
-		return self._basis.dtype
-	
 
-	@property
-	def states(self):
-		"""numpy.ndarray(int): basis states stored in their integer representation."""
-		basis_view=self._basis[:]
-		basis_view.setflags(write=0,uic=0)
-		return basis_view
+
 
 	def _partial_trace(self,state,sub_sys_A=None,subsys_ordering=True,return_rdm="A",enforce_pure=False,sparse=False):
 		"""Calculates reduced density matrix, through a partial trace of a quantum state in a lattice `basis`.
