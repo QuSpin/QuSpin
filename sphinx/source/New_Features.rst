@@ -4,7 +4,7 @@
 ================================================
 
 
-:green:`Highlights:` OpenMP support here; Constrained Hilbert spaces support here; Lanczos module now here!
+:green:`Highlights:` Lanczos module now here; Constrained Hilbert spaces support here; OpenMP support here!
 ===========================================================================================================
 
 Check out :ref:`parallelization-label` and the example script :ref:`example12-label`.
@@ -23,13 +23,14 @@ Improved Functionality
 ++++++++++++++++++++++
 
 * revised `user_basis` tutorial for spinless fermions: introduced function `_count_particles_32()`.
+* added optional arguments `svd_solver`, `svd_kwargs` to `basis.ent_entropy()`.
 * fixed bugs.
 
 
 New Attributes, Functions, Methods and Classes
 ++++++++++++++++++++++++++++++++++++++++++++++
 * new `tools.Lanczos` module for Lanczos type calculations. 
-* new function method `Op_shift_sector` of the `*basis_general_` classes allows to apply operators, which do not preserve the symmetry sector, to quantum states in the reduced basis. Useful for computing correlation functions. See Example ??.
+* new function method `Op_shift_sector` of the `*basis_general_` classes allows to apply operators, which do not preserve the symmetry sector, to quantum states in the reduced basis. Useful for computing correlation functions. See Example 19.
 * new required package for QuSpin: `numexpr` (ADD TO MANUAL INSTALL AND README).
 
 

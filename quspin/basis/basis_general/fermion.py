@@ -505,6 +505,10 @@ class spinful_fermion_basis_general(spinless_fermion_basis_general):
 		self.__dict__.update(state)
 		self._core = spinful_fermion_basis_core_wrap(self._basis_dtype,self._N//2,self._maps,self._pers,self._qs,self._double_occupancy)
 
+	@property
+	def _fermion_basis(self):
+		return True 
+
 	def _Op(self,opstr,indx,J,dtype):
 
 		if self._simple_symm:
@@ -639,9 +643,6 @@ class spinful_fermion_basis_general(spinless_fermion_basis_general):
 		'''
 		return spinless_fermion_basis_general.Op_bra_ket(self,opstr,indx,J,dtype,ket_states,reduce_output=reduce_output)
 
-	@property
-	def _fermion_basis(self):
-		return True 
 
 	def _get_state(self,b):
 		b = int(b)

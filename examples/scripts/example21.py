@@ -212,5 +212,5 @@ axinset.set_ylim((ymin-boundy,ymax+boundy))
 #
 # display plot
 f.tight_layout()
-plt.show()
+#plt.show()
 #

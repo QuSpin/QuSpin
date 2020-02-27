@@ -255,9 +255,7 @@ class lattice_basis(basis):
 		else:
 			return rdm_A,rdm_B
 
-	def _ent_entropy(self,state,sub_sys_A=None,density=True,subsys_ordering=True,return_rdm=None,enforce_pure=False,return_rdm_EVs=False,sparse=False,alpha=1.0,sparse_diag=True,maxiter=None,
-					 svd_solver=None, svd_kwargs=dict(),
-					 ):
+	def _ent_entropy(self,state,sub_sys_A=None,density=True,subsys_ordering=True,return_rdm=None,enforce_pure=False,return_rdm_EVs=False,sparse=False,alpha=1.0,sparse_diag=True,maxiter=None,svd_solver=None, svd_kwargs=dict(),):
 		"""Calculates entanglement entropy of subsystem A and the corresponding reduced density matrix
 
 		"""
@@ -285,13 +283,7 @@ class lattice_basis(basis):
 		if return_rdm not in set(["A","B","both",None]):
 			raise ValueError("return_rdm must be: 'A','B','both' or None")
 
-		# set default values for np svd_solver solver
-		if not bool(svd_kwargs): 
-			if return_rdm is None:
-				svd_kwargs=dict(compute_uv=False,)
-			else:
-				svd_kwargs=dict(full_matrices=False,)
-
+		
 		if subsys_ordering:
 			sub_sys_A = sorted(sub_sys_A)
 
@@ -323,19 +315,13 @@ class lattice_basis(basis):
 					
 		else:
 			if state.ndim==1:
-				#state = state.reshape((-1,1)) # dims expanded below for (p, rdm_A, rdm_B) to allow for a custom svd solver
-				p, rdm_A, rdm_B = self._p_pure(state,sub_sys_A,svd_solver,svd_kwargs,return_rdm=return_rdm)
-				
-				p = _np.expand_dims(p, 0)
-				if rdm_B is not None:
-					rdm_B=_np.expand_dims(rdm_B, 0)
-				if rdm_A is not None:
-					rdm_A=_np.expand_dims(rdm_A, 0)
-				
+				state = state.reshape((-1,1))
+				p, rdm_A, rdm_B = self._p_pure(state,sub_sys_A,svd_solver=svd_solver,svd_kwargs=svd_kwargs,return_rdm=return_rdm)
+			
 			elif state.ndim==2: 
 
 				if state.shape[0]!=state.shape[1] or enforce_pure:
-					p, rdm_A, rdm_B = self._p_pure(state,sub_sys_A,svd_solver,svd_kwargs,return_rdm=return_rdm)
+					p, rdm_A, rdm_B = self._p_pure(state,sub_sys_A,svd_solver=svd_solver,svd_kwargs=svd_kwargs,return_rdm=return_rdm)
 				else: # 2D mixed
 					pure=False
 					"""
@@ -427,8 +413,8 @@ class lattice_basis(basis):
 
 	##### private methods
 
-	def _p_pure(self,state,sub_sys_A,svd_solver,svd_kwargs,return_rdm=None,):
-		
+	def _p_pure(self,state,sub_sys_A,svd_solver=None,svd_kwargs=dict(),return_rdm=None,): # default is None
+
 		# calculate full H-space representation of state
 		state=self.get_vec(state,sparse=False)
 		# put states in rows
@@ -439,11 +425,32 @@ class lattice_basis(basis):
 		rdm_A=None
 		rdm_B=None
 
+		
 		# perform SVD	
 		if return_rdm is None:
-			lmbda = svd_solver(v, **svd_kwargs) # compute_uv=False
+			if (svd_solver is None) or (svd_solver==_np.linalg.svd):
+				# update dict args
+				svd_kwargs.update(dict(compute_uv=False,))
+				lmbda = _np.linalg.svd(v, **svd_kwargs) 
+			else: # custom solver
+				# preallocate
+				lmbda=_np.zeros(v.shape[0:2],dtype=state.dtype)
+				# loop over states
+				for j in range(v.shape[0]):
+					lmbda[j,...] = svd_solver(v[j,...], **svd_kwargs)	
 		else:
-			U, lmbda, V = svd_solver(v, **svd_kwargs) # full_matrices=False
+			if (svd_solver is None) or (svd_solver==_np.linalg.svd):
+				svd_kwargs.update(dict(full_matrices=False,))
+				U, lmbda, V =  _np.linalg.svd(v, **svd_kwargs)
+			else: # custom solver
+				# preallocate
+				lmbda=_np.zeros(v.shape[0:2],dtype=state.dtype)
+				U=_np.zeros(v.shape,dtype=state.dtype)
+				V=_np.zeros_like(U)
+				# loop over states
+				for j in range(v.shape[0]):
+					U[j,...], lmbda[j,...], V[j,...] = svd_solver(v[j,...], **svd_kwargs)
+			
 			if return_rdm=='A':
 				rdm_A = _np.einsum('...ij,...j,...kj->...ik',U,lmbda**2,U.conj() )
 			elif return_rdm=='B':
