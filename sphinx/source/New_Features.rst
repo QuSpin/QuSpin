@@ -30,7 +30,7 @@ Improved Functionality
 New Attributes, Functions, Methods and Classes
 ++++++++++++++++++++++++++++++++++++++++++++++
 * new `tools.Lanczos` module for Lanczos type calculations. 
-* new function method `Op_shift_sector` of the `*basis_general_` classes allows to apply operators, which do not preserve the symmetry sector, to quantum states in the reduced basis. Useful for computing correlation functions. See Example 19.
+* new function method `Op_shift_sector` of the `*basis_general_` classes allows to apply operators, which do not preserve the symmetry sector, to quantum states in the reduced basis. Useful for computing correlation functions. See Example :ref:`example19-label`.
 * new required package for QuSpin: `numexpr` (ADD TO MANUAL INSTALL AND README).
 
 
@@ -40,12 +40,12 @@ Added in v. 0.3.3 (2019.10.15)
 Improved Functionality
 ++++++++++++++++++++++
 
-* introducing improvements to Example 11 to perform Monte Carlo sampling in the symmetry-reduced Hilbert space.
+* introducing improvements to Example :ref:`example11-label` to perform Monte Carlo sampling in the symmetry-reduced Hilbert space.
 * new examples:
-	* Example 13 to showcase `double_occupancy` option of the `spinful_fermion_basis_*`.
-	* Examples 14-16 demonstrate the usage of `user_basis`.
-	* Example 17 shows how to use QuSpin for Lindblad dynamics and demonstrates the use of the omp-parallelzied `matvec` function for speedup.
-	* Example 18 shows how to construct Hamiltinians on a hexagonal lattice. 
+	* Example :ref:`example13-label` to showcase `double_occupancy` option of the `spinful_fermion_basis_*`.
+	* Examples :ref:`example14-label`, :ref:`example15-label`, :ref:`example16-label` demonstrate the usage of `user_basis`.
+	* Example :ref:`example17-label` shows how to use QuSpin for Lindblad dynamics and demonstrates the use of the omp-parallelzied `matvec` function for speedup.
+	* Example :ref:`example18-label` shows how to construct Hamiltinians on a hexagonal lattice. 
 * improved functionality of the `tools.evolution.evolve()` function.
 * fixed import issue with scipy's `comb` function.
 * fixed a number of small bugs. 
