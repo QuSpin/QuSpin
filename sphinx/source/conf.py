@@ -37,6 +37,7 @@ extensions = ['sphinx.ext.autodoc',
               'sphinx.ext.coverage',
               'sphinx.ext.autosummary',
               'sphinx.ext.viewcode',
+      #        'sphinx.ext.autosectionlabel', # doesn't seem to work
               'sphinxtogithub',
               'numpydoc',
               'sphinxcontrib.googleanalytics',

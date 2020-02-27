@@ -4,7 +4,7 @@ from ._reshape_subsys import _lattice_partial_trace_mixed,_lattice_reshape_mixed
 from ._reshape_subsys import _lattice_partial_trace_sparse_pure,_lattice_reshape_sparse_pure
 import numpy as _np
 import scipy.sparse as _sp
-from numpy.linalg import norm,eigvalsh,svd
+from numpy.linalg import norm,eigvalsh
 from scipy.sparse.linalg import eigsh
 import warnings
 
@@ -255,7 +255,7 @@ class lattice_basis(basis):
 		else:
 			return rdm_A,rdm_B
 
-	def _ent_entropy(self,state,sub_sys_A=None,density=True,subsys_ordering=True,return_rdm=None,enforce_pure=False,return_rdm_EVs=False,sparse=False,alpha=1.0,sparse_diag=True,maxiter=None):
+	def _ent_entropy(self,state,sub_sys_A=None,density=True,subsys_ordering=True,return_rdm=None,enforce_pure=False,return_rdm_EVs=False,sparse=False,alpha=1.0,sparse_diag=True,maxiter=None,svd_solver=None, svd_kwargs=dict(),):
 		"""Calculates entanglement entropy of subsystem A and the corresponding reduced density matrix
 
 		"""
@@ -283,6 +283,7 @@ class lattice_basis(basis):
 		if return_rdm not in set(["A","B","both",None]):
 			raise ValueError("return_rdm must be: 'A','B','both' or None")
 
+		
 		if subsys_ordering:
 			sub_sys_A = sorted(sub_sys_A)
 
@@ -298,7 +299,6 @@ class lattice_basis(basis):
 			raise ValueError("state shape {0} not compatible with Ns={1}".format(state.shape,self._Ns))
 
 		
-
 		pure=True # set pure state parameter to True
 		if _sp.issparse(state) or sparse:
 			if state.ndim == 1:
@@ -316,12 +316,12 @@ class lattice_basis(basis):
 		else:
 			if state.ndim==1:
 				state = state.reshape((-1,1))
-				p, rdm_A, rdm_B = self._p_pure(state,sub_sys_A,return_rdm=return_rdm)
+				p, rdm_A, rdm_B = self._p_pure(state,sub_sys_A,svd_solver=svd_solver,svd_kwargs=svd_kwargs,return_rdm=return_rdm)
 			
 			elif state.ndim==2: 
 
 				if state.shape[0]!=state.shape[1] or enforce_pure:
-					p, rdm_A, rdm_B = self._p_pure(state,sub_sys_A,return_rdm=return_rdm)
+					p, rdm_A, rdm_B = self._p_pure(state,sub_sys_A,svd_solver=svd_solver,svd_kwargs=svd_kwargs,return_rdm=return_rdm)
 				else: # 2D mixed
 					pure=False
 					"""
@@ -413,8 +413,8 @@ class lattice_basis(basis):
 
 	##### private methods
 
-	def _p_pure(self,state,sub_sys_A,return_rdm=None):
-		
+	def _p_pure(self,state,sub_sys_A,svd_solver=None,svd_kwargs=dict(),return_rdm=None,): # default is None
+
 		# calculate full H-space representation of state
 		state=self.get_vec(state,sparse=False)
 		# put states in rows
@@ -425,11 +425,32 @@ class lattice_basis(basis):
 		rdm_A=None
 		rdm_B=None
 
+		
 		# perform SVD	
 		if return_rdm is None:
-			lmbda = svd(v, compute_uv=False) 
+			if (svd_solver is None) or (svd_solver==_np.linalg.svd):
+				# update dict args
+				svd_kwargs.update(dict(compute_uv=False,))
+				lmbda = _np.linalg.svd(v, **svd_kwargs) 
+			else: # custom solver
+				# preallocate
+				lmbda=_np.zeros(v.shape[0:2],dtype=state.dtype)
+				# loop over states
+				for j in range(v.shape[0]):
+					lmbda[j,...] = svd_solver(v[j,...], **svd_kwargs)	
 		else:
-			U, lmbda, V = svd(v, full_matrices=False)
+			if (svd_solver is None) or (svd_solver==_np.linalg.svd):
+				svd_kwargs.update(dict(full_matrices=False,))
+				U, lmbda, V =  _np.linalg.svd(v, **svd_kwargs)
+			else: # custom solver
+				# preallocate
+				lmbda=_np.zeros(v.shape[0:2],dtype=state.dtype)
+				U=_np.zeros(v.shape,dtype=state.dtype)
+				V=_np.zeros_like(U)
+				# loop over states
+				for j in range(v.shape[0]):
+					U[j,...], lmbda[j,...], V[j,...] = svd_solver(v[j,...], **svd_kwargs)
+			
 			if return_rdm=='A':
 				rdm_A = _np.einsum('...ij,...j,...kj->...ik',U,lmbda**2,U.conj() )
 			elif return_rdm=='B':
@@ -437,7 +458,6 @@ class lattice_basis(basis):
 			elif return_rdm=='both':
 				rdm_A = _np.einsum('...ij,...j,...kj->...ik',U,lmbda**2,U.conj() )
 				rdm_B = _np.einsum('...ji,...j,...jk->...ik',V.conj(),lmbda**2,V )
-
 
 		return lmbda**2 + _np.finfo(lmbda.dtype).eps, rdm_A, rdm_B
 

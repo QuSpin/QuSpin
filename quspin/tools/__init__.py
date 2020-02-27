@@ -29,7 +29,7 @@ Lanczos
    lanczos_full
    lanczos_iter
    expm_lanczos
-   lin_comb_Q
+   lin_comb_Q_T
    LTLM_static_iteration
    FTLM_static_iteration      
 
