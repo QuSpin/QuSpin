@@ -55,6 +55,8 @@ bool inline update_out_dense(std::complex<double> c, std::complex<double> phase,
 }
 
 
+
+
 template<class I,class T,class P=signed char>
 bool get_vec_rep(general_basis_core<I,P> *B,
 									 I s,
@@ -214,6 +216,63 @@ bool get_vec_general_dense(general_basis_core<I,P> *B,
 
 	return err;
 }
+
+
+
+
+
+
+
+template<class I,class T,class P=signed char>
+bool get_vec_inv_rep(general_basis_core<I,P> *B,
+									 I s,
+								   P &phase,
+							 const int nt,
+							 const npy_intp n_vec,
+							 const npy_intp Ns_full,
+							 const T in[],
+							 std::complex<double> c,
+							 	   T out[],
+							 const int depth = 0)
+{
+	bool err = true;
+	if(nt<=0){
+		const npy_intp full = (Ns_full - s - 1)*n_vec;
+		err = update_out_dense(c,phase,n_vec,&in[full],out);		
+		return err;
+	}
+	int per = B->pers[depth];
+	double q = (2.0*M_PI*B->qs[depth])/per;
+	std::complex<double> cc = std::exp(std::complex<double>(0,q));
+
+	if(depth < nt-1){
+		for(int j=0;j<per && err;j++){
+			err = get_vec_inv_rep(B,s,phase,nt,n_vec,Ns_full,in,c,out,depth+1);
+			c *= cc;
+			s = B->map_state(s,depth,phase);
+		}
+		return err;
+	}
+	else{
+		for(int j=0;j<per && err;j++){
+			const npy_intp full = (Ns_full - s - 1)*n_vec;
+			err = update_out_dense(c,phase,n_vec,&in[full],out);
+			c *= cc;
+			s = B->map_state(s,depth,phase);
+		}
+		return err;
+	}
+}
+
+
+
+
+
+
+
+
+
+
 
 
 
