@@ -99,6 +99,7 @@ M expm_multiply_parallel documentation: italics for dtype argument.
 M check conda-build recipe
 M add example22 on how to use expm_multiply_parallel
 M open up issue about unittest package for testing. 
-
+M wrapper for get_vec_inv
+M fix NOte in partial trace
 
 MP check brian's email. 

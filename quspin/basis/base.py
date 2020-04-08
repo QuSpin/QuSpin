@@ -253,6 +253,13 @@ class basis(object):
 	def partial_trace(self,state,sub_sys_A=None,subsys_ordering=True,return_rdm="A",enforce_pure=False,sparse=False):
 		"""Calculates reduced density matrix, through a partial trace of a quantum state in a lattice `basis`.
 
+		Notes
+		-----
+		This function can also be applied to operators defined by the input `state`. However, if an operator is defined in a 
+		symmetry-reduced basis, this function may give :red:`wrong results`. In such a case, one can use the `basis.get_proj()` 
+		nction to project the operator to the full basis, and then apply `basis.partial_trace()`. 
+
+
 		Parameters
 		-----------
 		state : obj
