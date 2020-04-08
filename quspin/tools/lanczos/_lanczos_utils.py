@@ -117,21 +117,23 @@ def lanczos_full(A,v0,m,full_ortho=False,out=None,eps=None):
 	
 	"""
 
-
+	v0 = np.asanyarray(v0)
+	n = v0.size
 	dtype = _np.result_type(A.dtype,v0.dtype)
 
 	if v0.ndim != 1:
-		raise ValueError
+		raise ValueError("expecting array with ndim=1 for initial Lanczos vector.")
 
-	n = v0.size
+	if m >= n:
+		raise ValueError("Requested size of Lanczos basis must be smaller then size of original space (e.g. m < n).")
 
 	if out is not None:
 		if out.shape != (m,n):
-			raise ValueError
+			raise ValueError("argument 'out' must have shape (m,n), see documentation.")
 		if out.dtype != dtype:
-			raise ValueError
+			raise ValueError("argument 'out' has dtype {}, expecting dtype {}".format(out.dtype,dtype))
 		if not out.flags["CARRAY"]:
-			raise ValueError
+			raise ValueError("argument 'out' must be C-contiguous and writable.")
 
 		Q = out
 	else:
@@ -265,6 +267,10 @@ def lanczos_iter(A,v0,m,return_vec_iter=True,copy_v0=True,copy_A=False,eps=None)
 
 	"""
 
+	v0 = np.asanyarray(v0)
+	n = v0.size
+	dtype = _np.result_type(A.dtype,v0.dtype)
+
 	if copy_v0 and return_vec_iter:
 		v0 = v0.copy()
 
@@ -274,13 +280,12 @@ def lanczos_iter(A,v0,m,return_vec_iter=True,copy_v0=True,copy_A=False,eps=None)
 	if v0.ndim != 1:
 		raise ValueError("expecting array with ndim=1 for initial Lanczos vector.")
 
-	dtype = _np.result_type(A.dtype,v0.dtype)
+	if m >= n:
+		raise ValueError("Requested size of Lanczos basis must be smaller then size of original space (e.g. m < n).")
 
 	q = v0.astype(dtype,copy=True)
 	v = _np.zeros_like(v0,dtype=dtype)
 	r = _np.zeros_like(v0,dtype=dtype)
-
-	n = v0.size
 
 	b = _np.zeros((m,),dtype=q.real.dtype)
 	a = _np.zeros((m,),dtype=q.real.dtype)
@@ -394,9 +399,9 @@ def lin_comb_Q_T(coeff,Q_T,out=None):
 		if out.shape != q.shape:
 			raise ValueError("'out' must have same shape as a Lanczos vector.")
 		if out.dtype != dtype:
-			raise ValueError("dtype for 'out' does not match dtype for result.")
+			raise ValueError("argument 'out' has dtype {}, expecting dtype {}".format(out.dtype,dtype))
 		if not out.flags["CARRAY"]:
-			raise ValueError("'out' must be a contiguous array.")
+			raise ValueError("argument 'out' must be C-contiguous and writable.")
 	else:
 		out = _np.zeros(q.shape,dtype=dtype)
 
