@@ -545,10 +545,10 @@ cdef class general_basis_core_wrap:
 
             if basis.dtype == uint32:
                 with nogil:
-                    err = get_vec_general_dense(<general_basis_core[uint32_t]*>B,<uint32_t*>basis_ptr,&n[0],n_vec,Ns,Ns_full,&v_in[0,0],&v_out[0,0])
+                    err = get_vec_inv_general_dense(<general_basis_core[uint32_t]*>B,<uint32_t*>basis_ptr,&n[0],n_vec,Ns,Ns_full,&v_in[0,0],&v_out[0,0])
             elif basis.dtype == uint64:
                 with nogil:
-                    err = get_vec_general_dense(<general_basis_core[uint64_t]*>B,<uint64_t*>basis_ptr,&n[0],n_vec,Ns,Ns_full,&v_in[0,0],&v_out[0,0])            
+                    err = get_vec_inv_general_dense(<general_basis_core[uint64_t]*>B,<uint64_t*>basis_ptr,&n[0],n_vec,Ns,Ns_full,&v_in[0,0],&v_out[0,0])            
             else:
                 raise TypeError("basis dtype {} not recognized.".format(basis.dtype))
 

@@ -9,6 +9,12 @@
 
 namespace basis_general {
 
+// NOTE about openmp:
+// As the basis representative states for a unique sub-groups of the full H-space.
+// each thread will never access the same elements as other threads.
+
+
+
 template<class T,class P>
 bool inline update_out_dense(std::complex<double> c, P phase, npy_intp n_vec,const std::complex<T> *in, std::complex<T> *out){
 	for(npy_intp i=0;i<n_vec;i++){
@@ -338,7 +344,7 @@ bool get_vec_inv_general_pcon_dense(general_basis_core<I,P> *B,
 
 			std::complex<double> c = 1.0/std::sqrt(n[k]*norm);
 			P phase = 1;
-			bool local_err = get_vec_rep_basis(B,basis[k],phase,nt,n_vec,basis_pcon,Ns_full,in,c,&out[k*n_vec]);
+			bool local_err = get_vec_inv_rep_basis(B,basis[k],phase,nt,n_vec,basis_pcon,Ns_full,in,c,&out[k*n_vec]);
 			if(!local_err){
 				#pragma omp critical
 				err = local_err;
@@ -375,7 +381,7 @@ bool get_vec_inv_general_dense(general_basis_core<I,P> *B,
 
 		std::complex<double> c = 1.0/std::sqrt(n[k]*norm);
 		P phase = 1;
-		bool local_err = get_vec_rep(B,basis[k],phase,nt,n_vec,Ns_full,in,c,&out[k*n_vec]);
+		bool local_err = get_vec_inv_rep(B,basis[k],phase,nt,n_vec,Ns_full,in,c,&out[k*n_vec]);
 		if(!local_err){
 			#pragma omp critical
 			err = local_err;

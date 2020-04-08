@@ -17,8 +17,6 @@ def test(basis,pcon=False):
 
 	P = basis.get_proj(np.complex128,pcon=pcon)
 
-	print(P.toarray())
-
 	Ns_full, Ns = P.shape
 
 	v=np.random.normal(size=Ns)
@@ -30,24 +28,27 @@ def test(basis,pcon=False):
 	err_msg = "get_vec/get_vec_inv test failed for L={0}".format(basis.__class__)
 	
 	np.testing.assert_allclose(P.dot(v)       , basis.get_vec(v, sparse=False)         ,atol=1e-10,err_msg=err_msg)
-
-	v_p = P.H.dot(v_full)
-	v_gv = basis.get_vec_inv(v_full, sparse=False)
-
-	print(v_p)
-	print(v_gv)
-	exit()
-
 	np.testing.assert_allclose(P.H.dot(v_full), basis.get_vec_inv(v_full, sparse=False),atol=1e-10,err_msg=err_msg)
 
 
 
-L=2
-bases=[spin_basis_general(L,Nup=L//2), ] # spin_basis_general(L,), 
+L=4
+z = -(np.arange(L)+1)
+p = np.arange(L)[::-1]
 
+bases=[spin_basis_general(L),
+	   spin_basis_general(L,Nup=L//2),
+	   spin_basis_general(L,zb=(z,0)),
+	   spin_basis_general(L,zb=(z,1)),
+	   spin_basis_general(L,pb=(p,0)),
+	   spin_basis_general(L,pb=(p,1)),
+	   spin_basis_general(L,zb=(z,0),pb=(p,0)),
+	   spin_basis_general(L,zb=(z,0),pb=(p,1)),
+	   spin_basis_general(L,zb=(z,1),pb=(p,0)),
+	   spin_basis_general(L,zb=(z,1),pb=(p,1)),
+	   ] 
 
 for basis in bases:
-
 	test(basis)
 
 
