@@ -36,13 +36,13 @@ cdef extern from "general_basis_op.h" namespace "basis_general":
                                  const I2[],const J2[],const npy_intp,const K[],K[]) nogil
 
 cdef extern from "general_basis_get_vec.h" namespace "basis_general":
-    bool get_vec_general_dense[I,J,T](general_basis_core[I] *B,const I[],const J[],const npy_intp,
+    bool project_from_general_dense[I,J,T](general_basis_core[I] *B,const I[],const J[],const npy_intp,
                                     const npy_intp,const npy_intp,const T[],T[]) nogil
-    bool get_vec_general_pcon_dense[I,J,T](general_basis_core[I] *B,const I[],const J[],const npy_intp,
+    bool project_from_general_pcon_dense[I,J,T](general_basis_core[I] *B,const I[],const J[],const npy_intp,
                                     const npy_intp,const npy_intp,const I[],const T[],T[]) nogil
-    bool get_vec_inv_general_dense[I,J,T](general_basis_core[I] *B,const I[],const J[],const npy_intp,
+    bool project_to_general_dense[I,J,T](general_basis_core[I] *B,const I[],const J[],const npy_intp,
                                     const npy_intp,const npy_intp,const T[],T[]) nogil
-    bool get_vec_inv_general_pcon_dense[I,J,T](general_basis_core[I] *B,const I[],const J[],const npy_intp,
+    bool project_to_general_pcon_dense[I,J,T](general_basis_core[I] *B,const I[],const J[],const npy_intp,
                                     const npy_intp,const npy_intp,const I[],const T[],T[]) nogil
 
 

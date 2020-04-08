@@ -427,7 +427,7 @@ class basis_general(lattice_basis):
 
 		Notes
 		-----
-		* particularly useful when a given operation canot be carried away in the symmetry-reduced basis
+		* particularly useful when a given operation canot be carried out in the symmetry-reduced basis
 		in a straightforward manner.
 		* see also `Op_shift_sector()`.
 
@@ -480,36 +480,36 @@ class basis_general(lattice_basis):
 		return self._core.get_proj(self._basis,dtype,sign,c,indices,indptr,basis_pcon=basis_pcon)
 
 
-	def get_vec_inv(self,v0,sparse=True,pcon=False):
-		"""Transforms state from symmetry-reduced basis to full (symmetry-free) basis.
+	def project_to(self,v0,sparse=True,pcon=False):
+		"""Transforms state from full (symmetry-free) basis to symmetry-reduced basis.
 
 		Notes
 		-----
-		Particularly useful when a given operation cannot be carried away in the symmetry-reduced basis
-		in a straightforward manner.
+		* particularly useful when a given operation cannot be carried out in the full basis.
+		* supports parallelisation to multiple states listed in the columns. 
+		* inverse function to `project_from`. 
 
-		Supports parallelisation to multiple states listed in the columns.
 
 		Parameters
 		-----------
 		v0 : numpy.ndarray
-			Contains in its columns the states in the symmetry-reduced basis.
+			Contains in its columns the states in the full (symmetry-free) basis.
 		sparse : bool, optional
 			Whether or not the output should be in sparse format. Default is `True`.
 		pcon : bool, optional
-			Whether or not to return the projector to the particle number (magnetisation) conserving basis 
+			Whether or not to return the output in the particle number (magnetisation) conserving basis 
 			(useful in bosonic/single particle systems). Default is `pcon=False`.
 		
 		Returns
 		--------
 		numpy.ndarray
-			Array containing the state `v0` in the full basis.
+			Array containing the state `v0` in the symmetry-reduced basis.
 
 		Examples
 		--------
 
-		>>> v_full = get_vec(v0)
-		>>> print(v_full.shape, v0.shape)
+		>>> v_symm = project_to(v0)
+		>>> print(v_symm.shape, v0.shape)
 
 		"""
 
@@ -565,7 +565,7 @@ class basis_general(lattice_basis):
 			return self.get_proj(v0.dtype,pcon=pcon).T.dot(_sp.csr_matrix(v0))
 		else:
 			v_out = _np.zeros(shape,dtype=v0.dtype,)
-			self._core.get_vec_inv_dense(self._basis,self._n,v0,v_out,basis_pcon=basis_pcon)
+			self._core.project_to_dense(self._basis,self._n,v0,v_out,basis_pcon=basis_pcon)
 			if squeeze:
 				return  _np.squeeze(v_out)
 			else:
@@ -573,14 +573,24 @@ class basis_general(lattice_basis):
 
 
 	def get_vec(self,v0,sparse=True,pcon=False):
+		""" DEPRECATED (cf `project_from`). Transforms state from symmetry-reduced basis to full (symmetry-free) basis.
+
+		Notes
+		-----
+		This function is :red:`deprecated`. Use `project_from()` instead; see also the inverse function `project_to()`.
+
+		"""
+
+		return self.project_from(v0,sparse=sparse,pcon=pcon)
+
+	def project_from(self,v0,sparse=True,pcon=False):
 		"""Transforms state from symmetry-reduced basis to full (symmetry-free) basis.
 
 		Notes
 		-----
-		Particularly useful when a given operation cannot be carried away in the symmetry-reduced basis
-		in a straightforward manner.
-
-		Supports parallelisation to multiple states listed in the columns.
+		* particularly useful when a given operation cannot be carried out in the symmetry-reduced basis in a straightforward manner.
+		* supports parallelisation to multiple states listed in the columns.
+		* inverse function to `project_to`.
 
 		Parameters
 		-----------
@@ -589,7 +599,7 @@ class basis_general(lattice_basis):
 		sparse : bool, optional
 			Whether or not the output should be in sparse format. Default is `True`.
 		pcon : bool, optional
-			Whether or not to return the projector to the particle number (magnetisation) conserving basis 
+			Whether or not to return the output in the particle number (magnetisation) conserving basis 
 			(useful in bosonic/single particle systems). Default is `pcon=False`.
 		
 		Returns
@@ -600,7 +610,7 @@ class basis_general(lattice_basis):
 		Examples
 		--------
 
-		>>> v_full = get_vec(v0)
+		>>> v_full = project_from(v0)
 		>>> print(v_full.shape, v0.shape)
 
 		"""
@@ -656,11 +666,12 @@ class basis_general(lattice_basis):
 			return self.get_proj(v0.dtype,pcon=pcon).dot(_sp.csc_matrix(v0))
 		else:
 			v_out = _np.zeros(shape,dtype=v0.dtype,)
-			self._core.get_vec_dense(self._basis,self._n,v0,v_out,basis_pcon=basis_pcon)
+			self._core.project_from_dense(self._basis,self._n,v0,v_out,basis_pcon=basis_pcon)
 			if squeeze:
 				return  _np.squeeze(v_out)
 			else:
 				return v_out	
+
 
 	def _check_symm(self,static,dynamic,photon_basis=None):
 		if photon_basis is None:
