@@ -1,0 +1,50 @@
+{% set version = "0.3.4" %}
+{% set build_num = "0" %} # set build number
+
+package:
+  name: quspin
+  version: {{ version }}
+
+source:
+  url: https://github.com/weinbe58/QuSpin/archive/dev_{{ version }}.zip
+
+build:
+  number: {{ build_num }}
+  string: omp_py{{ py_version | replace(".", "") }}h{{PKG_HASH}}_{{ build_num }}
+  script: python setup.py install --omp
+  features:
+    - omp
+  ignore_run_exports:
+    - boost
+
+requirements:
+  build:
+    - llvm-openmp # [osx]
+    - {{compiler('cxx')}}
+
+  host:
+    - boost
+    - cython >=0.29
+    - numpy {{ numpy }}
+    - python {{ py_version }}
+
+ 
+  run:
+    - llvm-openmp # [osx]
+    - python {{ py_version }}
+    - {{ pin_compatible('numpy') }}
+    - scipy >=1.0.0
+    - six
+    - joblib
+    - dill
+    - gmpy2 
+    - numba >=0.41
+    - numexpr
+    
+test:
+  imports:
+    - quspin 
+
+about:
+  home: https://github.com/weinbe58/QuSpin.git
+  license: BSD-3

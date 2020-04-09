@@ -102,7 +102,13 @@ rst_prolog = open('global.rst', 'r').read()
 # built documents.
 #
 # The short X.Y version.
-version = u'0.3.4'
+io = open("../../conda.recipe/quspin/meta.yaml","r")
+meta_file = io.read()
+io.close()
+
+meta_file = meta_file.split()
+ind = meta_file.index("version")
+version = meta_file[ind+2].replace('"','')
 # The full version, including alpha/beta/rc tags.
 release = version
 
