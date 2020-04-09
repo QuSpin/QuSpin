@@ -27,7 +27,7 @@ def test(basis,pcon=False):
 
 	err_msg = "get_vec/get_vec_inv test failed for L={0}".format(basis.__class__)
 	
-	np.testing.assert_allclose(P.dot(v)       , basis.project_from(v, sparse=False)         ,atol=1e-10,err_msg=err_msg)
+	np.testing.assert_allclose(P.dot(v)       , basis.project_from(v   , sparse=False),atol=1e-10,err_msg=err_msg)
 	np.testing.assert_allclose(P.H.dot(v_full), basis.project_to(v_full, sparse=False),atol=1e-10,err_msg=err_msg)
 
 
