@@ -90,7 +90,7 @@ def lanczos_full(A,v0,m,full_ortho=False,out=None,eps=None):
 	-----------
 	A : LinearOperator, hamiltonian, numpy.ndarray, or object with a 'dot' method and a 'dtype' method.
 		Python object representing a linear map to compute the Lanczos approximation to the largest eigenvalues/vectors of. Must contain a dot-product method, used as `A.dot(v)` and a dtype method, used as `A.dtype`, e.g. `hamiltonian`, `quantum_operator`, `quantum_LinearOperator`, sparse or dense matrix.
-	v0 : array_like, (m,)
+	v0 : array_like, (n,)
 		initial vector to start the Lanczos algorithm from.
 	m : int
 		Number of Lanczos vectors (size of the Krylov subspace)
@@ -232,7 +232,7 @@ def lanczos_iter(A,v0,m,return_vec_iter=True,copy_v0=True,copy_A=False,eps=None)
 	-----------
 	A : LinearOperator, hamiltonian, numpy.ndarray, etc. with a 'dot' method and a 'dtype' method.
 		Python object representing a linear map to compute the Lanczos approximation to the largest eigenvalues/vectors of. Must contain a dot-product method, used as `A.dot(v)` and a dtype method, used as `A.dtype`, e.g. `hamiltonian`, `quantum_operator`, `quantum_LinearOperator`, sparse or dense matrix.
-	v0 : array_like, (m,)
+	v0 : array_like, (n,)
 		initial vector to start the Lanczos algorithm from.
 	m : int
 		Number of Lanczos vectors (size of the Krylov subspace)
@@ -359,7 +359,7 @@ def lin_comb_Q_T(coeff,Q_T,out=None):
 	""" Computes a linear combination of the Lanczos basis vectors:
 
 	.. math::
-		v_j = \\sum_{j=1}^{m} c_i \\left(Q^T\\right)_{ij} 
+		v_j = \\sum_{i=1}^{m} c_i \\left(Q^T\\right)_{ij} 
 
 	
 	Parameters

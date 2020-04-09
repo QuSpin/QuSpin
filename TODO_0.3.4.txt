@@ -66,8 +66,8 @@ documentation:
 	x for parameter 'other_basis': Change '*general_basis*' to 'basis object' and then clarify that the basis must be the same type as the calling basis. 
 	x CHECK! add shapes to ndarray
 	x add note on how to check if the Op_shift_sector is working properly. 
-	*x check for typo in fourier transform as well as generic expression in the last formula in the equations. (should be fixed, but check!)
-	* double check general formula for any symmetry. 
+	x check for typo in fourier transform as well as generic expression in the last formula in the equations. (should be fixed, but check!)
+	x double check general formula for any symmetry. 
 
 example:
 	x fix math and explanation for autocorrelation
@@ -80,13 +80,16 @@ example:
 Building dev-0.3.4
 -------------------
 
+x fix numba issue with version and cfunc. Issue 271
 P fix numpy warning about not supporting generators. Issue 254
-P fix numba issue with version and cfunc. Issue 271
+P discuss how to use lanczos to find the ground state efficiently compared to scipy. 
+P update list of required packages for manual install (both online doc and README): mention boost (required to build, not to run)
+P fix version of new release everywhere
 
 x Add cython to manual installation, README and in sphinx
 x double check required packages. possibly missing numexpr
-P double check documentation for lanczos for correct formulas
-P double check Op_shift_sector for correct formulas
+x double check documentation for lanczos for correct formulas
+x double check Op_shift_sector for correct formulas
 x spinful fermion entanglement entropy in general basis
 x add error in lanczos for when n > m.
 x add error messages for all errors
@@ -103,13 +106,17 @@ x change get_vec name also in basis_1d.
 x fix note in partial trace
 
 M expm_multiply warning: update documentation with a note and a small example
-M add example22 on how to use expm_multiply_parallel
+M add example22 on how to use expm_multiply_parallel: Floquet-manner
+M try conda build (from new recipe)
+M pip installation from github? at least test the behavior
+
 
 MP check brian's emails (there are 2 emails!). 
-MP update list of required packages for manual install (both online doc and README)
-MP fix version of new release everywhere
 
-MP pip installation from github? at least test the behavior
+
+
+
+
 
 to Automate:
 - building & moving the docs to gh-pages
