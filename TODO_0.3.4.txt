@@ -94,12 +94,17 @@ x add error messages for all errors
 x in all lanczos files 'Q' -> 'Q_T' (see expm_lanczos, lin_comb_Q) in examples, documentation code snippits
 x Note for example19.py add link to Op_shift_sector test for reflection symmetry example. 
 x Optional: try to cross reference links to auto generated documentation. 
-M list explicitly fixed bugs: Higher-Spin, ent_entropy for spinful_fermion_basis_general.
-M expm_multiply_parallel documentation: italics for dtype argument.
-M check conda-build recipe
+x list explicitly fixed bugs: Higher-Spin, ent_entropy for spinful_fermion_basis_general.
+x expm_multiply_parallel documentation: italics for dtype argument.
+x check conda-build recipe
+x open up issue about unittest package for testing. 
+x wrapper for get_vec_inv
+x change get_vec name also in basis_1d. 
+x fix note in partial trace
+M expm_multiply warning
 M add example22 on how to use expm_multiply_parallel
-M open up issue about unittest package for testing. 
-M wrapper for get_vec_inv
-M fix NOte in partial trace
 
-MP check brian's email. 
+MP check brian's emails (there are 2 emails!). 
+MP update list of required packages for manual install (both online doc and README)
+MP fix version of new release everywhere
+

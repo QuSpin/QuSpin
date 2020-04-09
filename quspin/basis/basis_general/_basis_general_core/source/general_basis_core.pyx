@@ -498,7 +498,66 @@ cdef class general_basis_core_wrap:
             raise TypeError("input datatype is not single or double precision floating point types.")
 
     @cython.boundscheck(False)
-    def get_vec_dense(self, _np.ndarray basis, norm_type[::1] n, dtype[:,::1] v_in, dtype[:,::1] v_out,_np.ndarray basis_pcon=None):
+    def project_to_dense(self, _np.ndarray basis, norm_type[::1] n, dtype[:,::1] v_in, dtype[:,::1] v_out,_np.ndarray basis_pcon=None):
+        cdef npy_intp Ns = v_out.shape[0]
+        cdef npy_intp Ns_full = 0
+        cdef npy_intp n_vec = v_in.shape[1]
+        cdef bool err
+        cdef void * basis_ptr = _np.PyArray_DATA(basis) # use standard numpy API function
+        cdef void * basis_pcon_ptr = NULL
+        cdef void * B = self._basis_core # must define local cdef variable to do the pointer casting
+
+        if not basis.flags["CARRAY"]:
+            raise ValueError("basis array must be writable and C-contiguous")
+
+        if basis_pcon is not None:
+            Ns_full = basis_pcon.shape[0]
+
+            if not basis_pcon.flags["C_CONTIGUOUS"]:
+                raise ValueError("input array must be C-contiguous")
+
+            if basis.dtype != basis_pcon.dtype:
+                raise TypeError("basis_pcon must match dtype of the basis.")
+
+            basis_pcon_ptr = _np.PyArray_GETPTR1(basis_pcon,0)
+            if basis.dtype == uint32:
+                with nogil:
+                    err = project_to_general_pcon_dense(<general_basis_core[uint32_t]*>B,<uint32_t*>basis_ptr,&n[0],n_vec,Ns,Ns_full,<uint32_t*>basis_pcon_ptr,&v_in[0,0],&v_out[0,0])
+            elif basis.dtype == uint64:
+                with nogil:
+                    err = project_to_general_pcon_dense(<general_basis_core[uint64_t]*>B,<uint64_t*>basis_ptr,&n[0],n_vec,Ns,Ns_full,<uint64_t*>basis_pcon_ptr,&v_in[0,0],&v_out[0,0])            
+            elif basis.dtype == uint256:
+                with nogil:
+                    err = project_to_general_pcon_dense(<general_basis_core[uint256_t]*>B,<uint256_t*>basis_ptr,&n[0],n_vec,Ns,Ns_full,<uint256_t*>basis_pcon_ptr,&v_in[0,0],&v_out[0,0])
+            elif basis.dtype == uint1024:
+                with nogil:
+                    err = project_to_general_pcon_dense(<general_basis_core[uint1024_t]*>B,<uint1024_t*>basis_ptr,&n[0],n_vec,Ns,Ns_full,<uint1024_t*>basis_pcon_ptr,&v_in[0,0],&v_out[0,0])            
+            elif basis.dtype == uint4096:
+                with nogil:
+                    err = project_to_general_pcon_dense(<general_basis_core[uint4096_t]*>B,<uint4096_t*>basis_ptr,&n[0],n_vec,Ns,Ns_full,<uint4096_t*>basis_pcon_ptr,&v_in[0,0],&v_out[0,0])
+            elif basis.dtype == uint16384:
+                with nogil:
+                    err = project_to_general_pcon_dense(<general_basis_core[uint16384_t]*>B,<uint16384_t*>basis_ptr,&n[0],n_vec,Ns,Ns_full,<uint16384_t*>basis_pcon_ptr,&v_in[0,0],&v_out[0,0])            
+            else:
+                raise TypeError("basis dtype {} not recognized.".format(basis.dtype))
+        else:
+            Ns_full = self._Ns_full
+
+            if basis.dtype == uint32:
+                with nogil:
+                    err = project_to_general_dense(<general_basis_core[uint32_t]*>B,<uint32_t*>basis_ptr,&n[0],n_vec,Ns,Ns_full,&v_in[0,0],&v_out[0,0])
+            elif basis.dtype == uint64:
+                with nogil:
+                    err = project_to_general_dense(<general_basis_core[uint64_t]*>B,<uint64_t*>basis_ptr,&n[0],n_vec,Ns,Ns_full,&v_in[0,0],&v_out[0,0])            
+            else:
+                raise TypeError("basis dtype {} not recognized.".format(basis.dtype))
+
+        if not err:
+            raise TypeError("attemping to use real type for complex elements.")
+
+
+    @cython.boundscheck(False)
+    def project_from_dense(self, _np.ndarray basis, norm_type[::1] n, dtype[:,::1] v_in, dtype[:,::1] v_out,_np.ndarray basis_pcon=None):
         cdef npy_intp Ns = v_in.shape[0]
         cdef npy_intp Ns_full = 0
         cdef npy_intp n_vec = v_in.shape[1]
@@ -522,22 +581,22 @@ cdef class general_basis_core_wrap:
             basis_pcon_ptr = _np.PyArray_GETPTR1(basis_pcon,0)
             if basis.dtype == uint32:
                 with nogil:
-                    err = get_vec_general_pcon_dense(<general_basis_core[uint32_t]*>B,<uint32_t*>basis_ptr,&n[0],n_vec,Ns,Ns_full,<uint32_t*>basis_pcon_ptr,&v_in[0,0],&v_out[0,0])
+                    err = project_from_general_pcon_dense(<general_basis_core[uint32_t]*>B,<uint32_t*>basis_ptr,&n[0],n_vec,Ns,Ns_full,<uint32_t*>basis_pcon_ptr,&v_in[0,0],&v_out[0,0])
             elif basis.dtype == uint64:
                 with nogil:
-                    err = get_vec_general_pcon_dense(<general_basis_core[uint64_t]*>B,<uint64_t*>basis_ptr,&n[0],n_vec,Ns,Ns_full,<uint64_t*>basis_pcon_ptr,&v_in[0,0],&v_out[0,0])            
+                    err = project_from_general_pcon_dense(<general_basis_core[uint64_t]*>B,<uint64_t*>basis_ptr,&n[0],n_vec,Ns,Ns_full,<uint64_t*>basis_pcon_ptr,&v_in[0,0],&v_out[0,0])            
             elif basis.dtype == uint256:
                 with nogil:
-                    err = get_vec_general_pcon_dense(<general_basis_core[uint256_t]*>B,<uint256_t*>basis_ptr,&n[0],n_vec,Ns,Ns_full,<uint256_t*>basis_pcon_ptr,&v_in[0,0],&v_out[0,0])
+                    err = project_from_general_pcon_dense(<general_basis_core[uint256_t]*>B,<uint256_t*>basis_ptr,&n[0],n_vec,Ns,Ns_full,<uint256_t*>basis_pcon_ptr,&v_in[0,0],&v_out[0,0])
             elif basis.dtype == uint1024:
                 with nogil:
-                    err = get_vec_general_pcon_dense(<general_basis_core[uint1024_t]*>B,<uint1024_t*>basis_ptr,&n[0],n_vec,Ns,Ns_full,<uint1024_t*>basis_pcon_ptr,&v_in[0,0],&v_out[0,0])            
+                    err = project_from_general_pcon_dense(<general_basis_core[uint1024_t]*>B,<uint1024_t*>basis_ptr,&n[0],n_vec,Ns,Ns_full,<uint1024_t*>basis_pcon_ptr,&v_in[0,0],&v_out[0,0])            
             elif basis.dtype == uint4096:
                 with nogil:
-                    err = get_vec_general_pcon_dense(<general_basis_core[uint4096_t]*>B,<uint4096_t*>basis_ptr,&n[0],n_vec,Ns,Ns_full,<uint4096_t*>basis_pcon_ptr,&v_in[0,0],&v_out[0,0])
+                    err = project_from_general_pcon_dense(<general_basis_core[uint4096_t]*>B,<uint4096_t*>basis_ptr,&n[0],n_vec,Ns,Ns_full,<uint4096_t*>basis_pcon_ptr,&v_in[0,0],&v_out[0,0])
             elif basis.dtype == uint16384:
                 with nogil:
-                    err = get_vec_general_pcon_dense(<general_basis_core[uint16384_t]*>B,<uint16384_t*>basis_ptr,&n[0],n_vec,Ns,Ns_full,<uint16384_t*>basis_pcon_ptr,&v_in[0,0],&v_out[0,0])            
+                    err = project_from_general_pcon_dense(<general_basis_core[uint16384_t]*>B,<uint16384_t*>basis_ptr,&n[0],n_vec,Ns,Ns_full,<uint16384_t*>basis_pcon_ptr,&v_in[0,0],&v_out[0,0])            
             else:
                 raise TypeError("basis dtype {} not recognized.".format(basis.dtype))
         else:
@@ -545,10 +604,10 @@ cdef class general_basis_core_wrap:
 
             if basis.dtype == uint32:
                 with nogil:
-                    err = get_vec_general_dense(<general_basis_core[uint32_t]*>B,<uint32_t*>basis_ptr,&n[0],n_vec,Ns,Ns_full,&v_in[0,0],&v_out[0,0])
+                    err = project_from_general_dense(<general_basis_core[uint32_t]*>B,<uint32_t*>basis_ptr,&n[0],n_vec,Ns,Ns_full,&v_in[0,0],&v_out[0,0])
             elif basis.dtype == uint64:
                 with nogil:
-                    err = get_vec_general_dense(<general_basis_core[uint64_t]*>B,<uint64_t*>basis_ptr,&n[0],n_vec,Ns,Ns_full,&v_in[0,0],&v_out[0,0])            
+                    err = project_from_general_dense(<general_basis_core[uint64_t]*>B,<uint64_t*>basis_ptr,&n[0],n_vec,Ns,Ns_full,&v_in[0,0],&v_out[0,0])            
             else:
                 raise TypeError("basis dtype {} not recognized.".format(basis.dtype))
 

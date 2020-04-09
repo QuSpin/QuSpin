@@ -255,9 +255,12 @@ class basis(object):
 
 		Notes
 		-----
-		This function can also be applied to operators defined by the input `state`. However, if an operator is defined in a 
-		symmetry-reduced basis, this function may give :red:`wrong results`. In such a case, one can use the `basis.get_proj()` 
-		nction to project the operator to the full basis, and then apply `basis.partial_trace()`. 
+		This function can also be applied to trace out operators/observables defined by the input `state`, in which case one has 
+		to additionally normalize the final output by the Hilbert space dimension of the traced-out space. 
+		However, if an operator is defined in a symmetry-reduced basis, there is a :red:`caveat`. In such a case, one has to:
+			(1) use the `basis.get_proj()` function to lift the operator to the full basis; 
+			(2) apply `basis.partial_trace()`;
+			(3) repeat this procedure for all symmetry sectors, and sum up the resulting reduced operators [this is becauce one has to add in the information about how the operator acts on the full Hilbert space].
 
 
 		Parameters

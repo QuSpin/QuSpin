@@ -598,11 +598,22 @@ class basis_1d(lattice_basis):
 		return ME,row,col		
 
 	def get_vec(self,v0,sparse=True,pcon=False):
+		""" DEPRECATED (cf `project_from`). Transforms state from symmetry-reduced basis to full (symmetry-free) basis.
+
+		Notes
+		-----
+		This function is :red:`deprecated`. Use `project_from()` instead (the inverse function, `project_to()`, is currently available in the `basis_general` classes only). 
+
+		"""
+
+		return self.project_from(v0,sparse=sparse,pcon=pcon)
+
+	def project_from(self,v0,sparse=True,pcon=False):
 		"""Transforms state from symmetry-reduced basis to full (symmetry-free) basis.
 
 		Notes
 		-----
-		Particularly useful when a given operation canot be carried away in the symmetry-reduced basis
+		Particularly useful when a given operation canot be carried out in the symmetry-reduced basis
 		in a straightforward manner.
 
 		Supports parallelisation to multiple states listed in the columns.
@@ -614,7 +625,7 @@ class basis_1d(lattice_basis):
 		sparse : bool, optional
 			Whether or not the output should be in sparse format. Default is `True`.
 		pcon : bool, optional
-			Whether or not to return the projector to the particle number (magnetisation) conserving basis 
+			Whether or not to return the output in the particle number (magnetisation) conserving basis 
 			(useful in bosonic/single particle systems). Default is `pcon=False`.
 
 		Returns

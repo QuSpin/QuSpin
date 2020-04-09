@@ -427,7 +427,7 @@ class basis_general(lattice_basis):
 
 		Notes
 		-----
-		* particularly useful when a given operation canot be carried away in the symmetry-reduced basis
+		* particularly useful when a given operation canot be carried out in the symmetry-reduced basis
 		in a straightforward manner.
 		* see also `Op_shift_sector()`.
 
@@ -479,15 +479,118 @@ class basis_general(lattice_basis):
 
 		return self._core.get_proj(self._basis,dtype,sign,c,indices,indptr,basis_pcon=basis_pcon)
 
+
+	def project_to(self,v0,sparse=True,pcon=False):
+		"""Transforms state from full (symmetry-free) basis to symmetry-reduced basis.
+
+		Notes
+		-----
+		* particularly useful when a given operation cannot be carried out in the full basis.
+		* supports parallelisation to multiple states listed in the columns. 
+		* inverse function to `project_from`. 
+
+
+		Parameters
+		-----------
+		v0 : numpy.ndarray
+			Contains in its columns the states in the full (symmetry-free) basis.
+		sparse : bool, optional
+			Whether or not the output should be in sparse format. Default is `True`.
+		pcon : bool, optional
+			Whether or not to return the output in the particle number (magnetisation) conserving basis 
+			(useful in bosonic/single particle systems). Default is `pcon=False`.
+		
+		Returns
+		--------
+		numpy.ndarray
+			Array containing the state `v0` in the symmetry-reduced basis.
+
+		Examples
+		--------
+
+		>>> v_symm = project_to(v0)
+		>>> print(v_symm.shape, v0.shape)
+
+		"""
+
+		basis_pcon = None
+
+		if pcon==True:
+			if self._basis_pcon is None:
+				self._basis_pcon = self.__class__(**self._pcon_args,make_basis=False)
+				self._basis_pcon.make(N_p=0)
+
+			basis_pcon = self._basis_pcon._basis
+
+		if not self._made_basis:
+			raise AttributeError('this function requires the basis to be cosntructed first, see basis.make().')
+
+
+		if not hasattr(v0,"shape"):
+			v0 = _np.asanyarray(v0)
+
+		squeeze = False
+		if pcon:
+			Ns_full = basis_pcon.size
+		else:
+			Ns_full = self._sps**self._N
+
+		if v0.ndim == 1:
+			v0 = v0.reshape((-1,1))
+			shape = (self._Ns,1)
+			squeeze = True
+		elif v0.ndim == 2:
+			shape = (self._Ns,v0.shape[1])
+		else:
+			raise ValueError("excpecting v0 to have ndim > 0 and at most 2")
+
+		if self._Ns <= 0:
+			# CHECK later
+			if sparse:
+				return _sp.csr_matrix(([],([],[])),shape=(self._Ns,0),dtype=v0.dtype)
+			else:
+				return _np.zeros((self._Ns,0),dtype=v0.dtype)
+
+		if v0.shape[0] != Ns_full:
+			raise ValueError("v0 shape {0} not compatible with Ns_full={1}".format(v0.shape,Ns_full))
+
+		if _sp.issparse(v0): # current work around for sparse states.
+			# return self.get_proj(v0.dtype).dot(v0)
+			raise ValueError
+
+		v0 = _np.ascontiguousarray(v0)
+
+		if sparse:
+			# current work-around for sparse
+			return self.get_proj(v0.dtype,pcon=pcon).T.dot(_sp.csr_matrix(v0))
+		else:
+			v_out = _np.zeros(shape,dtype=v0.dtype,)
+			self._core.project_to_dense(self._basis,self._n,v0,v_out,basis_pcon=basis_pcon)
+			if squeeze:
+				return  _np.squeeze(v_out)
+			else:
+				return v_out	
+
+
 	def get_vec(self,v0,sparse=True,pcon=False):
+		""" DEPRECATED (cf `project_from`). Transforms state from symmetry-reduced basis to full (symmetry-free) basis.
+
+		Notes
+		-----
+		This function is :red:`deprecated`. Use `project_from()` instead; see also the inverse function `project_to()`.
+
+		"""
+
+		return self.project_from(v0,sparse=sparse,pcon=pcon)
+
+	def project_from(self,v0,sparse=True,pcon=False):
 		"""Transforms state from symmetry-reduced basis to full (symmetry-free) basis.
 
 		Notes
 		-----
-		Particularly useful when a given operation cannot be carried away in the symmetry-reduced basis
-		in a straightforward manner.
-
-		Supports parallelisation to multiple states listed in the columns.
+		* particularly useful when a given operation cannot be carried out in the symmetry-reduced basis in a straightforward manner.
+		* supports parallelisation to multiple states listed in the columns.
+		* inverse function to `project_to`.
 
 		Parameters
 		-----------
@@ -496,7 +599,7 @@ class basis_general(lattice_basis):
 		sparse : bool, optional
 			Whether or not the output should be in sparse format. Default is `True`.
 		pcon : bool, optional
-			Whether or not to return the projector to the particle number (magnetisation) conserving basis 
+			Whether or not to return the output in the particle number (magnetisation) conserving basis 
 			(useful in bosonic/single particle systems). Default is `pcon=False`.
 		
 		Returns
@@ -507,7 +610,7 @@ class basis_general(lattice_basis):
 		Examples
 		--------
 
-		>>> v_full = get_vec(v0)
+		>>> v_full = project_from(v0)
 		>>> print(v_full.shape, v0.shape)
 
 		"""
@@ -560,14 +663,15 @@ class basis_general(lattice_basis):
 
 		if sparse:
 			# current work-around for sparse
-			return self.get_proj(v0.dtype,pcon=pcon).dot(_sp.csr_matrix(v0))
+			return self.get_proj(v0.dtype,pcon=pcon).dot(_sp.csc_matrix(v0))
 		else:
 			v_out = _np.zeros(shape,dtype=v0.dtype,)
-			self._core.get_vec_dense(self._basis,self._n,v0,v_out,basis_pcon=basis_pcon)
+			self._core.project_from_dense(self._basis,self._n,v0,v_out,basis_pcon=basis_pcon)
 			if squeeze:
 				return  _np.squeeze(v_out)
 			else:
 				return v_out	
+
 
 	def _check_symm(self,static,dynamic,photon_basis=None):
 		if photon_basis is None:

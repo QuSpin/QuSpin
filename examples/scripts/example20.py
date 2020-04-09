@@ -16,7 +16,7 @@ sys.path.insert(0,quspin_path)
 from quspin.basis import spin_basis_1d
 from quspin.operators import hamiltonian
 from scipy.sparse.linalg import expm_multiply
-from quspin.tools.lanczos import lanczos_full,lanczos_iter,lin_comb_Q,expm_lanczos
+from quspin.tools.lanczos import lanczos_full,lanczos_iter,lin_comb_Q_T,expm_lanczos
 import numpy as np
 import scipy.linalg as sla
 #
@@ -89,7 +89,7 @@ except AssertionError:
 	raise AssertionError("Energy failed to converge |E_lanczos-E_exact| = {} > 1e-10".format(dE))
 #
 # compute ground state vector
-psi_GS_lanczos = lin_comb_Q(V[:,0],Q_T)
+psi_GS_lanczos = lin_comb_Q_T(V[:,0],Q_T)
 # check ground state convergence
 try:
 	# compute fidelity of being in exact GS

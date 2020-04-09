@@ -39,6 +39,7 @@ The following Python scripts demonstrate basic and advanced functionality of QuS
 	
 	* Algorithms and Routines
 		* :ref:`example11-label`, :download:`download script <../../examples/scripts/example11.py>`
+		* :red:`NEW:` :ref:`example22-label`, :download:`download script <../../examples/scripts/example22.py>`
 		* :red:`NEW:` :ref:`example19-label`, :download:`download script <../../examples/scripts/example19.py>`
 		* :red:`NEW:` :ref:`example20-label`, :download:`download script <../../examples/scripts/example20.py>`
 		* :red:`NEW:` :ref:`example21-label`, :download:`download script <../../examples/scripts/example21.py>`

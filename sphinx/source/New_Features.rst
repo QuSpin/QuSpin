@@ -1,11 +1,11 @@
 
 
-:red:`QuSpin 0.3.4` here (updated on 2020.??.??)
+:red:`QuSpin 0.3.4` (updated on 2020.??.??)
 ================================================
 
 
-:green:`Highlights:` Lanczos module now here; Constrained Hilbert spaces support here; OpenMP support here!
-===========================================================================================================
+:green:`Highlights:` Lanczos module now here; Constrained Hilbert spaces support available; OpenMP support available!
+=====================================================================================================================
 
 Check out :ref:`parallelization-label` and the example script :ref:`example12-label`.
 
@@ -22,16 +22,19 @@ Added in v. 0.3.4 (2020.??.??)
 Improved Functionality
 ++++++++++++++++++++++
 
+* :red:`deprecating` python 27 support. 
 * revised `user_basis` tutorial for spinless fermions: introduced function `_count_particles_32()`.
 * added optional arguments `svd_solver`, `svd_kwargs` to `basis.ent_entropy()`.
-* fixed bugs.
+* fixed a number of small bugs, and in particule: (i) a bug with computing the entanglement entropy using the `spinful_fermion_basis_general`, and (ii) a bug with constructing operators for higher-spin operators (S>1/2). 
+* :red:`deprecating` function `basis.get_vec()`: use `basis.project_from()` instead.
 
 
 New Attributes, Functions, Methods and Classes
 ++++++++++++++++++++++++++++++++++++++++++++++
+* new `*_basis_general` functions `basis.project_from()` and `basis.project_to()` to transform states between a symmetry-reduced basis and the full basis. That's the inverse to the deprecated function `get_vec`.
 * new `tools.Lanczos` module for Lanczos type calculations. 
 * new function method `Op_shift_sector` of the `*basis_general_` classes allows to apply operators, which do not preserve the symmetry sector, to quantum states in the reduced basis. Useful for computing correlation functions. See Example :ref:`example19-label`.
-* new required package for QuSpin: `numexpr` (ADD TO MANUAL INSTALL AND README).
+* new required package for QuSpin: `numexpr` :red:`(ADD/CHECK TO MANUAL INSTALL AND README)`.
 
 
 Added in v. 0.3.3 (2019.10.15)

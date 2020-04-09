@@ -37,13 +37,14 @@ class expm_multiply_parallel(object):
         a : scalar, optional
             scalar value multiplying generator matrix :math:`A` in matrix exponential: :math:`\\mathrm{e}^{aA}`.
         dtype : numpy.dtype, optional
-            dtype specified for this operator. Default is: result_type(A.dtype,min_scalar_type(a),float64)
+            data type specified for the total operator :math:`\\mathrm{e}^{aA}`. Default is: `numpy.result_type(A.dtype,min_scalar_type(a),float64)`.
         copy : bool, optional
             if `True` the matrix is copied otherwise the matrix is stored by reference. 
 
         Note
         ----
-        The `dtype` need not be the same dtype of `A` or `a`, however it must be possible to cast the result of a*A to this dtype. 
+        The `dtype` need not be the same dtype of `A` or `a`, however it must be possible to cast the result of `a*A` to this `dtype` For instance, consider doing
+        real-time evolution with a purely-imaginary Hamiltonian, in which case `a` and `A` are both complex-valued, while the resulting unitary is real-valued.  
 
         """
         if _np.array(a).ndim == 0:
