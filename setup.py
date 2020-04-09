@@ -33,14 +33,14 @@ def setup_package():
 				os.environ["CFLAGS"]="-fopenmp"
 
 
-	io = open("meta.yaml","r")
+
+	io = open("./conda.recipe/quspin/meta.yaml","r")
 	meta_file = io.read()
 	io.close()
 
 	meta_file = meta_file.split()
-
-	ind = meta_file.index("version:")
-	version = meta_file[ind+1].replace('"','')
+	ind = meta_file.index("version")
+	version = meta_file[ind+2].replace('"','')
 
 
 	metadata = dict(
