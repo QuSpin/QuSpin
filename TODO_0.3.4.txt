@@ -101,10 +101,19 @@ x open up issue about unittest package for testing.
 x wrapper for get_vec_inv
 x change get_vec name also in basis_1d. 
 x fix note in partial trace
-M expm_multiply warning
+
+M expm_multiply warning: update documentation with a note and a small example
 M add example22 on how to use expm_multiply_parallel
 
 MP check brian's emails (there are 2 emails!). 
 MP update list of required packages for manual install (both online doc and README)
 MP fix version of new release everywhere
+
+MP pip installation from github? at least test the behavior
+
+to Automate:
+- building & moving the docs to gh-pages
+- update version everywhere: 
+- update the required packages versions
+
 
