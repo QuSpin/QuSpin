@@ -11,7 +11,18 @@ class expm_multiply_parallel(object):
 
     Notes
     -----
-    This is a wrapper over custom c++ code.
+    * this is a wrapper over custom c++ code.
+    * the `dtype` input need not be the same dtype as `A` or `a`; however, it must be possible to cast the result of `a*A` to this `dtype`. 
+    * consider the special case of real-time evolution with a purely-imaginary Hamiltonian, in which case `a=-1j*time` and `A` are both complex-valued, while the resulting matrix exponential is real-valued: in such cases, one can use either one of
+    
+    >>> expm_multiply_parallel( (1j*H.tocsr()).astype(np.float64), a=-1.0, dtype=np.float64)`
+    
+    and
+    
+    >>> expm_multiply_parallel( H.tocsr(), a=-1.0j, dtype=np.complex128)
+    
+    The more efficient way to compute the matrix exponential in this case is to use a real-valued `dtype`. 
+
 
     Examples
     --------
@@ -40,11 +51,6 @@ class expm_multiply_parallel(object):
             data type specified for the total operator :math:`\\mathrm{e}^{aA}`. Default is: `numpy.result_type(A.dtype,min_scalar_type(a),float64)`.
         copy : bool, optional
             if `True` the matrix is copied otherwise the matrix is stored by reference. 
-
-        Note
-        ----
-        The `dtype` need not be the same dtype of `A` or `a`, however it must be possible to cast the result of `a*A` to this `dtype` For instance, consider doing
-        real-time evolution with a purely-imaginary Hamiltonian, in which case `a` and `A` are both complex-valued, while the resulting unitary is real-valued.  
 
         """
         if _np.array(a).ndim == 0:
@@ -96,8 +102,9 @@ class expm_multiply_parallel(object):
 
     def set_a(self,a,dtype=None):
         """Sets the value of the property `a`.
+
         Parameters
-        -----------
+        ----------
         a : scalar
             new value of `a`.
         dtype : numpy.dtype, optional

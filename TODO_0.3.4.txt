@@ -105,7 +105,7 @@ x wrapper for get_vec_inv
 x change get_vec name also in basis_1d. 
 x fix note in partial trace
 
-M expm_multiply warning: update documentation with a note and a small example
+x expm_multiply warning: update documentation with a note and a small example
 M add example22 on how to use expm_multiply_parallel: Floquet-manner
 M try conda build (from new recipe)
 M pip installation from github? at least test the behavior

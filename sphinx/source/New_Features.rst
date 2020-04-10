@@ -34,7 +34,7 @@ New Attributes, Functions, Methods and Classes
 * new `*_basis_general` functions `basis.project_from()` and `basis.project_to()` to transform states between a symmetry-reduced basis and the full basis. That's the inverse to the deprecated function `get_vec`.
 * new `tools.Lanczos` module for Lanczos type calculations. 
 * new function method `Op_shift_sector` of the `*basis_general_` classes allows to apply operators, which do not preserve the symmetry sector, to quantum states in the reduced basis. Useful for computing correlation functions. See Example :ref:`example19-label`.
-* new required package for QuSpin: `numexpr` :red:`(ADD/CHECK TO MANUAL INSTALL AND README)`.
+* new required package for QuSpin: `numexpr`.
 
 
 Added in v. 0.3.3 (2019.10.15)
