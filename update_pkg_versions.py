@@ -3,6 +3,8 @@ this script goes through and updates the version-strings for QuSpin both inside 
 as well as for the conda-build recipe. It also builds the documentation and moves it into the 'docs' folder
 """
 
+quspin_ver = '"0.3.4"'
+build_num = '"0"'
 
 meta_template = """{version_text:s}
 
@@ -72,14 +74,12 @@ about:
   license: BSD-3
 """
 
-conda_build_config_template="""
-py_version:{python_text:s}
+conda_build_config_template="""py_version:{python_text:s}
 
 numpy:{numpy_text:s}
 """
 
-md_url = "[{text}]({url})"
-rst_url = "`{text} <{url}>`_"
+
 
 numpy_versions = ["1.17.2"]
 python_versions = ["3.6","3.7","3.8 # [not win]"]
@@ -96,6 +96,7 @@ pkg_vers = {
 	"boost":"",
 	"numpy":">="+numpy_versions[0],
 	"python":">="+python_versions[0],
+	"llvm-openmp":"",
 }
 
 pkg_urls = {
@@ -111,6 +112,8 @@ pkg_urls = {
 	"boost":("https://www.boost.org/doc/libs/1_70_0/libs/python/doc/html/index.html", "installation must include header files for boost."),
 	"llvm-openmp":("http://openmp.llvm.org/", "osx openmp version only."),
 }
+
+
 
 
 host_pkg = {
@@ -136,7 +139,7 @@ run_pkg["numba"] = pkg_vers["numba"]
 
 host_recipe = "\n    "+("\n    ".join("- "+pkg+" "+ver for pkg,ver in host_pkg.items()))
 run_recipe = "\n    "+("\n    ".join("- "+pkg+" "+ver for pkg,ver in run_pkg.items()))
-version_text = """{%  set version = "0.3.4" %}\n{%  set build_num = "0" %}"""
+version_text = """{%  set version = """+quspin_ver+""" %}\n{%  set build_num = """+build_num+""" %}"""
 
 python_text="\n  "+("\n  ".join("- "+ver for ver in python_versions))
 numpy_text="\n  "+("\n  ".join("- "+ver for ver in numpy_versions))
@@ -158,5 +161,44 @@ with open("conda.recipe/quspin-omp/meta.yaml","w") as IO:
 with open("conda.recipe/quspin-omp/conda_build_config.yaml","w") as IO:
 	IO.write(conda_build_config)
 
+md_url = "[{text}]({url})"
+rst_url = "`{text} <{url}>`_"
 
+md_text = ["For the **manual installation** you must have all the prerequisite python packages installed:"]
+rst_text = ["For the **manual installation** you must have all the prerequisite python packages installed:"]
 
+for pkg,url in pkg_urls.items():
+	if len(url) > 1:
+		md_text += [" * "+md_url.format(text=pkg,url=url[0])+pkg_vers[pkg]+", "+url[1]]
+		rst_text += ["    * "+rst_url.format(text=pkg,url=url[0])+pkg_vers[pkg]+", "+url[1]]
+	else:
+		md_text += [" * "+md_url.format(text=pkg,url=url[0])+pkg_vers[pkg]]
+		rst_text += ["    * "+rst_url.format(text=pkg,url=url[0])+pkg_vers[pkg]]
+
+with open("sphinx/source/Installation.rst","r") as IO:
+	Installation_rst = IO.read()
+
+Installation_rst_lines = Installation_rst.split("\n")
+begin = Installation_rst_lines.index(".. begin packages")
+end = Installation_rst_lines.index(".. end packages")
+
+Installation_rst_lines = Installation_rst_lines[:begin+1]+rst_text+Installation_rst_lines[end:]
+
+Installation_rst_new = "\n".join(Installation_rst_lines)
+
+with open("sphinx/source/Installation.rst","w") as IO:
+	IO.write(Installation_rst_new)
+
+with open("README.md","r") as IO:
+	readme_md = IO.read()
+
+readme_md_lines = readme_md.split("\n")
+begin = readme_md_lines.index("<!--- begin packages --->")
+end = readme_md_lines.index("<!--- end packages --->")
+
+readme_md_lines = readme_md_lines[:begin+1]+md_text+readme_md_lines[end:]
+
+readme_md_new = "\n".join(readme_md_lines)
+
+with open("README.md","w") as IO:
+	IO.write(readme_md_new)

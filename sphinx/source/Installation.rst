@@ -2,20 +2,20 @@ Installation
 ============
 
 QuSpin is currently being supported for Python 2 and Python 3 which are a prerequisite. We recommend the use of the free package manager `Anaconda <https://www.continuum.io/downloads>`_ which installs Python and manages its packages. For a lighter installation (preferred for computing clusters), one can use `miniconda <http://conda.pydata.org/miniconda.html>`_.
-
-For the **manual installation** you must have all the prerequisite python packages installed: 
-	* `numpy <http://www.numpy.org/>`_
-	* `scipy <https://www.scipy.org>`_
-	* `cython <https://www.cython.org>`_ 
-	* `joblib <https://pythonhosted.org/joblib/>`_
-	* `six <https://pythonhosted.org/six/>`_
-	* `dill <https://pypi.python.org/pypi/dill>`_
-	* `gmpy2 <https://gmpy2.readthedocs.io/en/latest/>`_
-	* `numba <http://numba.pydata.org/>`_
-	* `numexpr <https://numexpr.readthedocs.io/en/latest/user_guide.html>`_
-	* `boost-py <https://www.boost.org/doc/libs/1_70_0/libs/python/doc/html/index.html>`_, installation must include header files for boost.
-	* `llvm-openmp <http://openmp.llvm.org/>`_, osx omp version only
-
+.. begin packages
+For the **manual installation** you must have all the prerequisite python packages installed:
+    * `scipy <https://www.scipy.org>`_>=1.0.0
+    * `numpy <http://www.numpy.org>`_>=1.17.2
+    * `cython <https://www.cython.org>`_>=0.29
+    * `joblib <https://pythonhosted.org/joblib/>`_
+    * `six <https://pythonhosted.org/six/>`_
+    * `dill <https://pypi.python.org/pypi/dill>`_
+    * `gmpy2 <https://gmpy2.readthedocs.io/en/latest/>`_
+    * `numba <http://numba.pydata.org/>`_>=0.41
+    * `numexpr <https://numexpr.readthedocs.io/en/latest/user_guide.html>`_
+    * `boost <https://www.boost.org/doc/libs/1_70_0/libs/python/doc/html/index.html>`_, installation must include header files for boost.
+    * `llvm-openmp <http://openmp.llvm.org/>`_, osx openmp version only.
+.. end packages
 For Windows machines one needs the correct version of the Microsoft Visual Studios compiler for the given python version one is building the package for. A good resource which can help with this can be found `here <https://github.com/cython/cython/wiki/CythonExtensionsOnWindows>`_. For OS-X and Linux the standard compilers should be fine for building the package. Note that some of the compiled extensions require Openmp 2.0 or above. When installing the package manually, if you add the flag `--record install.txt`, the location of all the installed files will be output to the file `install.txt`. This is useful as most package managers will not be able to remove manually installed packages and so in order to delete this package completely one needs to manually remove all the files. 
 	
 Mac OS X/Linux
