@@ -104,10 +104,11 @@ numpy:{numpy_text:s}
 """
 
 
-
+# version list for conda-build matrix
 numpy_versions = ["1.17.2"]
 python_versions = ["3.6","3.7","3.8 # [not win]"]
 
+# versions for python package lists
 pkg_vers = {
 	"scipy":">=1.0.0",
 	"joblib":"",
@@ -122,7 +123,7 @@ pkg_vers = {
 	"python":">="+python_versions[0],
 	"llvm-openmp":"",
 }
-
+# package urls and comments
 pkg_urls = {
 	"scipy":("https://www.scipy.org",),
 	"numpy":("http://www.numpy.org",),
@@ -139,7 +140,7 @@ pkg_urls = {
 
 
 
-
+# packages and versions for host-field in meta file
 host_pkg = {
 	"numpy":"{{ numpy }}",
 	"python":"{{ py_version }}",
@@ -147,7 +148,7 @@ host_pkg = {
 host_pkg["cython"] = pkg_vers["cython"]
 host_pkg["boost"] = pkg_vers["boost"]
 
-
+# packages and version for run-field in meta file
 run_pkg = {
 	"python": "{{ py_version }}",
 	"{{ pin_compatible('numpy') }}":"",
@@ -160,7 +161,7 @@ run_pkg["numexpr"] = pkg_vers["numexpr"]
 run_pkg["gmpy2"] = pkg_vers["gmpy2"]
 run_pkg["numba"] = pkg_vers["numba"]
 
-
+# building meta and conda_build_config files
 host_recipe = "\n    "+("\n    ".join("- "+pkg+" "+ver for pkg,ver in host_pkg.items()))
 run_recipe = "\n    "+("\n    ".join("- "+pkg+" "+ver for pkg,ver in run_pkg.items()))
 version_text = """{%  set version = """+quspin_ver+""" %}\n{%  set build_num = """+build_num+""" %}"""
@@ -185,7 +186,7 @@ with open("conda.recipe/quspin-omp/meta.yaml","w") as IO:
 with open("conda.recipe/quspin-omp/conda_build_config.yaml","w") as IO:
 	IO.write(conda_build_config)
 
-# updating package lists:
+# updating package lists in Installation.rst and README.md:
 
 md_url = "[{text}]({url})"
 rst_url = "`{text} <{url}>`_"
@@ -231,13 +232,14 @@ readme_md_new = "\n".join(readme_md_lines)
 with open("README.md","w") as IO:
 	IO.write(readme_md_new)
 
-
+# run build for documentation and copy results into docs folder
 
 script = """#!/bin/bash
 
 cd ./sphinx
 make html
 cd ../
+cp -r ./sphinx/_build/html/* docs/
 """
 rc = call(script, shell=True)
 
