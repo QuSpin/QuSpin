@@ -107,7 +107,7 @@ x fix note in partial trace
 
 x expm_multiply warning: update documentation with a note and a small example
 M add example22 on how to use expm_multiply_parallel: Floquet-manner
-M try conda build (from new recipe)
+x try conda build (from new recipe)
 M pip installation from github? at least test the behavior
 
 
