@@ -81,10 +81,10 @@ Building dev-0.3.4
 -------------------
 
 x fix numba issue with version and cfunc. Issue 271
-P fix numpy warning about not supporting generators. Issue 254
+c fix numpy warning about not supporting generators. Issue 254
 P discuss how to use lanczos to find the ground state efficiently compared to scipy. 
-P update list of required packages for manual install (both online doc and README): mention boost (required to build, not to run)
-P fix version of new release everywhere
+x update list of required packages for manual install (both online doc and README): mention boost (required to build, not to run)
+x fix version of new release everywhere
 
 x Add cython to manual installation, README and in sphinx
 x double check required packages. possibly missing numexpr
@@ -118,9 +118,9 @@ MP check brian's emails (there are 2 emails!).
 
 
 
-to Automate:
-- building & moving the docs to gh-pages
-- update version everywhere: 
-- update the required packages versions
+to Automate: done.
+x building & moving the docs to gh-pages
+x update version everywhere: 
+x update the required packages versions
 
 
