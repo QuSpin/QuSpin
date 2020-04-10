@@ -81,8 +81,8 @@ Building dev-0.3.4
 -------------------
 
 x fix numba issue with version and cfunc. Issue 271
-c fix numpy warning about not supporting generators. Issue 254
-P discuss how to use lanczos to find the ground state efficiently compared to scipy. 
+x fix numpy warning about not supporting generators. Issue 254
+x discuss how to use lanczos to find the ground state efficiently compared to scipy. 
 x update list of required packages for manual install (both online doc and README): mention boost (required to build, not to run)
 x fix version of new release everywhere
 

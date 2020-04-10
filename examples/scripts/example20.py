@@ -75,10 +75,8 @@ v0 /= np.linalg.norm(v0)
 #
 m_GS=50 # Krylov subspace dimension
 #
-# Lanczos finds the largest-magnitude eigenvalue: apply on -H and then revert sign of E
-E,V,Q_T = lanczos_full(-H,v0,m_GS,full_ortho=False)
-E=-E[::-1] # revert negative sign and re-order E'values
-V=V[:,::-1] # re-order e'vectors
+# Lanczos finds the largest-magnitude eigenvalues: 
+E,V,Q_T = lanczos_full(H,v0,m_GS,full_ortho=False)
 #
 # check GS energy convergence
 try:

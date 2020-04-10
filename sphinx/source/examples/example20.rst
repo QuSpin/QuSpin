@@ -35,13 +35,9 @@ In the case for `expm_multiply_parallel` the convergence is always guaranteed to
 Ground State Search
 +++++++++++++++++++
 
-When using the Lanczos algorithm to compute (part of) the eigensystem of :math:`H`, it should be noted that the :math:`m` eigenvalues of :math:`T` approximate the :math:`m` largest eigenvalues of :math:`H`. Thus, when looking for ground-state properties, one typically applies the Lanczos algorithm to :math:`-H`. 
+One of the major uses of the Lanczos method is to find the ground state of a given matrix. It is important to remember that the Lanczos iteration projects out the eigenstates with the largest magnitude eigenvalues of the operator. As such, depending on which eigenvalues one is targeting one might have to transform the operator to make sure that the Lanczos algorithm targets that particular eigenvalue. In the case of the ground state, one either shift the operator by a constant as to make the magitude of the ground state the largest, however, in a lot of cases the ground state already has one of the largest magnitude eigenvalues. 
 
-One may be tempted to use imaginary time evolution to find the ground state. Some advantages of this is that it is possible to systematically control when to stop by observing the evolution of the expectation value of the energy :math:`\langle\psi(\tau)|H|\psi(\tau)\rangle/\langle\psi(\tau)|\psi(\tau)\rangle`, as :math:`\tau\rightarrow\infty`. This can be done using multiple time-steps or in one large time step using the lanczos matrix exponential. Interestingly, if we assume that the number of lanczos vectors is large enough for the matrix exponential to converge. that implies that, for the large time-step, the ground state, as calculated from the krylow-subspace, has to be the ground state. In that sense the matrix exponential for large :math:`\tau` is no different then calculating the ground state directly from the lanczos basis. 
-
-
-
-
+After creating the lanczos basis, QuSpin will return the eigenvalues and vectors of the Krylov sub-space matrix :math:`T`. If the operator has been transformed to create the Lanczos basis, one should perform the inverse transform of the eigenvalues to get the eigenvalues of the original operator. In the example below the ground state energy is the largest magnitude eigenvalue, hence we do not need to transform the Hamiltonian and likewise, the eigenvalues. The eigenvectors of the Hamiltonian can be constructed by taking linear combinations of the Lanczos basis with coefficients given by the eigenvectors of :math:`T`.
 
 Script
 ------
