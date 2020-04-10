@@ -198,9 +198,9 @@ class lattice_basis(basis):
 					# vectorize sparse_pure partial trace 
 					state = state.tocsr()
 					try:
-						state_gen = (_lattice_partial_trace_sparse_pure(state.getrow(i),sub_sys_A,N,sps,return_rdm=return_rdm) for i in xrange(state.shape[0]))
+						state_gen = [_lattice_partial_trace_sparse_pure(state.getrow(i),sub_sys_A,N,sps,return_rdm=return_rdm) for i in xrange(state.shape[0])]
 					except NameError:
-						state_gen = (_lattice_partial_trace_sparse_pure(state.getrow(i),sub_sys_A,N,sps,return_rdm=return_rdm) for i in range(state.shape[0]))
+						state_gen = [_lattice_partial_trace_sparse_pure(state.getrow(i),sub_sys_A,N,sps,return_rdm=return_rdm) for i in range(state.shape[0])]
 
 					left,right = zip(*state_gen)
 
@@ -516,7 +516,7 @@ class lattice_basis(basis):
 				p = get_p_patchy(rdm)
 				p = p.reshape((1,-1))
 			else:
-				p_gen = (get_p_patchy(dm) for dm in rdm[:])
+				p_gen = [get_p_patchy(dm) for dm in rdm[:]]
 				p = _np.stack(p_gen)
 
 		else:
@@ -524,7 +524,7 @@ class lattice_basis(basis):
 				p = eigvalsh(rdm.todense())[::-1] + _np.finfo(rdm.dtype).eps
 				p = p.reshape((1,-1))
 			else:
-				p_gen = (eigvalsh(dm.todense())[::-1] + _np.finfo(dm.dtype).eps for dm in rdm[:])
+				p_gen = [eigvalsh(dm.todense())[::-1] + _np.finfo(dm.dtype).eps for dm in rdm[:]]
 				p = _np.stack(p_gen)
 
 		return p,rdm_A,rdm_B
