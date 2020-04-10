@@ -1,5 +1,5 @@
-{% set version = "0.3.4" %}
-{% set build_num = "0" %} # set build number
+{%  set version = "0.3.4" %}
+{%  set build_num = "0" %}
 
 package:
   name: quspin
@@ -10,7 +10,7 @@ source:
 
 build:
   number: {{ build_num }}
-  string: omp_py{{ py_version | replace(".", "") }}h{{PKG_HASH}}_{{ build_num }}
+  string: py{{ py_version | replace(".", "") }}h{{PKG_HASH}}_{{ build_num }}
   script: python setup.py install --omp
   features:
     - omp
@@ -19,27 +19,24 @@ build:
 
 requirements:
   build:
-    - llvm-openmp # [osx]
     - {{compiler('cxx')}}
 
   host:
-    - boost
-    - cython >=0.29
     - numpy {{ numpy }}
     - python {{ py_version }}
-
+    - cython >=0.29
+    - boost 
  
   run:
-    - llvm-openmp # [osx]
     - python {{ py_version }}
-    - {{ pin_compatible('numpy') }}
+    - {{ pin_compatible('numpy') }} 
     - scipy >=1.0.0
-    - six
-    - joblib
-    - dill
+    - joblib 
+    - six 
+    - dill 
+    - numexpr 
     - gmpy2 
     - numba >=0.41
-    - numexpr
     
 test:
   imports:
