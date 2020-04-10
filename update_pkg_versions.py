@@ -2,9 +2,33 @@
 this script goes through and updates the version-strings for QuSpin both inside the package
 as well as for the conda-build recipe. It also builds the documentation and moves it into the 'docs' folder
 """
+from subprocess import call
+
+
 
 quspin_ver = '"0.3.4"'
 build_num = '"0"'
+
+
+with open("./quspin/__init__.py","r") as IO:
+	init_file = IO.read()
+
+
+init_file_list = init_file.split("\n")
+
+for i,line in enumerate(init_file_list):
+	if "__version__" in line:
+		index = i
+		break
+
+init_file_list[index] = "__version__ = {}".format(quspin_ver)
+
+init_file_new = "\n".join(init_file_list)
+
+with open("./quspin/__init__.py","w") as IO:
+	IO.write(init_file_new)
+
+
 
 meta_template = """{version_text:s}
 
@@ -161,6 +185,8 @@ with open("conda.recipe/quspin-omp/meta.yaml","w") as IO:
 with open("conda.recipe/quspin-omp/conda_build_config.yaml","w") as IO:
 	IO.write(conda_build_config)
 
+# updating package lists:
+
 md_url = "[{text}]({url})"
 rst_url = "`{text} <{url}>`_"
 
@@ -189,6 +215,8 @@ Installation_rst_new = "\n".join(Installation_rst_lines)
 with open("sphinx/source/Installation.rst","w") as IO:
 	IO.write(Installation_rst_new)
 
+
+# README
 with open("README.md","r") as IO:
 	readme_md = IO.read()
 
@@ -202,3 +230,14 @@ readme_md_new = "\n".join(readme_md_lines)
 
 with open("README.md","w") as IO:
 	IO.write(readme_md_new)
+
+
+
+script = """#!/bin/bash
+
+cd ./sphinx
+make html
+cd ../
+"""
+rc = call(script, shell=True)
+
