@@ -1,6 +1,6 @@
 .. _example9-label:
 
-Integrability Breaking and Thermalising Dynamics in the Translationally Invariant 2D Transverse-Field Ising Model
+Integrability Breaking and Thermalising Dynamics in the 2D Transverse-Field Ising Model
 -----------------------------------------------------------------------------------------------------------------
 
 This example shows how to code up the time-periodic 2D transverse-field Ising Hamiltonian:

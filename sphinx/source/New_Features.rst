@@ -1,6 +1,6 @@
 
 
-:red:`QuSpin 0.3.4` (updated on 2020.??.??)
+:red:`QuSpin 0.3.4` (released on 2020.??.??)
 ================================================
 
 
@@ -22,19 +22,22 @@ Added in v. 0.3.4 (2020.??.??)
 Improved Functionality
 ++++++++++++++++++++++
 
-* :red:`deprecating` python 27 support. 
-* revised `user_basis` tutorial for spinless fermions: introduced function `_count_particles_32()`.
-* added optional arguments `svd_solver`, `svd_kwargs` to `basis.ent_entropy()`.
-* fixed a number of small bugs, and in particule: (i) a bug with computing the entanglement entropy using the `spinful_fermion_basis_general`, and (ii) a bug with constructing operators for higher-spin operators (S>1/2). 
+* :red:`deprecating` python 27 support. Installing QuSpin for py27 will by defult result in version 0.3.3.
 * :red:`deprecating` function `basis.get_vec()`: use `basis.project_from()` instead.
+* revised `user_basis` tutorial for spinless fermions and introduced function `_count_particles_32()`.
+* added optional arguments `svd_solver`, `svd_kwargs` to `basis.ent_entropy()`; allows to use some scipy svd solvers, which are typically more stable. 
+* fixed bugs:
+	* computing the entanglement entropy when using the `spinful_fermion_basis_general`.
+	* constructing operators for higher-spin operators (S>1/2). 
+
 
 
 New Attributes, Functions, Methods and Classes
 ++++++++++++++++++++++++++++++++++++++++++++++
-* new `*_basis_general` functions `basis.project_from()` and `basis.project_to()` to transform states between a symmetry-reduced basis and the full basis. That's the inverse to the deprecated function `get_vec`.
-* new `tools.Lanczos` module for Lanczos type calculations. 
-* new function method `Op_shift_sector` of the `*basis_general_` classes allows to apply operators, which do not preserve the symmetry sector, to quantum states in the reduced basis. Useful for computing correlation functions. See Example :ref:`example19-label`.
-* new required package for QuSpin: `numexpr`.
+* new `*_basis_general` functions -- `basis.project_from()` and its inverse `basis.project_to()` -- to transform states between a symmetry-reduced basis and the full basis.
+* new `tools.Lanczos` module for Lanczos type calculations, see examples :ref:`example20-label`, :ref:`example21-label`.
+* new function method `Op_shift_sector` of the `*basis_general_` classes allows to apply operators, which do not preserve the symmetry sector, to quantum states in the reduced basis. Useful for computing correlation functions. See example :ref:`example19-label`.
+* new required support package for QuSpin: `numexpr`.
 
 
 Added in v. 0.3.3 (2019.10.15)
