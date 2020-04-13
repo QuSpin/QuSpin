@@ -33,21 +33,21 @@ J_zz = [[Jzz_0,i,(i+1)%L] for i in range(L)] # OBC
 J_xy = [[0.5*Jxy,i,(i+1)%L] for i in range(L)] # OBC
 h_z=[[hz,i] for i in range(L)]
 # static and dynamic lists
-static_xxz = [["+-",J_xy],["-+",J_xy],["zz",J_zz],["z",h_z],]
+static_ave = [["+-",J_xy],["-+",J_xy],["zz",J_zz],["z",h_z],]
 static_0 = [["+-",J_xy],["-+",J_xy],]
 static_1 = [["zz",J_zz],["z",h_z],]
 dynamic=[]
 # compute the time-dependent Heisenberg Hamiltonian
-H_XXZ = hamiltonian(static_xxz,dynamic,basis=basis,dtype=np.float64)
+H_ave = 0.5*hamiltonian(static_ave,dynamic,basis=basis,dtype=np.float64)
 H0 = hamiltonian(static_0,dynamic,basis=basis,dtype=np.float64)
 H1 = hamiltonian(static_1,dynamic,basis=basis,dtype=np.float64)
 #
 ##### various exact diagonalisation routines #####
 # calculate full eigensystem
-E,V=H_XXZ.eigsh(k=1,which='SA')
+E,V=H_ave.eigsh(k=1,which='SA')
 psi_i=V[:,0]
 #
-# auxiliary array for efficiency
+# auxiliary array for memory efficiency
 psi=psi_i.copy().astype(np.complex128)
 work_array=np.zeros((2*len(psi),), dtype=psi.dtype) # twice as long because complex-valued
 
@@ -66,6 +66,7 @@ Sent_density[0]=basis.ent_entropy(psi,sub_sys_A=range(L//2),density=True)['Sent_
 
 for j in range(N_steps):
 	
+	# apply to state psi and update psi in-place
 	expH0.dot(psi,work_array=work_array,overwrite_v=True) 
 	expH1.dot(psi,work_array=work_array,overwrite_v=True)
 
@@ -82,4 +83,4 @@ plt.plot(times, Sent_density)
 plt.show()
 
 
-
+#plt.close()
