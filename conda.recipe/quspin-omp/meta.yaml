@@ -10,7 +10,7 @@ source:
 
 build:
   number: {{ build_num }}
-  string: py{{ py_version | replace(".", "") }}h{{PKG_HASH}}_{{ build_num }}
+  string: omp_py{{ py_version | replace(".", "") }}h{{PKG_HASH}}_{{ build_num }}
   script: python setup.py install --omp
   features:
     - omp
@@ -26,6 +26,7 @@ requirements:
     - python {{ py_version }}
     - cython >=0.29
     - boost 
+    - llvm-openmp # [os-x]
  
   run:
     - python {{ py_version }}
@@ -37,6 +38,7 @@ requirements:
     - numexpr 
     - gmpy2 
     - numba >=0.41
+    - llvm-openmp # [os-x]
     
 test:
   imports:

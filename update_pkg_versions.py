@@ -3,6 +3,7 @@ this script goes through and updates the version-strings for QuSpin both inside 
 as well as for the conda-build recipe. It also builds the documentation and moves it into the 'docs' folder
 """
 from subprocess import call
+import sys
 
 
 
@@ -74,7 +75,7 @@ source:
 
 build:
   number: {{{{ build_num }}}}
-  string: py{{{{ py_version | replace(".", "") }}}}h{{{{PKG_HASH}}}}_{{{{ build_num }}}}
+  string: omp_py{{{{ py_version | replace(".", "") }}}}h{{{{PKG_HASH}}}}_{{{{ build_num }}}}
   script: python setup.py install --omp
   features:
     - omp
@@ -86,8 +87,10 @@ requirements:
     - {{{{compiler('cxx')}}}}
 
   host:{host_recipe:s}
+    - llvm-openmp # [os-x]
  
   run:{run_recipe:s}
+    - llvm-openmp # [os-x]
     
 test:
   imports:
@@ -234,12 +237,13 @@ with open("README.md","w") as IO:
 
 # run build for documentation and copy results into docs folder
 
-script = """#!/bin/bash
+if "--build_docs" in sys.argv:
+	script = """#!/bin/bash
 
-cd ./sphinx
-make html
-cd ../
-cp -r ./sphinx/_build/html/* docs/
-"""
-rc = call(script, shell=True)
+	cd ./sphinx
+	make html
+	cd ../
+	cp -r ./sphinx/_build/html/* docs/
+	"""
+	rc = call(script, shell=True)
 
