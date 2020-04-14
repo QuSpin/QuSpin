@@ -22,7 +22,7 @@ requirements:
   host:
     - numpy {{ numpy }}
     - python {{ py_version }}
-    - cython >=0.29
+    - cython 
     - boost 
  
   run:
