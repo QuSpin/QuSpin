@@ -8,6 +8,11 @@ Repository for conda-build recipes of QuSpin
 2) `conda build purge-all`
 3) run the builds 
 
+% build all at the samt time
+`conda build conda.recipe --no-anaconda-upload`
+
+
+% build separately
 `conda build conda.recipe/quspin --no-anaconda-upload`
 
 `conda build conda.recipe/omp --no-anaconda-upload`
