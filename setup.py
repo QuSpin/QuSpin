@@ -43,7 +43,8 @@ def setup_package():
 			os.environ["CFLAGS"]=os.environ["CFLAGS"]+" "+extra_compiler_args
 		else:
 			os.environ["CFLAGS"]=extra_compiler_args
-	else:
+			
+	if "--default-compiler-flags" in sys.argv:
 		if sys.platform == "win32":
 			pass
 		else:
