@@ -34,7 +34,7 @@ def setup_package():
 
 	if "--extra-compiler-args" in sys.argv:
 		i = sys.argv.index("--extra-compiler-args")
-		extra_compiler_args = sys.argv[i+1]
+		extra_compiler_args = sys.argv[i+1].replace('\"','')
 
 		sys.argv.remove(extra_compiler_args)
 		sys.argv.remove("--extra-compiler-args")
@@ -43,7 +43,7 @@ def setup_package():
 			os.environ["CFLAGS"]=os.environ["CFLAGS"]+" "+extra_compiler_args
 		else:
 			os.environ["CFLAGS"]=extra_compiler_args
-			
+
 	if "--default-compiler-flags" in sys.argv:
 		if sys.platform == "win32":
 			pass
