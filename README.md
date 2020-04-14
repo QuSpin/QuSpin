@@ -47,11 +47,11 @@ To install QuSpin manually, download the source code either from the [master](ht
 
 Unix:
 ```
-python setup.py install 
+python setup.py install --default-compiler-flags
 ```
 or Windows command line:
 ```
-setup.py install
+setup.py install --default-compiler-flags
 ```
 <!--- begin packages --->
 For the **manual installation** you must have all the prerequisite python packages installed:
@@ -73,11 +73,11 @@ For manual installation with OpenMP, use:
 
 Unix:
 ```
-python setup.py install --omp
+python setup.py install --omp --default-compiler-flags
 ```
 or Windows command line:
 ```
-setup.py install --omp
+setup.py install --omp --default-compiler-flags
 ```
 
 ### **updating the package**
