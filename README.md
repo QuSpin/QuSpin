@@ -57,7 +57,7 @@ setup.py install
 For the **manual installation** you must have all the prerequisite python packages installed:
  * [scipy](https://www.scipy.org)>=1.0.0
  * [numpy](http://www.numpy.org)>=1.17.2
- * [cython](https://www.cython.org)>=0.29
+ * [cython](https://www.cython.org)
  * [joblib](https://pythonhosted.org/joblib/)
  * [six](https://pythonhosted.org/six/)
  * [dill](https://pypi.python.org/pypi/dill)

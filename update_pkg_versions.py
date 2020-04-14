@@ -109,7 +109,7 @@ numpy:{numpy_text:s}
 
 # version list for conda-build matrix
 numpy_versions = ["1.17.2"]
-python_versions = ["3.6","3.7","3.8 # [linux]"]
+python_versions = ["3.6","3.7","3.8 # [not win]"]
 
 # versions for python package lists
 pkg_vers = {
@@ -120,7 +120,8 @@ pkg_vers = {
 	"numba":">=0.41",
 	"numexpr":"",
 	"gmpy2":"",
-	"cython":">=0.29",
+	# "cython":">=0.29",
+	"cython":"",
 	"boost":"",
 	"numpy":">="+numpy_versions[0],
 	"python":">="+python_versions[0],
@@ -235,6 +236,7 @@ readme_md_new = "\n".join(readme_md_lines)
 with open("README.md","w") as IO:
 	IO.write(readme_md_new)
 
+'''
 # run build for documentation and copy results into docs folder
 
 if "--build_docs" in sys.argv:
@@ -246,4 +248,4 @@ if "--build_docs" in sys.argv:
 	cp -r ./sphinx/_build/html/* docs/
 	"""
 	rc = call(script, shell=True)
-
+'''
