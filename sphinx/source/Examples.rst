@@ -5,7 +5,7 @@ For a detailed tutorial on how to use the package, check out these papers:
 	* `SciPost Phys. 2, 003 (2017) <https://scipost.org/10.21468/SciPostPhys.2.1.003>`_.
 	* `SciPost Phys. 7, 020 (2019) <https://scipost.org/10.21468/SciPostPhys.7.2.020>`_.
 
-The following Python scripts demonstrate basic and advanced functionality of QuSpin. In many cases, we have chosen to exhibit QuSpin's functionality, and *there may be a more efficient approach* to obtain the same result using QuSpin. 
+The following Python scripts demonstrate basic and advanced functionality of QuSpin. In many cases, we have chosen to exhibit QuSpin's functionality, and *there may exist a more efficient approach* to obtain the same result using QuSpin. 
 
 To run the example scripts, besides QuSpin, you have to also install `matplotlib <https://matplotlib.org/users/installing.html>`_ (e.g. by using anaconda):
 	
