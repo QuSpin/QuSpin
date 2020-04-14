@@ -43,7 +43,7 @@ source:
 build:
   number: {{{{ build_num }}}}
   string: py{{{{ py_version | replace(".", "") }}}}h{{{{PKG_HASH}}}}_{{{{ build_num }}}}
-  script: python setup.py install 
+  script: python setup.py install
   ignore_run_exports:
     - boost
 
@@ -54,10 +54,10 @@ requirements:
   host:{host_recipe:s}
  
   run:{run_recipe:s}
-    
+  
 test:
   imports:
-    - quspin 
+    - quspin
 
 about:
   home: https://github.com/weinbe58/QuSpin.git
@@ -87,10 +87,10 @@ requirements:
     - {{{{compiler('cxx')}}}}
 
   host:{host_recipe:s}
-    - llvm-openmp # [os-x]
+    - llvm-openmp # [osx]
  
   run:{run_recipe:s}
-    - llvm-openmp # [os-x]
+    - llvm-openmp # [osx]
     
 test:
   imports:

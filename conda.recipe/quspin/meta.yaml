@@ -11,7 +11,7 @@ source:
 build:
   number: {{ build_num }}
   string: py{{ py_version | replace(".", "") }}h{{PKG_HASH}}_{{ build_num }}
-  script: python setup.py install 
+  script: python setup.py install
   ignore_run_exports:
     - boost
 
@@ -35,10 +35,10 @@ requirements:
     - numexpr 
     - gmpy2 
     - numba >=0.41
-    
+  
 test:
   imports:
-    - quspin 
+    - quspin
 
 about:
   home: https://github.com/weinbe58/QuSpin.git
