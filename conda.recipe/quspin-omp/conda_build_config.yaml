@@ -1,7 +1,7 @@
 py_version:
   - 3.6
   - 3.7
-  - 3.8 # [not win]
+  - 3.8 # [linux]
 
 numpy:
   - 1.17.2
