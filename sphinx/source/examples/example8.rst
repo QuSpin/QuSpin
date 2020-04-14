@@ -1,6 +1,6 @@
 .. _example8-label:
 
-The Gross-Pitaevskii Equation and Nonlinear Time Evolution
+User-defined ODEs: the Gross-Pitaevskii Equation and Nonlinear Time Evolution
 ----------------------------------------------------------
 
 

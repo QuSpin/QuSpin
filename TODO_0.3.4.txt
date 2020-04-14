@@ -106,9 +106,10 @@ x change get_vec name also in basis_1d.
 x fix note in partial trace
 
 x expm_multiply warning: update documentation with a note and a small example
-M add example22 on how to use expm_multiply_parallel: Floquet-manner
 x try conda build (from new recipe)
+x add example22 on how to use expm_multiply_parallel: Floquet-manner
 M pip installation from github? at least test the behavior
+M run osx tests with built code
 
 
 MP check brian's emails (there are 2 emails!). 
