@@ -52,10 +52,9 @@ requirements:
     - {{{{compiler('cxx')}}}}
 
   host:{host_recipe:s}
-    - llvm-openmp # [osx]
  
   run:{run_recipe:s}
-    - llvm-openmp # [osx]
+  
 test:
   imports:
     - quspin
