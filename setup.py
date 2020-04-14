@@ -32,19 +32,8 @@ def setup_package():
 			else:
 				os.environ["CFLAGS"]="-fopenmp"
 
-	if "--extra-compiler-args" in sys.argv:
-		i = sys.argv.index("--extra-compiler-args")
-		extra_compiler_args = sys.argv[i+1].replace('\"','')
-
-		sys.argv.remove(extra_compiler_args)
-		sys.argv.remove("--extra-compiler-args")
-
-		if "CFLAGS" in os.environ:
-			os.environ["CFLAGS"]=os.environ["CFLAGS"]+" "+extra_compiler_args
-		else:
-			os.environ["CFLAGS"]=extra_compiler_args
-
 	if "--default-compiler-flags" in sys.argv:
+		sys.argv.remove("--default-compiler-flags")
 		if sys.platform == "win32":
 			pass
 		else:
