@@ -26,7 +26,7 @@ requirements:
     - python {{ py_version }}
     - cython >=0.29
     - boost 
-    - llvm-openmp # [os-x]
+    - llvm-openmp # [osx]
  
   run:
     - python {{ py_version }}
@@ -38,7 +38,7 @@ requirements:
     - numexpr 
     - gmpy2 
     - numba >=0.41
-    - llvm-openmp # [os-x]
+    - llvm-openmp # [osx]
     
 test:
   imports:
