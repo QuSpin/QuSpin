@@ -85,12 +85,12 @@ build:
 requirements:
   build:
     - {{{{compiler('cxx')}}}}
+    - llvm-openmp # [osx]
+    - libgomp # [linux]
 
   host:{host_recipe:s}
-    - llvm-openmp # [osx]
  
   run:{run_recipe:s}
-    - llvm-openmp # [osx]
     
 test:
   imports:

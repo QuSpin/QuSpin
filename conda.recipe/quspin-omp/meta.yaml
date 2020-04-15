@@ -20,13 +20,14 @@ build:
 requirements:
   build:
     - {{compiler('cxx')}}
+    - llvm-openmp # [osx]
+    - libgomp # [linux]
 
   host:
     - numpy {{ numpy }}
     - python {{ py_version }}
     - cython 
     - boost 
-    - llvm-openmp # [osx]
  
   run:
     - python {{ py_version }}
@@ -38,7 +39,6 @@ requirements:
     - numexpr 
     - gmpy2 
     - numba >=0.41
-    - llvm-openmp # [osx]
     
 test:
   imports:
