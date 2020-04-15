@@ -22,14 +22,15 @@ Added in v. 0.3.4 (2020.??.??)
 Improved Functionality
 ++++++++++++++++++++++
 
-* :red:`deprecating` python 27 support. Installing QuSpin for py27 will by defult result in version 0.3.3.
+* :red:`deprecating` python 2.7 support. Installing QuSpin for py27 will by defult result in version 0.3.3.
 * :red:`deprecating` function `basis.get_vec()`: use `basis.project_from()` instead.
-..* adding support for python 38 (linux only) [currently boost does not support a py38 version for osx and windows].
 * revised `user_basis` tutorial for spinless fermions and introduced function `_count_particles_32()`.
 * added optional arguments `svd_solver`, `svd_kwargs` to `basis.ent_entropy()`; allows to use some scipy svd solvers, which are typically more stable. 
+* `expm_multiply_parallel` now supports the option to give the operator an explicit dtype, see example :ref:`example22-label`.
 * fixed bugs:
 	* computing the entanglement entropy when using the `spinful_fermion_basis_general`.
 	* constructing operators for higher-spin operators (S>1/2). 
+
 
 
 
@@ -39,6 +40,7 @@ New Attributes, Functions, Methods and Classes
 * new `tools.Lanczos` module for Lanczos type calculations, see examples :ref:`example20-label`, :ref:`example21-label`.
 * new function method `Op_shift_sector` of the `*basis_general_` classes allows to apply operators, which do not preserve the symmetry sector, to quantum states in the reduced basis. Useful for computing correlation functions. See example :ref:`example19-label`.
 * new required support package for QuSpin: `numexpr`.
+
 
 
 Added in v. 0.3.3 (2019.10.15)
