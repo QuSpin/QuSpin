@@ -91,6 +91,8 @@ requirements:
   host:{host_recipe:s}
  
   run:{run_recipe:s}
+    - llvm-openmp # [osx]
+    - libgomp # [linux]
     
 test:
   imports:

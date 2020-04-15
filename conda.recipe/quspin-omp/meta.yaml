@@ -39,6 +39,8 @@ requirements:
     - numexpr 
     - gmpy2 
     - numba >=0.41
+    - llvm-openmp # [osx]
+    - libgomp # [linux]
     
 test:
   imports:
