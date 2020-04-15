@@ -21,23 +21,16 @@ def setup_package():
 
 	if "--omp" in sys.argv:
 		sys.argv.remove("--omp")
-		if sys.platform.startswith('win'):
+		if sys.platform == "win32":
 			if "CFLAGS" in os.environ:
 				os.environ["CFLAGS"]=os.environ["CFLAGS"]+" /openmp"
 			else:
 				os.environ["CFLAGS"]="/openmp"
-		elif sys.platform.startswith('linux'):
+		else:
 			if "CFLAGS" in os.environ:
 				os.environ["CFLAGS"]=os.environ["CFLAGS"]+" -fopenmp"
 			else:
 				os.environ["CFLAGS"]="-fopenmp"
-		elif sys.platform.startswith('darwin')
-			if "CFLAGS" in os.environ:
-				os.environ["CFLAGS"]=os.environ["CFLAGS"]+" -Wl,-rpath ${PREFIX}/lib -L${PREFIX}/lib -fopenmp"
-			else:
-				os.environ["CFLAGS"]="-Wl,-rpath ${PREFIX}/lib -L${PREFIX}/lib -fopenmp"
-		
-
 
 	if "--default-compiler-flags" in sys.argv:
 		sys.argv.remove("--default-compiler-flags")
