@@ -24,7 +24,7 @@ Improved Functionality
 
 * :red:`deprecating` python 27 support. Installing QuSpin for py27 will by defult result in version 0.3.3.
 * :red:`deprecating` function `basis.get_vec()`: use `basis.project_from()` instead.
-* adding support for python 38 (linux only) [currently boost does not support a py38 version for osx and windows].
+..* adding support for python 38 (linux only) [currently boost does not support a py38 version for osx and windows].
 * revised `user_basis` tutorial for spinless fermions and introduced function `_count_particles_32()`.
 * added optional arguments `svd_solver`, `svd_kwargs` to `basis.ent_entropy()`; allows to use some scipy svd solvers, which are typically more stable. 
 * fixed bugs:
