@@ -62,6 +62,7 @@ test:
 about:
   home: https://github.com/weinbe58/QuSpin.git
   license: BSD-3
+  license_file: LICENSE.rst
 """
 
 meta_omp_template = """{version_text:s}
@@ -86,12 +87,12 @@ requirements:
   build:
     - {{{{compiler('cxx')}}}}
     - llvm-openmp # [osx]
-    - libgomp # [linux]
 
   host:{host_recipe:s}
  
   run:{run_recipe:s}
-    
+    - llvm-openmp # [osx]
+
 test:
   imports:
     - quspin 
@@ -99,6 +100,7 @@ test:
 about:
   home: https://github.com/weinbe58/QuSpin.git
   license: BSD-3
+  license_file: LICENSE.rst
 """
 
 conda_build_config_template="""py_version:{python_text:s}
@@ -116,15 +118,14 @@ python_versions = ["3.6",
 
 # versions for python package lists
 pkg_vers = {
-	"scipy":">=1.0.0",
+	"scipy":">=0.19.1",
 	"joblib":"",
 	"six":"",
 	"dill":"",
-	"numba":">=0.41",
+	"numba":"",
 	"numexpr":"",
 	"gmpy2":"",
-	# "cython":">=0.29",
-	"cython":"",
+	"cython":">0.29",
 	"boost":"",
 	"numpy":">="+numpy_versions[0],
 	"python":">="+python_versions[0],
@@ -158,7 +159,7 @@ host_pkg["boost"] = pkg_vers["boost"]
 # packages and version for run-field in meta file
 run_pkg = {
 	"python": "{{ py_version }}",
-	"{{ pin_compatible('numpy') }}":"",
+	"{{ pin_compatible('numpy',max_pin='x') }}":"",
 }
 run_pkg["scipy"] = pkg_vers["scipy"]
 run_pkg["joblib"] = pkg_vers["joblib"]
