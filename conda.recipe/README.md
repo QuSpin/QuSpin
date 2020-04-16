@@ -18,7 +18,6 @@ Repository for conda-build recipes of QuSpin
 `conda build conda.recipe/omp --no-anaconda-upload`
 `conda build conda.recipe/quspin-omp --no-anaconda-upload`
 
-% to test dependencies use -t option
 
 
 3a) test in a local conda env before uploading to anaconda cloud
@@ -31,7 +30,7 @@ Repository for conda-build recipes of QuSpin
 
 `conda install conda-build anaconda-client` # if using miniconda
 
-% upload omp build: screws up number of downloads
+% upload omp build: screws up downloads stats on anaconca cloud
 `anaconda upload -u weinbe58 (path_to_zip)`
 
 % automatic upload # do NOT use

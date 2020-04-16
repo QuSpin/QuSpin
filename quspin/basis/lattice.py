@@ -188,7 +188,7 @@ class lattice_basis(basis):
 			raise ValueError("state shape {0} not compatible with Ns={1}".format(state.shape,self._Ns))
 
 		if _sp.issparse(state) or sparse:
-			state=self.get_vec(state,sparse=True).T
+			state=self.project_from(state,sparse=True).T
 			
 			if state.shape[0] == 1:
 				# sparse_pure partial trace
@@ -217,13 +217,13 @@ class lattice_basis(basis):
 		else:
 			if state.ndim==1:
 				# calculate full H-space representation of state
-				state=self.get_vec(state,sparse=False)
+				state=self.project_from(state,sparse=False)
 				rdm_A,rdm_B = _lattice_partial_trace_pure(state.T,sub_sys_A,N,sps,return_rdm=return_rdm)
 
 			elif state.ndim==2: 
 				if state.shape[0]!=state.shape[1] or enforce_pure:
 					# calculate full H-space representation of state
-					state=self.get_vec(state,sparse=False)
+					state=self.project_from(state,sparse=False)
 					rdm_A,rdm_B = _lattice_partial_trace_pure(state.T,sub_sys_A,N,sps,return_rdm=return_rdm)
 
 				else: 
@@ -424,7 +424,7 @@ class lattice_basis(basis):
 			svd_kwargs=dict()
 
 		# calculate full H-space representation of state
-		state=self.get_vec(state,sparse=False)
+		state=self.project_from(state,sparse=False)
 		# put states in rows
 		state=state.T
 		# reshape state according to sub_sys_A

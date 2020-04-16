@@ -308,8 +308,19 @@ class photon_basis(tensor_basis):
 			return ME, row, col	
 
 
-
 	def get_vec(self,v0,sparse=True,Nph=None,full_part=True):
+		""" DEPRECATED (cf `project_from`). Transforms state from symmetry-reduced basis to full (symmetry-free) basis.
+
+		Notes
+		-----
+		This function is :red:`deprecated`. Use `project_from()` instead (the inverse function, `project_to()`, is currently available in the `basis_general` classes only). 
+
+		"""
+
+		return self.project_from(v0,sparse=sparse,Nph=Nph,full_part=full_part)
+
+
+	def project_from(self,v0,sparse=True,Nph=None,full_part=True):
 		"""Transforms state from symmetry-reduced basis to full (symmetry-free) basis.
 
 		Notes
@@ -339,12 +350,12 @@ class photon_basis(tensor_basis):
 		Examples
 		--------
 
-		>>> v_full = get_vec(v0)
+		>>> v_full = project_from(v0)
 		>>> print(v_full.shape, v0.shape)
 
 		"""
 		if not self._check_pcon:
-			return tensor_basis.get_vec(self,v0,sparse=sparse,full_left=full_part)
+			return tensor_basis.project_from(self,v0,sparse=sparse,full_left=full_part)
 		else:
 			if not hasattr(v0,"shape"):
 				v0 = _np.asanyarray(v0)
@@ -363,9 +374,9 @@ class photon_basis(tensor_basis):
 					raise ValueError("v0 has incompatible dimensions with basis")
 				v0 = v0.reshape((-1,1))
 				if sparse:
-					return _conserved_get_vec(self,v0,sparse,Nph,full_part)
+					return _conserved_project_from(self,v0,sparse,Nph,full_part)
 				else:
-					return _conserved_get_vec(self,v0,sparse,Nph,full_part).reshape((-1,))
+					return _conserved_project_from(self,v0,sparse,Nph,full_part).reshape((-1,))
 
 			elif v0.ndim == 2:
 				if v0.shape[0] != self._Ns:
@@ -374,7 +385,7 @@ class photon_basis(tensor_basis):
 				if _sp.issparse(v0):
 					return self.get_proj(v0.dtype,Nph=Nph,full_part=full_part).dot(v0)
 
-				return _conserved_get_vec(self,v0,sparse,Nph,full_part)
+				return _conserved_project_from(self,v0,sparse,Nph,full_part)
 			else:
 				raise ValueError("excpecting v0 to have ndim at most 2")
 
@@ -479,16 +490,16 @@ class photon_basis(tensor_basis):
 
 		if self._check_pcon: # project to full photon basis
 			if _sp.issparse(state) or sparse:
-				proj_state=self.get_vec(state,sparse=True,full_part=False)
+				proj_state=self.project_from(state,sparse=True,full_part=False)
 			else:
 				if state.ndim==1:
 					# calculate full H-space representation of state
-					proj_state=self.get_vec(state,sparse=False,full_part=False)
+					proj_state=self.project_from(state,sparse=False,full_part=False)
 
 				elif state.ndim==2: 
 					if state.shape[0]!=state.shape[1] or enforce_pure:
 						# calculate full H-space representation of state
-						proj_state=self.get_vec(state,sparse=False,full_part=False)
+						proj_state=self.project_from(state,sparse=False,full_part=False)
 
 					else: 
 						proj = self.get_proj(_dtypes[state.dtype.char],full_part=False)
@@ -589,15 +600,15 @@ class photon_basis(tensor_basis):
 
 		if self._check_pcon: # project to full photon basis
 			if _sp.issparse(state) or sparse:
-				proj_state=self.get_vec(state,sparse=True,full_part=False)
+				proj_state=self.project_from(state,sparse=True,full_part=False)
 			else:
 				if state.ndim==1:
 					# calculate full H-space representation of state
-					proj_state=self.get_vec(state,sparse=False,full_part=False)
+					proj_state=self.project_from(state,sparse=False,full_part=False)
 				elif state.ndim==2: 
 					if state.shape[0]!=state.shape[1] or enforce_pure:
 						# calculate full H-space representation of state
-						proj_state=self.get_vec(state,sparse=False,full_part=False)
+						proj_state=self.project_from(state,sparse=False,full_part=False)
 					else: 
 						proj = self.get_proj(_dtypes[state.dtype.char],full_part=False)
 						proj_state = proj*state*proj.H			
@@ -779,7 +790,7 @@ class photon_basis(tensor_basis):
 		return self._sort_local_list(static_list),self._sort_local_list(dynamic_list)
 
 
-def _conserved_get_vec(p_basis,v0,sparse,Nph,full_part):
+def _conserved_project_from(p_basis,v0,sparse,Nph,full_part):
 	v0_mask = _np.zeros_like(v0)
 	np_min = p_basis._n.min()
 	np_max = p_basis._n.max()
@@ -790,7 +801,7 @@ def _conserved_get_vec(p_basis,v0,sparse,Nph,full_part):
 	v0_mask[mask] = v0[mask]
 
 	if full_part:
-		v0_full = p_basis._basis_left.get_vec(v0_mask,sparse=sparse)
+		v0_full = p_basis._basis_left.project_from(v0_mask,sparse=sparse)
 	else:
 		v0_full = v0_mask
 
@@ -808,7 +819,7 @@ def _conserved_get_vec(p_basis,v0,sparse,Nph,full_part):
 		v0_mask[mask] = v0[mask]
 
 		if full_part:
-			v0_full_1 = p_basis._basis_left.get_vec(v0_mask,sparse=sparse)
+			v0_full_1 = p_basis._basis_left.project_from(v0_mask,sparse=sparse)
 		else:
 			v0_full_1 = v0_mask
 
@@ -898,6 +909,9 @@ class ho_basis(basis):
 		return self._Np+1
 
 	def get_vec(self,v0,sparse=True):
+		return self.project_from(v0,sparse=sparse)
+
+	def project_from(self,v0,sparse=True):
 		if self._Ns <= 0:
 			return _np.array([])
 		if v0.ndim == 1:
