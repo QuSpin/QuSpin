@@ -22,19 +22,19 @@ requirements:
   host:
     - numpy {{ numpy }}
     - python {{ py_version }}
-    - cython 
+    - cython >0.29
     - boost 
  
   run:
     - python {{ py_version }}
-    - {{ pin_compatible('numpy') }} 
-    - scipy >=1.0.0
+    - {{ pin_compatible('numpy',max_pin='x') }} 
+    - scipy >=0.19.1
     - joblib 
     - six 
     - dill 
     - numexpr 
     - gmpy2 
-    - numba >=0.41
+    - numba 
   
 test:
   imports:
@@ -43,3 +43,4 @@ test:
 about:
   home: https://github.com/weinbe58/QuSpin.git
   license: BSD-3
+  license_file: LICENSE.rst

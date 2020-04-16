@@ -55,14 +55,14 @@ setup.py install --default-compiler-flags
 ```
 <!--- begin packages --->
 For the **manual installation** you must have all the prerequisite python packages installed:
- * [scipy](https://www.scipy.org)>=1.0.0
+ * [scipy](https://www.scipy.org)>=0.19.1
  * [numpy](http://www.numpy.org)>=1.17.2
- * [cython](https://www.cython.org)
+ * [cython](https://www.cython.org)>0.29
  * [joblib](https://pythonhosted.org/joblib/)
  * [six](https://pythonhosted.org/six/)
  * [dill](https://pypi.python.org/pypi/dill)
  * [gmpy2](https://gmpy2.readthedocs.io/en/latest/)
- * [numba](http://numba.pydata.org/)>=0.41
+ * [numba](http://numba.pydata.org/)
  * [numexpr](https://numexpr.readthedocs.io/en/latest/user_guide.html)
  * [boost](https://www.boost.org/doc/libs/1_70_0/libs/python/doc/html/index.html), installation must include header files for boost.
  * [llvm-openmp](http://openmp.llvm.org/), osx openmp version only.

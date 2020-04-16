@@ -5,14 +5,14 @@ QuSpin is currently being supported for Python 2 and Python 3 which are a prereq
 
 .. begin packages
 For the **manual installation** you must have all the prerequisite python packages installed:
-    * `scipy <https://www.scipy.org>`_>=1.0.0
+    * `scipy <https://www.scipy.org>`_>=0.19.1
     * `numpy <http://www.numpy.org>`_>=1.17.2
-    * `cython <https://www.cython.org>`_
+    * `cython <https://www.cython.org>`_>0.29
     * `joblib <https://pythonhosted.org/joblib/>`_
     * `six <https://pythonhosted.org/six/>`_
     * `dill <https://pypi.python.org/pypi/dill>`_
     * `gmpy2 <https://gmpy2.readthedocs.io/en/latest/>`_
-    * `numba <http://numba.pydata.org/>`_>=0.41
+    * `numba <http://numba.pydata.org/>`_
     * `numexpr <https://numexpr.readthedocs.io/en/latest/user_guide.html>`_
     * `boost <https://www.boost.org/doc/libs/1_70_0/libs/python/doc/html/index.html>`_, installation must include header files for boost.
     * `llvm-openmp <http://openmp.llvm.org/>`_, osx openmp version only.
