@@ -8,7 +8,7 @@ Repository for conda-build recipes of QuSpin
 2) `conda build purge-all`
 3) run the builds 
 
-% build all at the samt time
+% build all at the same time (does not work for OSX because the omp package has to be built first)
 `conda build conda.recipe --no-anaconda-upload`
 
 
