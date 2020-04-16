@@ -6,7 +6,6 @@ from quspin.basis import spin_basis_general
 from quspin.operators import hamiltonian
 from quspin.tools.evolution import expm_multiply_parallel
 import numpy as np
-import matplotlib.pyplot as plt
 
 
 
