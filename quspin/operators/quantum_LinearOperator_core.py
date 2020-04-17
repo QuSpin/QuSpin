@@ -8,7 +8,9 @@ from .hamiltonian_core import hamiltonian
 from ._make_hamiltonian import _consolidate_static
 
 from ..basis import spin_basis_1d as _default_basis
+from ..basis.base import _is_diagonal,_update_diag
 from ..basis import isbasis as _isbasis
+
 
 # need linear algebra packages
 import scipy.sparse.linalg as _sla
@@ -129,35 +131,15 @@ class quantum_LinearOperator(LinearOperator):
 		self._static_list = []
 		for opstr,indx,J in static_list:
 			ME,row,col = self.basis.Op(opstr,indx,J,self._dtype)
-			if (row==col).all():
+			if _is_diagonal(row,col):
 				if self._diagonal is None:
-					self._diagonal = _np.zeros((self.Ns,),dtype=ME.real.dtype)
+					self._diagonal = _np.zeros((self.Ns,),dtype=ME.dtype)
 
-				if self._unique_me:
-					if row.shape[0] == self.Ns:
-						self._diagonal += ME.real
-					else:
-						self._diagonal[row] += ME.real
-				else:
-					while len(row) > 0:
-						# if there are multiple matrix elements per row as there are for some
-						# symmetries availible then do the indexing for unique elements then
-						# delete them from the list and then repeat until all elements have been 
-						# taken care of. This is less memory efficient but works well for when
-						# there are a few number of matrix elements per row. 
-						row_unique,args = _np.unique(row,return_index=True)
+				_update_diag(self._diagonal,row,ME)
 
-						self._diagonal[row_unique] += ME[args].real
-						row = _np.delete(row,args)
-						ME = _np.delete(ME,args)
 			else:
 				self._static_list.append((opstr,indx,J))
 		
-
-
-
-
-
 	@property
 	def shape(self):
 		"""tuple: shape of linear operator."""
@@ -209,9 +191,12 @@ class quantum_LinearOperator(LinearOperator):
 	@property
 	def diagonal(self):
 		"""numpy.ndarray: static diagonal part of the linear operator. """
-		diagonal_view=self._diagonal[:]
-		diagonal_view.setflags(write=0,uic=0)
-		return diagonal_view
+		if self._diagonal is not None:
+			diagonal_view=self._diagonal[:]
+			diagonal_view.setflags(write=0,uic=0)
+			return diagonal_view
+		else:
+			return None
 
 	def set_diagonal(self,diagonal,copy=True):
 		"""Sets the diagonal part of the quantum_LinearOperator.
@@ -324,28 +309,193 @@ class quantum_LinearOperator(LinearOperator):
 			if self.diagonal is not None:
 				_np.multiply(other.T,self.diagonal,out=out.T)
 
-			for opstr,indx,J in self._static_list:
-				self.basis.inplace_Op(other,opstr, indx, J, self._dtype,
-									self._conjugated,self._transposed,v_out=out)
+			self.basis.inplace_Op(other, self._static_list, self._dtype,
+				self._conjugated,self._transposed,v_out=out,a=a)
 
-			return a*out
+			return out
 		else:
 			return a * (self * other)
 
+	def quant_fluct(self,V,enforce_pure=False):
+		"""Calculates the quantum fluctuations (variance) of `quantum_LinearOperator` object in state `V`.
+
+		.. math::
+			\\langle V|H^2|V\\rangle - \\langle V|H|V\\rangle^2
+
+		Parameters
+		-----------
+		V : numpy.ndarray
+			Depending on the shape, can be a single state or a collection of pure or mixed states
+			[see `enforce_pure`].
+		enforce_pure : bool, optional
+			Flag to enforce pure expectation value of `V` is a square matrix with multiple pure states
+			in the columns.
+			
+		Returns
+		--------
+		float
+			Quantum fluctuations of `hamiltonian` operator in state `V`.
+
+		Examples
+		---------
+		>>> H_fluct = H.quant_fluct(V,time=0,diagonal=False,check=True)
+
+		corresponds to :math:`\\Delta H = \\sqrt{ \\langle V|H^2(t=\\texttt{time})|V\\rangle - \\langle V|H(t=\\texttt{time})|V\\rangle^2 }`. 
+			 
+		"""
+		from .exp_op_core import isexp_op
+		from .hamiltonian_core import ishamiltonian
+
+		if self.Ns <= 0:
+			return _np.asarray([])
+
+		if ishamiltonian(V):
+			raise TypeError("Can't take expectation value of hamiltonian")
+
+		if isexp_op(V):
+			raise TypeError("Can't take expectation value of exp_op")
+
+		# fluctuations =  expctH2 - expctH^2
+		kwargs = dict(enforce_pure=enforce_pure)
+		V_dot = self.dot(V,check=check)
+		expt_value_sq = self._expt_value_core(V,V_dot,**kwargs)**2
+
+		if V.shape[0] != V.shape[1] or enforce_pure:
+			sq_expt_value = self._expt_value_core(V_dot,V_dot,**kwargs)
+		else:
+			V_dot = self.dot(V_dot,time=time,check=check)
+			sq_expt_value = self._expt_value_core(V,V_dot,**kwargs)
+
+		return sq_expt_value - expt_value_sq
+
+	def expt_value(self,V,enforce_pure=False):
+		"""Calculates expectation value of `quantum_LinearOperator` object in state `V`.
+
+		.. math::
+			\\langle V|H|V\\rangle
+
+		Parameters
+		-----------
+		V : numpy.ndarray
+			Depending on the shape, can be a single state or a collection of pure or mixed states
+			[see `enforce_pure` argument of `basis.ent_entropy`].
+		enforce_pure : bool, optional
+			Flag to enforce pure expectation value of `V` is a square matrix with multiple pure states
+			in the columns.
+			
+		Returns
+		--------
+		float
+			Expectation value of `hamiltonian` operator in state `V`.
+
+		Examples
+		---------
+		>>> H_expt = H.expt_value(V,time=0,diagonal=False,check=True)
+
+		corresponds to :math:`H_{expt} = \\langle V|H(t=0)|V\\rangle`. 
+			 
+		"""
+		from .exp_op_core import isexp_op
+		from .hamiltonian_core import ishamiltonian
+
+		if self.Ns <= 0:
+			return _np.asarray([])
+
+		if ishamiltonian(V):
+			raise TypeError("Can't take expectation value of hamiltonian")
+
+		if isexp_op(V):
+			raise TypeError("Can't take expectation value of exp_op")
+
+		
+		V_dot = self.dot(V)
+		return self._expt_value_core(V,V_dot,enforce_pure=enforce_pure)
+
+	def _expt_value_core(self,V_left,V_right,enforce_pure=False):
+		if _sp.issparse(V_right):
+			if V_left.shape[0] != V_left.shape[1] or enforce_pure: # pure states
+				return _np.asscalar((V_left.H.dot(V_right)).toarray())
+			else: # density matrix
+				return V_right.diagonal().sum()
+		else:
+			V_right = _np.asarray(V_right).squeeze()
+			if V_right.ndim == 1: # pure state
+				return _np.vdot(V_left,V_right)
+			elif V_left.shape[0] != V_left.shape[1] or enforce_pure: # multiple pure states
+				return _np.einsum("ij,ij->j",V_left.conj(),V_right)
+			else: # density matrix
+				return V_right.trace()
+
+	def matrix_ele(self,Vl,Vr,diagonal=False):
+		"""Calculates matrix element of `quantum_LinearOperator` object between states `Vl` and `Vr`.
+
+		.. math::
+			\\langle V_l|H|V_r\\rangle
+
+		Notes
+		-----
+		Taking the conjugate or transpose of the state `Vl` is done automatically.  
+
+		Parameters
+		-----------
+		Vl : numpy.ndarray
+			Vector(s)/state(s) to multiple with on left side.
+		Vl : numpy.ndarray
+			Vector(s)/state(s) to multiple with on right side.
+		diagonal : bool, optional
+			When set to `True`, returs only diagonal part of expectation value. Default is `diagonal = False`.
+
+		Returns
+		--------
+		float
+			Matrix element of `quantum_operator` quantum_operator between the states `Vl` and `Vr`.
+
+		Examples
+		---------
+		>>> H_lr = H.expt_value(Vl,Vr,pars=pars,diagonal=False,check=True)
+
+		corresponds to :math:`H_{lr} = \\langle V_l|H(\\lambda=0)|V_r\\rangle`. 
+
+		"""
+		Vr = self.dot(Vr)
+
+		try:
+			shape = Vl.shape
+		except AttributeError:
+			Vl =_np.asanyarray(Vl)
+			shape = Vl.shape
+
+		if shape[0] != self._shape[1]:
+			raise ValueError("matrix dimension mismatch with shapes: {0} and {1}.".format(V.shape,self._shape))
+
+		if Vl.ndim > 2:
+			raise ValueError("Expecting  0< V.ndim < 3.")
+
+		if _sp.issparse(Vl):
+			if diagonal:
+				return Vl.H.dot(Vr).diagonal()
+			else:
+				return Vl.H.dot(Vr)
+		else:
+			if diagonal:
+				return _np.einsum("ij,ij->j",Vl.conj(),Vr)
+			else:
+				return Vl.T.conj().dot(Vr)
 
 	def _matvec(self,other):
 
 		other = _np.asanyarray(other)
 		result_dtype = _np.result_type(self._dtype,other.dtype)
-		other = _np.ascontiguousarray(other,dtype=result_dtype)
-		new_other = _np.zeros_like(other,dtype=result_dtype)
-		
-		if self.diagonal is not None:
-			_np.multiply(other.T,self.diagonal,out=new_other.T)
 
-		for opstr,indx,J in self._static_list:
-			self.basis.inplace_Op(other,opstr, indx, J, self._dtype,
-								self._conjugated,self._transposed,v_out=new_other)
+		other = other.astype(result_dtype,copy=False,order="C")
+		new_other = _np.zeros_like(other)
+		
+		if self._diagonal is not None:
+			_np.multiply(other.T,self._diagonal,out=new_other.T)
+
+		self.basis.inplace_Op(other,self._static_list, self._dtype,
+							self._conjugated,self._transposed,v_out=new_other)
+
 		return new_other
 
 	def _rmatvec(self,other):

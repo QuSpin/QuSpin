@@ -1,11 +1,9 @@
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><script type="text/javascript">
+    <meta charset="utf-8" /><script type="text/javascript">
 
       var _gaq = _gaq || [];
       _gaq.push(['_setAccount', 'UA-110543543-1']);
@@ -17,16 +15,16 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-    <title>The Gross-Pitaevskii Equation and Nonlinear Time Evolution &#8212; QuSpin 0.3.3 documentation</title>
+    <title>User-defined ODEs: the Gross-Pitaevskii Equation and Nonlinear Time Evolution &#8212; QuSpin 0.3.4 documentation</title>
     <link rel="stylesheet" href="../static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../static/pygments.css" type="text/css" />
     
-    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../static/documentation_options.js"></script>
-    <script type="text/javascript" src="../static/jquery.js"></script>
-    <script type="text/javascript" src="../static/underscore.js"></script>
-    <script type="text/javascript" src="../static/doctools.js"></script>
-    <script type="text/javascript" src="../static/language_data.js"></script>
-    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script id="documentation_options" data-url_root="../" src="../static/documentation_options.js"></script>
+    <script src="../static/jquery.js"></script>
+    <script src="../static/underscore.js"></script>
+    <script src="../static/doctools.js"></script>
+    <script src="../static/language_data.js"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" /> 
@@ -40,7 +38,7 @@
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.3 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.4 documentation</a> &#187;</li> 
       </ul>
     </div>  
 
@@ -49,9 +47,10 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="section" id="the-gross-pitaevskii-equation-and-nonlinear-time-evolution">
-<span id="example8-label"></span><h1>The Gross-Pitaevskii Equation and Nonlinear Time Evolution<a class="headerlink" href="#the-gross-pitaevskii-equation-and-nonlinear-time-evolution" title="Permalink to this headline">¶</a></h1>
-<p>This example shows how to code up the Gross-Pitaevskii equation:</p>
+  <style> .red {color:#ff0000; font-weight:bold; font-style:italic; } </style>
+<style> .green {color:#00b200; font-weight:bold; font-style:italic; } </style><div class="section" id="user-defined-odes-the-gross-pitaevskii-equation-and-nonlinear-time-evolution">
+<span id="example8-label"></span><h1>User-defined ODEs: the Gross-Pitaevskii Equation and Nonlinear Time Evolution<a class="headerlink" href="#user-defined-odes-the-gross-pitaevskii-equation-and-nonlinear-time-evolution" title="Permalink to this headline">¶</a></h1>
+<p>This example shows how to code up the Gross-Pitaevskii equation for a system in a one-dimensional lattice subject to a harmonic trapping potential:</p>
 <div class="math notranslate nohighlight">
 \[\begin{split}i\partial_t\psi_j(t) &amp;=&amp; -J\left( \psi_{j-1}(t) + \psi_{j+1}(t)\right) + \frac{1}{2}\kappa_\mathrm{trap}(t)(j-j_0)^2\psi_j(t) + U|\psi_j(t)|^2\psi_j(t), \nonumber \\
 \kappa_\mathrm{trap}(t)&amp;=&amp;(\kappa_f-\kappa_i)t/t_\mathrm{ramp}+ \kappa_i.\end{split}\]</div>
@@ -59,7 +58,7 @@
 </div>
 <div class="section" id="script">
 <h1>Script<a class="headerlink" href="#script" title="Permalink to this headline">¶</a></h1>
-<p><a class="reference download internal" download="" href="../downloads/63538270afb92ba7cc430c185a5c27f4/example8.py"><code class="xref download docutils literal notranslate"><span class="pre">download</span> <span class="pre">script</span></code></a></p>
+<p><a class="reference download internal" download="" href="../downloads/76ffd754dec8daf18b7b03661b88016f/example8.py"><code class="xref download docutils literal notranslate"><span class="pre">download</span> <span class="pre">script</span></code></a></p>
 <div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>  1
   2
   3
@@ -202,8 +201,8 @@
 <span class="kn">from</span> <span class="nn">quspin.operators</span> <span class="kn">import</span> <span class="n">hamiltonian</span> <span class="c1"># Hamiltonians and operators</span>
 <span class="kn">from</span> <span class="nn">quspin.basis</span> <span class="kn">import</span> <span class="n">boson_basis_1d</span> <span class="c1"># Hilbert space boson basis</span>
 <span class="kn">from</span> <span class="nn">quspin.tools.evolution</span> <span class="kn">import</span> <span class="n">evolve</span> <span class="c1"># nonlinear evolution </span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span> <span class="c1"># generic math functions</span>
-<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span> <span class="c1"># plotting library</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span> <span class="c1"># generic math functions</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span> <span class="c1"># plotting library</span>
 <span class="kn">from</span> <span class="nn">six</span> <span class="kn">import</span> <span class="n">iteritems</span> <span class="c1"># loop over elements of dictionary</span>
 <span class="c1">#</span>
 <span class="c1">##### define model parameters #####</span>
@@ -255,7 +254,7 @@
 <span class="n">tau</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span><span class="mf">35.0</span><span class="p">,</span><span class="mi">71</span><span class="p">)</span>
 <span class="c1"># evolve state in imaginary time</span>
 <span class="n">psi_tau</span> <span class="o">=</span> <span class="n">evolve</span><span class="p">(</span><span class="n">phi0</span><span class="p">,</span><span class="n">tau</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">tau</span><span class="p">,</span><span class="n">GPE_imag_time</span><span class="p">,</span><span class="n">f_params</span><span class="o">=</span><span class="n">GPE_params</span><span class="p">,</span>
-							<span class="n">imag_time</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span><span class="n">real</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span><span class="n">iterate</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+							<span class="n">imag_time</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">real</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">iterate</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="c1">#</span>
 <span class="c1"># display state evolution</span>
 <span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">psi0</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">psi_tau</span><span class="p">):</span>
@@ -267,7 +266,7 @@
 	<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">sites</span><span class="p">,</span> <span class="nb">abs</span><span class="p">(</span><span class="n">psi0</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;b&#39;</span><span class="p">,</span><span class="n">marker</span><span class="o">=</span><span class="s1">&#39;o&#39;</span><span class="p">,</span>
 								<span class="n">label</span><span class="o">=</span><span class="s1">&#39;$|</span><span class="se">\\</span><span class="s1">phi_j(</span><span class="se">\\</span><span class="s1">tau)|^2$&#39;</span> <span class="p">)</span>
 	<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;$</span><span class="se">\\</span><span class="s1">mathrm{lattice</span><span class="se">\\</span><span class="s1"> sites}$&#39;</span><span class="p">,</span><span class="n">fontsize</span><span class="o">=</span><span class="mi">14</span><span class="p">)</span>
-	<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;$J</span><span class="se">\\</span><span class="s1">tau=</span><span class="si">%0.2f</span><span class="s1">,</span><span class="se">\\</span><span class="s1"> E_</span><span class="se">\\</span><span class="s1">mathrm{GS}(</span><span class="se">\\</span><span class="s1">tau)=</span><span class="si">%0.4f</span><span class="s1">J$&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">tau</span><span class="p">[</span><span class="n">i</span><span class="p">],</span><span class="n">E_GS</span><span class="p">)</span>
+	<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;$J</span><span class="se">\\</span><span class="s1">tau=</span><span class="si">%0.2f</span><span class="s1">,</span><span class="se">\\</span><span class="s1"> E_</span><span class="se">\\</span><span class="s1">mathrm</span><span class="si">{GS}</span><span class="s1">(</span><span class="se">\\</span><span class="s1">tau)=</span><span class="si">%0.4f</span><span class="s1">J$&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">tau</span><span class="p">[</span><span class="n">i</span><span class="p">],</span><span class="n">E_GS</span><span class="p">)</span>
 																<span class="p">,</span><span class="n">fontsize</span><span class="o">=</span><span class="mi">14</span><span class="p">)</span>
 	<span class="n">plt</span><span class="o">.</span><span class="n">ylim</span><span class="p">([</span><span class="o">-</span><span class="mf">0.01</span><span class="p">,</span><span class="nb">max</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">phi0</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">+</span><span class="mf">0.01</span><span class="p">])</span>
 	<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">fontsize</span><span class="o">=</span><span class="mi">14</span><span class="p">)</span>
@@ -287,11 +286,11 @@
 	<span class="c1"># solve dynamic part of GPE</span>
 	<span class="k">for</span> <span class="n">f</span><span class="p">,</span><span class="n">Hd</span> <span class="ow">in</span> <span class="n">iteritems</span><span class="p">(</span><span class="n">Hsp</span><span class="o">.</span><span class="n">dynamic</span><span class="p">):</span>
 		<span class="n">psi_dot</span> <span class="o">+=</span> <span class="n">f</span><span class="p">(</span><span class="n">time</span><span class="p">)</span><span class="o">*</span><span class="n">Hd</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">psi</span><span class="p">)</span>
-	<span class="k">return</span> <span class="o">-</span><span class="mi">1j</span><span class="o">*</span><span class="n">psi_dot</span>
+	<span class="k">return</span> <span class="o">-</span><span class="mi">1</span><span class="n">j</span><span class="o">*</span><span class="n">psi_dot</span>
 <span class="c1"># define real time vector</span>
 <span class="n">t</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span><span class="n">t_ramp</span><span class="p">,</span><span class="mi">101</span><span class="p">)</span>
 <span class="c1"># time-evolve state according to GPE</span>
-<span class="n">psi_t</span> <span class="o">=</span> <span class="n">evolve</span><span class="p">(</span><span class="n">psi0</span><span class="p">,</span><span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">t</span><span class="p">,</span><span class="n">GPE</span><span class="p">,</span><span class="n">iterate</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span><span class="n">atol</span><span class="o">=</span><span class="mf">1E-12</span><span class="p">,</span><span class="n">rtol</span><span class="o">=</span><span class="mf">1E-12</span><span class="p">)</span>
+<span class="n">psi_t</span> <span class="o">=</span> <span class="n">evolve</span><span class="p">(</span><span class="n">psi0</span><span class="p">,</span><span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">t</span><span class="p">,</span><span class="n">GPE</span><span class="p">,</span><span class="n">iterate</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">atol</span><span class="o">=</span><span class="mf">1E-12</span><span class="p">,</span><span class="n">rtol</span><span class="o">=</span><span class="mf">1E-12</span><span class="p">)</span>
 <span class="c1">#</span>
 <span class="c1"># display state evolution</span>
 <span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">psi</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">psi_t</span><span class="p">):</span>
@@ -301,12 +300,12 @@
 	<span class="n">kappa_trap</span><span class="o">=</span><span class="n">ramp</span><span class="p">(</span><span class="n">t</span><span class="p">[</span><span class="n">i</span><span class="p">],</span><span class="n">kappa_trap_i</span><span class="p">,</span><span class="n">kappa_trap_f</span><span class="p">,</span><span class="n">t_ramp</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="n">sites</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span>
 	<span class="c1"># plot wave function</span>
 	<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">sites</span><span class="p">,</span> <span class="nb">abs</span><span class="p">(</span><span class="n">psi0</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;r&#39;</span><span class="p">,</span><span class="n">marker</span><span class="o">=</span><span class="s1">&#39;s&#39;</span><span class="p">,</span><span class="n">alpha</span><span class="o">=</span><span class="mf">0.2</span>
-								<span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;$|</span><span class="se">\\</span><span class="s1">psi_{</span><span class="se">\\</span><span class="s1">mathrm{GS},j}|^2$&#39;</span><span class="p">)</span>
+								<span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;$|</span><span class="se">\\</span><span class="s1">psi_{</span><span class="se">\\</span><span class="s1">mathrm</span><span class="si">{GS}</span><span class="s1">,j}|^2$&#39;</span><span class="p">)</span>
 	<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">sites</span><span class="p">,</span> <span class="nb">abs</span><span class="p">(</span><span class="n">psi</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;b&#39;</span><span class="p">,</span><span class="n">marker</span><span class="o">=</span><span class="s1">&#39;o&#39;</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;$|</span><span class="se">\\</span><span class="s1">psi_j(t)|^2$&#39;</span><span class="p">)</span>
-	<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">sites</span><span class="p">,</span> <span class="n">kappa_trap</span><span class="p">,</span><span class="s1">&#39;--&#39;</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;g&#39;</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;$</span><span class="se">\\</span><span class="s1">mathrm{trap}$&#39;</span><span class="p">)</span>
+	<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">sites</span><span class="p">,</span> <span class="n">kappa_trap</span><span class="p">,</span><span class="s1">&#39;--&#39;</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;g&#39;</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;$</span><span class="se">\\</span><span class="s1">mathrm</span><span class="si">{trap}</span><span class="s1">$&#39;</span><span class="p">)</span>
 	<span class="n">plt</span><span class="o">.</span><span class="n">ylim</span><span class="p">([</span><span class="o">-</span><span class="mf">0.01</span><span class="p">,</span><span class="nb">max</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">psi0</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">+</span><span class="mf">0.01</span><span class="p">])</span>
 	<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;$</span><span class="se">\\</span><span class="s1">mathrm{lattice</span><span class="se">\\</span><span class="s1"> sites}$&#39;</span><span class="p">,</span><span class="n">fontsize</span><span class="o">=</span><span class="mi">14</span><span class="p">)</span>
-	<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;$Jt=</span><span class="si">%0.2f</span><span class="s1">,</span><span class="se">\\</span><span class="s1"> E(t)-E_</span><span class="se">\\</span><span class="s1">mathrm{GS}=</span><span class="si">%0.4f</span><span class="s1">J$&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">t</span><span class="p">[</span><span class="n">i</span><span class="p">],</span><span class="n">E</span><span class="o">-</span><span class="n">E_GS</span><span class="p">),</span><span class="n">fontsize</span><span class="o">=</span><span class="mi">14</span><span class="p">)</span>
+	<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;$Jt=</span><span class="si">%0.2f</span><span class="s1">,</span><span class="se">\\</span><span class="s1"> E(t)-E_</span><span class="se">\\</span><span class="s1">mathrm</span><span class="si">{GS}</span><span class="s1">=</span><span class="si">%0.4f</span><span class="s1">J$&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">t</span><span class="p">[</span><span class="n">i</span><span class="p">],</span><span class="n">E</span><span class="o">-</span><span class="n">E_GS</span><span class="p">),</span><span class="n">fontsize</span><span class="o">=</span><span class="mi">14</span><span class="p">)</span>
 	<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="s1">&#39;upper right&#39;</span><span class="p">,</span><span class="n">fontsize</span><span class="o">=</span><span class="mi">14</span><span class="p">)</span>
 	<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
 	<span class="n">plt</span><span class="o">.</span><span class="n">draw</span><span class="p">()</span> <span class="c1"># draw frame</span>
@@ -325,7 +324,7 @@
         <div class="sphinxsidebarwrapper">
   <h3><a href="../index.html">Table of Contents</a></h3>
   <ul>
-<li><a class="reference internal" href="#">The Gross-Pitaevskii Equation and Nonlinear Time Evolution</a></li>
+<li><a class="reference internal" href="#">User-defined ODEs: the Gross-Pitaevskii Equation and Nonlinear Time Evolution</a></li>
 <li><a class="reference internal" href="#script">Script</a></li>
 </ul>
 
@@ -337,17 +336,15 @@
     </ul>
    </div>
 <div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
+  <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" />
+      <input type="text" name="q" aria-labelledby="searchlabel" />
       <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
     </form>
     </div>
 </div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
+<script>$('#searchbox').show(0);</script>
         </div>
       </div>
       <div class="clearer"></div>
@@ -361,12 +358,12 @@
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.3 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.4 documentation</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2016, Phillip Weinberg and Marin Bukov.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.4.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.4.0.
     </div>
   </body>
 </html>

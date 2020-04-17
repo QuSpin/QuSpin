@@ -1,8 +1,11 @@
-:math:`\mathrm{\color{orange} {QuSpin\ 0.3.3}}` here (updated on 2019.10.15)
-============================================================================
 
-:math:`\mathrm{\color{red} {Highlights}}`: OpenMP support here; Constrained Hilbert spaces support now here!
-===================================================================
+
+:red:`QuSpin 0.3.4` (released on 2020.04.17)
+================================================
+
+
+:green:`Highlights:` Lanczos module now here; Constrained Hilbert spaces support available; OpenMP support available!
+=====================================================================================================================
 
 Check out :ref:`parallelization-label` and the example script :ref:`example12-label`.
 
@@ -13,17 +16,45 @@ Complete list of the most recent features
 =========================================
 
 
+Added in v. 0.3.4 (2020.04.17)
+------------------------------
+
+Improved Functionality
+++++++++++++++++++++++
+
+* :red:`discontinuing` python 2.7 support. Installing QuSpin for py27 will by defult result in version 0.3.3.
+* :red:`deprecating` function `basis.get_vec()`: use `basis.project_from()` instead.
+* revised `user_basis` tutorial for spinless fermions and introduced function `_count_particles_32()`.
+* added optional arguments `svd_solver`, `svd_kwargs` to `basis.ent_entropy()`; allows to use some scipy svd solvers, which are typically more stable. 
+* `expm_multiply_parallel` now supports the option to give the operator an explicit dtype, see example :ref:`example22-label`.
+* fixed bugs:
+	* computing the entanglement entropy when using the `spinful_fermion_basis_general`.
+	* constructing operators for higher-spin operators (S>1/2). 
+
+
+
+
+New Attributes, Functions, Methods and Classes
+++++++++++++++++++++++++++++++++++++++++++++++
+* new `*_basis_general` functions -- `basis.project_from()` and its inverse `basis.project_to()` -- to transform states between a symmetry-reduced basis and the full basis.
+* new `tools.Lanczos` module for Lanczos type calculations, see examples :ref:`example20-label`, :ref:`example21-label`.
+* new function method `Op_shift_sector` of the `*basis_general_` classes allows to apply operators, which do not preserve the symmetry sector, to quantum states in the reduced basis. Useful for computing correlation functions. See example :ref:`example19-label`.
+* new required support package for QuSpin: `numexpr`.
+
+
+
 Added in v. 0.3.3 (2019.10.15)
 ------------------------------
 
 Improved Functionality
 ++++++++++++++++++++++
-* introducing improvements to Example 11 to perform Monte Carlo sampling in the symmetry-reduced Hilbert space.
+
+* introducing improvements to Example :ref:`example11-label` to perform Monte Carlo sampling in the symmetry-reduced Hilbert space.
 * new examples:
-	* Example 13 to showcase `double_occupancy` option of the `spinful_fermion_basis_*`.
-	* Examples 14-16 demonstrate the usage of `user_basis`.
-	* Example 17 shows how to use QuSpin for Lindblad dynamics and demonstrates the use of the omp-parallelzied `matvec` function for speedup.
-	* Example 18 shows how to construct Hamiltinians on a hexagonal lattice. 
+	* Example :ref:`example13-label` to showcase `double_occupancy` option of the `spinful_fermion_basis_*`.
+	* Examples :ref:`example14-label`, :ref:`example15-label`, :ref:`example16-label` demonstrate the usage of `user_basis`.
+	* Example :ref:`example17-label` shows how to use QuSpin for Lindblad dynamics and demonstrates the use of the omp-parallelzied `matvec` function for speedup.
+	* Example :ref:`example18-label` shows how to construct Hamiltinians on a hexagonal lattice. 
 * improved functionality of the `tools.evolution.evolve()` function.
 * fixed import issue with scipy's `comb` function.
 * fixed a number of small bugs. 
@@ -57,7 +88,7 @@ Improved Functionality
 ++++++++++++++++++++++
 
 * support for python 3.7.
-* :math:`\mathrm{\color{red} {discontinued\ support}}` for python 3.5 on all platforms and python 2.7 on windows. QuSpin for these versions will remain available to download up to and including QuSpin 0.3.0, but they are no longer being maintained. 
+* :red:`discontinued support` for python 3.5 on all platforms and python 2.7 on windows. QuSpin for these versions will remain available to download up to and including QuSpin 0.3.0, but they are no longer being maintained. 
 * matplotlib is no longer a required package to install quspin. It is still required to run the examples, though.
 * parallelization: New parallel features added or improved + OpenMP support for osx. Requires a different build of QuSpin (see also :ref:`parallelization-label`).
 * new OpenMP features in operators module (see :ref:`parallelization-label` and example script :ref:`example12-label`).

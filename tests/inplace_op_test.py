@@ -13,7 +13,7 @@ import scipy.sparse as sp
 
 
 
-dtypes = [np.float32,np.float64,np.complex64,np.complex128]
+dtypes = [np.float64,np.complex128]
 
 def eps(dtype1,dtype2):
 	return 100*max(np.finfo(dtype1).eps,np.finfo(dtype2).eps)
@@ -34,11 +34,11 @@ py = x + y[::-1]*Lx
 z = -(1+i)
 
 
-basis_full = spin_basis_general(N)
-basis_pcon = spin_basis_general(N,m=0.0)
-basis_pcon_symm = spin_basis_general(N,m=0.0,tx=(tx,0),ty=(ty,0),px=(px,0),py=(py,0),z=(z,0))
+basis_full = spin_basis_general(N,pauli=False)
+basis_pcon = spin_basis_general(N,pauli=False,m=0.0)
+basis_pcon_symm = spin_basis_general(N,pauli=False,m=0.0,tx=(tx,0),ty=(ty,0),px=(px,0),py=(py,0),z=(z,0))
 
-Jzz_list = [[1.0,i,tx[i]] for i in range(N)]+[[1.0,i,ty[i]] for i in range(N)]
+Jzz_list = [[0.0,i,tx[i]] for i in range(N)]+[[0.0,i,ty[i]] for i in range(N)]
 Jxy_list = [[0.5,i,tx[i]] for i in range(N)]+[[0.5,i,ty[i]] for i in range(N)]
 static = [["+-",Jxy_list],["-+",Jxy_list],["zz",Jzz_list]]
 
@@ -55,7 +55,6 @@ for b in [basis_full,basis_pcon,basis_pcon_symm]:
 
 			v1 = H.dot(v)
 			v2 = H_op.dot(v)
-
 
 			atol = eps(dtype1,dtype2)
 			np.testing.assert_allclose(v1,v2,atol=atol)

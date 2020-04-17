@@ -1,11 +1,9 @@
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><script type="text/javascript">
+    <meta charset="utf-8" /><script type="text/javascript">
 
       var _gaq = _gaq || [];
       _gaq.push(['_setAccount', 'UA-110543543-1']);
@@ -17,16 +15,16 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-    <title>Hexagonal Lattice: Fermi-Hubbard model [courtesy of A. Buyskikh] &#8212; QuSpin 0.3.3 documentation</title>
+    <title>Hexagonal Lattice: Fermi-Hubbard model [courtesy of A. Buyskikh] &#8212; QuSpin 0.3.4 documentation</title>
     <link rel="stylesheet" href="../static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../static/pygments.css" type="text/css" />
     
-    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../static/documentation_options.js"></script>
-    <script type="text/javascript" src="../static/jquery.js"></script>
-    <script type="text/javascript" src="../static/underscore.js"></script>
-    <script type="text/javascript" src="../static/doctools.js"></script>
-    <script type="text/javascript" src="../static/language_data.js"></script>
-    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script id="documentation_options" data-url_root="../" src="../static/documentation_options.js"></script>
+    <script src="../static/jquery.js"></script>
+    <script src="../static/underscore.js"></script>
+    <script src="../static/doctools.js"></script>
+    <script src="../static/language_data.js"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" /> 
@@ -40,7 +38,7 @@
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.3 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.4 documentation</a> &#187;</li> 
       </ul>
     </div>  
 
@@ -49,7 +47,8 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="section" id="hexagonal-lattice-fermi-hubbard-model-courtesy-of-a-buyskikh">
+  <style> .red {color:#ff0000; font-weight:bold; font-style:italic; } </style>
+<style> .green {color:#00b200; font-weight:bold; font-style:italic; } </style><div class="section" id="hexagonal-lattice-fermi-hubbard-model-courtesy-of-a-buyskikh">
 <span id="example18-label"></span><h1>Hexagonal Lattice: Fermi-Hubbard model [courtesy of A. Buyskikh]<a class="headerlink" href="#hexagonal-lattice-fermi-hubbard-model-courtesy-of-a-buyskikh" title="Permalink to this headline">¶</a></h1>
 <p>This example demonstrates how to use the python package <a class="reference external" href="https://networkx.github.io/documentation/stable/install.html">networkx</a> to construct a hexagonal (honeycomb) lattice, and define the Fermi-Hubbard Hamiltonian:</p>
 <div class="math notranslate nohighlight">
@@ -63,7 +62,7 @@
 </div>
 <div class="section" id="script">
 <h1>Script<a class="headerlink" href="#script" title="Permalink to this headline">¶</a></h1>
-<p><a class="reference download internal" download="" href="../downloads/c5f2aab59975bf060200c7d8348484c4/example18.py"><code class="xref download docutils literal notranslate"><span class="pre">download</span> <span class="pre">script</span></code></a></p>
+<p><a class="reference download internal" download="" href="../downloads/61f833d71f42c014c5a2712f2e008eb4/example18.py"><code class="xref download docutils literal notranslate"><span class="pre">download</span> <span class="pre">script</span></code></a></p>
 <div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
  2
  3
@@ -131,8 +130,7 @@
 65
 66
 67
-68
-69</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span><span class="p">,</span> <span class="n">division</span>
+68</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span><span class="p">,</span> <span class="n">division</span>
 <span class="c1">#</span>
 <span class="kn">import</span> <span class="nn">sys</span><span class="o">,</span><span class="nn">os</span>
 <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s1">&#39;KMP_DUPLICATE_LIB_OK&#39;</span><span class="p">]</span><span class="o">=</span><span class="s1">&#39;True&#39;</span> <span class="c1"># uncomment this line if omp error occurs on OSX for python 3</span>
@@ -151,15 +149,15 @@
 <span class="c1">###########################################################################</span>
 <span class="kn">from</span> <span class="nn">quspin.basis</span> <span class="kn">import</span> <span class="n">spinful_fermion_basis_general</span>
 <span class="kn">from</span> <span class="nn">quspin.operators</span> <span class="kn">import</span> <span class="n">hamiltonian</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">networkx</span> <span class="kn">as</span> <span class="nn">nx</span> <span class="c1"># networkx package, see https://networkx.github.io/documentation/stable/</span>
-<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span> <span class="c1"># plotting library</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">networkx</span> <span class="k">as</span> <span class="nn">nx</span> <span class="c1"># networkx package, see https://networkx.github.io/documentation/stable/</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span> <span class="c1"># plotting library</span>
 <span class="c1">#</span>
 <span class="c1">###### create honeycomb lattice</span>
 <span class="c1"># lattice graph parameters</span>
 <span class="n">m</span> <span class="o">=</span> <span class="mi">2</span>  <span class="c1"># number of rows of hexagons in the lattice</span>
 <span class="n">n</span> <span class="o">=</span> <span class="mi">2</span>  <span class="c1"># number of columns of hexagons in the lattice</span>
-<span class="n">isPBC</span> <span class="o">=</span> <span class="bp">False</span> <span class="c1"># if True, use periodic boundary conditions</span>
+<span class="n">isPBC</span> <span class="o">=</span> <span class="kc">False</span> <span class="c1"># if True, use periodic boundary conditions</span>
 <span class="c1">#</span>
 <span class="c1">### build graph using networkx</span>
 <span class="n">hex_graph</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">generators</span><span class="o">.</span><span class="n">lattice</span><span class="o">.</span><span class="n">hexagonal_lattice_graph</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">periodic</span><span class="o">=</span><span class="n">isPBC</span><span class="p">)</span>
@@ -167,12 +165,11 @@
 <span class="n">hex_graph</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">convert_node_labels_to_integers</span><span class="p">(</span><span class="n">hex_graph</span><span class="p">)</span>
 <span class="c1"># set number of lattice sites</span>
 <span class="n">N</span> <span class="o">=</span> <span class="n">hex_graph</span><span class="o">.</span><span class="n">number_of_nodes</span><span class="p">()</span>
-<span class="k">print</span><span class="p">(</span><span class="s1">&#39;constructed hexagonal lattice with {0:d} sites.</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">N</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;constructed hexagonal lattice with </span><span class="si">{0:d}</span><span class="s1"> sites.</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">N</span><span class="p">))</span>
 <span class="c1"># visualise graph</span>
 <span class="n">pos</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">spring_layout</span><span class="p">(</span><span class="n">hex_graph</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">42</span><span class="p">,</span> <span class="n">iterations</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
-<span class="n">nx</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="n">hex_graph</span><span class="p">,</span> <span class="n">pos</span><span class="o">=</span><span class="n">pos</span><span class="p">,</span> <span class="n">with_labels</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">()</span> <span class="c1"># disable to see graph</span>
+<span class="n">nx</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="n">hex_graph</span><span class="p">,</span> <span class="n">pos</span><span class="o">=</span><span class="n">pos</span><span class="p">,</span> <span class="n">with_labels</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="n">block</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 <span class="c1">#</span>
 <span class="c1">###### model parameters</span>
 <span class="c1">#</span>
@@ -185,7 +182,7 @@
 <span class="c1">#</span>
 <span class="c1">### compute basis</span>
 <span class="n">basis</span> <span class="o">=</span> <span class="n">spinful_fermion_basis_general</span><span class="p">(</span><span class="n">N</span><span class="p">,</span> <span class="n">Nf</span><span class="o">=</span><span class="p">(</span><span class="n">N_up</span><span class="p">,</span> <span class="n">N_down</span><span class="p">))</span>
-<span class="k">print</span><span class="p">(</span><span class="s1">&#39;Hilbert space size: {0:d}.</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">basis</span><span class="o">.</span><span class="n">Ns</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Hilbert space size: </span><span class="si">{0:d}</span><span class="s1">.</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">basis</span><span class="o">.</span><span class="n">Ns</span><span class="p">))</span>
 <span class="c1">#</span>
 <span class="c1"># define site-coupling lists</span>
 <span class="n">tunnelling</span>   <span class="o">=</span> <span class="p">[[</span><span class="o">-</span><span class="n">t</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">)</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">hex_graph</span><span class="o">.</span><span class="n">adj</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span>
@@ -200,7 +197,7 @@
 <span class="c1">#</span>
 <span class="c1"># compute eigensystem</span>
 <span class="n">E</span><span class="p">,</span> <span class="n">V</span> <span class="o">=</span> <span class="n">H</span><span class="o">.</span><span class="n">eigsh</span><span class="p">(</span><span class="n">k</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span><span class="n">which</span><span class="o">=</span><span class="s1">&#39;SA&#39;</span><span class="p">,</span><span class="n">maxiter</span><span class="o">=</span><span class="mf">1E4</span><span class="p">)</span>
-<span class="k">print</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">lowest energies: {E}&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">lowest energies: </span><span class="si">{</span><span class="n">E</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
 </pre></div>
 </td></tr></table></div>
 </div>
@@ -225,17 +222,15 @@
     </ul>
    </div>
 <div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
+  <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" />
+      <input type="text" name="q" aria-labelledby="searchlabel" />
       <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
     </form>
     </div>
 </div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
+<script>$('#searchbox').show(0);</script>
         </div>
       </div>
       <div class="clearer"></div>
@@ -249,12 +244,12 @@
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.3 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.4 documentation</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2016, Phillip Weinberg and Marin Bukov.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.4.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.4.0.
     </div>
   </body>
 </html>

@@ -107,6 +107,14 @@ class tensor_basis(basis):
 		""":obj:`basis`: all others basis constructors except for the first one of the `basis` objects list to be tensored."""
 		return self._basis_right
 
+	@property
+	def N(self):
+		"""tuple: the value of `N` attribute from all the basis objects tensored together in a tuple ordered according to the input basis list."""
+		if not isinstance(self._basis_right,tensor_basis):
+			return (self._basis_left.N,)+(self._basis_right.N,)
+		else:
+			return (self._basis_left.N,)+self._basis_right.N
+	
 
 
 	def Op(self,opstr,indx,J,dtype):
@@ -169,16 +177,18 @@ class tensor_basis(basis):
 		n1 = row_left.shape[0]
 		n2 = row_right.shape[0]
 
-
 		if n1 > 0 and n2 > 0:
-			row_left = row_left.astype(self._dtype)
+			row_left = row_left.astype(self._dtype,copy=False)
+			row_right = row_right.astype(self._dtype,copy=False)
 			row_left *= self._basis_right.Ns
+
 			row = _np.kron(row_left,_np.ones_like(row_right,dtype=_np.int8))
 			row += _np.kron(_np.ones_like(row_left,dtype=_np.int8),row_right)
 
 			del row_left,row_right
 
-			col_left = col_left.astype(self._dtype)
+			col_left = col_left.astype(self._dtype,copy=False)
+			col_right = col_right.astype(self._dtype,copy=False)
 			col_left *= self._basis_right.Ns
 			col = _np.kron(col_left,_np.ones_like(col_right,dtype=_np.int8))
 			col += _np.kron(_np.ones_like(col_left,dtype=_np.int8),col_right)
@@ -231,6 +241,17 @@ class tensor_basis(basis):
 
 
 	def get_vec(self,v0,sparse=True,full_left=True,full_right=True):
+		""" DEPRECATED (cf `project_from`). Transforms state from symmetry-reduced basis to full (symmetry-free) basis.
+
+		Notes
+		-----
+		This function is :red:`deprecated`. Use `project_from()` instead (the inverse function, `project_to()`, is currently available in the `basis_general` classes only). 
+
+		"""
+
+		return self.project_from(v0,sparse=sparse,full_left=full_left,full_right=full_right)
+
+	def project_from(self,v0,sparse=True,full_left=True,full_right=True):
 		"""Transforms state from symmetry-reduced basis to full (symmetry-free) basis.
 
 		Notes
@@ -259,7 +280,7 @@ class tensor_basis(basis):
 		Examples
 		--------
 
-		>>> v_full = get_vec(v0)
+		>>> v_full = project_from(v0)
 		>>> print(v_full.shape, v0.shape)
 
 		"""
@@ -276,15 +297,15 @@ class tensor_basis(basis):
 		if v0.ndim == 1:
 			v0 = v0.reshape((-1,1))
 			if sparse:
-				return _combine_get_vecs(self,v0,sparse,full_left,full_right)
+				return _combine_project_froms(self,v0,sparse,full_left,full_right)
 			else:
-				return _combine_get_vecs(self,v0,sparse,full_left,full_right).reshape((-1,))
+				return _combine_project_froms(self,v0,sparse,full_left,full_right).reshape((-1,))
 		elif v0.ndim == 2:
 
 			if _sp.issparse(v0):
 				return self.get_proj(v0.dtype,full_left=full_left,full_right=full_right).dot(v0)
 
-			return _combine_get_vecs(self,v0,sparse,full_left,full_right)
+			return _combine_project_froms(self,v0,sparse,full_left,full_right)
 		else:
 			raise ValueError("excpecting v0 to have ndim at most 2")
 
@@ -965,7 +986,7 @@ class tensor_basis(basis):
 		return str_list		
 
 
-def _combine_get_vecs(basis,v0,sparse,full_left,full_right):
+def _combine_project_froms(basis,v0,sparse,full_left,full_right):
 	Ns1=basis._basis_left.Ns
 	Ns2=basis._basis_right.Ns
 
@@ -990,13 +1011,13 @@ def _combine_get_vecs(basis,v0,sparse,full_left,full_right):
 		v2 = V2[-1]
 
 		if full_left:
-			v1 = basis._basis_left.get_vec(v1,sparse=True)
+			v1 = basis._basis_left.project_from(v1,sparse=True)
 			
 		if full_right:
 			try:
-				v2 = basis._basis_right.get_vec(v2,sparse=True,full_left=True,full_right=True)
+				v2 = basis._basis_right.project_from(v2,sparse=True,full_left=True,full_right=True)
 			except TypeError:
-				v2 = basis._basis_right.get_vec(v2,sparse=True)
+				v2 = basis._basis_right.project_from(v2,sparse=True)
 
 		temp1 = _np.ones((v1.shape[0],1),dtype=_np.int8)
 		temp2 = _np.ones((v2.shape[0],1),dtype=_np.int8)
@@ -1014,13 +1035,13 @@ def _combine_get_vecs(basis,v0,sparse,full_left,full_right):
 			v2 = V2[i]
 
 			if full_left:
-				v1 = basis._basis_left.get_vec(v1,sparse=True)
+				v1 = basis._basis_left.project_from(v1,sparse=True)
 				
 			if full_right:
 				try:
-					v2 = basis._basis_right.get_vec(v2,sparse=True,full_left=True,full_right=True)
+					v2 = basis._basis_right.project_from(v2,sparse=True,full_left=True,full_right=True)
 				except TypeError:
-					v2 = basis._basis_right.get_vec(v2,sparse=True)
+					v2 = basis._basis_right.project_from(v2,sparse=True)
 
 
 			v1 = _sp.kron(v1,temp2,format="csr")  
@@ -1036,13 +1057,13 @@ def _combine_get_vecs(basis,v0,sparse,full_left,full_right):
 		v2 = V2[-1]
 
 		if full_left:
-			v1 = basis._basis_left.get_vec(v1,sparse=False)
+			v1 = basis._basis_left.project_from(v1,sparse=False)
 			
 		if full_right:
 			try:
-				v2 = basis._basis_right.get_vec(v2,sparse=False,full_left=True,full_right=True)
+				v2 = basis._basis_right.project_from(v2,sparse=False,full_left=True,full_right=True)
 			except TypeError:
-				v2 = basis._basis_right.get_vec(v2,sparse=False)
+				v2 = basis._basis_right.project_from(v2,sparse=False)
 
 
 		temp1 = _np.ones((v1.shape[0],1),dtype=_np.int8)
@@ -1058,13 +1079,13 @@ def _combine_get_vecs(basis,v0,sparse,full_left,full_right):
 			v2 = V2[i]
 
 			if full_left:
-				v1 = basis._basis_left.get_vec(v1,sparse=False)
+				v1 = basis._basis_left.project_from(v1,sparse=False)
 				
 			if full_right:
 				try:
-					v2 = basis._basis_right.get_vec(v2,sparse=False,full_left=True,full_right=True)
+					v2 = basis._basis_right.project_from(v2,sparse=False,full_left=True,full_right=True)
 				except TypeError:
-					v2 = basis._basis_right.get_vec(v2,sparse=False)
+					v2 = basis._basis_right.project_from(v2,sparse=False)
 
 			v1 =  _np.kron(v1,temp2)
 			v2 = _np.kron(temp1,v2)
@@ -1113,10 +1134,10 @@ def _combine_get_vec(basis,v0,sparse,full_left,full_right):
 
 	# Next thing to do is take those vectors and convert them to their full hilbert space
 	if full_left:
-		V1=basis._basis_left.get_vec(V1,sparse)
+		V1=basis._basis_left.project_from(V1,sparse)
 
 	if full_right:
-		V2=basis._basis_right.get_vec(V2,sparse)
+		V2=basis._basis_right.project_from(V2,sparse)
 
 
 	# calculate the dimension total hilbert space with no symmetries
@@ -1149,7 +1170,7 @@ def _combine_get_vec(basis,v0,sparse,full_left,full_right):
 	return v0
 
 
-def _combine_get_vecs(basis,V0,sparse,full_left,full_right):
+def _combine_project_froms(basis,V0,sparse,full_left,full_right):
 	v0_list=[]
 	V0=V0.T
 	for v0 in V0:

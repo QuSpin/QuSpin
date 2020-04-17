@@ -1,11 +1,9 @@
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><script type="text/javascript">
+    <meta charset="utf-8" /><script type="text/javascript">
 
       var _gaq = _gaq || [];
       _gaq.push(['_setAccount', 'UA-110543543-1']);
@@ -17,16 +15,16 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-    <title>Heating in Periodically Driven Spin Chains &#8212; QuSpin 0.3.3 documentation</title>
+    <title>Heating in Periodically Driven Spin Chains &#8212; QuSpin 0.3.4 documentation</title>
     <link rel="stylesheet" href="../static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../static/pygments.css" type="text/css" />
     
-    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../static/documentation_options.js"></script>
-    <script type="text/javascript" src="../static/jquery.js"></script>
-    <script type="text/javascript" src="../static/underscore.js"></script>
-    <script type="text/javascript" src="../static/doctools.js"></script>
-    <script type="text/javascript" src="../static/language_data.js"></script>
-    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script id="documentation_options" data-url_root="../" src="../static/documentation_options.js"></script>
+    <script src="../static/jquery.js"></script>
+    <script src="../static/underscore.js"></script>
+    <script src="../static/doctools.js"></script>
+    <script src="../static/language_data.js"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" /> 
@@ -40,7 +38,7 @@
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.3 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.4 documentation</a> &#187;</li> 
       </ul>
     </div>  
 
@@ -49,7 +47,8 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="section" id="heating-in-periodically-driven-spin-chains">
+  <style> .red {color:#ff0000; font-weight:bold; font-style:italic; } </style>
+<style> .green {color:#00b200; font-weight:bold; font-style:italic; } </style><div class="section" id="heating-in-periodically-driven-spin-chains">
 <span id="example2-label"></span><h1>Heating in Periodically Driven Spin Chains<a class="headerlink" href="#heating-in-periodically-driven-spin-chains" title="Permalink to this headline">¶</a></h1>
 <p>This example shows how to code up the periodically-driven spin Hamiltonian:</p>
 <div class="math notranslate nohighlight">
@@ -63,7 +62,7 @@ J\sum_{j=0}^{L-1} \sigma^z_j\sigma^z_{j+1} + h\sum_{j=0}^{L-1}\sigma^z, &amp;  t
 </div>
 <div class="section" id="script">
 <h1>Script<a class="headerlink" href="#script" title="Permalink to this headline">¶</a></h1>
-<p><a class="reference download internal" download="" href="../downloads/ea10f6bcdb78dfdec82c256e5c6581c0/example2.py"><code class="xref download docutils literal notranslate"><span class="pre">download</span> <span class="pre">script</span></code></a></p>
+<p><a class="reference download internal" download="" href="../downloads/70cca51afd2226b31252e32dbcfec75a/example2.py"><code class="xref download docutils literal notranslate"><span class="pre">download</span> <span class="pre">script</span></code></a></p>
 <div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>  1
   2
   3
@@ -223,7 +222,7 @@ J\sum_{j=0}^{L-1} \sigma^z_j\sigma^z_{j+1} + h\sum_{j=0}^{L-1}\sigma^z, &amp;  t
 <span class="kn">from</span> <span class="nn">quspin.basis</span> <span class="kn">import</span> <span class="n">spin_basis_1d</span> <span class="c1"># Hilbert space spin basis</span>
 <span class="kn">from</span> <span class="nn">quspin.tools.measurements</span> <span class="kn">import</span> <span class="n">obs_vs_time</span><span class="p">,</span> <span class="n">diag_ensemble</span> <span class="c1"># t_dep measurements</span>
 <span class="kn">from</span> <span class="nn">quspin.tools.Floquet</span> <span class="kn">import</span> <span class="n">Floquet</span><span class="p">,</span> <span class="n">Floquet_t_vec</span> <span class="c1"># Floquet Hamiltonian</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span> <span class="c1"># generic math functions</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span> <span class="c1"># generic math functions</span>
 <span class="c1">#</span>
 <span class="c1">##### define model parameters #####</span>
 <span class="n">L</span><span class="o">=</span><span class="mi">14</span> <span class="c1"># system size</span>
@@ -282,7 +281,7 @@ J\sum_{j=0}^{L-1} \sigma^z_j\sigma^z_{j+1} + h\sum_{j=0}^{L-1}\sigma^z, &amp;  t
 <span class="c1">#</span>
 <span class="c1">##### rotate Heff to stroboscopic basis #####</span>
 <span class="c1"># e^{-1j*Keff_02} Heff_02 e^{+1j*Keff_02}</span>
-<span class="n">HF_02</span> <span class="o">=</span> <span class="n">Heff_02</span><span class="o">.</span><span class="n">rotate_by</span><span class="p">(</span><span class="n">Keff_02</span><span class="p">,</span><span class="n">generator</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span><span class="n">a</span><span class="o">=</span><span class="mi">1j</span><span class="p">)</span> 
+<span class="n">HF_02</span> <span class="o">=</span> <span class="n">Heff_02</span><span class="o">.</span><span class="n">rotate_by</span><span class="p">(</span><span class="n">Keff_02</span><span class="p">,</span><span class="n">generator</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">a</span><span class="o">=</span><span class="mi">1</span><span class="n">j</span><span class="p">)</span> 
 <span class="c1">#</span>
 <span class="c1">##### define time vector of stroboscopic times with 100 cycles #####</span>
 <span class="n">t</span><span class="o">=</span><span class="n">Floquet_t_vec</span><span class="p">(</span><span class="n">Omega</span><span class="p">,</span><span class="mi">100</span><span class="p">,</span><span class="n">len_T</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="c1"># t.vals=times, t.i=init. time, t.T=drive period</span>
@@ -290,7 +289,7 @@ J\sum_{j=0}^{L-1} \sigma^z_j\sigma^z_{j+1} + h\sum_{j=0}^{L-1}\sigma^z, &amp;  t
 <span class="c1">##### calculate exact Floquet eigensystem #####</span>
 <span class="n">t_list</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.0</span><span class="p">,</span><span class="n">t</span><span class="o">.</span><span class="n">T</span><span class="o">/</span><span class="mf">4.0</span><span class="p">,</span><span class="mf">3.0</span><span class="o">*</span><span class="n">t</span><span class="o">.</span><span class="n">T</span><span class="o">/</span><span class="mf">4.0</span><span class="p">])</span><span class="o">+</span><span class="n">np</span><span class="o">.</span><span class="n">finfo</span><span class="p">(</span><span class="nb">float</span><span class="p">)</span><span class="o">.</span><span class="n">eps</span> <span class="c1"># times to evaluate H</span>
 <span class="n">dt_list</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">t</span><span class="o">.</span><span class="n">T</span><span class="o">/</span><span class="mf">4.0</span><span class="p">,</span><span class="n">t</span><span class="o">.</span><span class="n">T</span><span class="o">/</span><span class="mf">2.0</span><span class="p">,</span><span class="n">t</span><span class="o">.</span><span class="n">T</span><span class="o">/</span><span class="mf">4.0</span><span class="p">])</span> <span class="c1"># time step durations to apply H for</span>
-<span class="n">Floq</span><span class="o">=</span><span class="n">Floquet</span><span class="p">({</span><span class="s1">&#39;H&#39;</span><span class="p">:</span><span class="n">H</span><span class="p">,</span><span class="s1">&#39;t_list&#39;</span><span class="p">:</span><span class="n">t_list</span><span class="p">,</span><span class="s1">&#39;dt_list&#39;</span><span class="p">:</span><span class="n">dt_list</span><span class="p">},</span><span class="n">VF</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span> <span class="c1"># call Floquet class</span>
+<span class="n">Floq</span><span class="o">=</span><span class="n">Floquet</span><span class="p">({</span><span class="s1">&#39;H&#39;</span><span class="p">:</span><span class="n">H</span><span class="p">,</span><span class="s1">&#39;t_list&#39;</span><span class="p">:</span><span class="n">t_list</span><span class="p">,</span><span class="s1">&#39;dt_list&#39;</span><span class="p">:</span><span class="n">dt_list</span><span class="p">},</span><span class="n">VF</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="c1"># call Floquet class</span>
 <span class="n">VF</span><span class="o">=</span><span class="n">Floq</span><span class="o">.</span><span class="n">VF</span> <span class="c1"># read off Floquet states</span>
 <span class="n">EF</span><span class="o">=</span><span class="n">Floq</span><span class="o">.</span><span class="n">EF</span> <span class="c1"># read off quasienergies</span>
 <span class="c1">#</span>
@@ -304,7 +303,7 @@ J\sum_{j=0}^{L-1} \sigma^z_j\sigma^z_{j+1} + h\sum_{j=0}^{L-1}\sigma^z, &amp;  t
 <span class="c1">#meas = obs_vs_time((psi_i,EF,VF),t.vals,{&quot;E_time&quot;:HF_02/L},Sent_args=Sent_args)</span>
 <span class="c1">#&quot;&quot;&quot;</span>
 <span class="c1"># alternative way by solving Schroedinger&#39;s eqn</span>
-<span class="n">psi_t</span> <span class="o">=</span> <span class="n">H</span><span class="o">.</span><span class="n">evolve</span><span class="p">(</span><span class="n">psi_i</span><span class="p">,</span><span class="n">t</span><span class="o">.</span><span class="n">i</span><span class="p">,</span><span class="n">t</span><span class="o">.</span><span class="n">vals</span><span class="p">,</span><span class="n">iterate</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span><span class="n">rtol</span><span class="o">=</span><span class="mf">1E-9</span><span class="p">,</span><span class="n">atol</span><span class="o">=</span><span class="mf">1E-9</span><span class="p">)</span>
+<span class="n">psi_t</span> <span class="o">=</span> <span class="n">H</span><span class="o">.</span><span class="n">evolve</span><span class="p">(</span><span class="n">psi_i</span><span class="p">,</span><span class="n">t</span><span class="o">.</span><span class="n">i</span><span class="p">,</span><span class="n">t</span><span class="o">.</span><span class="n">vals</span><span class="p">,</span><span class="n">iterate</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">rtol</span><span class="o">=</span><span class="mf">1E-9</span><span class="p">,</span><span class="n">atol</span><span class="o">=</span><span class="mf">1E-9</span><span class="p">)</span>
 <span class="n">meas</span> <span class="o">=</span> <span class="n">obs_vs_time</span><span class="p">(</span><span class="n">psi_t</span><span class="p">,</span><span class="n">t</span><span class="o">.</span><span class="n">vals</span><span class="p">,{</span><span class="s2">&quot;E_time&quot;</span><span class="p">:</span><span class="n">HF_02</span><span class="o">/</span><span class="n">L</span><span class="p">},</span><span class="n">Sent_args</span><span class="o">=</span><span class="n">Sent_args</span><span class="p">)</span>
 <span class="c1">#&quot;&quot;&quot;</span>
 <span class="c1"># read off measurements</span>
@@ -312,20 +311,20 @@ J\sum_{j=0}^{L-1} \sigma^z_j\sigma^z_{j+1} + h\sum_{j=0}^{L-1}\sigma^z, &amp;  t
 <span class="n">Entropy_t</span> <span class="o">=</span> <span class="n">meas</span><span class="p">[</span><span class="s2">&quot;Sent_time&quot;</span><span class="p">][</span><span class="s2">&quot;Sent&quot;</span><span class="p">]</span>
 <span class="c1">#</span>
 <span class="c1">##### calculate diagonal ensemble measurements</span>
-<span class="n">DE_args</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;Obs&quot;</span><span class="p">:</span><span class="n">HF_02</span><span class="p">,</span><span class="s2">&quot;Sd_Renyi&quot;</span><span class="p">:</span><span class="bp">True</span><span class="p">,</span><span class="s2">&quot;Srdm_Renyi&quot;</span><span class="p">:</span><span class="bp">True</span><span class="p">,</span><span class="s2">&quot;Srdm_args&quot;</span><span class="p">:</span><span class="n">Sent_args</span><span class="p">}</span>
+<span class="n">DE_args</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;Obs&quot;</span><span class="p">:</span><span class="n">HF_02</span><span class="p">,</span><span class="s2">&quot;Sd_Renyi&quot;</span><span class="p">:</span><span class="kc">True</span><span class="p">,</span><span class="s2">&quot;Srdm_Renyi&quot;</span><span class="p">:</span><span class="kc">True</span><span class="p">,</span><span class="s2">&quot;Srdm_args&quot;</span><span class="p">:</span><span class="n">Sent_args</span><span class="p">}</span>
 <span class="n">DE</span> <span class="o">=</span> <span class="n">diag_ensemble</span><span class="p">(</span><span class="n">L</span><span class="p">,</span><span class="n">psi_i</span><span class="p">,</span><span class="n">EF</span><span class="p">,</span><span class="n">VF</span><span class="p">,</span><span class="o">**</span><span class="n">DE_args</span><span class="p">)</span>
 <span class="n">Ed</span> <span class="o">=</span> <span class="n">DE</span><span class="p">[</span><span class="s2">&quot;Obs_pure&quot;</span><span class="p">]</span>
 <span class="n">Sd</span> <span class="o">=</span> <span class="n">DE</span><span class="p">[</span><span class="s2">&quot;Sd_pure&quot;</span><span class="p">]</span>
 <span class="n">Srdm</span><span class="o">=</span><span class="n">DE</span><span class="p">[</span><span class="s2">&quot;Srdm_pure&quot;</span><span class="p">]</span>
 <span class="c1">#</span>
 <span class="c1">##### plot results #####</span>
-<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 <span class="kn">import</span> <span class="nn">pylab</span>
 <span class="c1"># define legend labels</span>
-<span class="n">str_E_t</span> <span class="o">=</span> <span class="s2">&quot;$</span><span class="se">\\</span><span class="s2">mathcal{E}(lT)$&quot;</span>
-<span class="n">str_Sent_t</span> <span class="o">=</span> <span class="s2">&quot;$s_\mathrm{ent}(lT)$&quot;</span>
-<span class="n">str_Ed</span> <span class="o">=</span> <span class="s2">&quot;$</span><span class="se">\\</span><span class="s2">overline{\mathcal{E}}$&quot;</span>
-<span class="n">str_Srdm</span> <span class="o">=</span> <span class="s2">&quot;$</span><span class="se">\\</span><span class="s2">overline{s}_\mathrm{rdm}$&quot;</span>
+<span class="n">str_E_t</span> <span class="o">=</span> <span class="s2">&quot;$</span><span class="se">\\</span><span class="s2">mathcal</span><span class="si">{E}</span><span class="s2">(lT)$&quot;</span>
+<span class="n">str_Sent_t</span> <span class="o">=</span> <span class="s2">&quot;$s_\mathrm</span><span class="si">{ent}</span><span class="s2">(lT)$&quot;</span>
+<span class="n">str_Ed</span> <span class="o">=</span> <span class="s2">&quot;$</span><span class="se">\\</span><span class="s2">overline{\mathcal</span><span class="si">{E}</span><span class="s2">}$&quot;</span>
+<span class="n">str_Srdm</span> <span class="o">=</span> <span class="s2">&quot;$</span><span class="se">\\</span><span class="s2">overline</span><span class="si">{s}</span><span class="s2">_\mathrm</span><span class="si">{rdm}</span><span class="s2">$&quot;</span>
 <span class="n">str_Sd</span> <span class="o">=</span> <span class="s2">&quot;$s_d^F$&quot;</span>
 <span class="c1"># plot infinite-time data</span>
 <span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
@@ -336,7 +335,7 @@ J\sum_{j=0}^{L-1} \sigma^z_j\sigma^z_{j+1} + h\sum_{j=0}^{L-1}\sigma^z, &amp;  t
 <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">vals</span><span class="o">/</span><span class="n">t</span><span class="o">.</span><span class="n">T</span><span class="p">,</span><span class="n">Energy_t</span><span class="p">,</span><span class="s2">&quot;b-o&quot;</span><span class="p">,</span><span class="n">linewidth</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="n">str_E_t</span><span class="p">,</span><span class="n">markersize</span><span class="o">=</span><span class="mf">3.0</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">vals</span><span class="o">/</span><span class="n">t</span><span class="o">.</span><span class="n">T</span><span class="p">,</span><span class="n">Entropy_t</span><span class="p">,</span><span class="s2">&quot;r-s&quot;</span><span class="p">,</span><span class="n">linewidth</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="n">str_Sent_t</span><span class="p">,</span><span class="n">markersize</span><span class="o">=</span><span class="mf">3.0</span><span class="p">)</span>
 <span class="c1"># label axes</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;$</span><span class="se">\\</span><span class="s2">#\ </span><span class="se">\\</span><span class="s2">mathrm{periods}</span><span class="se">\\</span><span class="s2"> l$&quot;</span><span class="p">,</span><span class="n">fontsize</span><span class="o">=</span><span class="mi">18</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;$</span><span class="se">\\</span><span class="s2">#\ </span><span class="se">\\</span><span class="s2">mathrm</span><span class="si">{periods}</span><span class="se">\\</span><span class="s2"> l$&quot;</span><span class="p">,</span><span class="n">fontsize</span><span class="o">=</span><span class="mi">18</span><span class="p">)</span>
 <span class="c1"># set y axis limits</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">ylim</span><span class="p">([</span><span class="o">-</span><span class="mf">0.6</span><span class="p">,</span><span class="mf">0.7</span><span class="p">])</span>
 <span class="c1"># display legend</span>
@@ -344,7 +343,7 @@ J\sum_{j=0}^{L-1} \sigma^z_j\sigma^z_{j+1} + h\sum_{j=0}^{L-1}\sigma^z, &amp;  t
 <span class="c1"># update axis font size</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">tick_params</span><span class="p">(</span><span class="n">labelsize</span><span class="o">=</span><span class="mi">16</span><span class="p">)</span>
 <span class="c1"># turn on grid</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="bp">True</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
 <span class="c1"># save figure</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s1">&#39;example2.pdf&#39;</span><span class="p">,</span> <span class="n">bbox_inches</span><span class="o">=</span><span class="s1">&#39;tight&#39;</span><span class="p">)</span>
@@ -375,17 +374,15 @@ J\sum_{j=0}^{L-1} \sigma^z_j\sigma^z_{j+1} + h\sum_{j=0}^{L-1}\sigma^z, &amp;  t
     </ul>
    </div>
 <div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
+  <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" />
+      <input type="text" name="q" aria-labelledby="searchlabel" />
       <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
     </form>
     </div>
 </div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
+<script>$('#searchbox').show(0);</script>
         </div>
       </div>
       <div class="clearer"></div>
@@ -399,12 +396,12 @@ J\sum_{j=0}^{L-1} \sigma^z_j\sigma^z_{j+1} + h\sum_{j=0}^{L-1}\sigma^z, &amp;  t
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.3 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.4 documentation</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2016, Phillip Weinberg and Marin Bukov.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.4.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.4.0.
     </div>
   </body>
 </html>

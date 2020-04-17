@@ -53,7 +53,7 @@ class spin_basis_1d(basis_1d):
 		S: str, optional
 			Size of local spin degrees of freedom. Can be any (half-)integer from:
 			"1/2","1","3/2",...,"9999/2","5000".
-		pauli: bool, optional (requires `S="1/2"`)
+		pauli: int, optional (requires `S="1/2"`)
 			* for `pauli=0` the code uses spin-1/2 operators: 
 	
 			.. math::
@@ -78,17 +78,17 @@ class spin_basis_1d(basis_1d):
 
 				**a** (*int*) - specifies unit cell size for translation.
 
-				**kblock** (*int*) - specifies momentum block.
+				**kblock** (*int*) - specifies momentum block. The physical manifestation of this symmetry transformation is translation by `a` lattice sites. 
 
-				**pblock** (*int*) - specifies parity block.
+				**pblock** (*int*) - specifies parity block. The physical manifestation of this symmetry transformation is reflection about the middle of the chain.
 
-				**zblock** (*int*) - specifies spin inversion symmetry block.
+				**zblock** (*int*) - specifies spin inversion symmetry block. The physical manifestation of this symmetry transformation is to flip the sign of the spin-z component.
 
-				**pzblock** (*int*) - specifies parity followed by spin inversion symmetry block.
+				**pzblock** (*int*) - specifies parity followed by spin inversion symmetry block. The physical manifestation of this symmetry transformation is reflection about the middle of the chain and a simultaneous flip of the sign of the spin-z component.
 
-				**zAblock** (*int*) - specifies spin inversion symmetry block for sublattice A.
+				**zAblock** (*int*) - specifies spin inversion symmetry block for sublattice A (defined as all even lattice sites). The physical manifestation of this symmetry transformation is to flip the sign of the spin-z component on all even sites.
 
-				**zBblock** (*int*) - specifies spin inversion symmetry block for sublattice B.
+				**zBblock** (*int*) - specifies spin inversion symmetry block for sublattice B (defined as all odd lattice sites). The physical manifestation of this symmetry transformation is to flip the sign of the spin-z component on all odd sites.
 
 		"""
 		input_keys = set(blocks.keys())
@@ -279,9 +279,9 @@ class spin_basis_1d(basis_1d):
 		indx = _np.array(op[1])
 		if _np.any(indx>=0):
 			indx_p = indx[opstr == "+"].tolist()
-			p = not any(indx_p.count(x) > 1 for x in indx_p)
+			p = not any(indx_p.count(x) > self.sps-1 for x in indx_p)
 			indx_p = indx[opstr == "-"].tolist()
-			m = not any(indx_p.count(x) > 1 for x in indx_p)
+			m = not any(indx_p.count(x) > self.sps-1 for x in indx_p)
 			return (p and m)
 		else:
 			return True

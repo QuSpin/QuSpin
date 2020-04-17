@@ -1,11 +1,9 @@
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><script type="text/javascript">
+    <meta charset="utf-8" /><script type="text/javascript">
 
       var _gaq = _gaq || [];
       _gaq.push(['_setAccount', 'UA-110543543-1']);
@@ -17,16 +15,16 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-    <title>quspin.basis.basis_1d.fermion &#8212; QuSpin 0.3.3 documentation</title>
+    <title>quspin.basis.basis_1d.fermion &#8212; QuSpin 0.3.4 documentation</title>
     <link rel="stylesheet" href="../../../../static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../../static/pygments.css" type="text/css" />
     
-    <script type="text/javascript" id="documentation_options" data-url_root="../../../../" src="../../../../static/documentation_options.js"></script>
-    <script type="text/javascript" src="../../../../static/jquery.js"></script>
-    <script type="text/javascript" src="../../../../static/underscore.js"></script>
-    <script type="text/javascript" src="../../../../static/doctools.js"></script>
-    <script type="text/javascript" src="../../../../static/language_data.js"></script>
-    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script id="documentation_options" data-url_root="../../../../" src="../../../../static/documentation_options.js"></script>
+    <script src="../../../../static/jquery.js"></script>
+    <script src="../../../../static/underscore.js"></script>
+    <script src="../../../../static/doctools.js"></script>
+    <script src="../../../../static/language_data.js"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <link rel="index" title="Index" href="../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../search.html" /> 
@@ -40,7 +38,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">QuSpin 0.3.3 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">QuSpin 0.3.4 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -51,10 +49,10 @@
           <div class="body" role="main">
             
   <h1>Source code for quspin.basis.basis_1d.fermion</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">._basis_1d_core</span> <span class="k">import</span> <span class="n">hcp_basis</span><span class="p">,</span><span class="n">hcp_ops</span><span class="p">,</span><span class="n">spf_basis</span><span class="p">,</span><span class="n">spf_ops</span>
-<span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">_check_1d_symm_spf</span> <span class="k">as</span> <span class="n">_check</span>
-<span class="kn">from</span> <span class="nn">.base_1d</span> <span class="k">import</span> <span class="n">basis_1d</span>
-<span class="kn">from</span> <span class="nn">..base</span> <span class="k">import</span> <span class="n">MAXPRINT</span>
+<span></span><span class="kn">from</span> <span class="nn">._basis_1d_core</span> <span class="kn">import</span> <span class="n">hcp_basis</span><span class="p">,</span><span class="n">hcp_ops</span><span class="p">,</span><span class="n">spf_basis</span><span class="p">,</span><span class="n">spf_ops</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">_check_1d_symm_spf</span> <span class="k">as</span> <span class="n">_check</span>
+<span class="kn">from</span> <span class="nn">.base_1d</span> <span class="kn">import</span> <span class="n">basis_1d</span>
+<span class="kn">from</span> <span class="nn">..base</span> <span class="kn">import</span> <span class="n">MAXPRINT</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">_np</span>
 
 
@@ -89,7 +87,7 @@
 <span class="sd">		:lines: 7-</span>
 
 <span class="sd">	&quot;&quot;&quot;</span>	
-<div class="viewcode-block" id="spinless_fermion_basis_1d.__init__"><a class="viewcode-back" href="../../../../generated/quspin.basis.spinless_fermion_basis_1d.html#quspin.basis.spinless_fermion_basis_1d.__init__">[docs]</a>	<span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">L</span><span class="p">,</span><span class="n">Nf</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">nf</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="o">**</span><span class="n">blocks</span><span class="p">):</span>
+<div class="viewcode-block" id="spinless_fermion_basis_1d.__init__"><a class="viewcode-back" href="../../../../generated/quspin.basis.spinless_fermion_basis_1d.html#quspin.basis.spinless_fermion_basis_1d.__init__">[docs]</a>	<span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">L</span><span class="p">,</span><span class="n">Nf</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">nf</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="o">**</span><span class="n">blocks</span><span class="p">):</span>
 		<span class="sd">&quot;&quot;&quot;Intializes the `fermion_basis_1d` object (basis for fermionic operators).</span>
 
 <span class="sd">		Parameters</span>
@@ -105,9 +103,9 @@
 
 <span class="sd">				**a** (*int*) - specifies unit cell size for translation.</span>
 
-<span class="sd">				**kblock** (*int*) - specifies momentum block.</span>
+<span class="sd">				**kblock** (*int*) - specifies momentum block. The physical manifestation of this symmetry transformation is translation by `a` lattice sites.</span>
 
-<span class="sd">				**pblock** (*int*) - specifies parity block.</span>
+<span class="sd">				**pblock** (*int*) - specifies parity block. The physical manifestation of this symmetry transformation is reflection about the middle of the chain.</span>
 
 <span class="sd">		&quot;&quot;&quot;</span>
 
@@ -190,7 +188,7 @@
 	<span class="k">def</span> <span class="nf">__type__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 		<span class="k">return</span> <span class="s2">&quot;&lt;type &#39;qspin.basis.fermion_basis_1d&#39;&gt;&quot;</span>
 
-	<span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+	<span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 		<span class="k">return</span> <span class="s2">&quot;&lt; instance of &#39;qspin.basis.fermion_basis_1d&#39; with </span><span class="si">{0}</span><span class="s2"> states &gt;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_Ns</span><span class="p">)</span>
 
 	<span class="k">def</span> <span class="nf">__name__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -248,7 +246,7 @@
 <span class="sd">		:lines: 7-</span>
 
 <span class="sd">	&quot;&quot;&quot;</span>	
-<div class="viewcode-block" id="spinful_fermion_basis_1d.__init__"><a class="viewcode-back" href="../../../../generated/quspin.basis.spinful_fermion_basis_1d.html#quspin.basis.spinful_fermion_basis_1d.__init__">[docs]</a>	<span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">L</span><span class="p">,</span><span class="n">Nf</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">nf</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">double_occupancy</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="o">**</span><span class="n">blocks</span><span class="p">):</span>
+<div class="viewcode-block" id="spinful_fermion_basis_1d.__init__"><a class="viewcode-back" href="../../../../generated/quspin.basis.spinful_fermion_basis_1d.html#quspin.basis.spinful_fermion_basis_1d.__init__">[docs]</a>	<span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">L</span><span class="p">,</span><span class="n">Nf</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">nf</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">double_occupancy</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="o">**</span><span class="n">blocks</span><span class="p">):</span>
 		<span class="sd">&quot;&quot;&quot;Intializes the `fermion_basis_1d` object (basis for fermionic operators).</span>
 
 <span class="sd">		Parameters</span>
@@ -268,13 +266,13 @@
 
 <span class="sd">				**a** (*int*) - specifies unit cell size for translation.</span>
 
-<span class="sd">				**kblock** (*int*) - specifies momentum block.</span>
+<span class="sd">				**kblock** (*int*) - specifies momentum block. The physical manifestation of this symmetry transformation is translation by `a` lattice sites.</span>
 
-<span class="sd">				**pblock** (*int*) - specifies parity block.</span>
+<span class="sd">				**pblock** (*int*) - specifies parity block. The physical manifestation of this symmetry transformation is reflection about the middle of the chain.</span>
 
-<span class="sd">				**sblock** (*int*) - specifies fermion spin inversion block.</span>
+<span class="sd">				**sblock** (*int*) - specifies fermion spin inversion block. The physical manifestation of this symmetry transformation is the exchange of a spin-up and a spin-down fermion on a fixed lattice site.</span>
 
-<span class="sd">				**psblock** (*int*) - specifies parity followed by fermion spin inversion symmetry block.</span>
+<span class="sd">				**psblock** (*int*) - specifies parity followed by fermion spin inversion symmetry block. The physical manifestation of this symmetry transformation is reflection about the middle of the chain, and a simultaneous exchange of a spin-up and a spin-down fermion on a fixed lattice site.</span>
 
 <span class="sd">		&quot;&quot;&quot;</span>
 
@@ -554,7 +552,7 @@
 					<span class="n">subsys_ordering</span><span class="o">=</span><span class="n">subsys_ordering</span><span class="p">,</span><span class="n">return_rdm</span><span class="o">=</span><span class="n">return_rdm</span><span class="p">,</span>
 					<span class="n">enforce_pure</span><span class="o">=</span><span class="n">enforce_pure</span><span class="p">,</span><span class="n">sparse</span><span class="o">=</span><span class="n">sparse</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="spinful_fermion_basis_1d.ent_entropy"><a class="viewcode-back" href="../../../../generated/quspin.basis.spinful_fermion_basis_1d.html#quspin.basis.spinful_fermion_basis_1d.ent_entropy">[docs]</a>	<span class="k">def</span> <span class="nf">ent_entropy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">state</span><span class="p">,</span><span class="n">sub_sys_A</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">density</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">subsys_ordering</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">return_rdm</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">enforce_pure</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">return_rdm_EVs</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">sparse</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">alpha</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span><span class="n">sparse_diag</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">maxiter</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="spinful_fermion_basis_1d.ent_entropy"><a class="viewcode-back" href="../../../../generated/quspin.basis.spinful_fermion_basis_1d.html#quspin.basis.spinful_fermion_basis_1d.ent_entropy">[docs]</a>	<span class="k">def</span> <span class="nf">ent_entropy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">state</span><span class="p">,</span><span class="n">sub_sys_A</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">density</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">subsys_ordering</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">return_rdm</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">enforce_pure</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">return_rdm_EVs</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">sparse</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">alpha</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span><span class="n">sparse_diag</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">maxiter</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">svd_solver</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">svd_kwargs</span><span class="o">=</span><span class="kc">None</span><span class="p">,):</span>
 		<span class="sd">&quot;&quot;&quot;Calculates entanglement entropy of subsystem A and the corresponding reduced density matrix</span>
 
 <span class="sd">		Notes</span>
@@ -604,6 +602,11 @@
 <span class="sd">		maxiter : int, optional</span>
 <span class="sd">			Specifies the number of iterations for Lanczos diagonalisation. Look up documentation for </span>
 <span class="sd">			`scipy.sparse.linalg.eigsh() &lt;https://docs.scipy.org/doc/scipy/reference/generated/generated/scipy.sparse.linalg.eigsh.html&gt;`_.</span>
+<span class="sd">		svd_solver : object, optional</span>
+<span class="sd">			Specifies the svd solver to be used, e.g. `numpy.linalg.svd` or `scipy.linalg.svd`, or a custom solver. Effective when `enforce_pure=True` or `sparse=False`.</span>
+<span class="sd">		svd_kwargs : dict, optional</span>
+<span class="sd">			Specifies additional arguments for `svd_solver`. </span>
+
 
 <span class="sd">		Returns</span>
 <span class="sd">		--------</span>
@@ -642,12 +645,13 @@
 		<span class="k">return</span> <span class="n">basis_1d</span><span class="o">.</span><span class="n">_ent_entropy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">state</span><span class="p">,</span><span class="n">sub_sys_A</span><span class="p">,</span><span class="n">density</span><span class="o">=</span><span class="n">density</span><span class="p">,</span>
 						<span class="n">subsys_ordering</span><span class="o">=</span><span class="n">subsys_ordering</span><span class="p">,</span><span class="n">return_rdm</span><span class="o">=</span><span class="n">return_rdm</span><span class="p">,</span>
 						<span class="n">enforce_pure</span><span class="o">=</span><span class="n">enforce_pure</span><span class="p">,</span><span class="n">return_rdm_EVs</span><span class="o">=</span><span class="n">return_rdm_EVs</span><span class="p">,</span>
-						<span class="n">sparse</span><span class="o">=</span><span class="n">sparse</span><span class="p">,</span><span class="n">alpha</span><span class="o">=</span><span class="n">alpha</span><span class="p">,</span><span class="n">sparse_diag</span><span class="o">=</span><span class="n">sparse_diag</span><span class="p">,</span><span class="n">maxiter</span><span class="o">=</span><span class="n">maxiter</span><span class="p">)</span></div>
+						<span class="n">sparse</span><span class="o">=</span><span class="n">sparse</span><span class="p">,</span><span class="n">alpha</span><span class="o">=</span><span class="n">alpha</span><span class="p">,</span><span class="n">sparse_diag</span><span class="o">=</span><span class="n">sparse_diag</span><span class="p">,</span><span class="n">maxiter</span><span class="o">=</span><span class="n">maxiter</span><span class="p">,</span>
+						<span class="n">svd_solver</span><span class="o">=</span><span class="n">svd_solver</span><span class="p">,</span> <span class="n">svd_kwargs</span><span class="o">=</span><span class="n">svd_kwargs</span><span class="p">,</span> <span class="p">)</span></div>
 
 	<span class="k">def</span> <span class="nf">__type__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 		<span class="k">return</span> <span class="s2">&quot;&lt;type &#39;qspin.basis.fermion_basis_1d&#39;&gt;&quot;</span>
 
-	<span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+	<span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 		<span class="k">return</span> <span class="s2">&quot;&lt; instance of &#39;qspin.basis.fermion_basis_1d&#39; with </span><span class="si">{0}</span><span class="s2"> states &gt;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_Ns</span><span class="p">)</span>
 
 	<span class="k">def</span> <span class="nf">__name__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -970,17 +974,15 @@
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
 <div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
+  <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../../../../search.html" method="get">
-      <input type="text" name="q" />
+      <input type="text" name="q" aria-labelledby="searchlabel" />
       <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
     </form>
     </div>
 </div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
+<script>$('#searchbox').show(0);</script>
         </div>
       </div>
       <div class="clearer"></div>
@@ -994,13 +996,13 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">QuSpin 0.3.3 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">QuSpin 0.3.4 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2016, Phillip Weinberg and Marin Bukov.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.4.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.4.0.
     </div>
   </body>
 </html>

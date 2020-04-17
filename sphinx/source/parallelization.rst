@@ -12,10 +12,10 @@ Below, we introduce some of the new features in QuSpin 0.3.1 which are included 
 Check out also our example script :ref:`example12-label`, which demonstrates how to use multi-threading with QuSpin in practice. 
 
 1. Multi-threading via OpenMP in QuSpin:
------------------------------------
+----------------------------------------
 
 1.1. Install QuSpin with OpenMP support:
-````````````````
+````````````````````````````````````````
 
 In order to make use of OpenMP features in QuSpin, one just needs to install the `omp` metapackage which will track the OpenMP compiled version of QuSpin for your platform. Starting from QuSpin 0.3.1, we have OpenMP support across the different operating systems. To install the OpenMP version of QuSpin simply run:
 ::
@@ -30,7 +30,7 @@ upon which you will be asked by anaconda if you want to downgrade you QuSpin ver
 
 
 1.2. Multi-threaded support for QuSpin functions:
-````````````````
+````````````````````````````````````````````````````
 
 All the support for QuSpin's OpenMP multi-threading can be accessed using the OpenMP environment variable: `OMP_NUM_THREADS`. Simply put, if you want to use multiple cores when running your script, set that variable equal to the number of cores you request during the calculation. Then the segments of code which use OpenMP will automatically begin to use those extra cores. 
 
@@ -59,7 +59,7 @@ In QuSpin 0.3.1 we have worked on trying to make the user experience seamless so
 
 
 1.2.1 Parallel support in the operator module: `hamiltonian`, `quantum_operator` and `quantum_LinearOperator`
-+++++++++
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 One of the most ubiquitous operations in exact diagonalization codes is the matrix-vector product: the matrix represents a quantum operator and the vector -- the quantum state being acted on by the operator. This is used pretty much everywhere except for full diagonalization of the matrix: from evolution to Lanczos methods. 
 
@@ -98,7 +98,7 @@ Casting `H` as a `LinearOperator <https://docs.scipy.org/doc/scipy/reference/gen
 	ValueError: Error in inverting M: function gmres_loose did not converge (info = 2570).
 
 1.2.2 Parallel support in the general basis classes `*_basis_general`
-+++++++++
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 Starting from QuSpin 0.3.1, we have efficient implementation of parallel support for the methods in the `*_basis_general` classes.
 Additionally, we have also added an implementation of `inplace_Op` which is used to do 'on the fly' calculation of an operator acting on a state using multi-threading OpenMP speed-up (which can be accessed simply by using any general basis in the `quantum_LinearOperator` class).
@@ -106,7 +106,7 @@ Additionally, we have also added an implementation of `inplace_Op` which is used
 Note that the `*_basis_1d` classes do **not** support OpenMP. 
 
 2. Multi-threading via MKL and NumPy/SciPy in QuSpin:
---------------------------------------------
+-----------------------------------------------------
 
 Depending on the version of NumPy you have installed, you may also be able to access some additional multi-threading to speed up diagonalization, e.g. using `eigh()`, `eigvalsh()`, or `svd()` operations during calculations of eigenvalues/vectors or entanglement entropy. 
 To do this, the default version of NumPy installed with Anaconda must be linked against Intel's Math Kernel Library (MKL) which implemented very efficient multi-threaded variations of LAPACK functions. If you use Anaconda 2.5 or later, MKL is the default numpy version. To turn on the multi-threading, simply use the MKL environment variables. For more info visit this `MKL website <https://software.intel.com/en-us/mkl-linux-developer-guide-intel-mkl-specific-environment-variables-for-openmp-threading-control>`_.

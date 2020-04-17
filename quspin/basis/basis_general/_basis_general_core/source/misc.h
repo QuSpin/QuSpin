@@ -2,6 +2,8 @@
 #define __MISC_H__
 
 #include "numpy/ndarraytypes.h"
+#include <algorithm>
+#include "bits_info.h"
 
 namespace basis_general {
 
@@ -11,7 +13,7 @@ K binary_search(const K N,const I A[],const I s){
 	bmin = 0;
 	bmax = N-1;
 	while(bmin<=bmax){
-		b = (bmax+bmin)/2;
+		b = (bmax+bmin) >> 2;
 		I a = A[b];
 		if(s==a){
 			return b;
@@ -27,6 +29,40 @@ K binary_search(const K N,const I A[],const I s){
 }
 
 
+template<class I>
+struct compare : std::binary_function<I,I,bool>
+{
+	inline bool operator()(const I &a,const I &b){return a > b;}
+};
+
+
+
+template<class K,class I>
+K rep_position(const npy_intp A_begin[],const npy_intp A_end[],const I A[],const npy_intp s_p,const I s){
+
+	npy_intp begin = A_begin[s_p];
+	npy_intp end = A_end[s_p];
+	auto comp = compare<I>();
+
+	if(begin<0){
+		return -1;
+	}
+	else{
+		const I * A_begin = A + begin;
+		const I * A_end = A + end;
+		const I * a = std::lower_bound(A_begin, A_end, s, comp);
+		return ((!(a==A_end) && !comp(s,*a)) ? (K)(a-A) : -1);
+	}
+}
+
+template<class K,class I>
+inline K rep_position(const K N_A,const I A[],const I s){
+	auto comp = compare<I>();
+	const I * A_end = A+N_A;
+	const I * a = std::lower_bound(A, A_end, s,comp);
+	return ((!(a==A_end) && !comp(s,*a)) ? (K)(a-A) : -1);
+}
+
 bool inline check_nan(double val){
 #if defined(_WIN64)
 	// x64 version
@@ -38,24 +74,125 @@ bool inline check_nan(double val){
 #endif
 }
 
+template<class T>
+inline bool equal_zero(std::complex<T> a){
+	return (a.real() == 0 && a.imag() == 0);
+}
 
 template<class T>
-int inline check_imag(std::complex<double> m,std::complex<T> *M){
-	M[0].real(m.real());
-	M[0].imag(m.imag());
+inline bool equal_zero(T a){
+	return (a == 0);
+}
+
+
+template<class T>
+inline std::complex<double> mul(std::complex<T> a,std::complex<double> z){
+	double real = a.real()*z.real() - a.imag()*z.imag();
+	double imag = a.real()*z.imag() + a.imag()*z.real();
+
+	return std::complex<double>(real,imag);
+}
+
+template<class T>
+inline std::complex<double> mul(T a,std::complex<double> z){
+	return std::complex<double>(a*z.real(),a*z.imag());
+}
+
+
+
+
+template<class T>
+int inline check_imag(const std::complex<double> m){
+	return 0;
+}
+
+template<>
+int inline check_imag<double>(const std::complex<double> m){
+	return (std::abs(m.imag())>1.1e-15 ? 1 : 0);
+}
+
+template<>
+int inline check_imag<float>(const std::complex<double> m){
+	return (std::abs(m.imag())>1.1e-15 ? 1 : 0);
+}
+
+
+
+
+
+template<class T>
+int inline check_imag(const std::complex<double> m,std::complex<T> *M){
+	M->real(m.real());
+	M->imag(m.imag());
 	return 0;
 }
 
 template<class T>
-int inline check_imag(std::complex<double> m,T *M){
-	if(std::abs(m.imag())>1.1e-15){
-		return 1;
-	}
-	else{
-		M[0] = m.real();
-		return 0;
-	}
+int inline check_imag(const std::complex<double> m,T *M){
+	(*M) = m.real();
+	return (std::abs(m.imag())>1.1e-15 ? 1 : 0);
 }
+
+// template<>
+// int inline check_imag<signed char>(const std::complex<double> m,signed char *M){
+// 	const double real = m.real();
+// 	*M = (signed char) real;
+
+// 	if(real > std::numeric_limits<signed char>::max()){
+// 		return 4; // check for overflow in integer
+// 	}
+// 	if(std::abs(std::floor(real)-real)>1.1e-15){
+// 		return 3; // check check if value is whole number
+// 	}
+// 	if(std::abs(m.imag())>1.1e-15){
+// 		return 1; // check if imaginary part is zero
+// 	}
+// 	return 0;
+// }
+
+// template<>
+// int inline check_imag<signed short>(const std::complex<double> m,signed short *M){
+// 	const double real = m.real();
+// 	*M = (signed short) real;
+
+// 	if(real > std::numeric_limits<signed short>::max()){
+// 		return 4; // check for overflow in integer
+// 	}
+// 	if(std::abs(std::floor(real)-real)>1.1e-15){
+// 		return 3; // check check if value is whole number
+// 	}
+// 	if(std::abs(m.imag())>1.1e-15){
+// 		return 1; // check if imaginary part is zero
+// 	}
+// 	return 0;
+// }
+
+
+template<class T>
+int inline check_imag(const std::complex<double> m,const std::complex<T> v,std::complex<T> *M){
+	M->real(m.real()*v.real()-m.imag()*v.imag());
+	M->imag(m.imag()*v.real()+m.real()*v.imag());
+	return 0;
+}
+
+template<class T>
+int inline check_imag(std::complex<double> m,const T v,T *M){
+	(*M) = v*m.real();
+	return (std::abs(m.imag())>1.1e-15 ? 1 : 0);
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
 
 }
 

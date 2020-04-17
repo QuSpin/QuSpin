@@ -69,7 +69,7 @@ def block_diag_hamiltonian(blocks,static,dynamic,basis_con,basis_args,dtype,basi
 	basis_kwargs : dict, optional
 		Dictionary of keyword arguments to add when calling `basis` constructor.
 	get_proj_kwargs : dict, optional 
-		Dictionary of keyword arguments for `basis.get_proj()` and `basis.get_vec()`.
+		Dictionary of keyword arguments for `basis.get_proj()` and `basis.project_from()`.
 	check_symm : bool, optional 
 		Enable/Disable symmetry check of the operators for the first Hamiltonian constructed.
 	check_herm : bool, optional
@@ -324,7 +324,7 @@ class block_ops(object):
 		basis_kwargs : dict, optional
 			Dictionary of keyword arguments to add when calling `basis` constructor.
 		get_proj_kwargs : dict, optional 
-			Dictionary of keyword arguments for `basis.get_proj()` and `basis.get_vec()`.
+			Dictionary of keyword arguments for `basis.get_proj()` and `basis.project_from()`.
 		save_previous_data : bool, optional
 			To do time evolution the `block_ops` class constructs Hamiltonians, which can take time. 
 			Set this flag to `True`, and the class will save previously calculated Hamiltonians, so
