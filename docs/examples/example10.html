@@ -1,11 +1,9 @@
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><script type="text/javascript">
+    <meta charset="utf-8" /><script type="text/javascript">
 
       var _gaq = _gaq || [];
       _gaq.push(['_setAccount', 'UA-110543543-1']);
@@ -17,16 +15,16 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-    <title>Out-of-Equilibrium Bose-Fermi Mixtures &#8212; QuSpin 0.3.3 documentation</title>
+    <title>Out-of-Equilibrium Bose-Fermi Mixtures &#8212; QuSpin 0.3.4 documentation</title>
     <link rel="stylesheet" href="../static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../static/pygments.css" type="text/css" />
     
-    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../static/documentation_options.js"></script>
-    <script type="text/javascript" src="../static/jquery.js"></script>
-    <script type="text/javascript" src="../static/underscore.js"></script>
-    <script type="text/javascript" src="../static/doctools.js"></script>
-    <script type="text/javascript" src="../static/language_data.js"></script>
-    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script id="documentation_options" data-url_root="../" src="../static/documentation_options.js"></script>
+    <script src="../static/jquery.js"></script>
+    <script src="../static/underscore.js"></script>
+    <script src="../static/doctools.js"></script>
+    <script src="../static/language_data.js"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" /> 
@@ -40,7 +38,7 @@
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.3 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.4 documentation</a> &#187;</li> 
       </ul>
     </div>  
 
@@ -49,7 +47,8 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="section" id="out-of-equilibrium-bose-fermi-mixtures">
+  <style> .red {color:#ff0000; font-weight:bold; font-style:italic; } </style>
+<style> .green {color:#00b200; font-weight:bold; font-style:italic; } </style><div class="section" id="out-of-equilibrium-bose-fermi-mixtures">
 <span id="example10-label"></span><h1>Out-of-Equilibrium Bose-Fermi Mixtures<a class="headerlink" href="#out-of-equilibrium-bose-fermi-mixtures" title="Permalink to this headline">¶</a></h1>
 <p>This example shows how to code up the Bose-Fermi mixture Hamiltonian:</p>
 <div class="math notranslate nohighlight">
@@ -61,7 +60,7 @@ H_\mathrm{bf} &amp;=&amp; U_\mathrm{bf}\sum_j n^\mathrm{b}_jn^\mathrm{f}_j\end{s
 </div>
 <div class="section" id="script">
 <h1>Script<a class="headerlink" href="#script" title="Permalink to this headline">¶</a></h1>
-<p><a class="reference download internal" download="" href="../downloads/8350cdea5f3f52bdc97398ccac351e7c/example10.py"><code class="xref download docutils literal notranslate"><span class="pre">download</span> <span class="pre">script</span></code></a></p>
+<p><a class="reference download internal" download="" href="../downloads/347f6f0c4893d69cedac9079b2638ec7/example10.py"><code class="xref download docutils literal notranslate"><span class="pre">download</span> <span class="pre">script</span></code></a></p>
 <div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
  2
  3
@@ -177,8 +176,8 @@ H_\mathrm{bf} &amp;=&amp; U_\mathrm{bf}\sum_j n^\mathrm{b}_jn^\mathrm{f}_j\end{s
 <span class="kn">from</span> <span class="nn">quspin.basis</span> <span class="kn">import</span> <span class="n">tensor_basis</span><span class="p">,</span><span class="n">spinless_fermion_basis_1d</span><span class="p">,</span><span class="n">boson_basis_1d</span> <span class="c1"># bases</span>
 <span class="kn">from</span> <span class="nn">quspin.tools.measurements</span> <span class="kn">import</span> <span class="n">obs_vs_time</span> <span class="c1"># calculating dynamics</span>
 <span class="kn">from</span> <span class="nn">quspin.tools.Floquet</span> <span class="kn">import</span> <span class="n">Floquet_t_vec</span> <span class="c1"># period-spaced time vector</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span> <span class="c1"># general math functions</span>
-<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span> <span class="c1"># plotting library</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span> <span class="c1"># general math functions</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span> <span class="c1"># plotting library</span>
 <span class="c1">#</span>
 <span class="c1">##### setting up parameters for simulation</span>
 <span class="c1"># physical parameters</span>
@@ -228,7 +227,7 @@ H_\mathrm{bf} &amp;=&amp; U_\mathrm{bf}\sum_j n^\mathrm{b}_jn^\mathrm{f}_j\end{s
 <span class="n">dynamic</span> <span class="o">=</span> <span class="p">[[</span><span class="s2">&quot;|n&quot;</span><span class="p">,</span><span class="n">drive_f</span><span class="p">,</span><span class="n">drive</span><span class="p">,</span><span class="n">drive_args</span><span class="p">]]</span> <span class="c1"># drive couples to fermions only</span>
 <span class="c1">#</span>
 <span class="c1">###### set up Hamiltonian and initial states</span>
-<span class="n">no_checks</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">check_pcon</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span><span class="n">check_symm</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span><span class="n">check_herm</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+<span class="n">no_checks</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">check_pcon</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">check_symm</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">check_herm</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 <span class="n">H_BFM</span> <span class="o">=</span> <span class="n">hamiltonian</span><span class="p">(</span><span class="n">static</span><span class="p">,</span><span class="n">dynamic</span><span class="p">,</span><span class="n">basis</span><span class="o">=</span><span class="n">basis</span><span class="p">,</span><span class="o">**</span><span class="n">no_checks</span><span class="p">)</span>
 <span class="c1"># define initial Fock state through strings</span>
 <span class="n">s_f</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s2">&quot;1&quot;</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">Nf</span><span class="p">))</span> <span class="o">+</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s2">&quot;0&quot;</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">L</span><span class="o">-</span><span class="n">Nf</span><span class="p">))</span>
@@ -237,11 +236,11 @@ H_\mathrm{bf} &amp;=&amp; U_\mathrm{bf}\sum_j n^\mathrm{b}_jn^\mathrm{f}_j\end{s
 <span class="n">i_0</span> <span class="o">=</span> <span class="n">basis</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">s_b</span><span class="p">,</span><span class="n">s_f</span><span class="p">)</span> <span class="c1"># find index of product state in basis</span>
 <span class="n">psi_0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">basis</span><span class="o">.</span><span class="n">Ns</span><span class="p">)</span> <span class="c1"># allocate space for state</span>
 <span class="n">psi_0</span><span class="p">[</span><span class="n">i_0</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="c1"># set MB state to be the given product state</span>
-<span class="k">print</span><span class="p">(</span><span class="s2">&quot;H-space size: {:d}, initial state: |{:s}&gt;|{:s}&gt;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">basis</span><span class="o">.</span><span class="n">Ns</span><span class="p">,</span><span class="n">s_b</span><span class="p">,</span><span class="n">s_f</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;H-space size: </span><span class="si">{:d}</span><span class="s2">, initial state: |</span><span class="si">{:s}</span><span class="s2">&gt;|</span><span class="si">{:s}</span><span class="s2">&gt;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">basis</span><span class="o">.</span><span class="n">Ns</span><span class="p">,</span><span class="n">s_b</span><span class="p">,</span><span class="n">s_f</span><span class="p">))</span>
 <span class="c1">#</span>
 <span class="c1">###### time evolve initial state and measure entanglement between species</span>
 <span class="n">t</span><span class="o">=</span><span class="n">Floquet_t_vec</span><span class="p">(</span><span class="n">Omega</span><span class="p">,</span><span class="mi">10</span><span class="p">,</span><span class="n">len_T</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span> <span class="c1"># t.vals=times, t.i=initial time, t.T=drive period</span>
-<span class="n">psi_t</span> <span class="o">=</span> <span class="n">H_BFM</span><span class="o">.</span><span class="n">evolve</span><span class="p">(</span><span class="n">psi_0</span><span class="p">,</span><span class="n">t</span><span class="o">.</span><span class="n">i</span><span class="p">,</span><span class="n">t</span><span class="o">.</span><span class="n">vals</span><span class="p">,</span><span class="n">iterate</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="n">psi_t</span> <span class="o">=</span> <span class="n">H_BFM</span><span class="o">.</span><span class="n">evolve</span><span class="p">(</span><span class="n">psi_0</span><span class="p">,</span><span class="n">t</span><span class="o">.</span><span class="n">i</span><span class="p">,</span><span class="n">t</span><span class="o">.</span><span class="n">vals</span><span class="p">,</span><span class="n">iterate</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="c1"># measure observable</span>
 <span class="n">Sent_args</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">basis</span><span class="o">=</span><span class="n">basis</span><span class="p">,</span><span class="n">sub_sys_A</span><span class="o">=</span><span class="s2">&quot;left&quot;</span><span class="p">)</span>
 <span class="n">meas</span> <span class="o">=</span> <span class="n">obs_vs_time</span><span class="p">(</span><span class="n">psi_t</span><span class="p">,</span><span class="n">t</span><span class="o">.</span><span class="n">vals</span><span class="p">,{},</span><span class="n">Sent_args</span><span class="o">=</span><span class="n">Sent_args</span><span class="p">)</span>
@@ -252,8 +251,8 @@ H_\mathrm{bf} &amp;=&amp; U_\mathrm{bf}\sum_j n^\mathrm{b}_jn^\mathrm{f}_j\end{s
 <span class="c1"># configuring plots</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">t</span><span class="o">/</span><span class="n">t</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">Entropy_t</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;$</span><span class="se">\\</span><span class="s2">mathrm{driving</span><span class="se">\\</span><span class="s2"> cycle}$&quot;</span><span class="p">,</span><span class="n">fontsize</span><span class="o">=</span><span class="mi">18</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;$S_</span><span class="se">\\</span><span class="s1">mathrm{ent}(t)$&#39;</span><span class="p">,</span><span class="n">fontsize</span><span class="o">=</span><span class="mi">18</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="bp">True</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;$S_</span><span class="se">\\</span><span class="s1">mathrm</span><span class="si">{ent}</span><span class="s1">(t)$&#39;</span><span class="p">,</span><span class="n">fontsize</span><span class="o">=</span><span class="mi">18</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">tick_params</span><span class="p">(</span><span class="n">labelsize</span><span class="o">=</span><span class="mi">16</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s1">&#39;BFM.pdf&#39;</span><span class="p">,</span> <span class="n">bbox_inches</span><span class="o">=</span><span class="s1">&#39;tight&#39;</span><span class="p">)</span>
@@ -283,17 +282,15 @@ H_\mathrm{bf} &amp;=&amp; U_\mathrm{bf}\sum_j n^\mathrm{b}_jn^\mathrm{f}_j\end{s
     </ul>
    </div>
 <div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
+  <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" />
+      <input type="text" name="q" aria-labelledby="searchlabel" />
       <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
     </form>
     </div>
 </div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
+<script>$('#searchbox').show(0);</script>
         </div>
       </div>
       <div class="clearer"></div>
@@ -307,12 +304,12 @@ H_\mathrm{bf} &amp;=&amp; U_\mathrm{bf}\sum_j n^\mathrm{b}_jn^\mathrm{f}_j\end{s
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.3 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.4 documentation</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2016, Phillip Weinberg and Marin Bukov.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.4.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.4.0.
     </div>
   </body>
 </html>

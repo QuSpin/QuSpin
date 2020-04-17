@@ -1,6 +1,6 @@
 
 
-:red:`QuSpin 0.3.4` (released on 2020.??.??)
+:red:`QuSpin 0.3.4` (released on 2020.04.17)
 ================================================
 
 
@@ -16,13 +16,13 @@ Complete list of the most recent features
 =========================================
 
 
-Added in v. 0.3.4 (2020.??.??)
+Added in v. 0.3.4 (2020.04.17)
 ------------------------------
 
 Improved Functionality
 ++++++++++++++++++++++
 
-* :red:`deprecating` python 2.7 support. Installing QuSpin for py27 will by defult result in version 0.3.3.
+* :red:`discontinuing` python 2.7 support. Installing QuSpin for py27 will by defult result in version 0.3.3.
 * :red:`deprecating` function `basis.get_vec()`: use `basis.project_from()` instead.
 * revised `user_basis` tutorial for spinless fermions and introduced function `_count_particles_32()`.
 * added optional arguments `svd_solver`, `svd_kwargs` to `basis.ent_entropy()`; allows to use some scipy svd solvers, which are typically more stable. 

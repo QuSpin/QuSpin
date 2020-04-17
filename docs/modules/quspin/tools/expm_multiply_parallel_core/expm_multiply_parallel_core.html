@@ -1,11 +1,9 @@
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><script type="text/javascript">
+    <meta charset="utf-8" /><script type="text/javascript">
 
       var _gaq = _gaq || [];
       _gaq.push(['_setAccount', 'UA-110543543-1']);
@@ -17,16 +15,16 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-    <title>quspin.tools.expm_multiply_parallel_core.expm_multiply_parallel_core &#8212; QuSpin 0.3.3 documentation</title>
+    <title>quspin.tools.expm_multiply_parallel_core.expm_multiply_parallel_core &#8212; QuSpin 0.3.4 documentation</title>
     <link rel="stylesheet" href="../../../../static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../../static/pygments.css" type="text/css" />
     
-    <script type="text/javascript" id="documentation_options" data-url_root="../../../../" src="../../../../static/documentation_options.js"></script>
-    <script type="text/javascript" src="../../../../static/jquery.js"></script>
-    <script type="text/javascript" src="../../../../static/underscore.js"></script>
-    <script type="text/javascript" src="../../../../static/doctools.js"></script>
-    <script type="text/javascript" src="../../../../static/language_data.js"></script>
-    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script id="documentation_options" data-url_root="../../../../" src="../../../../static/documentation_options.js"></script>
+    <script src="../../../../static/jquery.js"></script>
+    <script src="../../../../static/underscore.js"></script>
+    <script src="../../../../static/doctools.js"></script>
+    <script src="../../../../static/language_data.js"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <link rel="index" title="Index" href="../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../search.html" /> 
@@ -40,7 +38,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">QuSpin 0.3.3 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">QuSpin 0.3.4 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -51,11 +49,11 @@
           <div class="body" role="main">
             
   <h1>Source code for quspin.tools.expm_multiply_parallel_core.expm_multiply_parallel_core</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">scipy.sparse.linalg</span> <span class="k">import</span> <span class="n">LinearOperator</span><span class="p">,</span><span class="n">onenormest</span><span class="p">,</span><span class="n">aslinearoperator</span>
-<span class="kn">from</span> <span class="nn">.expm_multiply_parallel_wrapper</span> <span class="k">import</span> <span class="p">(</span><span class="n">_wrapper_expm_multiply</span><span class="p">,</span>
+<span></span><span class="kn">from</span> <span class="nn">scipy.sparse.linalg</span> <span class="kn">import</span> <span class="n">LinearOperator</span><span class="p">,</span><span class="n">onenormest</span><span class="p">,</span><span class="n">aslinearoperator</span>
+<span class="kn">from</span> <span class="nn">.expm_multiply_parallel_wrapper</span> <span class="kn">import</span> <span class="p">(</span><span class="n">_wrapper_expm_multiply</span><span class="p">,</span>
 	<span class="n">_wrapper_csr_trace</span><span class="p">,</span><span class="n">_wrapper_csr_1_norm</span><span class="p">)</span>
-<span class="kn">from</span> <span class="nn">scipy.sparse.construct</span> <span class="k">import</span> <span class="n">eye</span>
-<span class="kn">from</span> <span class="nn">scipy.sparse.linalg._expm_multiply</span> <span class="k">import</span> <span class="n">_fragment_3_1</span><span class="p">,</span><span class="n">_exact_1_norm</span>
+<span class="kn">from</span> <span class="nn">scipy.sparse.construct</span> <span class="kn">import</span> <span class="n">eye</span>
+<span class="kn">from</span> <span class="nn">scipy.sparse.linalg._expm_multiply</span> <span class="kn">import</span> <span class="n">_fragment_3_1</span><span class="p">,</span><span class="n">_exact_1_norm</span>
 <span class="kn">import</span> <span class="nn">scipy.sparse</span> <span class="k">as</span> <span class="nn">_sp</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">_np</span>
 
@@ -64,7 +62,18 @@
 
 <span class="sd">    Notes</span>
 <span class="sd">    -----</span>
-<span class="sd">    This is a wrapper over custom c++ code.</span>
+<span class="sd">    * this is a wrapper over custom c++ code.</span>
+<span class="sd">    * the `dtype` input need not be the same dtype as `A` or `a`; however, it must be possible to cast the result of `a*A` to this `dtype`. </span>
+<span class="sd">    * consider the special case of real-time evolution with a purely-imaginary Hamiltonian, in which case `a=-1j*time` and `A` are both complex-valued, while the resulting matrix exponential is real-valued: in such cases, one can use either one of</span>
+<span class="sd">    </span>
+<span class="sd">    &gt;&gt;&gt; expm_multiply_parallel( (1j*H.tocsr()).astype(np.float64), a=-1.0, dtype=np.float64)`</span>
+<span class="sd">    </span>
+<span class="sd">    and</span>
+<span class="sd">    </span>
+<span class="sd">    &gt;&gt;&gt; expm_multiply_parallel( H.tocsr(), a=-1.0j, dtype=np.complex128)</span>
+<span class="sd">    </span>
+<span class="sd">    The more efficient way to compute the matrix exponential in this case is to use a real-valued `dtype`. </span>
+
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
@@ -80,7 +89,7 @@
 <span class="sd">        :lines: 7-30</span>
 <span class="sd">    </span>
 <span class="sd">    &quot;&quot;&quot;</span>
-<div class="viewcode-block" id="expm_multiply_parallel.__init__"><a class="viewcode-back" href="../../../../generated/quspin.tools.evolution.expm_multiply_parallel.html#quspin.tools.evolution.expm_multiply_parallel.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">A</span><span class="p">,</span><span class="n">a</span><span class="o">=</span><span class="mf">1.0</span><span class="p">):</span>
+<div class="viewcode-block" id="expm_multiply_parallel.__init__"><a class="viewcode-back" href="../../../../generated/quspin.tools.evolution.expm_multiply_parallel.html#quspin.tools.evolution.expm_multiply_parallel.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">A</span><span class="p">,</span><span class="n">a</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">copy</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Initializes `expm_multiply_parallel`. </span>
 
 <span class="sd">        Parameters</span>
@@ -89,31 +98,46 @@
 <span class="sd">            The operator (matrix) whose exponential is to be calculated.</span>
 <span class="sd">        a : scalar, optional</span>
 <span class="sd">            scalar value multiplying generator matrix :math:`A` in matrix exponential: :math:`\\mathrm{e}^{aA}`.</span>
-<span class="sd">            </span>
+<span class="sd">        dtype : numpy.dtype, optional</span>
+<span class="sd">            data type specified for the total operator :math:`\\mathrm{e}^{aA}`. Default is: `numpy.result_type(A.dtype,min_scalar_type(a),float64)`.</span>
+<span class="sd">        copy : bool, optional</span>
+<span class="sd">            if `True` the matrix is copied otherwise the matrix is stored by reference. </span>
+
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">_np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">a</span><span class="p">)</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_a</span> <span class="o">=</span> <span class="n">a</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;a must be scalar value.&quot;</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_A</span> <span class="o">=</span> <span class="n">_sp</span><span class="o">.</span><span class="n">csr_matrix</span><span class="p">(</span><span class="n">A</span><span class="p">,</span><span class="n">copy</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-        <span class="c1"># self._A = _sp.csr_matrix(A,copy=True)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_A</span> <span class="o">=</span> <span class="n">_sp</span><span class="o">.</span><span class="n">csr_matrix</span><span class="p">(</span><span class="n">A</span><span class="p">,</span><span class="n">copy</span><span class="o">=</span><span class="n">copy</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">A</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="n">A</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;A must be a square matrix.&quot;</span><span class="p">)</span>
 
-        <span class="n">tol</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">finfo</span><span class="p">(</span><span class="n">A</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span><span class="o">.</span><span class="n">eps</span><span class="o">/</span><span class="mi">2</span>
-        <span class="n">tol_dtype</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">finfo</span><span class="p">(</span><span class="n">A</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span><span class="o">.</span><span class="n">eps</span><span class="o">.</span><span class="n">dtype</span>
+        <span class="n">a_dtype_min</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">min_scalar_type</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_a</span><span class="p">)</span>
+
+        <span class="c1"># use double precision by default. </span>
+        <span class="k">if</span> <span class="n">dtype</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_dtype</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">result_type</span><span class="p">(</span><span class="n">A</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span><span class="n">a_dtype_min</span><span class="p">,</span><span class="n">_np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">min_dtype</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">result_type</span><span class="p">(</span><span class="n">A</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span><span class="n">a_dtype_min</span><span class="p">,</span><span class="n">_np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">_np</span><span class="o">.</span><span class="n">can_cast</span><span class="p">(</span><span class="n">min_dtype</span><span class="p">,</span><span class="n">dtype</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;dtype not sufficient to represent a*A to at least float32 precision.&quot;</span><span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">_dtype</span> <span class="o">=</span> <span class="n">dtype</span>
+
+        <span class="n">tol</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">finfo</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dtype</span><span class="p">)</span><span class="o">.</span><span class="n">eps</span><span class="o">/</span><span class="mi">2</span>
+        <span class="n">tol_dtype</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">finfo</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dtype</span><span class="p">)</span><span class="o">.</span><span class="n">eps</span><span class="o">.</span><span class="n">dtype</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_tol</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">tol</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="n">tol_dtype</span><span class="p">)</span>
 
         <span class="n">mu</span> <span class="o">=</span> <span class="n">_wrapper_csr_trace</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_A</span><span class="o">.</span><span class="n">indptr</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">_A</span><span class="o">.</span><span class="n">indices</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">_A</span><span class="o">.</span><span class="n">data</span><span class="p">)</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">_A</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_mu</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">mu</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="n">A</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
-
-        <span class="n">shift</span> <span class="o">=</span> <span class="n">eye</span><span class="p">(</span><span class="n">A</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="nb">format</span><span class="o">=</span><span class="s2">&quot;csr&quot;</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="n">A</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
-        <span class="n">shift</span><span class="o">.</span><span class="n">data</span> <span class="o">*=</span> <span class="n">mu</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_A</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_A</span> <span class="o">-</span> <span class="n">shift</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_A_1_norm</span> <span class="o">=</span> <span class="n">_wrapper_csr_1_norm</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_A</span><span class="o">.</span><span class="n">indptr</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">_A</span><span class="o">.</span><span class="n">indices</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">_A</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_mu</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">mu</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_dtype</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_A_1_norm</span> <span class="o">=</span> <span class="n">_wrapper_csr_1_norm</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_A</span><span class="o">.</span><span class="n">indptr</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">_A</span><span class="o">.</span><span class="n">indices</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">_A</span><span class="o">.</span><span class="n">data</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">_mu</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_calculate_partition</span><span class="p">()</span></div>
+
+        <span class="c1"># shift = eye(A.shape[0],format=&quot;csr&quot;,dtype=A.dtype)</span>
+        <span class="c1"># shift.data *= mu</span>
+        <span class="c1"># self._A = self._A - shift</span>
 
 
     <span class="nd">@property</span>
@@ -127,8 +151,15 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_A</span>
 
 
-<div class="viewcode-block" id="expm_multiply_parallel.set_a"><a class="viewcode-back" href="../../../../generated/quspin.tools.evolution.expm_multiply_parallel.html#quspin.tools.evolution.expm_multiply_parallel.set_a">[docs]</a>    <span class="k">def</span> <span class="nf">set_a</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">a</span><span class="p">):</span>
+<div class="viewcode-block" id="expm_multiply_parallel.set_a"><a class="viewcode-back" href="../../../../generated/quspin.tools.evolution.expm_multiply_parallel.html#quspin.tools.evolution.expm_multiply_parallel.set_a">[docs]</a>    <span class="k">def</span> <span class="nf">set_a</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">a</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Sets the value of the property `a`.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        a : scalar</span>
+<span class="sd">            new value of `a`.</span>
+<span class="sd">        dtype : numpy.dtype, optional</span>
+<span class="sd">            dtype specified for this operator. Default is: result_type(A.dtype,min_scalar_type(a),float64)</span>
 
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
@@ -138,15 +169,28 @@
 <span class="sd">            :language: python</span>
 <span class="sd">            :lines: 32-35</span>
 <span class="sd">            </span>
-<span class="sd">        Parameters</span>
-<span class="sd">        -----------</span>
-<span class="sd">        a : scalar</span>
-<span class="sd">            new value of `a`.</span>
-
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">if</span> <span class="n">_np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">a</span><span class="p">)</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_a</span> <span class="o">=</span> <span class="n">a</span>
+
+            <span class="n">a_dtype_min</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">min_scalar_type</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_a</span><span class="p">)</span>
+
+            <span class="c1"># use double precision by default. </span>
+            <span class="k">if</span> <span class="n">dtype</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_dtype</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">result_type</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_A</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span><span class="n">a_dtype_min</span><span class="p">,</span><span class="n">_np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">min_dtype</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">result_type</span><span class="p">(</span><span class="n">A</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span><span class="n">a_dtype_min</span><span class="p">,</span><span class="n">_np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">_np</span><span class="o">.</span><span class="n">can_cast</span><span class="p">(</span><span class="n">min_dtype</span><span class="p">,</span><span class="n">dtype</span><span class="p">):</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;dtype not sufficient to represent a*A to at least float32 precision.&quot;</span><span class="p">)</span>
+
+                <span class="bp">self</span><span class="o">.</span><span class="n">_dtype</span> <span class="o">=</span> <span class="n">dtype</span>
+
+            <span class="n">tol</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">finfo</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dtype</span><span class="p">)</span><span class="o">.</span><span class="n">eps</span><span class="o">/</span><span class="mi">2</span>
+            <span class="n">tol_dtype</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">finfo</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dtype</span><span class="p">)</span><span class="o">.</span><span class="n">eps</span><span class="o">.</span><span class="n">dtype</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_tol</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">tol</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="n">tol_dtype</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_mu</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_mu</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_dtype</span><span class="p">)</span>
+
             <span class="bp">self</span><span class="o">.</span><span class="n">_calculate_partition</span><span class="p">()</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;expecting &#39;a&#39; to be scalar.&quot;</span><span class="p">)</span></div>
@@ -189,9 +233,7 @@
 
 
 
-        <span class="n">a_dtype_min</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">min_scalar_type</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_a</span><span class="p">)</span>
-        <span class="n">a_dtype</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">result_type</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_A</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span><span class="n">a_dtype_min</span><span class="p">)</span>
-        <span class="n">v_dtype</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">result_type</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_A</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span><span class="n">a_dtype</span><span class="p">,</span><span class="n">v</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
+        <span class="n">v_dtype</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">result_type</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dtype</span><span class="p">,</span><span class="n">v</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
 
 
         <span class="k">if</span> <span class="n">overwrite_v</span><span class="p">:</span>
@@ -216,8 +258,10 @@
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;work_array must be array of dtype which matches the result of the matrix-vector multiplication.&quot;</span><span class="p">)</span>
 
         <span class="n">a</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_a</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="n">v_dtype</span><span class="p">)</span>
+        <span class="n">mu</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_mu</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="n">v_dtype</span><span class="p">)</span>
+        <span class="n">tol</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_tol</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="n">mu</span><span class="o">.</span><span class="n">real</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
         <span class="n">_wrapper_expm_multiply</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_A</span><span class="o">.</span><span class="n">indptr</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">_A</span><span class="o">.</span><span class="n">indices</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">_A</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_s</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">_m_star</span><span class="p">,</span><span class="n">a</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">_tol</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">_mu</span><span class="p">,</span><span class="n">v</span><span class="p">,</span><span class="n">work_array</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_s</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">_m_star</span><span class="p">,</span><span class="n">a</span><span class="p">,</span><span class="n">tol</span><span class="p">,</span><span class="n">mu</span><span class="p">,</span><span class="n">v</span><span class="p">,</span><span class="n">work_array</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">v</span></div>
 
@@ -226,11 +270,18 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_m_star</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_s</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">ell</span> <span class="o">=</span> <span class="mi">2</span>
-            <span class="n">norm_info</span> <span class="o">=</span> <span class="n">LazyOperatorNormInfo</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_A</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_A_1_norm</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_a</span><span class="p">,</span> <span class="n">ell</span><span class="o">=</span><span class="n">ell</span><span class="p">)</span>
+            <span class="n">norm_info</span> <span class="o">=</span> <span class="n">LazyOperatorNormInfo</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_A</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_A_1_norm</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_a</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mu</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dtype</span><span class="p">,</span> <span class="n">ell</span><span class="o">=</span><span class="n">ell</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_m_star</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_s</span> <span class="o">=</span> <span class="n">_fragment_3_1</span><span class="p">(</span><span class="n">norm_info</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tol</span><span class="p">,</span> <span class="n">ell</span><span class="o">=</span><span class="n">ell</span><span class="p">)</span></div>
 
 
 <span class="c1">##### code below is copied from scipy.sparse.linalg._expm_multiply_core and modified slightly.</span>
+
+
+<span class="k">def</span> <span class="nf">matvec_p</span><span class="p">(</span><span class="n">v</span><span class="p">,</span><span class="n">A</span><span class="p">,</span><span class="n">a</span><span class="p">,</span><span class="n">mu</span><span class="p">,</span><span class="n">p</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">p</span><span class="p">):</span>
+        <span class="n">v</span> <span class="o">=</span> <span class="n">a</span> <span class="o">*</span> <span class="p">(</span><span class="n">A</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="o">-</span> <span class="n">mu</span><span class="o">*</span><span class="n">v</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">v</span>
 
 
 <span class="k">class</span> <span class="nc">LazyOperatorNormInfo</span><span class="p">:</span>
@@ -244,7 +295,7 @@
 <span class="sd">    outside of this module.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">A</span><span class="p">,</span> <span class="n">A_1_norm</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">ell</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">A</span><span class="p">,</span> <span class="n">A_1_norm</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">mu</span><span class="p">,</span> <span class="n">dtype</span><span class="p">,</span> <span class="n">ell</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Provide the operator and some norm-related information.</span>
 
@@ -260,6 +311,8 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_A</span> <span class="o">=</span> <span class="n">A</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_a</span> <span class="o">=</span> <span class="n">a</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_mu</span> <span class="o">=</span> <span class="n">mu</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_dtype</span> <span class="o">=</span> <span class="n">dtype</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_A_1_norm</span> <span class="o">=</span> <span class="n">A_1_norm</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_ell</span> <span class="o">=</span> <span class="n">ell</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_d</span> <span class="o">=</span> <span class="p">{}</span>
@@ -275,8 +328,15 @@
 <span class="sd">        Lazily estimate d_p(A) ~= || A^p ||^(1/p) where ||.|| is the 1-norm.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">p</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_d</span><span class="p">:</span>
-            <span class="n">est</span> <span class="o">=</span> <span class="n">onenormest</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">_a</span> <span class="o">*</span> <span class="n">aslinearoperator</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_A</span><span class="p">))</span><span class="o">**</span><span class="n">p</span><span class="p">)</span>
+            <span class="n">matvec</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">v</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_a</span> <span class="o">*</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_A</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mu</span><span class="o">*</span><span class="n">v</span><span class="p">)</span>
+            <span class="n">rmatvec</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">v</span><span class="p">:</span> <span class="n">_np</span><span class="o">.</span><span class="n">conj</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_a</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_A</span><span class="o">.</span><span class="n">H</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="o">-</span> <span class="n">_np</span><span class="o">.</span><span class="n">conj</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_mu</span><span class="p">)</span><span class="o">*</span><span class="n">v</span><span class="p">)</span>
+            <span class="n">LO</span> <span class="o">=</span> <span class="n">LinearOperator</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_A</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_dtype</span><span class="p">,</span><span class="n">matvec</span><span class="o">=</span><span class="n">matvec</span><span class="p">,</span><span class="n">rmatvec</span><span class="o">=</span><span class="n">rmatvec</span><span class="p">)</span>
+
+            <span class="n">est</span> <span class="o">=</span> <span class="n">onenormest</span><span class="p">(</span><span class="n">LO</span><span class="o">**</span><span class="n">p</span><span class="p">)</span>
+
+            <span class="c1"># est = onenormest((self._a * aslinearoperator(self._A))**p)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_d</span><span class="p">[</span><span class="n">p</span><span class="p">]</span> <span class="o">=</span> <span class="n">est</span> <span class="o">**</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">/</span> <span class="n">p</span><span class="p">)</span>
+
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_d</span><span class="p">[</span><span class="n">p</span><span class="p">]</span>
 
     <span class="k">def</span> <span class="nf">alpha</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="p">):</span>
@@ -294,17 +354,15 @@
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
 <div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
+  <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../../../../search.html" method="get">
-      <input type="text" name="q" />
+      <input type="text" name="q" aria-labelledby="searchlabel" />
       <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
     </form>
     </div>
 </div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
+<script>$('#searchbox').show(0);</script>
         </div>
       </div>
       <div class="clearer"></div>
@@ -318,13 +376,13 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">QuSpin 0.3.3 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">QuSpin 0.3.4 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2016, Phillip Weinberg and Marin Bukov.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.4.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.4.0.
     </div>
   </body>
 </html>
