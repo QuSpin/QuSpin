@@ -1,11 +1,9 @@
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><script type="text/javascript">
+    <meta charset="utf-8" /><script type="text/javascript">
 
       var _gaq = _gaq || [];
       _gaq.push(['_setAccount', 'UA-110543543-1']);
@@ -17,16 +15,16 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-    <title>Monte Carlo Sampling Expectation Values of Obsevables &#8212; QuSpin 0.3.3 documentation</title>
+    <title>Monte Carlo Sampling Expectation Values of Obsevables &#8212; QuSpin 0.3.4 documentation</title>
     <link rel="stylesheet" href="../static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../static/pygments.css" type="text/css" />
     
-    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../static/documentation_options.js"></script>
-    <script type="text/javascript" src="../static/jquery.js"></script>
-    <script type="text/javascript" src="../static/underscore.js"></script>
-    <script type="text/javascript" src="../static/doctools.js"></script>
-    <script type="text/javascript" src="../static/language_data.js"></script>
-    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script id="documentation_options" data-url_root="../" src="../static/documentation_options.js"></script>
+    <script src="../static/jquery.js"></script>
+    <script src="../static/underscore.js"></script>
+    <script src="../static/doctools.js"></script>
+    <script src="../static/language_data.js"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" /> 
@@ -40,7 +38,7 @@
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.3 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.4 documentation</a> &#187;</li> 
       </ul>
     </div>  
 
@@ -49,9 +47,10 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="section" id="monte-carlo-sampling-expectation-values-of-obsevables">
+  <style> .red {color:#ff0000; font-weight:bold; font-style:italic; } </style>
+<style> .green {color:#00b200; font-weight:bold; font-style:italic; } </style><div class="section" id="monte-carlo-sampling-expectation-values-of-obsevables">
 <span id="example11-label"></span><h1>Monte Carlo Sampling Expectation Values of Obsevables<a class="headerlink" href="#monte-carlo-sampling-expectation-values-of-obsevables" title="Permalink to this headline">¶</a></h1>
-<p><a class="reference download internal" download="" href="../downloads/2e2fafe991a67f684ee29954808dde28/example11.py"><code class="xref download docutils literal notranslate"><span class="pre">download</span> <span class="pre">script</span></code></a></p>
+<p><a class="reference download internal" download="" href="../downloads/560f8fd39e62335be399e802c1b3cbe7/example11.py"><code class="xref download docutils literal notranslate"><span class="pre">download</span> <span class="pre">script</span></code></a></p>
 <p>The example below demonstrates how to use the <cite>*_basis_general</cite> methods <cite>Op_bra_ket()</cite>, <cite>representative()</cite> and <cite>get_amp()</cite>, which do not require computing all basis states, to do Monte-Carlo sampling in a symmetry-reduced subspace.</p>
 <p>Depending on the problem of interest, sampling in the symmetry-reduced Hilbert space, as opposed to sampling in the full Hilbert space, may or may not be advantages
 (in terms of speed and efficiency).</p>
@@ -72,7 +71,7 @@
 </div>
 <div class="section" id="script">
 <h1>Script<a class="headerlink" href="#script" title="Permalink to this headline">¶</a></h1>
-<p><a class="reference download internal" download="" href="../downloads/2e2fafe991a67f684ee29954808dde28/example11.py"><code class="xref download docutils literal notranslate"><span class="pre">download</span> <span class="pre">script</span></code></a></p>
+<p><a class="reference download internal" download="" href="../downloads/560f8fd39e62335be399e802c1b3cbe7/example11.py"><code class="xref download docutils literal notranslate"><span class="pre">download</span> <span class="pre">script</span></code></a></p>
 <div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>  1
   2
   3
@@ -320,7 +319,7 @@
 <span class="kn">from</span> <span class="nn">quspin.operators</span> <span class="kn">import</span> <span class="n">hamiltonian</span>
 <span class="kn">from</span> <span class="nn">quspin.basis</span> <span class="kn">import</span> <span class="n">spin_basis_general</span>
 <span class="kn">from</span> <span class="nn">quspin.operators._make_hamiltonian</span> <span class="kn">import</span> <span class="n">_consolidate_static</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">scipy.special</span> <span class="kn">import</span> <span class="n">comb</span>
 <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="c1">#fixes seed of rng</span>
 <span class="kn">from</span> <span class="nn">time</span> <span class="kn">import</span> <span class="n">time</span> <span class="c1"># timing package</span>
@@ -359,20 +358,20 @@
 <span class="n">static_formatted</span> <span class="o">=</span> <span class="n">_consolidate_static</span><span class="p">(</span><span class="n">static</span><span class="p">)</span>
 <span class="c1">#</span>
 <span class="c1">###### setting up basis object without computing the basis (make=False) ######</span>
-<span class="n">basis</span> <span class="o">=</span> <span class="n">spin_basis_general</span><span class="p">(</span><span class="n">N_2d</span><span class="p">,</span> <span class="n">pauli</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">make_basis</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> 
+<span class="n">basis</span> <span class="o">=</span> <span class="n">spin_basis_general</span><span class="p">(</span><span class="n">N_2d</span><span class="p">,</span> <span class="n">pauli</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">make_basis</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> 
 			<span class="n">Nup</span><span class="o">=</span><span class="n">N_2d</span><span class="o">//</span><span class="mi">2</span><span class="p">,</span> 
 			<span class="n">kxblock</span><span class="o">=</span><span class="p">(</span><span class="n">T_x</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="n">kyblock</span><span class="o">=</span><span class="p">(</span><span class="n">T_y</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span>
 			<span class="n">pxblock</span><span class="o">=</span><span class="p">(</span><span class="n">P_x</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="n">pyblock</span><span class="o">=</span><span class="p">(</span><span class="n">P_y</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="n">pdblock</span><span class="o">=</span><span class="p">(</span><span class="n">P_d</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span>
 			<span class="n">zblock</span><span class="o">=</span><span class="p">(</span><span class="n">Z</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span>
 			<span class="n">block_order</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;zblock&#39;</span><span class="p">,</span><span class="s1">&#39;pdblock&#39;</span><span class="p">,</span><span class="s1">&#39;pyblock&#39;</span><span class="p">,</span><span class="s1">&#39;pxblock&#39;</span><span class="p">,</span><span class="s1">&#39;kyblock&#39;</span><span class="p">,</span><span class="s1">&#39;kxblock&#39;</span><span class="p">]</span> <span class="c1"># momentum symmetry comes last for speed</span>
 		<span class="p">)</span>
-<span class="k">print</span><span class="p">(</span><span class="n">basis</span><span class="p">)</span> <span class="c1"># examine basis: contains a single element because it is not calculated due to make_basis=False argument above.</span>
-<span class="k">print</span><span class="p">(</span><span class="s1">&#39;basis is empty [note argument make_basis=False]&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">basis</span><span class="p">)</span> <span class="c1"># examine basis: contains a single element because it is not calculated due to make_basis=False argument above.</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;basis is empty [note argument make_basis=False]&#39;</span><span class="p">)</span>
 <span class="c1">#</span>
 <span class="c1">###### define quantum state to compute the energy of using Monte-Carlo sampling ######</span>
 <span class="c1">#</span>
 <span class="c1"># auxiliary basis, only needed for probability_amplitude(); not needed in a proper variational ansatz.</span>
-<span class="n">aux_basis</span> <span class="o">=</span> <span class="n">spin_basis_general</span><span class="p">(</span><span class="n">N_2d</span><span class="p">,</span> <span class="n">pauli</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">make_basis</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> 
+<span class="n">aux_basis</span> <span class="o">=</span> <span class="n">spin_basis_general</span><span class="p">(</span><span class="n">N_2d</span><span class="p">,</span> <span class="n">pauli</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">make_basis</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> 
 			<span class="n">Nup</span><span class="o">=</span><span class="n">N_2d</span><span class="o">//</span><span class="mi">2</span><span class="p">,</span> 
 			<span class="n">kxblock</span><span class="o">=</span><span class="p">(</span><span class="n">T_x</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="n">kyblock</span><span class="o">=</span><span class="p">(</span><span class="n">T_y</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span>
 			<span class="n">pxblock</span><span class="o">=</span><span class="p">(</span><span class="n">P_x</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="n">pyblock</span><span class="o">=</span><span class="p">(</span><span class="n">P_y</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="n">pdblock</span><span class="o">=</span><span class="p">(</span><span class="n">P_d</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span>
@@ -441,7 +440,7 @@
 	<span class="c1"># These can be computed by looping overthe static list without constructing the operator matrix. </span>
 	<span class="k">for</span> <span class="n">opstr</span><span class="p">,</span><span class="n">indx</span><span class="p">,</span><span class="n">J</span> <span class="ow">in</span> <span class="n">static_formatted</span><span class="p">:</span>
 		<span class="c1"># for every state `s`, compute the state it connects to `s&#39;`, and the corresponding matrix element `ME`</span>
-		<span class="n">ME</span><span class="p">,</span><span class="n">bras</span><span class="p">,</span><span class="n">kets</span> <span class="o">=</span> <span class="n">basis</span><span class="o">.</span><span class="n">Op_bra_ket</span><span class="p">(</span><span class="n">opstr</span><span class="p">,</span><span class="n">indx</span><span class="p">,</span><span class="n">J</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">,</span><span class="n">s</span><span class="p">,</span><span class="n">reduce_output</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+		<span class="n">ME</span><span class="p">,</span><span class="n">bras</span><span class="p">,</span><span class="n">kets</span> <span class="o">=</span> <span class="n">basis</span><span class="o">.</span><span class="n">Op_bra_ket</span><span class="p">(</span><span class="n">opstr</span><span class="p">,</span><span class="n">indx</span><span class="p">,</span><span class="n">J</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">,</span><span class="n">s</span><span class="p">,</span><span class="n">reduce_output</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 		<span class="c1"># performs sum over `s&#39;`</span>
 		<span class="n">E_s</span><span class="o">+=</span><span class="n">ME</span> <span class="o">*</span> <span class="n">probability_amplitude</span><span class="p">(</span><span class="n">bras</span><span class="p">,</span><span class="n">psi</span><span class="p">)</span>
 	<span class="c1"># normalize by `psi_s`</span>
@@ -455,13 +454,13 @@
 <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">shuffle</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
 <span class="n">s</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
 <span class="n">s</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="nb">str</span><span class="p">(</span><span class="n">j</span><span class="p">)</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">s</span><span class="p">])</span>
-<span class="k">print</span><span class="p">(</span><span class="s1">&#39;random initial state in bit representation:&#39;</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;random initial state in bit representation:&#39;</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span>
 <span class="c1"># transform state in bit representation</span>
 <span class="n">s</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>
-<span class="k">print</span><span class="p">(</span><span class="s1">&#39;same random initial state in integer representation:&#39;</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;same random initial state in integer representation:&#39;</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span>
 <span class="c1"># compute representative of state `s` under basis symmetries (here only Z-symmetry)</span>
 <span class="n">s</span><span class="o">=</span><span class="n">basis</span><span class="o">.</span><span class="n">representative</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
-<span class="k">print</span><span class="p">(</span><span class="s1">&#39;representative of random initial state in integer representation:&#39;</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;representative of random initial state in integer representation:&#39;</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span>
 <span class="c1"># compute amplitude in state s</span>
 <span class="n">psi_s</span><span class="o">=</span><span class="n">probability_amplitude</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">psi</span><span class="p">)</span>
 <span class="c1">#</span>
@@ -515,7 +514,7 @@
 	<span class="c1"># wait for MC chain to quilibrate and collect uncorrelated samples</span>
 	<span class="k">if</span> <span class="p">(</span><span class="n">j</span><span class="o">&gt;</span><span class="n">equilibration_time</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">j</span><span class="o">%</span><span class="n">autocorrelation_time</span><span class="o">==</span><span class="mi">0</span><span class="p">):</span>
 		<span class="c1"># compute local energy</span>
-		<span class="k">print</span><span class="p">(</span><span class="s1">&#39;computing local energy E_s for MC sample {0:d}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">k</span><span class="p">))</span>
+		<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;computing local energy E_s for MC sample </span><span class="si">{0:d}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">k</span><span class="p">))</span>
 		<span class="n">E_s</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">compute_local_energy</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">psi_s</span><span class="p">,</span><span class="n">psi</span><span class="p">)</span>
 		<span class="c1"># update sample</span>
 		<span class="n">MC_sample</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">=</span><span class="n">s</span>
@@ -534,10 +533,10 @@
 <span class="c1">#####   compute full basis   #####</span>
 <span class="c1"># so far the functions representative(), get_amp(), and Op_bra_ket() did not require to compute the full basis</span>
 <span class="n">basis</span><span class="o">.</span><span class="n">make</span><span class="p">(</span><span class="n">Ns_block_est</span><span class="o">=</span><span class="mi">16000</span><span class="p">)</span>
-<span class="k">print</span><span class="p">(</span><span class="n">basis</span><span class="p">)</span> <span class="c1"># after the basis is made, printing the basis returns the states</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">basis</span><span class="p">)</span> <span class="c1"># after the basis is made, printing the basis returns the states</span>
 <span class="c1"># compare results</span>
-<span class="k">print</span><span class="p">(</span><span class="s1">&#39;mean energy: {0:.4f}, MC variance: {1:.4f}, exact energy {2:.4f}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">E_mean</span><span class="p">,</span> <span class="n">E_var_MC</span><span class="p">,</span> <span class="n">E_exact</span><span class="p">)</span> <span class="p">)</span>
-<span class="k">print</span><span class="p">(</span><span class="s2">&quot;simulation took {0:.4f} sec&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">time</span><span class="p">()</span><span class="o">-</span><span class="n">ti</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;mean energy: </span><span class="si">{0:.4f}</span><span class="s1">, MC variance: </span><span class="si">{1:.4f}</span><span class="s1">, exact energy </span><span class="si">{2:.4f}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">E_mean</span><span class="p">,</span> <span class="n">E_var_MC</span><span class="p">,</span> <span class="n">E_exact</span><span class="p">)</span> <span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;simulation took </span><span class="si">{0:.4f}</span><span class="s2"> sec&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">time</span><span class="p">()</span><span class="o">-</span><span class="n">ti</span><span class="p">))</span>
 </pre></div>
 </td></tr></table></div>
 </div>
@@ -563,17 +562,15 @@
     </ul>
    </div>
 <div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
+  <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" />
+      <input type="text" name="q" aria-labelledby="searchlabel" />
       <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
     </form>
     </div>
 </div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
+<script>$('#searchbox').show(0);</script>
         </div>
       </div>
       <div class="clearer"></div>
@@ -587,12 +584,12 @@
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.3 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.4 documentation</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2016, Phillip Weinberg and Marin Bukov.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.4.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.4.0.
     </div>
   </body>
 </html>

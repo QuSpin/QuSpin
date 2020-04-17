@@ -31,12 +31,19 @@ cdef extern from "general_basis_op.h" namespace "basis_general":
     int general_op_bra_ket_pcon[I,T](general_basis_core[I] *B,const int,const char[], const int[],
                           const double complex, const npy_intp, const set[vector[int]], const I[], I[], T[]) nogil
 
-cdef extern from "general_basis_get_vec.h" namespace "basis_general":
-    bool get_vec_general_dense[I,J,T](general_basis_core[I] *B,const I[],const J[],const npy_intp,
-                                    const npy_intp,const npy_intp,const T[],T[]) nogil
-    bool get_vec_general_pcon_dense[I,J,T](general_basis_core[I] *B,const I[],const J[],const npy_intp,
-                                    const npy_intp,const npy_intp,const I[],const T[],T[]) nogil
+    int general_op_shift_sectors[I1,J1,I2,J2,K](general_basis_core[I1]*,const int,const char[],const int[],
+                                 const double complex,const npy_intp,const I1[],const J1[],const npy_intp,
+                                 const I2[],const J2[],const npy_intp,const K[],K[]) nogil
 
+cdef extern from "general_basis_get_vec.h" namespace "basis_general":
+    bool project_from_general_dense[I,J,T](general_basis_core[I] *B,const I[],const J[],const npy_intp,
+                                    const npy_intp,const npy_intp,const T[],T[]) nogil
+    bool project_from_general_pcon_dense[I,J,T](general_basis_core[I] *B,const I[],const J[],const npy_intp,
+                                    const npy_intp,const npy_intp,const I[],const T[],T[]) nogil
+    bool project_to_general_dense[I,J,T](general_basis_core[I] *B,const I[],const J[],const npy_intp,
+                                    const npy_intp,const npy_intp,const T[],T[]) nogil
+    bool project_to_general_pcon_dense[I,J,T](general_basis_core[I] *B,const I[],const J[],const npy_intp,
+                                    const npy_intp,const npy_intp,const I[],const T[],T[]) nogil
 
 
 cdef extern from "general_basis_get_amp.h" namespace "basis_general":

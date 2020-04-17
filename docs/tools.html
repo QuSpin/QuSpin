@@ -1,11 +1,9 @@
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><script type="text/javascript">
+    <meta charset="utf-8" /><script type="text/javascript">
 
       var _gaq = _gaq || [];
       _gaq.push(['_setAccount', 'UA-110543543-1']);
@@ -17,21 +15,21 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-    <title>Tools module (quspin.tools) &#8212; QuSpin 0.3.3 documentation</title>
+    <title>Tools module (quspin.tools) &#8212; QuSpin 0.3.4 documentation</title>
     <link rel="stylesheet" href="static/classic.css" type="text/css" />
     <link rel="stylesheet" href="static/pygments.css" type="text/css" />
     
-    <script type="text/javascript" id="documentation_options" data-url_root="./" src="static/documentation_options.js"></script>
-    <script type="text/javascript" src="static/jquery.js"></script>
-    <script type="text/javascript" src="static/underscore.js"></script>
-    <script type="text/javascript" src="static/doctools.js"></script>
-    <script type="text/javascript" src="static/language_data.js"></script>
-    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script id="documentation_options" data-url_root="./" src="static/documentation_options.js"></script>
+    <script src="static/jquery.js"></script>
+    <script src="static/underscore.js"></script>
+    <script src="static/doctools.js"></script>
+    <script src="static/language_data.js"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="quspin.tools.evolution.ED_state_vs_time" href="generated/quspin.tools.evolution.ED_state_vs_time.html" />
-    <link rel="prev" title="quspin.operators.isquantum_LinearOperator" href="generated/quspin.operators.isquantum_LinearOperator.html" /> 
+    <link rel="prev" title="quspin.operators.load_zip" href="generated/quspin.operators.load_zip.html" /> 
   </head><body>
     <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
@@ -46,9 +44,9 @@
           <a href="generated/quspin.tools.evolution.ED_state_vs_time.html" title="quspin.tools.evolution.ED_state_vs_time"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="generated/quspin.operators.isquantum_LinearOperator.html" title="quspin.operators.isquantum_LinearOperator"
+          <a href="generated/quspin.operators.load_zip.html" title="quspin.operators.load_zip"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">QuSpin 0.3.3 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">QuSpin 0.3.4 documentation</a> &#187;</li> 
       </ul>
     </div>  
 
@@ -57,108 +55,138 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <span class="target" id="module-quspin.tools"></span><div class="section" id="tools-module-quspin-tools">
+  <style> .red {color:#ff0000; font-weight:bold; font-style:italic; } </style>
+<style> .green {color:#00b200; font-weight:bold; font-style:italic; } </style><span class="target" id="module-quspin.tools"></span><div class="section" id="tools-module-quspin-tools">
 <h1>Tools module (<a class="reference internal" href="#module-quspin.tools" title="quspin.tools"><code class="xref py py-mod docutils literal notranslate"><span class="pre">quspin.tools</span></code></a>)<a class="headerlink" href="#tools-module-quspin-tools" title="Permalink to this headline">¶</a></h1>
 <p>Classes and functions to manipulate quantum states and do calculations.</p>
 <div class="section" id="evolution">
 <h2>evolution<a class="headerlink" href="#evolution" title="Permalink to this headline">¶</a></h2>
-<table border="1" class="longtable docutils">
+<table class="longtable docutils align-default">
 <colgroup>
-<col width="10%" />
-<col width="90%" />
+<col style="width: 10%" />
+<col style="width: 90%" />
 </colgroup>
-<tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="generated/quspin.tools.evolution.ED_state_vs_time.html#quspin.tools.evolution.ED_state_vs_time" title="quspin.tools.evolution.ED_state_vs_time"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ED_state_vs_time</span></code></a>(psi,&nbsp;E,&nbsp;V,&nbsp;times[,&nbsp;iterate])</td>
-<td>Calculates the time evolution of initial state using a complete eigenbasis.</td>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/quspin.tools.evolution.ED_state_vs_time.html#quspin.tools.evolution.ED_state_vs_time" title="quspin.tools.evolution.ED_state_vs_time"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ED_state_vs_time</span></code></a>(psi, E, V, times[, iterate])</p></td>
+<td><p>Calculates the time evolution of initial state using a complete eigenbasis.</p></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/quspin.tools.evolution.evolve.html#quspin.tools.evolution.evolve" title="quspin.tools.evolution.evolve"><code class="xref py py-obj docutils literal notranslate"><span class="pre">evolve</span></code></a>(v0,&nbsp;t0,&nbsp;times,&nbsp;f[,&nbsp;solver_name,&nbsp;…])</td>
-<td>Implements (imaginary) time evolution for a user-defined first-order ODE.</td>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/quspin.tools.evolution.evolve.html#quspin.tools.evolution.evolve" title="quspin.tools.evolution.evolve"><code class="xref py py-obj docutils literal notranslate"><span class="pre">evolve</span></code></a>(v0, t0, times, f[, solver_name, …])</p></td>
+<td><p>Implements (imaginary) time evolution for a user-defined first-order ODE.</p></td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="generated/quspin.tools.evolution.expm_multiply_parallel.html#quspin.tools.evolution.expm_multiply_parallel" title="quspin.tools.evolution.expm_multiply_parallel"><code class="xref py py-obj docutils literal notranslate"><span class="pre">expm_multiply_parallel</span></code></a>(A[,&nbsp;a])</td>
-<td>Implements <cite>scipy.sparse.linalg.expm_multiply()</cite> for <em>openmp</em>.</td>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/quspin.tools.evolution.expm_multiply_parallel.html#quspin.tools.evolution.expm_multiply_parallel" title="quspin.tools.evolution.expm_multiply_parallel"><code class="xref py py-obj docutils literal notranslate"><span class="pre">expm_multiply_parallel</span></code></a>(A[, a, dtype, copy])</p></td>
+<td><p>Implements <cite>scipy.sparse.linalg.expm_multiply()</cite> for <em>openmp</em>.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="lanczos">
+<h2>Lanczos<a class="headerlink" href="#lanczos" title="Permalink to this headline">¶</a></h2>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/quspin.tools.lanczos.lanczos_full.html#quspin.tools.lanczos.lanczos_full" title="quspin.tools.lanczos.lanczos_full"><code class="xref py py-obj docutils literal notranslate"><span class="pre">lanczos_full</span></code></a>(A, v0, m[, full_ortho, out, eps])</p></td>
+<td><p>Creates Lanczos basis; diagonalizes Krylov subspace in Lanczos basis.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/quspin.tools.lanczos.lanczos_iter.html#quspin.tools.lanczos.lanczos_iter" title="quspin.tools.lanczos.lanczos_iter"><code class="xref py py-obj docutils literal notranslate"><span class="pre">lanczos_iter</span></code></a>(A, v0, m[, return_vec_iter, …])</p></td>
+<td><p>Creates generator for Lanczos basis; diagonalizes Krylov subspace in Lanczos basis.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/quspin.tools.lanczos.expm_lanczos.html#quspin.tools.lanczos.expm_lanczos" title="quspin.tools.lanczos.expm_lanczos"><code class="xref py py-obj docutils literal notranslate"><span class="pre">expm_lanczos</span></code></a>(E, V, Q_T[, a, out])</p></td>
+<td><p>Calculates action of matrix exponential on vector using Lanczos algorithm.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/quspin.tools.lanczos.lin_comb_Q_T.html#quspin.tools.lanczos.lin_comb_Q_T" title="quspin.tools.lanczos.lin_comb_Q_T"><code class="xref py py-obj docutils literal notranslate"><span class="pre">lin_comb_Q_T</span></code></a>(coeff, Q_T[, out])</p></td>
+<td><p>Computes a linear combination of the Lanczos basis vectors:</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/quspin.tools.lanczos.LTLM_static_iteration.html#quspin.tools.lanczos.LTLM_static_iteration" title="quspin.tools.lanczos.LTLM_static_iteration"><code class="xref py py-obj docutils literal notranslate"><span class="pre">LTLM_static_iteration</span></code></a>(O_dict, E, V, Q_T[, beta])</p></td>
+<td><p>Calculate iteration for low-temperature Lanczos method.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/quspin.tools.lanczos.FTLM_static_iteration.html#quspin.tools.lanczos.FTLM_static_iteration" title="quspin.tools.lanczos.FTLM_static_iteration"><code class="xref py py-obj docutils literal notranslate"><span class="pre">FTLM_static_iteration</span></code></a>(O_dict, E, V, Q_T[, beta])</p></td>
+<td><p>Calculate iteration for Finite-Temperature Lanczos method.</p></td>
 </tr>
 </tbody>
 </table>
 </div>
 <div class="section" id="floquet">
 <h2>Floquet<a class="headerlink" href="#floquet" title="Permalink to this headline">¶</a></h2>
-<table border="1" class="longtable docutils">
+<table class="longtable docutils align-default">
 <colgroup>
-<col width="10%" />
-<col width="90%" />
+<col style="width: 10%" />
+<col style="width: 90%" />
 </colgroup>
-<tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="generated/quspin.tools.Floquet.Floquet.html#quspin.tools.Floquet.Floquet" title="quspin.tools.Floquet.Floquet"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Floquet</span></code></a>(evo_dict[,&nbsp;HF,&nbsp;UF,&nbsp;thetaF,&nbsp;VF,&nbsp;n_jobs])</td>
-<td>Calculates the Floquet spectrum, Floquet Hamiltonian and Floquet states.</td>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/quspin.tools.Floquet.Floquet.html#quspin.tools.Floquet.Floquet" title="quspin.tools.Floquet.Floquet"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Floquet</span></code></a>(evo_dict[, HF, UF, thetaF, VF, n_jobs])</p></td>
+<td><p>Calculates the Floquet spectrum, Floquet Hamiltonian and Floquet states.</p></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/quspin.tools.Floquet.Floquet_t_vec.html#quspin.tools.Floquet.Floquet_t_vec" title="quspin.tools.Floquet.Floquet_t_vec"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Floquet_t_vec</span></code></a>(Omega,&nbsp;N_const[,&nbsp;len_T,&nbsp;N_up,&nbsp;…])</td>
-<td>Creates a Floquet time vector with fixed number of points per period.</td>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/quspin.tools.Floquet.Floquet_t_vec.html#quspin.tools.Floquet.Floquet_t_vec" title="quspin.tools.Floquet.Floquet_t_vec"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Floquet_t_vec</span></code></a>(Omega, N_const[, len_T, N_up, …])</p></td>
+<td><p>Creates a Floquet time vector with fixed number of points per period.</p></td>
 </tr>
 </tbody>
 </table>
 </div>
 <div class="section" id="measurements">
 <h2>measurements<a class="headerlink" href="#measurements" title="Permalink to this headline">¶</a></h2>
-<table border="1" class="longtable docutils">
+<table class="longtable docutils align-default">
 <colgroup>
-<col width="10%" />
-<col width="90%" />
+<col style="width: 10%" />
+<col style="width: 90%" />
 </colgroup>
-<tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="generated/quspin.tools.measurements.ent_entropy.html#quspin.tools.measurements.ent_entropy" title="quspin.tools.measurements.ent_entropy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ent_entropy</span></code></a>(system_state,&nbsp;basis[,&nbsp;…])</td>
-<td>Calculates entanglement entropy of a subsystem using Singular Value Decomposition (svd).</td>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/quspin.tools.measurements.ent_entropy.html#quspin.tools.measurements.ent_entropy" title="quspin.tools.measurements.ent_entropy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ent_entropy</span></code></a>(system_state, basis[, …])</p></td>
+<td><p>DEPRECATED (cf <cite>basis.ent_entropy</cite>).</p></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/quspin.tools.measurements.diag_ensemble.html#quspin.tools.measurements.diag_ensemble" title="quspin.tools.measurements.diag_ensemble"><code class="xref py py-obj docutils literal notranslate"><span class="pre">diag_ensemble</span></code></a>(N,&nbsp;system_state,&nbsp;E2,&nbsp;V2[,&nbsp;…])</td>
-<td>Calculates expectation values in the Diagonal ensemble of the initial state.</td>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/quspin.tools.measurements.diag_ensemble.html#quspin.tools.measurements.diag_ensemble" title="quspin.tools.measurements.diag_ensemble"><code class="xref py py-obj docutils literal notranslate"><span class="pre">diag_ensemble</span></code></a>(N, system_state, E2, V2[, …])</p></td>
+<td><p>Calculates expectation values in the Diagonal ensemble of the initial state.</p></td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="generated/quspin.tools.measurements.obs_vs_time.html#quspin.tools.measurements.obs_vs_time" title="quspin.tools.measurements.obs_vs_time"><code class="xref py py-obj docutils literal notranslate"><span class="pre">obs_vs_time</span></code></a>(psi_t,&nbsp;times,&nbsp;Obs_dict[,&nbsp;…])</td>
-<td>Calculates expectation value of observable(s) as a function of time in a time-dependent state.</td>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/quspin.tools.measurements.obs_vs_time.html#quspin.tools.measurements.obs_vs_time" title="quspin.tools.measurements.obs_vs_time"><code class="xref py py-obj docutils literal notranslate"><span class="pre">obs_vs_time</span></code></a>(psi_t, times, Obs_dict[, …])</p></td>
+<td><p>Calculates expectation value of observable(s) as a function of time in a time-dependent state.</p></td>
 </tr>
 </tbody>
 </table>
 </div>
 <div class="section" id="block-tools">
 <h2>block_tools<a class="headerlink" href="#block-tools" title="Permalink to this headline">¶</a></h2>
-<table border="1" class="longtable docutils">
+<table class="longtable docutils align-default">
 <colgroup>
-<col width="10%" />
-<col width="90%" />
+<col style="width: 10%" />
+<col style="width: 90%" />
 </colgroup>
-<tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="generated/quspin.tools.block_tools.block_ops.html#quspin.tools.block_tools.block_ops" title="quspin.tools.block_tools.block_ops"><code class="xref py py-obj docutils literal notranslate"><span class="pre">block_ops</span></code></a>(blocks,&nbsp;static,&nbsp;dynamic,&nbsp;…[,&nbsp;…])</td>
-<td>Splits up the dynamics of a state over various symmetry sectors.</td>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/quspin.tools.block_tools.block_ops.html#quspin.tools.block_tools.block_ops" title="quspin.tools.block_tools.block_ops"><code class="xref py py-obj docutils literal notranslate"><span class="pre">block_ops</span></code></a>(blocks, static, dynamic, …[, …])</p></td>
+<td><p>Splits up the dynamics of a state over various symmetry sectors.</p></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/quspin.tools.block_tools.block_diag_hamiltonian.html#quspin.tools.block_tools.block_diag_hamiltonian" title="quspin.tools.block_tools.block_diag_hamiltonian"><code class="xref py py-obj docutils literal notranslate"><span class="pre">block_diag_hamiltonian</span></code></a>(blocks,&nbsp;static,&nbsp;…)</td>
-<td>Block-diagonalises a Hamiltonian obeying a symmetry.</td>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/quspin.tools.block_tools.block_diag_hamiltonian.html#quspin.tools.block_tools.block_diag_hamiltonian" title="quspin.tools.block_tools.block_diag_hamiltonian"><code class="xref py py-obj docutils literal notranslate"><span class="pre">block_diag_hamiltonian</span></code></a>(blocks, static, …)</p></td>
+<td><p>Block-diagonalises a Hamiltonian obeying a symmetry.</p></td>
 </tr>
 </tbody>
 </table>
 </div>
 <div class="section" id="misc">
 <h2>misc<a class="headerlink" href="#misc" title="Permalink to this headline">¶</a></h2>
-<table border="1" class="longtable docutils">
+<table class="longtable docutils align-default">
 <colgroup>
-<col width="10%" />
-<col width="90%" />
+<col style="width: 10%" />
+<col style="width: 90%" />
 </colgroup>
-<tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="generated/quspin.tools.misc.matvec.html#quspin.tools.misc.matvec" title="quspin.tools.misc.matvec"><code class="xref py py-obj docutils literal notranslate"><span class="pre">matvec</span></code></a>(array,&nbsp;other[,&nbsp;overwrite_out,&nbsp;out,&nbsp;a])</td>
-<td>Calculates omp-parallelized matrix vector products.</td>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/quspin.tools.misc.matvec.html#quspin.tools.misc.matvec" title="quspin.tools.misc.matvec"><code class="xref py py-obj docutils literal notranslate"><span class="pre">matvec</span></code></a>(array, other[, overwrite_out, out, a])</p></td>
+<td><p>Calculates omp-parallelized matrix vector products.</p></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/quspin.tools.misc.get_matvec_function.html#quspin.tools.misc.get_matvec_function" title="quspin.tools.misc.get_matvec_function"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_matvec_function</span></code></a>(array)</td>
-<td>Determines automatically the matrix vector product routine for an <cite>array</cite> based on its type.</td>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/quspin.tools.misc.get_matvec_function.html#quspin.tools.misc.get_matvec_function" title="quspin.tools.misc.get_matvec_function"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_matvec_function</span></code></a>(array)</p></td>
+<td><p>Determines automatically the matrix vector product routine for an <cite>array</cite> based on its type.</p></td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="generated/quspin.tools.misc.mean_level_spacing.html#quspin.tools.misc.mean_level_spacing" title="quspin.tools.misc.mean_level_spacing"><code class="xref py py-obj docutils literal notranslate"><span class="pre">mean_level_spacing</span></code></a>(E[,&nbsp;verbose])</td>
-<td>Calculates the mean-level spacing of an energy spectrum.</td>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/quspin.tools.misc.mean_level_spacing.html#quspin.tools.misc.mean_level_spacing" title="quspin.tools.misc.mean_level_spacing"><code class="xref py py-obj docutils literal notranslate"><span class="pre">mean_level_spacing</span></code></a>(E[, verbose])</p></td>
+<td><p>Calculates the mean-level spacing of an energy spectrum.</p></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/quspin.tools.misc.project_op.html#quspin.tools.misc.project_op" title="quspin.tools.misc.project_op"><code class="xref py py-obj docutils literal notranslate"><span class="pre">project_op</span></code></a>(Obs,&nbsp;proj[,&nbsp;dtype])</td>
-<td>Projects observable onto symmetry-reduced subspace.</td>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/quspin.tools.misc.project_op.html#quspin.tools.misc.project_op" title="quspin.tools.misc.project_op"><code class="xref py py-obj docutils literal notranslate"><span class="pre">project_op</span></code></a>(Obs, proj[, dtype])</p></td>
+<td><p>Projects observable onto symmetry-reduced subspace.</p></td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="generated/quspin.tools.misc.KL_div.html#quspin.tools.misc.KL_div" title="quspin.tools.misc.KL_div"><code class="xref py py-obj docutils literal notranslate"><span class="pre">KL_div</span></code></a>(p1,&nbsp;p2)</td>
-<td>Calculates Kullback-Leibler divergence of two discrete probability distributions.</td>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/quspin.tools.misc.KL_div.html#quspin.tools.misc.KL_div" title="quspin.tools.misc.KL_div"><code class="xref py py-obj docutils literal notranslate"><span class="pre">KL_div</span></code></a>(p1, p2)</p></td>
+<td><p>Calculates Kullback-Leibler divergence of two discrete probability distributions.</p></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/quspin.tools.misc.csr_matvec.html#quspin.tools.misc.csr_matvec" title="quspin.tools.misc.csr_matvec"><code class="xref py py-obj docutils literal notranslate"><span class="pre">csr_matvec</span></code></a>(A,&nbsp;v[,&nbsp;a,&nbsp;out,&nbsp;overwrite_out])</td>
-<td>Calculates matrix vector products <span class="math notranslate nohighlight">\(x += a A y\)</span> or <span class="math notranslate nohighlight">\(x = a A y\)</span> with csr matrix.</td>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/quspin.tools.misc.csr_matvec.html#quspin.tools.misc.csr_matvec" title="quspin.tools.misc.csr_matvec"><code class="xref py py-obj docutils literal notranslate"><span class="pre">csr_matvec</span></code></a>(A, v[, a, out, overwrite_out])</p></td>
+<td><p>Calculates matrix vector products <span class="math notranslate nohighlight">\(x += a A y\)</span> or <span class="math notranslate nohighlight">\(x = a A y\)</span> with csr matrix.</p></td>
 </tr>
 </tbody>
 </table>
@@ -173,8 +201,9 @@
         <div class="sphinxsidebarwrapper">
   <h3><a href="index.html">Table of Contents</a></h3>
   <ul>
-<li><a class="reference internal" href="#">Tools module (<code class="docutils literal notranslate"><span class="pre">quspin.tools</span></code>)</a><ul>
+<li><a class="reference internal" href="#">Tools module (<code class="xref py py-mod docutils literal notranslate"><span class="pre">quspin.tools</span></code>)</a><ul>
 <li><a class="reference internal" href="#evolution">evolution</a></li>
+<li><a class="reference internal" href="#lanczos">Lanczos</a></li>
 <li><a class="reference internal" href="#floquet">Floquet</a></li>
 <li><a class="reference internal" href="#measurements">measurements</a></li>
 <li><a class="reference internal" href="#block-tools">block_tools</a></li>
@@ -184,8 +213,8 @@
 </ul>
 
   <h4>Previous topic</h4>
-  <p class="topless"><a href="generated/quspin.operators.isquantum_LinearOperator.html"
-                        title="previous chapter">quspin.operators.isquantum_LinearOperator</a></p>
+  <p class="topless"><a href="generated/quspin.operators.load_zip.html"
+                        title="previous chapter">quspin.operators.load_zip</a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="generated/quspin.tools.evolution.ED_state_vs_time.html"
                         title="next chapter">quspin.tools.evolution.ED_state_vs_time</a></p>
@@ -197,17 +226,15 @@
     </ul>
    </div>
 <div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
+  <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="search.html" method="get">
-      <input type="text" name="q" />
+      <input type="text" name="q" aria-labelledby="searchlabel" />
       <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
     </form>
     </div>
 </div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
+<script>$('#searchbox').show(0);</script>
         </div>
       </div>
       <div class="clearer"></div>
@@ -225,14 +252,14 @@
           <a href="generated/quspin.tools.evolution.ED_state_vs_time.html" title="quspin.tools.evolution.ED_state_vs_time"
              >next</a> |</li>
         <li class="right" >
-          <a href="generated/quspin.operators.isquantum_LinearOperator.html" title="quspin.operators.isquantum_LinearOperator"
+          <a href="generated/quspin.operators.load_zip.html" title="quspin.operators.load_zip"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">QuSpin 0.3.3 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">QuSpin 0.3.4 documentation</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2016, Phillip Weinberg and Marin Bukov.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.4.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.4.0.
     </div>
   </body>
 </html>

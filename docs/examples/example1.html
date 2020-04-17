@@ -1,11 +1,9 @@
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><script type="text/javascript">
+    <meta charset="utf-8" /><script type="text/javascript">
 
       var _gaq = _gaq || [];
       _gaq.push(['_setAccount', 'UA-110543543-1']);
@@ -17,16 +15,16 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-    <title>Adiabatic Control of Parameters in Many-Body Localised Phases &#8212; QuSpin 0.3.3 documentation</title>
+    <title>Adiabatic Control of Parameters in Many-Body Localised Phases &#8212; QuSpin 0.3.4 documentation</title>
     <link rel="stylesheet" href="../static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../static/pygments.css" type="text/css" />
     
-    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../static/documentation_options.js"></script>
-    <script type="text/javascript" src="../static/jquery.js"></script>
-    <script type="text/javascript" src="../static/underscore.js"></script>
-    <script type="text/javascript" src="../static/doctools.js"></script>
-    <script type="text/javascript" src="../static/language_data.js"></script>
-    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script id="documentation_options" data-url_root="../" src="../static/documentation_options.js"></script>
+    <script src="../static/jquery.js"></script>
+    <script src="../static/underscore.js"></script>
+    <script src="../static/doctools.js"></script>
+    <script src="../static/language_data.js"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" /> 
@@ -40,7 +38,7 @@
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.3 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.4 documentation</a> &#187;</li> 
       </ul>
     </div>  
 
@@ -49,7 +47,8 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="section" id="adiabatic-control-of-parameters-in-many-body-localised-phases">
+  <style> .red {color:#ff0000; font-weight:bold; font-style:italic; } </style>
+<style> .green {color:#00b200; font-weight:bold; font-style:italic; } </style><div class="section" id="adiabatic-control-of-parameters-in-many-body-localised-phases">
 <span id="example1-label"></span><h1>Adiabatic Control of Parameters in Many-Body Localised Phases<a class="headerlink" href="#adiabatic-control-of-parameters-in-many-body-localised-phases" title="Permalink to this headline">¶</a></h1>
 <p>This example shows how to code up the time-dependent disordered spin Hamiltonian:</p>
 <div class="math notranslate nohighlight">
@@ -59,7 +58,7 @@ J_{zz}(t) &amp;=&amp;(1/2 + vt)J_{zz}(0).\end{split}\]</div>
 </div>
 <div class="section" id="script">
 <h1>Script<a class="headerlink" href="#script" title="Permalink to this headline">¶</a></h1>
-<p><a class="reference download internal" download="" href="../downloads/bdf6a760660dc24321cdfd04a264ec75/example1.py"><code class="xref download docutils literal notranslate"><span class="pre">download</span> <span class="pre">script</span></code></a></p>
+<p><a class="reference download internal" download="" href="../downloads/16887ccdd5a7725bcb6f6012c31984b2/example1.py"><code class="xref download docutils literal notranslate"><span class="pre">download</span> <span class="pre">script</span></code></a></p>
 <div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>  1
   2
   3
@@ -270,7 +269,7 @@ J_{zz}(t) &amp;=&amp;(1/2 + vt)J_{zz}(0).\end{split}\]</div>
 <span class="kn">from</span> <span class="nn">quspin.tools.measurements</span> <span class="kn">import</span> <span class="n">ent_entropy</span><span class="p">,</span> <span class="n">diag_ensemble</span> <span class="c1"># entropies</span>
 <span class="kn">from</span> <span class="nn">numpy.random</span> <span class="kn">import</span> <span class="n">ranf</span><span class="p">,</span><span class="n">seed</span> <span class="c1"># pseudo random numbers</span>
 <span class="kn">from</span> <span class="nn">joblib</span> <span class="kn">import</span> <span class="n">delayed</span><span class="p">,</span><span class="n">Parallel</span> <span class="c1"># parallelisation</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span> <span class="c1"># generic math functions</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span> <span class="c1"># generic math functions</span>
 <span class="kn">from</span> <span class="nn">time</span> <span class="kn">import</span> <span class="n">time</span> <span class="c1"># timing package</span>
 <span class="c1">#</span>
 <span class="c1">##### define simulation parameters #####</span>
@@ -292,7 +291,7 @@ J_{zz}(t) &amp;=&amp;(1/2 + vt)J_{zz}(0).\end{split}\]</div>
 	<span class="k">return</span> <span class="p">(</span><span class="mf">0.5</span> <span class="o">+</span> <span class="n">v</span><span class="o">*</span><span class="n">t</span><span class="p">)</span>
 <span class="n">ramp_args</span><span class="o">=</span><span class="p">[]</span>
 <span class="c1"># compute basis in the 0-total magnetisation sector (requires L even)</span>
-<span class="n">basis</span> <span class="o">=</span> <span class="n">spin_basis_1d</span><span class="p">(</span><span class="n">L</span><span class="p">,</span><span class="n">Nup</span><span class="o">=</span><span class="n">L</span><span class="o">//</span><span class="mi">2</span><span class="p">,</span><span class="n">pauli</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+<span class="n">basis</span> <span class="o">=</span> <span class="n">spin_basis_1d</span><span class="p">(</span><span class="n">L</span><span class="p">,</span><span class="n">Nup</span><span class="o">=</span><span class="n">L</span><span class="o">//</span><span class="mi">2</span><span class="p">,</span><span class="n">pauli</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 <span class="c1"># define operators with OBC using site-coupling lists</span>
 <span class="n">J_zz</span> <span class="o">=</span> <span class="p">[[</span><span class="n">Jzz_0</span><span class="p">,</span><span class="n">i</span><span class="p">,</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">L</span><span class="o">-</span><span class="mi">1</span><span class="p">)]</span> <span class="c1"># OBC</span>
 <span class="n">J_xy</span> <span class="o">=</span> <span class="p">[[</span><span class="n">Jxy</span><span class="o">/</span><span class="mf">2.0</span><span class="p">,</span><span class="n">i</span><span class="p">,</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">L</span><span class="o">-</span><span class="mi">1</span><span class="p">)]</span> <span class="c1"># OBC</span>
@@ -325,7 +324,7 @@ J_{zz}(t) &amp;=&amp;(1/2 + vt)J_{zz}(0).\end{split}\]</div>
 	<span class="c1"># static list</span>
 	<span class="n">disorder_field</span> <span class="o">=</span> <span class="p">[[</span><span class="s2">&quot;z&quot;</span><span class="p">,</span><span class="n">h_z</span><span class="p">]]</span>
 	<span class="c1"># compute disordered z-field Hamiltonian</span>
-	<span class="n">no_checks</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;check_herm&quot;</span><span class="p">:</span><span class="bp">False</span><span class="p">,</span><span class="s2">&quot;check_pcon&quot;</span><span class="p">:</span><span class="bp">False</span><span class="p">,</span><span class="s2">&quot;check_symm&quot;</span><span class="p">:</span><span class="bp">False</span><span class="p">}</span>
+	<span class="n">no_checks</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;check_herm&quot;</span><span class="p">:</span><span class="kc">False</span><span class="p">,</span><span class="s2">&quot;check_pcon&quot;</span><span class="p">:</span><span class="kc">False</span><span class="p">,</span><span class="s2">&quot;check_symm&quot;</span><span class="p">:</span><span class="kc">False</span><span class="p">}</span>
 	<span class="n">Hz</span><span class="o">=</span><span class="n">hamiltonian</span><span class="p">(</span><span class="n">disorder_field</span><span class="p">,[],</span><span class="n">basis</span><span class="o">=</span><span class="n">basis</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">,</span><span class="o">**</span><span class="n">no_checks</span><span class="p">)</span>
 	<span class="c1"># compute the MBL and ETH Hamiltonians for the same disorder realisation</span>
 	<span class="n">H_MBL</span><span class="o">=</span><span class="n">H_XXZ</span><span class="o">+</span><span class="n">h_MBL</span><span class="o">*</span><span class="n">Hz</span>
@@ -334,7 +333,7 @@ J_{zz}(t) &amp;=&amp;(1/2 + vt)J_{zz}(0).\end{split}\]</div>
 	<span class="c1">### ramp in MBL phase ###</span>
 	<span class="n">v</span><span class="o">=</span><span class="mf">1.0</span> <span class="c1"># reset ramp speed to unity</span>
 	<span class="c1"># calculate the energy at infinite temperature for initial MBL Hamiltonian</span>
-	<span class="n">eigsh_args</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;k&quot;</span><span class="p">:</span><span class="mi">2</span><span class="p">,</span><span class="s2">&quot;which&quot;</span><span class="p">:</span><span class="s2">&quot;BE&quot;</span><span class="p">,</span><span class="s2">&quot;maxiter&quot;</span><span class="p">:</span><span class="mf">1E4</span><span class="p">,</span><span class="s2">&quot;return_eigenvectors&quot;</span><span class="p">:</span><span class="bp">False</span><span class="p">}</span>
+	<span class="n">eigsh_args</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;k&quot;</span><span class="p">:</span><span class="mi">2</span><span class="p">,</span><span class="s2">&quot;which&quot;</span><span class="p">:</span><span class="s2">&quot;BE&quot;</span><span class="p">,</span><span class="s2">&quot;maxiter&quot;</span><span class="p">:</span><span class="mf">1E4</span><span class="p">,</span><span class="s2">&quot;return_eigenvectors&quot;</span><span class="p">:</span><span class="kc">False</span><span class="p">}</span>
 	<span class="n">Emin</span><span class="p">,</span><span class="n">Emax</span><span class="o">=</span><span class="n">H_MBL</span><span class="o">.</span><span class="n">eigsh</span><span class="p">(</span><span class="n">time</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span><span class="o">**</span><span class="n">eigsh_args</span><span class="p">)</span>
 	<span class="n">E_inf_temp</span><span class="o">=</span><span class="p">(</span><span class="n">Emax</span><span class="o">+</span><span class="n">Emin</span><span class="p">)</span><span class="o">/</span><span class="mf">2.0</span>
 	<span class="c1"># calculate nearest eigenstate to energy at infinite temperature</span>
@@ -360,7 +359,7 @@ J_{zz}(t) &amp;=&amp;(1/2 + vt)J_{zz}(0).\end{split}\]</div>
 	<span class="n">run_ETH</span><span class="o">=</span><span class="p">[</span><span class="n">_do_ramp</span><span class="p">(</span><span class="n">psi_0</span><span class="p">,</span><span class="n">H_ETH</span><span class="p">,</span><span class="n">basis</span><span class="p">,</span><span class="n">v</span><span class="p">,</span><span class="n">E_final</span><span class="p">,</span><span class="n">V_final</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">vs</span><span class="p">]</span>
 	<span class="n">run_ETH</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">(</span><span class="n">run_ETH</span><span class="p">)</span><span class="o">.</span><span class="n">T</span> <span class="c1"># stack vertically elements of list run_ETH</span>
 	<span class="c1"># show time taken</span>
-	<span class="k">print</span><span class="p">(</span><span class="s2">&quot;realization {0}/{1} took {2:.2f} sec&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">real</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span><span class="n">n_real</span><span class="p">,</span><span class="n">time</span><span class="p">()</span><span class="o">-</span><span class="n">ti</span><span class="p">))</span>
+	<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;realization </span><span class="si">{0}</span><span class="s2">/</span><span class="si">{1}</span><span class="s2"> took </span><span class="si">{2:.2f}</span><span class="s2"> sec&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">real</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span><span class="n">n_real</span><span class="p">,</span><span class="n">time</span><span class="p">()</span><span class="o">-</span><span class="n">ti</span><span class="p">))</span>
 	<span class="c1">#</span>
 	<span class="k">return</span> <span class="n">run_MBL</span><span class="p">,</span><span class="n">run_ETH</span>
 <span class="c1">#</span>
@@ -383,7 +382,7 @@ J_{zz}(t) &amp;=&amp;(1/2 + vt)J_{zz}(0).\end{split}\]</div>
 	<span class="n">subsys</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="n">basis</span><span class="o">.</span><span class="n">L</span><span class="o">//</span><span class="mi">2</span><span class="p">)</span> <span class="c1"># define subsystem</span>
 	<span class="n">Sent</span> <span class="o">=</span> <span class="n">ent_entropy</span><span class="p">(</span><span class="n">psi</span><span class="p">,</span><span class="n">basis</span><span class="p">,</span><span class="n">chain_subsys</span><span class="o">=</span><span class="n">subsys</span><span class="p">)[</span><span class="s2">&quot;Sent&quot;</span><span class="p">]</span>
 	<span class="c1"># calculate diagonal entropy in the basis of H(t_f)</span>
-	<span class="n">S_d</span> <span class="o">=</span> <span class="n">diag_ensemble</span><span class="p">(</span><span class="n">basis</span><span class="o">.</span><span class="n">L</span><span class="p">,</span><span class="n">psi</span><span class="p">,</span><span class="n">E_final</span><span class="p">,</span><span class="n">V_final</span><span class="p">,</span><span class="n">Sd_Renyi</span><span class="o">=</span><span class="bp">True</span><span class="p">)[</span><span class="s2">&quot;Sd_pure&quot;</span><span class="p">]</span>
+	<span class="n">S_d</span> <span class="o">=</span> <span class="n">diag_ensemble</span><span class="p">(</span><span class="n">basis</span><span class="o">.</span><span class="n">L</span><span class="p">,</span><span class="n">psi</span><span class="p">,</span><span class="n">E_final</span><span class="p">,</span><span class="n">V_final</span><span class="p">,</span><span class="n">Sd_Renyi</span><span class="o">=</span><span class="kc">True</span><span class="p">)[</span><span class="s2">&quot;Sd_pure&quot;</span><span class="p">]</span>
 	<span class="c1">#</span>
 	<span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">([</span><span class="n">S_d</span><span class="p">,</span><span class="n">Sent</span><span class="p">])</span>
 <span class="c1">#</span>
@@ -402,42 +401,42 @@ J_{zz}(t) &amp;=&amp;(1/2 + vt)J_{zz}(0).\end{split}\]</div>
 	<span class="n">mean_ETH</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">run_ETH</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
 	<span class="c1">#</span>
 	<span class="c1">##### plot results #####</span>
-	<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
+	<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 	<span class="c1">### MBL plot ###</span>
-	<span class="n">fig</span><span class="p">,</span> <span class="n">pltarr1</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="n">sharex</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span> <span class="c1"># define subplot panel</span>
+	<span class="n">fig</span><span class="p">,</span> <span class="n">pltarr1</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="n">sharex</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="c1"># define subplot panel</span>
 	<span class="c1"># subplot 1: diag enetropy vs ramp speed</span>
 	<span class="n">pltarr1</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">vs</span><span class="p">,</span><span class="n">mean_MBL</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">label</span><span class="o">=</span><span class="s2">&quot;MBL&quot;</span><span class="p">,</span><span class="n">marker</span><span class="o">=</span><span class="s2">&quot;.&quot;</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="s2">&quot;blue&quot;</span><span class="p">)</span> <span class="c1"># plot data</span>
 	<span class="n">pltarr1</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;$s_d(t_f)$&quot;</span><span class="p">,</span><span class="n">fontsize</span><span class="o">=</span><span class="mi">22</span><span class="p">)</span> <span class="c1"># label y-axis</span>
-	<span class="n">pltarr1</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;$v/J_{zz}(0)$&quot;</span><span class="p">,</span><span class="n">fontsize</span><span class="o">=</span><span class="mi">22</span><span class="p">)</span> <span class="c1"># label x-axis</span>
+	<span class="n">pltarr1</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;$v/J_</span><span class="si">{zz}</span><span class="s2">(0)$&quot;</span><span class="p">,</span><span class="n">fontsize</span><span class="o">=</span><span class="mi">22</span><span class="p">)</span> <span class="c1"># label x-axis</span>
 	<span class="n">pltarr1</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_xscale</span><span class="p">(</span><span class="s2">&quot;log&quot;</span><span class="p">)</span> <span class="c1"># set log scale on x-axis</span>
-	<span class="n">pltarr1</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="bp">True</span><span class="p">,</span><span class="n">which</span><span class="o">=</span><span class="s1">&#39;both&#39;</span><span class="p">)</span> <span class="c1"># plot grid</span>
+	<span class="n">pltarr1</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span><span class="n">which</span><span class="o">=</span><span class="s1">&#39;both&#39;</span><span class="p">)</span> <span class="c1"># plot grid</span>
 	<span class="n">pltarr1</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">tick_params</span><span class="p">(</span><span class="n">labelsize</span><span class="o">=</span><span class="mi">16</span><span class="p">)</span>
 	<span class="c1"># subplot 2: entanglement entropy vs ramp speed</span>
 	<span class="n">pltarr1</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">vs</span><span class="p">,</span><span class="n">mean_MBL</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="n">marker</span><span class="o">=</span><span class="s2">&quot;.&quot;</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="s2">&quot;blue&quot;</span><span class="p">)</span> <span class="c1"># plot data</span>
-	<span class="n">pltarr1</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;$s_\mathrm{ent}(t_f)$&quot;</span><span class="p">,</span><span class="n">fontsize</span><span class="o">=</span><span class="mi">22</span><span class="p">)</span> <span class="c1"># label y-axis</span>
-	<span class="n">pltarr1</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;$v/J_{zz}(0)$&quot;</span><span class="p">,</span><span class="n">fontsize</span><span class="o">=</span><span class="mi">22</span><span class="p">)</span> <span class="c1"># label x-axis</span>
+	<span class="n">pltarr1</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;$s_\mathrm</span><span class="si">{ent}</span><span class="s2">(t_f)$&quot;</span><span class="p">,</span><span class="n">fontsize</span><span class="o">=</span><span class="mi">22</span><span class="p">)</span> <span class="c1"># label y-axis</span>
+	<span class="n">pltarr1</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;$v/J_</span><span class="si">{zz}</span><span class="s2">(0)$&quot;</span><span class="p">,</span><span class="n">fontsize</span><span class="o">=</span><span class="mi">22</span><span class="p">)</span> <span class="c1"># label x-axis</span>
 	<span class="n">pltarr1</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_xscale</span><span class="p">(</span><span class="s2">&quot;log&quot;</span><span class="p">)</span> <span class="c1"># set log scale on x-axis</span>
-	<span class="n">pltarr1</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="bp">True</span><span class="p">,</span><span class="n">which</span><span class="o">=</span><span class="s1">&#39;both&#39;</span><span class="p">)</span> <span class="c1"># plot grid</span>
+	<span class="n">pltarr1</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span><span class="n">which</span><span class="o">=</span><span class="s1">&#39;both&#39;</span><span class="p">)</span> <span class="c1"># plot grid</span>
 	<span class="n">pltarr1</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">tick_params</span><span class="p">(</span><span class="n">labelsize</span><span class="o">=</span><span class="mi">16</span><span class="p">)</span>
 	<span class="c1"># save figure</span>
 	<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
 	<span class="n">fig</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s1">&#39;example1_MBL.pdf&#39;</span><span class="p">,</span> <span class="n">bbox_inches</span><span class="o">=</span><span class="s1">&#39;tight&#39;</span><span class="p">)</span>
 	<span class="c1">#</span>
 	<span class="c1">### ETH plot ###</span>
-	<span class="n">fig</span><span class="p">,</span> <span class="n">pltarr2</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="n">sharex</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span> <span class="c1"># define subplot panel</span>
+	<span class="n">fig</span><span class="p">,</span> <span class="n">pltarr2</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="n">sharex</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="c1"># define subplot panel</span>
 	<span class="c1"># subplot 1: diag enetropy vs ramp speed</span>
 	<span class="n">pltarr2</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">vs</span><span class="p">,</span><span class="n">mean_ETH</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">marker</span><span class="o">=</span><span class="s2">&quot;.&quot;</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="s2">&quot;green&quot;</span><span class="p">)</span> <span class="c1"># plot data</span>
 	<span class="n">pltarr2</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;$s_d(t_f)$&quot;</span><span class="p">,</span><span class="n">fontsize</span><span class="o">=</span><span class="mi">22</span><span class="p">)</span> <span class="c1"># label y-axis</span>
-	<span class="n">pltarr2</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;$v/J_{zz}(0)$&quot;</span><span class="p">,</span><span class="n">fontsize</span><span class="o">=</span><span class="mi">22</span><span class="p">)</span> <span class="c1"># label x-axis</span>
+	<span class="n">pltarr2</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;$v/J_</span><span class="si">{zz}</span><span class="s2">(0)$&quot;</span><span class="p">,</span><span class="n">fontsize</span><span class="o">=</span><span class="mi">22</span><span class="p">)</span> <span class="c1"># label x-axis</span>
 	<span class="n">pltarr2</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_xscale</span><span class="p">(</span><span class="s2">&quot;log&quot;</span><span class="p">)</span> <span class="c1"># set log scale on x-axis</span>
-	<span class="n">pltarr2</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="bp">True</span><span class="p">,</span><span class="n">which</span><span class="o">=</span><span class="s1">&#39;both&#39;</span><span class="p">)</span> <span class="c1"># plot grid</span>
+	<span class="n">pltarr2</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span><span class="n">which</span><span class="o">=</span><span class="s1">&#39;both&#39;</span><span class="p">)</span> <span class="c1"># plot grid</span>
 	<span class="n">pltarr2</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">tick_params</span><span class="p">(</span><span class="n">labelsize</span><span class="o">=</span><span class="mi">16</span><span class="p">)</span>
 	<span class="c1"># subplot 2: entanglement entropy vs ramp speed</span>
 	<span class="n">pltarr2</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">vs</span><span class="p">,</span><span class="n">mean_ETH</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="n">marker</span><span class="o">=</span><span class="s2">&quot;.&quot;</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="s2">&quot;green&quot;</span><span class="p">)</span> <span class="c1"># plot data</span>
-	<span class="n">pltarr2</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;$s_\mathrm{ent}(t_f)$&quot;</span><span class="p">,</span><span class="n">fontsize</span><span class="o">=</span><span class="mi">22</span><span class="p">)</span> <span class="c1"># label y-axis</span>
-	<span class="n">pltarr2</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;$v/J_{zz}(0)$&quot;</span><span class="p">,</span><span class="n">fontsize</span><span class="o">=</span><span class="mi">22</span><span class="p">)</span> <span class="c1"># label x-axis</span>
+	<span class="n">pltarr2</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;$s_\mathrm</span><span class="si">{ent}</span><span class="s2">(t_f)$&quot;</span><span class="p">,</span><span class="n">fontsize</span><span class="o">=</span><span class="mi">22</span><span class="p">)</span> <span class="c1"># label y-axis</span>
+	<span class="n">pltarr2</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;$v/J_</span><span class="si">{zz}</span><span class="s2">(0)$&quot;</span><span class="p">,</span><span class="n">fontsize</span><span class="o">=</span><span class="mi">22</span><span class="p">)</span> <span class="c1"># label x-axis</span>
 	<span class="n">pltarr2</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_xscale</span><span class="p">(</span><span class="s2">&quot;log&quot;</span><span class="p">)</span> <span class="c1"># set log scale on x-axis</span>
-	<span class="n">pltarr2</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="bp">True</span><span class="p">,</span><span class="n">which</span><span class="o">=</span><span class="s1">&#39;both&#39;</span><span class="p">)</span> <span class="c1"># plot grid</span>
+	<span class="n">pltarr2</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span><span class="n">which</span><span class="o">=</span><span class="s1">&#39;both&#39;</span><span class="p">)</span> <span class="c1"># plot grid</span>
 	<span class="n">pltarr2</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">tick_params</span><span class="p">(</span><span class="n">labelsize</span><span class="o">=</span><span class="mi">16</span><span class="p">)</span>
 	<span class="c1"># save figure</span>
 	<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
@@ -469,17 +468,15 @@ J_{zz}(t) &amp;=&amp;(1/2 + vt)J_{zz}(0).\end{split}\]</div>
     </ul>
    </div>
 <div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
+  <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" />
+      <input type="text" name="q" aria-labelledby="searchlabel" />
       <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
     </form>
     </div>
 </div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
+<script>$('#searchbox').show(0);</script>
         </div>
       </div>
       <div class="clearer"></div>
@@ -493,12 +490,12 @@ J_{zz}(t) &amp;=&amp;(1/2 + vt)J_{zz}(0).\end{split}\]</div>
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.3 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.4 documentation</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2016, Phillip Weinberg and Marin Bukov.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.4.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.4.0.
     </div>
   </body>
 </html>

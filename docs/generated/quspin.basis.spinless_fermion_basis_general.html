@@ -1,11 +1,9 @@
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><script type="text/javascript">
+    <meta charset="utf-8" /><script type="text/javascript">
 
       var _gaq = _gaq || [];
       _gaq.push(['_setAccount', 'UA-110543543-1']);
@@ -17,19 +15,21 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-    <title>quspin.basis.spinless_fermion_basis_general &#8212; QuSpin 0.3.3 documentation</title>
+    <title>quspin.basis.spinless_fermion_basis_general &#8212; QuSpin 0.3.4 documentation</title>
     <link rel="stylesheet" href="../static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../static/pygments.css" type="text/css" />
     
-    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../static/documentation_options.js"></script>
-    <script type="text/javascript" src="../static/jquery.js"></script>
-    <script type="text/javascript" src="../static/underscore.js"></script>
-    <script type="text/javascript" src="../static/doctools.js"></script>
-    <script type="text/javascript" src="../static/language_data.js"></script>
-    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script id="documentation_options" data-url_root="../" src="../static/documentation_options.js"></script>
+    <script src="../static/jquery.js"></script>
+    <script src="../static/underscore.js"></script>
+    <script src="../static/doctools.js"></script>
+    <script src="../static/language_data.js"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <link rel="index" title="Index" href="../genindex.html" />
-    <link rel="search" title="Search" href="../search.html" /> 
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="quspin.basis.spinful_fermion_basis_general" href="quspin.basis.spinful_fermion_basis_general.html" />
+    <link rel="prev" title="quspin.basis.boson_basis_general" href="quspin.basis.boson_basis_general.html" /> 
   </head><body>
     <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
@@ -40,8 +40,14 @@
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.3 documentation</a> &#187;</li>
-          <li class="nav-item nav-item-1"><a href="../basis.html" accesskey="U">Basis module (<code class="docutils literal notranslate"><span class="pre">quspin.basis</span></code>)</a> &#187;</li> 
+        <li class="right" >
+          <a href="quspin.basis.spinful_fermion_basis_general.html" title="quspin.basis.spinful_fermion_basis_general"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="quspin.basis.boson_basis_general.html" title="quspin.basis.boson_basis_general"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.4 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../basis.html" accesskey="U">Basis module (<code class="xref py py-mod docutils literal notranslate"><span class="pre">quspin.basis</span></code>)</a> &#187;</li> 
       </ul>
     </div>  
 
@@ -50,11 +56,12 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="section" id="quspin-basis-spinless-fermion-basis-general">
+  <style> .red {color:#ff0000; font-weight:bold; font-style:italic; } </style>
+<style> .green {color:#00b200; font-weight:bold; font-style:italic; } </style><div class="section" id="quspin-basis-spinless-fermion-basis-general">
 <h1>quspin.basis.spinless_fermion_basis_general<a class="headerlink" href="#quspin-basis-spinless-fermion-basis-general" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
 <dt id="quspin.basis.spinless_fermion_basis_general">
-<em class="property">class </em><code class="descclassname">quspin.basis.</code><code class="descname">spinless_fermion_basis_general</code><span class="sig-paren">(</span><em>N</em>, <em>Nf=None</em>, <em>nf=None</em>, <em>Ns_block_est=None</em>, <em>make_basis=True</em>, <em>block_order=None</em>, <em>**blocks</em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/basis/basis_general/fermion.html#spinless_fermion_basis_general"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#quspin.basis.spinless_fermion_basis_general" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">quspin.basis.</code><code class="sig-name descname">spinless_fermion_basis_general</code><span class="sig-paren">(</span><em class="sig-param">N</em>, <em class="sig-param">Nf=None</em>, <em class="sig-param">nf=None</em>, <em class="sig-param">Ns_block_est=None</em>, <em class="sig-param">make_basis=True</em>, <em class="sig-param">block_order=None</em>, <em class="sig-param">**blocks</em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/basis/basis_general/fermion.html#spinless_fermion_basis_general"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#quspin.basis.spinless_fermion_basis_general" title="Permalink to this definition">¶</a></dt>
 <dd><p>Constructs basis for spinless fermion operators for USER-DEFINED symmetries.</p>
 <p>Any unitary symmetry transformation <span class="math notranslate nohighlight">\(Q\)</span> of periodicity <span class="math notranslate nohighlight">\(m_Q\)</span> (<span class="math notranslate nohighlight">\(Q^{m_Q}=1\)</span>) has
 eigenvalues <span class="math notranslate nohighlight">\(\exp(-2\pi i q/m_Q)\)</span>, labelled by an ingeter <span class="math notranslate nohighlight">\(q\in\{0,1,\dots,m_Q-1\}\)</span>.
@@ -65,8 +72,8 @@ then <span class="math notranslate nohighlight">\(q\)</span> labels the mometum 
 L sites, enumerated <span class="math notranslate nohighlight">\(s=(s_0,s_1,\dots,s_{L-1})\)</span>. There are two types of operations one can perform on the sites:</p>
 <blockquote>
 <div><ul class="simple">
-<li>exchange the labels of two sites: <span class="math notranslate nohighlight">\(s_i \leftrightarrow s_j\)</span> (e.g., translation, parity)</li>
-<li>invert the <strong>fermion population</strong> on a given site with appropriate sign flip (see <cite>“z”</cite> operator string) <span class="math notranslate nohighlight">\(c_j^\dagger\to (-1)^j c_j\)</span>: <span class="math notranslate nohighlight">\(s_i\leftrightarrow -(s_j+1)\)</span> (e.g., particle-hole symmetry)</li>
+<li><p>exchange the labels of two sites: <span class="math notranslate nohighlight">\(s_i \leftrightarrow s_j\)</span> (e.g., translation, parity)</p></li>
+<li><p>invert the <strong>fermion population</strong> on a given site with appropriate sign flip (see <cite>“z”</cite> operator string) <span class="math notranslate nohighlight">\(c_j^\dagger\to (-1)^j c_j\)</span>: <span class="math notranslate nohighlight">\(s_i\leftrightarrow -(s_j+1)\)</span> (e.g., particle-hole symmetry)</p></li>
 </ul>
 </div></blockquote>
 <p>These two operations already comprise a variety of symmetries, including translation, parity (reflection) and 
@@ -79,8 +86,8 @@ population inversion. For a specific example, see below.</p>
 \end{array}\]</div>
 <p class="rubric">Notes</p>
 <ul class="simple">
-<li>For particle-hole symmetry, please use exclusively the operator string <cite>“z”</cite> (see table), otherwise the automatic symmetry check will raise an error when set to <cite>check_symm=True</cite>.</li>
-<li>QuSpin raises a warning to alert the reader when non-commuting symmetries are passed. In such cases, we recommend the user to manually check the combined usage of symmetries by, e.g., comparing the eigenvalues.</li>
+<li><p>For particle-hole symmetry, please use exclusively the operator string <cite>“z”</cite> (see table), otherwise the automatic symmetry check will raise an error when set to <cite>check_symm=True</cite>.</p></li>
+<li><p>QuSpin raises a warning to alert the reader when non-commuting symmetries are passed. In such cases, we recommend the user to manually check the combined usage of symmetries by, e.g., comparing the eigenvalues.</p></li>
 </ul>
 <p class="rubric">Examples</p>
 <p>The code snippet below shows how to use the <cite>spinless_fermion_basis_general</cite> class to construct the basis in the zero momentum sector of positive parity for the fermion Hamiltonian</p>
@@ -125,7 +132,7 @@ we do translation invariance and parity (reflection) (along each lattice directi
 35
 36</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">quspin.operators</span> <span class="kn">import</span> <span class="n">hamiltonian</span> <span class="c1"># operators</span>
 <span class="kn">from</span> <span class="nn">quspin.basis</span> <span class="kn">import</span> <span class="n">spinless_fermion_basis_general</span> <span class="c1"># spin basis constructor</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span> <span class="c1"># general math functions</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span> <span class="c1"># general math functions</span>
 <span class="c1">#</span>
 <span class="c1">###### define model parameters ######</span>
 <span class="n">Lx</span><span class="p">,</span> <span class="n">Ly</span> <span class="o">=</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span> <span class="c1"># linear dimension of spin 1 2d lattice</span>
@@ -161,301 +168,289 @@ we do translation invariance and parity (reflection) (along each lattice directi
 <span class="n">E</span><span class="o">=</span><span class="n">H</span><span class="o">.</span><span class="n">eigvalsh</span><span class="p">()</span>
 </pre></div>
 </td></tr></table></div>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Attributes:</th><td class="field-body"><dl class="first last docutils">
-<dt><a class="reference internal" href="#quspin.basis.spinless_fermion_basis_general.N" title="quspin.basis.spinless_fermion_basis_general.N"><code class="xref py py-obj docutils literal notranslate"><span class="pre">N</span></code></a></dt>
-<dd><p class="first last">int: number of sites the basis is constructed with.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Attributes</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><a class="reference internal" href="#quspin.basis.spinless_fermion_basis_general.N" title="quspin.basis.spinless_fermion_basis_general.N"><code class="xref py py-obj docutils literal notranslate"><span class="pre">N</span></code></a></dt><dd><p>int: number of sites the basis is constructed with.</p>
 </dd>
-<dt><a class="reference internal" href="#quspin.basis.spinless_fermion_basis_general.Ns" title="quspin.basis.spinless_fermion_basis_general.Ns"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Ns</span></code></a></dt>
-<dd><p class="first last">int: number of states in the Hilbert space.</p>
+<dt><a class="reference internal" href="#quspin.basis.spinless_fermion_basis_general.Ns" title="quspin.basis.spinless_fermion_basis_general.Ns"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Ns</span></code></a></dt><dd><p>int: number of states in the Hilbert space.</p>
 </dd>
-<dt><a class="reference internal" href="#quspin.basis.spinless_fermion_basis_general.blocks" title="quspin.basis.spinless_fermion_basis_general.blocks"><code class="xref py py-obj docutils literal notranslate"><span class="pre">blocks</span></code></a></dt>
-<dd><p class="first last">dict: contains the quantum numbers (blocks) for the symmetry sectors.</p>
+<dt><a class="reference internal" href="#quspin.basis.spinless_fermion_basis_general.blocks" title="quspin.basis.spinless_fermion_basis_general.blocks"><code class="xref py py-obj docutils literal notranslate"><span class="pre">blocks</span></code></a></dt><dd><p>dict: contains the quantum numbers (blocks) for the symmetry sectors.</p>
 </dd>
-<dt><a class="reference internal" href="#quspin.basis.spinless_fermion_basis_general.description" title="quspin.basis.spinless_fermion_basis_general.description"><code class="xref py py-obj docutils literal notranslate"><span class="pre">description</span></code></a></dt>
-<dd><p class="first last">str: information about <cite>basis</cite> object.</p>
+<dt><a class="reference internal" href="#quspin.basis.spinless_fermion_basis_general.description" title="quspin.basis.spinless_fermion_basis_general.description"><code class="xref py py-obj docutils literal notranslate"><span class="pre">description</span></code></a></dt><dd><p>str: information about <cite>basis</cite> object.</p>
 </dd>
-<dt><strong>dtype</strong></dt>
-<dd></dd>
-<dt><a class="reference internal" href="#quspin.basis.spinless_fermion_basis_general.operators" title="quspin.basis.spinless_fermion_basis_general.operators"><code class="xref py py-obj docutils literal notranslate"><span class="pre">operators</span></code></a></dt>
-<dd><p class="first last">set: set of available operator strings.</p>
+<dt><a class="reference internal" href="#quspin.basis.spinless_fermion_basis_general.dtype" title="quspin.basis.spinless_fermion_basis_general.dtype"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dtype</span></code></a></dt><dd><p>numpy.dtype: data type of basis state integers.</p>
 </dd>
-<dt><a class="reference internal" href="#quspin.basis.spinless_fermion_basis_general.sps" title="quspin.basis.spinless_fermion_basis_general.sps"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sps</span></code></a></dt>
-<dd><p class="first last">int: number of states per site (i.e. the on-site Hilbert space dimension).</p>
+<dt><a class="reference internal" href="#quspin.basis.spinless_fermion_basis_general.operators" title="quspin.basis.spinless_fermion_basis_general.operators"><code class="xref py py-obj docutils literal notranslate"><span class="pre">operators</span></code></a></dt><dd><p>set: set of available operator strings.</p>
 </dd>
-<dt><a class="reference internal" href="#quspin.basis.spinless_fermion_basis_general.states" title="quspin.basis.spinless_fermion_basis_general.states"><code class="xref py py-obj docutils literal notranslate"><span class="pre">states</span></code></a></dt>
-<dd><p class="first last">numpy.ndarray(int): basis states stored in their integer representation.</p>
+<dt><a class="reference internal" href="#quspin.basis.spinless_fermion_basis_general.sps" title="quspin.basis.spinless_fermion_basis_general.sps"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sps</span></code></a></dt><dd><p>int: number of states per site (i.e. the on-site Hilbert space dimension).</p>
+</dd>
+<dt><a class="reference internal" href="#quspin.basis.spinless_fermion_basis_general.states" title="quspin.basis.spinless_fermion_basis_general.states"><code class="xref py py-obj docutils literal notranslate"><span class="pre">states</span></code></a></dt><dd><p>numpy.ndarray(int): basis states stored in their integer representation.</p>
 </dd>
 </dl>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 <p class="rubric">Methods</p>
-<table border="1" class="longtable docutils">
+<table class="longtable docutils align-default">
 <colgroup>
-<col width="10%" />
-<col width="90%" />
+<col style="width: 10%" />
+<col style="width: 90%" />
 </colgroup>
-<tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="#quspin.basis.spinless_fermion_basis_general.Op" title="quspin.basis.spinless_fermion_basis_general.Op"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Op</span></code></a>(opstr,&nbsp;indx,&nbsp;J,&nbsp;dtype)</td>
-<td>Constructs operator from a site-coupling list and an operator string in a lattice basis.</td>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#quspin.basis.spinless_fermion_basis_general.Op" title="quspin.basis.spinless_fermion_basis_general.Op"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Op</span></code></a>(opstr, indx, J, dtype)</p></td>
+<td><p>Constructs operator from a site-coupling list and an operator string in a lattice basis.</p></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#quspin.basis.spinless_fermion_basis_general.Op_bra_ket" title="quspin.basis.spinless_fermion_basis_general.Op_bra_ket"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Op_bra_ket</span></code></a>(opstr,&nbsp;indx,&nbsp;J,&nbsp;dtype,&nbsp;ket_states)</td>
-<td>Finds bra states which connect given ket states by operator from a site-coupling list and an operator string.</td>
+<tr class="row-even"><td><p><a class="reference internal" href="#quspin.basis.spinless_fermion_basis_general.Op_bra_ket" title="quspin.basis.spinless_fermion_basis_general.Op_bra_ket"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Op_bra_ket</span></code></a>(opstr, indx, J, dtype, ket_states)</p></td>
+<td><p>Finds bra states which connect given ket states by operator from a site-coupling list and an operator string.</p></td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#quspin.basis.spinless_fermion_basis_general.check_hermitian" title="quspin.basis.spinless_fermion_basis_general.check_hermitian"><code class="xref py py-obj docutils literal notranslate"><span class="pre">check_hermitian</span></code></a>(static,&nbsp;dynamic)</td>
-<td>Checks operator string lists for hermiticity of the combined operator.</td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#quspin.basis.spinless_fermion_basis_general.Op_shift_sector" title="quspin.basis.spinless_fermion_basis_general.Op_shift_sector"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Op_shift_sector</span></code></a>(other_basis, op_list, v_in)</p></td>
+<td><p>Applies symmetry non-conserving operator to state in symmetry-reduced basis.</p></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#quspin.basis.spinless_fermion_basis_general.check_pcon" title="quspin.basis.spinless_fermion_basis_general.check_pcon"><code class="xref py py-obj docutils literal notranslate"><span class="pre">check_pcon</span></code></a>(static,&nbsp;dynamic)</td>
-<td>Checks operator string lists for particle number (magnetisation) conservartion of the combined operator.</td>
+<tr class="row-even"><td><p><a class="reference internal" href="#quspin.basis.spinless_fermion_basis_general.check_hermitian" title="quspin.basis.spinless_fermion_basis_general.check_hermitian"><code class="xref py py-obj docutils literal notranslate"><span class="pre">check_hermitian</span></code></a>(static, dynamic)</p></td>
+<td><p>Checks operator string lists for hermiticity of the combined operator.</p></td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#quspin.basis.spinless_fermion_basis_general.check_symm" title="quspin.basis.spinless_fermion_basis_general.check_symm"><code class="xref py py-obj docutils literal notranslate"><span class="pre">check_symm</span></code></a>(static,&nbsp;dynamic)</td>
-<td>Checks operator string lists for the required symmetries of the combined operator.</td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#quspin.basis.spinless_fermion_basis_general.check_pcon" title="quspin.basis.spinless_fermion_basis_general.check_pcon"><code class="xref py py-obj docutils literal notranslate"><span class="pre">check_pcon</span></code></a>(static, dynamic)</p></td>
+<td><p>Checks operator string lists for particle number (magnetisation) conservartion of the combined operator.</p></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#quspin.basis.spinless_fermion_basis_general.ent_entropy" title="quspin.basis.spinless_fermion_basis_general.ent_entropy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ent_entropy</span></code></a>(state[,&nbsp;sub_sys_A,&nbsp;density,&nbsp;…])</td>
-<td>Calculates entanglement entropy of subsystem A and the corresponding reduced density matrix</td>
+<tr class="row-even"><td><p><a class="reference internal" href="#quspin.basis.spinless_fermion_basis_general.check_symm" title="quspin.basis.spinless_fermion_basis_general.check_symm"><code class="xref py py-obj docutils literal notranslate"><span class="pre">check_symm</span></code></a>(static, dynamic)</p></td>
+<td><p>Checks operator string lists for the required symmetries of the combined operator.</p></td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#quspin.basis.spinless_fermion_basis_general.expanded_form" title="quspin.basis.spinless_fermion_basis_general.expanded_form"><code class="xref py py-obj docutils literal notranslate"><span class="pre">expanded_form</span></code></a>([static,&nbsp;dynamic])</td>
-<td>Splits up operator strings containing “x” and “y” into operator combinations of “+” and “-“.</td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#quspin.basis.spinless_fermion_basis_general.ent_entropy" title="quspin.basis.spinless_fermion_basis_general.ent_entropy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ent_entropy</span></code></a>(state[, sub_sys_A, density, …])</p></td>
+<td><p>Calculates entanglement entropy of subsystem A and the corresponding reduced density matrix</p></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#quspin.basis.spinless_fermion_basis_general.get_amp" title="quspin.basis.spinless_fermion_basis_general.get_amp"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_amp</span></code></a>(states[,&nbsp;out,&nbsp;amps,&nbsp;mode])</td>
-<td>Computes the rescale factor of state amplitudes between the symmetry-reduced and full basis.</td>
+<tr class="row-even"><td><p><a class="reference internal" href="#quspin.basis.spinless_fermion_basis_general.expanded_form" title="quspin.basis.spinless_fermion_basis_general.expanded_form"><code class="xref py py-obj docutils literal notranslate"><span class="pre">expanded_form</span></code></a>([static, dynamic])</p></td>
+<td><p>Splits up operator strings containing “x” and “y” into operator combinations of “+” and “-“.</p></td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#quspin.basis.spinless_fermion_basis_general.get_proj" title="quspin.basis.spinless_fermion_basis_general.get_proj"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_proj</span></code></a>(dtype[,&nbsp;pcon])</td>
-<td>Calculates transformation/projector from symmetry-reduced basis to full (symmetry-free) basis.</td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#quspin.basis.spinless_fermion_basis_general.get_amp" title="quspin.basis.spinless_fermion_basis_general.get_amp"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_amp</span></code></a>(states[, out, amps, mode])</p></td>
+<td><p>Computes the rescale factor of state amplitudes between the symmetry-reduced and full basis.</p></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#quspin.basis.spinless_fermion_basis_general.get_vec" title="quspin.basis.spinless_fermion_basis_general.get_vec"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_vec</span></code></a>(v0[,&nbsp;sparse,&nbsp;pcon])</td>
-<td>Transforms state from symmetry-reduced basis to full (symmetry-free) basis.</td>
+<tr class="row-even"><td><p><a class="reference internal" href="#quspin.basis.spinless_fermion_basis_general.get_proj" title="quspin.basis.spinless_fermion_basis_general.get_proj"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_proj</span></code></a>(dtype[, pcon])</p></td>
+<td><p>Calculates transformation/projector from symmetry-reduced basis to full (symmetry-free) basis.</p></td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#quspin.basis.spinless_fermion_basis_general.index" title="quspin.basis.spinless_fermion_basis_general.index"><code class="xref py py-obj docutils literal notranslate"><span class="pre">index</span></code></a>(s)</td>
-<td>Finds the index of user-defined Fock state in any lattice basis.</td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#quspin.basis.spinless_fermion_basis_general.get_vec" title="quspin.basis.spinless_fermion_basis_general.get_vec"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_vec</span></code></a>(v0[, sparse, pcon])</p></td>
+<td><p>DEPRECATED (cf <cite>project_from</cite>).</p></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#quspin.basis.spinless_fermion_basis_general.inplace_Op" title="quspin.basis.spinless_fermion_basis_general.inplace_Op"><code class="xref py py-obj docutils literal notranslate"><span class="pre">inplace_Op</span></code></a>(v_in,&nbsp;opstr,&nbsp;indx,&nbsp;J,&nbsp;dtype[,&nbsp;…])</td>
-<td>Calculates the action of an operator on a state.</td>
+<tr class="row-even"><td><p><a class="reference internal" href="#quspin.basis.spinless_fermion_basis_general.index" title="quspin.basis.spinless_fermion_basis_general.index"><code class="xref py py-obj docutils literal notranslate"><span class="pre">index</span></code></a>(s)</p></td>
+<td><p>Finds the index of user-defined Fock state in any lattice basis.</p></td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#quspin.basis.spinless_fermion_basis_general.int_to_state" title="quspin.basis.spinless_fermion_basis_general.int_to_state"><code class="xref py py-obj docutils literal notranslate"><span class="pre">int_to_state</span></code></a>(state[,&nbsp;bracket_notation])</td>
-<td>Finds string representation of a state defined in integer representation.</td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#quspin.basis.spinless_fermion_basis_general.inplace_Op" title="quspin.basis.spinless_fermion_basis_general.inplace_Op"><code class="xref py py-obj docutils literal notranslate"><span class="pre">inplace_Op</span></code></a>(v_in, op_list, dtype[, …])</p></td>
+<td><p>Calculates the action of an operator on a state.</p></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#quspin.basis.spinless_fermion_basis_general.make" title="quspin.basis.spinless_fermion_basis_general.make"><code class="xref py py-obj docutils literal notranslate"><span class="pre">make</span></code></a>([Ns_block_est])</td>
-<td>Creates the entire basis by calling the basis constructor.</td>
+<tr class="row-even"><td><p><a class="reference internal" href="#quspin.basis.spinless_fermion_basis_general.int_to_state" title="quspin.basis.spinless_fermion_basis_general.int_to_state"><code class="xref py py-obj docutils literal notranslate"><span class="pre">int_to_state</span></code></a>(state[, bracket_notation])</p></td>
+<td><p>Finds string representation of a state defined in integer representation.</p></td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#quspin.basis.spinless_fermion_basis_general.normalization" title="quspin.basis.spinless_fermion_basis_general.normalization"><code class="xref py py-obj docutils literal notranslate"><span class="pre">normalization</span></code></a>(states[,&nbsp;out])</td>
-<td>Computes normalization of <cite>basis</cite> states.</td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#quspin.basis.spinless_fermion_basis_general.make" title="quspin.basis.spinless_fermion_basis_general.make"><code class="xref py py-obj docutils literal notranslate"><span class="pre">make</span></code></a>([Ns_block_est, N_p])</p></td>
+<td><p>Creates the entire basis by calling the basis constructor.</p></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#quspin.basis.spinless_fermion_basis_general.partial_trace" title="quspin.basis.spinless_fermion_basis_general.partial_trace"><code class="xref py py-obj docutils literal notranslate"><span class="pre">partial_trace</span></code></a>(state[,&nbsp;sub_sys_A,&nbsp;…])</td>
-<td>Calculates reduced density matrix, through a partial trace of a quantum state in a lattice <cite>basis</cite>.</td>
+<tr class="row-even"><td><p><a class="reference internal" href="#quspin.basis.spinless_fermion_basis_general.make_basis_blocks" title="quspin.basis.spinless_fermion_basis_general.make_basis_blocks"><code class="xref py py-obj docutils literal notranslate"><span class="pre">make_basis_blocks</span></code></a>([N_p])</p></td>
+<td><p>Creates/modifies the bounds for representatives based on prefix tages.</p></td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#quspin.basis.spinless_fermion_basis_general.representative" title="quspin.basis.spinless_fermion_basis_general.representative"><code class="xref py py-obj docutils literal notranslate"><span class="pre">representative</span></code></a>(states[,&nbsp;out,&nbsp;return_g,&nbsp;…])</td>
-<td>Maps states to their representatives under the <cite>basis</cite> symmetries.</td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#quspin.basis.spinless_fermion_basis_general.normalization" title="quspin.basis.spinless_fermion_basis_general.normalization"><code class="xref py py-obj docutils literal notranslate"><span class="pre">normalization</span></code></a>(states[, out])</p></td>
+<td><p>Computes normalization of <cite>basis</cite> states.</p></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#quspin.basis.spinless_fermion_basis_general.state_to_int" title="quspin.basis.spinless_fermion_basis_general.state_to_int"><code class="xref py py-obj docutils literal notranslate"><span class="pre">state_to_int</span></code></a>(state)</td>
-<td>Finds integer representation of a state defined in string format.</td>
+<tr class="row-even"><td><p><a class="reference internal" href="#quspin.basis.spinless_fermion_basis_general.partial_trace" title="quspin.basis.spinless_fermion_basis_general.partial_trace"><code class="xref py py-obj docutils literal notranslate"><span class="pre">partial_trace</span></code></a>(state[, sub_sys_A, …])</p></td>
+<td><p>Calculates reduced density matrix, through a partial trace of a quantum state in a lattice <cite>basis</cite>.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#quspin.basis.spinless_fermion_basis_general.project_from" title="quspin.basis.spinless_fermion_basis_general.project_from"><code class="xref py py-obj docutils literal notranslate"><span class="pre">project_from</span></code></a>(v0[, sparse, pcon])</p></td>
+<td><p>Transforms state from symmetry-reduced basis to full (symmetry-free) basis.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#quspin.basis.spinless_fermion_basis_general.project_to" title="quspin.basis.spinless_fermion_basis_general.project_to"><code class="xref py py-obj docutils literal notranslate"><span class="pre">project_to</span></code></a>(v0[, sparse, pcon])</p></td>
+<td><p>Transforms state from full (symmetry-free) basis to symmetry-reduced basis.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#quspin.basis.spinless_fermion_basis_general.representative" title="quspin.basis.spinless_fermion_basis_general.representative"><code class="xref py py-obj docutils literal notranslate"><span class="pre">representative</span></code></a>(states[, out, return_g, …])</p></td>
+<td><p>Maps states to their representatives under the <cite>basis</cite> symmetries.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#quspin.basis.spinless_fermion_basis_general.state_to_int" title="quspin.basis.spinless_fermion_basis_general.state_to_int"><code class="xref py py-obj docutils literal notranslate"><span class="pre">state_to_int</span></code></a>(state)</p></td>
+<td><p>Finds integer representation of a state defined in string format.</p></td>
 </tr>
 </tbody>
 </table>
 <dl class="method">
 <dt id="quspin.basis.spinless_fermion_basis_general.__init__">
-<code class="descname">__init__</code><span class="sig-paren">(</span><em>N</em>, <em>Nf=None</em>, <em>nf=None</em>, <em>Ns_block_est=None</em>, <em>make_basis=True</em>, <em>block_order=None</em>, <em>**blocks</em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/basis/basis_general/fermion.html#spinless_fermion_basis_general.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#quspin.basis.spinless_fermion_basis_general.__init__" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param">N</em>, <em class="sig-param">Nf=None</em>, <em class="sig-param">nf=None</em>, <em class="sig-param">Ns_block_est=None</em>, <em class="sig-param">make_basis=True</em>, <em class="sig-param">block_order=None</em>, <em class="sig-param">**blocks</em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/basis/basis_general/fermion.html#spinless_fermion_basis_general.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#quspin.basis.spinless_fermion_basis_general.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Intializes the <cite>spinless_fermion_basis_general</cite> object (basis for fermionic operators).</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first last docutils">
-<dt><strong>L: int</strong></dt>
-<dd><p class="first last">Length of chain/number of sites.</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl>
+<dt><strong>L: int</strong></dt><dd><p>Length of chain/number of sites.</p>
 </dd>
-<dt><strong>Nf: {int,list}, optional</strong></dt>
-<dd><p class="first last">Number of fermions in chain. Can be integer or list to specify one or more particle sectors.</p>
+<dt><strong>Nf: {int,list}, optional</strong></dt><dd><p>Number of fermions in chain. Can be integer or list to specify one or more particle sectors.</p>
 </dd>
-<dt><strong>nf: float, optional</strong></dt>
-<dd><p class="first last">Density of fermions in chain (fermions per site).</p>
+<dt><strong>nf: float, optional</strong></dt><dd><p>Density of fermions in chain (fermions per site).</p>
 </dd>
-<dt><strong>Ns_block_est: int, optional</strong></dt>
-<dd><p class="first last">Overwrites the internal estimate of the size of the reduced Hilbert space for the given symmetries. This can be used to help conserve memory if the exact size of the H-space is known ahead of time.</p>
+<dt><strong>Ns_block_est: int, optional</strong></dt><dd><p>Overwrites the internal estimate of the size of the reduced Hilbert space for the given symmetries. This can be used to help conserve memory if the exact size of the H-space is known ahead of time.</p>
 </dd>
-<dt><strong>make_basis: bool, optional</strong></dt>
-<dd><p class="first last">Boolean to control whether to make the basis. Allows the use to use some functionality of the basis constructor without constructing the entire basis.</p>
+<dt><strong>make_basis: bool, optional</strong></dt><dd><p>Boolean to control whether to make the basis. Allows the use to use some functionality of the basis constructor without constructing the entire basis.</p>
 </dd>
-<dt><strong>block_order: list of strings, optional</strong></dt>
-<dd><p class="first last">A list of strings containing the names of the symmetry blocks which specifies the order in which the symmetries will be applied to the state when calculating the basis. The first element in the list is applied to the state first followed by the second element, etc. If the list is not specificed the ordering is such that the symmetry with the largest cycle is the first, followed by the second largest, etc.</p>
+<dt><strong>block_order: list of strings, optional</strong></dt><dd><p>A list of strings containing the names of the symmetry blocks which specifies the order in which the symmetries will be applied to the state when calculating the basis. The first element in the list is applied to the state first followed by the second element, etc. If the list is not specificed the ordering is such that the symmetry with the largest cycle is the first, followed by the second largest, etc.</p>
 </dd>
-<dt><strong>**blocks: optional</strong></dt>
-<dd><p class="first">keyword arguments which pass the symmetry generator arrays. For instance:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">basis</span><span class="p">(</span><span class="o">...</span><span class="p">,</span><span class="n">kxblock</span><span class="o">=</span><span class="p">(</span><span class="n">Q</span><span class="p">,</span><span class="n">q</span><span class="p">),</span><span class="o">...</span><span class="p">)</span>
+<dt><strong>**blocks: optional</strong></dt><dd><p>keyword arguments which pass the symmetry generator arrays. For instance:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">basis</span><span class="p">(</span><span class="o">...</span><span class="p">,</span><span class="n">kxblock</span><span class="o">=</span><span class="p">(</span><span class="n">Q</span><span class="p">,</span><span class="n">q</span><span class="p">),</span><span class="o">...</span><span class="p">)</span>
 </pre></div>
 </div>
-<p class="last">The keys of the symmetry sector, e.g. <cite>kxblock</cite>, can be chosen arbitrarily by the user. The
+<p>The keys of the symmetry sector, e.g. <cite>kxblock</cite>, can be chosen arbitrarily by the user. The
 values are tuples where the first entry contains the symmetry transformation <span class="math notranslate nohighlight">\(Q\)</span> acting on the
 lattice sites (see class example), and the second entry is an integer <span class="math notranslate nohighlight">\(q\)</span> to label the symmetry
 sector.</p>
 </dd>
 </dl>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 </dd></dl>
 
 <p class="rubric">Methods</p>
-<table border="1" class="longtable docutils">
+<table class="longtable docutils align-default">
 <colgroup>
-<col width="10%" />
-<col width="90%" />
+<col style="width: 10%" />
+<col style="width: 90%" />
 </colgroup>
-<tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="#quspin.basis.spinless_fermion_basis_general.Op" title="quspin.basis.spinless_fermion_basis_general.Op"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Op</span></code></a>(opstr,&nbsp;indx,&nbsp;J,&nbsp;dtype)</td>
-<td>Constructs operator from a site-coupling list and an operator string in a lattice basis.</td>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#quspin.basis.spinless_fermion_basis_general.Op" title="quspin.basis.spinless_fermion_basis_general.Op"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Op</span></code></a>(opstr, indx, J, dtype)</p></td>
+<td><p>Constructs operator from a site-coupling list and an operator string in a lattice basis.</p></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#quspin.basis.spinless_fermion_basis_general.Op_bra_ket" title="quspin.basis.spinless_fermion_basis_general.Op_bra_ket"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Op_bra_ket</span></code></a>(opstr,&nbsp;indx,&nbsp;J,&nbsp;dtype,&nbsp;ket_states)</td>
-<td>Finds bra states which connect given ket states by operator from a site-coupling list and an operator string.</td>
+<tr class="row-even"><td><p><a class="reference internal" href="#quspin.basis.spinless_fermion_basis_general.Op_bra_ket" title="quspin.basis.spinless_fermion_basis_general.Op_bra_ket"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Op_bra_ket</span></code></a>(opstr, indx, J, dtype, ket_states)</p></td>
+<td><p>Finds bra states which connect given ket states by operator from a site-coupling list and an operator string.</p></td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#quspin.basis.spinless_fermion_basis_general.__init__" title="quspin.basis.spinless_fermion_basis_general.__init__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__init__</span></code></a>(N[,&nbsp;Nf,&nbsp;nf,&nbsp;Ns_block_est,&nbsp;…])</td>
-<td>Intializes the <cite>spinless_fermion_basis_general</cite> object (basis for fermionic operators).</td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#quspin.basis.spinless_fermion_basis_general.Op_shift_sector" title="quspin.basis.spinless_fermion_basis_general.Op_shift_sector"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Op_shift_sector</span></code></a>(other_basis, op_list, v_in)</p></td>
+<td><p>Applies symmetry non-conserving operator to state in symmetry-reduced basis.</p></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#quspin.basis.spinless_fermion_basis_general.check_hermitian" title="quspin.basis.spinless_fermion_basis_general.check_hermitian"><code class="xref py py-obj docutils literal notranslate"><span class="pre">check_hermitian</span></code></a>(static,&nbsp;dynamic)</td>
-<td>Checks operator string lists for hermiticity of the combined operator.</td>
+<tr class="row-even"><td><p><a class="reference internal" href="#quspin.basis.spinless_fermion_basis_general.__init__" title="quspin.basis.spinless_fermion_basis_general.__init__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__init__</span></code></a>(N[, Nf, nf, Ns_block_est, …])</p></td>
+<td><p>Intializes the <cite>spinless_fermion_basis_general</cite> object (basis for fermionic operators).</p></td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#quspin.basis.spinless_fermion_basis_general.check_pcon" title="quspin.basis.spinless_fermion_basis_general.check_pcon"><code class="xref py py-obj docutils literal notranslate"><span class="pre">check_pcon</span></code></a>(static,&nbsp;dynamic)</td>
-<td>Checks operator string lists for particle number (magnetisation) conservartion of the combined operator.</td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#quspin.basis.spinless_fermion_basis_general.check_hermitian" title="quspin.basis.spinless_fermion_basis_general.check_hermitian"><code class="xref py py-obj docutils literal notranslate"><span class="pre">check_hermitian</span></code></a>(static, dynamic)</p></td>
+<td><p>Checks operator string lists for hermiticity of the combined operator.</p></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#quspin.basis.spinless_fermion_basis_general.check_symm" title="quspin.basis.spinless_fermion_basis_general.check_symm"><code class="xref py py-obj docutils literal notranslate"><span class="pre">check_symm</span></code></a>(static,&nbsp;dynamic)</td>
-<td>Checks operator string lists for the required symmetries of the combined operator.</td>
+<tr class="row-even"><td><p><a class="reference internal" href="#quspin.basis.spinless_fermion_basis_general.check_pcon" title="quspin.basis.spinless_fermion_basis_general.check_pcon"><code class="xref py py-obj docutils literal notranslate"><span class="pre">check_pcon</span></code></a>(static, dynamic)</p></td>
+<td><p>Checks operator string lists for particle number (magnetisation) conservartion of the combined operator.</p></td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#quspin.basis.spinless_fermion_basis_general.ent_entropy" title="quspin.basis.spinless_fermion_basis_general.ent_entropy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ent_entropy</span></code></a>(state[,&nbsp;sub_sys_A,&nbsp;density,&nbsp;…])</td>
-<td>Calculates entanglement entropy of subsystem A and the corresponding reduced density matrix</td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#quspin.basis.spinless_fermion_basis_general.check_symm" title="quspin.basis.spinless_fermion_basis_general.check_symm"><code class="xref py py-obj docutils literal notranslate"><span class="pre">check_symm</span></code></a>(static, dynamic)</p></td>
+<td><p>Checks operator string lists for the required symmetries of the combined operator.</p></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#quspin.basis.spinless_fermion_basis_general.expanded_form" title="quspin.basis.spinless_fermion_basis_general.expanded_form"><code class="xref py py-obj docutils literal notranslate"><span class="pre">expanded_form</span></code></a>([static,&nbsp;dynamic])</td>
-<td>Splits up operator strings containing “x” and “y” into operator combinations of “+” and “-“.</td>
+<tr class="row-even"><td><p><a class="reference internal" href="#quspin.basis.spinless_fermion_basis_general.ent_entropy" title="quspin.basis.spinless_fermion_basis_general.ent_entropy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ent_entropy</span></code></a>(state[, sub_sys_A, density, …])</p></td>
+<td><p>Calculates entanglement entropy of subsystem A and the corresponding reduced density matrix</p></td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#quspin.basis.spinless_fermion_basis_general.get_amp" title="quspin.basis.spinless_fermion_basis_general.get_amp"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_amp</span></code></a>(states[,&nbsp;out,&nbsp;amps,&nbsp;mode])</td>
-<td>Computes the rescale factor of state amplitudes between the symmetry-reduced and full basis.</td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#quspin.basis.spinless_fermion_basis_general.expanded_form" title="quspin.basis.spinless_fermion_basis_general.expanded_form"><code class="xref py py-obj docutils literal notranslate"><span class="pre">expanded_form</span></code></a>([static, dynamic])</p></td>
+<td><p>Splits up operator strings containing “x” and “y” into operator combinations of “+” and “-“.</p></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#quspin.basis.spinless_fermion_basis_general.get_proj" title="quspin.basis.spinless_fermion_basis_general.get_proj"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_proj</span></code></a>(dtype[,&nbsp;pcon])</td>
-<td>Calculates transformation/projector from symmetry-reduced basis to full (symmetry-free) basis.</td>
+<tr class="row-even"><td><p><a class="reference internal" href="#quspin.basis.spinless_fermion_basis_general.get_amp" title="quspin.basis.spinless_fermion_basis_general.get_amp"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_amp</span></code></a>(states[, out, amps, mode])</p></td>
+<td><p>Computes the rescale factor of state amplitudes between the symmetry-reduced and full basis.</p></td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#quspin.basis.spinless_fermion_basis_general.get_vec" title="quspin.basis.spinless_fermion_basis_general.get_vec"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_vec</span></code></a>(v0[,&nbsp;sparse,&nbsp;pcon])</td>
-<td>Transforms state from symmetry-reduced basis to full (symmetry-free) basis.</td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#quspin.basis.spinless_fermion_basis_general.get_proj" title="quspin.basis.spinless_fermion_basis_general.get_proj"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_proj</span></code></a>(dtype[, pcon])</p></td>
+<td><p>Calculates transformation/projector from symmetry-reduced basis to full (symmetry-free) basis.</p></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#quspin.basis.spinless_fermion_basis_general.index" title="quspin.basis.spinless_fermion_basis_general.index"><code class="xref py py-obj docutils literal notranslate"><span class="pre">index</span></code></a>(s)</td>
-<td>Finds the index of user-defined Fock state in any lattice basis.</td>
+<tr class="row-even"><td><p><a class="reference internal" href="#quspin.basis.spinless_fermion_basis_general.get_vec" title="quspin.basis.spinless_fermion_basis_general.get_vec"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_vec</span></code></a>(v0[, sparse, pcon])</p></td>
+<td><p>DEPRECATED (cf <cite>project_from</cite>).</p></td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#quspin.basis.spinless_fermion_basis_general.inplace_Op" title="quspin.basis.spinless_fermion_basis_general.inplace_Op"><code class="xref py py-obj docutils literal notranslate"><span class="pre">inplace_Op</span></code></a>(v_in,&nbsp;opstr,&nbsp;indx,&nbsp;J,&nbsp;dtype[,&nbsp;…])</td>
-<td>Calculates the action of an operator on a state.</td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#quspin.basis.spinless_fermion_basis_general.index" title="quspin.basis.spinless_fermion_basis_general.index"><code class="xref py py-obj docutils literal notranslate"><span class="pre">index</span></code></a>(s)</p></td>
+<td><p>Finds the index of user-defined Fock state in any lattice basis.</p></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#quspin.basis.spinless_fermion_basis_general.int_to_state" title="quspin.basis.spinless_fermion_basis_general.int_to_state"><code class="xref py py-obj docutils literal notranslate"><span class="pre">int_to_state</span></code></a>(state[,&nbsp;bracket_notation])</td>
-<td>Finds string representation of a state defined in integer representation.</td>
+<tr class="row-even"><td><p><a class="reference internal" href="#quspin.basis.spinless_fermion_basis_general.inplace_Op" title="quspin.basis.spinless_fermion_basis_general.inplace_Op"><code class="xref py py-obj docutils literal notranslate"><span class="pre">inplace_Op</span></code></a>(v_in, op_list, dtype[, …])</p></td>
+<td><p>Calculates the action of an operator on a state.</p></td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#quspin.basis.spinless_fermion_basis_general.make" title="quspin.basis.spinless_fermion_basis_general.make"><code class="xref py py-obj docutils literal notranslate"><span class="pre">make</span></code></a>([Ns_block_est])</td>
-<td>Creates the entire basis by calling the basis constructor.</td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#quspin.basis.spinless_fermion_basis_general.int_to_state" title="quspin.basis.spinless_fermion_basis_general.int_to_state"><code class="xref py py-obj docutils literal notranslate"><span class="pre">int_to_state</span></code></a>(state[, bracket_notation])</p></td>
+<td><p>Finds string representation of a state defined in integer representation.</p></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#quspin.basis.spinless_fermion_basis_general.normalization" title="quspin.basis.spinless_fermion_basis_general.normalization"><code class="xref py py-obj docutils literal notranslate"><span class="pre">normalization</span></code></a>(states[,&nbsp;out])</td>
-<td>Computes normalization of <cite>basis</cite> states.</td>
+<tr class="row-even"><td><p><a class="reference internal" href="#quspin.basis.spinless_fermion_basis_general.make" title="quspin.basis.spinless_fermion_basis_general.make"><code class="xref py py-obj docutils literal notranslate"><span class="pre">make</span></code></a>([Ns_block_est, N_p])</p></td>
+<td><p>Creates the entire basis by calling the basis constructor.</p></td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#quspin.basis.spinless_fermion_basis_general.partial_trace" title="quspin.basis.spinless_fermion_basis_general.partial_trace"><code class="xref py py-obj docutils literal notranslate"><span class="pre">partial_trace</span></code></a>(state[,&nbsp;sub_sys_A,&nbsp;…])</td>
-<td>Calculates reduced density matrix, through a partial trace of a quantum state in a lattice <cite>basis</cite>.</td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#quspin.basis.spinless_fermion_basis_general.make_basis_blocks" title="quspin.basis.spinless_fermion_basis_general.make_basis_blocks"><code class="xref py py-obj docutils literal notranslate"><span class="pre">make_basis_blocks</span></code></a>([N_p])</p></td>
+<td><p>Creates/modifies the bounds for representatives based on prefix tages.</p></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#quspin.basis.spinless_fermion_basis_general.representative" title="quspin.basis.spinless_fermion_basis_general.representative"><code class="xref py py-obj docutils literal notranslate"><span class="pre">representative</span></code></a>(states[,&nbsp;out,&nbsp;return_g,&nbsp;…])</td>
-<td>Maps states to their representatives under the <cite>basis</cite> symmetries.</td>
+<tr class="row-even"><td><p><a class="reference internal" href="#quspin.basis.spinless_fermion_basis_general.normalization" title="quspin.basis.spinless_fermion_basis_general.normalization"><code class="xref py py-obj docutils literal notranslate"><span class="pre">normalization</span></code></a>(states[, out])</p></td>
+<td><p>Computes normalization of <cite>basis</cite> states.</p></td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#quspin.basis.spinless_fermion_basis_general.state_to_int" title="quspin.basis.spinless_fermion_basis_general.state_to_int"><code class="xref py py-obj docutils literal notranslate"><span class="pre">state_to_int</span></code></a>(state)</td>
-<td>Finds integer representation of a state defined in string format.</td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#quspin.basis.spinless_fermion_basis_general.partial_trace" title="quspin.basis.spinless_fermion_basis_general.partial_trace"><code class="xref py py-obj docutils literal notranslate"><span class="pre">partial_trace</span></code></a>(state[, sub_sys_A, …])</p></td>
+<td><p>Calculates reduced density matrix, through a partial trace of a quantum state in a lattice <cite>basis</cite>.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#quspin.basis.spinless_fermion_basis_general.representative" title="quspin.basis.spinless_fermion_basis_general.representative"><code class="xref py py-obj docutils literal notranslate"><span class="pre">representative</span></code></a>(states[, out, return_g, …])</p></td>
+<td><p>Maps states to their representatives under the <cite>basis</cite> symmetries.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#quspin.basis.spinless_fermion_basis_general.state_to_int" title="quspin.basis.spinless_fermion_basis_general.state_to_int"><code class="xref py py-obj docutils literal notranslate"><span class="pre">state_to_int</span></code></a>(state)</p></td>
+<td><p>Finds integer representation of a state defined in string format.</p></td>
 </tr>
 </tbody>
 </table>
 <p class="rubric">Attributes</p>
-<table border="1" class="longtable docutils">
+<table class="longtable docutils align-default">
 <colgroup>
-<col width="10%" />
-<col width="90%" />
+<col style="width: 10%" />
+<col style="width: 90%" />
 </colgroup>
-<tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="#quspin.basis.spinless_fermion_basis_general.N" title="quspin.basis.spinless_fermion_basis_general.N"><code class="xref py py-obj docutils literal notranslate"><span class="pre">N</span></code></a></td>
-<td>int: number of sites the basis is constructed with.</td>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#quspin.basis.spinless_fermion_basis_general.N" title="quspin.basis.spinless_fermion_basis_general.N"><code class="xref py py-obj docutils literal notranslate"><span class="pre">N</span></code></a></p></td>
+<td><p>int: number of sites the basis is constructed with.</p></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#quspin.basis.spinless_fermion_basis_general.Ns" title="quspin.basis.spinless_fermion_basis_general.Ns"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Ns</span></code></a></td>
-<td>int: number of states in the Hilbert space.</td>
+<tr class="row-even"><td><p><a class="reference internal" href="#quspin.basis.spinless_fermion_basis_general.Ns" title="quspin.basis.spinless_fermion_basis_general.Ns"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Ns</span></code></a></p></td>
+<td><p>int: number of states in the Hilbert space.</p></td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#quspin.basis.spinless_fermion_basis_general.blocks" title="quspin.basis.spinless_fermion_basis_general.blocks"><code class="xref py py-obj docutils literal notranslate"><span class="pre">blocks</span></code></a></td>
-<td>dict: contains the quantum numbers (blocks) for the symmetry sectors.</td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#quspin.basis.spinless_fermion_basis_general.blocks" title="quspin.basis.spinless_fermion_basis_general.blocks"><code class="xref py py-obj docutils literal notranslate"><span class="pre">blocks</span></code></a></p></td>
+<td><p>dict: contains the quantum numbers (blocks) for the symmetry sectors.</p></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#quspin.basis.spinless_fermion_basis_general.description" title="quspin.basis.spinless_fermion_basis_general.description"><code class="xref py py-obj docutils literal notranslate"><span class="pre">description</span></code></a></td>
-<td>str: information about <cite>basis</cite> object.</td>
+<tr class="row-even"><td><p><a class="reference internal" href="#quspin.basis.spinless_fermion_basis_general.description" title="quspin.basis.spinless_fermion_basis_general.description"><code class="xref py py-obj docutils literal notranslate"><span class="pre">description</span></code></a></p></td>
+<td><p>str: information about <cite>basis</cite> object.</p></td>
 </tr>
-<tr class="row-odd"><td><code class="xref py py-obj docutils literal notranslate"><span class="pre">dtype</span></code></td>
-<td></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#quspin.basis.spinless_fermion_basis_general.dtype" title="quspin.basis.spinless_fermion_basis_general.dtype"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dtype</span></code></a></p></td>
+<td><p>numpy.dtype: data type of basis state integers.</p></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#quspin.basis.spinless_fermion_basis_general.operators" title="quspin.basis.spinless_fermion_basis_general.operators"><code class="xref py py-obj docutils literal notranslate"><span class="pre">operators</span></code></a></td>
-<td>set: set of available operator strings.</td>
+<tr class="row-even"><td><p><a class="reference internal" href="#quspin.basis.spinless_fermion_basis_general.operators" title="quspin.basis.spinless_fermion_basis_general.operators"><code class="xref py py-obj docutils literal notranslate"><span class="pre">operators</span></code></a></p></td>
+<td><p>set: set of available operator strings.</p></td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#quspin.basis.spinless_fermion_basis_general.sps" title="quspin.basis.spinless_fermion_basis_general.sps"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sps</span></code></a></td>
-<td>int: number of states per site (i.e.</td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#quspin.basis.spinless_fermion_basis_general.sps" title="quspin.basis.spinless_fermion_basis_general.sps"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sps</span></code></a></p></td>
+<td><p>int: number of states per site (i.e.</p></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="#quspin.basis.spinless_fermion_basis_general.states" title="quspin.basis.spinless_fermion_basis_general.states"><code class="xref py py-obj docutils literal notranslate"><span class="pre">states</span></code></a></td>
-<td>numpy.ndarray(int): basis states stored in their integer representation.</td>
+<tr class="row-even"><td><p><a class="reference internal" href="#quspin.basis.spinless_fermion_basis_general.states" title="quspin.basis.spinless_fermion_basis_general.states"><code class="xref py py-obj docutils literal notranslate"><span class="pre">states</span></code></a></p></td>
+<td><p>numpy.ndarray(int): basis states stored in their integer representation.</p></td>
 </tr>
 </tbody>
 </table>
-<dl class="attribute">
+<dl class="method">
 <dt id="quspin.basis.spinless_fermion_basis_general.N">
-<code class="descname">N</code><a class="headerlink" href="#quspin.basis.spinless_fermion_basis_general.N" title="Permalink to this definition">¶</a></dt>
+<em class="property">property </em><code class="sig-name descname">N</code><a class="headerlink" href="#quspin.basis.spinless_fermion_basis_general.N" title="Permalink to this definition">¶</a></dt>
 <dd><p>int: number of sites the basis is constructed with.</p>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="method">
 <dt id="quspin.basis.spinless_fermion_basis_general.Ns">
-<code class="descname">Ns</code><a class="headerlink" href="#quspin.basis.spinless_fermion_basis_general.Ns" title="Permalink to this definition">¶</a></dt>
+<em class="property">property </em><code class="sig-name descname">Ns</code><a class="headerlink" href="#quspin.basis.spinless_fermion_basis_general.Ns" title="Permalink to this definition">¶</a></dt>
 <dd><p>int: number of states in the Hilbert space.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="quspin.basis.spinless_fermion_basis_general.Op">
-<code class="descname">Op</code><span class="sig-paren">(</span><em>opstr</em>, <em>indx</em>, <em>J</em>, <em>dtype</em><span class="sig-paren">)</span><a class="headerlink" href="#quspin.basis.spinless_fermion_basis_general.Op" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">Op</code><span class="sig-paren">(</span><em class="sig-param">opstr</em>, <em class="sig-param">indx</em>, <em class="sig-param">J</em>, <em class="sig-param">dtype</em><span class="sig-paren">)</span><a class="headerlink" href="#quspin.basis.spinless_fermion_basis_general.Op" title="Permalink to this definition">¶</a></dt>
 <dd><p>Constructs operator from a site-coupling list and an operator string in a lattice basis.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
-<dt><strong>opstr</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
-<dd><p class="first">Operator string in the lattice basis format. For instance:</p>
-<div class="last highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">opstr</span> <span class="o">=</span> <span class="s2">&quot;zz&quot;</span>
+<dl class="field-list">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl>
+<dt><strong>opstr</strong><span class="classifier">str</span></dt><dd><p>Operator string in the lattice basis format. For instance:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">opstr</span> <span class="o">=</span> <span class="s2">&quot;zz&quot;</span>
 </pre></div>
 </div>
 </dd>
-<dt><strong>indx</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list(int)</span></dt>
-<dd><p class="first">List of integers to designate the sites the lattice basis operator is defined on. For instance:</p>
-<div class="last highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">indx</span> <span class="o">=</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">]</span>
+<dt><strong>indx</strong><span class="classifier">list(int)</span></dt><dd><p>List of integers to designate the sites the lattice basis operator is defined on. For instance:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">indx</span> <span class="o">=</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">]</span>
 </pre></div>
 </div>
 </dd>
-<dt><strong>J</strong> <span class="classifier-delimiter">:</span> <span class="classifier">scalar</span></dt>
-<dd><p class="first last">Coupling strength.</p>
+<dt><strong>J</strong><span class="classifier">scalar</span></dt><dd><p>Coupling strength.</p>
 </dd>
-<dt><strong>dtype</strong> <span class="classifier-delimiter">:</span> <span class="classifier">‘type’</span></dt>
-<dd><p class="first last">Data type (e.g. numpy.float64) to construct the operator with.</p>
+<dt><strong>dtype</strong><span class="classifier">‘type’</span></dt><dd><p>Data type (e.g. numpy.float64) to construct the operator with.</p>
 </dd>
 </dl>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
-<dt><strong>tuple</strong></dt>
-<dd><dl class="first last docutils">
-<dt><cite>(ME,row,col)</cite>, where</dt>
-<dd><ul class="first last simple">
-<li>numpy.ndarray(scalar): <cite>ME</cite>: matrix elements of type <cite>dtype</cite>.</li>
-<li><dl class="first docutils">
-<dt>numpy.ndarray(int): <cite>row</cite>: row indices of matrix representing the operator in the lattice basis,</dt>
-<dd>such that <cite>row[i]</cite> is the row index of <cite>ME[i]</cite>.</dd>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>tuple</strong></dt><dd><dl class="simple">
+<dt><cite>(ME,row,col)</cite>, where</dt><dd><ul class="simple">
+<li><p>numpy.ndarray(scalar): <cite>ME</cite>: matrix elements of type <cite>dtype</cite>.</p></li>
+<li><dl class="simple">
+<dt>numpy.ndarray(int): <cite>row</cite>: row indices of matrix representing the operator in the lattice basis,</dt><dd><p>such that <cite>row[i]</cite> is the row index of <cite>ME[i]</cite>.</p>
+</dd>
 </dl>
 </li>
-<li><dl class="first docutils">
-<dt>numpy.ndarray(int): <cite>col</cite>: column index of matrix representing the operator in the lattice basis,</dt>
-<dd>such that <cite>col[i]</cite> is the column index of <cite>ME[i]</cite>.</dd>
+<li><dl class="simple">
+<dt>numpy.ndarray(int): <cite>col</cite>: column index of matrix representing the operator in the lattice basis,</dt><dd><p>such that <cite>col[i]</cite> is the column index of <cite>ME[i]</cite>.</p>
+</dd>
 </dl>
 </li>
 </ul>
@@ -463,12 +458,10 @@ sector.</p>
 </dl>
 </dd>
 </dl>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 <p class="rubric">Examples</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">J</span> <span class="o">=</span> <span class="mf">1.41</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">J</span> <span class="o">=</span> <span class="mf">1.41</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">indx</span> <span class="o">=</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">opstr</span> <span class="o">=</span> <span class="s2">&quot;zz&quot;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">dtype</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span>
@@ -479,70 +472,58 @@ sector.</p>
 
 <dl class="method">
 <dt id="quspin.basis.spinless_fermion_basis_general.Op_bra_ket">
-<code class="descname">Op_bra_ket</code><span class="sig-paren">(</span><em>opstr</em>, <em>indx</em>, <em>J</em>, <em>dtype</em>, <em>ket_states</em>, <em>reduce_output=True</em><span class="sig-paren">)</span><a class="headerlink" href="#quspin.basis.spinless_fermion_basis_general.Op_bra_ket" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">Op_bra_ket</code><span class="sig-paren">(</span><em class="sig-param">opstr</em>, <em class="sig-param">indx</em>, <em class="sig-param">J</em>, <em class="sig-param">dtype</em>, <em class="sig-param">ket_states</em>, <em class="sig-param">reduce_output=True</em><span class="sig-paren">)</span><a class="headerlink" href="#quspin.basis.spinless_fermion_basis_general.Op_bra_ket" title="Permalink to this definition">¶</a></dt>
 <dd><p>Finds bra states which connect given ket states by operator from a site-coupling list and an operator string.</p>
 <p>Given a set of ket states <span class="math notranslate nohighlight">\(|s\rangle\)</span>, the function returns the bra states <span class="math notranslate nohighlight">\(\langle s'|\)</span> which connect to them through an operator, together with the corresponding matrix elements.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
-<dt><strong>opstr</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
-<dd><p class="first">Operator string in the lattice basis format. For instance:</p>
-<div class="last highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">opstr</span> <span class="o">=</span> <span class="s2">&quot;zz&quot;</span>
+<dl class="field-list">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl>
+<dt><strong>opstr</strong><span class="classifier">str</span></dt><dd><p>Operator string in the lattice basis format. For instance:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">opstr</span> <span class="o">=</span> <span class="s2">&quot;zz&quot;</span>
 </pre></div>
 </div>
 </dd>
-<dt><strong>indx</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list(int)</span></dt>
-<dd><p class="first">List of integers to designate the sites the lattice basis operator is defined on. For instance:</p>
-<div class="last highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">indx</span> <span class="o">=</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">]</span>
+<dt><strong>indx</strong><span class="classifier">list(int)</span></dt><dd><p>List of integers to designate the sites the lattice basis operator is defined on. For instance:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">indx</span> <span class="o">=</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">]</span>
 </pre></div>
 </div>
 </dd>
-<dt><strong>J</strong> <span class="classifier-delimiter">:</span> <span class="classifier">scalar</span></dt>
-<dd><p class="first last">Coupling strength.</p>
+<dt><strong>J</strong><span class="classifier">scalar</span></dt><dd><p>Coupling strength.</p>
 </dd>
-<dt><strong>dtype</strong> <span class="classifier-delimiter">:</span> <span class="classifier">‘type’</span></dt>
-<dd><p class="first last">Data type (e.g. numpy.float64) to construct the matrix elements with.</p>
+<dt><strong>dtype</strong><span class="classifier">‘type’</span></dt><dd><p>Data type (e.g. numpy.float64) to construct the matrix elements with.</p>
 </dd>
-<dt><strong>ket_states</strong> <span class="classifier-delimiter">:</span> <span class="classifier">numpy.ndarray(int)</span></dt>
-<dd><p class="first last">Ket states in integer representation. Must be of same data type as <cite>basis</cite>.</p>
+<dt><strong>ket_states</strong><span class="classifier">numpy.ndarray(int)</span></dt><dd><p>Ket states in integer representation. Must be of same data type as <cite>basis</cite>.</p>
 </dd>
-<dt><strong>reduce_output: bool, optional</strong></dt>
-<dd><p class="first last">If set to <cite>True</cite>, the returned arrays have the same size as <cite>ket_states</cite>; If set to <cite>False</cite> zeros are purged.</p>
+<dt><strong>reduce_output: bool, optional</strong></dt><dd><p>If set to <cite>True</cite>, the returned arrays have the same size as <cite>ket_states</cite>; If set to <cite>False</cite> zeros are purged.</p>
 </dd>
 </dl>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
-<dt><strong>tuple</strong></dt>
-<dd><dl class="first last docutils">
-<dt><cite>(ME,bra,ket)</cite>, where</dt>
-<dd><ul class="first last simple">
-<li>numpy.ndarray(scalar): <cite>ME</cite>: matrix elements of type <cite>dtype</cite>, which connects the ket and bra states.</li>
-<li><dl class="first docutils">
-<dt>numpy.ndarray(int): <cite>bra</cite>: bra states, obtained by applying the matrix representing the operator in the lattice basis,</dt>
-<dd>to the ket states, such that <cite>bra[i]</cite> corresponds to <cite>ME[i]</cite> and connects to <cite>ket[i]</cite>.</dd>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>tuple</strong></dt><dd><dl class="simple">
+<dt><cite>(ME,bra,ket)</cite>, where</dt><dd><ul class="simple">
+<li><p>numpy.ndarray(scalar): <cite>ME</cite>: matrix elements of type <cite>dtype</cite>, which connects the ket and bra states.</p></li>
+<li><dl class="simple">
+<dt>numpy.ndarray(int): <cite>bra</cite>: bra states, obtained by applying the matrix representing the operator in the lattice basis,</dt><dd><p>to the ket states, such that <cite>bra[i]</cite> corresponds to <cite>ME[i]</cite> and connects to <cite>ket[i]</cite>.</p>
+</dd>
 </dl>
 </li>
-<li>numpy.ndarray(int): <cite>ket</cite>: ket states, such that <cite>ket[i]</cite> corresponds to <cite>ME[i]</cite> and connects to <cite>bra[i]</cite>.</li>
+<li><p>numpy.ndarray(int): <cite>ket</cite>: ket states, such that <cite>ket[i]</cite> corresponds to <cite>ME[i]</cite> and connects to <cite>bra[i]</cite>.</p></li>
 </ul>
 </dd>
 </dl>
 </dd>
 </dl>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 <p class="rubric">Notes</p>
 <ul class="simple">
-<li>Similar to <cite>Op</cite> but instead of returning the matrix indices (row,col), it returns the states (bra,ket) in integer representation.</li>
-<li>Does NOT require the full basis (see <cite>basis</cite> optional argument <cite>make_basis</cite>).</li>
-<li>If a state from <cite>ket_states</cite> does not have a non-zero matrix element, it is removed from the returned list. See otional argument <cite>reduce_output</cite>.</li>
+<li><p>Similar to <cite>Op</cite> but instead of returning the matrix indices (row,col), it returns the states (bra,ket) in integer representation.</p></li>
+<li><p>Does NOT require the full basis (see <cite>basis</cite> optional argument <cite>make_basis</cite>).</p></li>
+<li><p>If a state from <cite>ket_states</cite> does not have a non-zero matrix element, it is removed from the returned list. See otional argument <cite>reduce_output</cite>.</p></li>
 </ul>
 <p class="rubric">Examples</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">J</span> <span class="o">=</span> <span class="mf">1.41</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">J</span> <span class="o">=</span> <span class="mf">1.41</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">indx</span> <span class="o">=</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">opstr</span> <span class="o">=</span> <span class="s2">&quot;zz&quot;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">dtype</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span>
@@ -551,177 +532,201 @@ sector.</p>
 </div>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="method">
+<dt id="quspin.basis.spinless_fermion_basis_general.Op_shift_sector">
+<code class="sig-name descname">Op_shift_sector</code><span class="sig-paren">(</span><em class="sig-param">other_basis</em>, <em class="sig-param">op_list</em>, <em class="sig-param">v_in</em>, <em class="sig-param">v_out=None</em>, <em class="sig-param">dtype=None</em><span class="sig-paren">)</span><a class="headerlink" href="#quspin.basis.spinless_fermion_basis_general.Op_shift_sector" title="Permalink to this definition">¶</a></dt>
+<dd><p>Applies symmetry non-conserving operator to state in symmetry-reduced basis.</p>
+<p>An operator, which does not conserve a symmetry, induces a change in the quantum number of a state defined in the corresponding symmetry sector. Hence, when the operator is applied on a quantum state, the state shifts the symmetry sector. <cite>Op_shift_sector()</cite> handles this automatically.</p>
+<p><span class="red">NOTE: One has to make sure that the operator moves the state between the two sectors this function will not give the correct results otherwise.</span></p>
+<p>Formally  equivalent to:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">P1</span> <span class="o">=</span> <span class="n">basis_sector_1</span><span class="o">.</span><span class="n">get_proj</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">complex128</span><span class="p">)</span> <span class="c1"># projector between full and initial basis</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">P2</span> <span class="o">=</span> <span class="n">basis_sector_2</span><span class="o">.</span><span class="n">get_proj</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">complex128</span><span class="p">)</span> <span class="c1"># projector between full and target basis</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">v_in_full</span> <span class="o">=</span> <span class="n">P1</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">v_in</span><span class="p">)</span> <span class="c1"># go from initial basis to to full basis</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">v_out_full</span> <span class="o">=</span> <span class="n">basis_full</span><span class="o">.</span><span class="n">inplace_Op</span><span class="p">(</span><span class="n">v_in_full</span><span class="p">,</span><span class="n">op_list</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">complex128</span><span class="p">)</span> <span class="c1"># apply Op</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">v_out</span> <span class="o">=</span> <span class="n">P2</span><span class="o">.</span><span class="n">H</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">v_out_full</span><span class="p">)</span> <span class="c1"># project to target basis</span>
+</pre></div>
+</div>
+<dl class="field-list">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl>
+<dt><strong>other_basis</strong><span class="classifier"><cite>basis</cite> object</span></dt><dd><p><cite>basis_general</cite> object for the initial symmetry sector. Must be the same <cite>basis</cite> class type as the basis whose instance is <cite>Op_shift_sector()</cite> (i.e. the basis in <cite>basis.Op_shift_sector()</cite>).</p>
+</dd>
+<dt><strong>op_list</strong><span class="classifier">list</span></dt><dd><p>Operator string list which defines the operator to apply. Follows the format <cite>[[“z”,[i],Jz[i]] for i in range(L)], [“x”,[i],Jx[j]] for j in range(L)],…]</cite>.</p>
+</dd>
+<dt><strong>v_in</strong><span class="classifier">array_like, (other_basis.Ns,…)</span></dt><dd><p>Initial state to apply the symmetry non-conserving operator on. Must have the same length as <cite>other_basis.Ns</cite>.</p>
+</dd>
+<dt><strong>v_out</strong><span class="classifier">array_like, (basis.Ns,…), optional</span></dt><dd><p>Optional array to write the result for the final/target state in.</p>
+</dd>
+<dt><strong>dtype</strong><span class="classifier">numpy dtype for matrix elements, optional</span></dt><dd><p>Data type (e.g. <cite>numpy.float64</cite>) to construct the operator with.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>(basis.Ns, ) numpy.ndarray</strong></dt><dd><p>Array containing the state <cite>v_out</cite> in the current basis, i.e. the basis in <cite>basis.Op_shift_sector()</cite>.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<ul class="simple">
+<li><p>particularly useful when computing correlation functions.</p></li>
+<li><p>supports parallelization to multiple states listed in the columns of <cite>v_in</cite>.</p></li>
+<li><p>the user is strongly advised to use the code under “Formally equivalent” above to check the results of this function for small system sizes.</p></li>
+</ul>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">v_out</span> <span class="o">=</span> <span class="n">basis</span><span class="o">.</span><span class="n">Op_shift_sector</span><span class="p">(</span><span class="n">initial_basis</span><span class="p">,</span> <span class="n">op_list</span><span class="p">,</span> <span class="n">v_in</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">v_out</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">basis</span><span class="o">.</span><span class="n">Ns</span><span class="p">,</span> <span class="n">v_in</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">initial_basis</span><span class="o">.</span><span class="n">Ns</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
 <dt id="quspin.basis.spinless_fermion_basis_general.blocks">
-<code class="descname">blocks</code><a class="headerlink" href="#quspin.basis.spinless_fermion_basis_general.blocks" title="Permalink to this definition">¶</a></dt>
+<em class="property">property </em><code class="sig-name descname">blocks</code><a class="headerlink" href="#quspin.basis.spinless_fermion_basis_general.blocks" title="Permalink to this definition">¶</a></dt>
 <dd><p>dict: contains the quantum numbers (blocks) for the symmetry sectors.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="quspin.basis.spinless_fermion_basis_general.check_hermitian">
-<code class="descname">check_hermitian</code><span class="sig-paren">(</span><em>static</em>, <em>dynamic</em><span class="sig-paren">)</span><a class="headerlink" href="#quspin.basis.spinless_fermion_basis_general.check_hermitian" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">check_hermitian</code><span class="sig-paren">(</span><em class="sig-param">static</em>, <em class="sig-param">dynamic</em><span class="sig-paren">)</span><a class="headerlink" href="#quspin.basis.spinless_fermion_basis_general.check_hermitian" title="Permalink to this definition">¶</a></dt>
 <dd><p>Checks operator string lists for hermiticity of the combined operator.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first last docutils">
-<dt><strong>static: list</strong></dt>
-<dd><p class="first last">Static operators formatted to be passed into the static argument of the <cite>hamiltonian</cite> class.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>static: list</strong></dt><dd><p>Static operators formatted to be passed into the static argument of the <cite>hamiltonian</cite> class.</p>
 </dd>
-<dt><strong>dynamic: list</strong></dt>
-<dd><p class="first last">Dynamic operators formatted to be passed into the dynamic argument of the <cite>hamiltonian</cite> class.</p>
+<dt><strong>dynamic: list</strong></dt><dd><p>Dynamic operators formatted to be passed into the dynamic argument of the <cite>hamiltonian</cite> class.</p>
 </dd>
 </dl>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="quspin.basis.spinless_fermion_basis_general.check_pcon">
-<code class="descname">check_pcon</code><span class="sig-paren">(</span><em>static</em>, <em>dynamic</em><span class="sig-paren">)</span><a class="headerlink" href="#quspin.basis.spinless_fermion_basis_general.check_pcon" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">check_pcon</code><span class="sig-paren">(</span><em class="sig-param">static</em>, <em class="sig-param">dynamic</em><span class="sig-paren">)</span><a class="headerlink" href="#quspin.basis.spinless_fermion_basis_general.check_pcon" title="Permalink to this definition">¶</a></dt>
 <dd><p>Checks operator string lists for particle number (magnetisation) conservartion of the combined operator.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first last docutils">
-<dt><strong>static: list</strong></dt>
-<dd><p class="first last">Static operators formatted to be passed into the static argument of the <cite>hamiltonian</cite> class.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>static: list</strong></dt><dd><p>Static operators formatted to be passed into the static argument of the <cite>hamiltonian</cite> class.</p>
 </dd>
-<dt><strong>dynamic: list</strong></dt>
-<dd><p class="first last">Dynamic operators formatted to be passed into the dynamic argument of the <cite>hamiltonian</cite> class.</p>
+<dt><strong>dynamic: list</strong></dt><dd><p>Dynamic operators formatted to be passed into the dynamic argument of the <cite>hamiltonian</cite> class.</p>
 </dd>
 </dl>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="quspin.basis.spinless_fermion_basis_general.check_symm">
-<code class="descname">check_symm</code><span class="sig-paren">(</span><em>static</em>, <em>dynamic</em><span class="sig-paren">)</span><a class="headerlink" href="#quspin.basis.spinless_fermion_basis_general.check_symm" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">check_symm</code><span class="sig-paren">(</span><em class="sig-param">static</em>, <em class="sig-param">dynamic</em><span class="sig-paren">)</span><a class="headerlink" href="#quspin.basis.spinless_fermion_basis_general.check_symm" title="Permalink to this definition">¶</a></dt>
 <dd><p>Checks operator string lists for the required symmetries of the combined operator.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first last docutils">
-<dt><strong>static: list</strong></dt>
-<dd><p class="first last">Static operators formatted to be passed into the static argument of the <cite>hamiltonian</cite> class.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>static: list</strong></dt><dd><p>Static operators formatted to be passed into the static argument of the <cite>hamiltonian</cite> class.</p>
 </dd>
-<dt><strong>dynamic: list</strong></dt>
-<dd><p class="first last">Dynamic operators formatted to be passed into the dynamic argument of the <cite>hamiltonian</cite> class.</p>
+<dt><strong>dynamic: list</strong></dt><dd><p>Dynamic operators formatted to be passed into the dynamic argument of the <cite>hamiltonian</cite> class.</p>
 </dd>
 </dl>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="method">
 <dt id="quspin.basis.spinless_fermion_basis_general.description">
-<code class="descname">description</code><a class="headerlink" href="#quspin.basis.spinless_fermion_basis_general.description" title="Permalink to this definition">¶</a></dt>
+<em class="property">property </em><code class="sig-name descname">description</code><a class="headerlink" href="#quspin.basis.spinless_fermion_basis_general.description" title="Permalink to this definition">¶</a></dt>
 <dd><p>str: information about <cite>basis</cite> object.</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="quspin.basis.spinless_fermion_basis_general.dtype">
+<em class="property">property </em><code class="sig-name descname">dtype</code><a class="headerlink" href="#quspin.basis.spinless_fermion_basis_general.dtype" title="Permalink to this definition">¶</a></dt>
+<dd><p>numpy.dtype: data type of basis state integers.</p>
+</dd></dl>
+
+<dl class="method">
 <dt id="quspin.basis.spinless_fermion_basis_general.ent_entropy">
-<code class="descname">ent_entropy</code><span class="sig-paren">(</span><em>state</em>, <em>sub_sys_A=None</em>, <em>density=True</em>, <em>subsys_ordering=True</em>, <em>return_rdm=None</em>, <em>enforce_pure=False</em>, <em>return_rdm_EVs=False</em>, <em>sparse=False</em>, <em>alpha=1.0</em>, <em>sparse_diag=True</em>, <em>maxiter=None</em><span class="sig-paren">)</span><a class="headerlink" href="#quspin.basis.spinless_fermion_basis_general.ent_entropy" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">ent_entropy</code><span class="sig-paren">(</span><em class="sig-param">state</em>, <em class="sig-param">sub_sys_A=None</em>, <em class="sig-param">density=True</em>, <em class="sig-param">subsys_ordering=True</em>, <em class="sig-param">return_rdm=None</em>, <em class="sig-param">enforce_pure=False</em>, <em class="sig-param">return_rdm_EVs=False</em>, <em class="sig-param">sparse=False</em>, <em class="sig-param">alpha=1.0</em>, <em class="sig-param">sparse_diag=True</em>, <em class="sig-param">maxiter=None</em>, <em class="sig-param">svd_solver=None</em>, <em class="sig-param">svd_kwargs=None</em><span class="sig-paren">)</span><a class="headerlink" href="#quspin.basis.spinless_fermion_basis_general.ent_entropy" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculates entanglement entropy of subsystem A and the corresponding reduced density matrix</p>
 <div class="math notranslate nohighlight">
 \[S_\mathrm{ent}(\alpha) = \frac{1}{N}\frac{1}{1-\alpha}\log \mathrm{tr}_{A} \left( \mathrm{tr}_{A^c} \vert\psi\rangle\langle\psi\vert \right)^\alpha \]</div>
 <p>where the normalization <span class="math notranslate nohighlight">\(N\)</span> can be switched on and off using the optional argument <cite>density</cite>.</p>
 <p><strong>Note:</strong> The logarithm used is the natural logarithm (base e).</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
-<dt><strong>state</strong> <span class="classifier-delimiter">:</span> <span class="classifier">obj</span></dt>
-<dd><p class="first">State of the quantum system. Can be either one of:</p>
-<blockquote class="last">
+<dl class="field-list">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl>
+<dt><strong>state</strong><span class="classifier">obj</span></dt><dd><p>State of the quantum system. Can be either one of:</p>
+<blockquote>
 <div><ul class="simple">
-<li>numpy.ndarray [shape (Ns,)]: pure state (default).</li>
-<li>numpy.ndarray [shape (Ns,Ns)]: density matrix (DM).</li>
+<li><p>numpy.ndarray [shape (Ns,)]: pure state (default).</p></li>
+<li><p>numpy.ndarray [shape (Ns,Ns)]: density matrix (DM).</p></li>
 </ul>
 </div></blockquote>
 </dd>
-<dt><strong>sub_sys_A</strong> <span class="classifier-delimiter">:</span> <span class="classifier">tuple/list, optional</span></dt>
-<dd><p class="first last">Defines the sites contained in subsystem A [by python convention the first site of the chain is labelled j=0].
+<dt><strong>sub_sys_A</strong><span class="classifier">tuple/list, optional</span></dt><dd><p>Defines the sites contained in subsystem A [by python convention the first site of the chain is labelled j=0].
 Default is <cite>tuple(range(N//2))</cite> with <cite>N</cite> the number of lattice sites.</p>
 </dd>
-<dt><strong>density</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool, optional</span></dt>
-<dd><p class="first last">Toggles whether to return entanglement entropy normalized by the number of sites in the subsystem.</p>
+<dt><strong>density</strong><span class="classifier">bool, optional</span></dt><dd><p>Toggles whether to return entanglement entropy normalized by the number of sites in the subsystem.</p>
 </dd>
-<dt><strong>return_rdm</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str, optional</span></dt>
-<dd><p class="first">Toggles returning the reduced DM. Can be tierh one of:</p>
-<blockquote class="last">
+<dt><strong>return_rdm</strong><span class="classifier">str, optional</span></dt><dd><p>Toggles returning the reduced DM. Can be tierh one of:</p>
+<blockquote>
 <div><ul class="simple">
-<li>“A”: returns reduced DM of subsystem A.</li>
-<li>“B”: returns reduced DM of subsystem B.</li>
-<li>“both”: returns reduced DM of both A and B subsystems.</li>
+<li><p>“A”: returns reduced DM of subsystem A.</p></li>
+<li><p>“B”: returns reduced DM of subsystem B.</p></li>
+<li><p>“both”: returns reduced DM of both A and B subsystems.</p></li>
 </ul>
 </div></blockquote>
 </dd>
-<dt><strong>enforce_pure</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool, optional</span></dt>
-<dd><p class="first last">Whether or not to assume <cite>state</cite> is a collection of pure states or a mixed density matrix, if
+<dt><strong>enforce_pure</strong><span class="classifier">bool, optional</span></dt><dd><p>Whether or not to assume <cite>state</cite> is a collection of pure states or a mixed density matrix, if
 it is a square array. Default is <cite>False</cite>.</p>
 </dd>
-<dt><strong>subsys_ordering</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool, optional</span></dt>
-<dd><p class="first last">Whether or not to reorder the sites in <cite>sub_sys_A</cite> in ascending order. Default is <cite>True</cite>.</p>
+<dt><strong>subsys_ordering</strong><span class="classifier">bool, optional</span></dt><dd><p>Whether or not to reorder the sites in <cite>sub_sys_A</cite> in ascending order. Default is <cite>True</cite>.</p>
 </dd>
-<dt><strong>sparse</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool, optional</span></dt>
-<dd><p class="first last">Whether or not to return a sparse DM. Default is <cite>False</cite>.</p>
+<dt><strong>sparse</strong><span class="classifier">bool, optional</span></dt><dd><p>Whether or not to return a sparse DM. Default is <cite>False</cite>.</p>
 </dd>
-<dt><strong>return_rdm_EVs</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool, optional</span></dt>
-<dd><p class="first last">Whether or not to return the eigenvalues of rthe educed DM. If <cite>return_rdm</cite> is specified,
+<dt><strong>return_rdm_EVs</strong><span class="classifier">bool, optional</span></dt><dd><p>Whether or not to return the eigenvalues of rthe educed DM. If <cite>return_rdm</cite> is specified,
 the eigenvalues of the corresponding DM are returned. If <cite>return_rdm</cite> is NOT specified, 
 the spectrum of <cite>rdm_A</cite> is returned by default. Default is <cite>False</cite>.</p>
 </dd>
-<dt><strong>alpha</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float, optional</span></dt>
-<dd><p class="first last">Renyi <span class="math notranslate nohighlight">\(\alpha\)</span> parameter for the entanglement entropy. Default is <span class="math notranslate nohighlight">\(\alpha=1\)</span>.</p>
+<dt><strong>alpha</strong><span class="classifier">float, optional</span></dt><dd><p>Renyi <span class="math notranslate nohighlight">\(\alpha\)</span> parameter for the entanglement entropy. Default is <span class="math notranslate nohighlight">\(\alpha=1\)</span>.</p>
 </dd>
-<dt><strong>sparse_diag</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool, optional</span></dt>
-<dd><p class="first last">When <cite>sparse=True</cite>, this flag enforces the use of
+<dt><strong>sparse_diag</strong><span class="classifier">bool, optional</span></dt><dd><p>When <cite>sparse=True</cite>, this flag enforces the use of
 <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/generated/scipy.sparse.linalg.eigsh.html">scipy.sparse.linalg.eigsh()</a>
 to calculate the eigenvaues of the reduced DM.</p>
 </dd>
-<dt><strong>maxiter</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int, optional</span></dt>
-<dd><p class="first last">Specifies the number of iterations for Lanczos diagonalisation. Look up documentation for 
+<dt><strong>maxiter</strong><span class="classifier">int, optional</span></dt><dd><p>Specifies the number of iterations for Lanczos diagonalisation. Look up documentation for 
 <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/generated/scipy.sparse.linalg.eigsh.html">scipy.sparse.linalg.eigsh()</a>.</p>
 </dd>
+<dt><strong>svd_solver</strong><span class="classifier">object, optional</span></dt><dd><p>Specifies the svd solver to be used, e.g. <cite>numpy.linalg.svd</cite> or <cite>scipy.linalg.svd</cite>, or a custom solver. Effective when <cite>enforce_pure=True</cite> or <cite>sparse=False</cite>.</p>
+</dd>
+<dt><strong>svd_kwargs</strong><span class="classifier">dict, optional</span></dt><dd><p>Specifies additional arguments for <cite>svd_solver</cite>.</p>
+</dd>
 </dl>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
-<dt><strong>dict</strong></dt>
-<dd><dl class="first last docutils">
-<dt>Dictionary with following keys, depending on input parameters:</dt>
-<dd><ul class="first last simple">
-<li>“Sent_A”: entanglement entropy of subsystem A (default).</li>
-<li>“Sent_B”: entanglement entropy of subsystem B.</li>
-<li>“p_A”: singular values of reduced DM of subsystem A (default).</li>
-<li>“p_B”: singular values of reduced DM of subsystem B.</li>
-<li>“rdm_A”: reduced DM of subsystem A.</li>
-<li>“rdm_B”: reduced DM of subsystem B.</li>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>dict</strong></dt><dd><dl class="simple">
+<dt>Dictionary with following keys, depending on input parameters:</dt><dd><ul class="simple">
+<li><p>“Sent_A”: entanglement entropy of subsystem A (default).</p></li>
+<li><p>“Sent_B”: entanglement entropy of subsystem B.</p></li>
+<li><p>“p_A”: singular values of reduced DM of subsystem A (default).</p></li>
+<li><p>“p_B”: singular values of reduced DM of subsystem B.</p></li>
+<li><p>“rdm_A”: reduced DM of subsystem A.</p></li>
+<li><p>“rdm_B”: reduced DM of subsystem B.</p></li>
 </ul>
 </dd>
 </dl>
 </dd>
 </dl>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 <p class="rubric">Notes</p>
 <p>Algorithm is based on both partial tracing and sigular value decomposition (SVD), optimised for speed.</p>
 <p class="rubric">Examples</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ent_entropy</span><span class="p">(</span><span class="n">state</span><span class="p">,</span><span class="n">sub_sys_A</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">7</span><span class="p">],</span><span class="n">return_rdm</span><span class="o">=</span><span class="s2">&quot;A&quot;</span><span class="p">,</span><span class="n">enforce_pure</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">return_rdm_EVs</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ent_entropy</span><span class="p">(</span><span class="n">state</span><span class="p">,</span><span class="n">sub_sys_A</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">7</span><span class="p">],</span><span class="n">return_rdm</span><span class="o">=</span><span class="s2">&quot;A&quot;</span><span class="p">,</span><span class="n">enforce_pure</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">return_rdm_EVs</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
 <span class="gp">&gt;&gt;&gt; </span>                            <span class="n">sparse</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">alpha</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span><span class="n">sparse_diag</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">subsys_ordering</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -729,35 +734,29 @@ to calculate the eigenvaues of the reduced DM.</p>
 
 <dl class="method">
 <dt id="quspin.basis.spinless_fermion_basis_general.expanded_form">
-<code class="descname">expanded_form</code><span class="sig-paren">(</span><em>static=[]</em>, <em>dynamic=[]</em><span class="sig-paren">)</span><a class="headerlink" href="#quspin.basis.spinless_fermion_basis_general.expanded_form" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">expanded_form</code><span class="sig-paren">(</span><em class="sig-param">static=[]</em>, <em class="sig-param">dynamic=[]</em><span class="sig-paren">)</span><a class="headerlink" href="#quspin.basis.spinless_fermion_basis_general.expanded_form" title="Permalink to this definition">¶</a></dt>
 <dd><p>Splits up operator strings containing “x” and “y” into operator combinations of “+” and “-“. This function is useful for higher spin hamiltonians where “x” and “y” operators are not appropriate operators.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
-<dt><strong>static: list</strong></dt>
-<dd><p class="first last">Static operators formatted to be passed into the static argument of the <cite>hamiltonian</cite> class.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>static: list</strong></dt><dd><p>Static operators formatted to be passed into the static argument of the <cite>hamiltonian</cite> class.</p>
 </dd>
-<dt><strong>dynamic: list</strong></dt>
-<dd><p class="first last">Dynamic operators formatted to be passed into the dynamic argument of the <cite>hamiltonian</cite> class.</p>
+<dt><strong>dynamic: list</strong></dt><dd><p>Dynamic operators formatted to be passed into the dynamic argument of the <cite>hamiltonian</cite> class.</p>
 </dd>
 </dl>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
-<dt><strong>tuple</strong></dt>
-<dd><dl class="first last docutils">
-<dt><cite>(static, dynamic)</cite>, where</dt>
-<dd><ul class="first last simple">
-<li><dl class="first docutils">
-<dt>list: <cite>static</cite>: operator strings with “x” and “y” expanded into “+” and “-“, formatted to </dt>
-<dd>be passed into the static argument of the <cite>hamiltonian</cite> class.</dd>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>tuple</strong></dt><dd><dl class="simple">
+<dt><cite>(static, dynamic)</cite>, where</dt><dd><ul class="simple">
+<li><dl class="simple">
+<dt>list: <cite>static</cite>: operator strings with “x” and “y” expanded into “+” and “-“, formatted to </dt><dd><p>be passed into the static argument of the <cite>hamiltonian</cite> class.</p>
+</dd>
 </dl>
 </li>
-<li><dl class="first docutils">
-<dt>list: <cite>dynamic</cite>: operator strings with “x” and “y” expanded into “+” and “-“, formatted to </dt>
-<dd>be passed into the dynamic argument of the <cite>hamiltonian</cite> class.</dd>
+<li><dl class="simple">
+<dt>list: <cite>dynamic</cite>: operator strings with “x” and “y” expanded into “+” and “-“, formatted to </dt><dd><p>be passed into the dynamic argument of the <cite>hamiltonian</cite> class.</p>
+</dd>
 </dl>
 </li>
 </ul>
@@ -765,14 +764,12 @@ to calculate the eigenvaues of the reduced DM.</p>
 </dl>
 </dd>
 </dl>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 <p class="rubric">Notes</p>
 <p>This function works with the <cite>tensor_basis</cite> and other basis which use the “|” symbol in the opstr.</p>
 <p class="rubric">Examples</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">static</span> <span class="o">=</span> <span class="p">[[</span><span class="s2">&quot;xx&quot;</span><span class="p">,[[</span><span class="mf">1.0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">]]],[</span><span class="s2">&quot;yy&quot;</span><span class="p">,[[</span><span class="mf">1.0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">]]]]</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">static</span> <span class="o">=</span> <span class="p">[[</span><span class="s2">&quot;xx&quot;</span><span class="p">,[[</span><span class="mf">1.0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">]]],[</span><span class="s2">&quot;yy&quot;</span><span class="p">,[[</span><span class="mf">1.0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">]]]]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">dynamic</span> <span class="o">=</span> <span class="p">[[</span><span class="s2">&quot;y&quot;</span><span class="p">,[[</span><span class="mf">1.0</span><span class="p">,</span><span class="mi">0</span><span class="p">]],</span><span class="k">lambda</span> <span class="n">t</span><span class="p">:</span> <span class="n">t</span><span class="p">,[]]]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">expanded_form</span><span class="p">(</span><span class="n">static</span><span class="p">,</span><span class="n">dynamic</span><span class="p">)</span>               
 </pre></div>
@@ -781,44 +778,36 @@ to calculate the eigenvaues of the reduced DM.</p>
 
 <dl class="method">
 <dt id="quspin.basis.spinless_fermion_basis_general.get_amp">
-<code class="descname">get_amp</code><span class="sig-paren">(</span><em>states</em>, <em>out=None</em>, <em>amps=None</em>, <em>mode='representative'</em><span class="sig-paren">)</span><a class="headerlink" href="#quspin.basis.spinless_fermion_basis_general.get_amp" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">get_amp</code><span class="sig-paren">(</span><em class="sig-param">states</em>, <em class="sig-param">out=None</em>, <em class="sig-param">amps=None</em>, <em class="sig-param">mode='representative'</em><span class="sig-paren">)</span><a class="headerlink" href="#quspin.basis.spinless_fermion_basis_general.get_amp" title="Permalink to this definition">¶</a></dt>
 <dd><p>Computes the rescale factor of state amplitudes between the symmetry-reduced and full basis.</p>
 <p>Given a quantum state <span class="math notranslate nohighlight">\(s\)</span> and a state amplitude in the full basis <span class="math notranslate nohighlight">\(\psi_s\)</span>, its representative (under the symemtries) 
 <span class="math notranslate nohighlight">\(r(s)\)</span> with a corresponding amplitude <span class="math notranslate nohighlight">\(\psi^\text{sym}_r\)</span>, the function computes the ratio <span class="math notranslate nohighlight">\(C\)</span>, defined as</p>
 <div class="math notranslate nohighlight">
 \[\psi_s = C\psi_r^\text{sym} \]</div>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
-<dt><strong>states</strong> <span class="classifier-delimiter">:</span> <span class="classifier">array_like(int)</span></dt>
-<dd><p class="first last">Fock-basis (z-basis) states to find the amplitude rescale factor <span class="math notranslate nohighlight">\(C\)</span> of. States are stored in integer representations.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>states</strong><span class="classifier">array_like(int)</span></dt><dd><p>Fock-basis (z-basis) states to find the amplitude rescale factor <span class="math notranslate nohighlight">\(C\)</span> of. States are stored in integer representations.</p>
 </dd>
-<dt><strong>out</strong> <span class="classifier-delimiter">:</span> <span class="classifier">numpy.ndarray(float), optional</span></dt>
-<dd><p class="first last">variable to store the rescale factors <span class="math notranslate nohighlight">\(C\)</span> of the states in. Must be a real or complex-valued <cite>numpy.ndarray</cite> of the same shape as <cite>states</cite>.</p>
+<dt><strong>out</strong><span class="classifier">numpy.ndarray(float), optional</span></dt><dd><p>variable to store the rescale factors <span class="math notranslate nohighlight">\(C\)</span> of the states in. Must be a real or complex-valued <cite>numpy.ndarray</cite> of the same shape as <cite>states</cite>.</p>
 </dd>
-<dt><strong>amps</strong> <span class="classifier-delimiter">:</span> <span class="classifier">numpy.ndarray(float), optional</span></dt>
-<dd><p class="first last">array of amplitudes to rescale by the amplitude factor <span class="math notranslate nohighlight">\(C\)</span> (see <cite>mode</cite>). Updated in-place. Must be a real or complex-valued <cite>numpy.ndarray</cite> of the same shape as <cite>states</cite>.</p>
+<dt><strong>amps</strong><span class="classifier">numpy.ndarray(float), optional</span></dt><dd><p>array of amplitudes to rescale by the amplitude factor <span class="math notranslate nohighlight">\(C\)</span> (see <cite>mode</cite>). Updated in-place. Must be a real or complex-valued <cite>numpy.ndarray</cite> of the same shape as <cite>states</cite>.</p>
 </dd>
-<dt><strong>mode</strong> <span class="classifier-delimiter">:</span> <span class="classifier">string, optional</span></dt>
-<dd><ul class="first last simple">
-<li><dl class="first docutils">
-<dt>if <cite>mode=’representative’</cite> (default), then the function assumes that</dt>
-<dd><ol class="first last lowerroman">
-<li><cite>states</cite> already contains representatives (i.e. states in the symmetry-reduced basis);</li>
-<li><cite>amps</cite> (if passed) are amplitudes in the symmetry-reduced basis (<span class="math notranslate nohighlight">\(\psi_r^\text{symm}\)</span>). The function will update <cite>amps</cite> in-place to <span class="math notranslate nohighlight">\(\psi_s\)</span>.</li>
+<dt><strong>mode</strong><span class="classifier">string, optional</span></dt><dd><ul class="simple">
+<li><dl class="simple">
+<dt>if <cite>mode=’representative’</cite> (default), then the function assumes that</dt><dd><ol class="lowerroman simple">
+<li><p><cite>states</cite> already contains representatives (i.e. states in the symmetry-reduced basis);</p></li>
+<li><p><cite>amps</cite> (if passed) are amplitudes in the symmetry-reduced basis (<span class="math notranslate nohighlight">\(\psi_r^\text{symm}\)</span>). The function will update <cite>amps</cite> in-place to <span class="math notranslate nohighlight">\(\psi_s\)</span>.</p></li>
 </ol>
 </dd>
 </dl>
 </li>
-<li><dl class="first docutils">
-<dt>if <cite>mode=’full_basis’</cite>, then the function assumes that</dt>
-<dd><ol class="first last lowerroman">
-<li><cite>states</cite> contains full-basis states (the funciton will compute the corresponding representatives);</li>
-<li><dl class="first docutils">
-<dt><cite>amps</cite> (if passed) are amplitudes in the full basis (<span class="math notranslate nohighlight">\(\psi_s\)</span>). The function will update <cite>amps</cite> in-place to <span class="math notranslate nohighlight">\(\psi_r^\text{symm}\)</span>;</dt>
-<dd><strong>Note</strong>: the function will also update the variable <cite>states</cite> in place with the corresponding representatives.</dd>
+<li><dl class="simple">
+<dt>if <cite>mode=’full_basis’</cite>, then the function assumes that</dt><dd><ol class="lowerroman simple">
+<li><p><cite>states</cite> contains full-basis states (the funciton will compute the corresponding representatives);</p></li>
+<li><dl class="simple">
+<dt><cite>amps</cite> (if passed) are amplitudes in the full basis (<span class="math notranslate nohighlight">\(\psi_s\)</span>). The function will update <cite>amps</cite> in-place to <span class="math notranslate nohighlight">\(\psi_r^\text{symm}\)</span>;</dt><dd><p><strong>Note</strong>: the function will also update the variable <cite>states</cite> in place with the corresponding representatives.</p>
+</dd>
 </dl>
 </li>
 </ol>
@@ -828,67 +817,57 @@ to calculate the eigenvaues of the reduced DM.</p>
 </ul>
 </dd>
 </dl>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
-<dt><strong>array_like(float)</strong></dt>
-<dd><p class="first last">amplitude rescale factor <span class="math notranslate nohighlight">\(C\)</span> (see expression above).</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>array_like(float)</strong></dt><dd><p>amplitude rescale factor <span class="math notranslate nohighlight">\(C\)</span> (see expression above).</p>
 </dd>
 </dl>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 <p class="rubric">Notes</p>
 <ul class="simple">
-<li>Particularly useful when a given operation cannot be carried away in the symmetry-reduced basis in a straightforward manner.</li>
-<li>To transform an entire state from a symmetry-reduced basis to the full (symmetry-free) basis, use the <cite>basis.get_vec()</cite> function.</li>
-<li>Returns zero, if the state passed to the function is not part of the symmetry-reduced basis.</li>
-<li>If <cite>amps</cite> is passed, the user has to make sure that the input data in <cite>amps</cite> correspond to the <cite>states</cite>.</li>
-<li>The function assumes that <cite>states</cite> comply with the particle conservation symmetry the <cite>basis</cite> was constructed with.</li>
+<li><p>Particularly useful when a given operation cannot be carried away in the symmetry-reduced basis in a straightforward manner.</p></li>
+<li><p>To transform an entire state from a symmetry-reduced basis to the full (symmetry-free) basis, use the <cite>basis.get_vec()</cite> function.</p></li>
+<li><p>Returns zero, if the state passed to the function is not part of the symmetry-reduced basis.</p></li>
+<li><p>If <cite>amps</cite> is passed, the user has to make sure that the input data in <cite>amps</cite> correspond to the <cite>states</cite>.</p></li>
+<li><p>The function assumes that <cite>states</cite> comply with the particle conservation symmetry the <cite>basis</cite> was constructed with.</p></li>
 </ul>
 <p class="rubric">Examples</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">C</span> <span class="o">=</span> <span class="n">get_amp</span><span class="p">(</span><span class="n">states</span><span class="p">,</span><span class="n">out</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">amps</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">mode</span><span class="o">=</span><span class="s1">&#39;representative&#39;</span><span class="p">)</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">C</span> <span class="o">=</span> <span class="n">get_amp</span><span class="p">(</span><span class="n">states</span><span class="p">,</span><span class="n">out</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">amps</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">mode</span><span class="o">=</span><span class="s1">&#39;representative&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </dd></dl>
 
 <dl class="method">
 <dt id="quspin.basis.spinless_fermion_basis_general.get_proj">
-<code class="descname">get_proj</code><span class="sig-paren">(</span><em>dtype</em>, <em>pcon=False</em><span class="sig-paren">)</span><a class="headerlink" href="#quspin.basis.spinless_fermion_basis_general.get_proj" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">get_proj</code><span class="sig-paren">(</span><em class="sig-param">dtype</em>, <em class="sig-param">pcon=False</em><span class="sig-paren">)</span><a class="headerlink" href="#quspin.basis.spinless_fermion_basis_general.get_proj" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculates transformation/projector from symmetry-reduced basis to full (symmetry-free) basis.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
-<dt><strong>dtype</strong> <span class="classifier-delimiter">:</span> <span class="classifier">‘type’</span></dt>
-<dd><p class="first last">Data type (e.g. numpy.float64) to construct the projector with.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>dtype</strong><span class="classifier">‘type’</span></dt><dd><p>Data type (e.g. numpy.float64) to construct the projector with.</p>
 </dd>
-<dt><strong>sparse</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool, optional</span></dt>
-<dd><p class="first last">Whether or not the output should be in sparse format. Default is <cite>True</cite>.</p>
-</dd>
-<dt><strong>pcon</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool, optional</span></dt>
-<dd><p class="first last">Whether or not to return the projector to the particle number (magnetisation) conserving basis 
+<dt><strong>pcon</strong><span class="classifier">bool, optional</span></dt><dd><p>Whether or not to return the projector to the particle number (magnetisation) conserving basis 
 (useful in bosonic/single particle systems). Default is <cite>pcon=False</cite>.</p>
 </dd>
 </dl>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
-<dt><strong>scipy.sparse.csc_matrix</strong></dt>
-<dd><p class="first last">Transformation/projector between the symmetry-reduced and the full basis.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>scipy.sparse.csc_matrix</strong></dt><dd><p>Transformation/projector between the symmetry-reduced and the full basis.</p>
 </dd>
 </dl>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 <p class="rubric">Notes</p>
-<p>Particularly useful when a given operation canot be carried away in the symmetry-reduced basis
-in a straightforward manner.</p>
+<ul class="simple">
+<li><p>particularly useful when a given operation canot be carried out in the symmetry-reduced basis</p></li>
+</ul>
+<p>in a straightforward manner.
+* see also <cite>Op_shift_sector()</cite>.</p>
 <p class="rubric">Examples</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">P</span> <span class="o">=</span> <span class="n">get_proj</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">,</span><span class="n">pcon</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">P</span> <span class="o">=</span> <span class="n">get_proj</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">,</span><span class="n">pcon</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">P</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -896,75 +875,35 @@ in a straightforward manner.</p>
 
 <dl class="method">
 <dt id="quspin.basis.spinless_fermion_basis_general.get_vec">
-<code class="descname">get_vec</code><span class="sig-paren">(</span><em>v0</em>, <em>sparse=True</em>, <em>pcon=False</em><span class="sig-paren">)</span><a class="headerlink" href="#quspin.basis.spinless_fermion_basis_general.get_vec" title="Permalink to this definition">¶</a></dt>
-<dd><p>Transforms state from symmetry-reduced basis to full (symmetry-free) basis.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
-<dt><strong>v0</strong> <span class="classifier-delimiter">:</span> <span class="classifier">numpy.ndarray</span></dt>
-<dd><p class="first last">Contains in its columns the states in the symmetry-reduced basis.</p>
-</dd>
-<dt><strong>sparse</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool, optional</span></dt>
-<dd><p class="first last">Whether or not the output should be in sparse format. Default is <cite>True</cite>.</p>
-</dd>
-<dt><strong>pcon</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool, optional</span></dt>
-<dd><p class="first last">Whether or not to return the projector to the particle number (magnetisation) conserving basis 
-(useful in bosonic/single particle systems). Default is <cite>pcon=False</cite>.</p>
-</dd>
-</dl>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
-<dt><strong>numpy.ndarray</strong></dt>
-<dd><p class="first last">Array containing the state <cite>v0</cite> in the full basis.</p>
-</dd>
-</dl>
-</td>
-</tr>
-</tbody>
-</table>
+<code class="sig-name descname">get_vec</code><span class="sig-paren">(</span><em class="sig-param">v0</em>, <em class="sig-param">sparse=True</em>, <em class="sig-param">pcon=False</em><span class="sig-paren">)</span><a class="headerlink" href="#quspin.basis.spinless_fermion_basis_general.get_vec" title="Permalink to this definition">¶</a></dt>
+<dd><p>DEPRECATED (cf <cite>project_from</cite>). Transforms state from symmetry-reduced basis to full (symmetry-free) basis.</p>
 <p class="rubric">Notes</p>
-<p>Particularly useful when a given operation cannot be carried away in the symmetry-reduced basis
-in a straightforward manner.</p>
-<p>Supports parallelisation to multiple states listed in the columns.</p>
-<p class="rubric">Examples</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">v_full</span> <span class="o">=</span> <span class="n">get_vec</span><span class="p">(</span><span class="n">v0</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">v_full</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">v0</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
-</pre></div>
-</div>
+<p>This function is <span class="red">deprecated</span>. Use <cite>project_from()</cite> instead; see also the inverse function <cite>project_to()</cite>.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="quspin.basis.spinless_fermion_basis_general.index">
-<code class="descname">index</code><span class="sig-paren">(</span><em>s</em><span class="sig-paren">)</span><a class="headerlink" href="#quspin.basis.spinless_fermion_basis_general.index" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">index</code><span class="sig-paren">(</span><em class="sig-param">s</em><span class="sig-paren">)</span><a class="headerlink" href="#quspin.basis.spinless_fermion_basis_general.index" title="Permalink to this definition">¶</a></dt>
 <dd><p>Finds the index of user-defined Fock state in any lattice basis.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
-<dt><strong>s</strong> <span class="classifier-delimiter">:</span> <span class="classifier">{str, int}</span></dt>
-<dd><p class="first last">Defines the Fock state with number of particles (spins) per site in underlying lattice <cite>basis</cite>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>s</strong><span class="classifier">{str, int}</span></dt><dd><p>Defines the Fock state with number of particles (spins) per site in underlying lattice <cite>basis</cite>.</p>
 </dd>
 </dl>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
-<dt><strong>int</strong></dt>
-<dd><p class="first last">Position of the Fock state in the lattice basis.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>int</strong></dt><dd><p>Position of the Fock state in the lattice basis.</p>
 </dd>
 </dl>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 <p class="rubric">Notes</p>
 <p>Particularly useful for defining initial Fock states through a unit vector in the direction specified
 by <cite>index()</cite>.</p>
 <p class="rubric">Examples</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">i0</span> <span class="o">=</span> <span class="n">index</span><span class="p">(</span><span class="s2">&quot;111000&quot;</span><span class="p">)</span> <span class="c1"># pick state from basis set</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">i0</span> <span class="o">=</span> <span class="n">index</span><span class="p">(</span><span class="s2">&quot;111000&quot;</span><span class="p">)</span> <span class="c1"># pick state from basis set</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">basis</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">i0</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">psi</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">basis</span><span class="o">.</span><span class="n">Ns</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
@@ -975,100 +914,71 @@ by <cite>index()</cite>.</p>
 
 <dl class="method">
 <dt id="quspin.basis.spinless_fermion_basis_general.inplace_Op">
-<code class="descname">inplace_Op</code><span class="sig-paren">(</span><em>v_in</em>, <em>opstr</em>, <em>indx</em>, <em>J</em>, <em>dtype</em>, <em>transposed=False</em>, <em>conjugated=False</em>, <em>v_out=None</em><span class="sig-paren">)</span><a class="headerlink" href="#quspin.basis.spinless_fermion_basis_general.inplace_Op" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">inplace_Op</code><span class="sig-paren">(</span><em class="sig-param">v_in</em>, <em class="sig-param">op_list</em>, <em class="sig-param">dtype</em>, <em class="sig-param">transposed=False</em>, <em class="sig-param">conjugated=False</em>, <em class="sig-param">v_out=None</em><span class="sig-paren">)</span><a class="headerlink" href="#quspin.basis.spinless_fermion_basis_general.inplace_Op" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculates the action of an operator on a state.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
-<dt><strong>v_in</strong> <span class="classifier-delimiter">:</span> <span class="classifier">array_like</span></dt>
-<dd><p class="first last">state (or states stored in columns) to act on with the operator.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>v_in</strong><span class="classifier">array_like</span></dt><dd><p>state (or states stored in columns) to act on with the operator.</p>
 </dd>
-<dt><strong>opstr</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
-<dd><p class="first">Operator string in the lattice basis format. For instance:</p>
-<div class="last highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">opstr</span> <span class="o">=</span> <span class="s2">&quot;zz&quot;</span>
-</pre></div>
-</div>
+<dt><strong>op_list</strong><span class="classifier">list</span></dt><dd><p>Operator string list which defines the operator to apply. Follows the format <cite>[[“z”,[i],Jz[i]] for i in range(L)], [“x”,[i],Jx[j]] for j in range(L)],…]</cite>.</p>
 </dd>
-<dt><strong>indx</strong> <span class="classifier-delimiter">:</span> <span class="classifier">list(int)</span></dt>
-<dd><p class="first">List of integers to designate the sites the lattice basis operator is defined on. For instance:</p>
-<div class="last highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">indx</span> <span class="o">=</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">]</span>
-</pre></div>
-</div>
+<dt><strong>dtype</strong><span class="classifier">‘type’</span></dt><dd><p>Data type (e.g. <cite>numpy.float64</cite>) to construct the operator with.</p>
 </dd>
-<dt><strong>J</strong> <span class="classifier-delimiter">:</span> <span class="classifier">scalar</span></dt>
-<dd><p class="first last">Coupling strength.</p>
+<dt><strong>transposed</strong><span class="classifier">bool, optional</span></dt><dd><p>if <cite>True</cite> this function will act with the trasposed operator.</p>
 </dd>
-<dt><strong>dtype</strong> <span class="classifier-delimiter">:</span> <span class="classifier">‘type’</span></dt>
-<dd><p class="first last">Data type (e.g. <cite>numpy.float64</cite>) to construct the operator with.</p>
+<dt><strong>conjugated</strong><span class="classifier">bool, optional</span></dt><dd><p>if <cite>True</cite> this function will act with the conjugated operator.</p>
 </dd>
-<dt><strong>transposed</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool, optional</span></dt>
-<dd><p class="first last">if <cite>True</cite> this function will act with the trasposed operator.</p>
-</dd>
-<dt><strong>conjugated</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool, optional</span></dt>
-<dd><p class="first last">if <cite>True</cite> this function will act with the conjugated operator.</p>
-</dd>
-<dt><strong>v_out</strong> <span class="classifier-delimiter">:</span> <span class="classifier">array_like</span></dt>
-<dd><p class="first last">output array, must be the same shape as <cite>v_in</cite> and must match the type of the output.</p>
+<dt><strong>v_out</strong><span class="classifier">array_like</span></dt><dd><p>output array, must be the same shape as <cite>v_in</cite> and must match the type of the output.</p>
 </dd>
 </dl>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
-<dt><strong>numpy.ndarray</strong></dt>
-<dd><ul class="first last simple">
-<li>if <cite>v_out</cite> is not <cite>None</cite>, this function modifies <cite>v_out</cite> inplace and returns it.</li>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>numpy.ndarray</strong></dt><dd><ul class="simple">
+<li><p>if <cite>v_out</cite> is not <cite>None</cite>, this function modifies <cite>v_out</cite> inplace and returns it.</p></li>
 </ul>
 </dd>
 </dl>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 <p class="rubric">Notes</p>
 <p>This function works with the <cite>tensor_basis</cite> and other basis which use the “|” symbol in the opstr.</p>
 <p class="rubric">Examples</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">J</span> <span class="o">=</span> <span class="mf">1.41</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">J</span> <span class="o">=</span> <span class="mf">1.41</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">indx</span> <span class="o">=</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">opstr</span> <span class="o">=</span> <span class="s2">&quot;zz&quot;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">dtype</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">ME</span><span class="p">,</span> <span class="n">row</span><span class="p">,</span> <span class="n">col</span> <span class="o">=</span> <span class="n">Op</span><span class="p">(</span><span class="n">opstr</span><span class="p">,</span><span class="n">indx</span><span class="p">,</span><span class="n">J</span><span class="p">,</span><span class="n">dtype</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">op_list</span><span class="o">=</span><span class="p">[[</span><span class="n">opstr</span><span class="p">,</span><span class="n">indx</span><span class="p">,</span><span class="n">J</span><span class="p">]]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ME</span><span class="p">,</span> <span class="n">row</span><span class="p">,</span> <span class="n">col</span> <span class="o">=</span> <span class="n">inplace_Op</span><span class="p">(</span><span class="n">op_list</span><span class="p">,</span><span class="n">dtype</span><span class="p">)</span>
 </pre></div>
 </div>
 </dd></dl>
 
 <dl class="method">
 <dt id="quspin.basis.spinless_fermion_basis_general.int_to_state">
-<code class="descname">int_to_state</code><span class="sig-paren">(</span><em>state</em>, <em>bracket_notation=True</em><span class="sig-paren">)</span><a class="headerlink" href="#quspin.basis.spinless_fermion_basis_general.int_to_state" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">int_to_state</code><span class="sig-paren">(</span><em class="sig-param">state</em>, <em class="sig-param">bracket_notation=True</em><span class="sig-paren">)</span><a class="headerlink" href="#quspin.basis.spinless_fermion_basis_general.int_to_state" title="Permalink to this definition">¶</a></dt>
 <dd><p>Finds string representation of a state defined in integer representation.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
-<dt><strong>state</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
-<dd><p class="first last">Defines the Fock state in integer representation in underlying lattice <cite>basis</cite>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>state</strong><span class="classifier">int</span></dt><dd><p>Defines the Fock state in integer representation in underlying lattice <cite>basis</cite>.</p>
 </dd>
-<dt><strong>bracket_notation</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool, optional</span></dt>
-<dd><p class="first last">Toggles whether to return the state in <a href="#id2"><span class="problematic" id="id3">|</span></a>str&gt; notation.</p>
+<dt><strong>bracket_notation</strong><span class="classifier">bool, optional</span></dt><dd><p>Toggles whether to return the state in <a href="#id2"><span class="problematic" id="id3">|</span></a>str&gt; notation.</p>
 </dd>
 </dl>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
-<dt><strong>str</strong></dt>
-<dd><p class="first last">String corresponding to the Fock <cite>state</cite> in the lattice basis.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>str</strong></dt><dd><p>String corresponding to the Fock <cite>state</cite> in the lattice basis.</p>
 </dd>
 </dl>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 <p class="rubric">Notes</p>
 <p>This function is the einverse of <cite>state_to_int</cite>.</p>
 <p class="rubric">Examples</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">s</span> <span class="o">=</span> <span class="n">basis</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="c1"># pick state from basis set</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">s</span> <span class="o">=</span> <span class="n">basis</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="c1"># pick state from basis set</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">s_str</span> <span class="o">=</span> <span class="n">basis</span><span class="o">.</span><span class="n">int_to_state</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">s_str</span><span class="p">)</span>
 </pre></div>
@@ -1077,30 +987,56 @@ by <cite>index()</cite>.</p>
 
 <dl class="method">
 <dt id="quspin.basis.spinless_fermion_basis_general.make">
-<code class="descname">make</code><span class="sig-paren">(</span><em>Ns_block_est=None</em><span class="sig-paren">)</span><a class="headerlink" href="#quspin.basis.spinless_fermion_basis_general.make" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">make</code><span class="sig-paren">(</span><em class="sig-param">Ns_block_est=None</em>, <em class="sig-param">N_p=None</em><span class="sig-paren">)</span><a class="headerlink" href="#quspin.basis.spinless_fermion_basis_general.make" title="Permalink to this definition">¶</a></dt>
 <dd><p>Creates the entire basis by calling the basis constructor.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
-<dt><strong>Ns_block_est: int, optional</strong></dt>
-<dd><p class="first last">Overwrites the internal estimate of the size of the reduced Hilbert space for the given symmetries. This can be used to help conserve memory if the exact size of the H-space is known ahead of time.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>Ns_block_est: int, optional</strong></dt><dd><p>Overwrites the internal estimate of the size of the reduced Hilbert space for the given symmetries. This can be used to help conserve memory if the exact size of the H-space is known ahead of time.</p>
+</dd>
+<dt><strong>N_p: int, optional</strong></dt><dd><p>number of bits to use in the prefix label used to generate blocks for searching positions of representatives.</p>
 </dd>
 </dl>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
-<dt><strong>int</strong></dt>
-<dd><p class="first last">Total number of states in the (symmetry-reduced) Hilbert space.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>int</strong></dt><dd><p>Total number of states in the (symmetry-reduced) Hilbert space.</p>
 </dd>
 </dl>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>The memory stored in the basis grows exponentially as exactly <span class="math notranslate nohighlight">\(2^{N_p+1}\)</span>. The default behavior is to use <cite>N_p</cite> such that 
+the size of the stored information for the representative bounds is approximately as large as the basis. This is not as effective
+for basis which small particle numbers as the blocks have very uneven sizes. To not use the blocks just set N_p=0.</p>
 <p class="rubric">Examples</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">N</span><span class="p">,</span> <span class="n">Nup</span> <span class="o">=</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">4</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">N</span><span class="p">,</span> <span class="n">Nup</span> <span class="o">=</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">4</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">basis</span><span class="o">=</span><span class="n">spin_basis_general</span><span class="p">(</span><span class="n">N</span><span class="p">,</span><span class="n">Nup</span><span class="o">=</span><span class="n">Nup</span><span class="p">,</span><span class="n">make_basis</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">basis</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">basis</span><span class="o">.</span><span class="n">make</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">basis</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="quspin.basis.spinless_fermion_basis_general.make_basis_blocks">
+<code class="sig-name descname">make_basis_blocks</code><span class="sig-paren">(</span><em class="sig-param">N_p=None</em><span class="sig-paren">)</span><a class="headerlink" href="#quspin.basis.spinless_fermion_basis_general.make_basis_blocks" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates/modifies the bounds for representatives based on prefix tages.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>N_p: int, optional</strong></dt><dd><p>number of bits to use in the prefix label used to generate blocks for searching positions of representatives.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>The memory stored in the basis grows exponentially as exactly <span class="math notranslate nohighlight">\(2^{N_p+1}\)</span>. The default behavior is to use <cite>N_p</cite> such that 
+the size of the stored information for the representative bounds is approximately as large as the basis. This is not as effective
+for basis which small particle numbers as the blocks have very uneven sizes. To not use the blocks just set N_p=0.</p>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">N</span><span class="p">,</span> <span class="n">Nup</span> <span class="o">=</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">4</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">basis</span><span class="o">=</span><span class="n">spin_basis_general</span><span class="p">(</span><span class="n">N</span><span class="p">,</span><span class="n">Nup</span><span class="o">=</span><span class="n">Nup</span><span class="p">,</span><span class="n">make_basis</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">basis</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">basis</span><span class="o">.</span><span class="n">make</span><span class="p">()</span>
@@ -1111,38 +1047,31 @@ by <cite>index()</cite>.</p>
 
 <dl class="method">
 <dt id="quspin.basis.spinless_fermion_basis_general.normalization">
-<code class="descname">normalization</code><span class="sig-paren">(</span><em>states</em>, <em>out=None</em><span class="sig-paren">)</span><a class="headerlink" href="#quspin.basis.spinless_fermion_basis_general.normalization" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">normalization</code><span class="sig-paren">(</span><em class="sig-param">states</em>, <em class="sig-param">out=None</em><span class="sig-paren">)</span><a class="headerlink" href="#quspin.basis.spinless_fermion_basis_general.normalization" title="Permalink to this definition">¶</a></dt>
 <dd><p>Computes normalization of <cite>basis</cite> states.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
-<dt><strong>states</strong> <span class="classifier-delimiter">:</span> <span class="classifier">array_like(int)</span></dt>
-<dd><p class="first last">Fock-basis (z-basis) states to find the normalizations of. States are stored in integer representations.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>states</strong><span class="classifier">array_like(int)</span></dt><dd><p>Fock-basis (z-basis) states to find the normalizations of. States are stored in integer representations.</p>
 </dd>
-<dt><strong>out</strong> <span class="classifier-delimiter">:</span> <span class="classifier">numpy.ndarray(unsigned int), optional</span></dt>
-<dd><p class="first last">variable to store the normalizations of the states in. Must be a <cite>numpy.ndarray</cite> of datatype <cite>unsigned int</cite> (e.g. <cite>numpy.uint16</cite>), and same shape as <cite>states</cite>.</p>
+<dt><strong>out</strong><span class="classifier">numpy.ndarray(unsigned int), optional</span></dt><dd><p>variable to store the normalizations of the states in. Must be a <cite>numpy.ndarray</cite> of datatype <cite>unsigned int</cite> (e.g. <cite>numpy.uint16</cite>), and same shape as <cite>states</cite>.</p>
 </dd>
 </dl>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
-<dt><strong>array_like(int)</strong></dt>
-<dd><p class="first last">normalizations of <cite>states</cite> for the given (symmetry-reduced) <cite>basis</cite>.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>array_like(int)</strong></dt><dd><p>normalizations of <cite>states</cite> for the given (symmetry-reduced) <cite>basis</cite>.</p>
 </dd>
 </dl>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 <p class="rubric">Notes</p>
 <ul class="simple">
-<li>Returns zero, if the state is not part of the symmetry-reduced basis.</li>
-<li>The normalizations can be used to compute matrix elements in the symmetry-reduced basis.</li>
+<li><p>Returns zero, if the state is not part of the symmetry-reduced basis.</p></li>
+<li><p>The normalizations can be used to compute matrix elements in the symmetry-reduced basis.</p></li>
 </ul>
 <p class="rubric">Examples</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">basis</span><span class="o">=</span><span class="n">spin_basis_general</span><span class="p">(</span><span class="n">N</span><span class="p">,</span><span class="n">Nup</span><span class="o">=</span><span class="n">Nup</span><span class="p">,</span><span class="n">make_basis</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">basis</span><span class="o">=</span><span class="n">spin_basis_general</span><span class="p">(</span><span class="n">N</span><span class="p">,</span><span class="n">Nup</span><span class="o">=</span><span class="n">Nup</span><span class="p">,</span><span class="n">make_basis</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">s</span> <span class="o">=</span> <span class="mi">17</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">norm_s</span> <span class="o">=</span> <span class="n">basis</span><span class="o">.</span><span class="n">normalization</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">norm_s</span><span class="p">)</span>
@@ -1150,110 +1079,173 @@ by <cite>index()</cite>.</p>
 </div>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="method">
 <dt id="quspin.basis.spinless_fermion_basis_general.operators">
-<code class="descname">operators</code><a class="headerlink" href="#quspin.basis.spinless_fermion_basis_general.operators" title="Permalink to this definition">¶</a></dt>
+<em class="property">property </em><code class="sig-name descname">operators</code><a class="headerlink" href="#quspin.basis.spinless_fermion_basis_general.operators" title="Permalink to this definition">¶</a></dt>
 <dd><p>set: set of available operator strings.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="quspin.basis.spinless_fermion_basis_general.partial_trace">
-<code class="descname">partial_trace</code><span class="sig-paren">(</span><em>state</em>, <em>sub_sys_A=None</em>, <em>subsys_ordering=True</em>, <em>return_rdm='A'</em>, <em>enforce_pure=False</em>, <em>sparse=False</em><span class="sig-paren">)</span><a class="headerlink" href="#quspin.basis.spinless_fermion_basis_general.partial_trace" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">partial_trace</code><span class="sig-paren">(</span><em class="sig-param">state</em>, <em class="sig-param">sub_sys_A=None</em>, <em class="sig-param">subsys_ordering=True</em>, <em class="sig-param">return_rdm='A'</em>, <em class="sig-param">enforce_pure=False</em>, <em class="sig-param">sparse=False</em><span class="sig-paren">)</span><a class="headerlink" href="#quspin.basis.spinless_fermion_basis_general.partial_trace" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculates reduced density matrix, through a partial trace of a quantum state in a lattice <cite>basis</cite>.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
-<dt><strong>state</strong> <span class="classifier-delimiter">:</span> <span class="classifier">obj</span></dt>
-<dd><p class="first">State of the quantum system. Can be either one of:</p>
-<blockquote class="last">
+<dl class="field-list">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl>
+<dt><strong>state</strong><span class="classifier">obj</span></dt><dd><p>State of the quantum system. Can be either one of:</p>
+<blockquote>
 <div><ul class="simple">
-<li>numpy.ndarray [shape (Ns,)]: pure state (default).</li>
-<li>numpy.ndarray [shape (Ns,Ns)]: density matrix (DM).</li>
+<li><p>numpy.ndarray [shape (Ns,)]: pure state (default).</p></li>
+<li><p>numpy.ndarray [shape (Ns,Ns)]: density matrix (DM).</p></li>
 </ul>
 </div></blockquote>
 </dd>
-<dt><strong>sub_sys_A</strong> <span class="classifier-delimiter">:</span> <span class="classifier">tuple/list, optional</span></dt>
-<dd><p class="first last">Defines the sites contained in subsystem A [by python convention the first site of the chain is labelled j=0].
+<dt><strong>sub_sys_A</strong><span class="classifier">tuple/list, optional</span></dt><dd><p>Defines the sites contained in subsystem A [by python convention the first site of the chain is labelled j=0].
 Default is <cite>tuple(range(N//2))</cite> with <cite>N</cite> the number of lattice sites.</p>
 </dd>
-<dt><strong>return_rdm</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str, optional</span></dt>
-<dd><p class="first">Toggles returning the reduced DM. Can be tierh one of:</p>
-<blockquote class="last">
+<dt><strong>return_rdm</strong><span class="classifier">str, optional</span></dt><dd><p>Toggles returning the reduced DM. Can be tierh one of:</p>
+<blockquote>
 <div><ul class="simple">
-<li>“A”: returns reduced DM of subsystem A.</li>
-<li>“B”: returns reduced DM of subsystem B.</li>
-<li>“both”: returns reduced DM of both A and B subsystems.</li>
+<li><p>“A”: returns reduced DM of subsystem A.</p></li>
+<li><p>“B”: returns reduced DM of subsystem B.</p></li>
+<li><p>“both”: returns reduced DM of both A and B subsystems.</p></li>
 </ul>
 </div></blockquote>
 </dd>
-<dt><strong>subsys_ordering</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool, optional</span></dt>
-<dd><p class="first last">Whether or not to reorder the sites in <cite>sub_sys_A</cite> in ascending order. Default is <cite>True</cite>.</p>
+<dt><strong>subsys_ordering</strong><span class="classifier">bool, optional</span></dt><dd><p>Whether or not to reorder the sites in <cite>sub_sys_A</cite> in ascending order. Default is <cite>True</cite>.</p>
 </dd>
-<dt><strong>enforce_pure</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool, optional</span></dt>
-<dd><p class="first last">Whether or not to assume <cite>state</cite> is a colelction of pure states or a mixed density matrix, if
+<dt><strong>enforce_pure</strong><span class="classifier">bool, optional</span></dt><dd><p>Whether or not to assume <cite>state</cite> is a colelction of pure states or a mixed density matrix, if
 it is a square array. Default is <cite>False</cite>.</p>
 </dd>
-<dt><strong>sparse</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool, optional</span></dt>
-<dd><p class="first last">Whether or not to return a sparse DM. Default is <cite>False</cite>.</p>
+<dt><strong>sparse</strong><span class="classifier">bool, optional</span></dt><dd><p>Whether or not to return a sparse DM. Default is <cite>False</cite>.</p>
 </dd>
 </dl>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
-<dt><strong>numpy.ndarray</strong></dt>
-<dd><p class="first last">Density matrix associated with <cite>state</cite>. Depends on optional arguments.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>numpy.ndarray</strong></dt><dd><p>Density matrix associated with <cite>state</cite>. Depends on optional arguments.</p>
 </dd>
 </dl>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>This function can also be applied to trace out operators/observables defined by the input <cite>state</cite>, in which case one has 
+to additionally normalize the final output by the Hilbert space dimension of the traced-out space. 
+However, if an operator is defined in a symmetry-reduced basis, there is a <span class="red">caveat</span>. In such a case, one has to:</p>
+<blockquote>
+<div><ol class="arabic simple">
+<li><p>use the <cite>basis.get_proj()</cite> function to lift the operator to the full basis;</p></li>
+<li><p>apply <cite>basis.partial_trace()</cite>;</p></li>
+<li><p>repeat this procedure for all symmetry sectors, and sum up the resulting reduced operators [this is becauce one has to add in the information about how the operator acts on the full Hilbert space].</p></li>
+</ol>
+</div></blockquote>
 <p class="rubric">Examples</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">partial_trace</span><span class="p">(</span><span class="n">state</span><span class="p">,</span><span class="n">sub_sys_A</span><span class="o">=</span><span class="nb">tuple</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">basis</span><span class="o">.</span><span class="n">N</span><span class="o">//</span><span class="mi">2</span><span class="p">),</span><span class="n">return_rdm</span><span class="o">=</span><span class="s2">&quot;A&quot;</span><span class="p">,</span><span class="n">enforce_pure</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">sparse</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">subsys_ordering</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">partial_trace</span><span class="p">(</span><span class="n">state</span><span class="p">,</span><span class="n">sub_sys_A</span><span class="o">=</span><span class="nb">tuple</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">basis</span><span class="o">.</span><span class="n">N</span><span class="o">//</span><span class="mi">2</span><span class="p">),</span><span class="n">return_rdm</span><span class="o">=</span><span class="s2">&quot;A&quot;</span><span class="p">,</span><span class="n">enforce_pure</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">sparse</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">subsys_ordering</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="quspin.basis.spinless_fermion_basis_general.project_from">
+<code class="sig-name descname">project_from</code><span class="sig-paren">(</span><em class="sig-param">v0</em>, <em class="sig-param">sparse=True</em>, <em class="sig-param">pcon=False</em><span class="sig-paren">)</span><a class="headerlink" href="#quspin.basis.spinless_fermion_basis_general.project_from" title="Permalink to this definition">¶</a></dt>
+<dd><p>Transforms state from symmetry-reduced basis to full (symmetry-free) basis.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>v0</strong><span class="classifier">numpy.ndarray</span></dt><dd><p>Contains in its columns the states in the symmetry-reduced basis.</p>
+</dd>
+<dt><strong>sparse</strong><span class="classifier">bool, optional</span></dt><dd><p>Whether or not the output should be in sparse format. Default is <cite>True</cite>.</p>
+</dd>
+<dt><strong>pcon</strong><span class="classifier">bool, optional</span></dt><dd><p>Whether or not to return the output in the particle number (magnetisation) conserving basis 
+(useful in bosonic/single particle systems). Default is <cite>pcon=False</cite>.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>numpy.ndarray</strong></dt><dd><p>Array containing the state <cite>v0</cite> in the full basis.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<ul class="simple">
+<li><p>particularly useful when a given operation cannot be carried out in the symmetry-reduced basis in a straightforward manner.</p></li>
+<li><p>supports parallelisation to multiple states listed in the columns.</p></li>
+<li><p>inverse function to <cite>project_to</cite>.</p></li>
+</ul>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">v_full</span> <span class="o">=</span> <span class="n">project_from</span><span class="p">(</span><span class="n">v0</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">v_full</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">v0</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="quspin.basis.spinless_fermion_basis_general.project_to">
+<code class="sig-name descname">project_to</code><span class="sig-paren">(</span><em class="sig-param">v0</em>, <em class="sig-param">sparse=True</em>, <em class="sig-param">pcon=False</em><span class="sig-paren">)</span><a class="headerlink" href="#quspin.basis.spinless_fermion_basis_general.project_to" title="Permalink to this definition">¶</a></dt>
+<dd><p>Transforms state from full (symmetry-free) basis to symmetry-reduced basis.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>v0</strong><span class="classifier">numpy.ndarray</span></dt><dd><p>Contains in its columns the states in the full (symmetry-free) basis.</p>
+</dd>
+<dt><strong>sparse</strong><span class="classifier">bool, optional</span></dt><dd><p>Whether or not the output should be in sparse format. Default is <cite>True</cite>.</p>
+</dd>
+<dt><strong>pcon</strong><span class="classifier">bool, optional</span></dt><dd><p>Whether or not to return the output in the particle number (magnetisation) conserving basis 
+(useful in bosonic/single particle systems). Default is <cite>pcon=False</cite>.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>numpy.ndarray</strong></dt><dd><p>Array containing the state <cite>v0</cite> in the symmetry-reduced basis.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<ul class="simple">
+<li><p>particularly useful when a given operation cannot be carried out in the full basis.</p></li>
+<li><p>supports parallelisation to multiple states listed in the columns.</p></li>
+<li><p>inverse function to <cite>project_from</cite>.</p></li>
+</ul>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">v_symm</span> <span class="o">=</span> <span class="n">project_to</span><span class="p">(</span><span class="n">v0</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">v_symm</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">v0</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
 </pre></div>
 </div>
 </dd></dl>
 
 <dl class="method">
 <dt id="quspin.basis.spinless_fermion_basis_general.representative">
-<code class="descname">representative</code><span class="sig-paren">(</span><em>states</em>, <em>out=None</em>, <em>return_g=False</em>, <em>return_sign=False</em><span class="sig-paren">)</span><a class="headerlink" href="#quspin.basis.spinless_fermion_basis_general.representative" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">representative</code><span class="sig-paren">(</span><em class="sig-param">states</em>, <em class="sig-param">out=None</em>, <em class="sig-param">return_g=False</em>, <em class="sig-param">return_sign=False</em><span class="sig-paren">)</span><a class="headerlink" href="#quspin.basis.spinless_fermion_basis_general.representative" title="Permalink to this definition">¶</a></dt>
 <dd><p>Maps states to their representatives under the <cite>basis</cite> symmetries.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
-<dt><strong>states</strong> <span class="classifier-delimiter">:</span> <span class="classifier">array_like(int)</span></dt>
-<dd><p class="first last">Fock-basis (z-basis) states to find the representatives of. States are stored in integer representations.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>states</strong><span class="classifier">array_like(int)</span></dt><dd><p>Fock-basis (z-basis) states to find the representatives of. States are stored in integer representations.</p>
 </dd>
-<dt><strong>out</strong> <span class="classifier-delimiter">:</span> <span class="classifier">numpy.ndarray(int), optional</span></dt>
-<dd><p class="first last">variable to store the representative states in. Must be a <cite>numpy.ndarray</cite> of same datatype as <cite>basis</cite>, and same shape as <cite>states</cite>.</p>
+<dt><strong>out</strong><span class="classifier">numpy.ndarray(int), optional</span></dt><dd><p>variable to store the representative states in. Must be a <cite>numpy.ndarray</cite> of same datatype as <cite>basis</cite>, and same shape as <cite>states</cite>.</p>
 </dd>
-<dt><strong>return_g</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool, optional</span></dt>
-<dd><p class="first last">if set to <cite>True</cite>, the function also returns the integer <cite>g</cite> corresponding to the number of times each basis symmetry needs to be applied to a given state to obtain its representative.</p>
+<dt><strong>return_g</strong><span class="classifier">bool, optional</span></dt><dd><p>if set to <cite>True</cite>, the function also returns the integer <cite>g</cite> corresponding to the number of times each basis symmetry needs to be applied to a given state to obtain its representative.</p>
 </dd>
-<dt><strong>return_sign</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool, optional</span></dt>
-<dd><p class="first last">if set to <cite>True</cite>, the function returns the <cite>sign</cite> of the representative relative to the original state (nontrivial only for fermionic bases).</p>
+<dt><strong>return_sign</strong><span class="classifier">bool, optional</span></dt><dd><p>if set to <cite>True</cite>, the function returns the <cite>sign</cite> of the representative relative to the original state (nontrivial only for fermionic bases).</p>
 </dd>
 </dl>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
-<dt><strong>tuple</strong></dt>
-<dd><p class="first last">( representatives, g_array, sign_array )
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>tuple</strong></dt><dd><p>( representatives, g_array, sign_array )
 * array_like(int): <cite>representatives</cite>: Representatives under <cite>basis</cite> symmetries, corresponding to <cite>states</cite>.
 * array_like(int): <cite>g_array</cite> of size (number of states, number of symmetries). Requires <cite>return_g=True</cite>. Contains integers corresponding to the number of times each basis symmetry needs to be applied to a given state to obtain its representative.
 * array_like(int): <cite>sign_array</cite> of size (number of states,). Requires <cite>return_sign=True</cite>. Contains <cite>sign</cite> of the representative relative to the original state (nontrivial only for fermionic bases).</p>
 </dd>
 </dl>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 <p class="rubric">Examples</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">basis</span><span class="o">=</span><span class="n">spin_basis_general</span><span class="p">(</span><span class="n">N</span><span class="p">,</span><span class="n">Nup</span><span class="o">=</span><span class="n">Nup</span><span class="p">,</span><span class="n">make_basis</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">basis</span><span class="o">=</span><span class="n">spin_basis_general</span><span class="p">(</span><span class="n">N</span><span class="p">,</span><span class="n">Nup</span><span class="o">=</span><span class="n">Nup</span><span class="p">,</span><span class="n">make_basis</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">s</span> <span class="o">=</span> <span class="mi">17</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">r</span> <span class="o">=</span> <span class="n">basis</span><span class="o">.</span><span class="n">representative</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">r</span><span class="p">)</span>
@@ -1261,49 +1253,43 @@ it is a square array. Default is <cite>False</cite>.</p>
 </div>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="method">
 <dt id="quspin.basis.spinless_fermion_basis_general.sps">
-<code class="descname">sps</code><a class="headerlink" href="#quspin.basis.spinless_fermion_basis_general.sps" title="Permalink to this definition">¶</a></dt>
+<em class="property">property </em><code class="sig-name descname">sps</code><a class="headerlink" href="#quspin.basis.spinless_fermion_basis_general.sps" title="Permalink to this definition">¶</a></dt>
 <dd><p>int: number of states per site (i.e. the on-site Hilbert space dimension).</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="quspin.basis.spinless_fermion_basis_general.state_to_int">
-<code class="descname">state_to_int</code><span class="sig-paren">(</span><em>state</em><span class="sig-paren">)</span><a class="headerlink" href="#quspin.basis.spinless_fermion_basis_general.state_to_int" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">state_to_int</code><span class="sig-paren">(</span><em class="sig-param">state</em><span class="sig-paren">)</span><a class="headerlink" href="#quspin.basis.spinless_fermion_basis_general.state_to_int" title="Permalink to this definition">¶</a></dt>
 <dd><p>Finds integer representation of a state defined in string format.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
-<dt><strong>state</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str</span></dt>
-<dd><p class="first last">Defines the Fock state with number of particles (spins) per site in underlying lattice <cite>basis</cite>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>state</strong><span class="classifier">str</span></dt><dd><p>Defines the Fock state with number of particles (spins) per site in underlying lattice <cite>basis</cite>.</p>
 </dd>
 </dl>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
-<dt><strong>int</strong></dt>
-<dd><p class="first last">Integer corresponding to the Fock <cite>state</cite> in the lattice basis.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>int</strong></dt><dd><p>Integer corresponding to the Fock <cite>state</cite> in the lattice basis.</p>
 </dd>
 </dl>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 <p class="rubric">Notes</p>
 <p>This function is the einverse of <cite>int_to_state</cite>.</p>
 <p class="rubric">Examples</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">s_str</span> <span class="o">=</span> <span class="s2">&quot;111000&quot;</span> <span class="c1"># pick state from basis set</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">s_str</span> <span class="o">=</span> <span class="s2">&quot;111000&quot;</span> <span class="c1"># pick state from basis set</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">s</span> <span class="o">=</span> <span class="n">basis</span><span class="o">.</span><span class="n">state_to_int</span><span class="p">(</span><span class="n">s_str</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
 </pre></div>
 </div>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="method">
 <dt id="quspin.basis.spinless_fermion_basis_general.states">
-<code class="descname">states</code><a class="headerlink" href="#quspin.basis.spinless_fermion_basis_general.states" title="Permalink to this definition">¶</a></dt>
+<em class="property">property </em><code class="sig-name descname">states</code><a class="headerlink" href="#quspin.basis.spinless_fermion_basis_general.states" title="Permalink to this definition">¶</a></dt>
 <dd><p>numpy.ndarray(int): basis states stored in their integer representation.</p>
 </dd></dl>
 
@@ -1317,6 +1303,12 @@ it is a square array. Default is <cite>False</cite>.</p>
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="quspin.basis.boson_basis_general.html"
+                        title="previous chapter">quspin.basis.boson_basis_general</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="quspin.basis.spinful_fermion_basis_general.html"
+                        title="next chapter">quspin.basis.spinful_fermion_basis_general</a></p>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
@@ -1325,17 +1317,15 @@ it is a square array. Default is <cite>False</cite>.</p>
     </ul>
    </div>
 <div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
+  <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" />
+      <input type="text" name="q" aria-labelledby="searchlabel" />
       <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
     </form>
     </div>
 </div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
+<script>$('#searchbox').show(0);</script>
         </div>
       </div>
       <div class="clearer"></div>
@@ -1349,13 +1339,19 @@ it is a square array. Default is <cite>False</cite>.</p>
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.3 documentation</a> &#187;</li>
-          <li class="nav-item nav-item-1"><a href="../basis.html" >Basis module (<code class="docutils literal notranslate"><span class="pre">quspin.basis</span></code>)</a> &#187;</li> 
+        <li class="right" >
+          <a href="quspin.basis.spinful_fermion_basis_general.html" title="quspin.basis.spinful_fermion_basis_general"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="quspin.basis.boson_basis_general.html" title="quspin.basis.boson_basis_general"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.4 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../basis.html" >Basis module (<code class="xref py py-mod docutils literal notranslate"><span class="pre">quspin.basis</span></code>)</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2016, Phillip Weinberg and Marin Bukov.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.4.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.4.0.
     </div>
   </body>
 </html>

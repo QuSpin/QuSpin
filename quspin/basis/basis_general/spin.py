@@ -105,7 +105,7 @@ class spin_basis_general(hcb_basis_general,higher_spin_basis_general):
 		S: str, optional
 			Size of local spin degrees of freedom. Can be any (half-)integer from:
 			"1/2","1","3/2",...,"9999/2","5000".
-		pauli: bool, optional (requires `S="1/2"`)
+		pauli: int, optional (requires `S="1/2"`)
 			* for `pauli=0` the code uses spin-1/2 operators: 
 	
 			.. math::
@@ -244,7 +244,27 @@ class spin_basis_general(hcb_basis_general,higher_spin_basis_general):
 		else:
 			return higher_spin_basis_general._inplace_Op(self,v_in,op_list,dtype,
 				transposed=transposed,conjugated=conjugated,v_out=v_out,a=a)
-	
+
+
+	def Op_shift_sector(self,other_basis,op_list,v_in,v_out=None,dtype=None):
+		if self._S == "1/2":
+
+			if self._pauli==1:
+				scale = lambda s:(1<<len(s.replace("I","")))
+			elif self._pauli==-1:
+				scale = lambda s:(1<<len(s.replace("I","").replace("+","").replace("-","")))
+			else:
+				scale = lambda s:1
+
+			op_list = [[op,indx,J*scale(op)] for op,indx,J in op_list]
+
+			return hcb_basis_general.Op_shift_sector(self,other_basis,op_list,v_in,v_out=v_out,dtype=dtype)
+
+		else:
+			return higher_spin_basis_general.Op_shift_sector(self,other_basis,op_list,v_in,v_out=v_out,dtype=dtype)	
+
+	Op_shift_sector.__doc__ = hcb_basis_general.Op_shift_sector.__doc__
+
 
 	def __type__(self):
 		return "<type 'qspin.basis.general_hcb'>"

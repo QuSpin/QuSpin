@@ -55,21 +55,21 @@ class boson_basis_1d(basis_1d):
 		**blocks: optional
 			Extra keyword arguments which include:
 
-				**a** (*int*) - specifies unit cell size for translation.
+				**a** (*int*) - specifies unit cell size for translation. 
 
-				**kblock** (*int*) - specifies momentum block.
+				**kblock** (*int*) - specifies momentum block. The physical manifestation of this symmetry transformation is translation by `a` lattice sites.
 
-				**pblock** (*int*) - specifies parity block.
+				**pblock** (*int*) - specifies parity block. The physical manifestation of this symmetry transformation is reflection about the middle of the chain.
 
 			and the following which only work for hardcore bosons (`sps=2`):
 
-				**pcblock** (*int*) - specifies parity followed by particle-hole symmetry block.
+				**cblock** (*int*) - specifies particle-hole symmetry block. The physical manifestation of this symmetry transformation is the exchange of a hard-core boson for a hole (i.e. no particle).
 
-				**cblock** (*int*) - specifies particle-hole symmetry block.
+				**pcblock** (*int*) - specifies parity followed by particle-hole symmetry block. The physical manifestation of this symmetry transformation is reflection about the middle of the chain, and a simultaneous exchange of a hard-core boson for a hole (i.e. no particle).
 
-				**cAblock** (*int*) - specifies particle-hole symmetry block for sublattice A.
+				**cAblock** (*int*) - specifies particle-hole symmetry block for sublattice A (defined as all even lattice sites). The physical manifestation of this symmetry transformation is the exchange of a hard-core boson for a hole (i.e. no particle) on all even sites.
 
-				**cBblock** (*int*) - specifies particle-hole symmetry block for sublattice B.
+				**cBblock** (*int*) - specifies particle-hole symmetry block for sublattice B (defined as all odd lattice sites). The physical manifestation of this symmetry transformation is the exchange of a hard-core boson for a hole (i.e. no particle) on all odd sites.
 
 		"""
 

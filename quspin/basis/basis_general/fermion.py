@@ -505,45 +505,147 @@ class spinful_fermion_basis_general(spinless_fermion_basis_general):
 		self.__dict__.update(state)
 		self._core = spinful_fermion_basis_core_wrap(self._basis_dtype,self._N//2,self._maps,self._pers,self._qs,self._double_occupancy)
 
+	@property
+	def _fermion_basis(self):
+		return True 
+
+	#################################################
+	# override for _inplace_Op and Op_shift_sector. #
+	#################################################
+
+	def ent_entropy(self,state,sub_sys_A=None,density=True,subsys_ordering=True,return_rdm=None,enforce_pure=False,return_rdm_EVs=False,sparse=False,alpha=1.0,sparse_diag=True,maxiter=None,svd_solver=None, svd_kwargs=None,):
+		"""Calculates entanglement entropy of subsystem A and the corresponding reduced density matrix
+
+		Notes
+		-----
+		Algorithm is based on both partial tracing and sigular value decomposition (SVD), optimised for speed.
+
+		Parameters
+		-----------
+		state : obj
+			State of the quantum system. Can be either one of:
+
+				* numpy.ndarray [shape (Ns,)]: pure state (default).
+				* numpy.ndarray [shape (Ns,Ns)]: density matrix (DM).
+				* dict('V_states',V_states) [shape (Ns,Nvecs)]: collection of `Nvecs` states stored in the columns of `V_states`.
+		sub_sys_A : tuple/list, optional
+			Defines the sites contained in subsystem A [by python convention the first site of the chain is labelled j=0]. Depending on the usage of simple/advanced notations the input is different:
+
+				* Simple notation: The format is `(spin_up_subsys,spin_down_subsys)` where the tuple `spin_up_subsys` and `spin_down_subsys` are lists (see example below).  Default is `tuple(range(N//2),range(N//2))` with `N` the number of physical lattice sites (e.g. sites which both species of fermions can occupy).
+				* Advanced notation: The format is a list, the labeling of the up spins are sites `0 - (N-1)` while the down spins are on sites `N - (2N - 1)`. 
+		return_rdm : str, optional
+			Toggles returning the reduced DM. Can be tierh one of:
+
+				* "A": returns reduced DM of subsystem A.
+				* "B": returns reduced DM of subsystem B.
+				* "both": returns reduced DM of both A and B subsystems.
+		enforce_pure : bool, optional
+			Whether or not to assume `state` is a colelction of pure states or a mixed density matrix, if
+			it is a square array. Default is `False`.
+		subsys_ordering : bool, optional
+			Whether or not to reorder the sites in `sub_sys_A` in ascending order. Default is `True`.
+		sparse : bool, optional
+			Whether or not to return a sparse DM. Default is `False`.
+		return_rdm_EVs : bool, optional 
+			Whether or not to return the eigenvalues of rthe educed DM. If `return_rdm` is specified,
+			the eigenvalues of the corresponding DM are returned. If `return_rdm` is NOT specified, 
+			the spectrum of `rdm_A` is returned by default. Default is `False`.
+		alpha : float, optional
+			Renyi :math:`\\alpha` parameter for the entanglement entropy. Default is :math:`\\alpha=1`:
+
+			.. math::
+				S_\\mathrm{ent}(\\alpha) =  \\frac{1}{1-\\alpha}\\log \\mathrm{tr}_{A} \\left( \\mathrm{tr}_{A^c} \\vert\\psi\\rangle\\langle\\psi\\vert \\right)^\\alpha
+		
+			**Note:** The logarithm used is the natural logarithm (base e).
+		sparse_diag : bool, optional
+			When `sparse=True`, this flag enforces the use of
+			`scipy.sparse.linalg.eigsh() <https://docs.scipy.org/doc/scipy/reference/generated/generated/scipy.sparse.linalg.eigsh.html>`_
+			to calculate the eigenvaues of the reduced DM.
+		maxiter : int, optional
+			Specifies the number of iterations for Lanczos diagonalisation. Look up documentation for 
+			`scipy.sparse.linalg.eigsh() <https://docs.scipy.org/doc/scipy/reference/generated/generated/scipy.sparse.linalg.eigsh.html>`_.
+		svd_solver : object, optional
+			Specifies the svd solver to be used, e.g. `numpy.linalg.svd` or `scipy.linalg.svd`, or a custom solver. Effective when `enforce_pure=True` or `sparse=False`.
+		svd_kwargs : dict, optional
+			Specifies additional arguments for `svd_solver`. 
+
+
+		Returns
+		--------
+		dict
+			Dictionary with following keys, depending on input parameters:
+				* "Sent_A": entanglement entropy of subsystem A (default).
+				* "Sent_B": entanglement entropy of subsystem B.
+				* "p_A": singular values of reduced DM of subsystem A (default).
+				* "p_B": singular values of reduced DM of subsystem B.
+				* "rdm_A": reduced DM of subsystem A.
+				* "rdm_B": reduced DM of subsystem B.
+
+		Examples
+		--------
+
+		>>> sub_sys_A_up=range(basis.L//2) # subsystem for spin-up fermions
+		>>> sub_sys_A_down=range(basis.L//2+1) # subsystem for spin-down fermions
+		>>> subsys_A=(sub_sys_A_up,sub_sys_A_down)
+		>>> state=1.0/np.sqrt(basis.Ns)*np.ones(basis.Ns) # infinite temperature state
+		>>> ent_entropy(state,sub_sys_A=subsys_A,return_rdm="A",enforce_pure=False,return_rdm_EVs=False,
+		>>>				sparse=False,alpha=1.0,sparse_diag=True,subsys_ordering=True)
+
+		"""
+		if self._simple_symm:
+			if sub_sys_A is None:
+				sub_sys_A = (list(range(self.N//2)),list(range(self.N//2)))
+
+			if type(sub_sys_A) is tuple and len(sub_sys_A) != 2:
+				raise ValueError("sub_sys_A must be a tuple which contains the subsystems for the up spins in the \
+								  first (left) part of the tuple and the down spins in the last (right) part of the tuple.")
+
+			sub_sys_A_up,sub_sys_A_down = sub_sys_A
+
+			sub_sys_A = list(sub_sys_A_up)
+			sub_sys_A.extend([i+self.N for i in sub_sys_A_down])
+		else:
+			if sub_sys_A is None:
+				sub_sys_A = [i for i in range(self.N//2)]+[self.N+i for i in range(self.N//2)]
+
+		return spinless_fermion_basis_general._ent_entropy(self,state,sub_sys_A,density=density,
+						subsys_ordering=subsys_ordering,return_rdm=return_rdm,
+						enforce_pure=enforce_pure,return_rdm_EVs=return_rdm_EVs,
+						sparse=sparse,alpha=alpha,sparse_diag=sparse_diag,maxiter=maxiter,
+						svd_solver=svd_solver, svd_kwargs=svd_kwargs, )
+
 	def _Op(self,opstr,indx,J,dtype):
-
-		if not self._made_basis:
-			raise AttributeError('this function requires the basis to be constructed first; use basis.make().')
-
 
 		if self._simple_symm:
 			opstr,indx = self._simple_to_adv((opstr,indx))
 
-		'''
-		if len(opstr) != len(indx):
-			raise ValueError('length of opstr does not match length of indx')
-
-		if _np.any(indx >= 2*self._N) or _np.any(indx < 0):
-			raise ValueError('values in indx falls outside of system')
-
-		extra_ops = set(opstr) - self._allowed_ops
-		if extra_ops:
-			raise ValueError("unrecognized characters {} in operator string.".format(extra_ops))
-
-		if self._Ns <= 0:
-			return _np.array([],dtype=dtype),_np.array([],dtype=self._index_type),_np.array([],dtype=self._index_type)
-	
-		col = _np.zeros(self._Ns,dtype=self._index_type)
-		row = _np.zeros(self._Ns,dtype=self._index_type)
-		ME = _np.zeros(self._Ns,dtype=dtype)
-
-		self._core.op(row,col,ME,opstr,indx,J,self._basis,self._n)
-
-		mask = _np.logical_not(_np.logical_or(_np.isnan(ME),_np.abs(ME)==0.0))
-		col = col[mask]
-		row = row[mask]
-		ME = ME[mask]
-		
-
-		return ME,row,col
-		'''
 		return spinless_fermion_basis_general._Op(self,opstr,indx,J,dtype)
 
+	def _inplace_Op(self,v_in,op_list,dtype,transposed=False,conjugated=False,v_out=None,a=1.0):
+		if self._simple_symm:
+			new_op_list = []
+			for opstr,indx,J in op_list:
+				new_opstr,new_indx = self._simple_to_adv((opstr,indx))
+				new_op_list.append((new_opstr,new_indx,J))
+		else:
+			new_op_list = op_list
+
+		return spinless_fermion_basis_general._inplace_Op(self,v_in,new_op_list,dtype,
+			transposed=transposed,conjugated=conjugated,v_out=v_out,a=a)
+
+
+	def Op_shift_sector(self,other_basis,op_list,v_in,v_out=None,dtype=None):
+		if self._simple_symm:
+			new_op_list = []
+			for opstr,indx,J in op_list:
+				new_opstr,new_indx = self._simple_to_adv((opstr,indx))
+				new_op_list.append((new_opstr,new_indx,J))
+		else:
+			new_op_list = op_list
+
+		return spinless_fermion_basis_general.Op_shift_sector(other_basis,new_op_list,v_in,v_out=v_out,dtype=dtype)	
+
+	Op_shift_sector.__doc__ = spinless_fermion_basis_general.Op_shift_sector.__doc__
 
 	def index(self,up_state,down_state):
 		"""Finds the index of user-defined Fock state in spinful fermion basis.
@@ -602,6 +704,7 @@ class spinful_fermion_basis_general(spinless_fermion_basis_general):
 
 	def state_to_int(self,*args):
 		""" Not Implemented."""
+
 	def Op_bra_ket(self,opstr,indx,J,dtype,ket_states,reduce_output=True):
 		
 		if self._simple_symm:
@@ -640,9 +743,6 @@ class spinful_fermion_basis_general(spinless_fermion_basis_general):
 		'''
 		return spinless_fermion_basis_general.Op_bra_ket(self,opstr,indx,J,dtype,ket_states,reduce_output=reduce_output)
 
-	@property
-	def _fermion_basis(self):
-		return True 
 
 	def _get_state(self,b):
 		b = int(b)

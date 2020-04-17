@@ -1,11 +1,9 @@
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><script type="text/javascript">
+    <meta charset="utf-8" /><script type="text/javascript">
 
       var _gaq = _gaq || [];
       _gaq.push(['_setAccount', 'UA-110543543-1']);
@@ -17,21 +15,21 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-    <title>Basis module (quspin.basis) &#8212; QuSpin 0.3.3 documentation</title>
+    <title>Basis module (quspin.basis) &#8212; QuSpin 0.3.4 documentation</title>
     <link rel="stylesheet" href="static/classic.css" type="text/css" />
     <link rel="stylesheet" href="static/pygments.css" type="text/css" />
     
-    <script type="text/javascript" id="documentation_options" data-url_root="./" src="static/documentation_options.js"></script>
-    <script type="text/javascript" src="static/jquery.js"></script>
-    <script type="text/javascript" src="static/underscore.js"></script>
-    <script type="text/javascript" src="static/doctools.js"></script>
-    <script type="text/javascript" src="static/language_data.js"></script>
-    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script id="documentation_options" data-url_root="./" src="static/documentation_options.js"></script>
+    <script src="static/jquery.js"></script>
+    <script src="static/underscore.js"></script>
+    <script src="static/doctools.js"></script>
+    <script src="static/language_data.js"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="quspin.basis.spin_basis_1d" href="generated/quspin.basis.spin_basis_1d.html" />
-    <link rel="prev" title="\(\mathrm{\color{orange} {QuSpin\ 0.3.3}}\) here (updated on 2019.10.15)" href="New_Features.html" /> 
+    <link rel="prev" title="QuSpin 0.3.4 (released on 2020.04.17)" href="New_Features.html" /> 
   </head><body>
     <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
@@ -46,9 +44,9 @@
           <a href="generated/quspin.basis.spin_basis_1d.html" title="quspin.basis.spin_basis_1d"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="New_Features.html" title="\(\mathrm{\color{orange} {QuSpin\ 0.3.3}}\) here (updated on 2019.10.15)"
+          <a href="New_Features.html" title="QuSpin 0.3.4 (released on 2020.04.17)"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">QuSpin 0.3.3 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">QuSpin 0.3.4 documentation</a> &#187;</li> 
       </ul>
     </div>  
 
@@ -57,7 +55,8 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <span class="target" id="module-quspin.basis"></span><div class="section" id="basis-module-quspin-basis">
+  <style> .red {color:#ff0000; font-weight:bold; font-style:italic; } </style>
+<style> .green {color:#00b200; font-weight:bold; font-style:italic; } </style><span class="target" id="module-quspin.basis"></span><div class="section" id="basis-module-quspin-basis">
 <h1>Basis module (<a class="reference internal" href="#module-quspin.basis" title="quspin.basis"><code class="xref py py-mod docutils literal notranslate"><span class="pre">quspin.basis</span></code></a>)<a class="headerlink" href="#basis-module-quspin-basis" title="Permalink to this headline">¶</a></h1>
 <p>Basis classes for quantum many-body systems.</p>
 <p>The following table shows the available operator strings for the different bases (<cite>sps</cite> is the onsite Hilbert space dimension):</p>
@@ -73,94 +72,94 @@ the argument <cite>pauli</cite> of the <cite>spin_basis_*</cite> classes. Higher
 the operator strings “x” and “y”.</p>
 <div class="section" id="one-dimensional-symmetries">
 <h2>one-dimensional symmetries<a class="headerlink" href="#one-dimensional-symmetries" title="Permalink to this headline">¶</a></h2>
-<table border="1" class="longtable docutils">
+<table class="longtable docutils align-default">
 <colgroup>
-<col width="10%" />
-<col width="90%" />
+<col style="width: 10%" />
+<col style="width: 90%" />
 </colgroup>
-<tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="generated/quspin.basis.spin_basis_1d.html#quspin.basis.spin_basis_1d" title="quspin.basis.spin_basis_1d"><code class="xref py py-obj docutils literal notranslate"><span class="pre">spin_basis_1d</span></code></a>(L[,&nbsp;Nup,&nbsp;m,&nbsp;S,&nbsp;pauli])</td>
-<td>Constructs basis for spin operators in a specified 1-d symmetry sector.</td>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/quspin.basis.spin_basis_1d.html#quspin.basis.spin_basis_1d" title="quspin.basis.spin_basis_1d"><code class="xref py py-obj docutils literal notranslate"><span class="pre">spin_basis_1d</span></code></a>(L[, Nup, m, S, pauli])</p></td>
+<td><p>Constructs basis for spin operators in a specified 1-d symmetry sector.</p></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/quspin.basis.boson_basis_1d.html#quspin.basis.boson_basis_1d" title="quspin.basis.boson_basis_1d"><code class="xref py py-obj docutils literal notranslate"><span class="pre">boson_basis_1d</span></code></a>(L[,&nbsp;Nb,&nbsp;nb,&nbsp;sps])</td>
-<td>Constructs basis for boson operators in a specified 1-d symmetry sector.</td>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/quspin.basis.boson_basis_1d.html#quspin.basis.boson_basis_1d" title="quspin.basis.boson_basis_1d"><code class="xref py py-obj docutils literal notranslate"><span class="pre">boson_basis_1d</span></code></a>(L[, Nb, nb, sps])</p></td>
+<td><p>Constructs basis for boson operators in a specified 1-d symmetry sector.</p></td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="generated/quspin.basis.spinless_fermion_basis_1d.html#quspin.basis.spinless_fermion_basis_1d" title="quspin.basis.spinless_fermion_basis_1d"><code class="xref py py-obj docutils literal notranslate"><span class="pre">spinless_fermion_basis_1d</span></code></a>(L[,&nbsp;Nf,&nbsp;nf])</td>
-<td>Constructs basis for spinless fermionic operators in a specified 1-d symmetry sector.</td>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/quspin.basis.spinless_fermion_basis_1d.html#quspin.basis.spinless_fermion_basis_1d" title="quspin.basis.spinless_fermion_basis_1d"><code class="xref py py-obj docutils literal notranslate"><span class="pre">spinless_fermion_basis_1d</span></code></a>(L[, Nf, nf])</p></td>
+<td><p>Constructs basis for spinless fermionic operators in a specified 1-d symmetry sector.</p></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/quspin.basis.spinful_fermion_basis_1d.html#quspin.basis.spinful_fermion_basis_1d" title="quspin.basis.spinful_fermion_basis_1d"><code class="xref py py-obj docutils literal notranslate"><span class="pre">spinful_fermion_basis_1d</span></code></a>(L[,&nbsp;Nf,&nbsp;nf,&nbsp;…])</td>
-<td>Constructs basis for spinful fermionic operators in a specified 1-d symmetry sector.</td>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/quspin.basis.spinful_fermion_basis_1d.html#quspin.basis.spinful_fermion_basis_1d" title="quspin.basis.spinful_fermion_basis_1d"><code class="xref py py-obj docutils literal notranslate"><span class="pre">spinful_fermion_basis_1d</span></code></a>(L[, Nf, nf, …])</p></td>
+<td><p>Constructs basis for spinful fermionic operators in a specified 1-d symmetry sector.</p></td>
 </tr>
 </tbody>
 </table>
 </div>
 <div class="section" id="general-lattice-symmetries">
 <h2>general lattice symmetries<a class="headerlink" href="#general-lattice-symmetries" title="Permalink to this headline">¶</a></h2>
-<table border="1" class="longtable docutils">
+<table class="longtable docutils align-default">
 <colgroup>
-<col width="10%" />
-<col width="90%" />
+<col style="width: 10%" />
+<col style="width: 90%" />
 </colgroup>
-<tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="generated/quspin.basis.spin_basis_general.html#quspin.basis.spin_basis_general" title="quspin.basis.spin_basis_general"><code class="xref py py-obj docutils literal notranslate"><span class="pre">spin_basis_general</span></code></a>(N[,&nbsp;Nup,&nbsp;m,&nbsp;S,&nbsp;pauli,&nbsp;…])</td>
-<td>Constructs basis for spin operators for USER-DEFINED symmetries.</td>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/quspin.basis.spin_basis_general.html#quspin.basis.spin_basis_general" title="quspin.basis.spin_basis_general"><code class="xref py py-obj docutils literal notranslate"><span class="pre">spin_basis_general</span></code></a>(N[, Nup, m, S, pauli, …])</p></td>
+<td><p>Constructs basis for spin operators for USER-DEFINED symmetries.</p></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/quspin.basis.boson_basis_general.html#quspin.basis.boson_basis_general" title="quspin.basis.boson_basis_general"><code class="xref py py-obj docutils literal notranslate"><span class="pre">boson_basis_general</span></code></a>(N[,&nbsp;Nb,&nbsp;nb,&nbsp;sps,&nbsp;…])</td>
-<td>Constructs basis for boson operators for USER-DEFINED symmetries.</td>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/quspin.basis.boson_basis_general.html#quspin.basis.boson_basis_general" title="quspin.basis.boson_basis_general"><code class="xref py py-obj docutils literal notranslate"><span class="pre">boson_basis_general</span></code></a>(N[, Nb, nb, sps, …])</p></td>
+<td><p>Constructs basis for boson operators for USER-DEFINED symmetries.</p></td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="generated/quspin.basis.spinless_fermion_basis_general.html#quspin.basis.spinless_fermion_basis_general" title="quspin.basis.spinless_fermion_basis_general"><code class="xref py py-obj docutils literal notranslate"><span class="pre">spinless_fermion_basis_general</span></code></a>(N[,&nbsp;Nf,&nbsp;nf,&nbsp;…])</td>
-<td>Constructs basis for spinless fermion operators for USER-DEFINED symmetries.</td>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/quspin.basis.spinless_fermion_basis_general.html#quspin.basis.spinless_fermion_basis_general" title="quspin.basis.spinless_fermion_basis_general"><code class="xref py py-obj docutils literal notranslate"><span class="pre">spinless_fermion_basis_general</span></code></a>(N[, Nf, nf, …])</p></td>
+<td><p>Constructs basis for spinless fermion operators for USER-DEFINED symmetries.</p></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/quspin.basis.spinful_fermion_basis_general.html#quspin.basis.spinful_fermion_basis_general" title="quspin.basis.spinful_fermion_basis_general"><code class="xref py py-obj docutils literal notranslate"><span class="pre">spinful_fermion_basis_general</span></code></a>(N[,&nbsp;Nf,&nbsp;nf,&nbsp;…])</td>
-<td>Constructs basis for spinful fermion operators for USER-DEFINED symmetries.</td>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/quspin.basis.spinful_fermion_basis_general.html#quspin.basis.spinful_fermion_basis_general" title="quspin.basis.spinful_fermion_basis_general"><code class="xref py py-obj docutils literal notranslate"><span class="pre">spinful_fermion_basis_general</span></code></a>(N[, Nf, nf, …])</p></td>
+<td><p>Constructs basis for spinful fermion operators for USER-DEFINED symmetries.</p></td>
 </tr>
 </tbody>
 </table>
 </div>
 <div class="section" id="user-basis">
 <h2>user basis<a class="headerlink" href="#user-basis" title="Permalink to this headline">¶</a></h2>
-<table border="1" class="longtable docutils">
+<table class="longtable docutils align-default">
 <colgroup>
-<col width="10%" />
-<col width="90%" />
+<col style="width: 10%" />
+<col style="width: 90%" />
 </colgroup>
-<tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="generated/quspin.basis.user_basis.html#quspin.basis.user_basis" title="quspin.basis.user_basis"><code class="xref py py-obj docutils literal notranslate"><span class="pre">user_basis</span></code></a>(basis_dtype,&nbsp;N,&nbsp;op_dict[,&nbsp;sps,&nbsp;…])</td>
-<td>Constructs basis for USER-DEFINED functionality of a basis object.</td>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/quspin.basis.user_basis.html#quspin.basis.user_basis" title="quspin.basis.user_basis"><code class="xref py py-obj docutils literal notranslate"><span class="pre">user_basis</span></code></a>(basis_dtype, N, op_dict[, sps, …])</p></td>
+<td><p>Constructs basis for USER-DEFINED functionality of a basis object.</p></td>
 </tr>
 </tbody>
 </table>
 </div>
 <div class="section" id="combining-basis-classes">
 <h2>combining basis classes<a class="headerlink" href="#combining-basis-classes" title="Permalink to this headline">¶</a></h2>
-<table border="1" class="longtable docutils">
+<table class="longtable docutils align-default">
 <colgroup>
-<col width="10%" />
-<col width="90%" />
+<col style="width: 10%" />
+<col style="width: 90%" />
 </colgroup>
-<tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="generated/quspin.basis.tensor_basis.html#quspin.basis.tensor_basis" title="quspin.basis.tensor_basis"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tensor_basis</span></code></a>(*basis_list)</td>
-<td>Constructs basis in tensor product Hilbert space.</td>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/quspin.basis.tensor_basis.html#quspin.basis.tensor_basis" title="quspin.basis.tensor_basis"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tensor_basis</span></code></a>(*basis_list)</p></td>
+<td><p>Constructs basis in tensor product Hilbert space.</p></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/quspin.basis.photon_basis.html#quspin.basis.photon_basis" title="quspin.basis.photon_basis"><code class="xref py py-obj docutils literal notranslate"><span class="pre">photon_basis</span></code></a>(basis_constructor,&nbsp;…)</td>
-<td>Constructs basis in photon-particle Hilbert space.</td>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/quspin.basis.photon_basis.html#quspin.basis.photon_basis" title="quspin.basis.photon_basis"><code class="xref py py-obj docutils literal notranslate"><span class="pre">photon_basis</span></code></a>(basis_constructor, …)</p></td>
+<td><p>Constructs basis in photon-particle Hilbert space.</p></td>
 </tr>
 </tbody>
 </table>
 </div>
 <div class="section" id="functions">
 <h2>functions<a class="headerlink" href="#functions" title="Permalink to this headline">¶</a></h2>
-<table border="1" class="longtable docutils">
+<table class="longtable docutils align-default">
 <colgroup>
-<col width="10%" />
-<col width="90%" />
+<col style="width: 10%" />
+<col style="width: 90%" />
 </colgroup>
-<tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="generated/quspin.basis.coherent_state.html#quspin.basis.coherent_state" title="quspin.basis.coherent_state"><code class="xref py py-obj docutils literal notranslate"><span class="pre">coherent_state</span></code></a>(a,&nbsp;n[,&nbsp;dtype])</td>
-<td>Creates a harmonic oscillator (HO) coherent state.</td>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/quspin.basis.coherent_state.html#quspin.basis.coherent_state" title="quspin.basis.coherent_state"><code class="xref py py-obj docutils literal notranslate"><span class="pre">coherent_state</span></code></a>(a, n[, dtype])</p></td>
+<td><p>Creates a harmonic oscillator (HO) coherent state.</p></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/quspin.basis.photon_Hspace_dim.html#quspin.basis.photon_Hspace_dim" title="quspin.basis.photon_Hspace_dim"><code class="xref py py-obj docutils literal notranslate"><span class="pre">photon_Hspace_dim</span></code></a>(N,&nbsp;Ntot,&nbsp;Nph)</td>
-<td>Calculates the dimension of the total spin-photon Hilbert space.</td>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/quspin.basis.photon_Hspace_dim.html#quspin.basis.photon_Hspace_dim" title="quspin.basis.photon_Hspace_dim"><code class="xref py py-obj docutils literal notranslate"><span class="pre">photon_Hspace_dim</span></code></a>(N, Ntot, Nph)</p></td>
+<td><p>Calculates the dimension of the total spin-photon Hilbert space.</p></td>
 </tr>
 </tbody>
 </table>
@@ -171,78 +170,78 @@ the operator strings “x” and “y”.</p>
 representation of many-body states.</p>
 <div class="section" id="a-custom-large-integer-data-types-supported-in-general-basis">
 <h3>a) custom large integer data types supported in general basis<a class="headerlink" href="#a-custom-large-integer-data-types-supported-in-general-basis" title="Permalink to this headline">¶</a></h3>
-<table border="1" class="longtable docutils">
+<table class="longtable docutils align-default">
 <colgroup>
-<col width="10%" />
-<col width="90%" />
+<col style="width: 10%" />
+<col style="width: 90%" />
 </colgroup>
-<tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="generated/quspin.basis.uint256.html#quspin.basis.uint256" title="quspin.basis.uint256"><code class="xref py py-obj docutils literal notranslate"><span class="pre">uint256</span></code></a></td>
-<td></td>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/quspin.basis.uint256.html#quspin.basis.uint256" title="quspin.basis.uint256"><code class="xref py py-obj docutils literal notranslate"><span class="pre">uint256</span></code></a></p></td>
+<td><p></p></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/quspin.basis.uint1024.html#quspin.basis.uint1024" title="quspin.basis.uint1024"><code class="xref py py-obj docutils literal notranslate"><span class="pre">uint1024</span></code></a></td>
-<td></td>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/quspin.basis.uint1024.html#quspin.basis.uint1024" title="quspin.basis.uint1024"><code class="xref py py-obj docutils literal notranslate"><span class="pre">uint1024</span></code></a></p></td>
+<td><p></p></td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="generated/quspin.basis.uint4096.html#quspin.basis.uint4096" title="quspin.basis.uint4096"><code class="xref py py-obj docutils literal notranslate"><span class="pre">uint4096</span></code></a></td>
-<td></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/quspin.basis.uint4096.html#quspin.basis.uint4096" title="quspin.basis.uint4096"><code class="xref py py-obj docutils literal notranslate"><span class="pre">uint4096</span></code></a></p></td>
+<td><p></p></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/quspin.basis.uint16384.html#quspin.basis.uint16384" title="quspin.basis.uint16384"><code class="xref py py-obj docutils literal notranslate"><span class="pre">uint16384</span></code></a></td>
-<td></td>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/quspin.basis.uint16384.html#quspin.basis.uint16384" title="quspin.basis.uint16384"><code class="xref py py-obj docutils literal notranslate"><span class="pre">uint16384</span></code></a></p></td>
+<td><p></p></td>
 </tr>
 </tbody>
 </table>
 </div>
 <div class="section" id="b-array-initialization-routines">
 <h3>b) array initialization routines<a class="headerlink" href="#b-array-initialization-routines" title="Permalink to this headline">¶</a></h3>
-<table border="1" class="longtable docutils">
+<table class="longtable docutils align-default">
 <colgroup>
-<col width="10%" />
-<col width="90%" />
+<col style="width: 10%" />
+<col style="width: 90%" />
 </colgroup>
-<tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="generated/quspin.basis.basis_ones.html#quspin.basis.basis_ones" title="quspin.basis.basis_ones"><code class="xref py py-obj docutils literal notranslate"><span class="pre">basis_ones</span></code></a>(shape[,&nbsp;dtype])</td>
-<td>Allocates initialized array using the QuSpin basis integers.</td>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/quspin.basis.basis_ones.html#quspin.basis.basis_ones" title="quspin.basis.basis_ones"><code class="xref py py-obj docutils literal notranslate"><span class="pre">basis_ones</span></code></a>(shape[, dtype])</p></td>
+<td><p>Allocates initialized array using the QuSpin basis integers.</p></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/quspin.basis.basis_zeros.html#quspin.basis.basis_zeros" title="quspin.basis.basis_zeros"><code class="xref py py-obj docutils literal notranslate"><span class="pre">basis_zeros</span></code></a>(shape[,&nbsp;dtype])</td>
-<td>Allocates initialized array using the QuSpin basis integers.</td>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/quspin.basis.basis_zeros.html#quspin.basis.basis_zeros" title="quspin.basis.basis_zeros"><code class="xref py py-obj docutils literal notranslate"><span class="pre">basis_zeros</span></code></a>(shape[, dtype])</p></td>
+<td><p>Allocates initialized array using the QuSpin basis integers.</p></td>
 </tr>
 </tbody>
 </table>
 </div>
 <div class="section" id="c-utilities-to-use-large-integers">
 <h3>c) utilities to use large integers<a class="headerlink" href="#c-utilities-to-use-large-integers" title="Permalink to this headline">¶</a></h3>
-<table border="1" class="longtable docutils">
+<table class="longtable docutils align-default">
 <colgroup>
-<col width="10%" />
-<col width="90%" />
+<col style="width: 10%" />
+<col style="width: 90%" />
 </colgroup>
-<tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="generated/quspin.basis.get_basis_type.html#quspin.basis.get_basis_type" title="quspin.basis.get_basis_type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_basis_type</span></code></a>(N,&nbsp;Np,&nbsp;sps)</td>
-<td>Returns minimum dtype to represent manybody state.</td>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/quspin.basis.get_basis_type.html#quspin.basis.get_basis_type" title="quspin.basis.get_basis_type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_basis_type</span></code></a>(N, Np, sps)</p></td>
+<td><p>Returns minimum dtype to represent manybody state.</p></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/quspin.basis.python_int_to_basis_int.html#quspin.basis.python_int_to_basis_int" title="quspin.basis.python_int_to_basis_int"><code class="xref py py-obj docutils literal notranslate"><span class="pre">python_int_to_basis_int</span></code></a>(python_int[,&nbsp;dtype])</td>
-<td>Converts python integer to QuSpin basis type.</td>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/quspin.basis.python_int_to_basis_int.html#quspin.basis.python_int_to_basis_int" title="quspin.basis.python_int_to_basis_int"><code class="xref py py-obj docutils literal notranslate"><span class="pre">python_int_to_basis_int</span></code></a>(python_int[, dtype])</p></td>
+<td><p>Converts python integer to QuSpin basis type.</p></td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="generated/quspin.basis.basis_int_to_python_int.html#quspin.basis.basis_int_to_python_int" title="quspin.basis.basis_int_to_python_int"><code class="xref py py-obj docutils literal notranslate"><span class="pre">basis_int_to_python_int</span></code></a>(basis_int)</td>
-<td>Converts QuSpin basis type integer to a python integer.</td>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/quspin.basis.basis_int_to_python_int.html#quspin.basis.basis_int_to_python_int" title="quspin.basis.basis_int_to_python_int"><code class="xref py py-obj docutils literal notranslate"><span class="pre">basis_int_to_python_int</span></code></a>(basis_int)</p></td>
+<td><p>Converts QuSpin basis type integer to a python integer.</p></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/quspin.basis.bitwise_not.html#quspin.basis.bitwise_not" title="quspin.basis.bitwise_not"><code class="xref py py-obj docutils literal notranslate"><span class="pre">bitwise_not</span></code></a>(x[,&nbsp;out,&nbsp;where])</td>
-<td>Bitwise NOT operation <cite>~x</cite>.</td>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/quspin.basis.bitwise_not.html#quspin.basis.bitwise_not" title="quspin.basis.bitwise_not"><code class="xref py py-obj docutils literal notranslate"><span class="pre">bitwise_not</span></code></a>(x[, out, where])</p></td>
+<td><p>Bitwise NOT operation <cite>~x</cite>.</p></td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="generated/quspin.basis.bitwise_and.html#quspin.basis.bitwise_and" title="quspin.basis.bitwise_and"><code class="xref py py-obj docutils literal notranslate"><span class="pre">bitwise_and</span></code></a>(x1,&nbsp;x2[,&nbsp;out,&nbsp;where])</td>
-<td>Bitwise AND operation <cite>x1 &amp; x2</cite>.</td>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/quspin.basis.bitwise_and.html#quspin.basis.bitwise_and" title="quspin.basis.bitwise_and"><code class="xref py py-obj docutils literal notranslate"><span class="pre">bitwise_and</span></code></a>(x1, x2[, out, where])</p></td>
+<td><p>Bitwise AND operation <cite>x1 &amp; x2</cite>.</p></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/quspin.basis.bitwise_or.html#quspin.basis.bitwise_or" title="quspin.basis.bitwise_or"><code class="xref py py-obj docutils literal notranslate"><span class="pre">bitwise_or</span></code></a>(x1,&nbsp;x2[,&nbsp;out,&nbsp;where])</td>
-<td>Bitwise OR operation <cite>x1 | x2</cite>.</td>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/quspin.basis.bitwise_or.html#quspin.basis.bitwise_or" title="quspin.basis.bitwise_or"><code class="xref py py-obj docutils literal notranslate"><span class="pre">bitwise_or</span></code></a>(x1, x2[, out, where])</p></td>
+<td><p>Bitwise OR operation <cite>x1 | x2</cite>.</p></td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="generated/quspin.basis.bitwise_xor.html#quspin.basis.bitwise_xor" title="quspin.basis.bitwise_xor"><code class="xref py py-obj docutils literal notranslate"><span class="pre">bitwise_xor</span></code></a>(x1,&nbsp;x2[,&nbsp;out,&nbsp;where])</td>
-<td>Bitwise XOR operation <cite>x1 ^ x2</cite>.</td>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/quspin.basis.bitwise_xor.html#quspin.basis.bitwise_xor" title="quspin.basis.bitwise_xor"><code class="xref py py-obj docutils literal notranslate"><span class="pre">bitwise_xor</span></code></a>(x1, x2[, out, where])</p></td>
+<td><p>Bitwise XOR operation <cite>x1 ^ x2</cite>.</p></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/quspin.basis.bitwise_leftshift.html#quspin.basis.bitwise_leftshift" title="quspin.basis.bitwise_leftshift"><code class="xref py py-obj docutils literal notranslate"><span class="pre">bitwise_leftshift</span></code></a>(x1,&nbsp;x2[,&nbsp;out,&nbsp;where])</td>
-<td>Bitwise LEFT SHIFT operation <cite>x1 &lt;&lt; x2</cite>.</td>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/quspin.basis.bitwise_leftshift.html#quspin.basis.bitwise_leftshift" title="quspin.basis.bitwise_leftshift"><code class="xref py py-obj docutils literal notranslate"><span class="pre">bitwise_leftshift</span></code></a>(x1, x2[, out, where])</p></td>
+<td><p>Bitwise LEFT SHIFT operation <cite>x1 &lt;&lt; x2</cite>.</p></td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="generated/quspin.basis.bitwise_rightshift.html#quspin.basis.bitwise_rightshift" title="quspin.basis.bitwise_rightshift"><code class="xref py py-obj docutils literal notranslate"><span class="pre">bitwise_rightshift</span></code></a>(x1,&nbsp;x2[,&nbsp;out,&nbsp;where])</td>
-<td>Bitwise RIGHT SHIFT operation <cite>x1 &gt;&gt; x2</cite>.</td>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/quspin.basis.bitwise_rightshift.html#quspin.basis.bitwise_rightshift" title="quspin.basis.bitwise_rightshift"><code class="xref py py-obj docutils literal notranslate"><span class="pre">bitwise_rightshift</span></code></a>(x1, x2[, out, where])</p></td>
+<td><p>Bitwise RIGHT SHIFT operation <cite>x1 &gt;&gt; x2</cite>.</p></td>
 </tr>
 </tbody>
 </table>
@@ -258,7 +257,7 @@ representation of many-body states.</p>
         <div class="sphinxsidebarwrapper">
   <h3><a href="index.html">Table of Contents</a></h3>
   <ul>
-<li><a class="reference internal" href="#">Basis module (<code class="docutils literal notranslate"><span class="pre">quspin.basis</span></code>)</a><ul>
+<li><a class="reference internal" href="#">Basis module (<code class="xref py py-mod docutils literal notranslate"><span class="pre">quspin.basis</span></code>)</a><ul>
 <li><a class="reference internal" href="#one-dimensional-symmetries">one-dimensional symmetries</a></li>
 <li><a class="reference internal" href="#general-lattice-symmetries">general lattice symmetries</a></li>
 <li><a class="reference internal" href="#user-basis">user basis</a></li>
@@ -276,7 +275,7 @@ representation of many-body states.</p>
 
   <h4>Previous topic</h4>
   <p class="topless"><a href="New_Features.html"
-                        title="previous chapter"><span class="math notranslate nohighlight">\(\mathrm{\color{orange} {QuSpin\ 0.3.3}}\)</span> here (updated on 2019.10.15)</a></p>
+                        title="previous chapter"><span class="red">QuSpin 0.3.4</span> (released on 2020.04.17)</a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="generated/quspin.basis.spin_basis_1d.html"
                         title="next chapter">quspin.basis.spin_basis_1d</a></p>
@@ -288,17 +287,15 @@ representation of many-body states.</p>
     </ul>
    </div>
 <div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
+  <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="search.html" method="get">
-      <input type="text" name="q" />
+      <input type="text" name="q" aria-labelledby="searchlabel" />
       <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
     </form>
     </div>
 </div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
+<script>$('#searchbox').show(0);</script>
         </div>
       </div>
       <div class="clearer"></div>
@@ -316,14 +313,14 @@ representation of many-body states.</p>
           <a href="generated/quspin.basis.spin_basis_1d.html" title="quspin.basis.spin_basis_1d"
              >next</a> |</li>
         <li class="right" >
-          <a href="New_Features.html" title="\(\mathrm{\color{orange} {QuSpin\ 0.3.3}}\) here (updated on 2019.10.15)"
+          <a href="New_Features.html" title="QuSpin 0.3.4 (released on 2020.04.17)"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">QuSpin 0.3.3 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">QuSpin 0.3.4 documentation</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2016, Phillip Weinberg and Marin Bukov.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.4.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.4.0.
     </div>
   </body>
 </html>

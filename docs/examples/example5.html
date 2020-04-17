@@ -1,11 +1,9 @@
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><script type="text/javascript">
+    <meta charset="utf-8" /><script type="text/javascript">
 
       var _gaq = _gaq || [];
       _gaq.push(['_setAccount', 'UA-110543543-1']);
@@ -17,16 +15,16 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-    <title>Free Particle Systems: the Fermionic SSH Chain &#8212; QuSpin 0.3.3 documentation</title>
+    <title>Free Particle Systems: the Fermionic SSH Chain &#8212; QuSpin 0.3.4 documentation</title>
     <link rel="stylesheet" href="../static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../static/pygments.css" type="text/css" />
     
-    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../static/documentation_options.js"></script>
-    <script type="text/javascript" src="../static/jquery.js"></script>
-    <script type="text/javascript" src="../static/underscore.js"></script>
-    <script type="text/javascript" src="../static/doctools.js"></script>
-    <script type="text/javascript" src="../static/language_data.js"></script>
-    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script id="documentation_options" data-url_root="../" src="../static/documentation_options.js"></script>
+    <script src="../static/jquery.js"></script>
+    <script src="../static/underscore.js"></script>
+    <script src="../static/doctools.js"></script>
+    <script src="../static/language_data.js"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" /> 
@@ -40,7 +38,7 @@
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.3 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.4 documentation</a> &#187;</li> 
       </ul>
     </div>  
 
@@ -49,7 +47,8 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="section" id="free-particle-systems-the-fermionic-ssh-chain">
+  <style> .red {color:#ff0000; font-weight:bold; font-style:italic; } </style>
+<style> .green {color:#00b200; font-weight:bold; font-style:italic; } </style><div class="section" id="free-particle-systems-the-fermionic-ssh-chain">
 <span id="example5-label"></span><h1>Free Particle Systems: the Fermionic SSH Chain<a class="headerlink" href="#free-particle-systems-the-fermionic-ssh-chain" title="Permalink to this headline">¶</a></h1>
 <p>This example shows how to code up the Su-Schrieffer-Heeger chain:</p>
 <div class="math notranslate nohighlight">
@@ -58,7 +57,7 @@
 </div>
 <div class="section" id="script">
 <h1>Script<a class="headerlink" href="#script" title="Permalink to this headline">¶</a></h1>
-<p><a class="reference download internal" download="" href="../downloads/e377c5aacdf186c4867061acd33a997f/example5.py"><code class="xref download docutils literal notranslate"><span class="pre">download</span> <span class="pre">script</span></code></a></p>
+<p><a class="reference download internal" download="" href="../downloads/8ebdaf354c80ef927ecd6a3597c6b0f6/example5.py"><code class="xref download docutils literal notranslate"><span class="pre">download</span> <span class="pre">script</span></code></a></p>
 <div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>  1
   2
   3
@@ -188,10 +187,10 @@
 <span class="kn">from</span> <span class="nn">quspin.operators</span> <span class="kn">import</span> <span class="n">hamiltonian</span><span class="p">,</span><span class="n">exp_op</span> <span class="c1"># Hamiltonians and operators</span>
 <span class="kn">from</span> <span class="nn">quspin.basis</span> <span class="kn">import</span> <span class="n">spinless_fermion_basis_1d</span> <span class="c1"># Hilbert space fermion basis</span>
 <span class="kn">from</span> <span class="nn">quspin.tools.block_tools</span> <span class="kn">import</span> <span class="n">block_diag_hamiltonian</span> <span class="c1"># block diagonalisation</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span> <span class="c1"># generic math functions</span>
-<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span> <span class="c1"># plotting library</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span> <span class="c1"># generic math functions</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span> <span class="c1"># plotting library</span>
 <span class="k">try</span><span class="p">:</span> <span class="c1"># import python 3 zip function in python 2 and pass if already using python 3</span>
-    <span class="kn">import</span> <span class="nn">itertools.izip</span> <span class="kn">as</span> <span class="nn">zip</span>
+    <span class="kn">import</span> <span class="nn">itertools.izip</span> <span class="k">as</span> <span class="nn">zip</span>
 <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
     <span class="k">pass</span> 
 <span class="c1">##### define model parameters #####</span>
@@ -220,7 +219,7 @@
 <span class="n">basis_args</span> <span class="o">=</span> <span class="p">(</span><span class="n">L</span><span class="p">,)</span>
 <span class="c1"># construct block-diagonal Hamiltonian</span>
 <span class="n">FT</span><span class="p">,</span><span class="n">Hblock</span> <span class="o">=</span> <span class="n">block_diag_hamiltonian</span><span class="p">(</span><span class="n">blocks</span><span class="p">,</span><span class="n">static</span><span class="p">,</span><span class="n">dynamic</span><span class="p">,</span><span class="n">spinless_fermion_basis_1d</span><span class="p">,</span>
-						<span class="n">basis_args</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">complex128</span><span class="p">,</span><span class="n">get_proj_kwargs</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">pcon</span><span class="o">=</span><span class="bp">True</span><span class="p">))</span>
+						<span class="n">basis_args</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">complex128</span><span class="p">,</span><span class="n">get_proj_kwargs</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">pcon</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
 <span class="c1"># diagonalise momentum-space Hamiltonian</span>
 <span class="n">Eblock</span><span class="p">,</span><span class="n">Vblock</span><span class="o">=</span><span class="n">Hblock</span><span class="o">.</span><span class="n">eigh</span><span class="p">()</span>
 <span class="c1">##### prepare the density observables and initial states #####</span>
@@ -229,21 +228,21 @@
 <span class="c1"># construct operator n_1 = $n_{j=0}$</span>
 <span class="n">n_1_static</span><span class="o">=</span><span class="p">[[</span><span class="s1">&#39;n&#39;</span><span class="p">,[[</span><span class="mf">1.0</span><span class="p">,</span><span class="mi">0</span><span class="p">]]]]</span>
 <span class="n">n_1</span><span class="o">=</span><span class="n">hamiltonian</span><span class="p">(</span><span class="n">n_1_static</span><span class="p">,[],</span><span class="n">basis</span><span class="o">=</span><span class="n">basis</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">,</span>
-				<span class="n">check_herm</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span><span class="n">check_pcon</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+				<span class="n">check_herm</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">check_pcon</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 <span class="c1"># construct operator n_2 = $n_{j=L/2}$</span>
 <span class="n">n_2_static</span><span class="o">=</span><span class="p">[[</span><span class="s1">&#39;n&#39;</span><span class="p">,[[</span><span class="mf">1.0</span><span class="p">,</span><span class="n">L</span><span class="o">//</span><span class="mi">2</span><span class="p">]]]]</span>
 <span class="n">n_2</span><span class="o">=</span><span class="n">hamiltonian</span><span class="p">(</span><span class="n">n_2_static</span><span class="p">,[],</span><span class="n">basis</span><span class="o">=</span><span class="n">basis</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">,</span>
-				<span class="n">check_herm</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span><span class="n">check_pcon</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+				<span class="n">check_herm</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">check_pcon</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 <span class="c1"># transform n_j operators to momentum space</span>
-<span class="n">n_1</span><span class="o">=</span><span class="n">n_1</span><span class="o">.</span><span class="n">rotate_by</span><span class="p">(</span><span class="n">FT</span><span class="p">,</span><span class="n">generator</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
-<span class="n">n_2</span><span class="o">=</span><span class="n">n_2</span><span class="o">.</span><span class="n">rotate_by</span><span class="p">(</span><span class="n">FT</span><span class="p">,</span><span class="n">generator</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+<span class="n">n_1</span><span class="o">=</span><span class="n">n_1</span><span class="o">.</span><span class="n">rotate_by</span><span class="p">(</span><span class="n">FT</span><span class="p">,</span><span class="n">generator</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">n_2</span><span class="o">=</span><span class="n">n_2</span><span class="o">.</span><span class="n">rotate_by</span><span class="p">(</span><span class="n">FT</span><span class="p">,</span><span class="n">generator</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 <span class="c1">##### evaluate nonequal time correlator &lt;FS|n_2(t) n_1(0)|FS&gt; #####</span>
 <span class="c1"># define time vector</span>
 <span class="n">t</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span><span class="mf">90.0</span><span class="p">,</span><span class="mi">901</span><span class="p">)</span>
 <span class="c1"># calcualte state acted on by n_1</span>
 <span class="n">n_psi0</span><span class="o">=</span><span class="n">n_1</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">psi0</span><span class="p">)</span>
 <span class="c1"># construct time-evolution operator using exp_op class (sometimes faster)</span>
-<span class="n">U</span> <span class="o">=</span> <span class="n">exp_op</span><span class="p">(</span><span class="n">Hblock</span><span class="p">,</span><span class="n">a</span><span class="o">=-</span><span class="mi">1j</span><span class="p">,</span><span class="n">start</span><span class="o">=</span><span class="n">t</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span><span class="n">stop</span><span class="o">=</span><span class="n">t</span><span class="o">.</span><span class="n">max</span><span class="p">(),</span><span class="n">num</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">t</span><span class="p">),</span><span class="n">iterate</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="n">U</span> <span class="o">=</span> <span class="n">exp_op</span><span class="p">(</span><span class="n">Hblock</span><span class="p">,</span><span class="n">a</span><span class="o">=-</span><span class="mi">1</span><span class="n">j</span><span class="p">,</span><span class="n">start</span><span class="o">=</span><span class="n">t</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span><span class="n">stop</span><span class="o">=</span><span class="n">t</span><span class="o">.</span><span class="n">max</span><span class="p">(),</span><span class="n">num</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">t</span><span class="p">),</span><span class="n">iterate</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="c1"># evolve states</span>
 <span class="n">psi_t</span><span class="o">=</span><span class="n">U</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">psi0</span><span class="p">)</span>
 <span class="n">n_psi_t</span> <span class="o">=</span> <span class="n">U</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">n_psi0</span><span class="p">)</span>
@@ -254,7 +253,7 @@
 <span class="n">correlators</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">shape</span><span class="o">+</span><span class="n">psi0</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
 <span class="c1"># loop over the time-evolved states</span>
 <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">psi</span><span class="p">,</span><span class="n">n_psi</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span> <span class="nb">zip</span><span class="p">(</span><span class="n">psi_t</span><span class="p">,</span><span class="n">n_psi_t</span><span class="p">)</span> <span class="p">):</span>
-	<span class="n">correlators</span><span class="p">[</span><span class="n">i</span><span class="p">,:]</span><span class="o">=</span><span class="n">n_2</span><span class="o">.</span><span class="n">matrix_ele</span><span class="p">(</span><span class="n">psi</span><span class="p">,</span><span class="n">n_psi</span><span class="p">,</span><span class="n">diagonal</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span><span class="o">.</span><span class="n">real</span>
+	<span class="n">correlators</span><span class="p">[</span><span class="n">i</span><span class="p">,:]</span><span class="o">=</span><span class="n">n_2</span><span class="o">.</span><span class="n">matrix_ele</span><span class="p">(</span><span class="n">psi</span><span class="p">,</span><span class="n">n_psi</span><span class="p">,</span><span class="n">diagonal</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">real</span>
 <span class="c1"># evaluate correlator at finite temperature</span>
 <span class="n">n_FD</span><span class="o">=</span><span class="mf">1.0</span><span class="o">/</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">beta</span><span class="o">*</span><span class="n">E</span><span class="p">)</span><span class="o">+</span><span class="mf">1.0</span><span class="p">)</span>
 <span class="n">correlator</span> <span class="o">=</span> <span class="p">(</span><span class="n">n_FD</span><span class="o">*</span><span class="n">correlators</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
@@ -308,17 +307,15 @@
     </ul>
    </div>
 <div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
+  <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" />
+      <input type="text" name="q" aria-labelledby="searchlabel" />
       <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
     </form>
     </div>
 </div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
+<script>$('#searchbox').show(0);</script>
         </div>
       </div>
       <div class="clearer"></div>
@@ -332,12 +329,12 @@
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.3 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.4 documentation</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2016, Phillip Weinberg and Marin Bukov.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.4.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.4.0.
     </div>
   </body>
 </html>

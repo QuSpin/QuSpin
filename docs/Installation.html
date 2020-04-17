@@ -1,11 +1,9 @@
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><script type="text/javascript">
+    <meta charset="utf-8" /><script type="text/javascript">
 
       var _gaq = _gaq || [];
       _gaq.push(['_setAccount', 'UA-110543543-1']);
@@ -17,16 +15,16 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-    <title>Installation &#8212; QuSpin 0.3.3 documentation</title>
+    <title>Installation &#8212; QuSpin 0.3.4 documentation</title>
     <link rel="stylesheet" href="static/classic.css" type="text/css" />
     <link rel="stylesheet" href="static/pygments.css" type="text/css" />
     
-    <script type="text/javascript" id="documentation_options" data-url_root="./" src="static/documentation_options.js"></script>
-    <script type="text/javascript" src="static/jquery.js"></script>
-    <script type="text/javascript" src="static/underscore.js"></script>
-    <script type="text/javascript" src="static/doctools.js"></script>
-    <script type="text/javascript" src="static/language_data.js"></script>
-    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script id="documentation_options" data-url_root="./" src="static/documentation_options.js"></script>
+    <script src="static/jquery.js"></script>
+    <script src="static/underscore.js"></script>
+    <script src="static/doctools.js"></script>
+    <script src="static/language_data.js"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -48,7 +46,7 @@
         <li class="right" >
           <a href="generated/quspin.tools.misc.csr_matvec.html" title="quspin.tools.misc.csr_matvec"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">QuSpin 0.3.3 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">QuSpin 0.3.4 documentation</a> &#187;</li> 
       </ul>
     </div>  
 
@@ -57,11 +55,27 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="section" id="installation">
+  <style> .red {color:#ff0000; font-weight:bold; font-style:italic; } </style>
+<style> .green {color:#00b200; font-weight:bold; font-style:italic; } </style><div class="section" id="installation">
 <h1>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h1>
 <p>QuSpin is currently being supported for Python 2 and Python 3 which are a prerequisite. We recommend the use of the free package manager <a class="reference external" href="https://www.continuum.io/downloads">Anaconda</a> which installs Python and manages its packages. For a lighter installation (preferred for computing clusters), one can use <a class="reference external" href="http://conda.pydata.org/miniconda.html">miniconda</a>.</p>
-<p>For the <strong>manual installation</strong> you must have all the prerequisite python packages: <a class="reference external" href="http://www.numpy.org/">numpy</a>, <a class="reference external" href="https://www.scipy.org">scipy</a>, <a class="reference external" href="https://pythonhosted.org/joblib/">joblib</a>, <a class="reference external" href="https://pythonhosted.org/six/">six</a>, <a class="reference external" href="https://pypi.python.org/pypi/dill">dill</a>, <a class="reference external" href="https://gmpy2.readthedocs.io/en/latest/">gmpy2</a>,
-<a class="reference external" href="http://numba.pydata.org/">numba</a>, llvm-openmp [osx omp version only] installed. For Windows machines one needs the correct version of the Microsoft Visual Studios compiler for the given python version one is building the package for. A good resource which can help with this can be found <a class="reference external" href="https://github.com/cython/cython/wiki/CythonExtensionsOnWindows">here</a>. For OS-X and Linux the standard compilers should be fine for building the package. Note that some of the compiled extensions require Openmp 2.0 or above. When installing the package manually, if you add the flag <cite>–record install.txt</cite>, the location of all the installed files will be output to the file <cite>install.txt</cite>. This is useful as most package managers will not be able to remove manually installed packages and so in order to delete this package completely one needs to manually remove all the files.</p>
+<dl class="simple">
+<dt>For the <strong>manual installation</strong> you must have all the prerequisite python packages installed:</dt><dd><ul class="simple">
+<li><p><a class="reference external" href="https://www.scipy.org">scipy</a>&gt;=0.19.1</p></li>
+<li><p><a class="reference external" href="http://www.numpy.org">numpy</a>&gt;=1.17.2</p></li>
+<li><p><a class="reference external" href="https://www.cython.org">cython</a>&gt;0.29</p></li>
+<li><p><a class="reference external" href="https://pythonhosted.org/joblib/">joblib</a></p></li>
+<li><p><a class="reference external" href="https://pythonhosted.org/six/">six</a></p></li>
+<li><p><a class="reference external" href="https://pypi.python.org/pypi/dill">dill</a></p></li>
+<li><p><a class="reference external" href="https://gmpy2.readthedocs.io/en/latest/">gmpy2</a></p></li>
+<li><p><a class="reference external" href="http://numba.pydata.org/">numba</a></p></li>
+<li><p><a class="reference external" href="https://numexpr.readthedocs.io/en/latest/user_guide.html">numexpr</a></p></li>
+<li><p><a class="reference external" href="https://www.boost.org/doc/libs/1_70_0/libs/python/doc/html/index.html">boost</a>, installation must include header files for boost.</p></li>
+<li><p><a class="reference external" href="http://openmp.llvm.org/">llvm-openmp</a>, osx openmp version only.</p></li>
+</ul>
+</dd>
+</dl>
+<p>On Windows machines one needs the correct version of the Microsoft Visual Studios compiler for the given python version one is building the package for. A good resource which can help with this can be found <a class="reference external" href="https://github.com/cython/cython/wiki/CythonExtensionsOnWindows">here</a>. For OS-X and Linux the standard compilers should be fine for building the package. Note that some of the compiled extensions require Openmp 2.0 or above. When installing the package manually, if you add the flag <cite>–record install.txt</cite>, the location of all the installed files will be output to the file <cite>install.txt</cite>. This is useful as most package managers will not be able to remove manually installed packages and so in order to delete this package completely one needs to manually remove all the files.</p>
 <div class="section" id="mac-os-x-linux">
 <h2>Mac OS X/Linux<a class="headerlink" href="#mac-os-x-linux" title="Permalink to this headline">¶</a></h2>
 <p>To install Anaconda/miniconda all one has to do is execute the installation script with administrative privilege. To do this, open up the terminal and go to the folder containing the downloaded installation file and execute the following command:</p>
@@ -88,11 +102,11 @@
 <p>upon which you will be asked by anaconda if you want to downgrade you QuSpin version to a version which no longer tracks the <cite>omp</cite> feature.</p>
 <p><strong>Installing Manually</strong></p>
 <p>Installing the package manually is not recommended unless the above method failed. Note that you must have the requisite Python packages [see above] installed before installing QuSpin. Once all the prerequisite packages are installed, one can download the source code from <a class="reference external" href="https://github.com/weinbe58/qspin/tree/master">github</a> and then extract the code to whichever directory one desires. Open the terminal and go to the top level directory of the source code and execute:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ python setup.py install --record install_file.txt
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ python setup.py install --default-compiler-flags --record install_file.txt
 </pre></div>
 </div>
 <p>or if you require OpenMP support (see also <a class="reference internal" href="parallelization.html#parallelization-label"><span class="std std-ref">Parallel Computing Support</span></a>)</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ python setup.py install --omp --record install_file.txt
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ python setup.py install --omp --default-compiler-flags --record install_file.txt
 </pre></div>
 </div>
 <p>This will compile the source code and copy it to the installation directory of Python recording the installation location to <cite>install_file.txt</cite>. To update the code, you must first completely remove the current version installed and then install the new code. The <cite>install_file.txt</cite> can be used to remove the package by running:</p>
@@ -117,11 +131,11 @@
 <p>If asked to install new packages just say <cite>yes</cite>. To update the code just run this command regularly.</p>
 <p><strong>Installing Manually</strong></p>
 <p>Installing the package manually is not recommended unless the above method failed. NNote that you must have the requisite Python packages [see above] installed before installing QuSpin. Once all the prerequisite packages are installed, one can download the source code from <a class="reference external" href="https://github.com/weinbe58/qspin/tree/master">github</a> and then extract the code to whichever directory one desires. Open the terminal and go to the top level directory of the source code and then execute:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">python</span> <span class="n">setup</span><span class="o">.</span><span class="n">py</span> <span class="n">install</span> <span class="o">--</span><span class="n">record</span> <span class="n">install_file</span><span class="o">.</span><span class="n">txt</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">python</span> <span class="n">setup</span><span class="o">.</span><span class="n">py</span> <span class="n">install</span> <span class="o">--</span><span class="n">default</span><span class="o">-</span><span class="n">compiler</span><span class="o">-</span><span class="n">flags</span> <span class="o">--</span><span class="n">record</span> <span class="n">install_file</span><span class="o">.</span><span class="n">txt</span>
 </pre></div>
 </div>
 <p>or if you require OpenMP support (see also <a class="reference internal" href="parallelization.html#parallelization-label"><span class="std std-ref">Parallel Computing Support</span></a>)</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">python</span> <span class="n">setup</span><span class="o">.</span><span class="n">py</span> <span class="n">install</span> <span class="o">--</span><span class="n">omp</span> <span class="o">--</span><span class="n">record</span> <span class="n">install_file</span><span class="o">.</span><span class="n">txt</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">python</span> <span class="n">setup</span><span class="o">.</span><span class="n">py</span> <span class="n">install</span> <span class="o">--</span><span class="n">omp</span> <span class="o">--</span><span class="n">default</span><span class="o">-</span><span class="n">compiler</span><span class="o">-</span><span class="n">flags</span> <span class="o">--</span><span class="n">record</span> <span class="n">install_file</span><span class="o">.</span><span class="n">txt</span>
 </pre></div>
 </div>
 <p>This will compile the source code and copy it to the installation directory of Python and record the installation location to <cite>install_file.txt</cite>. To update the code you must first completely remove the current version installed and then install the new code.</p>
@@ -132,60 +146,52 @@
 <p>Let us review how to use the command line for Windows and OS X/Linux to navigate your computer’s folders/directories and run the Python scripts.</p>
 <div class="section" id="id3">
 <h2>Mac OS X/Linux<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h2>
-<dl class="docutils">
-<dt>Some basic commands:</dt>
-<dd><ul class="first last">
-<li><dl class="first docutils">
-<dt>change directory:</dt>
-<dd><div class="first last highlight-default notranslate"><div class="highlight"><pre><span></span>$ cd &lt; path_to_directory &gt;
+<dl>
+<dt>Some basic commands:</dt><dd><ul>
+<li><dl>
+<dt>change directory:</dt><dd><div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ cd &lt; path_to_directory &gt;
 </pre></div>
 </div>
 </dd>
 </dl>
 </li>
-<li><dl class="first docutils">
-<dt>list files in current directory:</dt>
-<dd><div class="first last highlight-default notranslate"><div class="highlight"><pre><span></span>$ ls
+<li><dl>
+<dt>list files in current directory:</dt><dd><div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ ls
 </pre></div>
 </div>
 </dd>
 </dl>
 </li>
-<li><dl class="first docutils">
-<dt>list files in another directory:</dt>
-<dd><div class="first last highlight-default notranslate"><div class="highlight"><pre><span></span>$ ls &lt; path_to_directory &gt;
+<li><dl>
+<dt>list files in another directory:</dt><dd><div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ ls &lt; path_to_directory &gt;
 </pre></div>
 </div>
 </dd>
 </dl>
 </li>
-<li><dl class="first docutils">
-<dt>make new directory:</dt>
-<dd><div class="first last highlight-default notranslate"><div class="highlight"><pre><span></span>$ mkdir &lt;path&gt;/&lt; directory_name &gt;
+<li><dl>
+<dt>make new directory:</dt><dd><div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ mkdir &lt;path&gt;/&lt; directory_name &gt;
 </pre></div>
 </div>
 </dd>
 </dl>
 </li>
-<li><dl class="first docutils">
-<dt>copy file:</dt>
-<dd><div class="first last highlight-default notranslate"><div class="highlight"><pre><span></span>$ cp &lt; path &gt;/&lt; file_name &gt; &lt; new_path &gt;/&lt; new_file_name &gt;
+<li><dl>
+<dt>copy file:</dt><dd><div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ cp &lt; path &gt;/&lt; file_name &gt; &lt; new_path &gt;/&lt; new_file_name &gt;
 </pre></div>
 </div>
 </dd>
 </dl>
 </li>
-<li><dl class="first docutils">
-<dt>move file or change file name:</dt>
-<dd><div class="first last highlight-default notranslate"><div class="highlight"><pre><span></span>$ mv &lt; path &gt;/&lt; file_name &gt; &lt; new_path &gt;/&lt; new_file_name &gt;
+<li><dl>
+<dt>move file or change file name:</dt><dd><div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ mv &lt; path &gt;/&lt; file_name &gt; &lt; new_path &gt;/&lt; new_file_name &gt;
 </pre></div>
 </div>
 </dd>
 </dl>
 </li>
-<li><dl class="first docutils">
-<dt>remove file:</dt>
-<dd><div class="first last highlight-default notranslate"><div class="highlight"><pre><span></span>$ rm &lt; path_to_file &gt;/&lt; file_name &gt;
+<li><dl>
+<dt>remove file:</dt><dd><div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ rm &lt; path_to_file &gt;/&lt; file_name &gt;
 </pre></div>
 </div>
 </dd>
@@ -198,60 +204,52 @@
 </div>
 <div class="section" id="id4">
 <h2>Windows<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h2>
-<dl class="docutils">
-<dt>Some basic commands:</dt>
-<dd><ul class="first last">
-<li><dl class="first docutils">
-<dt>change directory:</dt>
-<dd><div class="first last highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">cd</span> <span class="o">&lt;</span> <span class="n">path_to_directory</span> <span class="o">&gt;</span>
+<dl>
+<dt>Some basic commands:</dt><dd><ul>
+<li><dl>
+<dt>change directory:</dt><dd><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">cd</span> <span class="o">&lt;</span> <span class="n">path_to_directory</span> <span class="o">&gt;</span>
 </pre></div>
 </div>
 </dd>
 </dl>
 </li>
-<li><dl class="first docutils">
-<dt>list files in current directory:</dt>
-<dd><div class="first last highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="nb">dir</span>
+<li><dl>
+<dt>list files in current directory:</dt><dd><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="nb">dir</span>
 </pre></div>
 </div>
 </dd>
 </dl>
 </li>
-<li><dl class="first docutils">
-<dt>list files in another directory:</dt>
-<dd><div class="first last highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="nb">dir</span> <span class="o">&lt;</span> <span class="n">path_to_directory</span> <span class="o">&gt;</span>
+<li><dl>
+<dt>list files in another directory:</dt><dd><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="nb">dir</span> <span class="o">&lt;</span> <span class="n">path_to_directory</span> <span class="o">&gt;</span>
 </pre></div>
 </div>
 </dd>
 </dl>
 </li>
-<li><dl class="first docutils">
-<dt>make new directory:</dt>
-<dd><div class="first last highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">mkdir</span> <span class="o">&lt;</span><span class="n">path</span><span class="o">&gt;</span>\<span class="o">&lt;</span> <span class="n">directory_name</span> <span class="o">&gt;</span>
+<li><dl>
+<dt>make new directory:</dt><dd><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">mkdir</span> <span class="o">&lt;</span><span class="n">path</span><span class="o">&gt;</span>\<span class="o">&lt;</span> <span class="n">directory_name</span> <span class="o">&gt;</span>
 </pre></div>
 </div>
 </dd>
 </dl>
 </li>
-<li><dl class="first docutils">
-<dt>copy file:</dt>
-<dd><div class="first last highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">copy</span> <span class="o">&lt;</span> <span class="n">path</span> <span class="o">&gt;</span>\<span class="o">&lt;</span> <span class="n">file_name</span> <span class="o">&gt;</span> <span class="o">&lt;</span> <span class="n">new_path</span> <span class="o">&gt;</span>\<span class="o">&lt;</span> <span class="n">new_file_name</span> <span class="o">&gt;</span>
+<li><dl>
+<dt>copy file:</dt><dd><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">copy</span> <span class="o">&lt;</span> <span class="n">path</span> <span class="o">&gt;</span>\<span class="o">&lt;</span> <span class="n">file_name</span> <span class="o">&gt;</span> <span class="o">&lt;</span> <span class="n">new_path</span> <span class="o">&gt;</span>\<span class="o">&lt;</span> <span class="n">new_file_name</span> <span class="o">&gt;</span>
 </pre></div>
 </div>
 </dd>
 </dl>
 </li>
-<li><dl class="first docutils">
-<dt>move file or change file name:</dt>
-<dd><div class="first last highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">move</span> <span class="o">&lt;</span> <span class="n">path</span> <span class="o">&gt;</span>\<span class="o">&lt;</span> <span class="n">file_name</span> <span class="o">&gt;</span> <span class="o">&lt;</span> <span class="n">new_path</span> <span class="o">&gt;</span>\<span class="o">&lt;</span> <span class="n">new_file_name</span> <span class="o">&gt;</span>
+<li><dl>
+<dt>move file or change file name:</dt><dd><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">move</span> <span class="o">&lt;</span> <span class="n">path</span> <span class="o">&gt;</span>\<span class="o">&lt;</span> <span class="n">file_name</span> <span class="o">&gt;</span> <span class="o">&lt;</span> <span class="n">new_path</span> <span class="o">&gt;</span>\<span class="o">&lt;</span> <span class="n">new_file_name</span> <span class="o">&gt;</span>
 </pre></div>
 </div>
 </dd>
 </dl>
 </li>
-<li><dl class="first docutils">
-<dt>remove file:</dt>
-<dd><div class="first last highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">erase</span> <span class="o">&lt;</span> <span class="n">path</span> <span class="o">&gt;</span>\<span class="o">&lt;</span> <span class="n">file_name</span> <span class="o">&gt;</span>
+<li><dl>
+<dt>remove file:</dt><dd><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">erase</span> <span class="o">&lt;</span> <span class="n">path</span> <span class="o">&gt;</span>\<span class="o">&lt;</span> <span class="n">file_name</span> <span class="o">&gt;</span>
 </pre></div>
 </div>
 </dd>
@@ -307,17 +305,15 @@
     </ul>
    </div>
 <div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
+  <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="search.html" method="get">
-      <input type="text" name="q" />
+      <input type="text" name="q" aria-labelledby="searchlabel" />
       <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
     </form>
     </div>
 </div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
+<script>$('#searchbox').show(0);</script>
         </div>
       </div>
       <div class="clearer"></div>
@@ -337,12 +333,12 @@
         <li class="right" >
           <a href="generated/quspin.tools.misc.csr_matvec.html" title="quspin.tools.misc.csr_matvec"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">QuSpin 0.3.3 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">QuSpin 0.3.4 documentation</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2016, Phillip Weinberg and Marin Bukov.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.4.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.4.0.
     </div>
   </body>
 </html>

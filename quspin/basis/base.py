@@ -120,6 +120,7 @@ class basis(object):
 		v_out = v_out.reshape((self.Ns,-1))
 		v_in = v_in.reshape((self.Ns,-1))
 
+		
 		for opstr,indx,J in op_list:
 
 			if not transposed:
@@ -145,18 +146,8 @@ class basis(object):
 		-----------
 		v_in : array_like
 			state (or states stored in columns) to act on with the operator.
-		opstr : str
-			Operator string in the lattice basis format. For instance:
-
-			>>> opstr = "zz"
-
-		indx : list(int)
-			List of integers to designate the sites the lattice basis operator is defined on. For instance:
-			
-			>>> indx = [2,3]
-
-		J : scalar
-			Coupling strength.
+		op_list : list
+			Operator string list which defines the operator to apply. Follows the format `[["z",[i],Jz[i]] for i in range(L)], ["x",[i],Jx[j]] for j in range(L)],...]`. 
 		dtype : 'type'
 			Data type (e.g. `numpy.float64`) to construct the operator with.
 		transposed : bool, optional
@@ -179,9 +170,11 @@ class basis(object):
 		>>> indx = [2,3]
 		>>> opstr = "zz"
 		>>> dtype = np.float64
-		>>> ME, row, col = Op(opstr,indx,J,dtype)
+		>>> op_list=[[opstr,indx,J]]
+		>>> ME, row, col = inplace_Op(op_list,dtype)
 
 		"""
+
 		return self._inplace_Op(v_in,op_list,dtype,transposed=transposed,conjugated=conjugated,v_out=v_out)
 
 	def Op(self,opstr,indx,J,dtype):
@@ -239,7 +232,6 @@ class basis(object):
 				if _is_diagonal(row,col):
 					if diag is None:
 						diag = _np.zeros(self.Ns,dtype=dtype)
-
 					_update_diag(diag,row,ME)
 				else:
 					if off_diag is None:
@@ -260,6 +252,16 @@ class basis(object):
 
 	def partial_trace(self,state,sub_sys_A=None,subsys_ordering=True,return_rdm="A",enforce_pure=False,sparse=False):
 		"""Calculates reduced density matrix, through a partial trace of a quantum state in a lattice `basis`.
+
+		Notes
+		-----
+		This function can also be applied to trace out operators/observables defined by the input `state`, in which case one has 
+		to additionally normalize the final output by the Hilbert space dimension of the traced-out space. 
+		However, if an operator is defined in a symmetry-reduced basis, there is a :red:`caveat`. In such a case, one has to:
+			(1) use the `basis.get_proj()` function to lift the operator to the full basis; 
+			(2) apply `basis.partial_trace()`;
+			(3) repeat this procedure for all symmetry sectors, and sum up the resulting reduced operators [this is becauce one has to add in the information about how the operator acts on the full Hilbert space].
+
 
 		Parameters
 		-----------
@@ -301,7 +303,7 @@ class basis(object):
 					subsys_ordering=subsys_ordering,return_rdm=return_rdm,
 					enforce_pure=enforce_pure,sparse=sparse)
 
-	def ent_entropy(self,state,sub_sys_A=None,density=True,subsys_ordering=True,return_rdm=None,enforce_pure=False,return_rdm_EVs=False,sparse=False,alpha=1.0,sparse_diag=True,maxiter=None):
+	def ent_entropy(self,state,sub_sys_A=None,density=True,subsys_ordering=True,return_rdm=None,enforce_pure=False,return_rdm_EVs=False,sparse=False,alpha=1.0,sparse_diag=True,maxiter=None,svd_solver=None, svd_kwargs=None ):
 		"""Calculates entanglement entropy of subsystem A and the corresponding reduced density matrix
 
 		.. math::
@@ -354,6 +356,10 @@ class basis(object):
 		maxiter : int, optional
 			Specifies the number of iterations for Lanczos diagonalisation. Look up documentation for 
 			`scipy.sparse.linalg.eigsh() <https://docs.scipy.org/doc/scipy/reference/generated/generated/scipy.sparse.linalg.eigsh.html>`_.
+		svd_solver : object, optional
+			Specifies the svd solver to be used, e.g. `numpy.linalg.svd` or `scipy.linalg.svd`, or a custom solver. Effective when `enforce_pure=True` or `sparse=False`.
+		svd_kwargs : dict, optional
+			Specifies additional arguments for `svd_solver`. 
 
 		Returns
 		--------
@@ -377,7 +383,8 @@ class basis(object):
 		return self._ent_entropy(state,sub_sys_A=sub_sys_A,density=density,
 								subsys_ordering=subsys_ordering,return_rdm=return_rdm,
 								enforce_pure=enforce_pure,return_rdm_EVs=return_rdm_EVs,
-								sparse=sparse,alpha=alpha,sparse_diag=sparse_diag,maxiter=maxiter)
+								sparse=sparse,alpha=alpha,sparse_diag=sparse_diag,maxiter=maxiter,
+								svd_solver=svd_solver, svd_kwargs=svd_kwargs )
 
 	def expanded_form(self,static=[],dynamic=[]):
 		"""Splits up operator strings containing "x" and "y" into operator combinations of "+" and "-". This function is useful for higher spin hamiltonians where "x" and "y" operators are not appropriate operators. 
@@ -661,8 +668,6 @@ class basis(object):
 						if static_list[i] not in odd_ops:
 							odd_ops.append(static_list[i])
 
-
-	
 			if odd_ops:
 				unique_opstrs = list(set( next(iter(zip(*tuple(odd_ops))))) )
 				unique_odd_ops = []
@@ -692,7 +697,7 @@ class basis(object):
 						if dynamic_list[i] not in odd_ops:
 							odd_ops.append(dynamic_list[i])
 
-	
+
 			if odd_ops:
 				unique_opstrs = list(set( next(iter(zip(*tuple(odd_ops))))))
 				unique_odd_ops = []
