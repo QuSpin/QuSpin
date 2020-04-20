@@ -1,11 +1,11 @@
 """
 This is an exmple quspin application which can be used to benchmark the package performance.
 
-python quspin_app N_MKL N_OMP L N_T  ,  e.g.,  python quspin_app.py 4 4 5 10
+python quspin_app N_MKL N_OMP L N_T  ,  e.g.,  python quspin_app.py 4 4 5 10000
 
 N_NKL: number of MKL threads
 N_OMP: number of OMP threads
-L: (4<L<7) linear system size; runtime scales exponentially with L
+L: (3<L<7) linear system size; runtime scales exponentially with L
 N_T: number of time steps; runtime scales linearly with N_T
 
 """
@@ -19,11 +19,12 @@ os.environ['OMP_NUM_THREADS']=sys.argv[2]
 qspin_path = os.path.join(os.getcwd(),"../")
 sys.path.insert(0,qspin_path)
 
-from quspin.operators import hamiltonian
+from quspin.operators import hamiltonian,quantum_LinearOperator
 from quspin.basis import spin_basis_general
 from quspin.tools.evolution import expm_multiply_parallel
 import numpy as np 
 import time
+from scipy.sparse.linalg import eigsh
 
 ###### simulation parameters
 # system size: expect exponential slowdown of simulation time with increasinf L
@@ -83,19 +84,36 @@ print("\nbasis with {0:d} states took {1:0.2f} secs.\n".format(basis.Ns, time_ba
 # linear speedup is expected from both OMP and MKL
 
 J_list=[[1.0,i,T_x[i]] for i in range(N_sites)] + [[1.0,i,T_y[i]] for i in range(N_sites)]
-static_off_diag=[ ["+-",J_list], ["-+",J_list], ["zz",J_list] ]
+static=[ ["+-",J_list], ["-+",J_list], ["zz",J_list] ]
 
 ti=time.time()
-H=hamiltonian(static_off_diag, [], basis=basis, dtype=np.float64)
+H=hamiltonian(static, [], basis=basis, dtype=np.float64)
+H_op=H.aslinearoperator()
+H_qop=quantum_LinearOperator(static,basis=basis,dtype=np.float64)
 tf=time.time()
 time_H=tf-ti
 print("\nHamiltonian construction took {0:0.2f} secs.\n".format(time_H))
 
 
+
 ######## HAMILTONIAN DIAGONALIZATION ########
 #
 # required time scales exponentially with L
-# linear speedup is expected from MKL
+# linear speedup is expected both OMP and MKL
+
+
+ti=time.time()
+eigsh(H_op,k=1,which='SA')
+tf=time.time()
+time_eigsh_op=tf-ti
+print("\ncomputing ground state took {0:0.2f} secs.\n".format(time_eigsh_op))
+
+
+ti=time.time()
+H_qop.eigsh(k=1,which='SA')
+tf=time.time()
+time_eigsh_qop=tf-ti
+print("\ncomputing ground state for quantum_LinearOperator took {0:0.2f} secs.\n".format(time_eigsh_qop))
 
 
 # calculate minimum and maximum energy only
@@ -106,12 +124,19 @@ time_eigsh=tf-ti
 print("\ncomputing ground state & most excited state took {0:0.2f} secs.\n".format(time_eigsh))
 
 
-# calculate full eigensystem
+
+
+######## project_from & project_to ########
+#
+# required time scales exponentially with L
+# linear speedup is expected from OMP
 ti=time.time()
-E,V=H.eigh()
+psi_full = basis.project_from(psi_s[:,0],sparse=False) 
+basis.project_to(psi_full)
 tf=time.time()
-time_eigh=tf-ti
-print("\ncomputing all eigenstates took {0:0.2f} secs.\n".format(time_eigh))
+time_proj=tf-ti
+print("\nbasis.project_* took {0:0.2f} secs.\n".format(time_proj))
+
 
 
 ######## TIME EVOLUTION ########
@@ -137,27 +162,21 @@ for j in range(N_T):
 	#
 	# apply to state psi and update psi in-place
 	expH.dot(psi,work_array=work_array,overwrite_v=True)
-	# test project_to and project_from functions
-
+	
 tf=time.time()
 time_expm=tf-ti
 print("\ntime evolution took {0:0.2f} secs.\n".format(time_expm))
 
 
 
-######## project_from & project_to ########
-#
-# required time scales exponentially with L
-# linear speedup is expected from OMP
-ti=time.time()
-psi_full = basis.project_from(psi,sparse=False) 
-basis.project_to(psi_full)
-tf=time.time()
-time_proj=tf-ti
-print("\nbasis.project_* took {0:0.2f} secs.\n".format(time_proj))
 
 
-
-time_tot=time_basis + time_H + time_eigsh + time_eigh + time_expm + time_proj
+time_tot=time_basis + time_H + time_eigsh_op + time_eigsh_qop + time_eigh + time_expm + time_proj
 print("\n\ntotal run time: {0:0.2f} secs.\n".format(time_tot))
+
+
+
+
+
+
 
