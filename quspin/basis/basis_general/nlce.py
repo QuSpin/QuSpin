@@ -216,7 +216,7 @@ class _nlce(object):
 		return out.reshape(shape0)
 
 	def cluster_sums(self,O,Ncl_max=None):
-		"""Calculate sums over cluster of a given size given the expecation values over clusters. 
+		"""Calculate sum of expecation values over clusters of a fixed size. 
 
 		Parameters
 		----------
@@ -237,10 +237,11 @@ class _nlce(object):
 		"""
 
 		W = self.get_W(O,Ncl_max=Ncl_max)
+		shape0 = W.shape[1:]
 		shape = W.shape[:1]+(-1,)
 		Nc = W.shape[0]
 		Sn = _get_Sn(self._N_cl,W.reshape(shape),self._L_list[:Nc],self._Ncl_list[:Nc])
-		return Sn
+		return Sn.reshape((-1,)+shape0)
 
 	def partial_sums(self,O,Ncl_max=None):
 		"""Calculate the bare sums given the expecation values over clusters. 
@@ -295,7 +296,7 @@ class _nlce(object):
 		return wynn_eps_method(p,ncycle)
 
 	def __getitem__(self,key=None):
-		if type(key) is int:
+		if _np.issubdtype(type(key),_np.integer):
 			yield self.get_cluster_graph(key)
 		elif type(key) is slice:
 
@@ -326,7 +327,6 @@ class _nlce(object):
 			else:
 				step = key.step
 
-			print(start,stop,step)
 
 			for i in range(start,stop,step):
 				yield self.get_cluster_graph(i)
@@ -338,6 +338,10 @@ class _nlce(object):
 
 			for i in iter_key:
 				yield self.get_cluster_graph(i)
+
+	@property
+	def weighted_clusters(self):
+		return self._weighted_clusters
 
 	def get_cluster_graph(self,ic):
 		"""Get connectivity list for a give cluster.
@@ -365,6 +369,27 @@ class _nlce(object):
 		raise NotImplementedError
 
 
+	def cluster_symm(self,ic):
+		"""Get list of Point-group symmetries for a give cluster.
+
+		Parameters
+		----------
+
+		ic : integer
+			index for the requested cluster.
+
+		returns
+		-------
+		maps: tuple
+			tuple of numpy.ndarrays that define site mappings (used by a general basis) for the different PG symmetries of cluster.
+
+		"""
+		raise NotImplementedError
+		
+
+
+	
+
 class _ncle_site(_nlce):
 	def __init__(self,N_cl,N_lat,
 				 nn_list,nn_weight,cluster_list,
@@ -373,12 +398,13 @@ class _ncle_site(_nlce):
 		self._N_lat = N_lat
 		self._nn_list = nn_list
 		self._nn_weight = nn_weight
+		self._weighted_clusters = (nn_weight is not None)
 		_nlce.__init__(self,N_cl,cluster_list,L_list,Ncl_list,Y)
 
 
 	def get_cluster_graph(self,ic):
 
-		if type(ic) is not int:
+		if not _np.issubdtype(type(ic),_np.integer):
 			raise ValueError
 
 		if ic < 0 or ic >= self.Nc_max:
@@ -391,7 +417,7 @@ class _ncle_site(_nlce):
 		sites.sort()
 		visited = set([])
 		stack.append(sites[0])
-		if self._nn_weight is not None:
+		if self.weighted_clusters:
 			while(stack):
 				i = stack.pop()
 				a = _np.searchsorted(sites,i)
@@ -514,11 +540,12 @@ class _ncle_plaquet(_nlce):
 		self._plaquet_sites = plaquet_sites
 		self._plaquet_edges = plaquet_edges
 		self._edge_weights = edge_weights
+		self._weighted_clusters = (edge_weights is not None)
 
 		_nlce.__init__(self,N_cl,cluster_list,L_list,Ncl_list,Y)
 
 	def get_cluster_graph(self,ic):
-		if type(ic) is not int:
+		if not _np.issubdtype(type(ic),_np.integer):
 			raise ValueError
 
 		if ic < 0 or ic >= self.Nc_max:
@@ -548,14 +575,15 @@ class _ncle_plaquet(_nlce):
 		except IndexError:
 			pass
 
-		if self._edge_weights is not None:
+		if self.weighted_clusters:
 			while(stack):
 				pos = stack.pop()
 
 				for new_pos,edge_set in self._plaquet_edges[pos].items():
 					if new_pos not in visited and new_pos in plaquets:
 						for i,j in edge_set:
-							ww = self._edge_weights[i][j]
+							# ww = self._edge_weights[i][j]
+							ww = self._edge_weights[(i,j)]
 							ii = _np.searchsorted(sites,i)
 							jj = _np.searchsorted(sites,j)
 							graph.append((ww,ii,jj))
@@ -582,6 +610,16 @@ class _ncle_plaquet(_nlce):
 		return ic,sites,self._Ncl_list[ic],frozenset(graph)
 
 	get_cluster_graph.__doc__ = _nlce.get_cluster_graph.__doc__
+
+
+
+
+
+
+
+
+
+
 
 
 class NLCE_plaquet(_ncle_plaquet):
@@ -635,15 +673,19 @@ class NLCE_plaquet(_ncle_plaquet):
 
 		"""
 
+		plaquet_sites = _np.asanyarray(plaquet_sites)
+		plaquet_sites = plaquet_sites.astype(_np.int32,order="C",copy=True)
+
 		if plaquet_per_site is None:
 			_,counts = _np.unique(plaquet_sites,return_counts=True)
 
 			self._plaquets_per_site = _np.sum(counts)//len(counts)
+
+			if _np.any(counts != self._plaquets_per_site):
+				raise ValueError("Number of plaquets per site is not equal for all plaquets")
 		else:
 			self._plaquets_per_site = plaquet_per_site
 
-		if _np.any(counts != self._plaquets_per_site):
-			raise ValueError("Number of plaquets per site is not equal for all plaquets")
 
 		tr = _np.asanyarray(tr)
 		pg = _np.asanyarray(pg)
@@ -651,25 +693,36 @@ class NLCE_plaquet(_ncle_plaquet):
 		N_plaquet = len(plaquet_edges)
 
 		if not isinstance(plaquet_edges,dict):
-			raise TypeError
+			raise TypeError("invalid format for 'edge_weights' must be dictionary of dictionaries containing intra- and inter-plaquet edges.")
 		else:
 			for a,edge_dict in plaquet_edges.items():
 				if not isinstance(edge_dict,dict):
-					raise TypeError
+					raise TypeError("invalid format for 'edge_weights' must be dictionary of dictionaries containing intra- and inter-plaquet edges.")
 
 				for b,edge_set in edge_dict.items():
 					if type(edge_set) not in [set,frozenset]:
-						raise TypeError
+						raise TypeError("invalid format for 'edge_weights' must be dictionary of dictionaries containing intra- and inter-plaquet edges.")
+
+
+		if edge_weights is not None:
+			if None and not isinstance(edge_weights,dict):
+				raise ValueError("'edge_weights' must be dictionary of weights for edges in 'edge_dict'")
+			else:
+				for a,edge_dict in plaquet_edges.items():
+					for b,edge_set in edge_dict.items():
+						for edge in edge_set:
+							if edge not in edge_weights:
+								raise ValueError("Missing edge {} in 'edge_weights'".format(edge))
 
 
 		if plaquet_sites.shape[0] != N_plaquet:
-			raise ValueError
+			raise ValueError("must have: plaquet_sites.shape[0] == len(plaquet_edges")
 
 		if tr.shape[1] != N_plaquet:
-			raise ValueError
+			raise ValueError("must have: tr.shape[1] == len(plaquet_edges)")
 
 		if pg.shape[1] != N_plaquet:
-			raise ValueError
+			raise ValueError("must have: pg.shape[1] == len(plaquet_edges)")
 
 		nt_point = pg.shape[0]
 		nt_trans = tr.shape[0]
@@ -690,6 +743,8 @@ class NLCE_plaquet(_ncle_plaquet):
 				if _np.all(maps[j]==maps[i]):
 					ValueError("repeated transformations in list of permutations for point group/translations.")
 
+
+
 		nlce_core = nlce_plaquet_core_wrap(N_cl,nt_point,nt_trans,maps,pers,qs,
 			plaquet_sites,plaquet_edges,edge_weights)
 
@@ -699,8 +754,7 @@ class NLCE_plaquet(_ncle_plaquet):
 				 plaquet_sites,plaquet_edges,edge_weights,
 				 cluster_list,L_list,Ncl_list,Y)
 
-		plaquet_sites = _np.asanyarray(plaquet_sites)
-		plaquet_sites = plaquet_sites.astype(_np.int32,order="C",copy=True)
+
 
 	def get_W(self,O,Ncl_max=None,out=None):
 		res = _nlce.get_W(self,O,Ncl_max=Ncl_max,out=out)
