@@ -69,6 +69,14 @@ User Basis Tutorial
     
     user_basis
 
+Numerical Linked Cluster Expansion Tutorial
+============================================
+
+.. toctree::
+    :maxdepth: 1
+    
+    nlce
+
 
 Report a Bug / Ask a Question
 =============================

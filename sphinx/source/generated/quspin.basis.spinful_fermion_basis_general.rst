@@ -32,6 +32,8 @@ quspin.basis.spinful\_fermion\_basis\_general
       ~spinful_fermion_basis_general.make_basis_blocks
       ~spinful_fermion_basis_general.normalization
       ~spinful_fermion_basis_general.partial_trace
+      ~spinful_fermion_basis_general.project_from
+      ~spinful_fermion_basis_general.project_to
       ~spinful_fermion_basis_general.representative
       ~spinful_fermion_basis_general.state_to_int
    

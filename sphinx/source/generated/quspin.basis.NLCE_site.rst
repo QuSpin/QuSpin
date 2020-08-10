@@ -15,6 +15,7 @@ quspin.basis.NLCE\_site
    
       ~NLCE_site.__init__
       ~NLCE_site.cluster_sums
+      ~NLCE_site.cluster_symm
       ~NLCE_site.get_Nc
       ~NLCE_site.get_W
       ~NLCE_site.get_cluster_graph
@@ -29,7 +30,10 @@ quspin.basis.NLCE\_site
 
    .. autosummary::
    
+      ~NLCE_site.L_list
       ~NLCE_site.Nc_max
+      ~NLCE_site.Ncl_list
       ~NLCE_site.Ncl_max
+      ~NLCE_site.weighted_clusters
    
    
