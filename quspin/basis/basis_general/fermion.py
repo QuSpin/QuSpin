@@ -592,9 +592,10 @@ class spinful_fermion_basis_general(spinless_fermion_basis_general):
 		>>>				sparse=False,alpha=1.0,sparse_diag=True,subsys_ordering=True)
 
 		"""
+		N_sites = self.N//2
 		if self._simple_symm:
 			if sub_sys_A is None:
-				sub_sys_A = (list(range(self.N//2)),list(range(self.N//2)))
+				sub_sys_A = (list(range(N_sites//2)),list(range(N_sites//2)))
 
 			if type(sub_sys_A) is tuple and len(sub_sys_A) != 2:
 				raise ValueError("sub_sys_A must be a tuple which contains the subsystems for the up spins in the \
@@ -603,10 +604,10 @@ class spinful_fermion_basis_general(spinless_fermion_basis_general):
 			sub_sys_A_up,sub_sys_A_down = sub_sys_A
 
 			sub_sys_A = list(sub_sys_A_up)
-			sub_sys_A.extend([i+self.N for i in sub_sys_A_down])
+			sub_sys_A.extend([i+N_sites for i in sub_sys_A_down])
 		else:
 			if sub_sys_A is None:
-				sub_sys_A = [i for i in range(self.N//2)]+[self.N+i for i in range(self.N//2)]
+				sub_sys_A = [i for i in range(N_sites//2)]+[N_sites+i for i in range(N_sites//2)]
 
 		return spinless_fermion_basis_general._ent_entropy(self,state,sub_sys_A,density=density,
 						subsys_ordering=subsys_ordering,return_rdm=return_rdm,
