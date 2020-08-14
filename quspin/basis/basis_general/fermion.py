@@ -643,7 +643,7 @@ class spinful_fermion_basis_general(spinless_fermion_basis_general):
 		else:
 			new_op_list = op_list
 
-		return spinless_fermion_basis_general.Op_shift_sector(other_basis,new_op_list,v_in,v_out=v_out,dtype=dtype)	
+		return spinless_fermion_basis_general.Op_shift_sector(self,other_basis,new_op_list,v_in,v_out=v_out,dtype=dtype)	
 
 	Op_shift_sector.__doc__ = spinless_fermion_basis_general.Op_shift_sector.__doc__
 
