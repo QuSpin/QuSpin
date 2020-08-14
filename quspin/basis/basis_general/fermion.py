@@ -464,7 +464,7 @@ class spinful_fermion_basis_general(spinless_fermion_basis_general):
 
 		self._pcon_args = dict(N=N,Nf=Nf)
 
-		if len(self._pers)>0:
+		if len(self._pers)>0 or not double_occupancy:
 			if Ns_block_est is None:
 				self._Ns = int(float(self._Ns)/_np.multiply.reduce(self._pers))*4
 			else:

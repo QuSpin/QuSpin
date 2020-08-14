@@ -3,7 +3,10 @@
 import cython
 cimport numpy as _np
 import numpy as _np
-from numba.ccallback import CFunc
+try:
+    from numba.ccallback import CFunc # numba < 0.49.0
+except ModuleNotFoundError:
+    from numba.core.ccallback import CFunc # numba >= 0.49.0
 from libcpp.vector cimport vector
 
 
@@ -14,7 +17,7 @@ include "source/general_basis_core.pyx"
 cdef extern from "user_basis_core.h" namespace "basis_general":
     cdef cppclass user_basis_core[I](general_basis_core[I]):
         user_basis_core(const int,const int,const int,void *, 
-            const int*, const int*,I **, const int,size_t,I*,size_t,I*,size_t,I*,size_t,I*)
+            const int*, const int*,I **, const int,size_t,I*,size_t,I*,bool,size_t,I*,size_t,I*)
 
 cdef class user_core_wrap(general_basis_core_wrap):
     cdef object get_Ns_pcon_py
@@ -37,7 +40,7 @@ cdef class user_core_wrap(general_basis_core_wrap):
 
     def __cinit__(self,Ns_full,dtype,N,sps,maps, pers, qs, maps_args,
         int n_sectors, get_Ns_pcon, get_s0_pcon, next_state,
-        ns_args,pre_check_state,precs_args,count_particles, count_particles_args, op_func, op_args):
+        ns_args,pre_check_state,precs_args,bool pre_check_state_parallel,count_particles, count_particles_args, op_func, op_args):
         self._N = N
         self._sps = sps
         self._Ns_full = Ns_full
@@ -127,11 +130,11 @@ cdef class user_core_wrap(general_basis_core_wrap):
 
         if dtype == uint32:
             self._basis_core = <void *> new user_basis_core[uint32_t](N,self._sps,self._nt,maps_ptr,pers_ptr,qs_ptr,<uint32_t**>&self.maps_args_vector[0],
-                n_sectors,next_state_add,<uint32_t*>ns_args_ptr,pre_check_state_add,<uint32_t*>precs_args_ptr,
+                n_sectors,next_state_add,<uint32_t*>ns_args_ptr,pre_check_state_add,<uint32_t*>precs_args_ptr,pre_check_state_parallel,
                 count_particles_add,<uint32_t*>count_particles_args_ptr,op_func_add,<uint32_t*>op_args_ptr)
         elif dtype == uint64:
             self._basis_core = <void *> new user_basis_core[uint64_t](N,self._sps,self._nt,maps_ptr,pers_ptr,qs_ptr,<uint64_t**>&self.maps_args_vector[0],
-                n_sectors,next_state_add,<uint64_t*>ns_args_ptr,pre_check_state_add,<uint64_t*>precs_args_ptr,
+                n_sectors,next_state_add,<uint64_t*>ns_args_ptr,pre_check_state_add,<uint64_t*>precs_args_ptr,pre_check_state_parallel,
                 count_particles_add,<uint64_t*>count_particles_args_ptr,op_func_add,<uint64_t*>op_args_ptr)
         else:
             raise ValueError("user defined basis only supports system sizes <= 64.")
