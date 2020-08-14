@@ -2,7 +2,10 @@ from .base_general import basis_general
 from ._basis_general_core import user_core_wrap
 import numpy as _np
 from numba import cfunc, types, njit
-from numba.ccallback import CFunc
+try:
+	from numba.ccallback import CFunc # numba < 0.49.0
+except ModuleNotFoundError:
+	from numba.core.ccallback import CFunc # numba >= 0.49.0
 
 map_sig_32 = types.uint32(types.uint32,types.intc,types.CPointer(types.int8),types.CPointer(types.uint32))
 map_sig_64 = types.uint64(types.uint64,types.intc,types.CPointer(types.int8),types.CPointer(types.uint64))
@@ -130,7 +133,7 @@ class user_basis(basis_general):
 
 	"""
 	def __init__(self,basis_dtype,N,op_dict,sps=2,pcon_dict=None,pre_check_state=None,allowed_ops=None,
-		Ns_block_est=None,_make_basis=True,block_order=None,_Np=None,**blocks):
+		parallel=False,Ns_block_est=None,_make_basis=True,block_order=None,_Np=None,**blocks):
 		"""Intializes the `user_basis_general` object (basis for user defined ED calculations).
 
 		Parameters
@@ -174,6 +177,8 @@ class user_basis(basis_general):
 			(e.g. for a spinful fermion basis to never have a doubly occupied site). One can pass additional arguments `args` using a `np.ndarray[basis_dtype]`.
 		allowed_ops: list/set, optional
 			A list of allowed characters, each of which is to be passed in to the `op` in the form of `op_str` (see above).
+		parallel: bool, optional
+			turns on parallel code when constructing the basis even when no symmetries are implemented. Useful when constructing highly constrained Hilbert spaces with pre_check_state. 
 		sps: int, optional
 			The number of states per site (i.e. the local on-site Hilbert space dimension).
 		Ns_block_est: int, optional
@@ -467,7 +472,7 @@ class user_basis(basis_general):
 		self._basis_dtype = basis_dtype
 		self._core_args = (Ns_full, basis_dtype, N, sps, map_funcs, pers, qs, map_args,
 								n_sectors, get_Ns_pcon, get_s0_pcon, next_state,
-								next_state_args,pre_check_state,check_state_nosymm_args,
+								next_state_args,pre_check_state,check_state_nosymm_args,parallel,
 								count_particles, count_particles_args, op_func, op_args)
 		self._core = user_core_wrap(*self._core_args)
 
