@@ -27,8 +27,8 @@ def cython_files():
     package_dir = os.path.dirname(os.path.realpath(__file__))
     package_dir = os.path.expandvars(package_dir)
 
-    cython_src = glob.glob(os.path.join(package_dir,"*.pyx"))
-    # cython_src = [os.path.join(package_dir,"hcb_core.pyx"),os.path.join(package_dir,"higher_spin_core.pyx")]
+    # cython_src = glob.glob(os.path.join(package_dir,"*.pyx"))
+    cython_src = [os.path.join(package_dir,"hcb_core.pyx")]
     # cython_src = [os.path.join(package_dir,"general_basis_utils.pyx")]
 
     include_dir = os.path.join(package_dir,"source")
