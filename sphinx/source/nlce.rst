@@ -58,7 +58,7 @@ Another ingredient required to build the LCE is how to define the verticies betw
 Example 1: Nearest Neighbor Square Lattice Site Expansion
 `````````````````````````````````````````````````````````
 
-Here we will go through an example which will show how to define the EL for a Site based NLCE on the 2D square lattice. First we need to Pick an embedding Lattice. Here we are interested in the site expansion on the square lattice so our embedding lattice is going to be a finite square lattice. The maximum cluster size will define how large the EL must be since in the site expansion the longest cluster that can be created in a chain. Given a maximum cluster size :code:`Ncl_max` we choose the Linear size of the Embedding Lattice to be :code:`L=Ncl_max+(Ncl_max%2)+2`. The extra factor of :code:`Ncl_max%2` is not neccesary unless you would like to preserve the staggared patter on the cluster because in some cases the cluster can wrap around to the other side of the lattice and that will mess up the staggared pattern: (-1)^(x+y) on the cluster. Next we need to define the point-group and translational symmetries as well as the list of neighboring sites on the EL. Similar to the mappings in the for the :code:`*_basis_general` classes I define the transformation by a array such that the mapping :math:`S:i\mapsto j` is stored as an array :code:`S[i]=j`. To get these transformations we first must have a labeling of each vertex of the EL. We use the standard way of mapping :code:`i_s=x_s+L*y_s` or :code:`x_s,y_s = i_s%L,i_s//L`. After defining the mappings the translations and point group symmetries they are packages together into a single array one for the translations and one for the point group symmetries. Finally the list of nearest neighbors list is created. This is formatted as an array whos i-th row corresponds to the sites connected to the i-th site on the graph. Any negative integer can be used as padding in the array if the number of neighbors in not the same for all sites. 
+In this first example, we will show how to use :code:`NCLE_site` to calculate the cluters in the Site based NLCE on the 2D square lattice. First we need to define an embedding Lattice. Here we are interested in the site expansion on the square lattice so our embedding lattice is going to be a finite square lattice. The length of the EL will have to be large enough such that no clusters will wrap around the boundarys, In the case of the site expansion the cluster with the longest linear size will be a chain. Given a maximum cluster size :code:`Ncl_max` we choose the Linear size of the Embedding Lattice to be :code:`L=Ncl_max+(Ncl_max%2)+2`. We add :code:`+2` to the length so that the chain will not be able to link when it wraps around and The extra factor of :code:`Ncl_max%2` is only neccesary if you would like to preserve the staggared patter on the cluster because in some cases the cluster can wrap around to the other side of the lattice and that will mess up the staggared pattern: (-1)^(x+y) on the cluster. Next we need to define the point-group and translational symmetries as well as the list of neighboring sites on the EL. Similar to the mappings in the for the :code:`*_basis_general` classes one must define the transformations by a array such that the mapping :math:`S:i\mapsto j` is stored as :code:`S[i]=j`. To get these transformations we first must have a labeling of each vertex of the EL. We use the standard way of mapping :code:`i_s=x_s+L*y_s` or :code:`x_s,y_s = i_s%L,i_s//L`. After defining the mappings the translations and point group symmetries they are packages together into a single array one for the translations and one for the point group symmetries. Finally the list of nearest neighbors list is created. This is formatted as an array whos i-th row corresponds to the sites connected to the i-th site on the graph. Any negative integer can be used as padding in the array if the number of neighbors in not the same for all sites. The Full code is listed below:
 
 .. code-block:: python
 
@@ -99,3 +99,59 @@ Here we will go through an example which will show how to define the EL for a Si
 	# creating cluster expansion object
 	nlce = NLCE_site(Ncl_max,N_EL,nn_list,Tr,Pg)
 
+
+.. image:: images/sq_lat_nn.png
+   :height: 100
+
+
+Example 2: Constructing NLCE with multiple coupling constants
+`````````````````````````````````````````````````````````````
+
+In this Next example we will discuss the notion of weighted edges in NLCE and how to use weight edges to take into account two or more coupling constants in the Hmailtonian. In many cases one may have interactions that may not be the same value for every interaction on the lattice, e.g. the :math:`J_1-J_2` model. In this case for the site-based NLCE clusters may have different weights in the expansion even though they may have the same topology based on simply the connections in the graph. In order to take this into account we can use weighted graphs to distinquish the topologies of each graph when the couplinngs are not uniform. To illistrate this we will modify the first example to calculate the site expansion of the :math:`J_1-J_2` model on the 2D square lattice. Because the building blocks are the same, the EL is identical to the previous example. 
+
+.. code-block:: python
+
+	from quspin.basis import NLCE_site
+	import numpy as np
+	#
+	# Maximum Cluster size
+	Ncl_max = 6 
+	#
+	# size of Embedding Lattice
+	L = Ncl_max + (Ncl_max%2) + 2
+	N_EL = L**2
+	#
+	# coordinates on Embedding Lattice
+	s = np.arange(N_EL)
+	x = s%L
+	y = s//L
+	#
+	# translation generators
+	Tx = ((x+1)%L)+y*L
+	Ty = x+((y+1)%L)*L
+	#
+	# point group generators, 4-fold rotation + reflection 
+	R = np.rot90(s.reshape((L,L))).ravel()
+	Pd = y + L * x
+	#
+	# EL lattice symmetries split up into two groups
+	Pg = np.vstack((Pd,R)).astype(np.int32) # Point-Group
+	Tr = np.vstack((Tx,Ty)).astype(np.int32) # Translations
+	#
+	# defining nearest neighbors
+	nn1 = ((x+1)%L)+y*L # right
+	nn2 = ((x-1)%L)+y*L # left
+	nn3 = x+((y+1)%L)*L # up
+	nn4 = x+((y-1)%L)*L # down
+	# defining next nearest neighbors
+	nn5 = ((x+1)%L)+((y+1)%L)*L # right
+	nn6 = ((x+1)%L)+((y-1)%L)*L # right
+	nn7 = ((x-1)%L)+((y+1)%L)*L # right
+	nn8 = ((x-1)%L)+((y-1)%L)*L # right
+	nn_list = np.vstack((nn1,nn2,nn3,nn4,nn5,nn6,nn7,nn8)).T.astype(np.int32,order="C")
+	#
+	# defining weights
+	nn_weights = np.array((N*[[1,1,1,1,2,2,2,2]]),dtype=np.int32)
+	#
+	# creating cluster expansion object
+	nlce = NLCE_site(Ncl_max,N_EL,nn_list,Tr,Pg)

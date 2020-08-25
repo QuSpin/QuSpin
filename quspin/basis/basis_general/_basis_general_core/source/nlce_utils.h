@@ -1,17 +1,18 @@
 #ifndef _NLCE_UTILS_H
 #define _NLCE_UTILS_H
 
-
-
+#include <boost/config.hpp>
 #include <boost/graph/adjacency_list.hpp>
 #include <boost/graph/isomorphism.hpp>
 #include <boost/graph/vf2_sub_graph_iso.hpp>
+#include <boost/graph/graph_utility.hpp>
 #include <unordered_map>
 #include <unordered_set>
 #include <map>
 #include <set>
 #include <utility>
 #include <stack>
+#include <iostream>
 
 #include "general_basis_core.h"
 #include "openmp.h"
@@ -54,6 +55,54 @@ public:
 		return true;
 	}
 };
+
+
+// use this for weighted graphs. 
+template<class GraphType>
+bool is_isomorphic(GraphType g1,GraphType g2){
+
+    const int n = boost::num_vertices(g1);
+    std::vector<typename boost::graph_traits< GraphType >::vertex_descriptor > f(n);
+    typename boost::property_map< GraphType, boost::vertex_index_t >::type v1_index_map = boost::get(boost::vertex_index, g1);
+
+#if defined(BOOST_MSVC) && BOOST_MSVC <= 1300
+    bool iso = boost::isomorphism(g1, g2,
+        boost::make_iterator_property_map(f.begin(), v1_index_map, f[0]),
+        boost::degree_vertex_invariant(), boost::get(vertex_index, g1),
+        boost::get(vertex_index, g2));
+#else
+    bool iso = isomorphism(g1, g2,
+        boost::isomorphism_map(
+        boost::make_iterator_property_map(f.begin(), v1_index_map, f[0])));
+#endif
+
+    if(iso){ // isomorphism does not take into account the weights on edges, therefore we must check that edge weights match. 
+
+        typename boost::graph_traits<GraphType>::edge_iterator e1,e1_end;
+        typename boost::graph_traits<GraphType>::edge_descriptor e2;
+        bool is_edge;
+        typename boost::property_map<GraphType, boost::edge_weight_t>::type weights1 = boost::get(boost::edge_weight, g1);
+        typename boost::property_map<GraphType, boost::edge_weight_t>::type weights2 = boost::get(boost::edge_weight, g2);
+        
+        for(boost::tie(e1, e1_end) = boost::edges(g1); e1 != e1_end; e1++){
+            typename boost::graph_traits<GraphType>::vertex_descriptor u = boost::source(*e1,g1);
+            typename boost::graph_traits<GraphType>::vertex_descriptor v = boost::target(*e1,g1);
+            int i_u = boost::get(boost::get(boost::vertex_index, g1),u);
+            int i_v = boost::get(boost::get(boost::vertex_index, g1),v);
+            boost::tie(e2,is_edge) = boost::edge(f[i_u],f[i_v],g2);
+
+            if(!is_edge || boost::get(weights1,*e1)!=boost::get(weights2,e2)){
+                return false;
+            }
+
+        }
+
+        return true;
+    }
+
+    return false;
+
+}
 
 
 
@@ -204,6 +253,8 @@ typedef boost::graph_traits<GraphType>::vertex_descriptor VertexDescr;
 
 
 
+
+
 template<class I,class Stack,class VertexList,class Graph,class Set>
 void build_adj(Stack &stack,
 			   VertexList &verts,
@@ -287,7 +338,7 @@ void build_topo_clusters(const int Nnn,
 	
 			for(auto iter=topo_clusters_thread[threadn].begin();iter!=topo_clusters_thread[threadn].end();iter++)
 			{
-				found = boost::isomorphism(iter->second.second,graph);
+				found = is_isomorphic(iter->second.second,graph);
 	
 				if(found){
 					topo_clusters_thread[threadn][iter->first].first += pair->second;
@@ -307,7 +358,7 @@ void build_topo_clusters(const int Nnn,
 			bool found = false;
 			for(auto iter2=topo_clusters.begin();iter2!=topo_clusters.end();iter2++)
 			{
-				found = boost::isomorphism(iter2->second.second,iter1->second.second);
+				found = is_isomorphic(iter2->second.second,iter1->second.second);
 	
 				if(found){
 					topo_clusters[iter2->first].first += iter1->second.first;;
@@ -415,7 +466,7 @@ void subclusters(const int ClusterSize,
 			bool found = false;
 
 			for(auto iter=topo_clusters.begin();iter!=topo_clusters.end();iter++){
-				found = boost::isomorphism(iter->second.second,graph);
+				found = is_isomorphic(iter->second.second,graph);
 				if(found){
 					sub_clusters[iter->first] += 1;
 					break;
@@ -787,6 +838,7 @@ void calc_subclusters_parallel(const int Nnn,
 
 namespace nlce_plaquet {
 
+
 template<class I,class map_type,class Edges_t>
 void build_new_symm_clusters(basis_general::general_basis_core<I> * B_f,
 							 basis_general::general_basis_core<I> * B_p,
@@ -971,7 +1023,7 @@ void build_topo_clusters(const int Nsp,
 	
 			for(auto iter=topo_clusters_thread[threadn].begin();iter!=topo_clusters_thread[threadn].end();iter++)
 			{
-				found = boost::isomorphism(iter->second.second,graph);
+				found = is_isomorphic(iter->second.second,graph);
 	
 				if(found){
 					topo_clusters_thread[threadn][iter->first].first += pair->second;
@@ -991,7 +1043,7 @@ void build_topo_clusters(const int Nsp,
 			bool found = false;
 			for(auto iter2=topo_clusters.begin();iter2!=topo_clusters.end();iter2++)
 			{
-				found = boost::isomorphism(iter2->second.second,iter1->second.second);
+				found = is_isomorphic(iter2->second.second,iter1->second.second);
 	
 				if(found){
 					topo_clusters[iter2->first].first += iter1->second.first;;
@@ -1117,7 +1169,7 @@ void subclusters(const int ClusterSize,
 			bool found = false;
 
 			for(auto iter=topo_clusters.begin();iter!=topo_clusters.end();iter++){
-				found = boost::isomorphism(iter->second.second,graph);
+				found = is_isomorphic(iter->second.second,graph);
 				if(found){
 					sub_clusters[iter->first] += 1;
 					break;
