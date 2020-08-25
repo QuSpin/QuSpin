@@ -26,14 +26,14 @@ class general_basis_core{
 		const int * maps;
 		const int * pers;
 		const int * qs;
-		const bool fermionic;
+		const bool fermionic,pre_check;
 
-		general_basis_core(const int _N, const bool _fermionnic=false) : \
-			 N(_N), nt(0), maps(NULL), pers(NULL), qs(NULL), fermionic(_fermionnic) {}
+		general_basis_core(const int _N, const bool _fermionnic=false, const bool _pre_check=false) : \
+			 N(_N), nt(0), maps(NULL), pers(NULL), qs(NULL), fermionic(_fermionnic), pre_check(_pre_check) {}
 
 		general_basis_core(const int _N,const int _nt,const int _maps[], \
-			const int _pers[], const int _qs[], const bool _fermionnic=false) : \
-			 N(_N), nt(_nt), maps(_maps) , pers(_pers), qs(_qs), fermionic(_fermionnic) { }
+			const int _pers[], const int _qs[], const bool _fermionnic=false, const bool _pre_check=false) : \
+			 N(_N), nt(_nt), maps(_maps) , pers(_pers), qs(_qs), fermionic(_fermionnic), pre_check(_pre_check) { }
 
 		~general_basis_core() {}
 

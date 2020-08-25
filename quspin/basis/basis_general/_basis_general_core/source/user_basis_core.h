@@ -45,8 +45,9 @@ class user_basis_core : public general_basis_core<I,P>
 		user_basis_core(const int _N,const int _sps,const int _nt,
 			void * _map_funcs, const int _pers[], const int _qs[], I** _maps_args, 
 			const int _n_sectors,size_t _next_state,I *_ns_args,size_t _pre_check_state,
-			I* _precs_args,size_t _count_particles,I *_count_particles_args,size_t _op_func,I *_op_args) : \
-		general_basis_core<I,P>::general_basis_core(_N,_nt,NULL,_pers,_qs,true), n_sectors(_n_sectors), sps(_sps)
+			I* _precs_args, const bool pre_check_state_parallel,
+			size_t _count_particles,I *_count_particles_args,size_t _op_func,I *_op_args) : \
+		general_basis_core<I,P>::general_basis_core(_N,_nt,NULL,_pers,_qs,true,pre_check_state_parallel), n_sectors(_n_sectors), sps(_sps)
 		{
 			map_funcs = (map_type*)_map_funcs;
 			maps_args = _maps_args;

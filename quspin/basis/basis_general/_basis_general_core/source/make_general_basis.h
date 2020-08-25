@@ -357,7 +357,7 @@ npy_intp make_basis(general_basis_core<I,P> *B,npy_intp MAX,npy_intp mem_MAX,I b
 	const int nt =  B->get_nt();
 	const int nthreads = omp_get_max_threads();
 
-	if(nthreads>1 && MAX > nthreads && nt>0){
+	if(nthreads>1 && MAX > nthreads && (nt>0 || B->pre_check)){
 		return make_basis_parallel(B,MAX,mem_MAX,basis,n);
 	}
 	else{
@@ -373,7 +373,7 @@ npy_intp make_basis_pcon(general_basis_core<I,P> *B,npy_intp MAX,npy_intp mem_MA
 	const int nt =  B->get_nt();
 	const int nthreads = omp_get_max_threads();
 
-	if(nthreads>1 && MAX > nthreads && nt>0){
+	if(nthreads>1 && MAX > nthreads && (nt>0 || B->pre_check)){
 		return make_basis_pcon_parallel(B,MAX,mem_MAX,s,basis,n);
 	}
 	else{
