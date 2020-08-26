@@ -272,7 +272,7 @@ cdef class general_basis_core_wrap:
  
     @cython.boundscheck(False)
     def op_shift_sector(self, dtype[:,::1] v_in, dtype[:,::1] v_out, object opstr,int[::1] indx, object J,
-        _np.ndarray basis_out, norm_type[::1] n_out,_np.ndarray basis_in, norm_type[::1] n_in):
+        _np.ndarray basis_out, norm_type[::1] n_out,_np.ndarray basis_in, norm_type_2[::1] n_in):
         cdef char[::1] c_opstr = bytearray(opstr,"utf-8")
         cdef int n_op = indx.shape[0]
         cdef npy_intp Ns_in = basis_in.shape[0]
