@@ -205,7 +205,7 @@ def lanczos_full(A,v0,m,full_ortho=False,out=None,eps=None):
 				r[:] = A.dot(Q[i,:])
 
 			_np.conj(r,out=r)
-			h[i,i:] = _np.dot(Q[i:,:],r).real
+			h[i,i:] = _np.dot(Q[i:m,:],r).real
 
 		E,V = _np.linalg.eigh(h,UPLO="U")
 
