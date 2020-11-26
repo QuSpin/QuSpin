@@ -1,10 +1,10 @@
 
 
-:red:`QuSpin 0.3.4` (released on 2020.04.17)
+:green:`QuSpin 1.0.0` (released on 2021.??.??)
 ================================================
 
 
-:green:`Highlights:` Lanczos module now here; Constrained Hilbert spaces support available; OpenMP support available!
+:red:`Highlights:` Lanczos module now here; Constrained Hilbert spaces support available; OpenMP support available!
 =====================================================================================================================
 
 Check out :ref:`parallelization-label` and the example script :ref:`example12-label`.
@@ -14,6 +14,21 @@ For a tutorial in QuSpin's `user_basis` which allows the user to define custom b
 
 Complete list of the most recent features 
 =========================================
+
+
+Added in v. 1.0.0 (2021.??.??)
+------------------------------
+
+Improved Functionality
+++++++++++++++++++++++
+* ...
+
+
+New Attributes, Functions, Methods, Classes, and Examples
+++++++++++++++++++++++++++++++++++++++++++++++
+* new example: Majorana fermion operators, cf. :ref:`example23-label`.
+* new example: Gell-Mann operators for spin-1 systems, cf. :ref:`example24-label`.
+
 
 
 Added in v. 0.3.4 (2020.04.17)
