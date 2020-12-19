@@ -157,10 +157,11 @@ class expm_multiply_parallel(object):
 
         Parameters
         -----------
-        v : contiguous numpy.ndarray
+        v : contiguous numpy.ndarray, 1d or 2d array
             array to apply :math:`\\mathrm{e}^{aA}` on.
         work_array : contiguous numpy.ndarray, optional
-            array of `shape = (2*len(v),)` which is used as work_array space for the underlying c-code. This saves extra memory allocation for function operations.
+            array can be any shape but must contain 2*v.size contiguous elements. 
+            This array is used as temporary memory space for the underlying c-code. This saves extra memory allocation for function operations.
         overwrite_v : bool
             if set to `True`, the data in `v` is overwritten by the function. This saves extra memory allocation for the results.
 
@@ -201,7 +202,7 @@ class expm_multiply_parallel(object):
             else:
                 work_array = _np.zeros((2*self._A.shape[0],v.shape[1]),dtype=v.dtype)
         else:
-            work_array = _np.ascontiguousarray(work_array)
+            work_array = work_array.ravel(order="A")
 
             if work_array.size == 2*v.size:
                 raise ValueError("work_array must have twice the number of elements as in v.")
