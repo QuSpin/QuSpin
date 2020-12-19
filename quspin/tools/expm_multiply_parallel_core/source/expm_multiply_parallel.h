@@ -63,7 +63,7 @@ void csr_matvec_multi(const bool overwrite_y,
 {
 	T3 * y_row = y;
 	if(overwrite_y){
-		for(I k = 0; k<n; k++, y_row+=n_vecs){
+		for(I k = 0; k<n_row; k++, y_row+=n_vecs){
 			std::fill(vco,vco+n_vecs,0);
 
 			for(I jj = Ap[k]; jj < Ap[k+1]; jj++){
@@ -83,7 +83,7 @@ void csr_matvec_multi(const bool overwrite_y,
 			
 		}
 	}else{
-		for(I k = 0; k<n; k++, y_row+=n_vecs){
+		for(I k = 0; k<n_row; k++, y_row+=n_vecs){
 			std::fill(vco,vco+n_vecs,0);
 
 			for(I jj = Ap[k]; jj < Ap[k+1]; jj++){
