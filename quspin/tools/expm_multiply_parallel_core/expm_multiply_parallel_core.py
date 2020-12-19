@@ -1,6 +1,6 @@
 from scipy.sparse.linalg import LinearOperator,onenormest,aslinearoperator
 from .expm_multiply_parallel_wrapper import (_wrapper_expm_multiply,
-	_wrapper_csr_trace,_wrapper_csr_1_norm)
+	_wrapper_expm_multiply_batch,_wrapper_csr_trace,_wrapper_csr_1_norm)
 from scipy.sparse.construct import eye
 from scipy.sparse.linalg._expm_multiply import _fragment_3_1,_exact_1_norm
 import scipy.sparse as _sp
@@ -174,8 +174,8 @@ class expm_multiply_parallel(object):
         """
         v = _np.asarray(v)
             
-        if v.ndim != 1:
-            raise ValueError("array must have ndim of 1.")
+        if v.ndim > 2:
+            raise ValueError("array must have ndim <= 2.")
         
         if v.shape[0] != self._A.shape[1]:
             raise ValueError("dimension mismatch {}, {}".format(self._A.shape,v.shape))
@@ -192,25 +192,35 @@ class expm_multiply_parallel(object):
             if not v.flags["CARRAY"]:
                 raise TypeError("input array must a contiguous and writable.")
 
-            if v.ndim != 1:
-                raise ValueError("array must have ndim of 1.")
         else:
             v = v.astype(v_dtype,order="C",copy=True)
 
         if work_array is None:
-            work_array = _np.zeros((2*self._A.shape[0],),dtype=v.dtype)
+            if v.ndim == 1:
+                work_array = _np.zeros((2*self._A.shape[0],),dtype=v.dtype)
+            else:
+                work_array = _np.zeros((2*self._A.shape[0],v.shape[1]),dtype=v.dtype)
         else:
             work_array = _np.ascontiguousarray(work_array)
-            if work_array.shape != (2*self._A.shape[0],):
-                raise ValueError("work_array array must be an array of shape (2*v.shape[0],) with same dtype as v.")
+
+            if work_array.size == 2*v.size:
+                raise ValueError("work_array must have twice the number of elements as in v.")
+        
             if work_array.dtype != v_dtype:
                 raise ValueError("work_array must be array of dtype which matches the result of the matrix-vector multiplication.")
+
+
 
         a = _np.array(self._a,dtype=v_dtype)
         mu = _np.array(self._mu,dtype=v_dtype)
         tol = _np.array(self._tol,dtype=mu.real.dtype)
-        _wrapper_expm_multiply(self._A.indptr,self._A.indices,self._A.data,
-                    self._s,self._m_star,a,tol,mu,v,work_array)
+        if v.ndim == 1:
+            _wrapper_expm_multiply(self._A.indptr,self._A.indices,self._A.data,
+                        self._s,self._m_star,a,tol,mu,v,work_array.ravel())
+        else:
+            work_array = work_array.reshape((-1,v.shape[1]))
+            _wrapper_expm_multiply_batch(self._A.indptr,self._A.indices,self._A.data,
+                        self._s,self._m_star,a,tol,mu,v,work_array)            
 
         return v
 
