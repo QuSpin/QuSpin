@@ -169,9 +169,12 @@ class spinless_fermion_basis_general(basis_general):
 							"\n\t+: raising operator"+
 							"\n\t-: lowering operator"+
 							"\n\tn: number operator"+
-							"\n\tz: c-symm number operator")
+							"\n\tz: c-symm number operator"+
+							"\n\tx: majorana x-operator"+
+							"\n\ty: majorana y-operator"
+							)
 
-		self._allowed_ops=set(["I","n","+","-","z"])
+		self._allowed_ops=set(["I","n","+","-","z","x","y"])
 		
 	def __setstate__(self,state):
 		self.__dict__.update(state)
@@ -497,9 +500,11 @@ class spinful_fermion_basis_general(spinless_fermion_basis_general):
 							"\n\t+: raising operator"+
 							"\n\t-: lowering operator"+
 							"\n\tn: number operator"+
-							"\n\tz: c-symm number operator")
+							"\n\tz: c-symm number operator"+
+							"\n\tx: majorana x-operator"+
+							"\n\ty: majorana y-operator")
 
-		self._allowed_ops=set(["I","n","+","-","z"])
+		self._allowed_ops=set(["I","n","+","-","z","x","y"])
 		
 	def __setstate__(self,state):
 		self.__dict__.update(state)
