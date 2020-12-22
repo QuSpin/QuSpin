@@ -28,10 +28,15 @@ class tensor_basis(basis):
 		Notes
 		-----
 
-		The `tensor_basis` operator strings are separated by a pipe symbol, '|'. However, the index array has
+		* The `tensor_basis` operator strings are separated by a pipe symbol, '|'. However, the index array has
 		NO pipe symbol.
 
+		* If two fermion basis constructors are used, `tensor_basis` will assume that the two fermion species are distinguishable, 
+		i.e. their operators will commute (instead of anti-commute). For anticommuting fermion species, use the 
+		`spinful_fermion_basis_`* constructors.
+
 		The `tensor_basis` class does not allow one to make use of symmetries, save for particle conservation.
+
 
 		Examples
 		---------
