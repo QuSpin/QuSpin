@@ -109,12 +109,12 @@ class spinless_fermion_basis_core : public hcb_basis_core<I,P>
 {
 
 	public:
-		spinless_fermion_basis_core(const int _N) : \
-		hcb_basis_core<I>::hcb_basis_core(_N,true) { }
+		spinless_fermion_basis_core(const int _N,const bool _pre_check=false) : \
+		hcb_basis_core<I>::hcb_basis_core(_N,true,_pre_check) { }
 
 		spinless_fermion_basis_core(const int _N,const int _nt,const int _maps[], \
-						   const int _pers[], const int _qs[]) : \
-		hcb_basis_core<I>::hcb_basis_core(_N,_nt,_maps,_pers,_qs,true) {}
+						   const int _pers[], const int _qs[],const bool _pre_check=false) : \
+		hcb_basis_core<I>::hcb_basis_core(_N,_nt,_maps,_pers,_qs,true,_pre_check) {}
 
 		~spinless_fermion_basis_core(){}
 

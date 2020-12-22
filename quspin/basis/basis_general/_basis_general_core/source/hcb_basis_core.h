@@ -32,12 +32,12 @@ class hcb_basis_core : public general_basis_core<I,P>
 		std::vector<tr_benes<I>> benes_maps;
 		std::vector<I> invs;
 
-		hcb_basis_core(const int _N, const bool _fermionic=false) : \
-		general_basis_core<I>::general_basis_core(_N,_fermionic) {}
+		hcb_basis_core(const int _N, const bool _fermionic=false,const bool _pre_check=false) : \
+		general_basis_core<I>::general_basis_core(_N,_fermionic,_pre_check) {}
 
 		hcb_basis_core(const int _N,const int _nt,const int _maps[], \
-					const int _pers[], const int _qs[], const bool _fermionic=false) : \
-		general_basis_core<I>::general_basis_core(_N,_nt,_maps,_pers,_qs,_fermionic) {
+					const int _pers[], const int _qs[], const bool _fermionic=false,const bool _pre_check=false) : \
+		general_basis_core<I>::general_basis_core(_N,_nt,_maps,_pers,_qs,_fermionic,_pre_check) {
 
 			benes_maps.resize(_nt);
 			invs.resize(_nt);

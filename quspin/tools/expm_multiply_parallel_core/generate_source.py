@@ -105,6 +105,57 @@ def generate_expm_multiply():
 
 
 
+
+expm_multiply_parallel_batch_temp="""
+
+void expm_multiply_batch_impl(const int switch_num,
+                        const npy_intp n,
+                        const npy_intp n_vecs,
+                              void * Ap,
+                              void * Aj,
+                              void * Ax,
+                        const int s,
+                        const int m_star,
+                              void * tol,
+                              void * mu,
+                              void * a,
+                              void * F,
+                              void * work)
+
+{{
+    switch(switch_num){{{switch_body:}
+        default:
+            throw std::runtime_error("internal error: invalid argument typenums");
+    }}    
+}}"""
+
+
+
+
+
+def generate_expm_multiply_batch():
+    switch_num = 0
+    switch_body = ""
+    case_tmp = "\n\t\tcase {} :\n\t\t\t{}\n\t\t\tbreak;"
+    call_tmp = "expm_multiply_batch<{I},{T1},{T2},{T3}>((const {I})n,n_vecs,(const {I}*)Ap,(const {I}*)Aj,(const {T1}*)Ax,s,m_star,*(const {T2}*)tol,*(const {T3}*)mu,*(const {T3}*)a,({T3}*)F,({T3}*)work);"
+    for I in I_types:
+        for T1 in T_types:
+            for T2 in T_types:
+                for T3 in T3_types:
+                    if np.can_cast(T1,T3) and T2 == real_dtypes[T3]:
+                        call = call_tmp.format(I=numpy_ctypes[I],T1=numpy_ctypes[T1],T2=numpy_ctypes[T2],T3=numpy_ctypes[T3])
+                        switch_body = switch_body + case_tmp.format(switch_num,call)
+
+                        switch_num += 1
+
+
+
+    return expm_multiply_parallel_batch_temp.format(switch_body=switch_body)    
+
+
+
+
+
 source_impl_header = """#ifndef __EXPM_MULTIPLY_PARALLEL_IMPL_H__
 #define __EXPM_MULTIPLY_PARALLEL_IMPL_H__
 
@@ -122,6 +173,7 @@ inline bool EquivTypes(PyArray_Descr * dtype1,PyArray_Descr * dtype2){{
 def generate_source():
     header_body = generate_get_switch_num()
     header_body = header_body + generate_expm_multiply()
+    header_body = header_body + generate_expm_multiply_batch()
     source_impl_header.format(header_body=header_body)
     path = os.path.join(os.path.dirname(__file__),"source","expm_multiply_parallel_impl.h")
     IO = open(path,"w")
