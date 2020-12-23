@@ -204,7 +204,7 @@ class expm_multiply_parallel(object):
         else:
             work_array = work_array.ravel(order="A")
 
-            if work_array.size == 2*v.size:
+            if work_array.size != 2*v.size:
                 raise ValueError("work_array must have twice the number of elements as in v.")
         
             if work_array.dtype != v_dtype:
