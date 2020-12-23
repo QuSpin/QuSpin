@@ -11,20 +11,15 @@ except NameError:
 class spin_basis_general(hcb_basis_general,higher_spin_basis_general):
 	"""Constructs basis for spin operators for USER-DEFINED symmetries.
 
-	Any unitary symmetry transformation :math:`Q` of periodicity :math:`m_Q` (:math:`Q^{m_Q}=1`) has
-	eigenvalues :math:`\\exp(-2\\pi i q/m_Q)`, labelled by an ingeter :math:`q\\in\\{0,1,\\dots,m_Q-1\\}`.
-	These integers :math:`q` are used to define the symmetry blocks.
+	Any unitary symmetry transformation :math:`Q` of periodicity :math:`m_Q` (:math:`Q^{m_Q}=1`) has eigenvalues :math:`\\exp(-2\\pi i q/m_Q)`, labelled by an ingeter :math:`q\\in\\{0,1,\\dots,m_Q-1\\}`. These integers :math:`q` are used to define the symmetry blocks.
 
-	For instance, if :math:`Q=P` is parity (reflection), then :math:`q=0,1`. If :math:`Q=T` is translation by one lattice site,
-	then :math:`q` labels the mometum blocks in the same fashion as for the `..._basis_1d` classes. 
+	For instance, if :math:`Q=P` is parity (reflection), then :math:`q=0,1`. If :math:`Q=T` is translation by one lattice site, then :math:`q` labels the mometum blocks in the same fashion as for the `..._basis_1d` classes. 
 
-	User-defined symmetries with the `spin_basis_general` class can be programmed as follows. Suppose we have a system of
-	L sites, enumerated :math:`s=(s_0,s_1,\\dots,s_{L-1})`. There are two types of operations one can perform on the sites:
+	User-defined symmetries with the `spin_basis_general` class can be programmed as follows. Suppose we have a system of L sites, enumerated :math:`s=(s_0,s_1,\\dots,s_{L-1})`. There are two types of operations one can perform on the sites:
 		* exchange the labels of two sites: :math:`s_i \\leftrightarrow s_j` (e.g., translation, parity)
 		* invert the population on a given site: :math:`s_i\\leftrightarrow -(s_j+1)` (e.g., spin inversion)
 
-	These two operations already comprise a variety of symmetries, including translation, parity (reflection) and 
-	spin inversion. For a specific example, see below.
+	These two operations already comprise a variety of symmetries, including translation, parity (reflection) and spin inversion. For a specific example, see below.
 
 	The supported operator strings for `spin_basis_general` are:
 

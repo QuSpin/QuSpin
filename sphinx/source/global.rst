@@ -1,3 +1,5 @@
+:orphan:
+
 .. raw:: html
 
     <style> .red {color:#ff0000; font-weight:bold; font-style:italic; } </style>

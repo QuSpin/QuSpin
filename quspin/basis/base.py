@@ -143,7 +143,7 @@ class basis(object):
 		This function works with the `tensor_basis` and other basis which use the "|" symbol in the opstr.
 
 		Parameters
-		-----------
+		----------
 		v_in : array_like
 			state (or states stored in columns) to act on with the operator.
 		op_list : list
@@ -181,7 +181,7 @@ class basis(object):
 		"""Constructs operator from a site-coupling list and an operator string in a lattice basis.
 
 		Parameters
-		-----------
+		----------
 		opstr : str
 			Operator string in the lattice basis format. For instance:
 
@@ -255,13 +255,10 @@ class basis(object):
 
 		Notes
 		-----
-		This function can also be applied to trace out operators/observables defined by the input `state`, in which case one has 
-		to additionally normalize the final output by the Hilbert space dimension of the traced-out space. 
-		However, if an operator is defined in a symmetry-reduced basis, there is a :red:`caveat`. In such a case, one has to:
+		This function can also be applied to trace out operators/observables defined by the input `state`, in which case one has to additionally normalize the final output by the Hilbert space dimension of the traced-out space. However, if an operator is defined in a symmetry-reduced basis, there is a :red:`caveat`. In such a case, one has to:
 			(1) use the `basis.get_proj()` function to lift the operator to the full basis; 
 			(2) apply `basis.partial_trace()`;
 			(3) repeat this procedure for all symmetry sectors, and sum up the resulting reduced operators [this is becauce one has to add in the information about how the operator acts on the full Hilbert space].
-
 
 		Parameters
 		-----------
@@ -296,6 +293,7 @@ class basis(object):
 		--------
 
 		>>> partial_trace(state,sub_sys_A=tuple(range(basis.N//2),return_rdm="A",enforce_pure=False,sparse=False,subsys_ordering=True)
+
 
 		"""
 

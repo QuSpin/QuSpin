@@ -26,6 +26,7 @@ quspin.basis.spinless\_fermion\_basis\_1d
       ~spinless_fermion_basis_1d.inplace_Op
       ~spinless_fermion_basis_1d.int_to_state
       ~spinless_fermion_basis_1d.partial_trace
+      ~spinless_fermion_basis_1d.project_from
       ~spinless_fermion_basis_1d.state_to_int
    
    

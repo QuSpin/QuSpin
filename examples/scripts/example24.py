@@ -93,7 +93,7 @@ def translation(x,N,sign_ptr,args):
 	# count number of fermions, i.e. 1's in bit configuration of x1
 	f_count1 = _count_particles_32(x1,period)
 	# count number of fermions, i.e. 1's in bit configuration of x2
-	f_count2 = _count_particles_32(x1,period)
+	f_count2 = _count_particles_32(x2,period)
 	#####
 	# compute fermion sign
 	sign_ptr[0] *= (-1 if ((f_count1&1)&(f_count2&1)&1) else 1)
@@ -112,7 +112,7 @@ def parity(x,N,sign_ptr,args):
 	# count number of fermions, i.e. 1's in bit configuration of the state
 	f_count = _count_particles_32(x,N)
 	#####
-	sign_ptr[0] *= (-1 if (f_count&2)&1 else 1)
+	sign_ptr[0] *= (-1 if ((f_count&2) and 1) else 1)
 	#
 	out ^= (x&1)
 	x >>= 1
@@ -129,6 +129,8 @@ P_args=np.array([N-1],dtype=np.uint32)
 ######  construct user_basis 
 # define maps dict
 maps = dict(T_block=(translation,N,0,T_args), P_block=(parity,2,0,P_args), ) 
+#maps = dict(P_block=(parity,2,0,P_args), )
+#maps = dict(T_block=(translation,N,0,T_args) ) 
 op_dict = dict(op=op,op_args=op_args)
 # create user basiss
 basis = user_basis(np.uint32,N,op_dict,allowed_ops=set("xy+-nI"),sps=2,**maps)

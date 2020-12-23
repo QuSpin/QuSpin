@@ -72,6 +72,7 @@ def lanczos_full(A,v0,m,full_ortho=False,out=None,eps=None):
 	
 	* an :math:`n\\times m` matrix  :math:`Q`, and 
 	* a real symmetric tridiagonal matrix :math:`T=Q^\\dagger A Q` of size :math:`m\\times m`. The matrix :math:`T` can be represented via its eigendecomposition `(E,V)`: :math:`T=V\\mathrm{diag}(E)V^T`. 
+	
 	This function computes the triple :math:`(E,V,Q^T)`.
 
 	:red:`NOTE:` This function returns :math:`Q^T;\\,Q^T` is (in general) different from :math:`Q^\\dagger`.
@@ -223,13 +224,14 @@ def lanczos_iter(A,v0,m,return_vec_iter=True,copy_v0=True,copy_A=False,eps=None)
 	
 	* an :math:`n\\times m` matrix  :math:`Q`, and 
 	* a real symmetric tridiagonal matrix :math:`T=Q^\\dagger A Q` of size :math:`m\\times m`. The matrix :math:`T` can be represented via its eigendecomposition `(E,V)`: :math:`T=V\\mathrm{diag}(E)V^T`. 
+
 	This function computes the triple :math:`(E,V,Q^T)`.
 
 	:red:`NOTE:` This function returns :math:`Q^T;\\,Q^T` is (in general) different from :math:`Q^\\dagger`.
  
 
 	Parameters
-	-----------
+	----------
 	A : LinearOperator, hamiltonian, numpy.ndarray, etc. with a 'dot' method and a 'dtype' method.
 		Python object representing a linear map to compute the Lanczos approximation to the largest eigenvalues/vectors of. Must contain a dot-product method, used as `A.dot(v)` and a dtype method, used as `A.dtype`, e.g. `hamiltonian`, `quantum_operator`, `quantum_LinearOperator`, sparse or dense matrix.
 	v0 : array_like, (n,)

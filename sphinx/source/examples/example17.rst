@@ -1,4 +1,7 @@
+:orphan:
+
 .. _example17-label:
+
 
 Optical Bloch equations: Lindblad dynamics using the fast (omp-parallelized) `matvec` function
 ----------------------------------------------------------------------------------------------

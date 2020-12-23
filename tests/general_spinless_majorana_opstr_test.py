@@ -5,7 +5,9 @@ qspin_path = os.path.join(os.getcwd(),"../")
 sys.path.insert(0,qspin_path)
 
 from quspin.basis import spinless_fermion_basis_general
+from quspin.operators import hamiltonian
 
+import numpy as np 
 
 J=-np.sqrt(2.0) # hoppping
 U=+1.0 # nn interaction
@@ -19,12 +21,17 @@ for N in range(6,10):
 
 	###### setting up user-defined symmetry transformations for 2d lattice ######
 	s = np.arange(N) # sites [0,1,2,....]
-	T = (s+1)%L # translation 
+	T = (s+1)%N # translation 
 	P = s[::-1] # reflection 
+
 	#
 	###### setting up bases ######
-	basis=spinless_fermion_basis_general(N_2d,tblock=(T,0),pblock=(P,0),)
-	#
+	basis=spinless_fermion_basis_general(N, tblock=(T,0),pblock=(P,0),)
+	#basis=spinless_fermion_basis_general(N,pblock=(P,0),)#pblock=(P,0),)
+	#basis=spinless_fermion_basis_general(N,tblock=(T,0),)#pblock=(P,0),)
+
+	#print(basis)
+
 	#
 	#
 	##### Hamiltonian using Majorana fermions
@@ -43,9 +50,6 @@ for N in range(6,10):
 	#
 	H_majorana=hamiltonian(static,[],basis=basis,dtype=np.float64,**no_checks)
 
-
-
-
 	#
 	#
 	##### Hamiltonian using complex fermions
@@ -61,14 +65,18 @@ for N in range(6,10):
 	H=hamiltonian(static,[],basis=basis,dtype=np.float64,**no_checks)
 
 
+
+	#######################################
+
+
+	print("\ntesting N={}...".format(N))
 	
-	#print(H.toarray())
-	#print()
-	#print(H_majorana.toarray())
-	#print()
+	print(H.toarray())
+	print()
+	print(H_majorana.toarray())
+	print()
 	print(np.linalg.norm((H-H_majorana).toarray()))
 
-
-	np.testing.assert_allclose(H_majorana, H, rtol=1e-14, atol=0)
+	np.testing.assert_allclose((H_majorana-H).toarray(),0,atol=1e-12)
 
 
