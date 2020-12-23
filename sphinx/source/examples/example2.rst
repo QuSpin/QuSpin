@@ -1,3 +1,5 @@
+:orphan:
+
 .. _example2-label:
 
 Heating in Periodically Driven Spin Chains

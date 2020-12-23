@@ -1,4 +1,7 @@
+:orphan:
+
 .. _example4-label:
+
 
 The Spectrum of the Transverse Field Ising Model and the Jordan-Wigner Transformation
 -------------------------------------------------------------------------------------

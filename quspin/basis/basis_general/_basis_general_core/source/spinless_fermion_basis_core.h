@@ -180,6 +180,14 @@ class spinless_fermion_basis_core : public hcb_basis_core<I,P>
 					case 'z':
 						m *= (a?0.5:-0.5);
 						break;
+					case 'x':
+						m *= sign;
+						r ^= b;
+						break;
+					case 'y': // corresponds to -\sigma^y
+						m *= (a?std::complex<double>(0,-1.0*sign):std::complex<double>(0,+1.0*sign));
+						r ^= b;
+						break;
 					case 'n':
 						m *= (a?1:0);
 						break;

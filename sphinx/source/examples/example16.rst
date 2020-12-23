@@ -1,4 +1,7 @@
+:orphan:
+
 .. _example16-label:
+
 
 Applying symmetries to reduce user-imported bases using QuSpin
 --------------------------------------------------------------

@@ -1,4 +1,7 @@
+:orphan:
+
 .. _example23-label:
+
 
 Gell-Mann Operators for Spin-1 systems
 --------------------------------------

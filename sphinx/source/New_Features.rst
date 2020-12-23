@@ -1,6 +1,6 @@
 
 
-:green:`QuSpin 1.0.0` (released on 2021.??.??)
+:green:`QuSpin 0.3.5` (released on 2021.??.??)
 ================================================
 
 
@@ -16,7 +16,7 @@ Complete list of the most recent features
 =========================================
 
 
-Added in v. 1.0.0 (2021.??.??)
+Added in v. 0.3.5 (2021.??.??)
 ------------------------------
 
 Improved Functionality
@@ -25,7 +25,7 @@ Improved Functionality
 
 
 New Attributes, Functions, Methods, Classes, and Examples
-++++++++++++++++++++++++++++++++++++++++++++++
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 * new example: Majorana fermion operators, cf. :ref:`example23-label`.
 * new example: Gell-Mann operators for spin-1 systems, cf. :ref:`example24-label`.
 

@@ -41,6 +41,13 @@ extensions = ['sphinx.ext.autodoc',
               'sphinxtogithub',
               'numpydoc',
               'sphinxcontrib.googleanalytics',
+
+              'sphinx.ext.napoleon',
+              'sphinx_automodapi.automodapi',
+
+              'sphinx.ext.doctest',
+              # 'sphinx.ext.todo',
+              # 'sphinx.ext.imgmath',
             ]
 
 
@@ -93,8 +100,8 @@ master_doc = 'index'
 
 # General information about the project.
 project = u'QuSpin'
-copyright = u'2016, Phillip Weinberg and Marin Bukov'
-author = u'Phillip Weinberg and Marin Bukov'
+copyright = u'2016, Phillip Weinberg, Markus Schmitt and Marin Bukov'
+author = u'Phillip Weinberg, Markus Schmitt and Marin Bukov'
 rst_prolog = open('global.rst', 'r').read()
 
 # The version info for the project you're documenting, acts as replacement for
@@ -153,7 +160,7 @@ html_theme_options = {
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
-html_static_path = ['_static']
+#html_static_path = ['_static']
 
 
 # -- Options for HTMLHelp output ------------------------------------------
@@ -187,7 +194,7 @@ latex_elements = {
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
     (master_doc, 'QuSpin.tex', u'QuSpin Documentation',
-     u'Phillip Weinberg and Marin Bukov', 'manual'),
+     u'Phillip Weinberg, Markus Schmitt and Marin Bukov', 'manual'),
 ]
 
 

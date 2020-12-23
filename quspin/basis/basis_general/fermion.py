@@ -11,27 +11,22 @@ from scipy.special import comb
 class spinless_fermion_basis_general(basis_general):
 	"""Constructs basis for spinless fermion operators for USER-DEFINED symmetries.
 
-	Any unitary symmetry transformation :math:`Q` of periodicity :math:`m_Q` (:math:`Q^{m_Q}=1`) has
-	eigenvalues :math:`\\exp(-2\\pi i q/m_Q)`, labelled by an ingeter :math:`q\\in\\{0,1,\\dots,m_Q-1\\}`.
-	These integers :math:`q` are used to define the symmetry blocks.
+	Any unitary symmetry transformation :math:`Q` of periodicity :math:`m_Q` (:math:`Q^{m_Q}=1`) has eigenvalues :math:`\\exp(-2\\pi i q/m_Q)`, labelled by an ingeter :math:`q\\in\\{0,1,\\dots,m_Q-1\\}`. These integers :math:`q` are used to define the symmetry blocks.
 
-	For instance, if :math:`Q=P` is parity (reflection), then :math:`q=0,1`. If :math:`Q=T` is translation by one lattice site,
-	then :math:`q` labels the mometum blocks in the same fashion as for the `..._basis_1d` classes. 
+	For instance, if :math:`Q=P` is parity (reflection), then :math:`q=0,1`. If :math:`Q=T` is translation by one lattice site, then :math:`q` labels the mometum blocks in the same fashion as for the `..._basis_1d` classes. 
 
-	User-defined symmetries with the `spinless_fermion_basis_general` class can be programmed as follows. Suppose we have a system of
-	L sites, enumerated :math:`s=(s_0,s_1,\\dots,s_{L-1})`. There are two types of operations one can perform on the sites:
+	User-defined symmetries with the `spinless_fermion_basis_general` class can be programmed as follows. Suppose we have a system of L sites, enumerated :math:`s=(s_0,s_1,\\dots,s_{L-1})`. There are two types of operations one can perform on the sites:
 		* exchange the labels of two sites: :math:`s_i \\leftrightarrow s_j` (e.g., translation, parity)
 		* invert the **fermion population** on a given site with appropriate sign flip (see `"z"` operator string) :math:`c_j^\\dagger\\to (-1)^j c_j`: :math:`s_i\\leftrightarrow -(s_j+1)` (e.g., particle-hole symmetry)
 		
-	These two operations already comprise a variety of symmetries, including translation, parity (reflection) and 
-	population inversion. For a specific example, see below.
+	These two operations already comprise a variety of symmetries, including translation, parity (reflection) and population inversion. For a specific example, see below.
 
 	The supported operator strings for `spinless_fermion_basis_general` are:
 
 	.. math::
 		\\begin{array}{cccc}
-			\\texttt{basis}/\\texttt{opstr}   &   \\texttt{"I"}   &   \\texttt{"+"}   &   \\texttt{"-"}  &   \\texttt{"n"}   &   \\texttt{"z"}    \\newline	
-			\\texttt{spinless_fermion_basis_general}& \\hat{1}        &   \\hat c^\\dagger      &       \\hat c          & \\hat c^\\dagger c     &  \\hat c^\\dagger\\hat c - \\frac{1}{2}      \\newline
+			\\texttt{basis}/\\texttt{opstr}   &   \\texttt{"I"}   &   \\texttt{"+"}   &   \\texttt{"-"}  &   \\texttt{"n"}   &   \\texttt{"z"}    &   \\texttt{"x"}    &   \\texttt{"y"}    \\newline	
+			\\texttt{spinless_fermion_basis_general}& \\hat{1}        &   \\hat c^\\dagger      &       \\hat c          & \\hat c^\\dagger c     &  \\hat c^\\dagger\\hat c - \\frac{1}{2}  &   \\hat c + \\hat c^\\dagger    &   -i\\left( \\hat c - \\hat c^\\dagger\\right)   \\newline
 		\\end{array}
 
 	Notes
@@ -39,6 +34,7 @@ class spinless_fermion_basis_general(basis_general):
 
 	* For particle-hole symmetry, please use exclusively the operator string `"z"` (see table), otherwise the automatic symmetry check will raise an error when set to `check_symm=True`.
 	* QuSpin raises a warning to alert the reader when non-commuting symmetries are passed. In such cases, we recommend the user to manually check the combined usage of symmetries by, e.g., comparing the eigenvalues.
+	* The fermion operator strings "x" and "y" correspond to real fermions, i.e. Majorana operators (note the sign difference between "y" and the :math:`\\sigma^y` Pauli matrix, which is convention).
 
 
 	Examples
@@ -169,9 +165,12 @@ class spinless_fermion_basis_general(basis_general):
 							"\n\t+: raising operator"+
 							"\n\t-: lowering operator"+
 							"\n\tn: number operator"+
-							"\n\tz: c-symm number operator")
+							"\n\tz: c-symm number operator"+
+							"\n\tx: majorana x-operator"+
+							"\n\ty: majorana y-operator"
+							)
 
-		self._allowed_ops=set(["I","n","+","-","z"])
+		self._allowed_ops=set(["I","n","+","-","z","x","y"])
 		
 	def __setstate__(self,state):
 		self.__dict__.update(state)
@@ -261,12 +260,9 @@ def process_spinful_map(N,map,q):
 class spinful_fermion_basis_general(spinless_fermion_basis_general):
 	"""Constructs basis for spinful fermion operators for USER-DEFINED symmetries.
 
-	Any unitary symmetry transformation :math:`Q` of periodicity :math:`m_Q` (:math:`Q^{m_Q}=1`) has
-	eigenvalues :math:`\\exp(-2\\pi i q/m_Q)`, labelled by an ingeter :math:`q\\in\\{0,1,\\dots,m_Q-1\\}`.
-	These integers :math:`q` are used to define the symmetry blocks.
+	Any unitary symmetry transformation :math:`Q` of periodicity :math:`m_Q` (:math:`Q^{m_Q}=1`) has eigenvalues :math:`\\exp(-2\\pi i q/m_Q)`, labelled by an ingeter :math:`q\\in\\{0,1,\\dots,m_Q-1\\}`. These integers :math:`q` are used to define the symmetry blocks.
 
-	For instance, if :math:`Q=P` is parity (reflection), then :math:`q=0,1`. If :math:`Q=T` is translation by one lattice site,
-	then :math:`q` labels the mometum blocks in the same fashion as for the `..._basis_1d` classes. 
+	For instance, if :math:`Q=P` is parity (reflection), then :math:`q=0,1`. If :math:`Q=T` is translation by one lattice site, then :math:`q` labels the mometum blocks in the same fashion as for the `..._basis_1d` classes. 
 
 	User-defined symmetries with the `spinful_fermion_basis_general` class can be programmed in two equivalent ways: *simple* and *advanced*.
 		* *simple* symmetry definition (see optional argument `simple_symm`) uses the pipe symbol, |, in the operator string (see site-coupling lists in example below) to distinguish between the spin-up and spin-down species. Suppose we have a system of L sites. In the *simple* case, the lattice sites are enumerated :math:`s=(s_0,s_1,\\dots,s_{L-1})` for **both** spin-up and spin-down. There are two types of operations one can perform on the sites:
@@ -278,15 +274,14 @@ class spinful_fermion_basis_general(spinless_fermion_basis_general):
 			* invert the **fermion population** on a given site with appropriate sign flip (see `"z"` operator string) :math:`c_j^\\dagger\\to (-1)^j c_j`: :math:`s_i\\leftrightarrow -(s_j+1)` (e.g., particle-hole symmetry)
 	
 
-	These two operations already comprise a variety of symmetries, including translation, parity (reflection), fermion-spin inversion
-	and particle-hole like symmetries. For specific examples, see below.
+	These two operations already comprise a variety of symmetries, including translation, parity (reflection), fermion-spin inversion and particle-hole like symmetries. For specific examples, see below.
 
 	The supported operator strings for `spinful_fermion_basis_general` are:
 
 	.. math::
 		\\begin{array}{cccc}
-			\\texttt{basis}/\\texttt{opstr}   &   \\texttt{"I"}   &   \\texttt{"+"}   &   \\texttt{"-"}  &   \\texttt{"n"}   &   \\texttt{"z"}    \\newline	
-			\\texttt{spinful_fermion_basis_general}& \\hat{1}        &   \\hat c^\\dagger      &       \\hat c          & \\hat c^\\dagger c     &  \\hat c^\\dagger\\hat c - \\frac{1}{2}      \\newline
+			\\texttt{basis}/\\texttt{opstr}   &   \\texttt{"I"}   &   \\texttt{"+"}   &   \\texttt{"-"}  &   \\texttt{"n"}   &   \\texttt{"z"}    &   \\texttt{"x"}    &   \\texttt{"y"}    \\newline	
+			\\texttt{spinful_fermion_basis_general}& \\hat{1}        &   \\hat c^\\dagger      &       \\hat c          & \\hat c^\\dagger c     &  \\hat c^\\dagger\\hat c - \\frac{1}{2}  &   \\hat c + \\hat c^\\dagger    &   -i\\left( \\hat c - \\hat c^\\dagger\\right)   \\newline
 		\\end{array}
 
 	Notes
@@ -295,6 +290,7 @@ class spinful_fermion_basis_general(spinless_fermion_basis_general):
 	* The definition of the operation :math:`s_i\\leftrightarrow -(s_j+1)` **differs** for the *simple* and *advanced* cases.
 	* For particle-hole symmetry, please use exclusively the operator string `"z"` (see table), otherwise the automatic symmetry check will raise an error when set to `check_symm=True`.
 	* QuSpin raises a warning to alert the reader when non-commuting symmetries are passed. In such cases, we recommend the user to manually check the combined usage of symmetries by, e.g., comparing the eigenvalues.
+	* The fermion operator strings "x" and "y" correspond to real fermions, i.e. Majorana operators (note the sign difference between "y" and the :math:`\\sigma^y` Pauli matrix, which is convention).
 
 
 	Examples
@@ -497,9 +493,11 @@ class spinful_fermion_basis_general(spinless_fermion_basis_general):
 							"\n\t+: raising operator"+
 							"\n\t-: lowering operator"+
 							"\n\tn: number operator"+
-							"\n\tz: c-symm number operator")
+							"\n\tz: c-symm number operator"+
+							"\n\tx: majorana x-operator"+
+							"\n\ty: majorana y-operator")
 
-		self._allowed_ops=set(["I","n","+","-","z"])
+		self._allowed_ops=set(["I","n","+","-","z","x","y"])
 		
 	def __setstate__(self,state):
 		self.__dict__.update(state)

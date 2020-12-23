@@ -1,4 +1,7 @@
+:orphan:
+
 .. _example22-label:
+
 
 Efficient time evolution: expm_multiply_parallel
 ------------------------------------------------

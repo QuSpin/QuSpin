@@ -1,4 +1,7 @@
+:orphan:
+
 .. _user-basis_example2-label:
+
 
 Bose-Hubbard model in 1d
 ------------------------

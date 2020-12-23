@@ -1,4 +1,7 @@
+:orphan:
+
 .. _example5-label:
+
 
 Free Particle Systems: the Fermionic SSH Chain
 ----------------------------------------------

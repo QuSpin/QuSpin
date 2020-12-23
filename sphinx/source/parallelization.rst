@@ -18,10 +18,12 @@ Check out also our example script :ref:`example12-label`, which demonstrates how
 ````````````````````````````````````````
 
 In order to make use of OpenMP features in QuSpin, one just needs to install the `omp` metapackage which will track the OpenMP compiled version of QuSpin for your platform. Starting from QuSpin 0.3.1, we have OpenMP support across the different operating systems. To install the OpenMP version of QuSpin simply run:
+
 ::
 	$ conda install -c weinbe58 omp quspin
 
 If you would like to go back to the single-threaded (i.e. no-OpenMP) version of QuSpin run:
+
 ::
 	$ conda remove --features omp -c weinbe58
 
@@ -37,6 +39,7 @@ All the support for QuSpin's OpenMP multi-threading can be accessed using the Op
 There are two ways to set up the OpenMP environment variable:
 
 1) in the terminal/Anaconda prompt, set
+
 ::
 	$ export OMP_NUM_THREADS = 4
 	$ echo $OMP_NUM_THREADS
@@ -44,6 +47,7 @@ There are two ways to set up the OpenMP environment variable:
 Make sure you run your script from that terminal window. If you run your code from a different terminal window, you have to set this variable again.
 
 2) in the beginning of your python script, **before you import QuSpin**,  set
+
 ::
 	import os
 	os.environ['OMP_NUM_THREADS'] = '4' # set number of OpenMP threads to run in parallel
@@ -72,14 +76,20 @@ For the supported sparse-matrix formats `csr`, `csc`, and `dia`, we have impleme
 To sum up, whenever one can prefer matrix-vector products in the code, using QuSpin's interface this will lead to the automatic use of multi-threading, when the OpenMP version is used. For instance, one commonly used function, which automatically benefits from multi-threading via the parallel matrix-vector product, is `hamiltonian.evolve()`. 
 
 At the same time, in some places automatic multithreading is not so obvious: for instance if one is trying to find the ground state of a particular `hamiltonian` object `H` one might do the following:
+
 ::
 	E,V = H.eigsh(time=t0,k=1,which="SA")
+
 The code just above will actually not use any multi-threading: this is because this code is actually equivilent to doing:
+
 ::
 	E,V = eigsh(H.tocsr(time=t0),k=1,which="SA")
+
 However, one can still beneft from the multi-threaded matrix-vector product by using the `H.aslinearoperator(time=t0)` method:
+
 ::
 	E,V = eigsh(H.aslinearoperator(time=t0),k=1,which="SA")
+
 Casting `H` as a `LinearOperator <https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.linalg.LinearOperator.html>`_ object enables the use of the methods `H.dot()` and `H.transpose().conj().dot()`. These methods will be used to do the eigenvalue calculation, which will then benefit from multi-threading (note that one cannot use `LinearOperator` by default when calling `H.eigsh()` since it limits the code functionality).
 
 .. Now one might ask: why not use the LinearOperator wrapper of the Hamiltonian class by default when calling `H.eigsh`? This works in many cases however there can be problems that will not work for LinearOperators. One example of this is solving for eigenvalues in the middle of the spectrum `eigsh`. We are not sure if this will ever be fixed in future versions on SciPy as it does not appear to be related to ARPACK (used by `eigsh`), but the convergence of some other algorithm which is called during the process for inverting the LinearOperator. This is evident by to the traceback:
@@ -114,6 +124,7 @@ To do this, the default version of NumPy installed with Anaconda must be linked 
 There are two ways to set up the MKL environment variable:
 
 1) in the terminal/Anaconda prompt, set
+
 ::
 	$ export MKL_NUM_THREADS = 4
 	$ echo $MKL_NUM_THREADS
@@ -121,6 +132,7 @@ There are two ways to set up the MKL environment variable:
 Make sure you run your script from that terminal window. If you run your code from a different terminal window, you have to set this variable again.
 
 2) in the beginning of your python script, **before you import NumPy or SciPy** set
+
 ::
 	import os
 	os.environ['MKL_NUM_THREADS'] = '4' # set number of MKL threads to run in parallel

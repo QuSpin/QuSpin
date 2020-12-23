@@ -1,9 +1,11 @@
 .. _example24-label:
 
+
+
 Majorana Fermions: Spinless Fermi-Hubbard Model
 -----------------------------------------------
 
-In this example, we show how to use the `user_basis` class to define Majorana fermion operators. We then show how to construct the Hamiltonian for the spinless Fermi-Hubbard model in the Majorana representation.  
+In this example, we show how to use the `user_basis` class to define Majorana fermion operators. We then show how to construct the Hamiltonian for the spinless Fermi-Hubbard model in the Majorana representation. Starting from version 0.3.5 the Majorana operator strings `"x"` and `"y"` are also available in the `*fermion_basis_general` classes. 
 
 Consider first a single fermion described by the creation and annihilation operators :math:`c^\dagger,c`. One can decompose one complex fermion into two real-valued Majorana fermion modes :math:`c^x, c^y`, defined by the operators
 
@@ -13,8 +15,9 @@ Consider first a single fermion described by the creation and annihilation opera
 which obey the fermion commutation relations :math:`\{c^x, c_y\}=0`, :math:`\left(c^\alpha\right)^2 = 1`, for :math:`\alpha=x,y`.
 
 The inverse transformation is given by
+
 .. math::
-	c = \frac{1}{2}\left( c^x + i c^y ), \qquad c^\dagger = \frac{1}{2}\left( c^x - i c^y ).
+	c = \frac{1}{2}\left( c^x + i c^y \right), \qquad c^\dagger = \frac{1}{2}\left( c^x - i c^y \right).
 
 Here, we choose to denote the Majorana operators by :math:`c^x, c^y`, due to a formal relation with the Pauli matrices: :math:`c^x = \sigma^x`, :math:`c^y = -\sigma^y` (**NB** the extra negative sign appearing for :math:`c^y` is because of the standard convention for the definition of Majorana modes), :math:`c^\dagger = \sigma^+`, and :math:`c = \sigma^-`. 
 

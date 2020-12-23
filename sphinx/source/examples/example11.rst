@@ -1,3 +1,5 @@
+:orphan:
+
 .. _example11-label:
 
 Monte Carlo Sampling Expectation Values of Obsevables
