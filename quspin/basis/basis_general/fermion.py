@@ -1,6 +1,7 @@
 from ._basis_general_core import spinful_fermion_basis_core_wrap
 from ._basis_general_core import spinless_fermion_basis_core_wrap
 from ._basis_general_core import get_basis_type,basis_zeros
+from ._basis_general_core import basis_int_to_python_int #,_get_basis_index
 from .base_general import basis_general,_check_symm_map
 from ..base import MAXPRINT
 import numpy as _np
@@ -505,7 +506,8 @@ class spinful_fermion_basis_general(spinless_fermion_basis_general):
 
 	@property
 	def _fermion_basis(self):
-		return True 
+		return True
+
 
 	#################################################
 	# override for _inplace_Op and Op_shift_sector. #
@@ -698,11 +700,51 @@ class spinful_fermion_basis_general(spinless_fermion_basis_general):
 		else:
 			raise ValueError("state must be representive state in basis.")
 
-	def int_to_state(self,*args):
-		""" Not Implemented."""
+	def int_to_state(self,state,bracket_notation=True):
 
-	def state_to_int(self,*args):
-		""" Not Implemented."""
+		state = basis_int_to_python_int(state)
+
+		n_space = len(str(self.sps))
+
+		if self.N <= 64:
+			bits_up   = ((state>>(self.N-i-1))&1 for i in range(self.N//2))
+			s_str_up   = (" ".join(("{:1d}").format(bit) for bit in bits_up))
+			
+			bits_down = ((state>>(self.N//2-i-1))&1 for i in range(self.N//2))
+			s_str_down = (" ".join(("{:1d}").format(bit) for bit in bits_down))
+
+		else:
+			left_bits_up = (state//int(self.sps**(self.N-i-1))%self.sps for i in range(16))
+			right_bits_up = (state//int(self.sps**(self.N-i-1))%self.sps for i in range(self.N//2-16,self.N//2,1))
+
+			str_list_up = [("{:"+str(n_space)+"d}").format(bit) for bit in left_bits_up]
+			str_list_up.append("...")
+			str_list_up.extend(("{:"+str(n_space)+"d}").format(bit) for bit in right_bits_up)
+			s_str_up = (" ".join(str_list_up))
+
+
+			left_bits_down = (state//int(self.sps**(self.N//2-i-1))%self.sps for i in range(16))
+			right_bits_down = (state//int(self.sps**(self.N//2-i-1))%self.sps for i in range(self.N//2-16,self.N//2,1))
+
+			str_list_down = [("{:"+str(n_space)+"d}").format(bit) for bit in left_bits_down]
+			str_list_down.append("...")
+			str_list_down.extend(("{:"+str(n_space)+"d}").format(bit) for bit in right_bits_down)
+			s_str_down = (" ".join(str_list_down))
+
+		if bracket_notation:
+			return "|"+s_str_up+">"  + "|"+s_str_down+">"
+		else:
+			return (s_str_up+s_str_down).replace(' ', '')
+
+	int_to_state.__doc__ = spinless_fermion_basis_general.int_to_state.__doc__
+
+
+	def state_to_int(self,state):
+		state = state.replace('|','').replace('>','').replace('<','')
+		up_state, down_state = state[:self.N//2], state[self.N//2:]
+		return basis_int_to_python_int(self._basis[self.index(up_state, down_state)])
+
+	state_to_int.__doc__ = spinless_fermion_basis_general.state_to_int.__doc__
 
 	def Op_bra_ket(self,opstr,indx,J,dtype,ket_states,reduce_output=True):
 		
@@ -742,7 +784,7 @@ class spinful_fermion_basis_general(spinless_fermion_basis_general):
 		'''
 		return spinless_fermion_basis_general.Op_bra_ket(self,opstr,indx,J,dtype,ket_states,reduce_output=reduce_output)
 
-
+	"""
 	def _get_state(self,b):
 		b = int(b)
 		bits_left = ((b>>(self.N-i-1))&1 for i in range(self.N//2))
@@ -750,17 +792,8 @@ class spinful_fermion_basis_general(spinless_fermion_basis_general):
 		bits_right = ((b>>(self.N//2-i-1))&1 for i in range(self.N//2))
 		state_right = "|"+(" ".join(("{:1d}").format(bit) for bit in bits_right))+">"
 		return state_left+state_right
+	"""
 
-	def _get__str__(self):
-		temp1 = "     {0:"+str(len(str(self.Ns)))+"d}.  "
-		if self._Ns > MAXPRINT:
-			half = MAXPRINT // 2
-			str_list = [(temp1.format(i))+self._get_state(b) for i,b in zip(range(half),self._basis[:half])]
-			str_list.extend([(temp1.format(i))+self._get_state(b) for i,b in zip(range(self._Ns-half,self._Ns,1),self._basis[-half:])])
-		else:
-			str_list = [(temp1.format(i))+self._get_state(b) for i,b in enumerate(self._basis)]
-
-		return tuple(str_list)
 
 	def _sort_opstr(self,op):
 

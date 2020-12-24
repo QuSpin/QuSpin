@@ -227,6 +227,7 @@ class basis_general(lattice_basis):
 			return s_str.replace(' ', '')
 
 	def _state_to_int(self,state):
+		state = state.replace('|','').replace('>','').replace('<','')
 		return basis_int_to_python_int(self._basis[self.index(state)])
 
 	def _index(self,s):
@@ -326,7 +327,7 @@ class basis_general(lattice_basis):
 
 		An operator, which does not conserve a symmetry, induces a change in the quantum number of a state defined in the corresponding symmetry sector. Hence, when the operator is applied on a quantum state, the state shifts the symmetry sector. `Op_shift_sector()` handles this automatically. 
 
-		:red:`NOTE: One has to make sure that the operator moves the state between the two sectors this function will not give the correct results otherwise.`
+		:red:`NOTE: One has to make sure that (i) the operator moves the state between the two sectors, and (ii) the two bases objects have the same symmetries. This function will not give the correct results otherwise.`
 
 		Formally  equivalent to:
 
