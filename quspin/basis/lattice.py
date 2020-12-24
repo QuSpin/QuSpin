@@ -592,6 +592,7 @@ class lattice_basis(basis):
 		else:
 			str_list = [(temp1.format(i))+self.int_to_state(b)+temp2.format(b) for i,b in enumerate(self._basis)]
 
+
 		return tuple(str_list)
 
 

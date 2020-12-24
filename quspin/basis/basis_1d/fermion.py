@@ -373,6 +373,16 @@ class spinful_fermion_basis_1d(spinless_fermion_basis_1d,basis_1d):
 		basis_1d.__init__(self,spf_basis,spf_ops,L,Np=Nf_list,pars=pars,count_particles=count_particles,**blocks)
 		
 
+	@property
+	def N(self):
+		"""int: Total number of sites (spin-up + spin-down) the basis is constructed with. NOTE: :math:`N=2L`."""
+		return 2*self._L
+
+	@property
+	def _fermion_basis(self):
+		return True 
+
+
 	def _Op(self,opstr,indx,J,dtype):
 		
 		i = opstr.index("|")
@@ -434,11 +444,52 @@ class spinful_fermion_basis_1d(spinless_fermion_basis_1d,basis_1d):
 		else:
 			raise ValueError("state must be representive state in basis.")
 
-	def int_to_state(self,*args):
-		""" Not Implemented."""
+	def int_to_state(self,state,bracket_notation=True):
 
-	def state_to_int(self,*args):
-		""" Not Implemented."""
+		if int(state)!=state:
+			raise ValueError("state must be integer")
+
+		n_space = len(str(self.sps))
+
+		if self.N <= 64:
+			bits_up   = ((state>>(self.N-i-1))&1 for i in range(self.N//2))
+			s_str_up   = (" ".join(("{:1d}").format(bit) for bit in bits_up))
+			
+			bits_down = ((state>>(self.N//2-i-1))&1 for i in range(self.N//2))
+			s_str_down = (" ".join(("{:1d}").format(bit) for bit in bits_down))
+
+		else:
+			left_bits_up = (state//int(self.sps**(self.N-i-1))%self.sps for i in range(16))
+			right_bits_up = (state//int(self.sps**(self.N-i-1))%self.sps for i in range(self.N//2-16,self.N//2,1))
+
+			str_list_up = [("{:"+str(n_space)+"d}").format(bit) for bit in left_bits_up]
+			str_list_up.append("...")
+			str_list_up.extend(("{:"+str(n_space)+"d}").format(bit) for bit in right_bits_up)
+			s_str_up = (" ".join(str_list_up))
+
+
+			left_bits_down = (state//int(self.sps**(self.N//2-i-1))%self.sps for i in range(16))
+			right_bits_down = (state//int(self.sps**(self.N//2-i-1))%self.sps for i in range(self.N//2-16,self.N//2,1))
+
+			str_list_down = [("{:"+str(n_space)+"d}").format(bit) for bit in left_bits_down]
+			str_list_down.append("...")
+			str_list_down.extend(("{:"+str(n_space)+"d}").format(bit) for bit in right_bits_down)
+			s_str_down = (" ".join(str_list_down))
+
+		if bracket_notation:
+			return "|"+s_str_up+">"  + "|"+s_str_down+">"
+		else:
+			return (s_str_up+s_str_down).replace(' ', '')
+
+	int_to_state.__doc__ = spinless_fermion_basis_1d.int_to_state.__doc__
+
+
+	def state_to_int(self,state):
+		state = state.replace('|','').replace('>','').replace('<','')
+		up_state, down_state = state[:self.N//2], state[self.N//2:]
+		return int(self._basis[self.index(up_state, down_state)])
+
+	state_to_int.__doc__ = spinless_fermion_basis_1d.state_to_int.__doc__
 
 	def partial_trace(self,state,sub_sys_A=None,density=True,subsys_ordering=True,return_rdm=None,enforce_pure=False,return_rdm_EVs=False,sparse=False,alpha=1.0,sparse_diag=True,maxiter=None):
 		"""Calculates reduced density matrix, through a partial trace of a quantum state in a lattice `basis`.
@@ -606,14 +657,7 @@ class spinful_fermion_basis_1d(spinless_fermion_basis_1d,basis_1d):
 	def __name__(self):
 		return "<type 'qspin.basis.fermion_basis_1d'>"
 
-	@property
-	def N(self):
-		"""int: Total number of sites (spin-up + spin-down) the basis is constructed with. NOTE: :math:`N=2L`."""
-		return 2*self._L
-
-	@property
-	def _fermion_basis(self):
-		return True 
+	
 
 	# functions called in base class:
 
@@ -629,6 +673,7 @@ class spinful_fermion_basis_1d(spinless_fermion_basis_1d,basis_1d):
 	def _expand_opstr(self,op,num):
 		return _expand_opstr_spinful(op,num) 
 
+	"""
 	def _get_state(self,b):
 		b = int(b)
 		bits_left = ((b>>(self.N-i-1))&1 for i in range(self.N//2))
@@ -647,7 +692,7 @@ class spinful_fermion_basis_1d(spinless_fermion_basis_1d,basis_1d):
 			str_list = [(temp1.format(i))+self._get_state(b) for i,b in enumerate(self._basis)]
 
 		return tuple(str_list)
-
+	"""
 
 	def _check_symm(self,static,dynamic,photon_basis=None):
 		kblock = self._blocks_1d.get("kblock")

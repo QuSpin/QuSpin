@@ -542,7 +542,8 @@ class basis_1d(lattice_basis):
 		else:
 			return s_str.replace(' ', '')
 
-	def _state_to_int(self,state):		
+	def _state_to_int(self,state):
+		state = state.replace('|','').replace('>','').replace('<','')		
 		return int(self._basis[self.index(state)])
 
 	def _index(self,s):

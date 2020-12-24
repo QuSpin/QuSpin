@@ -115,8 +115,8 @@ Additionally, we have also added an implementation of `inplace_Op` which is used
 
 Note that the `*_basis_1d` classes do **not** support OpenMP. 
 
-2. Multi-threading via MKL and NumPy/SciPy in QuSpin:
------------------------------------------------------
+2. Multi-threading via MKL and NumPy/SciPy Functions in QuSpin:
+---------------------------------------------------------------
 
 Depending on the version of NumPy you have installed, you may also be able to access some additional multi-threading to speed up diagonalization, e.g. using `eigh()`, `eigvalsh()`, or `svd()` operations during calculations of eigenvalues/vectors or entanglement entropy. 
 To do this, the default version of NumPy installed with Anaconda must be linked against Intel's Math Kernel Library (MKL) which implemented very efficient multi-threaded variations of LAPACK functions. If you use Anaconda 2.5 or later, MKL is the default numpy version. To turn on the multi-threading, simply use the MKL environment variables. For more info visit this `MKL website <https://software.intel.com/en-us/mkl-linux-developer-guide-intel-mkl-specific-environment-variables-for-openmp-threading-control>`_.
@@ -142,5 +142,11 @@ This allows to change the MKL variable dynamically from your python script.
 Another useful python package for changing the number of cores MKL is using at runtime is `mkl-service <https://docs.anaconda.com/mkl-service/>`_. For more information about MKL-accelerated versions of NumPy, check out this `website <https://docs.anaconda.com/mkl-optimizations/>`_.
 
 
+There is the possibility for an extra speedup for people who use Anaconda installs with a `numpy` build that uses the Intel MKL library. If they have an **AMD CPU**, MKL will not enable any SIMD instructions for it leading to about 1/4 the speed the chip is capable of for linear algebra. However, an environment variable can be set to force SIMD instructions to be used anyway.
 
+::
+	import os
+	os.environ['MKL_DEBUG_CPU_TYPE'] = '5' # AVX2 instructions; good for any Ryzen-era CPU and probably some earlier ones.
+	os.environ['MKL_DEBUG_CPU_TYPE'] = '4' # AVX instructions; good for any reasonably recent AMD CPU.
 
+**Intel CPU** users don’t have to worry about this, nor does anyone who is using a `numpy` built on top of `OpenBLAS` or `BLIS`.
