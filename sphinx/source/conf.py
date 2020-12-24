@@ -26,44 +26,67 @@ sys.path.insert(0, os.path.abspath('../../'))
 
 # If your documentation needs a minimal Sphinx version, state it here.
 #
-# needs_sphinx = '1.0'
+# needs_sphinx = '3.0'
 
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
-extensions = ['sphinx.ext.autodoc',
+extensions = [
+
               'sphinx.ext.mathjax',
+
+              'numpydoc',
+
+              'sphinx.ext.autodoc',
+              
               'sphinx.ext.intersphinx',
               'sphinx.ext.coverage',
               'sphinx.ext.autosummary',
               'sphinx.ext.viewcode',
-      #        'sphinx.ext.autosectionlabel', # doesn't seem to work
+          #    'sphinx.ext.autosectionlabel', # doesn't seem to work
+      
               'sphinxtogithub',
-              'numpydoc',
+              'sphinx.ext.napoleon',
               'sphinxcontrib.googleanalytics',
 
-              'sphinx.ext.napoleon',
-              'sphinx_automodapi.automodapi',
-
-              'sphinx.ext.doctest',
-              # 'sphinx.ext.todo',
-              # 'sphinx.ext.imgmath',
             ]
 
 
 # -- General configuration ------------------------------------------------
 # autoclass_content = ""  
-autodoc_default_flags = [
-        # Make sure that any autodoc declarations show the right members
-        "members",
-        "inherited-members",
-        "show-inheritance"
-        "no-special-members",
-        "no-private-members",
-        "no-undoc-members"
-]
+# autodoc_default_flags = [
+#         # Make sure that any autodoc declarations show the right members
+#         "members",
+#         "inherited-members",
+#         "show-inheritance",
+#         "no-special-members",
+#         "no-private-members",
+#         "no-undoc-members"
+# ]
+
+autodoc_default_options = {
+        "members": True,
+        "inherited-members": True,
+        "show-inheritance": True,
+        "no-special-members": True,
+        "no-private-members": True,
+        "no-undoc-members": True,
+
+      #  'member-order': 'bysource',
+        'undoc-members': True,
+        'exclude-members': '__init__',
+}
 
 autosummary_generate = True  # Make _autosummary files and include them
+
+# Only the class' docstring is inserted.
+autoclass_content = 'class'
+
+# If true, `todo` and `todoList` produce output, else they produce nothing.
+todo_include_todos = False
+ 
+# remove duplicates 
+numpydoc_show_class_members = False
 
 # # NumPydoc settings
 # numpydoc_show_class_members = True
@@ -130,7 +153,8 @@ language = None
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
 # This patterns also effect to html_static_path and html_extra_path
-exclude_patterns =  [] #['_build', 'Thumbs.db', '.DS_Store', '.git']
+#exclude_patterns =  [] #['_build', 'Thumbs.db', '.DS_Store', '.git']
+#exclude_patterns = ['links.rst', 'README.rst']
 
 # The name of the Pygments (syntax highlighting) style to use.
 pygments_style = 'sphinx'

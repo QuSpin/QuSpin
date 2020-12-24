@@ -428,8 +428,8 @@ class basis_general(lattice_basis):
 
 		Notes
 		-----
-		* particularly useful when a given operation canot be carried out in the symmetry-reduced basis
-		in a straightforward manner.
+		* particularly useful when a given operation canot be carried out in the symmetry-reduced basis in a straightforward manner.
+		
 		* see also `Op_shift_sector()`.
 
 		Parameters
