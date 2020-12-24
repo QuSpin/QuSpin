@@ -56,14 +56,14 @@ class lattice_basis(basis):
 
 		Notes
 		-----
-		This function is the einverse of `state_to_int`.
+		This function is the inverse of `state_to_int`.
 
 		Parameters
 		-----------
 		state : int
 			Defines the Fock state in integer representation in underlying lattice `basis`.
 		bracket_notation : bool, optional
-			Toggles whether to return the state in |str> notation.
+			Toggles whether to return the state in `|str>` notation.
 
 		Returns
 		--------

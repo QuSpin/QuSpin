@@ -266,7 +266,7 @@ class spinful_fermion_basis_general(spinless_fermion_basis_general):
 	For instance, if :math:`Q=P` is parity (reflection), then :math:`q=0,1`. If :math:`Q=T` is translation by one lattice site, then :math:`q` labels the mometum blocks in the same fashion as for the `..._basis_1d` classes. 
 
 	User-defined symmetries with the `spinful_fermion_basis_general` class can be programmed in two equivalent ways: *simple* and *advanced*.
-		* *simple* symmetry definition (see optional argument `simple_symm`) uses the pipe symbol, |, in the operator string (see site-coupling lists in example below) to distinguish between the spin-up and spin-down species. Suppose we have a system of L sites. In the *simple* case, the lattice sites are enumerated :math:`s=(s_0,s_1,\\dots,s_{L-1})` for **both** spin-up and spin-down. There are two types of operations one can perform on the sites:
+		* *simple* symmetry definition (see optional argument `simple_symm`) uses the pipe symbol, "|", in the operator string (see site-coupling lists in example below) to distinguish between the spin-up and spin-down species. Suppose we have a system of L sites. In the *simple* case, the lattice sites are enumerated :math:`s=(s_0,s_1,\\dots,s_{L-1})` for **both** spin-up and spin-down. There are two types of operations one can perform on the sites:
 			* exchange the labels of two sites: :math:`s_i \\leftrightarrow s_j` (e.g., translation, parity)
 			* invert the **fermion spin** on a given site: :math:`s_i\\leftrightarrow -(s_j+1)` (e.g., fermion spin inversion)
 

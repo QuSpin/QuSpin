@@ -19,8 +19,7 @@ __all__=["tensor_basis"]
 class tensor_basis(basis):
 	"""Constructs basis in tensor product Hilbert space.
 
-		The `tensor_basis` class combines two basis objects `basis1` and `basis2` together into a new basis 
-		object which can be then used, e.g., to create the Hamiltonian over the tensor product Hilbert space:
+		The `tensor_basis` class combines two basis objects `basis1` and `basis2` together into a new basis object which can be then used, e.g., to create the Hamiltonian over the tensor product Hilbert space:
 
 		.. math::
 			\\mathcal{H}=\\mathcal{H}_1\\otimes\\mathcal{H}_2
@@ -28,12 +27,9 @@ class tensor_basis(basis):
 		Notes
 		-----
 
-		* The `tensor_basis` operator strings are separated by a pipe symbol, '|'. However, the index array has
-		NO pipe symbol.
+		* The `tensor_basis` operator strings are separated by a pipe symbol, "|". However, the index array has NO pipe symbol.
 
-		* If two fermion basis constructors are used, `tensor_basis` will assume that the two fermion species are distinguishable, 
-		i.e. their operators will commute (instead of anti-commute). For anticommuting fermion species, use the 
-		`spinful_fermion_basis_`* constructors.
+		* If two fermion basis constructors are used, `tensor_basis` will assume that the two fermion species are distinguishable, i.e. their operators will commute (instead of anti-commute). For anticommuting fermion species, use the `spinful_fermion_basis_*` constructors.
 
 		The `tensor_basis` class does not allow one to make use of symmetries, save for particle conservation.
 
