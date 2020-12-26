@@ -510,11 +510,10 @@ class hamiltonian(object):
 
 	@property
 	def dynamic(self):
-		"""dict: contains dynamic parts of the operator as `{func: Hdyn}`.
+		"""dict: contains dynamic parts of the operator as `dict(func=Hdyn)`. 
 
-		Here `func` is the memory address of the time-dependent function which can be called as `func(time)`.
-		The function arguments are hard-coded, and are not passed. `Hdyn` is the sparse matrix to which
-		the drive couples.
+		The key `func` is the memory address of the time-dependent function which can be called as `func(time)`. The function arguments are hard-coded, and are not passed. 
+		The value `Hdyn` is the sparse matrix to which the drive couples.
 		
 		"""
 		return self._dynamic
@@ -531,6 +530,7 @@ class hamiltonian(object):
 
 	@property
 	def nbytes(self):
+		"""float: Total bytes consumed by the elements of the `hamiltonian` array."""
 		nbytes = 0
 		if _sp.issparse(self._static):
 			nbytes += self._static.data.nbytes

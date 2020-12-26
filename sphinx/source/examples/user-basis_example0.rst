@@ -1,4 +1,7 @@
+:orphan:
+
 .. _user-basis_example0-label:
+
 
 spin-1/2 Heisenberg model in 1d
 -------------------------------

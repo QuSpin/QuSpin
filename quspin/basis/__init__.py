@@ -12,14 +12,19 @@ The following table shows the available operator strings for the different bases
       \\texttt{basis}/\\texttt{opstr}   &   \\texttt{"I"}   &   \\texttt{"+"}   &   \\texttt{"-"}  &   \\texttt{"n"}   &   \\texttt{"z"}   &   \\texttt{"x"}   &   \\texttt{"y"}  \\newline  
       \\texttt{spin_basis_*} &   \\hat{1}        &   \\hat S^+(\\hat\\sigma^+)       &   \\hat S^-(\\hat\\sigma^-)      &         -         &   \\hat S^z(\\hat\\sigma^z)       &   \\hat S^x(\\hat\\sigma^x)     &   \\hat S^y(\\hat\\sigma^y)  \\  \\newline
       \\texttt{boson_basis_*}&   \\hat{1}        &   \\hat b^\\dagger      &       \\hat b          & \\hat b^\\dagger \\hat b     &  \\hat b^\\dagger\\hat b - \\frac{\\mathrm{sps}-1}{2}       &   -       &   -  \\newline
-      \\texttt{*_fermion_basis_*}& \\hat{1}        &   \\hat c^\\dagger      &       \\hat c          & \\hat c^\\dagger \\hat c     &  \\hat c^\\dagger\\hat c - \\frac{1}{2}       &   -       &   -  \\newline
+      \\texttt{*_fermion_basis_*}& \\hat{1}        &   \\hat c^\\dagger      &       \\hat c          & \\hat c^\\dagger \\hat c     &  \\hat c^\\dagger\\hat c - \\frac{1}{2}       &   \\hat c + \\hat c^\\dagger       &   -i\\left( \\hat c - \\hat c^\\dagger\\right)  \\newline
    \\end{array}
 
-**Note:** The default operators for spin-1/2 are the Pauli matrices, NOT the spin operators. To change this, see
-the argument `pauli` of the `spin_basis_*` classes. Higher spins can only be defined using the spin operators, and do NOT support
-the operator strings "x" and "y". 
+**Notes:** 
+
+* The default operators for spin-1/2 are the Pauli matrices, NOT the spin operators. To change this, see the argument `pauli` of the `spin_basis_*` classes. 
+* Higher spins can only be defined using the spin operators, and do NOT support the operator strings "x" and "y". 
+* The fermion operator strings "x" and "y" are present only in the *general* basis fermion classes, and correspond to real fermions, i.e. Majorana operators (note the sign difference between "y" and the :math:`\\sigma^y` Pauli matrix, which is convention).
+* The variable `sps` in the definition of the bosonic `"z"` operator stands for "states per site", i.e., the local on-site Hilbert space dimension.
+
 
 .. currentmodule:: quspin.basis
+
 
 one-dimensional symmetries
 --------------------------
@@ -32,16 +37,19 @@ one-dimensional symmetries
    spinless_fermion_basis_1d
    spinful_fermion_basis_1d
 
+
+
 general lattice symmetries
 --------------------------
 
 .. autosummary::
    :toctree: generated/
-
+   
    spin_basis_general
    boson_basis_general
    spinless_fermion_basis_general
    spinful_fermion_basis_general
+
 
 
 user basis
@@ -53,6 +61,7 @@ user basis
    user_basis
 
 
+
 combining basis classes
 -----------------------
 
@@ -61,6 +70,7 @@ combining basis classes
 
    tensor_basis
    photon_basis
+
 
 functions
 ---------
@@ -88,6 +98,7 @@ a) custom large integer data types supported in general basis
    uint4096
    uint16384
 
+
 b) array initialization routines
 ++++++++++++++++++++++++++++++++
 
@@ -113,7 +124,6 @@ c) utilities to use large integers
    bitwise_leftshift
    bitwise_rightshift
 
-
 d) Numerical Linked Cluster Expansion
 +++++++++++++++++++++++++++++++++++++
 
@@ -123,6 +133,7 @@ d) Numerical Linked Cluster Expansion
    NLCE_site
    NLCE_plaquet
    wynn_eps_method
+
 
 """
 from .basis_1d import *

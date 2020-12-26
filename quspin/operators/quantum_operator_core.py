@@ -45,7 +45,7 @@ class quantum_operator(object):
 		It is often required to be able to handle a parameter-dependent Hamiltonian :math:`H(\\lambda)=H_1 + \\lambda H_2`, e.g.
 
 		.. math::
-			H_1=\sum_j J_{zz}S^z_jS^z_{j+1} + h_xS^x_j, \\qquad H_2=\\sum_j S^z_j
+			H_1=\\sum_j J_{zz}S^z_jS^z_{j+1} + h_xS^x_j, \\qquad H_2=\\sum_j S^z_j
 
 		The following code snippet shows how to use the `quantum_operator` class to vary the parameter :math:`\\lambda`
 		without having to re-build the Hamiltonian every time.
@@ -294,6 +294,7 @@ class quantum_operator(object):
 	
 	@property
 	def shape(self):
+		"""tuple: shape of the `quantum_operator` object, always equal to `(Ns,Ns)`."""
 		return self._shape
 	
 

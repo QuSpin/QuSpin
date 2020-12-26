@@ -1,4 +1,7 @@
+:orphan:
+
 .. _example1-label:
+
 
 Adiabatic Control of Parameters in Many-Body Localised Phases
 -------------------------------------------------------------

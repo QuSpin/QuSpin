@@ -35,8 +35,6 @@ def _consolidate_static(static_list):
 			else:
 				static_dict[opstr][indx] = J
 
-				
-
 	static_list = []
 	for opstr,opstr_dict in static_dict.items():
 		for indx,J in opstr_dict.items():

@@ -18,10 +18,12 @@ Check out also our example script :ref:`example12-label`, which demonstrates how
 ````````````````````````````````````````
 
 In order to make use of OpenMP features in QuSpin, one just needs to install the `omp` metapackage which will track the OpenMP compiled version of QuSpin for your platform. Starting from QuSpin 0.3.1, we have OpenMP support across the different operating systems. To install the OpenMP version of QuSpin simply run:
+
 ::
 	$ conda install -c weinbe58 omp quspin
 
 If you would like to go back to the single-threaded (i.e. no-OpenMP) version of QuSpin run:
+
 ::
 	$ conda remove --features omp -c weinbe58
 
@@ -37,6 +39,7 @@ All the support for QuSpin's OpenMP multi-threading can be accessed using the Op
 There are two ways to set up the OpenMP environment variable:
 
 1) in the terminal/Anaconda prompt, set
+
 ::
 	$ export OMP_NUM_THREADS = 4
 	$ echo $OMP_NUM_THREADS
@@ -44,6 +47,7 @@ There are two ways to set up the OpenMP environment variable:
 Make sure you run your script from that terminal window. If you run your code from a different terminal window, you have to set this variable again.
 
 2) in the beginning of your python script, **before you import QuSpin**,  set
+
 ::
 	import os
 	os.environ['OMP_NUM_THREADS'] = '4' # set number of OpenMP threads to run in parallel
@@ -72,14 +76,20 @@ For the supported sparse-matrix formats `csr`, `csc`, and `dia`, we have impleme
 To sum up, whenever one can prefer matrix-vector products in the code, using QuSpin's interface this will lead to the automatic use of multi-threading, when the OpenMP version is used. For instance, one commonly used function, which automatically benefits from multi-threading via the parallel matrix-vector product, is `hamiltonian.evolve()`. 
 
 At the same time, in some places automatic multithreading is not so obvious: for instance if one is trying to find the ground state of a particular `hamiltonian` object `H` one might do the following:
+
 ::
 	E,V = H.eigsh(time=t0,k=1,which="SA")
+
 The code just above will actually not use any multi-threading: this is because this code is actually equivilent to doing:
+
 ::
 	E,V = eigsh(H.tocsr(time=t0),k=1,which="SA")
+
 However, one can still beneft from the multi-threaded matrix-vector product by using the `H.aslinearoperator(time=t0)` method:
+
 ::
 	E,V = eigsh(H.aslinearoperator(time=t0),k=1,which="SA")
+
 Casting `H` as a `LinearOperator <https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.linalg.LinearOperator.html>`_ object enables the use of the methods `H.dot()` and `H.transpose().conj().dot()`. These methods will be used to do the eigenvalue calculation, which will then benefit from multi-threading (note that one cannot use `LinearOperator` by default when calling `H.eigsh()` since it limits the code functionality).
 
 .. Now one might ask: why not use the LinearOperator wrapper of the Hamiltonian class by default when calling `H.eigsh`? This works in many cases however there can be problems that will not work for LinearOperators. One example of this is solving for eigenvalues in the middle of the spectrum `eigsh`. We are not sure if this will ever be fixed in future versions on SciPy as it does not appear to be related to ARPACK (used by `eigsh`), but the convergence of some other algorithm which is called during the process for inverting the LinearOperator. This is evident by to the traceback:
@@ -105,8 +115,8 @@ Additionally, we have also added an implementation of `inplace_Op` which is used
 
 Note that the `*_basis_1d` classes do **not** support OpenMP. 
 
-2. Multi-threading via MKL and NumPy/SciPy in QuSpin:
------------------------------------------------------
+2. Multi-threading via MKL and NumPy/SciPy Functions in QuSpin:
+---------------------------------------------------------------
 
 Depending on the version of NumPy you have installed, you may also be able to access some additional multi-threading to speed up diagonalization, e.g. using `eigh()`, `eigvalsh()`, or `svd()` operations during calculations of eigenvalues/vectors or entanglement entropy. 
 To do this, the default version of NumPy installed with Anaconda must be linked against Intel's Math Kernel Library (MKL) which implemented very efficient multi-threaded variations of LAPACK functions. If you use Anaconda 2.5 or later, MKL is the default numpy version. To turn on the multi-threading, simply use the MKL environment variables. For more info visit this `MKL website <https://software.intel.com/en-us/mkl-linux-developer-guide-intel-mkl-specific-environment-variables-for-openmp-threading-control>`_.
@@ -114,6 +124,7 @@ To do this, the default version of NumPy installed with Anaconda must be linked 
 There are two ways to set up the MKL environment variable:
 
 1) in the terminal/Anaconda prompt, set
+
 ::
 	$ export MKL_NUM_THREADS = 4
 	$ echo $MKL_NUM_THREADS
@@ -121,6 +132,7 @@ There are two ways to set up the MKL environment variable:
 Make sure you run your script from that terminal window. If you run your code from a different terminal window, you have to set this variable again.
 
 2) in the beginning of your python script, **before you import NumPy or SciPy** set
+
 ::
 	import os
 	os.environ['MKL_NUM_THREADS'] = '4' # set number of MKL threads to run in parallel
@@ -130,5 +142,11 @@ This allows to change the MKL variable dynamically from your python script.
 Another useful python package for changing the number of cores MKL is using at runtime is `mkl-service <https://docs.anaconda.com/mkl-service/>`_. For more information about MKL-accelerated versions of NumPy, check out this `website <https://docs.anaconda.com/mkl-optimizations/>`_.
 
 
+There is the possibility for an extra speedup for people who use Anaconda installs with a `numpy` build that uses the Intel MKL library. If they have an **AMD CPU**, MKL will not enable any SIMD instructions for it leading to about 1/4 the speed the chip is capable of for linear algebra. However, an environment variable can be set to force SIMD instructions to be used anyway.
 
+::
+	import os
+	os.environ['MKL_DEBUG_CPU_TYPE'] = '5' # AVX2 instructions; good for any Ryzen-era CPU and probably some earlier ones.
+	os.environ['MKL_DEBUG_CPU_TYPE'] = '4' # AVX instructions; good for any reasonably recent AMD CPU.
 
+**Intel CPU** users don’t have to worry about this, nor does anyone who is using a `numpy` built on top of `OpenBLAS` or `BLIS`.

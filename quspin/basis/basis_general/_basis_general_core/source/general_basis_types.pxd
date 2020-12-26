@@ -76,6 +76,12 @@ ctypedef fused norm_type:
     uint32_t
     uint64_t
 
+ctypedef fused norm_type_2:
+    uint8_t
+    uint16_t
+    uint32_t
+    uint64_t
+
 ctypedef fused shift_type:
     uint8_t
     uint16_t

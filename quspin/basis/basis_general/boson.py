@@ -5,50 +5,49 @@ import numpy as _np
 from scipy.special import comb
 
 def H_dim(Np,N,m_max):
-    """
-    Returns the total number of states in the bosonic Hilbert space
+	"""
+	Returns the total number of states in the bosonic Hilbert space.
 
-    --- arguments:
+	Parameters
+	----------
+	Np: int
+		total number of bosons in lattice.
+	N: int 
+		total number of sites.
+	m_max+1: int
+		maximum number of states per site. 
+	
+	"""
+	Ns = 0
+	for r in range(Np//(m_max+1)+1):
+		r_2 = Np - r*(m_max+1)
+		if r % 2 == 0:
+			Ns +=  comb(N,r,exact=True) * comb(N + r_2 - 1,r_2,exact=True)
+		else:
+			Ns += -comb(N,r,exact=True) * comb(N + r_2 - 1,r_2,exact=True)
 
-    Np: total number of bosons in lattice
-    N: total number of sites
-    m_max+1: max number of states per site 
-    """
-    Ns = 0
-    for r in range(Np//(m_max+1)+1):
-        r_2 = Np - r*(m_max+1)
-        if r % 2 == 0:
-            Ns +=  comb(N,r,exact=True) * comb(N + r_2 - 1,r_2,exact=True)
-        else:
-            Ns += -comb(N,r,exact=True) * comb(N + r_2 - 1,r_2,exact=True)
-
-    return Ns
+	return Ns
 
 # general basis for hardcore bosons/spin-1/2
 class boson_basis_general(hcb_basis_general,basis_general):
 	"""Constructs basis for boson operators for USER-DEFINED symmetries.
 
-	Any unitary symmetry transformation :math:`Q` of periodicity :math:`m_Q` (:math:`Q^{m_Q}=1`) has
-	eigenvalues :math:`\\exp(-2\\pi i q/m_Q)`, labelled by an ingeter :math:`q\\in\\{0,1,\\dots,m_Q-1\\}`.
-	These integers :math:`q` are used to define the symmetry blocks.
+	Any unitary symmetry transformation :math:`Q` of periodicity :math:`m_Q` (:math:`Q^{m_Q}=1`) has eigenvalues :math:`\\exp(-2\\pi i q/m_Q)`, labelled by an ingeter :math:`q\\in\\{0,1,\\dots,m_Q-1\\}`. These integers :math:`q` are used to define the symmetry blocks.
 
-	For instance, if :math:`Q=P` is parity (reflection), then :math:`q=0,1`. If :math:`Q=T` is translation by one lattice site,
-	then :math:`q` labels the mometum blocks in the same fashion as for the `..._basis_1d` classes. 
+	For instance, if :math:`Q=P` is parity (reflection), then :math:`q=0,1`. If :math:`Q=T` is translation by one lattice site, then :math:`q` labels the mometum blocks in the same fashion as for the `..._basis_1d` classes. 
 
-	User-defined symmetries with the `boson_basis_general` class can be programmed as follows. Suppose we have a system of
-	L sites, enumerated :math:`s=(s_0,s_1,\\dots,s_{L-1})`. There are two types of operations one can perform on the sites:
+	User-defined symmetries with the `boson_basis_general` class can be programmed as follows. Suppose we have a system of L sites, enumerated :math:`s=(s_0,s_1,\\dots,s_{L-1})`. There are two types of operations one can perform on the sites:
 		* exchange the labels of two sites: :math:`s_i \\leftrightarrow s_j` (e.g., translation, parity)
 		* invert the population on a given site: :math:`s_i\\leftrightarrow -(s_j+1)` (e.g., particle-hole symmetry, hardcore bosons only)
 
-	These two operations already comprise a variety of symmetries, including translation, parity (reflection) and 
-	spin inversion. For a specific example, see below.
+	These two operations already comprise a variety of symmetries, including translation, parity (reflection) and spin inversion. For a specific example, see below.
 
 	The supported operator strings for `boson_basis_general` are:
 
 	.. math::
 		\\begin{array}{cccc}
-			\\texttt{basis}/\\texttt{opstr}   &   \\texttt{"I"}   &   \\texttt{"+"}   &   \\texttt{"-"}  &   \\texttt{"n"}   &   \\texttt{"z"}     \\newline	
-			\\texttt{boson_basis_general}&   \\hat{1}        &   \\hat b^\\dagger      &       \\hat b          & \\hat b^\\dagger b     &  \\hat b^\\dagger\\hat b - \\frac{\\mathrm{sps}-1}{2}  \\newline
+			\\texttt{basis}/\\texttt{opstr}   &   \\texttt{"I"}   &   \\texttt{"+"}   &   \\texttt{"-"}  &   \\texttt{"n"}   &   \\texttt{"z"}	 \\newline	
+			\\texttt{boson_basis_general}&   \\hat{1}		&   \\hat b^\\dagger	  &	   \\hat b		  & \\hat b^\\dagger b	 &  \\hat b^\\dagger\\hat b - \\frac{\\mathrm{sps}-1}{2}  \\newline
 		\\end{array}
 
 	Notes
@@ -67,7 +66,7 @@ class boson_basis_general(hcb_basis_general,basis_general):
 	The code snippet below shows how to construct the two-dimensional Bose-Hubbard model.
 	
 	.. math::
-		H = -J \\sum_{\\langle ij\\rangle} b^\dagger_i b_j + \\mathrm{h.c.} - \\mu\\sum_j n_j + \\frac{U}{2}\\sum_j n_j(n_j-1)
+		H = -J \\sum_{\\langle ij\\rangle} b^\\dagger_i b_j + \\mathrm{h.c.} - \\mu\\sum_j n_j + \\frac{U}{2}\\sum_j n_j(n_j-1)
 
 	Moreover, it demonstrates how to pass user-defined symmetries to the `boson_basis_general` constructor. In particular,
 	we do translation invariance and parity (reflection) (along each lattice direction).
@@ -83,7 +82,7 @@ class boson_basis_general(hcb_basis_general,basis_general):
 		"""Intializes the `boson_basis_general` object (basis for bosonic operators).
 
 		Parameters
-		-----------
+		----------
 		N: int
 			Number of sites.
 		Nb: {int,list}, optional

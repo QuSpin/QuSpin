@@ -1,3 +1,5 @@
+:orphan:
+
 .. _example00-label:
 
 BHM

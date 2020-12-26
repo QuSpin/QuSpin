@@ -14,7 +14,7 @@ Check out these papers for a detailed tutorial:
     * `SciPost Phys. 2, 003 (2017) <https://scipost.org/SciPostPhys.2.1.003>`_.
     * `SciPost Phys. 7, 020 (2019) <https://scipost.org/SciPostPhys.7.2.020>`_.
 
-The source code is available on `Github <https://github.com/weinbe58/QuSpin/tree/master>`_; report any bugs `here <https://github.com/weinbe58/QuSpin/issues>`_. Suggestions for improvement and user contributions and are welcome!
+The source code is available on `Github <https://github.com/weinbe58/QuSpin/tree/master>`_; **report any bugs** `here <https://github.com/weinbe58/QuSpin/issues>`_. Suggestions for improvement and user contributions are welcome!
 
 
 New Features

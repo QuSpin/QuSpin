@@ -1,4 +1,7 @@
+:orphan:
+
 .. _example21-label:
+
 
 Lanczos module: finite-temperature calculations
 -----------------------------------------------

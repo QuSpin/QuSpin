@@ -1,4 +1,7 @@
+:orphan:
+
 .. _example20-label:
+
 
 Lanczos module: time-evolution and ground state search
 ------------------------------------------------------
