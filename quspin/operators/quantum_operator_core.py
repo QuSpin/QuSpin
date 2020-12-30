@@ -326,8 +326,8 @@ class quantum_operator(object):
 
 	@property
 	def is_dense(self):
-		"""bool: `True` if the quantum_operator contains a dense matrix as a componnent of either 
-		the static or dynamic lists.
+		"""bool: `True` if `quantum_operator` contains a dense matrix as a componnent of either 
+		the static or dynamic list.
 
 		"""
 		return self._is_dense
@@ -339,12 +339,12 @@ class quantum_operator(object):
 
 	@property
 	def T(self):
-		""":obj:`quantum_operator`: transposes the operator matrix: :math:`H_{ij}\\mapsto H_{ji}`."""
+		""":obj:`quantum_operator`: transposes the operator matrix, :math:`H_{ij}\\mapsto H_{ji}`."""
 		return self.transpose()
 
 	@property
 	def H(self):
-		""":obj:`quantum_operator`: transposes and conjugates the operator matrix: :math:`H_{ij}\\mapsto H_{ji}^*`."""
+		""":obj:`quantum_operator`: transposes and conjugates the operator matrix, :math:`H_{ij}\\mapsto H_{ji}^*`."""
 		return self.getH()
 
 
@@ -585,7 +585,7 @@ class quantum_operator(object):
 		---------
 		>>> H_fluct = H.quant_fluct(V,time=0,diagonal=False,check=True)
 
-		corresponds to :math:`\\Delta H = \\sqrt{ \\langle V|H^2(t=\\texttt{time})|V\\rangle - \\langle V|H(t=\\texttt{time})|V\\rangle^2 }`. 
+		corresponds to :math:`\\left(\\Delta H\\right)^2 = \\langle V|H^2(t=\\texttt{time})|V\\rangle - \\langle V|H(t=\\texttt{time})|V\\rangle^2`. 
 			 
 		"""
 
