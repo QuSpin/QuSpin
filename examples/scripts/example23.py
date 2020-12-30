@@ -19,9 +19,9 @@ from numba import uint32,int32,float64,complex128 # numba data types
 import numpy as np
 from scipy.special import comb
 #
-N=1 # lattice sites
-sps=3 # states per site
-Np=N # N//2 # total number of bosons
+N=2 # lattice sites
+sps=3 # states per site: 3 for a spin-1 system
+Np=N//2 # total number of spin-1/s
 #
 ############   create boson user basis object   #############
 #
@@ -253,33 +253,34 @@ count_particles_args=np.array([N,sps],dtype=np.int32)
 #
 ######  construct user_basis
 # define maps dict
-maps = dict(T_block=(translation,N,0,T_args),P_block=(parity,2,0,P_args),Z_block=(inversion,2,0,Z_args), )
+maps = dict(T_block=(translation,N,0,T_args),P_block=(parity,2,0,P_args), ) #Z_block=(inversion,2,0,Z_args), )
 # define particle conservation and op dicts
 pcon_dict = dict(Np=Np,next_state=next_state,next_state_args=next_state_args,
 				 get_Ns_pcon=get_Ns_pcon,get_s0_pcon=get_s0_pcon,
 				 count_particles=count_particles,count_particles_args=count_particles_args,n_sectors=n_sectors)
 op_dict = dict(op=op,op_args=op_args)
 # create user basiss
-basis = user_basis(np.uint32,N,op_dict,allowed_ops=set("+-zI12345678"),sps=sps,) # **maps) #,pcon_dict=pcon_dict
+basis = user_basis(np.uint32,N,op_dict,allowed_ops=set("+-zI12345678"),  sps=sps, **maps, ) # pcon_dict=pcon_dict)
 #
 print(basis)
 #
-############   create Hamiltonians   #############
+############   create Hamiltonian   #############
 #
 J=-1.0
-U=+1.0
+U=+np.sqrt(2.0)
+h=np.sqrt(7.0)
 #
-hopping=[[+J,j,(j+1)%N] for j in range(N)]
-int_bb=[[0.5*U,j,j] for j in range(N)]
-int_b=[[-0.5*U,j] for j in range(N)]
-ones=[[1.0,j] for j in range(N)]
+nn_int=[[+J,j,(j+1)%N] for j in range(N)]
+onsite_int=[[U,j,j] for j in range(N)]
+onsite_field=[[h,j] for j in range(N)]
 #
-static=[['1',ones],] #[["+-",hopping],["-+",hopping],["nn",int_bb],["n",int_b]]
+static=[["11",nn_int], ["22",nn_int], ["88",onsite_int],["5",onsite_field], ]
 dynamic=[]
 #
 no_checks=dict(check_symm=False, check_pcon=False, check_herm=False)
 H=hamiltonian(static,[],basis=basis,dtype=np.complex128,**no_checks)
 #
-print(H.toarray())
+np.set_printoptions(precision=2)
+print(H.toarray() )
 
 

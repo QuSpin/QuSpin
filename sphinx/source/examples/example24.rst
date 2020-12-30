@@ -12,7 +12,7 @@ Consider first a single fermion described by the creation and annihilation opera
 .. math::
 	c^x = c + c^\dagger,\qquad c^y = -i(c - c^\dagger),
 
-which obey the fermion commutation relations :math:`\{c^x, c_y\}=0`, :math:`\left(c^\alpha\right)^2 = 1`, for :math:`\alpha=x,y`.
+which obey the fermion commutation relations :math:`\{c^x, c^y\}=0`, :math:`\left(c^\alpha\right)^2 = 1`, for :math:`\alpha=x,y`.
 
 The inverse transformation is given by
 
