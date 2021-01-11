@@ -160,8 +160,7 @@ This allows to change the MKL variable dynamically from your python script.
 Another useful python package for changing the number of cores MKL is using at runtime is `mkl-service <https://docs.anaconda.com/mkl-service/>`_. For more information about MKL-accelerated versions of NumPy, check out this `website <https://docs.anaconda.com/mkl-optimizations/>`_.
 
 
-There is the possibility for an extra speedup for people who use Anaconda installs with a `numpy` build that uses the Intel MKL library. If they have an **AMD CPU**, MKL will not enable any SIMD instructions for it leading to about 1/4 the speed the chip is capable of for linear algebra. However, an environment variable can be set to force SIMD instructions to be used anyway (**Intel CPU** users don’t have to worry about this, nor does anyone who is using a `numpy` built on top of `OpenBLAS` or `BLIS`.
-).
+There is the possibility for an extra speedup for people who use Anaconda installs with a `numpy` build that uses the Intel MKL library. If they have an **AMD CPU**, MKL will not enable any SIMD instructions for it leading to about 1/4 the speed the chip is capable of for linear algebra. However, an environment variable can be set to force SIMD instructions to be used anyway (**Intel CPU** users don’t have to worry about this, nor does anyone who is using a `numpy` built on top of `OpenBLAS` or `BLIS`).
 
 ::
 
