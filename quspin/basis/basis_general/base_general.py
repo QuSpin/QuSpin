@@ -267,8 +267,7 @@ class basis_general(lattice_basis):
 		row = _np.empty(self._Ns,dtype=self._index_type)
 		ME = _np.empty(self._Ns,dtype=dtype)
 		# print(self._Ns)
-		N_me = self._core.op(row,col,ME,opstr,indx,J,self._basis,self._n,
-			self._basis_begin,self._basis_end,self._N_p)
+		self._core.op(row,col,ME,opstr,indx,J,self._basis,self._n,self._basis_begin,self._basis_end,self._N_p)
 
 		if _np.iscomplexobj(ME):
 			if ME.dtype == _np.complex64:
