@@ -1,5 +1,4 @@
 import numpy as _np
-from scipy.linalg.blas import get_blas_funcs
 from scipy.linalg import eigh_tridiagonal
 from copy import deepcopy
 from numba import njit
