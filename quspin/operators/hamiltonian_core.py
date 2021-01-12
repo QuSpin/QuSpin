@@ -2294,6 +2294,7 @@ class hamiltonian(object):
 		return self.__sub__(other).__neg__()
 
 	def __isub__(self,other): # self -= other
+
 		if ishamiltonian(other):
 			self._mat_checks(other)
 			return self._isub_hamiltonian(other)
@@ -2315,7 +2316,7 @@ class hamiltonian(object):
 		else:
 			other = _np.asanyarray(other)
 			self._mat_checks(other)	
-			return self._sub_dense(other)
+			return self._isub_dense(other)
 
 	##########################################################################################	
 	##########################################################################################
@@ -2858,14 +2859,13 @@ class hamiltonian(object):
 			self._is_dense = True
 			warnings.warn("Mixing dense objects will cast internal matrices to dense.",HamiltonianEfficiencyWarning,stacklevel=3)
 
-
 		try:
 			self._static -= other
 		except:
 			self._static = self._static - other
 
-		if _check_almost_zero(new._static):
-			new._static = _sp.dia_matrix(new._shape,dtype=new._dtype)
+		if _check_almost_zero(self._static):
+			self._static = _sp.dia_matrix(self._shape,dtype=self._dtype)
 
 		self.check_is_dense()
 		self._get_matvecs()

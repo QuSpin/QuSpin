@@ -1,10 +1,18 @@
 import numpy as _np
-from scipy.linalg.blas import get_blas_funcs
 from scipy.linalg import eigh_tridiagonal
 from copy import deepcopy
-
+from numba import njit
 
 __all__ = ["lanczos_full","lanczos_iter","lin_comb_Q_T"]
+
+
+
+@njit
+def _axpy(x,y,a):
+	for i in range(x.size):
+		y[i] += a * x[i]
+
+
 
 
 def _lanczos_vec_iter_core(A,v0,a,b):
@@ -19,11 +27,10 @@ def _lanczos_vec_iter_core(A,v0,a,b):
 	q_view = q[:]
 	q_view.setflags(write=0,uic=0)
 
-	yield q_view # return non-writable array
+
 
 	m = a.size
 	n = q.size
-	axpy = get_blas_funcs('axpy', arrays=(q,))
 
 	v = _np.zeros_like(v0,dtype=dtype)
 	r = _np.zeros_like(v0,dtype=dtype)
@@ -35,22 +42,24 @@ def _lanczos_vec_iter_core(A,v0,a,b):
 		r[:] = A.dot(q)
 		use_out = False
 
-	axpy(q,r,n,-a[0])
+	_axpy(q,r,-a[0])
+
+	yield q_view # return non-writable array
 
 	for i in range(1,m,1):
 		v[:] = q[:]
 
 		_np.divide(r,b[i-1],out=q)
 
-		yield q_view # return non-writable array
-
 		if use_out:
 			A.dot(q,out=r)
 		else:
 			r[:] = A.dot(q)
 
-		axpy(v,r,n,-b[i-1])
-		axpy(q,r,n,-a[i])
+		_axpy(v,r,-b[i-1])
+		_axpy(q,r,-a[i])
+
+		yield q_view # return non-writable array
 
 
 class _lanczos_vec_iter(object):
@@ -63,7 +72,11 @@ class _lanczos_vec_iter(object):
 	def __iter__(self):
 		return _lanczos_vec_iter_core(self._A,self._v0,self._a,self._b)
 
-
+	def __del__(self):
+		del self._A
+		del self._v0
+		del self._b
+		del self._a
 
 def lanczos_full(A,v0,m,full_ortho=False,out=None,eps=None):
 	""" Creates Lanczos basis; diagonalizes Krylov subspace in Lanczos basis.
@@ -147,8 +160,6 @@ def lanczos_full(A,v0,m,full_ortho=False,out=None,eps=None):
 	b = _np.zeros((m,),dtype=v.real.dtype)
 	a = _np.zeros((m,),dtype=v.real.dtype)
 
-	# get function : y <- y + a * x
-	axpy = get_blas_funcs('axpy', arrays=(r, v))
 
 	if eps is None:
 		eps = _np.finfo(dtype).eps
@@ -167,7 +178,7 @@ def lanczos_full(A,v0,m,full_ortho=False,out=None,eps=None):
 
 	a[0] = _np.vdot(Q[0,:],r).real
 
-	axpy(Q[0,:],r,n,-a[0])
+	_axpy(Q[0,:],r,-a[0])
 	b[0] = _np.linalg.norm(r)
 
 	i = 0
@@ -181,10 +192,10 @@ def lanczos_full(A,v0,m,full_ortho=False,out=None,eps=None):
 		else:
 			r[:] = A.dot(Q[i,:])
 
-		axpy(v,r,n,-b[i-1])
+		_axpy(v,r,-b[i-1])
 
 		a[i] = _np.vdot(Q[i,:],r).real
-		axpy(Q[i,:],r,n,-a[i])
+		_axpy(Q[i,:],r,-a[i])
 
 		b[i] = _np.linalg.norm(r)
 		if b[i] < eps:
@@ -193,9 +204,9 @@ def lanczos_full(A,v0,m,full_ortho=False,out=None,eps=None):
 
 
 	if full_ortho:
-		q,_ = _np.linalg.qr(Q[:m+1].T)
+		q,_ = _np.linalg.qr(Q[:m].T)
 
-		Q[:m+1,:] = q.T[...]
+		Q[:m,:] = q.T[...]
 
 		h = _np.zeros((m,m),dtype=a.dtype)
 
@@ -292,9 +303,6 @@ def lanczos_iter(A,v0,m,return_vec_iter=True,copy_v0=True,copy_A=False,eps=None)
 	b = _np.zeros((m,),dtype=q.real.dtype)
 	a = _np.zeros((m,),dtype=q.real.dtype)
 
-	# get function : y <- y + a * x
-	axpy = get_blas_funcs('axpy', arrays=(q, v))
-
 	if eps is None:
 		eps = _np.finfo(dtype).eps
 
@@ -311,7 +319,7 @@ def lanczos_iter(A,v0,m,return_vec_iter=True,copy_v0=True,copy_A=False,eps=None)
 		use_out = False
 
 	a[0] = _np.vdot(q,r).real
-	axpy(q,r,n,-a[0])
+	_axpy(q,r,-a[0])
 	b[0] = _np.linalg.norm(r)
 
 	i = 0
@@ -325,22 +333,19 @@ def lanczos_iter(A,v0,m,return_vec_iter=True,copy_v0=True,copy_A=False,eps=None)
 		else:
 			r[:] = A.dot(q)
 
-		axpy(v,r,n,-b[i-1])
+		_axpy(v,r,-b[i-1])
 		a[i] = _np.vdot(q,r).real
-		axpy(q,r,n,-a[i])
+		_axpy(q,r,-a[i])
 
 		b[i] = _np.linalg.norm(r)
 		if b[i] < eps:
+			m = i
 			break
 
-	a = a[:i+1].copy()
-	b = b[:i].copy()
-	del q,r,v
-
-	E,V = eigh_tridiagonal(a,b)
+	E,V = eigh_tridiagonal(a[:m],b[:m-1])
 
 	if return_vec_iter:
-		return E,V,_lanczos_vec_iter(A,v0,a.copy(),b.copy())
+		return E,V,_lanczos_vec_iter(A,v0,a[:m],b[:m-1])
 	else:
 		return E,V
 
@@ -407,13 +412,13 @@ def lin_comb_Q_T(coeff,Q_T,out=None):
 	else:
 		out = _np.zeros(q.shape,dtype=dtype)
 
-	# get function : y <- y + a * x
-	axpy = get_blas_funcs('axpy', arrays=(out,q))	
 	
 	n = q.size
 
 	_np.multiply(q,coeff[0],out=out)
 	for weight,q in zip(coeff[1:],Q_iter):
-		axpy(q,out,n,weight)
+		_axpy(q,out,weight)
+
+
 
 	return out
