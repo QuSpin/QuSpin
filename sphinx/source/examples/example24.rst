@@ -38,7 +38,7 @@ In the Majorana representation, the same Hamiltonian reads as
 .. math::
 	H = \sum_{j=0}^{L-1} \frac{iJ}{2}\left( c^x_j c^y_{j+1} - c^y_j c^x_{j+1} \right) + \frac{U}{4}\left(1 + 2ic^x_j c^y_j - c^x_j c^y_j c^x_{j+1} c^y_{j+1} \right).
 
-The script below uses the `user_basis` to define an enlarged fermion basis which allows to implement both Hamiltonians. We then compare the two matrices. Note that the `user_basis` readily allows one to apply symmetries to the Hamiltonian in the Majorana representation. 
+The script below uses the `user_basis` class to define an enlarged fermion basis which allows to implement both Hamiltonians. We then compare the two matrices. Note that the `user_basis` readily allows one to apply symmetries to the Hamiltonian in the Majorana representation. 
 
 
 Script
