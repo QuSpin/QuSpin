@@ -1,6 +1,6 @@
 
 
-:green:`QuSpin 0.3.5` (released on 2021.01.20)
+:green:`QuSpin 0.3.5` (released on 2021.02.01)
 ================================================
 
 
@@ -16,18 +16,27 @@ Complete list of the most recent features
 =========================================
 
 
-Added in v. 0.3.5 (2021.??.??)
+Added in v. 0.3.5 (2021.02.01)
 ------------------------------
 
 Improved Functionality
 ++++++++++++++++++++++
-* ...
+* adding python 3.8 support
+* adding quspin application to test the code on hpc clusters. 
+* added 2d array/batch support to `tools.evolution.expm_multiply_parallel`.
+* fixed bug with particle-hole symmetry in `*_fermion_basis_general`.
+* fixed bug with memory leakage in `tools.lanczos`.
+* fixed errors caused by dependencies. 
 
 
 New Attributes, Functions, Methods, Classes, and Examples
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+* :red:`deprecated` function `tools.misc.csr_matvec`.
+* added Majorana fermion operator strings to the `*_fermion_basis_general`.
+* added `int_to_state` and `state_to_int` functions to `spinful_basis_*` classes.
 * new example: Majorana fermion operators, cf. :ref:`example23-label`.
 * new example: Gell-Mann operators for spin-1 systems, cf. :ref:`example24-label`.
+* new example: Majorana SYK model, cf. :ref:`example25-label`.
 
 
 
@@ -37,8 +46,8 @@ Added in v. 0.3.4 (2020.04.17)
 Improved Functionality
 ++++++++++++++++++++++
 
-* :red:`discontinuing` python 2.7 support. Installing QuSpin for py27 will by defult result in version 0.3.3.
-* :red:`deprecating` function `basis.get_vec()`: use `basis.project_from()` instead.
+* :red:`discontinued` support for python 2.7 support. Installing QuSpin for py27 will by defult result in version 0.3.3.
+* :red:`deprecated` function `basis.get_vec()`: use `basis.project_from()` instead.
 * revised `user_basis` tutorial for spinless fermions and introduced function `_count_particles_32()`.
 * added optional arguments `svd_solver`, `svd_kwargs` to `basis.ent_entropy()`; allows to use some scipy svd solvers, which are typically more stable. 
 * `expm_multiply_parallel` now supports the option to give the operator an explicit dtype, see example :ref:`example22-label`.
