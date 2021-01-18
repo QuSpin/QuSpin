@@ -7,7 +7,7 @@ import sys
 
 
 
-quspin_ver = '"0.3.4"'
+quspin_ver = '"0.3.5"'
 build_num = '"0"'
 
 
@@ -113,7 +113,7 @@ numpy:{numpy_text:s}
 numpy_versions = ["1.17.2"]
 python_versions = ["3.6",
                    "3.7",
-                   # "3.8 # [not win]",
+                   "3.8 # [not win]",
                    ]
 
 # versions for python package lists
