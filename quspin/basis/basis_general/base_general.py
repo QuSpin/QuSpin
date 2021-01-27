@@ -863,7 +863,7 @@ class basis_general(lattice_basis):
 		ket_states : numpy.ndarray(int)
 			Ket states in integer representation. Must be of same data type as `basis`.
 		reduce_output: bool, optional
-			If set to `True`, the returned arrays have the same size as `ket_states`; If set to `False` zeros are purged.
+			If set to `False`, the returned arrays have the same size as `ket_states`; If set to `True` zeros are purged.
 
 		Returns
 		--------
@@ -905,7 +905,7 @@ class basis_general(lattice_basis):
 		ME = _np.zeros(ket_states.shape[0],dtype=dtype)
 
 		self._core.op_bra_ket(ket_states,bra,ME,opstr,indx,J,self._Np)
-		
+
 		if reduce_output: 
 			# remove nan's matrix elements
 			mask = _np.logical_not(_np.logical_or(_np.isnan(ME),_np.abs(ME)==0.0))
