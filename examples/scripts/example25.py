@@ -38,7 +38,7 @@ basis = spinless_fermion_basis_general(L,)
 #
 ##### create Hamiltonian #####
 #
-H_SYK = hamiltonian(static,[],basis=basis,dtype=np.float64) # cautian: matrix is NOT sparse (!)
+H_SYK = hamiltonian(static,[],basis=basis,dtype=np.float64) # caution: matrix is NOT sparse (!)
 #
 # compute entire spectrum
 E = H_SYK.eigvalsh()

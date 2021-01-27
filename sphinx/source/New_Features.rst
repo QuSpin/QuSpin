@@ -22,11 +22,14 @@ Added in v. 0.3.5 (2021.02.01)
 Improved Functionality
 ++++++++++++++++++++++
 * adding python 3.8 support
-* adding quspin application to test the code on hpc clusters. 
+* adding quspin application to test quspin on hpc clusters. 
 * added 2d array/batch support to `tools.evolution.expm_multiply_parallel`.
-* fixed bug with particle-hole symmetry in `*_fermion_basis_general`.
-* fixed bug with memory leakage in `tools.lanczos`.
-* fixed errors caused by dependencies. 
+* fixed errors caused by new releases of some of the dependencies. 
+* fixed bugs with: 
+	* particle-hole symmetry in `*_fermion_basis_general`;
+	* memory leakage in `tools.lanczos`;
+	* the `reduce_output` argument of `basis_general.Op_bra_ket()`. 
+
 
 
 New Attributes, Functions, Methods, Classes, and Examples
@@ -34,9 +37,10 @@ New Attributes, Functions, Methods, Classes, and Examples
 * :red:`deprecated` function `tools.misc.csr_matvec`.
 * added Majorana fermion operator strings to the `*_fermion_basis_general`.
 * added `int_to_state` and `state_to_int` functions to `spinful_basis_*` classes.
-* new example: Majorana fermion operators, cf. :ref:`example23-label`.
-* new example: Gell-Mann operators for spin-1 systems, cf. :ref:`example24-label`.
-* new example: Majorana SYK model, cf. :ref:`example25-label`.
+* new examples: 
+	Majorana fermion operators, cf. :ref:`example23-label`;
+	* Gell-Mann operators for spin-1 systems, cf. :ref:`example24-label`;
+	* Majorana SYK model, cf. :ref:`example25-label`.
 
 
 
