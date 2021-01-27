@@ -636,6 +636,9 @@ class hamiltonian(object):
 				raise ValueError("Expecting V.ndim < 4.")
 
 
+		if V.ndim == 3 and times.ndim==0:
+			times = _np.broadcast_to(times,(V.shape[-1],))
+
 		result_dtype = _np.result_type(V.dtype,self._dtype)
 		
 		if result_dtype not in supported_dtypes:
@@ -649,7 +652,7 @@ class hamiltonian(object):
 
 			if _sp.issparse(V):
 				V = V.tocsc()
-				return _sp.vstack([a*self.dot(V.get_col(i),time=t,check=check) for i,t in enumerate(time)])
+				return _sp.hstack([a*self.dot(V.getcol(i),time=t,check=check) for i,t in enumerate(time)])
 			else:
 				if V.ndim == 3 and V.shape[0] != V.shape[1]:
 					raise ValueError("Density matrices must be square!")
@@ -657,7 +660,7 @@ class hamiltonian(object):
 				# allocate C-contiguous array to output results in.
 				out = _np.zeros(V.shape[-1:]+V.shape[:-1],dtype=result_dtype)
 				
-				for i,t in enumerate(time):
+				for i,t in enumerate(times):
 					v = _np.ascontiguousarray(V[...,i],dtype=result_dtype)
 					self._static_matvec(self._static,v,overwrite_out=True,out=out[i,...],a=a)
 					for func,Hd in iteritems(self._dynamic):
@@ -695,6 +698,7 @@ class hamiltonian(object):
 					self._dynamic_matvec[func](Hd,V,overwrite_out=False,a=a*func(time),out=out)
 
 			elif _sp.issparse(V):
+
 				if out is not None:
 					raise TypeError("'out' option does not apply for sparse inputs.")
 
@@ -817,9 +821,6 @@ class hamiltonian(object):
 
 		from .exp_op_core import isexp_op
 
-		if self.Ns <= 0:
-			return _np.asarray([])
-
 		if ishamiltonian(V):
 			raise TypeError("Can't take expectation value of hamiltonian")
 
@@ -827,11 +828,11 @@ class hamiltonian(object):
 			raise TypeError("Can't take expectation value of exp_op")
 
 		# fluctuations =  expctH2 - expctH^2
-		kwargs = dict(time=time,enforce_pure=enforce_pure)
+		kwargs = dict(enforce_pure=enforce_pure)
 		V_dot=self.dot(V,time=time,check=check)
 		expt_value_sq = self._expt_value_core(V,V_dot,**kwargs)**2
 
-		if len(V.shape) > 1 and V.shape[0] != V.shape[1] or enforce_pure:
+		if V_dot.ndim > 1 and V_dot.shape[0] != V_dot.shape[1] or enforce_pure:
 			sq_expt_value = self._expt_value_core(V_dot,V_dot,**kwargs)
 		else:
 			V_dot=self.dot(V_dot,time=time,check=check)
@@ -877,9 +878,6 @@ class hamiltonian(object):
 		"""
 		from .exp_op_core import isexp_op
 
-		if self.Ns <= 0:
-			return _np.asarray([])
-
 		if ishamiltonian(V):
 			raise TypeError("Can't take expectation value of hamiltonian")
 
@@ -888,34 +886,23 @@ class hamiltonian(object):
 
 		
 		V_dot = self.dot(V,time=time,check=check)
-		return self._expt_value_core(V,V_dot,time=time,enforce_pure=enforce_pure)
+		return self._expt_value_core(V,V_dot,enforce_pure=enforce_pure)
 
-	def _expt_value_core(self,V_left,V_right,time=0,enforce_pure=False):
-		if _np.array(time).ndim > 0: # multiple time point expectation values
-			if _sp.issparse(V_right): # multiple pure states multiple time points
-				return (V_left.H.dot(V_right)).diagonal()
-			else:
-				V_left = _np.asarray(V_left)
-				if V_left.ndim == 2: # multiple pure states multiple time points
-					return _np.einsum("ij,ij->j",V_left.conj(),V_right)
-				elif V_left.ndim == 3: # multiple mixed states multiple time points
-					return _np.einsum("iij->j",V_right)
-
+	def _expt_value_core(self,V_left,V_right,enforce_pure=False):
+		if _sp.issparse(V_right):
+			if V_left.shape[0] != V_left.shape[1] or enforce_pure: # pure states
+				return _np.asarray((V_right.multiply(V_left.conj())).sum(axis=0)).squeeze()
+			else: # density matrix
+				return V_right.diagonal().sum()
 		else:
+			V_right = _np.asarray(V_right)
+			if V_right.ndim==1: # single pure state
+				return _np.vdot(V_left,V_right)
+			elif (V_right.shape[0] != V_right.shape[1] or enforce_pure): # multiple pure states
+				return _np.einsum("ij,ij->j",V_left.conj(),V_right)
+			else: # density matrices
+				return _np.einsum("ii...->...",V_right)
 
-			if _sp.issparse(V_right):
-				if V_left.shape[0] != V_left.shape[1] or enforce_pure: # pure states
-					return _np.asscalar((V_left.H.dot(V_right)).toarray())
-				else: # density matrix
-					return V_right.diagonal().sum()
-			else:
-				V_right = _np.asarray(V_right).squeeze()
-				if V_right.ndim == 1: # pure state
-					return _np.vdot(V_left,V_right)
-				elif V_left.shape[0] != V_left.shape[1] or enforce_pure: # multiple pure states
-					return _np.einsum("ij,ij->j",V_left.conj(),V_right)
-				else: # density matrix
-					return V_right.trace()
 		
 	def matrix_ele(self,Vl,Vr,time=0,diagonal=False,check=True):
 		"""Calculates matrix element of `hamiltonian` operator at time `time` in states `Vl` and `Vr`.
@@ -977,11 +964,17 @@ class hamiltonian(object):
 			if Vr.ndim > 2:
 				raise ValueError('Expecting Vr to have ndim < 3')
 
+
 		if _sp.issparse(Vl):
 			if diagonal:
-				return Vl.H.dot(Vr).diagonal()
+				return _np.asarray(Vl.conj().multiply(Vr).sum(axis=0)).squeeze()
 			else:
 				return Vl.H.dot(Vr)
+		elif _sp.issparse(Vr):
+			if diagonal:
+				return _np.asarray(Vr.multiply(Vl.conj()).sum(axis=0)).squeeze()
+			else:
+				return Vr.T.dot(Vl.conj())
 		else:
 			if diagonal:
 				return _np.einsum("ij,ij->j",Vl.conj(),Vr)

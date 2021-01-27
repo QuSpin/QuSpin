@@ -168,11 +168,11 @@ which can't be easily turned into a buffer.
 
 
 cdef state_type python_to_basis_int(object python_val, state_type val):
-    cdef int i = 0
+    cdef size_t i = 0
     val = <state_type>(0)
 
     while(python_val!=0):
-        val = val ^ ((<state_type>(<int>(python_val&1))) << i)
+        val = val ^ ((<state_type>(<int>(python_val & <size_t>(1)))) << i)
         i += 1
         python_val = python_val >> 1
 
