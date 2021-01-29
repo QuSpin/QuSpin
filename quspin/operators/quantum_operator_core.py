@@ -325,6 +325,11 @@ class quantum_operator(object):
 		return self._shape
 
 	@property
+	def shape(self):
+		return self._shape
+	
+
+	@property
 	def is_dense(self):
 		"""bool: `True` if `quantum_operator` contains a dense matrix as a componnent of either 
 		the static or dynamic list.

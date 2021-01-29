@@ -484,6 +484,15 @@ class hamiltonian(object):
 		return self._Ns
 
 	@property
+	def shape(self):
+		return self._shape
+	
+	@property
+	def ndim(self):
+		return len(self._shape)
+	
+
+	@property
 	def get_shape(self):
 		"""tuple: shape of the `hamiltonian` object, always equal to `(Ns,Ns)`."""
 		return self._shape
@@ -2963,16 +2972,26 @@ class hamiltonian(object):
 		out = kwargs.get("out")
 
 		if out is not None:
-			raise ValueError("quspin hamiltonian class does not support 'out' for numpy.multiply or numpy.dot.")
+			raise ValueError("quspin hamiltonian class does not support 'out' for numpy.multiply, numpy.dot, or numpy.matmul.")
 
 
-		if (func ==_np.dot) or (func ==_np.multiply):
+		if (func ==_np.dot) or (func ==_np.multiply) or (func ==_np.matmul):
 			if pos == 0:
 				return self.__mul__(inputs[1])
 			if pos == 1:
 				return self.__rmul__(inputs[0])
-			else:
-				return NotImplemented
+		elif (func ==_np.subtract):
+			if pos == 0:
+				return self.__sub__(inputs[1])
+			if pos == 1:
+				return self.__rsub__(inputs[0])
+		elif (func ==_np.add):
+			if pos == 0:
+				return self.__add__(inputs[1])
+			if pos == 1:
+				return self.__radd__(inputs[0])
+
+		return NotImplemented
 
 	def __array_ufunc__(self, func, method, *inputs, **kwargs):
 		# """Method for compatibility with NumPy >= 1.13 ufuncs and dot
@@ -2989,8 +3008,19 @@ class hamiltonian(object):
 				return inputs[0].__mul__(inputs[1])
 			elif ishamiltonian(inputs[1]):
 				return inputs[1].__rmul__(inputs[0])
+		elif (func == _np.subtract):
+			if ishamiltonian(inputs[0]):
+				return inputs[0].__sub__(inputs[1])
+			elif ishamiltonian(inputs[1]):
+				return inputs[1].__rsub__(inputs[0])			
+		elif (func == _np.add):
+			if ishamiltonian(inputs[0]):
+				return inputs[0].__add__(inputs[1])
+			elif ishamiltonian(inputs[1]):
+				return inputs[1].__radd__(inputs[0])		
 
 
+		return NotImplemented
 
 def ishamiltonian(obj):
 	"""Checks if instance is object of `hamiltonian` class.
