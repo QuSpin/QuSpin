@@ -14,12 +14,14 @@ This example shows how to code up the time-dependent disordered spin Hamiltonian
 
 Details about the code below can be found in `SciPost Phys. 2, 003 (2017) <https://scipost.org/10.21468/SciPostPhys.2.1.003>`_.
 
+UPDATE: The original version of this example has been deprecated as it is not compatible woth python >= 3. Below we have implemented a new version of the example that uses more up-to-date features of QuSpin. We leave a link down below to download the original version but going forward.
 
 Script
 ------
 
-:download:`download script <../../../examples/scripts/example1.py>`
+:download:`download original script <../../../examples/scripts/example1_original.py>`
 
+:download:`download script <../../../examples/scripts/example1.py>`
 
 .. literalinclude:: ../../../examples/scripts/example1.py
 	:linenos:
