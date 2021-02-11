@@ -43,6 +43,7 @@ New Attributes, Functions, Methods, Classes, and Examples
 	* Gell-Mann operators for spin-1 systems, cf. :ref:`example24-label`;
 	* Majorana SYK model, cf. :ref:`example25-label`.
 	* Calculation of spectral functions using symmetries, cf. :ref:`example26-label`.
+	* Tutorial on using QuSpin `basis` objects, cf. :ref:`example_00-label`.
 
 
 

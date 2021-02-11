@@ -3,14 +3,16 @@
 .. _example_00-label:
 
 
-Working with QuSpin `basis` objects
+Basics of QuSpin `basis` objects
 -----------------------------------
 
 This tutorial shows how to define and interpret `basis` objects.  
 
 In particular, we discuss how to define and read off physical states from the basis in the presence and absence of symmetries.  
 
-**Note:** we urge the users to work with the `basis_general` objects, since they have enhanced functionality; However, occasionally it might be more convenient to work with the `basis_1d` objects where creating the basis might be a little bit faster.
+**Notes:** 
+	* we advise the users whenever possible to work with the `basis_general` objects, since they have enhanced functionality; However, occasionally it might be more convenient to work with the `basis_1d` objects where creating the basis might be a little bit faster.
+	* the `general_basis` objects have a much more pronounced functionality, including some useful methods like `ent_entropy()`, `partial_trace()`, `Op_bra_ket()`, `Op_shift_sector()`, `get_amp()`, `representative()`, `normalization()`, etc., see documentation.
 
 
 Script
