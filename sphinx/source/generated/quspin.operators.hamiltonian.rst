@@ -1,4 +1,4 @@
-quspin.operators.hamiltonian
+﻿quspin.operators.hamiltonian
 ============================
 
 .. currentmodule:: quspin.operators
@@ -61,6 +61,7 @@ quspin.operators.hamiltonian
       ~hamiltonian.is_dense
       ~hamiltonian.nbytes
       ~hamiltonian.ndim
+      ~hamiltonian.shape
       ~hamiltonian.static
    
    
