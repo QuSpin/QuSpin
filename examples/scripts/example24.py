@@ -7,9 +7,12 @@ os.environ['MKL_NUM_THREADS']='1' # set number of MKL threads to run in parallel
 #
 quspin_path = os.path.join(os.getcwd(),"../../")
 sys.path.insert(0,quspin_path)
-#
+################################################################################
+#                              example 24                                      #
+# This example shows how to use the `user_basis` to define Majorana operators. #
+################################################################################
 from quspin.operators import hamiltonian # Hamiltonians and operators
-from quspin.basis import spinless_fermion_basis_1d # Hilbert space spin basis_1d
+from quspin.basis import spinless_fermion_basis_1d # Hilbert space fermion basis_1d
 from quspin.basis.user import user_basis # Hilbert space user basis
 from quspin.basis.user import next_state_sig_32,op_sig_32,map_sig_32,count_particles_sig_32 # user basis data types signatures
 from numba import carray,cfunc,jit # numba helper functions

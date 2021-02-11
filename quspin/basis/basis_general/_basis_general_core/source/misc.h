@@ -102,17 +102,17 @@ inline std::complex<double> mul(T a,std::complex<double> z){
 
 
 template<class T>
-int inline check_imag(const std::complex<double> m){
+int inline type_checks(const std::complex<double> m){
 	return 0;
 }
 
 template<>
-int inline check_imag<double>(const std::complex<double> m){
+int inline type_checks<double>(const std::complex<double> m){
 	return (std::abs(m.imag())>1.1e-15 ? 1 : 0);
 }
 
 template<>
-int inline check_imag<float>(const std::complex<double> m){
+int inline type_checks<float>(const std::complex<double> m){
 	return (std::abs(m.imag())>1.1e-15 ? 1 : 0);
 }
 
@@ -121,20 +121,20 @@ int inline check_imag<float>(const std::complex<double> m){
 
 
 template<class T>
-int inline check_imag(const std::complex<double> m,std::complex<T> *M){
+int inline type_checks(const std::complex<double> m,std::complex<T> *M){
 	M->real(m.real());
 	M->imag(m.imag());
 	return 0;
 }
 
 template<class T>
-int inline check_imag(const std::complex<double> m,T *M){
+int inline type_checks(const std::complex<double> m,T *M){
 	(*M) = m.real();
 	return (std::abs(m.imag())>1.1e-15 ? 1 : 0);
 }
 
 // template<>
-// int inline check_imag<signed char>(const std::complex<double> m,signed char *M){
+// int inline type_checks<signed char>(const std::complex<double> m,signed char *M){
 // 	const double real = m.real();
 // 	*M = (signed char) real;
 
@@ -151,7 +151,7 @@ int inline check_imag(const std::complex<double> m,T *M){
 // }
 
 // template<>
-// int inline check_imag<signed short>(const std::complex<double> m,signed short *M){
+// int inline type_checks<signed short>(const std::complex<double> m,signed short *M){
 // 	const double real = m.real();
 // 	*M = (signed short) real;
 
@@ -169,14 +169,14 @@ int inline check_imag(const std::complex<double> m,T *M){
 
 
 template<class T>
-int inline check_imag(const std::complex<double> m,const std::complex<T> v,std::complex<T> *M){
+int inline type_checks(const std::complex<double> m,const std::complex<T> v,std::complex<T> *M){
 	M->real(m.real()*v.real()-m.imag()*v.imag());
 	M->imag(m.imag()*v.real()+m.real()*v.imag());
 	return 0;
 }
 
 template<class T>
-int inline check_imag(std::complex<double> m,const T v,T *M){
+int inline type_checks(std::complex<double> m,const T v,T *M){
 	(*M) = v*m.real();
 	return (std::abs(m.imag())>1.1e-15 ? 1 : 0);
 

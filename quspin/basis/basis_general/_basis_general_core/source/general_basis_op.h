@@ -6,6 +6,7 @@
 #include <algorithm>
 #include <limits>
 #include <tuple>
+#include <utility>
 #include <boost/iterator/zip_iterator.hpp>
 #include "general_basis_core.h"
 #include "numpy/ndarraytypes.h"
@@ -255,8 +256,7 @@ int general_inplace_op_core(general_basis_core<I,P> *B,
 
             const I s = basis[ii];
             I r = s;
-            m.real(A.real());
-            m.imag(A.imag());
+            m = A;
             int local_err = B->op(r,m,n_op,opstr,indx);
 
             if(local_err == 0){
@@ -279,7 +279,7 @@ int general_inplace_op_core(general_basis_core<I,P> *B,
                           K * v_out_row = v_out + j * nvecs;
 
 
-                    local_err = check_imag<K>(m);
+                    local_err = type_checks<K>(m);
 
                     if(local_err){
                         #pragma omp atomic write
@@ -499,25 +499,24 @@ struct nonzero : std::unary_function<T,bool>
 
 template<class I, class J, class K, class T,class P=signed char,
         bool full_basis,bool symmetries,bool bracket_basis>
-int general_op_core(general_basis_core<I,P> *B,
-                          const int n_op,
-                          const char opstr[],
-                          const int indx[],
-                          const std::complex<double> A,
-                          const npy_intp Ns,
-                          const I basis[],
-                          const J n[],
-                          const npy_intp basis_begin[],
-                          const npy_intp basis_end[],
-                          const int N_p,
-                                npy_intp &N_me,
-                                  K row[],
-                                  K col[],
-                                  T M[]
-                          )
+std::pair<int,int> 
+general_op_core(general_basis_core<I,P> *B,
+                  const int n_op,
+                  const char opstr[],
+                  const int indx[],
+                  const std::complex<double> A,
+                  const npy_intp Ns,
+                  const I basis[],
+                  const J n[],
+                  const npy_intp basis_begin[],
+                  const npy_intp basis_end[],
+                  const int N_p,
+                          K row[],
+                          K col[],
+                          T M[]
+                  )
 {
-    int err = 0;
-    N_me = 0;
+    int err = 0, warn = 0;
 
     #pragma omp parallel firstprivate(N_p,Ns,A,n_op)
     {
@@ -534,8 +533,9 @@ int general_op_core(general_basis_core<I,P> *B,
         int g[__GENERAL_BASIS_CORE__max_nt];
         double kk[__GENERAL_BASIS_CORE__max_nt];
         
-        for(int k=0;k<nt;k++)
+        for(int k=0;k<nt;k++){
             kk[k] = 2.0*M_PI*B->qs[k]/B->pers[k];
+        }
 
         std::fill(M+begin,M+end,T(0));
         std::fill(row+begin,row+end,K(0));
@@ -548,8 +548,7 @@ int general_op_core(general_basis_core<I,P> *B,
 
             I r = basis[i];
             const I s = r;
-            m.real(A.real());
-            m.imag(A.imag());
+            m = A;
             int local_err = B->op(r,m,n_op,&opstr[0],&indx[0]);
 
             if(local_err == 0){
@@ -566,7 +565,7 @@ int general_op_core(general_basis_core<I,P> *B,
                     }
 
                     T me = 0;
-                    local_err = check_imag(m,&me);
+                    int local_warn = type_checks(m,&me);
                     
                     if(local_err){
                         #pragma omp atomic write
@@ -574,24 +573,30 @@ int general_op_core(general_basis_core<I,P> *B,
 
                     }
 
+                    if(warn == 0 && local_warn != 0){
+                        #pragma omp atomic write
+                        warn = local_warn;
+                    }
+
                     M[i]   = me;
                     col[i] = i;
                     row[i] = j;
                 }
             }
-            else if(err==0){
+            else if(err == 0){
                 #pragma omp atomic write
                 err = local_err;                    
             }
         }
     }
 
-    return err;
+    return std::make_pair(err,warn);
 }
 
 
 template<class I, class J, class K,class T,class P=signed char>
-int general_op(general_basis_core<I,P> *B,
+std::pair<int,int> 
+general_op(general_basis_core<I,P> *B,
                           const int n_op,
                           const char opstr[],
                           const int indx[],
@@ -603,7 +608,6 @@ int general_op(general_basis_core<I,P> *B,
                           const npy_intp basis_begin[],
                           const npy_intp basis_end[],
                           const int N_p,
-                                npy_intp &N_me,
                                   K row[],
                                   K col[],
                                   T M[]
@@ -612,22 +616,22 @@ int general_op(general_basis_core<I,P> *B,
     int err = 0;
     const int nt = B->get_nt();
     if(full_basis){ // full_basis = true, symmetries = false, // bracket_basis = false
-        return general_op_core<I,J,K,T,P,true,false,false>(B,n_op,opstr,indx,A,Ns,basis,n,basis_begin,basis_end,N_p,N_me,row,col,M);
+        return general_op_core<I,J,K,T,P,true,false,false>(B,n_op,opstr,indx,A,Ns,basis,n,basis_begin,basis_end,N_p,row,col,M);
     }
     else if(nt>0){ // full_basis = false, symmetries = true 
         if(N_p>0){ // bracket_basis = true
-            return general_op_core<I,J,K,T,P,false,true,true>(B,n_op,opstr,indx,A,Ns,basis,n,basis_begin,basis_end,N_p,N_me,row,col,M);
+            return general_op_core<I,J,K,T,P,false,true,true>(B,n_op,opstr,indx,A,Ns,basis,n,basis_begin,basis_end,N_p,row,col,M);
         }
         else{ // bracket_basis = false
-            return general_op_core<I,J,K,T,P,false,true,false>(B,n_op,opstr,indx,A,Ns,basis,n,basis_begin,basis_end,N_p,N_me,row,col,M);
+            return general_op_core<I,J,K,T,P,false,true,false>(B,n_op,opstr,indx,A,Ns,basis,n,basis_begin,basis_end,N_p,row,col,M);
         }
     }
     else{ // full_basis = flase, symmetries = false
         if(N_p>0){ // bracket_basis = true
-            return general_op_core<I,J,K,T,P,false,false,true>(B,n_op,opstr,indx,A,Ns,basis,n,basis_begin,basis_end,N_p,N_me,row,col,M);
+            return general_op_core<I,J,K,T,P,false,false,true>(B,n_op,opstr,indx,A,Ns,basis,n,basis_begin,basis_end,N_p,row,col,M);
         }
         else{ // bracket_basis = false
-            return general_op_core<I,J,K,T,P,false,false,false>(B,n_op,opstr,indx,A,Ns,basis,n,basis_begin,basis_end,N_p,N_me,row,col,M);
+            return general_op_core<I,J,K,T,P,false,false,false>(B,n_op,opstr,indx,A,Ns,basis,n,basis_begin,basis_end,N_p,row,col,M);
         }
     }
 }
@@ -727,7 +731,7 @@ int general_inplace_op_core(general_basis_core<I,P> *B,
                         }
                         transpose_indices<transpose>::call(i,j);
                         
-                        local_err = check_imag(conj<conjugate>::call(m),&M);
+                        local_err = type_checks(conj<conjugate>::call(m),&M);
                         ME[ii] = std::make_pair(j,M);
 
                         if(local_err){
@@ -1008,7 +1012,7 @@ int general_op(general_basis_core<I,P> *B,
                     }
                     m *= sign * std::sqrt(double(n[j])/double(n[i])) * std::exp(std::complex<double>(0,-q));
                     
-                    local_err = check_imag(m,&M[i]);
+                    local_err = type_checks(m,&M[i]);
                     col[i]=i;
                     row[i]=j;
                 }
@@ -1105,7 +1109,7 @@ int general_op(general_basis_core<I,P> *B,
                     }
 
                     
-                    local_err = check_imag(m,&M[i]);
+                    local_err = type_checks(m,&M[i]);
                     col[i] = i;
                     row[i] = j;
                 }
@@ -1127,7 +1131,7 @@ int general_op(general_basis_core<I,P> *B,
 }
 */
 
-#include <iomanip>
+
 
 template<class I1,class J1,class I2,class J2,class K,class P=signed char>
 int general_op_shift_sectors(general_basis_core<I1,P> *B_out,
@@ -1187,14 +1191,11 @@ int general_op_shift_sectors(general_basis_core<I1,P> *B_out,
                         m *= (double)sign * std::exp(std::complex<double>(0,-q));    
                     }
                     
-                    // std::cout << std::setw(20) << m << std::setw(4) << j << std::setw(4) << s << std::setw(4) << r << std::endl;
                     m *= std::sqrt(double(n_out[j])/double(n_in[i]));
-                    // std::cout << std::setw(20) << m << std::setw(4) << j << std::setw(4) << s << std::setw(4) << r << std::endl;
-                    // std::cout << std::endl;
                     const K * v_in_col  = v_in  + i * nvecs;
                           K * v_out_row = v_out + j * nvecs;
 
-                    local_err = check_imag<K>(m);
+                    local_err = type_checks<K>(m);
 
                     if(local_err && err==0){
                         #pragma omp atomic write
@@ -1271,7 +1272,7 @@ int general_op_bra_ket(general_basis_core<I,P> *B,
                         double norm_s = B->check_state(s);
                         m *= sign * std::sqrt(norm_r/norm_s);
 
-                        local_err = check_imag(m,&M[i]); // assigns value to M[i]
+                        local_err = type_checks(m,&M[i]); // assigns value to M[i]
                         bra[i] = r;
                     }
                     else{ // ref state in different particle number sector
@@ -1281,7 +1282,7 @@ int general_op_bra_ket(general_basis_core<I,P> *B,
                 }
                 else{ // diagonal matrix element
                     m *= sign;
-                    local_err = check_imag(m,&M[i]); // assigns value to M[i]
+                    local_err = type_checks(m,&M[i]); // assigns value to M[i]
                     bra[i] = s;
                 }
                 
@@ -1360,7 +1361,7 @@ int general_op_bra_ket_pcon(general_basis_core<I,P> *B,
                             double norm_s = B->check_state(s);
                             m *= sign * std::sqrt(norm_r/norm_s);
 
-                            local_err = check_imag(m,&M[i]); // assigns value to M[i]
+                            local_err = type_checks(m,&M[i]); // assigns value to M[i]
                             bra[i] = r;
 
                         }
@@ -1386,7 +1387,7 @@ int general_op_bra_ket_pcon(general_basis_core<I,P> *B,
 
                     m *= sign;
 
-                    local_err = check_imag(m,&M[i]); // assigns value to M[i]
+                    local_err = type_checks(m,&M[i]); // assigns value to M[i]
                     bra[i] = s;
                 }
                 

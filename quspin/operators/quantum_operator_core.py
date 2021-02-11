@@ -325,9 +325,15 @@ class quantum_operator(object):
 		return self._shape
 
 	@property
+	def shape(self):
+		"""tuple: shape of the `quantum_operator` object, always equal to `(Ns,Ns)`."""
+		return self._shape
+	
+
+	@property
 	def is_dense(self):
-		"""bool: `True` if the quantum_operator contains a dense matrix as a componnent of either 
-		the static or dynamic lists.
+		"""bool: `True` if `quantum_operator` contains a dense matrix as a componnent of either 
+		the static or dynamic list.
 
 		"""
 		return self._is_dense
@@ -339,12 +345,12 @@ class quantum_operator(object):
 
 	@property
 	def T(self):
-		""":obj:`quantum_operator`: transposes the operator matrix: :math:`H_{ij}\\mapsto H_{ji}`."""
+		""":obj:`quantum_operator`: transposes the operator matrix, :math:`H_{ij}\\mapsto H_{ji}`."""
 		return self.transpose()
 
 	@property
 	def H(self):
-		""":obj:`quantum_operator`: transposes and conjugates the operator matrix: :math:`H_{ij}\\mapsto H_{ji}^*`."""
+		""":obj:`quantum_operator`: transposes and conjugates the operator matrix, :math:`H_{ij}\\mapsto H_{ji}^*`."""
 		return self.getH()
 
 
@@ -472,25 +478,42 @@ class quantum_operator(object):
 			if shape[0] != self._shape[1]:
 				raise ValueError("matrix dimension mismatch with shapes: {0} and {1}.".format(V.shape,self._shape))
 
-			if V.ndim not in [1,2]:
-				raise ValueError("Expecting  0< V.ndim < 3.")
+			if V.ndim > 3:
+				raise ValueError("Expecting V.ndim < 4.")
 
 		result_dtype = _np.result_type(V.dtype,self._dtype)
 
 		if not (result_dtype in hamiltonian_core.supported_dtypes):
 			raise TypeError('hamiltonian does not support type: '+str(dtype))
 
-		if self.Ns <= 0:
-			return _np.asarray([],dtype=result_dtype)
+
+		if V.ndim == 3:
+			eps = _np.finfo(self.dtype).eps
+
+			if V.shape[0] != V.shape[1]: 
+				raise ValueError("Density matrices must be square!")
+
+			# allocate C-contiguous array to output results in.
+			out = _np.zeros(V.shape[-1:]+V.shape[:-1],dtype=result_dtype)
+
+			for i in range(V.shape[2]):
+				v = _np.ascontiguousarray(V[...,i],dtype=result_dtype)
+				for key,J in pars.items():
+					if _np.abs(J)>eps:
+						kwargs = dict(overwrite_out=False,a=a*J,out=out[i,...])
+						self._matvec_functions[key](self._quantum_operator[key],v,**kwargs)
+
+			return  out.transpose((1,2,0))
 
 		if _sp.issparse(V):
 			if out is not None:
 				raise TypeError("'out' option does not apply for sparse inputs.")
 
-			sparse_constuctor = getattr(_sp,V.get_format()+"_matrix")
+			sparse_constuctor = getattr(_sp,V.getformat()+"_matrix")
 			out = sparse_constuctor(V.shape,dtype=result_dtype)
 			for key,J in pars.items():
 				out = out + J*self._quantum_operator[key].dot(V)
+			
 			out = a*out
 
 		else:
@@ -510,10 +533,10 @@ class quantum_operator(object):
 
 			eps = _np.finfo(self.dtype).eps
 			V = _np.asarray(V,dtype=result_dtype)
+
 			for key,J in pars.items():
 				if _np.abs(J)>eps:
 					self._matvec_functions[key](self._quantum_operator[key],V,overwrite_out=False,a=a*J,out=out)
-
 
 		return out
 
@@ -585,14 +608,11 @@ class quantum_operator(object):
 		---------
 		>>> H_fluct = H.quant_fluct(V,time=0,diagonal=False,check=True)
 
-		corresponds to :math:`\\Delta H = \\sqrt{ \\langle V|H^2(t=\\texttt{time})|V\\rangle - \\langle V|H(t=\\texttt{time})|V\\rangle^2 }`. 
+		corresponds to :math:`\\left(\\Delta H\\right)^2 = \\langle V|H^2(t=\\texttt{time})|V\\rangle - \\langle V|H(t=\\texttt{time})|V\\rangle^2`. 
 			 
 		"""
 
 		from .exp_op_core import isexp_op
-
-		if self.Ns <= 0:
-			return _np.asarray([])
 
 		if hamiltonian_core.ishamiltonian(V):
 			raise TypeError("Can't take expectation value of hamiltonian")
@@ -605,10 +625,10 @@ class quantum_operator(object):
 		V_dot = self.dot(V,pars=pars,check=check)
 		expt_value_sq = self._expt_value_core(V,V_dot,**kwargs)**2
 
-		if V.shape[0] != V.shape[1] or enforce_pure:
+		if V.ndim==1 or (V.shape[0] != V.shape[1] or enforce_pure):
 			sq_expt_value = self._expt_value_core(V_dot,V_dot,**kwargs)
 		else:
-			V_dot = self.dot(V_dot,time=time,check=check)
+			V_dot = self.dot(V_dot,pars=pars,check=check)
 			sq_expt_value = self._expt_value_core(V,V_dot,**kwargs)
 
 		return sq_expt_value - expt_value_sq
@@ -646,9 +666,6 @@ class quantum_operator(object):
 		"""
 		from .exp_op_core import isexp_op
 
-		if self.Ns <= 0:
-			return _np.asarray([])
-
 		if hamiltonian_core.ishamiltonian(V):
 			raise TypeError("Can't take expectation value of hamiltonian")
 
@@ -662,17 +679,17 @@ class quantum_operator(object):
 	def _expt_value_core(self,V_left,V_right,enforce_pure=False):
 		if _sp.issparse(V_right):
 			if V_left.shape[0] != V_left.shape[1] or enforce_pure: # pure states
-				return _np.asscalar((V_left.H.dot(V_right)).toarray())
+				return _np.asarray((V_right.multiply(V_left.conj())).sum(axis=0)).squeeze()
 			else: # density matrix
 				return V_right.diagonal().sum()
 		else:
-			V_right = _np.asarray(V_right).squeeze()
-			if V_right.ndim == 1: # pure state
+			V_right = _np.asarray(V_right)
+			if V_right.ndim==1: # single pure state
 				return _np.vdot(V_left,V_right)
-			elif V_left.shape[0] != V_left.shape[1] or enforce_pure: # multiple pure states
+			elif (V_right.shape[0] != V_right.shape[1] or enforce_pure): # multiple pure states
 				return _np.einsum("ij,ij->j",V_left.conj(),V_right)
-			else: # density matrix
-				return V_right.trace()
+			else: # density matrices
+				return _np.einsum("ii...->...",V_right)
 
 	def matrix_ele(self,Vl,Vr,pars={},diagonal=False,check=True):
 		"""Calculates matrix element of `quantum_operator` object for parameters `pars` in states `Vl` and `Vr`.
@@ -726,9 +743,14 @@ class quantum_operator(object):
 
 		if _sp.issparse(Vl):
 			if diagonal:
-				return Vl.H.dot(Vr).diagonal()
+				return _np.asarray(Vl.conj().multiply(Vr).sum(axis=0)).squeeze()
 			else:
 				return Vl.H.dot(Vr)
+		elif _sp.issparse(Vr):
+			if diagonal:
+				return _np.asarray(Vr.multiply(Vl.conj()).sum(axis=0)).squeeze()
+			else:
+				return Vr.T.dot(Vl.conj())
 		else:
 			if diagonal:
 				return _np.einsum("ij,ij->j",Vl.conj(),Vr)

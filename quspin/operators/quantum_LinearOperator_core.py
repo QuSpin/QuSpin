@@ -180,12 +180,12 @@ class quantum_LinearOperator(LinearOperator):
 
 	@property
 	def T(self):
-		""":obj:`quantum_LinearOperator`: transposes the operator matrix: :math:`H_{ij}\\mapsto H_{ji}`."""
+		""":obj:`quantum_LinearOperator`: transposes the operator matrix, :math:`H_{ij}\\mapsto H_{ji}`."""
 		return self.transpose(copy = False)
 
 	@property
 	def H(self):
-		""":obj:`quantum_LinearOperator`: transposes and conjugates the operator matrix: :math:`H_{ij}\\mapsto H_{ji}^*`."""
+		""":obj:`quantum_LinearOperator`: transposes and conjugates the operator matrix, :math:`H_{ij}\\mapsto H_{ji}^*`."""
 		return self.getH(copy = False)
 
 	@property
@@ -340,7 +340,7 @@ class quantum_LinearOperator(LinearOperator):
 		---------
 		>>> H_fluct = H.quant_fluct(V,time=0,diagonal=False,check=True)
 
-		corresponds to :math:`\\Delta H = \\sqrt{ \\langle V|H^2(t=\\texttt{time})|V\\rangle - \\langle V|H(t=\\texttt{time})|V\\rangle^2 }`. 
+		corresponds to :math:`\\left(\\Delta H\\right)^2 = \\langle V|H^2(t=\\texttt{time})|V\\rangle - \\langle V|H(t=\\texttt{time})|V\\rangle^2`. 
 			 
 		"""
 		from .exp_op_core import isexp_op

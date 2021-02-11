@@ -72,13 +72,13 @@ I inline spinless_fermion_map_bits(I s,const int map[],const int N,P &sign){
 	bool f_count = 0;
 
 	for(int i=N-1;i>=0;--i){
-		int j = map[i];
-		I n = (s&1);
-		bool neg = j<0;
+		const int j = map[i];
+		const I n = (s&1);
+		const bool neg = j<0;
 
 		if(n){
 			pos_list[np++] = ( neg ? -(j+1) : j);
-			f_count ^= (neg&&(i&1));
+			// f_count ^= (neg&&(i&1)); do not change sign based on PH transformation
 		}
 		ss ^= ( neg ? (n^1)<<(N+j) : n<<(N-j-1) );
 

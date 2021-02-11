@@ -393,6 +393,6 @@ class spin_basis_general(hcb_basis_general,higher_spin_basis_general):
 				n = len(opstr.replace("I","").replace("+","").replace("-",""))
 				ME *= (1<<n)
 		else:
-			return higher_spin_basis_general.Op_bra_ket(self,opstr,indx,J,dtype,ket_states)
+			return higher_spin_basis_general.Op_bra_ket(self,opstr,indx,J,dtype,ket_states,reduce_output=reduce_output)
 
 		return ME,bra,ket
