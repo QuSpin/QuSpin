@@ -913,23 +913,6 @@ class hamiltonian(object):
 				return _np.einsum("ij,ij->j",V_left.conj(),V_right)
 			else: # density matrices
 				return _np.einsum("ii...->...",V_right)
-
-<<<<<<< HEAD
-			if _sp.issparse(V_right):
-				if V_left.shape[0] != V_left.shape[1] or enforce_pure: # pure states
-					return _np.asscalar((V_left.H.dot(V_right)).toarray())
-				else: # density matrix
-					return V_right.diagonal().sum()
-			else:
-				V_right = _np.atleast_1d(_np.asarray(V_right).squeeze())
-				if V_right.ndim == 1: # pure state
-					return _np.vdot(V_left,V_right)
-				elif enforce_pure or V_left.shape[0] != V_left.shape[1]: # multiple pure states
-					return _np.einsum("ij,ij->j",V_left.conj(),V_right)
-				else: # density matrix
-					return V_right.trace()
-=======
->>>>>>> dev_0.3.5
 		
 	def matrix_ele(self,Vl,Vr,time=0,diagonal=False,check=True):
 		"""Calculates matrix element of `hamiltonian` operator at time `time` in states `Vl` and `Vr`.
