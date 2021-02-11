@@ -39,6 +39,7 @@ class general_basis_core{
 
 		bool check_pcon(const I,const std::set<std::vector<int>>&);
 		virtual double check_state(I);
+		double check_state_less(I);
 		I ref_state(I,int[],P&);
 		I ref_state_less(I,int[],P&);
 		virtual I next_state_pcon(I,I) = 0;
@@ -214,6 +215,10 @@ double general_basis_core<I,P>::check_state(I s){
 	return check_state_core_unrolled(this,s,nt,gen_greater<I>());
 }
 
+template<class I,class P>
+double general_basis_core<I,P>::check_state_less(I s){
+	return check_state_core_unrolled(this,s,nt,gen_less<I>());
+}
 
 template<class I,class P>
 bool general_basis_core<I,P>::check_pcon(const I s,const std::set<std::vector<int>> &Np){

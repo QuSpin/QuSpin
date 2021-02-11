@@ -15,8 +15,10 @@
 #include <iostream>
 
 #include "general_basis_core.h"
+#include "misc.h"
 #include "openmp.h"
 
+// #define _unordered
 
 
 namespace nlce {
@@ -24,11 +26,23 @@ namespace nlce {
 template<class Graph>
 using pair = std::pair<npy_intp,Graph>;
 
+#ifdef _unordered
+
+template<class I>
+using map_type1 = std::unordered_map<I,npy_intp>;
+
+template<class I,class Graph>
+using map_type2 = std::unordered_map<I,pair<Graph>>;
+
+#else
+
 template<class I>
 using map_type1 = std::map<I,npy_intp>;
 
 template<class I,class Graph>
 using map_type2 = std::map<I,pair<Graph>>;
+
+#endif
 
 template<class I>
 using map_type3 = std::vector<map_type1<I>>;
@@ -153,6 +167,8 @@ int mult(basis_general::general_basis_core<I> * B_p,
 	return clusters.size();
 }
 
+
+
 template<class I,class Vec>
 void get_ind_pos_map(const I s,
 					 Vec &ind_to_pos)
@@ -187,11 +203,15 @@ void build_new_symm_clusters(basis_general::general_basis_core<I> * B_f,
 	std::vector<map_type> new_clusters_thread_vec(nthread);
 	map_type * new_clusters_thread = &new_clusters_thread_vec[0];
 
-	#pragma omp parallel 
+	#pragma omp parallel shared(new_clusters_thread)
 	{
 		int g[__GENERAL_BASIS_CORE__max_nt];
 		signed char sign=0;
 		const int threadn = omp_get_thread_num();
+
+		#ifdef _unordered
+		new_clusters_thread[threadn].reserve(10*Nnn*seed_clusters.size()/nthread);
+		#endif
 
 		npy_intp cnt = 0;
 
@@ -235,11 +255,33 @@ void build_new_symm_clusters(basis_general::general_basis_core<I> * B_f,
 			} while((s >>= 1) > 0);
 
 		}
+
+		#pragma omp barrier
+
+		int l = nthread-1;
+		int nth = nthread/2;
+
+		while(true) { // parallel merging
+
+			const int j = l - threadn;
+
+			if(threadn < j){
+				auto begin = new_clusters_thread[j].begin();
+				auto end = new_clusters_thread[j].end();
+				new_clusters_thread[threadn].insert(begin,end);
+			}
+
+			#pragma omp barrier
+
+			if(nth==0) break;
+
+			l -= nth;
+			nth /= 2;
+
+		}
 	}
 
-	for(auto list : new_clusters_thread_vec){
-		new_clusters.insert(list.begin(),list.end());
-	}
+	new_clusters = new_clusters_thread_vec.front();
 }
 
 
@@ -321,6 +363,9 @@ void build_topo_clusters(const int Nnn,
 	{
 		const int threadn = omp_get_thread_num();
 		std::unordered_map<int,VertexDescr> verts;
+		#ifdef _unordered
+		topo_clusters_thread_vec[threadn].reserve(symm_clusters.size());
+		#endif
 		GraphType graph;
 		std::stack<int> stack;
 		std::unordered_set<int> visited;
@@ -350,6 +395,7 @@ void build_topo_clusters(const int Nnn,
 				topo_clusters_thread[threadn][s] = std::make_pair(pair->second,graph);
 			}
 		}
+
 	}
 
 	for(auto list=topo_clusters_thread_vec.begin();list!=topo_clusters_thread_vec.end();list++){
@@ -612,6 +658,9 @@ void build_topo_clusters(const int Nnn,
 	{
 		const int threadn = omp_get_thread_num();
 		std::unordered_map<int,VertexDescr> verts;
+		#ifdef _unordered
+		topo_clusters_thread_vec[threadn].reserve(symm_clusters.size());
+		#endif
 		GraphType graph;
 		std::stack<int> stack;
 		std::unordered_set<int> visited;
@@ -641,27 +690,74 @@ void build_topo_clusters(const int Nnn,
 				topo_clusters_thread[threadn][s] = std::make_pair(pair->second,graph);
 			}
 		}
-	}
 
-	for(auto list=topo_clusters_thread_vec.begin();list!=topo_clusters_thread_vec.end();list++){
 
-		for(auto iter1=list->begin();iter1!=list->end();iter1++){
-			bool found = false;
-			for(auto iter2=topo_clusters.begin();iter2!=topo_clusters.end();iter2++)
-			{
-				found = boost::isomorphism(iter2->second.second,iter1->second.second);
-	
-				if(found){
-					topo_clusters[iter2->first].first += iter1->second.first;;
-					break;
+		#pragma omp barrier
+
+		int l = nthread-1;
+		int nth = nthread/2;
+
+		while(true) { // parallel merging
+
+			const int j = l - threadn;
+
+			if(threadn < j){ // merge j and nthread into nthread;
+				auto iter1 = topo_clusters_thread[j].begin();
+
+				for(;iter1 != topo_clusters_thread[j].end();iter1++){
+
+					bool found = false;
+
+					auto iter2 = topo_clusters_thread[threadn].begin();
+					for(;iter2 != topo_clusters_thread[threadn].end();iter2++)
+					{
+						found = boost::isomorphism(iter2->second.second,iter1->second.second);
+			
+						if(found){
+							topo_clusters_thread[threadn][iter2->first].first += iter1->second.first;
+							break;
+						}
+					}
+			
+					if(!found){
+						topo_clusters_thread[threadn][iter1->first] = iter1->second;
+					}
 				}
 			}
-	
-			if(!found){
-				topo_clusters[iter1->first] = iter1->second;
-			}
+
+			#pragma omp barrier
+
+			if(nth==0) break;
+
+			l -= nth;
+			nth /= 2;
+
 		}
+
+
 	}
+
+	topo_clusters = topo_clusters_thread_vec.front();
+
+	// for(auto list=topo_clusters_thread_vec.begin();list!=topo_clusters_thread_vec.end();list++){
+
+	// 	for(auto iter1=list->begin();iter1!=list->end();iter1++){
+	// 		bool found = false;
+	// 		for(auto iter2=topo_clusters.begin();iter2!=topo_clusters.end();iter2++)
+	// 		{
+	// 			found = boost::isomorphism(iter2->second.second,iter1->second.second);
+	
+	// 			if(found){
+	// 				topo_clusters[iter2->first].first += iter1->second.first;;
+	// 				break;
+	// 			}
+	// 		}
+	
+	// 		if(!found){
+	// 			topo_clusters[iter1->first] = iter1->second;
+	// 		}
+	// 	}
+	// }
 
 
 }
@@ -810,11 +906,38 @@ void calc_subclusters_parallel(const int Nnn,
 			}
 			mcs++;
 		}
-	}
 
-	for(auto list : sub_clusters_thread_vec){
-		sub_clusters.insert(list.begin(),list.end());
+		#pragma omp barrier
+
+		int l = nthread-1;
+		int nth = nthread/2;
+
+		while(true) { // parallel merging
+
+			const int j = l - threadn;
+
+			if(threadn < j){
+				auto begin = sub_clusters_thread[j].begin();
+				auto end = sub_clusters_thread[j].end();
+				sub_clusters_thread[threadn].insert(begin,end);
+			}
+
+			#pragma omp barrier
+
+			if(nth==0) break;
+
+			l -= nth;
+			nth /= 2;
+
+		}
+
+
 	}
+	
+	sub_clusters = sub_clusters_thread_vec.front();
+	// for(auto list : sub_clusters_thread_vec){
+	// 	sub_clusters.insert(list.begin(),list.end());
+	// }
 }
 
 
