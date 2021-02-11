@@ -1,7 +1,7 @@
 
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
     <meta charset="utf-8" /><script type="text/javascript">
 
@@ -15,7 +15,7 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-    <title>quspin.basis.basis_general.base_general &#8212; QuSpin 0.3.4 documentation</title>
+    <title>quspin.basis.basis_general.base_general &#8212; QuSpin 0.3.5 documentation</title>
     <link rel="stylesheet" href="../../../../static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../../static/pygments.css" type="text/css" />
     
@@ -38,7 +38,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">QuSpin 0.3.4 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">QuSpin 0.3.5 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -278,6 +278,7 @@
 			<span class="k">return</span> <span class="n">s_str</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
 
 	<span class="k">def</span> <span class="nf">_state_to_int</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">state</span><span class="p">):</span>
+		<span class="n">state</span> <span class="o">=</span> <span class="n">state</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;|&#39;</span><span class="p">,</span><span class="s1">&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;&gt;&#39;</span><span class="p">,</span><span class="s1">&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;&lt;&#39;</span><span class="p">,</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
 		<span class="k">return</span> <span class="n">basis_int_to_python_int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_basis</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">state</span><span class="p">)])</span>
 
 	<span class="k">def</span> <span class="nf">_index</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">s</span><span class="p">):</span>
@@ -317,8 +318,7 @@
 		<span class="n">row</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_Ns</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_index_type</span><span class="p">)</span>
 		<span class="n">ME</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_Ns</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
 		<span class="c1"># print(self._Ns)</span>
-		<span class="n">N_me</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_core</span><span class="o">.</span><span class="n">op</span><span class="p">(</span><span class="n">row</span><span class="p">,</span><span class="n">col</span><span class="p">,</span><span class="n">ME</span><span class="p">,</span><span class="n">opstr</span><span class="p">,</span><span class="n">indx</span><span class="p">,</span><span class="n">J</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">_basis</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">_n</span><span class="p">,</span>
-			<span class="bp">self</span><span class="o">.</span><span class="n">_basis_begin</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">_basis_end</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">_N_p</span><span class="p">)</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">_core</span><span class="o">.</span><span class="n">op</span><span class="p">(</span><span class="n">row</span><span class="p">,</span><span class="n">col</span><span class="p">,</span><span class="n">ME</span><span class="p">,</span><span class="n">opstr</span><span class="p">,</span><span class="n">indx</span><span class="p">,</span><span class="n">J</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">_basis</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">_n</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">_basis_begin</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">_basis_end</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">_N_p</span><span class="p">)</span>
 
 		<span class="k">if</span> <span class="n">_np</span><span class="o">.</span><span class="n">iscomplexobj</span><span class="p">(</span><span class="n">ME</span><span class="p">):</span>
 			<span class="k">if</span> <span class="n">ME</span><span class="o">.</span><span class="n">dtype</span> <span class="o">==</span> <span class="n">_np</span><span class="o">.</span><span class="n">complex64</span><span class="p">:</span>
@@ -377,7 +377,7 @@
 
 <span class="sd">		An operator, which does not conserve a symmetry, induces a change in the quantum number of a state defined in the corresponding symmetry sector. Hence, when the operator is applied on a quantum state, the state shifts the symmetry sector. `Op_shift_sector()` handles this automatically. </span>
 
-<span class="sd">		:red:`NOTE: One has to make sure that the operator moves the state between the two sectors this function will not give the correct results otherwise.`</span>
+<span class="sd">		:red:`NOTE: One has to make sure that (i) the operator moves the state between the two sectors, and (ii) the two bases objects have the same symmetries. This function will not give the correct results otherwise.`</span>
 
 <span class="sd">		Formally  equivalent to:</span>
 
@@ -478,8 +478,8 @@
 
 <span class="sd">		Notes</span>
 <span class="sd">		-----</span>
-<span class="sd">		* particularly useful when a given operation canot be carried out in the symmetry-reduced basis</span>
-<span class="sd">		in a straightforward manner.</span>
+<span class="sd">		* particularly useful when a given operation canot be carried out in the symmetry-reduced basis in a straightforward manner.</span>
+<span class="sd">		</span>
 <span class="sd">		* see also `Op_shift_sector()`.</span>
 
 <span class="sd">		Parameters</span>
@@ -914,7 +914,7 @@
 <span class="sd">		ket_states : numpy.ndarray(int)</span>
 <span class="sd">			Ket states in integer representation. Must be of same data type as `basis`.</span>
 <span class="sd">		reduce_output: bool, optional</span>
-<span class="sd">			If set to `True`, the returned arrays have the same size as `ket_states`; If set to `False` zeros are purged.</span>
+<span class="sd">			If set to `False`, the returned arrays have the same size as `ket_states`; If set to `True` zeros are purged.</span>
 
 <span class="sd">		Returns</span>
 <span class="sd">		--------</span>
@@ -956,7 +956,7 @@
 		<span class="n">ME</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">ket_states</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
 
 		<span class="bp">self</span><span class="o">.</span><span class="n">_core</span><span class="o">.</span><span class="n">op_bra_ket</span><span class="p">(</span><span class="n">ket_states</span><span class="p">,</span><span class="n">bra</span><span class="p">,</span><span class="n">ME</span><span class="p">,</span><span class="n">opstr</span><span class="p">,</span><span class="n">indx</span><span class="p">,</span><span class="n">J</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">_Np</span><span class="p">)</span>
-		
+
 		<span class="k">if</span> <span class="n">reduce_output</span><span class="p">:</span> 
 			<span class="c1"># remove nan&#39;s matrix elements</span>
 			<span class="n">mask</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">logical_not</span><span class="p">(</span><span class="n">_np</span><span class="o">.</span><span class="n">logical_or</span><span class="p">(</span><span class="n">_np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">ME</span><span class="p">),</span><span class="n">_np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">ME</span><span class="p">)</span><span class="o">==</span><span class="mf">0.0</span><span class="p">))</span>
@@ -1265,13 +1265,13 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">QuSpin 0.3.4 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">QuSpin 0.3.5 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &#169; Copyright 2016, Phillip Weinberg and Marin Bukov.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.4.0.
+        &#169; Copyright 2016, Phillip Weinberg, Markus Schmitt and Marin Bukov.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 3.0.4.
     </div>
   </body>
 </html>

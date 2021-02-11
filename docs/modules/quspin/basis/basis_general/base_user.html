@@ -1,7 +1,7 @@
 
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
     <meta charset="utf-8" /><script type="text/javascript">
 
@@ -15,7 +15,7 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-    <title>quspin.basis.basis_general.base_user &#8212; QuSpin 0.3.4 documentation</title>
+    <title>quspin.basis.basis_general.base_user &#8212; QuSpin 0.3.5 documentation</title>
     <link rel="stylesheet" href="../../../../static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../../static/pygments.css" type="text/css" />
     
@@ -38,7 +38,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">QuSpin 0.3.4 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">QuSpin 0.3.5 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -53,7 +53,10 @@
 <span class="kn">from</span> <span class="nn">._basis_general_core</span> <span class="kn">import</span> <span class="n">user_core_wrap</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">_np</span>
 <span class="kn">from</span> <span class="nn">numba</span> <span class="kn">import</span> <span class="n">cfunc</span><span class="p">,</span> <span class="n">types</span><span class="p">,</span> <span class="n">njit</span>
-<span class="kn">from</span> <span class="nn">numba.ccallback</span> <span class="kn">import</span> <span class="n">CFunc</span>
+<span class="k">try</span><span class="p">:</span>
+	<span class="kn">from</span> <span class="nn">numba.ccallback</span> <span class="kn">import</span> <span class="n">CFunc</span> <span class="c1"># numba &lt; 0.49.0</span>
+<span class="k">except</span> <span class="ne">ModuleNotFoundError</span><span class="p">:</span>
+	<span class="kn">from</span> <span class="nn">numba.core.ccallback</span> <span class="kn">import</span> <span class="n">CFunc</span> <span class="c1"># numba &gt;= 0.49.0</span>
 
 <span class="n">map_sig_32</span> <span class="o">=</span> <span class="n">types</span><span class="o">.</span><span class="n">uint32</span><span class="p">(</span><span class="n">types</span><span class="o">.</span><span class="n">uint32</span><span class="p">,</span><span class="n">types</span><span class="o">.</span><span class="n">intc</span><span class="p">,</span><span class="n">types</span><span class="o">.</span><span class="n">CPointer</span><span class="p">(</span><span class="n">types</span><span class="o">.</span><span class="n">int8</span><span class="p">),</span><span class="n">types</span><span class="o">.</span><span class="n">CPointer</span><span class="p">(</span><span class="n">types</span><span class="o">.</span><span class="n">uint32</span><span class="p">))</span>
 <span class="n">map_sig_64</span> <span class="o">=</span> <span class="n">types</span><span class="o">.</span><span class="n">uint64</span><span class="p">(</span><span class="n">types</span><span class="o">.</span><span class="n">uint64</span><span class="p">,</span><span class="n">types</span><span class="o">.</span><span class="n">intc</span><span class="p">,</span><span class="n">types</span><span class="o">.</span><span class="n">CPointer</span><span class="p">(</span><span class="n">types</span><span class="o">.</span><span class="n">int8</span><span class="p">),</span><span class="n">types</span><span class="o">.</span><span class="n">CPointer</span><span class="p">(</span><span class="n">types</span><span class="o">.</span><span class="n">uint64</span><span class="p">))</span>
@@ -181,7 +184,7 @@
 
 <span class="sd">	&quot;&quot;&quot;</span>
 <div class="viewcode-block" id="user_basis.__init__"><a class="viewcode-back" href="../../../../generated/quspin.basis.user_basis.html#quspin.basis.user_basis.__init__">[docs]</a>	<span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">basis_dtype</span><span class="p">,</span><span class="n">N</span><span class="p">,</span><span class="n">op_dict</span><span class="p">,</span><span class="n">sps</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span><span class="n">pcon_dict</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">pre_check_state</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">allowed_ops</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-		<span class="n">Ns_block_est</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">_make_basis</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">block_order</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">_Np</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="o">**</span><span class="n">blocks</span><span class="p">):</span>
+		<span class="n">parallel</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">Ns_block_est</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">_make_basis</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">block_order</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">_Np</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="o">**</span><span class="n">blocks</span><span class="p">):</span>
 		<span class="sd">&quot;&quot;&quot;Intializes the `user_basis_general` object (basis for user defined ED calculations).</span>
 
 <span class="sd">		Parameters</span>
@@ -225,6 +228,8 @@
 <span class="sd">			(e.g. for a spinful fermion basis to never have a doubly occupied site). One can pass additional arguments `args` using a `np.ndarray[basis_dtype]`.</span>
 <span class="sd">		allowed_ops: list/set, optional</span>
 <span class="sd">			A list of allowed characters, each of which is to be passed in to the `op` in the form of `op_str` (see above).</span>
+<span class="sd">		parallel: bool, optional</span>
+<span class="sd">			turns on parallel code when constructing the basis even when no symmetries are implemented. Useful when constructing highly constrained Hilbert spaces with pre_check_state. </span>
 <span class="sd">		sps: int, optional</span>
 <span class="sd">			The number of states per site (i.e. the local on-site Hilbert space dimension).</span>
 <span class="sd">		Ns_block_est: int, optional</span>
@@ -518,7 +523,7 @@
 		<span class="bp">self</span><span class="o">.</span><span class="n">_basis_dtype</span> <span class="o">=</span> <span class="n">basis_dtype</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">_core_args</span> <span class="o">=</span> <span class="p">(</span><span class="n">Ns_full</span><span class="p">,</span> <span class="n">basis_dtype</span><span class="p">,</span> <span class="n">N</span><span class="p">,</span> <span class="n">sps</span><span class="p">,</span> <span class="n">map_funcs</span><span class="p">,</span> <span class="n">pers</span><span class="p">,</span> <span class="n">qs</span><span class="p">,</span> <span class="n">map_args</span><span class="p">,</span>
 								<span class="n">n_sectors</span><span class="p">,</span> <span class="n">get_Ns_pcon</span><span class="p">,</span> <span class="n">get_s0_pcon</span><span class="p">,</span> <span class="n">next_state</span><span class="p">,</span>
-								<span class="n">next_state_args</span><span class="p">,</span><span class="n">pre_check_state</span><span class="p">,</span><span class="n">check_state_nosymm_args</span><span class="p">,</span>
+								<span class="n">next_state_args</span><span class="p">,</span><span class="n">pre_check_state</span><span class="p">,</span><span class="n">check_state_nosymm_args</span><span class="p">,</span><span class="n">parallel</span><span class="p">,</span>
 								<span class="n">count_particles</span><span class="p">,</span> <span class="n">count_particles_args</span><span class="p">,</span> <span class="n">op_func</span><span class="p">,</span> <span class="n">op_args</span><span class="p">)</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">_core</span> <span class="o">=</span> <span class="n">user_core_wrap</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">_core_args</span><span class="p">)</span>
 
@@ -591,13 +596,13 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">QuSpin 0.3.4 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">QuSpin 0.3.5 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &#169; Copyright 2016, Phillip Weinberg and Marin Bukov.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.4.0.
+        &#169; Copyright 2016, Phillip Weinberg, Markus Schmitt and Marin Bukov.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 3.0.4.
     </div>
   </body>
 </html>

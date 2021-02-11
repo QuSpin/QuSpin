@@ -1,7 +1,7 @@
 
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
     <meta charset="utf-8" /><script type="text/javascript">
 
@@ -15,7 +15,7 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-    <title>quspin.basis.python_int_to_basis_int &#8212; QuSpin 0.3.4 documentation</title>
+    <title>quspin.basis.python_int_to_basis_int &#8212; QuSpin 0.3.5 documentation</title>
     <link rel="stylesheet" href="../static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../static/pygments.css" type="text/css" />
     
@@ -46,7 +46,7 @@
         <li class="right" >
           <a href="quspin.basis.get_basis_type.html" title="quspin.basis.get_basis_type"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.4 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.5 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../basis.html" accesskey="U">Basis module (<code class="xref py py-mod docutils literal notranslate"><span class="pre">quspin.basis</span></code>)</a> &#187;</li> 
       </ul>
     </div>  
@@ -59,31 +59,31 @@
   <style> .red {color:#ff0000; font-weight:bold; font-style:italic; } </style>
 <style> .green {color:#00b200; font-weight:bold; font-style:italic; } </style><div class="section" id="quspin-basis-python-int-to-basis-int">
 <h1>quspin.basis.python_int_to_basis_int<a class="headerlink" href="#quspin-basis-python-int-to-basis-int" title="Permalink to this headline">¶</a></h1>
-<dl class="function">
+<dl class="py function">
 <dt id="quspin.basis.python_int_to_basis_int">
-<code class="sig-prename descclassname">quspin.basis.</code><code class="sig-name descname">python_int_to_basis_int</code><span class="sig-paren">(</span><em class="sig-param">python_int</em>, <em class="sig-param">dtype=None</em><span class="sig-paren">)</span><a class="headerlink" href="#quspin.basis.python_int_to_basis_int" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">quspin.basis.</code><code class="sig-name descname">python_int_to_basis_int</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">python_int</span></em>, <em class="sig-param"><span class="n">dtype</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#quspin.basis.python_int_to_basis_int" title="Permalink to this definition">¶</a></dt>
 <dd><p>Converts python integer to QuSpin basis type.</p>
 <p>This function takes a python integer and converts it to a basis type either specified by the user via the <cite>dtype</cite> argument or the minium type which will
 fit that integer.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><dl class="simple">
-<dt><strong>python_int</strong><span class="classifier">int</span></dt><dd><p>integer to be converted</p>
+<dt><strong>python_int: int</strong></dt><dd><p>integer to be converted</p>
 </dd>
-<dt><strong>dtype</strong><span class="classifier">dtype, optional</span></dt><dd><p>data type used to represent the python integer:  <cite>uint32</cite>,`uint64`,`uint256`,`uint1024`,`uint4096`,`uint16384` or <cite>numpy.object</cite></p>
+<dt><strong>dtype: dtype, optional</strong></dt><dd><p>data type used to represent the python integer:  <cite>uint32</cite>, <cite>uint64</cite>, <cite>uint256</cite>, <cite>uint1024</cite>, <cite>uint4096</cite>, <cite>uint16384</cite>. or <cite>numpy.object</cite></p>
 </dd>
 </dl>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><dl class="simple">
-<dt><strong>numpy scalar object</strong></dt><dd><p>the appropriate converted value which can be assigned to a numpy array.</p>
+<dt>numpy scalar object</dt><dd><p>the appropriate converted value which can be assigned to a numpy array.</p>
 </dd>
 </dl>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">new_val</span> <span class="o">=</span> <span class="n">python_int_to_basis_int</span><span class="p">(</span><span class="n">val</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="n">uint256</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">new_val</span> <span class="o">=</span> <span class="n">python_int_to_basis_int</span><span class="p">(</span><span class="n">val</span><span class="p">)</span> 
+<span class="gp">&gt;&gt;&gt; </span><span class="n">new_val</span> <span class="o">=</span> <span class="n">python_int_to_basis_int</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -138,13 +138,13 @@ fit that integer.</p>
         <li class="right" >
           <a href="quspin.basis.get_basis_type.html" title="quspin.basis.get_basis_type"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.4 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.5 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../basis.html" >Basis module (<code class="xref py py-mod docutils literal notranslate"><span class="pre">quspin.basis</span></code>)</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &#169; Copyright 2016, Phillip Weinberg and Marin Bukov.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.4.0.
+        &#169; Copyright 2016, Phillip Weinberg, Markus Schmitt and Marin Bukov.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 3.0.4.
     </div>
   </body>
 </html>

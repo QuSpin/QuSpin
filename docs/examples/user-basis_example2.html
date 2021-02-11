@@ -1,7 +1,7 @@
 
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
     <meta charset="utf-8" /><script type="text/javascript">
 
@@ -15,7 +15,7 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-    <title>Bose-Hubbard model in 1d &#8212; QuSpin 0.3.4 documentation</title>
+    <title>Bose-Hubbard model in 1d &#8212; QuSpin 0.3.5 documentation</title>
     <link rel="stylesheet" href="../static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../static/pygments.css" type="text/css" />
     
@@ -38,7 +38,7 @@
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.4 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.5 documentation</a> &#187;</li> 
       </ul>
     </div>  
 
@@ -256,9 +256,7 @@
 198
 199
 200
-201
-202
-203</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span><span class="p">,</span> <span class="n">division</span>
+201</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span><span class="p">,</span> <span class="n">division</span>
 <span class="c1">#</span>
 <span class="kn">import</span> <span class="nn">sys</span><span class="o">,</span><span class="nn">os</span>
 <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s1">&#39;KMP_DUPLICATE_LIB_OK&#39;</span><span class="p">]</span><span class="o">=</span><span class="s1">&#39;True&#39;</span> <span class="c1"># uncomment this line if omp error occurs on OSX for python 3</span>
@@ -285,7 +283,7 @@
 <span class="c1">#</span>
 <span class="c1">######  function to call when applying operators</span>
 <span class="nd">@cfunc</span><span class="p">(</span><span class="n">op_sig_32</span><span class="p">,</span>
-	<span class="nb">locals</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">s</span><span class="o">=</span><span class="n">int32</span><span class="p">,</span><span class="n">n</span><span class="o">=</span><span class="n">int32</span><span class="p">,</span><span class="n">b</span><span class="o">=</span><span class="n">uint32</span><span class="p">,</span><span class="n">occ</span><span class="o">=</span><span class="n">int32</span><span class="p">,</span><span class="n">sps</span><span class="o">=</span><span class="n">uint32</span><span class="p">,</span><span class="n">me_offdiag</span><span class="o">=</span><span class="n">float64</span><span class="p">,</span><span class="n">me_diag</span><span class="o">=</span><span class="n">float64</span><span class="p">),</span> <span class="p">)</span>
+	<span class="nb">locals</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">b</span><span class="o">=</span><span class="n">uint32</span><span class="p">,</span><span class="n">occ</span><span class="o">=</span><span class="n">int32</span><span class="p">,</span><span class="n">sps</span><span class="o">=</span><span class="n">uint32</span><span class="p">,</span><span class="n">me_offdiag</span><span class="o">=</span><span class="n">float64</span><span class="p">,</span><span class="n">me_diag</span><span class="o">=</span><span class="n">float64</span><span class="p">),</span> <span class="p">)</span>
 <span class="k">def</span> <span class="nf">op</span><span class="p">(</span><span class="n">op_struct_ptr</span><span class="p">,</span><span class="n">op_str</span><span class="p">,</span><span class="n">site_ind</span><span class="p">,</span><span class="n">N</span><span class="p">,</span><span class="n">args</span><span class="p">):</span>
 	<span class="c1"># using struct pointer to pass op_struct_ptr back to C++ see numba Records</span>
 	<span class="n">op_struct</span> <span class="o">=</span> <span class="n">carray</span><span class="p">(</span><span class="n">op_struct_ptr</span><span class="p">,</span><span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
@@ -296,8 +294,6 @@
 	<span class="c1">#</span>
 	<span class="n">site_ind</span> <span class="o">=</span> <span class="n">N</span> <span class="o">-</span> <span class="n">site_ind</span> <span class="o">-</span> <span class="mi">1</span> <span class="c1"># convention for QuSpin for mapping from bits to sites.</span>
 	<span class="n">occ</span> <span class="o">=</span> <span class="p">(</span><span class="n">op_struct</span><span class="o">.</span><span class="n">state</span><span class="o">//</span><span class="n">sps</span><span class="o">**</span><span class="n">site_ind</span><span class="p">)</span><span class="o">%</span><span class="n">sps</span> <span class="c1"># occupation</span>
-	<span class="n">n</span> <span class="o">=</span> <span class="p">(</span><span class="n">op_struct</span><span class="o">.</span><span class="n">state</span><span class="o">&gt;&gt;</span><span class="n">site_ind</span><span class="p">)</span><span class="o">&amp;</span><span class="mi">1</span> <span class="c1"># either 0 or 1</span>
-	<span class="n">s</span> <span class="o">=</span> <span class="p">(((</span><span class="n">op_struct</span><span class="o">.</span><span class="n">state</span><span class="o">&gt;&gt;</span><span class="n">site_ind</span><span class="p">)</span><span class="o">&amp;</span><span class="mi">1</span><span class="p">)</span><span class="o">&lt;&lt;</span><span class="mi">1</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span> <span class="c1"># either -1 or 1</span>
 	<span class="n">b</span> <span class="o">=</span> <span class="n">sps</span><span class="o">**</span><span class="n">site_ind</span>
 	<span class="c1">#</span>
 	<span class="k">if</span> <span class="n">op_str</span><span class="o">==</span><span class="mi">43</span><span class="p">:</span> <span class="c1"># &quot;+&quot; is integer value 43 = ord(&quot;+&quot;)</span>
@@ -507,12 +503,12 @@
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.4 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.5 documentation</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &#169; Copyright 2016, Phillip Weinberg and Marin Bukov.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.4.0.
+        &#169; Copyright 2016, Phillip Weinberg, Markus Schmitt and Marin Bukov.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 3.0.4.
     </div>
   </body>
 </html>

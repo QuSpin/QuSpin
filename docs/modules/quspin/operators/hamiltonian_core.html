@@ -1,7 +1,7 @@
 
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
     <meta charset="utf-8" /><script type="text/javascript">
 
@@ -15,7 +15,7 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-    <title>quspin.operators.hamiltonian_core &#8212; QuSpin 0.3.4 documentation</title>
+    <title>quspin.operators.hamiltonian_core &#8212; QuSpin 0.3.5 documentation</title>
     <link rel="stylesheet" href="../../../static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../static/pygments.css" type="text/css" />
     
@@ -38,7 +38,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">QuSpin 0.3.4 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">QuSpin 0.3.5 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -535,6 +535,17 @@
 		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Ns</span>
 
 	<span class="nd">@property</span>
+	<span class="k">def</span> <span class="nf">shape</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;tuple: shape of the `hamiltonian` object, always equal to `(Ns,Ns)`.&quot;&quot;&quot;</span>
+		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_shape</span>
+	
+	<span class="c1"># @property</span>
+	<span class="c1"># def ndim(self):</span>
+	<span class="c1"># 	&quot;&quot;&quot;int: number of dimensions, always equal to 2. &quot;&quot;&quot;</span>
+	<span class="c1"># 	return len(self._shape)</span>
+	
+
+	<span class="nd">@property</span>
 	<span class="k">def</span> <span class="nf">get_shape</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 		<span class="sd">&quot;&quot;&quot;tuple: shape of the `hamiltonian` object, always equal to `(Ns,Ns)`.&quot;&quot;&quot;</span>
 		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_shape</span>
@@ -561,27 +572,27 @@
 
 	<span class="nd">@property</span>
 	<span class="k">def</span> <span class="nf">dynamic</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-		<span class="sd">&quot;&quot;&quot;dict: contains dynamic parts of the operator as `{func: Hdyn}`.</span>
+		<span class="sd">&quot;&quot;&quot;dict: contains dynamic parts of the operator as `dict(func=Hdyn)`. </span>
 
-<span class="sd">		Here `func` is the memory address of the time-dependent function which can be called as `func(time)`.</span>
-<span class="sd">		The function arguments are hard-coded, and are not passed. `Hdyn` is the sparse matrix to which</span>
-<span class="sd">		the drive couples.</span>
+<span class="sd">		The key `func` is the memory address of the time-dependent function which can be called as `func(time)`. The function arguments are hard-coded, and are not passed. </span>
+<span class="sd">		The value `Hdyn` is the sparse matrix to which the drive couples.</span>
 <span class="sd">		</span>
 <span class="sd">		&quot;&quot;&quot;</span>
 		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dynamic</span>
 
 	<span class="nd">@property</span>
 	<span class="k">def</span> <span class="nf">T</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-		<span class="sd">&quot;&quot;&quot;:obj:`hamiltonian`: transposes the operator matrix: :math:`H_{ij}\\mapsto H_{ji}`.&quot;&quot;&quot;</span>
+		<span class="sd">&quot;&quot;&quot;:obj:`hamiltonian`: transposes the operator matrix, :math:`H_{ij}\\mapsto H_{ji}`.&quot;&quot;&quot;</span>
 		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">transpose</span><span class="p">()</span>
 
 	<span class="nd">@property</span>
 	<span class="k">def</span> <span class="nf">H</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-		<span class="sd">&quot;&quot;&quot;:obj:`hamiltonian`: transposes and conjugates the operator matrix: :math:`H_{ij}\\mapsto H_{ji}^*`.&quot;&quot;&quot;</span>
+		<span class="sd">&quot;&quot;&quot;:obj:`hamiltonian`: transposes and conjugates the operator matrix, :math:`H_{ij}\\mapsto H_{ji}^*`.&quot;&quot;&quot;</span>
 		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">getH</span><span class="p">()</span>
 
 	<span class="nd">@property</span>
 	<span class="k">def</span> <span class="nf">nbytes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;float: Total bytes consumed by the elements of the `hamiltonian` array.&quot;&quot;&quot;</span>
 		<span class="n">nbytes</span> <span class="o">=</span> <span class="mi">0</span>
 		<span class="k">if</span> <span class="n">_sp</span><span class="o">.</span><span class="n">issparse</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_static</span><span class="p">):</span>
 			<span class="n">nbytes</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_static</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">nbytes</span>
@@ -687,6 +698,9 @@
 				<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Expecting V.ndim &lt; 4.&quot;</span><span class="p">)</span>
 
 
+		<span class="k">if</span> <span class="n">V</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">3</span> <span class="ow">and</span> <span class="n">times</span><span class="o">.</span><span class="n">ndim</span><span class="o">==</span><span class="mi">0</span><span class="p">:</span>
+			<span class="n">times</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">broadcast_to</span><span class="p">(</span><span class="n">times</span><span class="p">,(</span><span class="n">V</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],))</span>
+
 		<span class="n">result_dtype</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">result_type</span><span class="p">(</span><span class="n">V</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">_dtype</span><span class="p">)</span>
 		
 		<span class="k">if</span> <span class="n">result_dtype</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">supported_dtypes</span><span class="p">:</span>
@@ -700,7 +714,7 @@
 
 			<span class="k">if</span> <span class="n">_sp</span><span class="o">.</span><span class="n">issparse</span><span class="p">(</span><span class="n">V</span><span class="p">):</span>
 				<span class="n">V</span> <span class="o">=</span> <span class="n">V</span><span class="o">.</span><span class="n">tocsc</span><span class="p">()</span>
-				<span class="k">return</span> <span class="n">_sp</span><span class="o">.</span><span class="n">vstack</span><span class="p">([</span><span class="n">a</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">V</span><span class="o">.</span><span class="n">get_col</span><span class="p">(</span><span class="n">i</span><span class="p">),</span><span class="n">time</span><span class="o">=</span><span class="n">t</span><span class="p">,</span><span class="n">check</span><span class="o">=</span><span class="n">check</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">t</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">time</span><span class="p">)])</span>
+				<span class="k">return</span> <span class="n">_sp</span><span class="o">.</span><span class="n">hstack</span><span class="p">([</span><span class="n">a</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">V</span><span class="o">.</span><span class="n">getcol</span><span class="p">(</span><span class="n">i</span><span class="p">),</span><span class="n">time</span><span class="o">=</span><span class="n">t</span><span class="p">,</span><span class="n">check</span><span class="o">=</span><span class="n">check</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">t</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">time</span><span class="p">)])</span>
 			<span class="k">else</span><span class="p">:</span>
 				<span class="k">if</span> <span class="n">V</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">3</span> <span class="ow">and</span> <span class="n">V</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="n">V</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
 					<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Density matrices must be square!&quot;</span><span class="p">)</span>
@@ -708,7 +722,7 @@
 				<span class="c1"># allocate C-contiguous array to output results in.</span>
 				<span class="n">out</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">V</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">:]</span><span class="o">+</span><span class="n">V</span><span class="o">.</span><span class="n">shape</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span><span class="n">dtype</span><span class="o">=</span><span class="n">result_dtype</span><span class="p">)</span>
 				
-				<span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">t</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">time</span><span class="p">):</span>
+				<span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">t</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">times</span><span class="p">):</span>
 					<span class="n">v</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">ascontiguousarray</span><span class="p">(</span><span class="n">V</span><span class="p">[</span><span class="o">...</span><span class="p">,</span><span class="n">i</span><span class="p">],</span><span class="n">dtype</span><span class="o">=</span><span class="n">result_dtype</span><span class="p">)</span>
 					<span class="bp">self</span><span class="o">.</span><span class="n">_static_matvec</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_static</span><span class="p">,</span><span class="n">v</span><span class="p">,</span><span class="n">overwrite_out</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="o">...</span><span class="p">],</span><span class="n">a</span><span class="o">=</span><span class="n">a</span><span class="p">)</span>
 					<span class="k">for</span> <span class="n">func</span><span class="p">,</span><span class="n">Hd</span> <span class="ow">in</span> <span class="n">iteritems</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dynamic</span><span class="p">):</span>
@@ -746,6 +760,7 @@
 					<span class="bp">self</span><span class="o">.</span><span class="n">_dynamic_matvec</span><span class="p">[</span><span class="n">func</span><span class="p">](</span><span class="n">Hd</span><span class="p">,</span><span class="n">V</span><span class="p">,</span><span class="n">overwrite_out</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">a</span><span class="o">=</span><span class="n">a</span><span class="o">*</span><span class="n">func</span><span class="p">(</span><span class="n">time</span><span class="p">),</span><span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span>
 
 			<span class="k">elif</span> <span class="n">_sp</span><span class="o">.</span><span class="n">issparse</span><span class="p">(</span><span class="n">V</span><span class="p">):</span>
+
 				<span class="k">if</span> <span class="n">out</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
 					<span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;&#39;out&#39; option does not apply for sparse inputs.&quot;</span><span class="p">)</span>
 
@@ -862,14 +877,11 @@
 <span class="sd">		---------</span>
 <span class="sd">		&gt;&gt;&gt; H_fluct = H.quant_fluct(V,time=0,diagonal=False,check=True)</span>
 
-<span class="sd">		corresponds to :math:`\\Delta H = \\sqrt{ \\langle V|H^2(t=\\texttt{time})|V\\rangle - \\langle V|H(t=\\texttt{time})|V\\rangle^2 }`. </span>
+<span class="sd">		corresponds to :math:`\\left(\\Delta H\\right)^2 = \\langle V|H^2(t=\\texttt{time})|V\\rangle - \\langle V|H(t=\\texttt{time})|V\\rangle^2`. </span>
 <span class="sd">			 </span>
 <span class="sd">		&quot;&quot;&quot;</span>
 
 		<span class="kn">from</span> <span class="nn">.exp_op_core</span> <span class="kn">import</span> <span class="n">isexp_op</span>
-
-		<span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">Ns</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
-			<span class="k">return</span> <span class="n">_np</span><span class="o">.</span><span class="n">asarray</span><span class="p">([])</span>
 
 		<span class="k">if</span> <span class="n">ishamiltonian</span><span class="p">(</span><span class="n">V</span><span class="p">):</span>
 			<span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Can&#39;t take expectation value of hamiltonian&quot;</span><span class="p">)</span>
@@ -878,11 +890,11 @@
 			<span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Can&#39;t take expectation value of exp_op&quot;</span><span class="p">)</span>
 
 		<span class="c1"># fluctuations =  expctH2 - expctH^2</span>
-		<span class="n">kwargs</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">time</span><span class="o">=</span><span class="n">time</span><span class="p">,</span><span class="n">enforce_pure</span><span class="o">=</span><span class="n">enforce_pure</span><span class="p">)</span>
+		<span class="n">kwargs</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">enforce_pure</span><span class="o">=</span><span class="n">enforce_pure</span><span class="p">)</span>
 		<span class="n">V_dot</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">V</span><span class="p">,</span><span class="n">time</span><span class="o">=</span><span class="n">time</span><span class="p">,</span><span class="n">check</span><span class="o">=</span><span class="n">check</span><span class="p">)</span>
 		<span class="n">expt_value_sq</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_expt_value_core</span><span class="p">(</span><span class="n">V</span><span class="p">,</span><span class="n">V_dot</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span>
 
-		<span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">V</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">V</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="n">V</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="ow">or</span> <span class="n">enforce_pure</span><span class="p">:</span>
+		<span class="k">if</span> <span class="n">V_dot</span><span class="o">.</span><span class="n">ndim</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">V_dot</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="n">V_dot</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="ow">or</span> <span class="n">enforce_pure</span><span class="p">:</span>
 			<span class="n">sq_expt_value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_expt_value_core</span><span class="p">(</span><span class="n">V_dot</span><span class="p">,</span><span class="n">V_dot</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 		<span class="k">else</span><span class="p">:</span>
 			<span class="n">V_dot</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">V_dot</span><span class="p">,</span><span class="n">time</span><span class="o">=</span><span class="n">time</span><span class="p">,</span><span class="n">check</span><span class="o">=</span><span class="n">check</span><span class="p">)</span>
@@ -928,9 +940,6 @@
 <span class="sd">		&quot;&quot;&quot;</span>
 		<span class="kn">from</span> <span class="nn">.exp_op_core</span> <span class="kn">import</span> <span class="n">isexp_op</span>
 
-		<span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">Ns</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
-			<span class="k">return</span> <span class="n">_np</span><span class="o">.</span><span class="n">asarray</span><span class="p">([])</span>
-
 		<span class="k">if</span> <span class="n">ishamiltonian</span><span class="p">(</span><span class="n">V</span><span class="p">):</span>
 			<span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Can&#39;t take expectation value of hamiltonian&quot;</span><span class="p">)</span>
 
@@ -939,34 +948,23 @@
 
 		
 		<span class="n">V_dot</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">V</span><span class="p">,</span><span class="n">time</span><span class="o">=</span><span class="n">time</span><span class="p">,</span><span class="n">check</span><span class="o">=</span><span class="n">check</span><span class="p">)</span>
-		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_expt_value_core</span><span class="p">(</span><span class="n">V</span><span class="p">,</span><span class="n">V_dot</span><span class="p">,</span><span class="n">time</span><span class="o">=</span><span class="n">time</span><span class="p">,</span><span class="n">enforce_pure</span><span class="o">=</span><span class="n">enforce_pure</span><span class="p">)</span></div>
+		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_expt_value_core</span><span class="p">(</span><span class="n">V</span><span class="p">,</span><span class="n">V_dot</span><span class="p">,</span><span class="n">enforce_pure</span><span class="o">=</span><span class="n">enforce_pure</span><span class="p">)</span></div>
 
-	<span class="k">def</span> <span class="nf">_expt_value_core</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">V_left</span><span class="p">,</span><span class="n">V_right</span><span class="p">,</span><span class="n">time</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">enforce_pure</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-		<span class="k">if</span> <span class="n">_np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">time</span><span class="p">)</span><span class="o">.</span><span class="n">ndim</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span> <span class="c1"># multiple time point expectation values</span>
-			<span class="k">if</span> <span class="n">_sp</span><span class="o">.</span><span class="n">issparse</span><span class="p">(</span><span class="n">V_right</span><span class="p">):</span> <span class="c1"># multiple pure states multiple time points</span>
-				<span class="k">return</span> <span class="p">(</span><span class="n">V_left</span><span class="o">.</span><span class="n">H</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">V_right</span><span class="p">))</span><span class="o">.</span><span class="n">diagonal</span><span class="p">()</span>
-			<span class="k">else</span><span class="p">:</span>
-				<span class="n">V_left</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">V_left</span><span class="p">)</span>
-				<span class="k">if</span> <span class="n">V_left</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span> <span class="c1"># multiple pure states multiple time points</span>
-					<span class="k">return</span> <span class="n">_np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s2">&quot;ij,ij-&gt;j&quot;</span><span class="p">,</span><span class="n">V_left</span><span class="o">.</span><span class="n">conj</span><span class="p">(),</span><span class="n">V_right</span><span class="p">)</span>
-				<span class="k">elif</span> <span class="n">V_left</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span> <span class="c1"># multiple mixed states multiple time points</span>
-					<span class="k">return</span> <span class="n">_np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s2">&quot;iij-&gt;j&quot;</span><span class="p">,</span><span class="n">V_right</span><span class="p">)</span>
-
+	<span class="k">def</span> <span class="nf">_expt_value_core</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">V_left</span><span class="p">,</span><span class="n">V_right</span><span class="p">,</span><span class="n">enforce_pure</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+		<span class="k">if</span> <span class="n">_sp</span><span class="o">.</span><span class="n">issparse</span><span class="p">(</span><span class="n">V_right</span><span class="p">):</span>
+			<span class="k">if</span> <span class="n">V_left</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="n">V_left</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="ow">or</span> <span class="n">enforce_pure</span><span class="p">:</span> <span class="c1"># pure states</span>
+				<span class="k">return</span> <span class="n">_np</span><span class="o">.</span><span class="n">asarray</span><span class="p">((</span><span class="n">V_right</span><span class="o">.</span><span class="n">multiply</span><span class="p">(</span><span class="n">V_left</span><span class="o">.</span><span class="n">conj</span><span class="p">()))</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">))</span><span class="o">.</span><span class="n">squeeze</span><span class="p">()</span>
+			<span class="k">else</span><span class="p">:</span> <span class="c1"># density matrix</span>
+				<span class="k">return</span> <span class="n">V_right</span><span class="o">.</span><span class="n">diagonal</span><span class="p">()</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
 		<span class="k">else</span><span class="p">:</span>
+			<span class="n">V_right</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">V_right</span><span class="p">)</span>
+			<span class="k">if</span> <span class="n">V_right</span><span class="o">.</span><span class="n">ndim</span><span class="o">==</span><span class="mi">1</span><span class="p">:</span> <span class="c1"># single pure state</span>
+				<span class="k">return</span> <span class="n">_np</span><span class="o">.</span><span class="n">vdot</span><span class="p">(</span><span class="n">V_left</span><span class="p">,</span><span class="n">V_right</span><span class="p">)</span>
+			<span class="k">elif</span> <span class="p">(</span><span class="n">V_right</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="n">V_right</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="ow">or</span> <span class="n">enforce_pure</span><span class="p">):</span> <span class="c1"># multiple pure states</span>
+				<span class="k">return</span> <span class="n">_np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s2">&quot;ij,ij-&gt;j&quot;</span><span class="p">,</span><span class="n">V_left</span><span class="o">.</span><span class="n">conj</span><span class="p">(),</span><span class="n">V_right</span><span class="p">)</span>
+			<span class="k">else</span><span class="p">:</span> <span class="c1"># density matrices</span>
+				<span class="k">return</span> <span class="n">_np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s2">&quot;ii...-&gt;...&quot;</span><span class="p">,</span><span class="n">V_right</span><span class="p">)</span>
 
-			<span class="k">if</span> <span class="n">_sp</span><span class="o">.</span><span class="n">issparse</span><span class="p">(</span><span class="n">V_right</span><span class="p">):</span>
-				<span class="k">if</span> <span class="n">V_left</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="n">V_left</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="ow">or</span> <span class="n">enforce_pure</span><span class="p">:</span> <span class="c1"># pure states</span>
-					<span class="k">return</span> <span class="n">_np</span><span class="o">.</span><span class="n">asscalar</span><span class="p">((</span><span class="n">V_left</span><span class="o">.</span><span class="n">H</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">V_right</span><span class="p">))</span><span class="o">.</span><span class="n">toarray</span><span class="p">())</span>
-				<span class="k">else</span><span class="p">:</span> <span class="c1"># density matrix</span>
-					<span class="k">return</span> <span class="n">V_right</span><span class="o">.</span><span class="n">diagonal</span><span class="p">()</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
-			<span class="k">else</span><span class="p">:</span>
-				<span class="n">V_right</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">V_right</span><span class="p">)</span><span class="o">.</span><span class="n">squeeze</span><span class="p">()</span>
-				<span class="k">if</span> <span class="n">V_right</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span> <span class="c1"># pure state</span>
-					<span class="k">return</span> <span class="n">_np</span><span class="o">.</span><span class="n">vdot</span><span class="p">(</span><span class="n">V_left</span><span class="p">,</span><span class="n">V_right</span><span class="p">)</span>
-				<span class="k">elif</span> <span class="n">V_left</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="n">V_left</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="ow">or</span> <span class="n">enforce_pure</span><span class="p">:</span> <span class="c1"># multiple pure states</span>
-					<span class="k">return</span> <span class="n">_np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s2">&quot;ij,ij-&gt;j&quot;</span><span class="p">,</span><span class="n">V_left</span><span class="o">.</span><span class="n">conj</span><span class="p">(),</span><span class="n">V_right</span><span class="p">)</span>
-				<span class="k">else</span><span class="p">:</span> <span class="c1"># density matrix</span>
-					<span class="k">return</span> <span class="n">V_right</span><span class="o">.</span><span class="n">trace</span><span class="p">()</span>
 		
 <div class="viewcode-block" id="hamiltonian.matrix_ele"><a class="viewcode-back" href="../../../generated/quspin.operators.hamiltonian.html#quspin.operators.hamiltonian.matrix_ele">[docs]</a>	<span class="k">def</span> <span class="nf">matrix_ele</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">Vl</span><span class="p">,</span><span class="n">Vr</span><span class="p">,</span><span class="n">time</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">diagonal</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 		<span class="sd">&quot;&quot;&quot;Calculates matrix element of `hamiltonian` operator at time `time` in states `Vl` and `Vr`.</span>
@@ -1028,11 +1026,17 @@
 			<span class="k">if</span> <span class="n">Vr</span><span class="o">.</span><span class="n">ndim</span> <span class="o">&gt;</span> <span class="mi">2</span><span class="p">:</span>
 				<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Expecting Vr to have ndim &lt; 3&#39;</span><span class="p">)</span>
 
+
 		<span class="k">if</span> <span class="n">_sp</span><span class="o">.</span><span class="n">issparse</span><span class="p">(</span><span class="n">Vl</span><span class="p">):</span>
 			<span class="k">if</span> <span class="n">diagonal</span><span class="p">:</span>
-				<span class="k">return</span> <span class="n">Vl</span><span class="o">.</span><span class="n">H</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">Vr</span><span class="p">)</span><span class="o">.</span><span class="n">diagonal</span><span class="p">()</span>
+				<span class="k">return</span> <span class="n">_np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">Vl</span><span class="o">.</span><span class="n">conj</span><span class="p">()</span><span class="o">.</span><span class="n">multiply</span><span class="p">(</span><span class="n">Vr</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">))</span><span class="o">.</span><span class="n">squeeze</span><span class="p">()</span>
 			<span class="k">else</span><span class="p">:</span>
 				<span class="k">return</span> <span class="n">Vl</span><span class="o">.</span><span class="n">H</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">Vr</span><span class="p">)</span>
+		<span class="k">elif</span> <span class="n">_sp</span><span class="o">.</span><span class="n">issparse</span><span class="p">(</span><span class="n">Vr</span><span class="p">):</span>
+			<span class="k">if</span> <span class="n">diagonal</span><span class="p">:</span>
+				<span class="k">return</span> <span class="n">_np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">Vr</span><span class="o">.</span><span class="n">multiply</span><span class="p">(</span><span class="n">Vl</span><span class="o">.</span><span class="n">conj</span><span class="p">())</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">))</span><span class="o">.</span><span class="n">squeeze</span><span class="p">()</span>
+			<span class="k">else</span><span class="p">:</span>
+				<span class="k">return</span> <span class="n">Vr</span><span class="o">.</span><span class="n">T</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">Vl</span><span class="o">.</span><span class="n">conj</span><span class="p">())</span>
 		<span class="k">else</span><span class="p">:</span>
 			<span class="k">if</span> <span class="n">diagonal</span><span class="p">:</span>
 				<span class="k">return</span> <span class="n">_np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s2">&quot;ij,ij-&gt;j&quot;</span><span class="p">,</span><span class="n">Vl</span><span class="o">.</span><span class="n">conj</span><span class="p">(),</span><span class="n">Vr</span><span class="p">)</span>
@@ -2345,6 +2349,7 @@
 		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="fm">__sub__</span><span class="p">(</span><span class="n">other</span><span class="p">)</span><span class="o">.</span><span class="fm">__neg__</span><span class="p">()</span>
 
 	<span class="k">def</span> <span class="fm">__isub__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">other</span><span class="p">):</span> <span class="c1"># self -= other</span>
+
 		<span class="k">if</span> <span class="n">ishamiltonian</span><span class="p">(</span><span class="n">other</span><span class="p">):</span>
 			<span class="bp">self</span><span class="o">.</span><span class="n">_mat_checks</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
 			<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_isub_hamiltonian</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
@@ -2366,7 +2371,7 @@
 		<span class="k">else</span><span class="p">:</span>
 			<span class="n">other</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">asanyarray</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
 			<span class="bp">self</span><span class="o">.</span><span class="n">_mat_checks</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>	
-			<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sub_dense</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
+			<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_isub_dense</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
 
 	<span class="c1">##########################################################################################	</span>
 	<span class="c1">##########################################################################################</span>
@@ -2909,14 +2914,13 @@
 			<span class="bp">self</span><span class="o">.</span><span class="n">_is_dense</span> <span class="o">=</span> <span class="kc">True</span>
 			<span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;Mixing dense objects will cast internal matrices to dense.&quot;</span><span class="p">,</span><span class="n">HamiltonianEfficiencyWarning</span><span class="p">,</span><span class="n">stacklevel</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
 
-
 		<span class="k">try</span><span class="p">:</span>
 			<span class="bp">self</span><span class="o">.</span><span class="n">_static</span> <span class="o">-=</span> <span class="n">other</span>
 		<span class="k">except</span><span class="p">:</span>
 			<span class="bp">self</span><span class="o">.</span><span class="n">_static</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_static</span> <span class="o">-</span> <span class="n">other</span>
 
-		<span class="k">if</span> <span class="n">_check_almost_zero</span><span class="p">(</span><span class="n">new</span><span class="o">.</span><span class="n">_static</span><span class="p">):</span>
-			<span class="n">new</span><span class="o">.</span><span class="n">_static</span> <span class="o">=</span> <span class="n">_sp</span><span class="o">.</span><span class="n">dia_matrix</span><span class="p">(</span><span class="n">new</span><span class="o">.</span><span class="n">_shape</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="n">new</span><span class="o">.</span><span class="n">_dtype</span><span class="p">)</span>
+		<span class="k">if</span> <span class="n">_check_almost_zero</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_static</span><span class="p">):</span>
+			<span class="bp">self</span><span class="o">.</span><span class="n">_static</span> <span class="o">=</span> <span class="n">_sp</span><span class="o">.</span><span class="n">dia_matrix</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_shape</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_dtype</span><span class="p">)</span>
 
 		<span class="bp">self</span><span class="o">.</span><span class="n">check_is_dense</span><span class="p">()</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">_get_matvecs</span><span class="p">()</span>
@@ -3021,16 +3025,26 @@
 		<span class="n">out</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;out&quot;</span><span class="p">)</span>
 
 		<span class="k">if</span> <span class="n">out</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-			<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;quspin hamiltonian class does not support &#39;out&#39; for numpy.multiply or numpy.dot.&quot;</span><span class="p">)</span>
+			<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;quspin hamiltonian class does not support &#39;out&#39; for numpy.multiply, numpy.dot, or numpy.matmul.&quot;</span><span class="p">)</span>
 
 
-		<span class="k">if</span> <span class="p">(</span><span class="n">func</span> <span class="o">==</span><span class="n">_np</span><span class="o">.</span><span class="n">dot</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">func</span> <span class="o">==</span><span class="n">_np</span><span class="o">.</span><span class="n">multiply</span><span class="p">):</span>
+		<span class="k">if</span> <span class="p">(</span><span class="n">func</span> <span class="o">==</span><span class="n">_np</span><span class="o">.</span><span class="n">dot</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">func</span> <span class="o">==</span><span class="n">_np</span><span class="o">.</span><span class="n">multiply</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">func</span> <span class="o">==</span><span class="n">_np</span><span class="o">.</span><span class="n">matmul</span><span class="p">):</span>
 			<span class="k">if</span> <span class="n">pos</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
 				<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="fm">__mul__</span><span class="p">(</span><span class="n">inputs</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
 			<span class="k">if</span> <span class="n">pos</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
 				<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="fm">__rmul__</span><span class="p">(</span><span class="n">inputs</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-			<span class="k">else</span><span class="p">:</span>
-				<span class="k">return</span> <span class="bp">NotImplemented</span>
+		<span class="k">elif</span> <span class="p">(</span><span class="n">func</span> <span class="o">==</span><span class="n">_np</span><span class="o">.</span><span class="n">subtract</span><span class="p">):</span>
+			<span class="k">if</span> <span class="n">pos</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+				<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="fm">__sub__</span><span class="p">(</span><span class="n">inputs</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+			<span class="k">if</span> <span class="n">pos</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+				<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="fm">__rsub__</span><span class="p">(</span><span class="n">inputs</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+		<span class="k">elif</span> <span class="p">(</span><span class="n">func</span> <span class="o">==</span><span class="n">_np</span><span class="o">.</span><span class="n">add</span><span class="p">):</span>
+			<span class="k">if</span> <span class="n">pos</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+				<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="fm">__add__</span><span class="p">(</span><span class="n">inputs</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+			<span class="k">if</span> <span class="n">pos</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+				<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="fm">__radd__</span><span class="p">(</span><span class="n">inputs</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+
+		<span class="k">return</span> <span class="bp">NotImplemented</span>
 
 	<span class="k">def</span> <span class="nf">__array_ufunc__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">func</span><span class="p">,</span> <span class="n">method</span><span class="p">,</span> <span class="o">*</span><span class="n">inputs</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 		<span class="c1"># &quot;&quot;&quot;Method for compatibility with NumPy &gt;= 1.13 ufuncs and dot</span>
@@ -3046,9 +3060,20 @@
 			<span class="k">if</span> <span class="n">ishamiltonian</span><span class="p">(</span><span class="n">inputs</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
 				<span class="k">return</span> <span class="n">inputs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="fm">__mul__</span><span class="p">(</span><span class="n">inputs</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
 			<span class="k">elif</span> <span class="n">ishamiltonian</span><span class="p">(</span><span class="n">inputs</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
-				<span class="k">return</span> <span class="n">inputs</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="fm">__rmul__</span><span class="p">(</span><span class="n">inputs</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span></div>
+				<span class="k">return</span> <span class="n">inputs</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="fm">__rmul__</span><span class="p">(</span><span class="n">inputs</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+		<span class="k">elif</span> <span class="p">(</span><span class="n">func</span> <span class="o">==</span> <span class="n">_np</span><span class="o">.</span><span class="n">subtract</span><span class="p">):</span>
+			<span class="k">if</span> <span class="n">ishamiltonian</span><span class="p">(</span><span class="n">inputs</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+				<span class="k">return</span> <span class="n">inputs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="fm">__sub__</span><span class="p">(</span><span class="n">inputs</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+			<span class="k">elif</span> <span class="n">ishamiltonian</span><span class="p">(</span><span class="n">inputs</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
+				<span class="k">return</span> <span class="n">inputs</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="fm">__rsub__</span><span class="p">(</span><span class="n">inputs</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>			
+		<span class="k">elif</span> <span class="p">(</span><span class="n">func</span> <span class="o">==</span> <span class="n">_np</span><span class="o">.</span><span class="n">add</span><span class="p">):</span>
+			<span class="k">if</span> <span class="n">ishamiltonian</span><span class="p">(</span><span class="n">inputs</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+				<span class="k">return</span> <span class="n">inputs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="fm">__add__</span><span class="p">(</span><span class="n">inputs</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+			<span class="k">elif</span> <span class="n">ishamiltonian</span><span class="p">(</span><span class="n">inputs</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
+				<span class="k">return</span> <span class="n">inputs</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="fm">__radd__</span><span class="p">(</span><span class="n">inputs</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>		
 
 
+		<span class="k">return</span> <span class="bp">NotImplemented</span></div>
 
 <div class="viewcode-block" id="ishamiltonian"><a class="viewcode-back" href="../../../generated/quspin.operators.ishamiltonian.html#quspin.operators.ishamiltonian">[docs]</a><span class="k">def</span> <span class="nf">ishamiltonian</span><span class="p">(</span><span class="n">obj</span><span class="p">):</span>
 	<span class="sd">&quot;&quot;&quot;Checks if instance is object of `hamiltonian` class.</span>
@@ -3098,13 +3123,13 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">QuSpin 0.3.4 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">QuSpin 0.3.5 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &#169; Copyright 2016, Phillip Weinberg and Marin Bukov.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.4.0.
+        &#169; Copyright 2016, Phillip Weinberg, Markus Schmitt and Marin Bukov.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 3.0.4.
     </div>
   </body>
 </html>

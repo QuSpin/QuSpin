@@ -1,7 +1,7 @@
 
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
     <meta charset="utf-8" /><script type="text/javascript">
 
@@ -15,7 +15,7 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-    <title>Efficient time evolution: expm_multiply_parallel &#8212; QuSpin 0.3.4 documentation</title>
+    <title>Efficient time evolution: expm_multiply_parallel &#8212; QuSpin 0.3.5 documentation</title>
     <link rel="stylesheet" href="../static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../static/pygments.css" type="text/css" />
     
@@ -38,7 +38,7 @@
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.4 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.5 documentation</a> &#187;</li> 
       </ul>
     </div>  
 
@@ -64,7 +64,7 @@ H_1 = \sum_{j=0}^{L-1} J_{zz} S^z_{j+1}S^z_j + h_z S^z_j\]</div>
 <div class="math notranslate nohighlight">
 \[\begin{split}\mathcal{E}_\mathrm{ave}(\ell T) &amp;= \frac{1}{L}\langle\psi(\ell T)| H_\mathrm{ave} |\psi(\ell T)\rangle, \quad |\psi(\ell T)\rangle = [\exp(-i H_1 T/2)\exp(-i H_0 T/2)]^\ell|\psi(0)\rangle,  \\
 s_\mathrm{ent}(\ell T) &amp;= \frac{1}{L_A} \mathrm{tr}_A \left[ \rho_A(\ell T)\log \rho_A(\ell T)\right], \quad \rho_A(\ell T) = \mathrm{tr}_{L \backslash L_A} |\psi(\ell T)\rangle\langle\psi(\ell T)|.\end{split}\]</div>
-<p>We compare the entanglement entropy density value to the Page value, which takes into account finite-size corrections. As expected, the system heats up quickly to an infinite-temperature state.</p>
+<p>We compare the entanglement entropy density value to the Page value [[D. N. Page, PRL <em>71</em>, 1291 (1993)]](<a class="reference external" href="https://journals.aps.org/prl/abstract/10.1103/PhysRevLett.71.1291">https://journals.aps.org/prl/abstract/10.1103/PhysRevLett.71.1291</a>), which takes into account finite-size corrections. As expected, the system heats up quickly to an infinite-temperature state.</p>
 </div>
 <div class="section" id="script">
 <h1>Script<a class="headerlink" href="#script" title="Permalink to this headline">¶</a></h1>
@@ -330,12 +330,12 @@ s_\mathrm{ent}(\ell T) &amp;= \frac{1}{L_A} \mathrm{tr}_A \left[ \rho_A(\ell T)\
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.4 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.5 documentation</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &#169; Copyright 2016, Phillip Weinberg and Marin Bukov.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.4.0.
+        &#169; Copyright 2016, Phillip Weinberg, Markus Schmitt and Marin Bukov.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 3.0.4.
     </div>
   </body>
 </html>

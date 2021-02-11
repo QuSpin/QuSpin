@@ -1,4 +1,7 @@
+:orphan:
+
 .. _example18-label:
+
 
 Hexagonal Lattice: Fermi-Hubbard model [courtesy of A. Buyskikh]
 ----------------------------------------------------------------
@@ -16,6 +19,7 @@ Below, we first construct the hexagonal graph using `networkx <https://networkx.
 
 This example can be generalized to other lattice geometrices supported by `networkx <https://networkx.github.io/documentation/stable/install.html>`_. To install `networkx using anaconda <https://anaconda.org/anaconda/networkx>`_, run 
 :: 
+
 	$ conda install -c anaconda networkx
 
 

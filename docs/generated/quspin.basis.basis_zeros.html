@@ -1,7 +1,7 @@
 
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
     <meta charset="utf-8" /><script type="text/javascript">
 
@@ -15,7 +15,7 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-    <title>quspin.basis.basis_zeros &#8212; QuSpin 0.3.4 documentation</title>
+    <title>quspin.basis.basis_zeros &#8212; QuSpin 0.3.5 documentation</title>
     <link rel="stylesheet" href="../static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../static/pygments.css" type="text/css" />
     
@@ -46,7 +46,7 @@
         <li class="right" >
           <a href="quspin.basis.basis_ones.html" title="quspin.basis.basis_ones"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.4 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.5 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../basis.html" accesskey="U">Basis module (<code class="xref py py-mod docutils literal notranslate"><span class="pre">quspin.basis</span></code>)</a> &#187;</li> 
       </ul>
     </div>  
@@ -59,30 +59,30 @@
   <style> .red {color:#ff0000; font-weight:bold; font-style:italic; } </style>
 <style> .green {color:#00b200; font-weight:bold; font-style:italic; } </style><div class="section" id="quspin-basis-basis-zeros">
 <h1>quspin.basis.basis_zeros<a class="headerlink" href="#quspin-basis-basis-zeros" title="Permalink to this headline">¶</a></h1>
-<dl class="function">
+<dl class="py function">
 <dt id="quspin.basis.basis_zeros">
-<code class="sig-prename descclassname">quspin.basis.</code><code class="sig-name descname">basis_zeros</code><span class="sig-paren">(</span><em class="sig-param">shape</em>, <em class="sig-param">dtype=uint32</em><span class="sig-paren">)</span><a class="headerlink" href="#quspin.basis.basis_zeros" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">quspin.basis.</code><code class="sig-name descname">basis_zeros</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">shape</span></em>, <em class="sig-param"><span class="n">dtype</span><span class="o">=</span><span class="default_value">uint32</span></em><span class="sig-paren">)</span><a class="headerlink" href="#quspin.basis.basis_zeros" title="Permalink to this definition">¶</a></dt>
 <dd><p>Allocates initialized array using the QuSpin basis integers.</p>
-<p>QuSpin uses non-standard numpy datatypes which wrap boost multiprecision integers. 
+<p>QuSpin uses non-standard numpy datatypes which wrap boost multiprecision integers.
 This function creates an array of integers which are properly initialized to 0.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><dl class="simple">
-<dt><strong>shape</strong><span class="classifier">tuple</span></dt><dd><p>shape of the numpy array.</p>
+<dt><strong>shape: tuple</strong></dt><dd><p>shape of the numpy array.</p>
 </dd>
-<dt><strong>dtype</strong><span class="classifier">numpy.dtype, optional</span></dt><dd><p>numpy dtype used to create the array, one can use QuSpin defined dtypes here: <cite>uint32</cite>,`uint64`,`uint256`,`uint1024`,`uint4096`, or <cite>uint16384</cite>.</p>
+<dt><strong>dtype: numpy.dtype, optional</strong></dt><dd><p>numpy dtype used to create the array, one can use QuSpin defined dtypes here: <cite>uint32</cite>, <cite>uint64</cite>, <cite>uint256</cite>, <cite>uint1024</cite>, <cite>uint4096</cite>, or <cite>uint16384</cite>.</p>
 </dd>
 </dl>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><dl class="simple">
-<dt><strong>numpy.array object</strong></dt><dd><p>a properly initialized array of type <cite>dtype</cite> initialized to 0.</p>
+<dt>numpy.array object</dt><dd><p>a properly initialized array of type <cite>dtype</cite> initialized to 0.</p>
 </dd>
 </dl>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">basis_zeros</span><span class="p">((</span><span class="mi">100</span><span class="p">,))</span>  
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="n">basis_zeros</span><span class="p">((</span><span class="mi">100</span><span class="p">,))</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -137,13 +137,13 @@ This function creates an array of integers which are properly initialized to 0.<
         <li class="right" >
           <a href="quspin.basis.basis_ones.html" title="quspin.basis.basis_ones"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.4 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.5 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../basis.html" >Basis module (<code class="xref py py-mod docutils literal notranslate"><span class="pre">quspin.basis</span></code>)</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &#169; Copyright 2016, Phillip Weinberg and Marin Bukov.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.4.0.
+        &#169; Copyright 2016, Phillip Weinberg, Markus Schmitt and Marin Bukov.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 3.0.4.
     </div>
   </body>
 </html>

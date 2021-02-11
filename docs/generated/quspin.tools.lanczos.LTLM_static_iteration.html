@@ -1,7 +1,7 @@
 
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
     <meta charset="utf-8" /><script type="text/javascript">
 
@@ -15,7 +15,7 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-    <title>quspin.tools.lanczos.LTLM_static_iteration &#8212; QuSpin 0.3.4 documentation</title>
+    <title>quspin.tools.lanczos.LTLM_static_iteration &#8212; QuSpin 0.3.5 documentation</title>
     <link rel="stylesheet" href="../static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../static/pygments.css" type="text/css" />
     
@@ -46,7 +46,7 @@
         <li class="right" >
           <a href="quspin.tools.lanczos.lin_comb_Q_T.html" title="quspin.tools.lanczos.lin_comb_Q_T"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.4 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.5 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../tools.html" accesskey="U">Tools module (<code class="xref py py-mod docutils literal notranslate"><span class="pre">quspin.tools</span></code>)</a> &#187;</li> 
       </ul>
     </div>  
@@ -59,41 +59,41 @@
   <style> .red {color:#ff0000; font-weight:bold; font-style:italic; } </style>
 <style> .green {color:#00b200; font-weight:bold; font-style:italic; } </style><div class="section" id="quspin-tools-lanczos-ltlm-static-iteration">
 <h1>quspin.tools.lanczos.LTLM_static_iteration<a class="headerlink" href="#quspin-tools-lanczos-ltlm-static-iteration" title="Permalink to this headline">¶</a></h1>
-<dl class="function">
+<dl class="py function">
 <dt id="quspin.tools.lanczos.LTLM_static_iteration">
-<code class="sig-prename descclassname">quspin.tools.lanczos.</code><code class="sig-name descname">LTLM_static_iteration</code><span class="sig-paren">(</span><em class="sig-param">O_dict</em>, <em class="sig-param">E</em>, <em class="sig-param">V</em>, <em class="sig-param">Q_T</em>, <em class="sig-param">beta=0</em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/tools/lanczos/_LTLM.html#LTLM_static_iteration"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#quspin.tools.lanczos.LTLM_static_iteration" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">quspin.tools.lanczos.</code><code class="sig-name descname">LTLM_static_iteration</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">O_dict</span></em>, <em class="sig-param"><span class="n">E</span></em>, <em class="sig-param"><span class="n">V</span></em>, <em class="sig-param"><span class="n">Q_T</span></em>, <em class="sig-param"><span class="n">beta</span><span class="o">=</span><span class="default_value">0</span></em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/tools/lanczos/_LTLM.html#LTLM_static_iteration"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#quspin.tools.lanczos.LTLM_static_iteration" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculate iteration for low-temperature Lanczos method.</p>
 <p>Here we give a brief overview of this method based on <a class="reference external" href="https://arxiv.org/abs/1111.5931">arXiv:1111.5931</a>.</p>
-<p>One would naively think that it would require full diagonalization to calculate thermodynamic expectation values 
+<p>One would naively think that it would require full diagonalization to calculate thermodynamic expectation values
 for a quantum system as one has to fully diagonalize the Hamiltonian to evaluate:</p>
 <div class="math notranslate nohighlight">
 \[\langle O\rangle_\beta = \frac{1}{Z}Tr\left(e^{-\beta H}O\right)\]</div>
-<p>with the partition function defined as: <span class="math notranslate nohighlight">\(Z=Tr\left(e^{-\beta H}\right)\)</span>. The idea behind the 
-Low-Temperature Lanczos Method (LTLM) is to use quantum typicality as well as Krylov subspaces to 
-simplify this calculation. Typicality states that the trace of an operator can be approximated as an average 
-of that same operator with random vectors in the Hilbert-space sampled with the Harr measure. As a corollary, it 
-is known that the fluctuations of this average for any finite sample set will converge to 0 as the size of 
+<p>with the partition function defined as: <span class="math notranslate nohighlight">\(Z=Tr\left(e^{-\beta H}\right)\)</span>. The idea behind the
+Low-Temperature Lanczos Method (LTLM) is to use quantum typicality as well as Krylov subspaces to
+simplify this calculation. Typicality states that the trace of an operator can be approximated as an average
+of that same operator with random vectors in the Hilbert-space sampled with the Harr measure. As a corollary, it
+is known that the fluctuations of this average for any finite sample set will converge to 0 as the size of
 the Hilbert space increases. Mathematically this is expressed as:</p>
 <div class="math notranslate nohighlight">
 \[\frac{1}{\dim\mathcal{H}}Tr\left(e^{-\beta H}O\right)\approx \frac{1}{N_r}\sum_r\langle r| e^{-\beta H}O |r\rangle\]</div>
-<p>where <span class="math notranslate nohighlight">\(|r\rangle\)</span> is a random state from the Harr measure of hilbert space <span class="math notranslate nohighlight">\(\mathcal{H}\)</span> if the 
-Hamiltonian. An issue can occur when the temperature goes to zero as the overlap <span class="math notranslate nohighlight">\(\langle r| e^{-\beta H}O |r\rangle\)</span> will 
-be quite small for most states <span class="math notranslate nohighlight">\(|r\rangle\)</span>. Hence, this will require more random realizations to converge. 
+<p>where <span class="math notranslate nohighlight">\(|r\rangle\)</span> is a random state from the Harr measure of hilbert space <span class="math notranslate nohighlight">\(\mathcal{H}\)</span> if the
+Hamiltonian. An issue can occur when the temperature goes to zero as the overlap <span class="math notranslate nohighlight">\(\langle r| e^{-\beta H}O |r\rangle\)</span> will
+be quite small for most states <span class="math notranslate nohighlight">\(|r\rangle\)</span>. Hence, this will require more random realizations to converge.
 Fortunately the trace is cyclical and therefore we can make the expression more symmetric:</p>
 <div class="math notranslate nohighlight">
 \[\frac{1}{\dim\mathcal{H}}Tr\left(e^{-\beta H}O\right)=\frac{1}{\dim\mathcal{H}}Tr\left(e^{-\beta H/2}O e^{-\beta H/2}\right)\approx \frac{1}{N_r}\sum_r\langle r|e^{-\beta H/2}O e^{-\beta H/2}|r\rangle\]</div>
 <p>Such that the expecation value is exact as <span class="math notranslate nohighlight">\(\beta\rightarrow\infty\)</span> at the cost of having to calculate
-two matrix exponentials. Next we can approximate the matrix exponential using the Lanczos basis. The idea 
+two matrix exponentials. Next we can approximate the matrix exponential using the Lanczos basis. The idea
 is that the eigenstates from the lanczos basis can effectively be inserted as an identity operator:</p>
 <div class="math notranslate nohighlight">
 \[\frac{1}{\dim\mathcal{H}}Tr\left(e^{-\beta H/2}O e^{-\beta H/2}\right)\approx \frac{1}{N_r}\sum_r\langle r|e^{-\beta H/2}O e^{-\beta H/2}|r\rangle\approx \frac{1}{N_r}\sum_r\sum_{i,j=1}^m e^{-\beta(\epsilon^{(r)}_i+\epsilon^{(r)}_j)/2}\langle r|\psi^{(r)}_i\rangle\langle\psi^{(r)}_i|O|\psi^{(r)}_j\rangle\langle\psi^{(r)}_j|r\rangle = \frac{1}{N_r}\sum_r \langle O\rangle_r \equiv \overline{\langle O\rangle_r}\]</div>
-<p>Now going back to the thermal expecation value, we can use the expression above to calculate <span class="math notranslate nohighlight">\(\frac{1}{Z}Tr\left(e^{-\beta H}O\right)\)</span> 
-by noting that the partition function is simply the expecation value of the identity operator: <span class="math notranslate nohighlight">\(Z=Tr\left(e^{-\beta H}I\right)\)</span> and hence 
+<p>Now going back to the thermal expecation value, we can use the expression above to calculate <span class="math notranslate nohighlight">\(\frac{1}{Z}Tr\left(e^{-\beta H}O\right)\)</span>
+by noting that the partition function is simply the expecation value of the identity operator: <span class="math notranslate nohighlight">\(Z=Tr\left(e^{-\beta H}I\right)\)</span> and hence
 the thermal expecation value is approximated by:</p>
 <div class="math notranslate nohighlight">
 \[\langle O\rangle_\beta \approx \frac{\overline{\langle O\rangle_r}}{\overline{\langle I\rangle_r}}\]</div>
 <p>The idea behind this function is to generate the the expecation value <span class="math notranslate nohighlight">\(\langle O\rangle_r\)</span> and <span class="math notranslate nohighlight">\(\langle I\rangle_r\)</span>
-for a lanczos basis generated from an initial state <span class="math notranslate nohighlight">\(|r\rangle\)</span>. Therefore if the user would like to calculate the thermal expecation value all one 
+for a lanczos basis generated from an initial state <span class="math notranslate nohighlight">\(|r\rangle\)</span>. Therefore if the user would like to calculate the thermal expecation value all one
 has to do call this function for each lanczos basis generated from a random state <span class="math notranslate nohighlight">\(|r\rangle\)</span>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -112,11 +112,11 @@ has to do call this function for each lanczos basis generated from a random stat
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><dl class="simple">
-<dt><strong>Result_dict: dictionary</strong></dt><dd><p>A dictionary storying the results for a single iteration of the LTLM. The results are stored in numpy.ndarrays 
-that have the same shape as <cite>beta</cite>. The keys of <cite>Result_dict</cite> are the same as the keys in <cite>O_dict</cite> and the values 
+<dt>Result_dict: dictionary</dt><dd><p>A dictionary storying the results for a single iteration of the LTLM. The results are stored in numpy.ndarrays
+that have the same shape as <cite>beta</cite>. The keys of <cite>Result_dict</cite> are the same as the keys in <cite>O_dict</cite> and the values
 associated with the given key in <cite>Result_dict</cite> are the expectation values for the operator in <cite>O_dict</cite> with the same key.</p>
 </dd>
-<dt><strong>I_expt: numpy.ndarray, same shape as `beta`</strong></dt><dd><p>The expecation value of the identity operator for each beta.</p>
+<dt>I_expt: numpy.ndarray, same shape as <cite>beta</cite></dt><dd><p>The expecation value of the identity operator for each beta.</p>
 </dd>
 </dl>
 </dd>
@@ -185,13 +185,13 @@ associated with the given key in <cite>Result_dict</cite> are the expectation va
         <li class="right" >
           <a href="quspin.tools.lanczos.lin_comb_Q_T.html" title="quspin.tools.lanczos.lin_comb_Q_T"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.4 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.5 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../tools.html" >Tools module (<code class="xref py py-mod docutils literal notranslate"><span class="pre">quspin.tools</span></code>)</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &#169; Copyright 2016, Phillip Weinberg and Marin Bukov.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.4.0.
+        &#169; Copyright 2016, Phillip Weinberg, Markus Schmitt and Marin Bukov.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 3.0.4.
     </div>
   </body>
 </html>

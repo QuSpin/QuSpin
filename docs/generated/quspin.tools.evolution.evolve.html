@@ -1,7 +1,7 @@
 
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
     <meta charset="utf-8" /><script type="text/javascript">
 
@@ -15,7 +15,7 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-    <title>quspin.tools.evolution.evolve &#8212; QuSpin 0.3.4 documentation</title>
+    <title>quspin.tools.evolution.evolve &#8212; QuSpin 0.3.5 documentation</title>
     <link rel="stylesheet" href="../static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../static/pygments.css" type="text/css" />
     
@@ -46,7 +46,7 @@
         <li class="right" >
           <a href="quspin.tools.evolution.ED_state_vs_time.html" title="quspin.tools.evolution.ED_state_vs_time"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.4 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.5 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../tools.html" accesskey="U">Tools module (<code class="xref py py-mod docutils literal notranslate"><span class="pre">quspin.tools</span></code>)</a> &#187;</li> 
       </ul>
     </div>  
@@ -59,11 +59,11 @@
   <style> .red {color:#ff0000; font-weight:bold; font-style:italic; } </style>
 <style> .green {color:#00b200; font-weight:bold; font-style:italic; } </style><div class="section" id="quspin-tools-evolution-evolve">
 <h1>quspin.tools.evolution.evolve<a class="headerlink" href="#quspin-tools-evolution-evolve" title="Permalink to this headline">¶</a></h1>
-<dl class="function">
+<dl class="py function">
 <dt id="quspin.tools.evolution.evolve">
-<code class="sig-prename descclassname">quspin.tools.evolution.</code><code class="sig-name descname">evolve</code><span class="sig-paren">(</span><em class="sig-param">v0</em>, <em class="sig-param">t0</em>, <em class="sig-param">times</em>, <em class="sig-param">f</em>, <em class="sig-param">solver_name='dop853'</em>, <em class="sig-param">real=False</em>, <em class="sig-param">stack_state=False</em>, <em class="sig-param">verbose=False</em>, <em class="sig-param">imag_time=False</em>, <em class="sig-param">iterate=False</em>, <em class="sig-param">f_params=()</em>, <em class="sig-param">**solver_args</em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/tools/evolution.html#evolve"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#quspin.tools.evolution.evolve" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">quspin.tools.evolution.</code><code class="sig-name descname">evolve</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">v0</span></em>, <em class="sig-param"><span class="n">t0</span></em>, <em class="sig-param"><span class="n">times</span></em>, <em class="sig-param"><span class="n">f</span></em>, <em class="sig-param"><span class="n">solver_name</span><span class="o">=</span><span class="default_value">'dop853'</span></em>, <em class="sig-param"><span class="n">real</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">stack_state</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">verbose</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">imag_time</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">iterate</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">f_params</span><span class="o">=</span><span class="default_value">()</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">solver_args</span></em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/tools/evolution.html#evolve"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#quspin.tools.evolution.evolve" title="Permalink to this definition">¶</a></dt>
 <dd><p>Implements (imaginary) time evolution for a user-defined first-order ODE.</p>
-<p>The function can be used to study nonlinear semiclassical dynamics. It can also serve as a pre-configured 
+<p>The function can be used to study nonlinear semiclassical dynamics. It can also serve as a pre-configured
 ODE solver in python, without any relation to other QuSpin objects.</p>
 <dl class="field-list">
 <dt class="field-odd">Parameters</dt>
@@ -89,10 +89,10 @@ ODE solver in python, without any relation to other QuSpin objects.</p>
 </dd>
 <dt><strong>real</strong><span class="classifier">bool, optional</span></dt><dd><p>Flag to determine if <cite>f</cite> is real or complex-valued. Default is <cite>False</cite>.</p>
 </dd>
-<dt><strong>imag_time</strong><span class="classifier">bool, optional</span></dt><dd><p>Must be set to <cite>True</cite> when <cite>f</cite> defines imaginary-time evolution, in order to normalise the state 
+<dt><strong>imag_time</strong><span class="classifier">bool, optional</span></dt><dd><p>Must be set to <cite>True</cite> when <cite>f</cite> defines imaginary-time evolution, in order to normalise the state
 at each time in <cite>times</cite>. Default is <cite>False</cite>.</p>
 </dd>
-<dt><strong>stack_state</strong><span class="classifier">bool, optional</span></dt><dd><p>If <cite>f</cite> is written to take care of real and imaginary parts separately (see Examples), this flag 
+<dt><strong>stack_state</strong><span class="classifier">bool, optional</span></dt><dd><p>If <cite>f</cite> is written to take care of real and imaginary parts separately (see Examples), this flag
 will return a single complex-valued solution instead of the real and imaginary parts separately.
 Default is <cite>False</cite>.</p>
 </dd>
@@ -102,7 +102,7 @@ Default is <cite>False</cite>.</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><dl class="simple">
-<dt><strong>obj</strong></dt><dd><dl class="simple">
+<dt>obj</dt><dd><dl class="simple">
 <dt>Can be either one of the following:</dt><dd><ul class="simple">
 <li><p>numpy.ndarray containing evolved state against time.</p></li>
 <li><p>generator object for time-evolved state (requires <cite>iterate = True</cite>).</p></li>
@@ -114,11 +114,11 @@ Default is <cite>False</cite>.</p>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
-<p>The following example shows how to use the <cite>evolve()</cite> function to solve the periodically-driven 
+<p>The following example shows how to use the <cite>evolve()</cite> function to solve the periodically-driven
 Gross-Pitaevskii equation (GPE) on a one-imensional lattice. The GPE has a linear part, comprising the
 kinetic energy and the external potentials (e.g. a harmonic trap), and a nonlinear part which describes
 the interactions.</p>
-<p>Below, in a few steps we show how to use the functionality of the <cite>evolve()</cite> function to solve the GPE 
+<p>Below, in a few steps we show how to use the functionality of the <cite>evolve()</cite> function to solve the GPE
 on a one-dimensional lattice for periodically-driven particles in a harmonic trap:</p>
 <div class="math notranslate nohighlight">
 \[i\dot\varphi_j(t) = -J\left( e^{-iA\sin\Omega t}\varphi_{j-1}(t) + e^{+iA\sin\Omega t}\varphi_{j+1}(t) \right) + \kappa_\mathrm{trap}\varphi_j(t) + U|\varphi_j(t)|^2\varphi_j(t)\]</div>
@@ -239,19 +239,19 @@ the strength of the harmonic trap, and <span class="math notranslate nohighlight
 <span class="n">phi_t</span> <span class="o">=</span> <span class="n">evolve</span><span class="p">(</span><span class="n">phi0</span><span class="p">,</span><span class="n">t</span><span class="o">.</span><span class="n">i</span><span class="p">,</span><span class="n">t</span><span class="o">.</span><span class="n">vals</span><span class="p">,</span><span class="n">GPE</span><span class="p">)</span>
 </pre></div>
 </td></tr></table></div>
-<p>Since the GPE is a complex-valued equation, the above code requires the use of a complex-valued ODE solver 
+<p>Since the GPE is a complex-valued equation, the above code requires the use of a complex-valued ODE solver
 [which is done by <cite>evolve()</cite> under the hood, so long as no solver is explicitly specified].</p>
-<p>An alternative way 
-to solve the GPE using a real-valued solver might be useful to speed-up the computation. This can be achieved 
+<p>An alternative way
+to solve the GPE using a real-valued solver might be useful to speed-up the computation. This can be achieved
 by decomposing the condensate wave function into a real and imaginary part, and proceeds as follows:</p>
 <p>The goal is to solve:</p>
 <div class="math notranslate nohighlight">
 \[-i\dot\varphi(t) = H(t)\varphi(t) + U |\varphi(t)|^2 \varphi(t)\]</div>
-<p>for the complex-valued <span class="math notranslate nohighlight">\(\varphi(t)\)</span> by re-writing it as a real-valued vector <cite>phi=[u,v]</cite> where 
-<span class="math notranslate nohighlight">\(\varphi(t) = u(t) + iv(t)\)</span>. The real and imaginary parts, <span class="math notranslate nohighlight">\(u(t)\)</span> and <span class="math notranslate nohighlight">\(v(t)\)</span>, have the same array dimension as 
+<p>for the complex-valued <span class="math notranslate nohighlight">\(\varphi(t)\)</span> by re-writing it as a real-valued vector <cite>phi=[u,v]</cite> where
+<span class="math notranslate nohighlight">\(\varphi(t) = u(t) + iv(t)\)</span>. The real and imaginary parts, <span class="math notranslate nohighlight">\(u(t)\)</span> and <span class="math notranslate nohighlight">\(v(t)\)</span>, have the same array dimension as
 <span class="math notranslate nohighlight">\(\phi(t)\)</span>.</p>
-<p>In the most general form, the single-particle Hamiltonian can be decomposed as 
-<span class="math notranslate nohighlight">\(H(t)= H_{stat} + f(t)H_{dyn}\)</span>, with a complex-valued driving function <span class="math notranslate nohighlight">\(f(t)\)</span>. Then, the GPE can be cast in 
+<p>In the most general form, the single-particle Hamiltonian can be decomposed as
+<span class="math notranslate nohighlight">\(H(t)= H_{stat} + f(t)H_{dyn}\)</span>, with a complex-valued driving function <span class="math notranslate nohighlight">\(f(t)\)</span>. Then, the GPE can be cast in
 the following real-valued form:</p>
 <div class="math notranslate nohighlight">
 \[\dot u(t) = +\left[H_{stat} + U\left(|u(t)|^2 + |v(t)|^2\right) \right]v(t) + Re[f(t)]H_{dyn}v(t) + Im[f(t)]H_{dyn}u(t)\]</div>
@@ -313,9 +313,9 @@ the following real-valued form:</p>
 </pre></div>
 </td></tr></table></div>
 <p>The flag <cite>stack_state=True</cite> is required for <cite>evolve()</cite> to handle the complex-valued initial condition properly,
-as well as to put together the output solution as a complex-valued vector in the end. Since the real-valued ODE solver 
-allows to parse ODE parameters, we can include them in the user-defined ODE function and use the 
-flag <cite>f_params</cite>. Notice the elegant way python allows one to circumvent the usage of this variable in the 
+as well as to put together the output solution as a complex-valued vector in the end. Since the real-valued ODE solver
+allows to parse ODE parameters, we can include them in the user-defined ODE function and use the
+flag <cite>f_params</cite>. Notice the elegant way python allows one to circumvent the usage of this variable in the
 complex-valued example above.</p>
 </dd></dl>
 
@@ -369,13 +369,13 @@ complex-valued example above.</p>
         <li class="right" >
           <a href="quspin.tools.evolution.ED_state_vs_time.html" title="quspin.tools.evolution.ED_state_vs_time"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.4 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.5 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../tools.html" >Tools module (<code class="xref py py-mod docutils literal notranslate"><span class="pre">quspin.tools</span></code>)</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &#169; Copyright 2016, Phillip Weinberg and Marin Bukov.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.4.0.
+        &#169; Copyright 2016, Phillip Weinberg, Markus Schmitt and Marin Bukov.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 3.0.4.
     </div>
   </body>
 </html>

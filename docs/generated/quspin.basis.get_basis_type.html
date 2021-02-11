@@ -1,7 +1,7 @@
 
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
     <meta charset="utf-8" /><script type="text/javascript">
 
@@ -15,7 +15,7 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-    <title>quspin.basis.get_basis_type &#8212; QuSpin 0.3.4 documentation</title>
+    <title>quspin.basis.get_basis_type &#8212; QuSpin 0.3.5 documentation</title>
     <link rel="stylesheet" href="../static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../static/pygments.css" type="text/css" />
     
@@ -46,7 +46,7 @@
         <li class="right" >
           <a href="quspin.basis.basis_zeros.html" title="quspin.basis.basis_zeros"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.4 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.5 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../basis.html" accesskey="U">Basis module (<code class="xref py py-mod docutils literal notranslate"><span class="pre">quspin.basis</span></code>)</a> &#187;</li> 
       </ul>
     </div>  
@@ -59,9 +59,9 @@
   <style> .red {color:#ff0000; font-weight:bold; font-style:italic; } </style>
 <style> .green {color:#00b200; font-weight:bold; font-style:italic; } </style><div class="section" id="quspin-basis-get-basis-type">
 <h1>quspin.basis.get_basis_type<a class="headerlink" href="#quspin-basis-get-basis-type" title="Permalink to this headline">¶</a></h1>
-<dl class="function">
+<dl class="py function">
 <dt id="quspin.basis.get_basis_type">
-<code class="sig-prename descclassname">quspin.basis.</code><code class="sig-name descname">get_basis_type</code><span class="sig-paren">(</span><em class="sig-param">N</em>, <em class="sig-param">Np</em>, <em class="sig-param">sps</em><span class="sig-paren">)</span><a class="headerlink" href="#quspin.basis.get_basis_type" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">quspin.basis.</code><code class="sig-name descname">get_basis_type</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">N</span></em>, <em class="sig-param"><span class="n">Np</span></em>, <em class="sig-param"><span class="n">sps</span></em><span class="sig-paren">)</span><a class="headerlink" href="#quspin.basis.get_basis_type" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns minimum dtype to represent manybody state.</p>
 <p>Given the system size, number of particles and states per site this function calculates the minimum type required to represent those states.</p>
 <dl class="field-list simple">
@@ -77,13 +77,13 @@
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><dl class="simple">
-<dt><strong>numpy.dtype object</strong></dt><dd><p>the appropriate dtype size to represent the system. will be one of:  <cite>uint32</cite>,`uint64`,`uint256`,`uint1024`,`uint4096`, or <cite>uint16384</cite>.</p>
+<dt>numpy.dtype object</dt><dd><p>the appropriate dtype size to represent the system. will be one of:  <cite>uint32</cite>, <cite>uint64</cite>, <cite>uint256</cite>, <cite>uint1024</cite>, <cite>uint4096</cite>, or <cite>uint16384</cite>.</p>
 </dd>
 </dl>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">dtype</span> <span class="o">=</span> <span class="n">get_basis_type</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>  
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">dtype</span> <span class="o">=</span> <span class="n">get_basis_type</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -138,13 +138,13 @@
         <li class="right" >
           <a href="quspin.basis.basis_zeros.html" title="quspin.basis.basis_zeros"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.4 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.5 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../basis.html" >Basis module (<code class="xref py py-mod docutils literal notranslate"><span class="pre">quspin.basis</span></code>)</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &#169; Copyright 2016, Phillip Weinberg and Marin Bukov.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.4.0.
+        &#169; Copyright 2016, Phillip Weinberg, Markus Schmitt and Marin Bukov.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 3.0.4.
     </div>
   </body>
 </html>

@@ -26,6 +26,7 @@ quspin.basis.spin\_basis\_1d
       ~spin_basis_1d.inplace_Op
       ~spin_basis_1d.int_to_state
       ~spin_basis_1d.partial_trace
+      ~spin_basis_1d.project_from
       ~spin_basis_1d.state_to_int
    
    

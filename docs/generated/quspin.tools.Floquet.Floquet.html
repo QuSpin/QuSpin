@@ -1,7 +1,7 @@
 
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
     <meta charset="utf-8" /><script type="text/javascript">
 
@@ -15,7 +15,7 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-    <title>quspin.tools.Floquet.Floquet &#8212; QuSpin 0.3.4 documentation</title>
+    <title>quspin.tools.Floquet.Floquet &#8212; QuSpin 0.3.5 documentation</title>
     <link rel="stylesheet" href="../static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../static/pygments.css" type="text/css" />
     
@@ -46,7 +46,7 @@
         <li class="right" >
           <a href="quspin.tools.lanczos.FTLM_static_iteration.html" title="quspin.tools.lanczos.FTLM_static_iteration"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.4 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.5 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../tools.html" accesskey="U">Tools module (<code class="xref py py-mod docutils literal notranslate"><span class="pre">quspin.tools</span></code>)</a> &#187;</li> 
       </ul>
     </div>  
@@ -59,10 +59,11 @@
   <style> .red {color:#ff0000; font-weight:bold; font-style:italic; } </style>
 <style> .green {color:#00b200; font-weight:bold; font-style:italic; } </style><div class="section" id="quspin-tools-floquet-floquet">
 <h1>quspin.tools.Floquet.Floquet<a class="headerlink" href="#quspin-tools-floquet-floquet" title="Permalink to this headline">¶</a></h1>
-<dl class="class">
+<dl class="py class">
 <dt id="quspin.tools.Floquet.Floquet">
-<em class="property">class </em><code class="sig-prename descclassname">quspin.tools.Floquet.</code><code class="sig-name descname">Floquet</code><span class="sig-paren">(</span><em class="sig-param">evo_dict</em>, <em class="sig-param">HF=False</em>, <em class="sig-param">UF=False</em>, <em class="sig-param">thetaF=False</em>, <em class="sig-param">VF=False</em>, <em class="sig-param">n_jobs=1</em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/tools/Floquet.html#Floquet"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#quspin.tools.Floquet.Floquet" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calculates the Floquet spectrum, Floquet Hamiltonian and Floquet states.</p>
+<em class="property">class </em><code class="sig-prename descclassname">quspin.tools.Floquet.</code><code class="sig-name descname">Floquet</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">evo_dict</span></em>, <em class="sig-param"><span class="n">HF</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">UF</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">thetaF</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">VF</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">n_jobs</span><span class="o">=</span><span class="default_value">1</span></em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/tools/Floquet.html#Floquet"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#quspin.tools.Floquet.Floquet" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Calculates the Floquet spectrum, Floquet Hamiltonian and Floquet states.</p>
 <p>Loops over the basis states to compute the Floquet unitary <span class="math notranslate nohighlight">\(U_F\)</span> (evolution operator over one period) for a
 periodically-driven system governed by the Hamiltonian <span class="math notranslate nohighlight">\(H(t)=H(t+T)\)</span>:</p>
 <div class="math notranslate nohighlight">
@@ -71,12 +72,12 @@ periodically-driven system governed by the Hamiltonian <span class="math notrans
 <p class="rubric">Examples</p>
 <p>Consider the following periodically driven spin-1/2 Hamiltonian</p>
 <div class="math notranslate nohighlight">
-\[H(t) = \left\{ 
-\begin{array}{cl} \sum_j J\sigma^z_{j+1}\sigma^z_j + h\sigma^z_j , &amp;  t\in[-T/4,T/4] \newline 
-\sum_j g\sigma^x_j, &amp;  t \in[T/4,3T/4] 
-\end{array} 
+\[H(t) = \left\{
+\begin{array}{cl} \sum_j J\sigma^z_{j+1}\sigma^z_j + h\sigma^z_j , &amp;  t\in[-T/4,T/4] \newline
+\sum_j g\sigma^x_j, &amp;  t \in[T/4,3T/4]
+\end{array}
 \right\}  \mathrm{mod}\ T\]</div>
-<p>where <span class="math notranslate nohighlight">\(T=2\pi/\Omega\)</span> is the drive period. We choose the starting point of the evolution 
+<p>where <span class="math notranslate nohighlight">\(T=2\pi/\Omega\)</span> is the drive period. We choose the starting point of the evolution
 (or equivalently – the driving phase) to be <span class="math notranslate nohighlight">\(t=0\)</span>.</p>
 <p>The following snippet of code shows how to calculate the Floquet eigenstates and the corresponding quasienergies,
 using <cite>evo_dict</cite> variable, case ii (see below).</p>
@@ -159,32 +160,14 @@ using <cite>evo_dict</cite> variable, case ii (see below).</p>
 <span class="n">EF</span><span class="o">=</span><span class="n">Floq</span><span class="o">.</span><span class="n">EF</span> <span class="c1"># read off quasienergies</span>
 </pre></div>
 </td></tr></table></div>
-<dl class="field-list simple">
-<dt class="field-odd">Attributes</dt>
-<dd class="field-odd"><dl class="simple">
-<dt><a class="reference internal" href="#quspin.tools.Floquet.Floquet.EF" title="quspin.tools.Floquet.Floquet.EF"><code class="xref py py-obj docutils literal notranslate"><span class="pre">EF</span></code></a></dt><dd><p>numpy.ndarray(float): ordered Floquet quasi-energies in interval <span class="math notranslate nohighlight">\([-\Omega,\Omega]\)</span>.</p>
-</dd>
-<dt><a class="reference internal" href="#quspin.tools.Floquet.Floquet.HF" title="quspin.tools.Floquet.Floquet.HF"><code class="xref py py-obj docutils literal notranslate"><span class="pre">HF</span></code></a></dt><dd><p>numpy.ndarray(float): Floquet Hamiltonian.</p>
-</dd>
-<dt><a class="reference internal" href="#quspin.tools.Floquet.Floquet.T" title="quspin.tools.Floquet.Floquet.T"><code class="xref py py-obj docutils literal notranslate"><span class="pre">T</span></code></a></dt><dd><p>float: drive period.</p>
-</dd>
-<dt><a class="reference internal" href="#quspin.tools.Floquet.Floquet.UF" title="quspin.tools.Floquet.Floquet.UF"><code class="xref py py-obj docutils literal notranslate"><span class="pre">UF</span></code></a></dt><dd><p>numpy.ndarray(float): Floquet unitary.</p>
-</dd>
-<dt><a class="reference internal" href="#quspin.tools.Floquet.Floquet.VF" title="quspin.tools.Floquet.Floquet.VF"><code class="xref py py-obj docutils literal notranslate"><span class="pre">VF</span></code></a></dt><dd><p>numpy.ndarray(float): Floquet eigenbasis (in columns).</p>
-</dd>
-<dt><a class="reference internal" href="#quspin.tools.Floquet.Floquet.thetaF" title="quspin.tools.Floquet.Floquet.thetaF"><code class="xref py py-obj docutils literal notranslate"><span class="pre">thetaF</span></code></a></dt><dd><p>numpy.ndarray(float): Floquet eigenphases.</p>
-</dd>
-</dl>
-</dd>
-</dl>
-<dl class="method">
+<dl class="py method">
 <dt id="quspin.tools.Floquet.Floquet.__init__">
-<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param">evo_dict</em>, <em class="sig-param">HF=False</em>, <em class="sig-param">UF=False</em>, <em class="sig-param">thetaF=False</em>, <em class="sig-param">VF=False</em>, <em class="sig-param">n_jobs=1</em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/tools/Floquet.html#Floquet.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#quspin.tools.Floquet.Floquet.__init__" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">evo_dict</span></em>, <em class="sig-param"><span class="n">HF</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">UF</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">thetaF</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">VF</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">n_jobs</span><span class="o">=</span><span class="default_value">1</span></em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/tools/Floquet.html#Floquet.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#quspin.tools.Floquet.Floquet.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Instantiates the <cite>Floquet</cite> class.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><dl class="simple">
-<dt><strong>evo_dict</strong><span class="classifier">dict</span></dt><dd><p>Dictionary which passes the different types of protocols to calculate the Floquet unitary. 
+<dt><strong>evo_dict</strong><span class="classifier">dict</span></dt><dd><p>Dictionary which passes the different types of protocols to calculate the Floquet unitary.
 Depending on the protocol type, it contains the following keys:</p>
 <ol class="lowerroman simple">
 <li><dl class="simple">
@@ -198,7 +181,7 @@ Depending on the protocol type, it contains the following keys:</p>
 </dl>
 </li>
 <li><dl class="simple">
-<dt>Periodic step protocol from a <cite>hamiltonian</cite> object. </dt><dd><ul class="simple">
+<dt>Periodic step protocol from a <cite>hamiltonian</cite> object.</dt><dd><ul class="simple">
 <li><p><cite>H</cite> : single hamiltonian object to generate the hamiltonians at each step. Periodic step drives can be encoded using a single function, e.g. <span class="math notranslate nohighlight">\(\mathrm{sign}(\cos(\Omega t))\)</span>.</p></li>
 <li><p><cite>t_list</cite> : list of times to evaluate the hamiltonian at for each step.</p></li>
 <li><p><cite>dt_list</cite> : list of time step durations for each step of the evolution.</p></li>
@@ -208,7 +191,7 @@ Depending on the protocol type, it contains the following keys:</p>
 </dl>
 </li>
 <li><dl class="simple">
-<dt>Periodic step protocol from a list of hamiltonians. </dt><dd><ul class="simple">
+<dt>Periodic step protocol from a list of hamiltonians.</dt><dd><ul class="simple">
 <li><p><cite>H_list</cite> : list of matrices to evolve with.</p></li>
 <li><p><cite>dt_list</cite> : list of time step durations. Must be the same size as <cite>H_list</cite>.</p></li>
 <li><p><cite>T</cite>: (optional) drive period used to compute the Floquet Hamiltonian <cite>H_F</cite>. If not specified, then <cite>T=sum(dt_list)</cite>. Use this option for periodic delta kicks.</p></li>
@@ -253,63 +236,93 @@ Depending on the protocol type, it contains the following keys:</p>
 </colgroup>
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#quspin.tools.Floquet.Floquet.EF" title="quspin.tools.Floquet.Floquet.EF"><code class="xref py py-obj docutils literal notranslate"><span class="pre">EF</span></code></a></p></td>
-<td><p>numpy.ndarray(float): ordered Floquet quasi-energies in interval <span class="math notranslate nohighlight">\([-\Omega,\Omega]\)</span>.</p></td>
+<td><p>ordered Floquet quasi-energies in interval <span class="math notranslate nohighlight">\([-\Omega,\Omega]\)</span>.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#quspin.tools.Floquet.Floquet.HF" title="quspin.tools.Floquet.Floquet.HF"><code class="xref py py-obj docutils literal notranslate"><span class="pre">HF</span></code></a></p></td>
-<td><p>numpy.ndarray(float): Floquet Hamiltonian.</p></td>
+<td><p>Floquet Hamiltonian.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#quspin.tools.Floquet.Floquet.T" title="quspin.tools.Floquet.Floquet.T"><code class="xref py py-obj docutils literal notranslate"><span class="pre">T</span></code></a></p></td>
-<td><p>float: drive period.</p></td>
+<td><p>drive period.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#quspin.tools.Floquet.Floquet.UF" title="quspin.tools.Floquet.Floquet.UF"><code class="xref py py-obj docutils literal notranslate"><span class="pre">UF</span></code></a></p></td>
-<td><p>numpy.ndarray(float): Floquet unitary.</p></td>
+<td><p>Floquet unitary.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#quspin.tools.Floquet.Floquet.VF" title="quspin.tools.Floquet.Floquet.VF"><code class="xref py py-obj docutils literal notranslate"><span class="pre">VF</span></code></a></p></td>
-<td><p>numpy.ndarray(float): Floquet eigenbasis (in columns).</p></td>
+<td><p>Floquet eigenbasis (in columns).</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#quspin.tools.Floquet.Floquet.thetaF" title="quspin.tools.Floquet.Floquet.thetaF"><code class="xref py py-obj docutils literal notranslate"><span class="pre">thetaF</span></code></a></p></td>
-<td><p>numpy.ndarray(float): Floquet eigenphases.</p></td>
+<td><p>Floquet eigenphases.</p></td>
 </tr>
 </tbody>
 </table>
-<dl class="method">
+<dl class="py method">
 <dt id="quspin.tools.Floquet.Floquet.EF">
 <em class="property">property </em><code class="sig-name descname">EF</code><a class="headerlink" href="#quspin.tools.Floquet.Floquet.EF" title="Permalink to this definition">¶</a></dt>
-<dd><p>numpy.ndarray(float): ordered Floquet quasi-energies in interval <span class="math notranslate nohighlight">\([-\Omega,\Omega]\)</span>.</p>
+<dd><p>ordered Floquet quasi-energies in interval <span class="math notranslate nohighlight">\([-\Omega,\Omega]\)</span>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>numpy.ndarray(float)</p>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="quspin.tools.Floquet.Floquet.HF">
 <em class="property">property </em><code class="sig-name descname">HF</code><a class="headerlink" href="#quspin.tools.Floquet.Floquet.HF" title="Permalink to this definition">¶</a></dt>
-<dd><p>numpy.ndarray(float): Floquet Hamiltonian.</p>
+<dd><p>Floquet Hamiltonian.</p>
 <p>Requires __init__ argument HF=True.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>numpy.ndarray(float)</p>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="quspin.tools.Floquet.Floquet.T">
 <em class="property">property </em><code class="sig-name descname">T</code><a class="headerlink" href="#quspin.tools.Floquet.Floquet.T" title="Permalink to this definition">¶</a></dt>
-<dd><p>float: drive period.</p>
+<dd><p>drive period.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="quspin.tools.Floquet.Floquet.UF">
 <em class="property">property </em><code class="sig-name descname">UF</code><a class="headerlink" href="#quspin.tools.Floquet.Floquet.UF" title="Permalink to this definition">¶</a></dt>
-<dd><p>numpy.ndarray(float): Floquet unitary.</p>
+<dd><p>Floquet unitary.</p>
 <p>Requires __init__ argument UF=True.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>numpy.ndarray(float)</p>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="quspin.tools.Floquet.Floquet.VF">
 <em class="property">property </em><code class="sig-name descname">VF</code><a class="headerlink" href="#quspin.tools.Floquet.Floquet.VF" title="Permalink to this definition">¶</a></dt>
-<dd><p>numpy.ndarray(float): Floquet eigenbasis (in columns).</p>
+<dd><p>Floquet eigenbasis (in columns).</p>
 <p>Requires __init__ argument VF=True.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>numpy.ndarray(float)</p>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="quspin.tools.Floquet.Floquet.thetaF">
 <em class="property">property </em><code class="sig-name descname">thetaF</code><a class="headerlink" href="#quspin.tools.Floquet.Floquet.thetaF" title="Permalink to this definition">¶</a></dt>
-<dd><p>numpy.ndarray(float): Floquet eigenphases.</p>
+<dd><p>Floquet eigenphases.</p>
 <p>Requires __init__ argument thetaF=True.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>numpy.ndarray(float)</p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
@@ -364,13 +377,13 @@ Depending on the protocol type, it contains the following keys:</p>
         <li class="right" >
           <a href="quspin.tools.lanczos.FTLM_static_iteration.html" title="quspin.tools.lanczos.FTLM_static_iteration"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.4 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.5 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../tools.html" >Tools module (<code class="xref py py-mod docutils literal notranslate"><span class="pre">quspin.tools</span></code>)</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &#169; Copyright 2016, Phillip Weinberg and Marin Bukov.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.4.0.
+        &#169; Copyright 2016, Phillip Weinberg, Markus Schmitt and Marin Bukov.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 3.0.4.
     </div>
   </body>
 </html>

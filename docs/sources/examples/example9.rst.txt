@@ -1,3 +1,5 @@
+:orphan:
+
 .. _example9-label:
 
 Integrability Breaking and Thermalising Dynamics in the 2D Transverse-Field Ising Model

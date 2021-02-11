@@ -1,7 +1,7 @@
 
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
     <meta charset="utf-8" /><script type="text/javascript">
 
@@ -15,7 +15,7 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-    <title>quspin.tools.evolution.expm_multiply_parallel &#8212; QuSpin 0.3.4 documentation</title>
+    <title>quspin.tools.evolution.expm_multiply_parallel &#8212; QuSpin 0.3.5 documentation</title>
     <link rel="stylesheet" href="../static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../static/pygments.css" type="text/css" />
     
@@ -46,7 +46,7 @@
         <li class="right" >
           <a href="quspin.tools.evolution.evolve.html" title="quspin.tools.evolution.evolve"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.4 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.5 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../tools.html" accesskey="U">Tools module (<code class="xref py py-mod docutils literal notranslate"><span class="pre">quspin.tools</span></code>)</a> &#187;</li> 
       </ul>
     </div>  
@@ -59,10 +59,11 @@
   <style> .red {color:#ff0000; font-weight:bold; font-style:italic; } </style>
 <style> .green {color:#00b200; font-weight:bold; font-style:italic; } </style><div class="section" id="quspin-tools-evolution-expm-multiply-parallel">
 <h1>quspin.tools.evolution.expm_multiply_parallel<a class="headerlink" href="#quspin-tools-evolution-expm-multiply-parallel" title="Permalink to this headline">¶</a></h1>
-<dl class="class">
+<dl class="py class">
 <dt id="quspin.tools.evolution.expm_multiply_parallel">
-<em class="property">class </em><code class="sig-prename descclassname">quspin.tools.evolution.</code><code class="sig-name descname">expm_multiply_parallel</code><span class="sig-paren">(</span><em class="sig-param">A</em>, <em class="sig-param">a=1.0</em>, <em class="sig-param">dtype=None</em>, <em class="sig-param">copy=False</em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/tools/expm_multiply_parallel_core/expm_multiply_parallel_core.html#expm_multiply_parallel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#quspin.tools.evolution.expm_multiply_parallel" title="Permalink to this definition">¶</a></dt>
-<dd><p>Implements <cite>scipy.sparse.linalg.expm_multiply()</cite> for <em>openmp</em>.</p>
+<em class="property">class </em><code class="sig-prename descclassname">quspin.tools.evolution.</code><code class="sig-name descname">expm_multiply_parallel</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">A</span></em>, <em class="sig-param"><span class="n">a</span><span class="o">=</span><span class="default_value">1.0</span></em>, <em class="sig-param"><span class="n">dtype</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">copy</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/tools/expm_multiply_parallel_core/expm_multiply_parallel_core.html#expm_multiply_parallel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#quspin.tools.evolution.expm_multiply_parallel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Implements <cite>scipy.sparse.linalg.expm_multiply()</cite> for <em>openmp</em>.</p>
 <p class="rubric">Notes</p>
 <ul class="simple">
 <li><p>this is a wrapper over custom c++ code.</p></li>
@@ -130,34 +131,9 @@ The code snippet below initiates the class, and is required to run the example c
 <span class="nb">print</span><span class="p">(</span><span class="n">expH</span><span class="p">)</span>
 </pre></div>
 </td></tr></table></div>
-<dl class="field-list simple">
-<dt class="field-odd">Attributes</dt>
-<dd class="field-odd"><dl class="simple">
-<dt><a class="reference internal" href="#quspin.tools.evolution.expm_multiply_parallel.A" title="quspin.tools.evolution.expm_multiply_parallel.A"><code class="xref py py-obj docutils literal notranslate"><span class="pre">A</span></code></a></dt><dd><p>scipy.sparse.csr_matrix: csr_matrix to be exponentiated.</p>
-</dd>
-<dt><a class="reference internal" href="#quspin.tools.evolution.expm_multiply_parallel.a" title="quspin.tools.evolution.expm_multiply_parallel.a"><code class="xref py py-obj docutils literal notranslate"><span class="pre">a</span></code></a></dt><dd><p>scalar: value multiplying generator matrix <span class="math notranslate nohighlight">\(A\)</span> in matrix exponential: <span class="math notranslate nohighlight">\(\mathrm{e}^{aA}\)</span></p>
-</dd>
-</dl>
-</dd>
-</dl>
-<p class="rubric">Methods</p>
-<table class="longtable docutils align-default">
-<colgroup>
-<col style="width: 10%" />
-<col style="width: 90%" />
-</colgroup>
-<tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#quspin.tools.evolution.expm_multiply_parallel.dot" title="quspin.tools.evolution.expm_multiply_parallel.dot"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dot</span></code></a>(v[, work_array, overwrite_v])</p></td>
-<td><p>Calculates the action of <span class="math notranslate nohighlight">\(\mathrm{e}^{aA}\)</span> on a vector <span class="math notranslate nohighlight">\(v\)</span>.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#quspin.tools.evolution.expm_multiply_parallel.set_a" title="quspin.tools.evolution.expm_multiply_parallel.set_a"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_a</span></code></a>(a[, dtype])</p></td>
-<td><p>Sets the value of the property <cite>a</cite>.</p></td>
-</tr>
-</tbody>
-</table>
-<dl class="method">
+<dl class="py method">
 <dt id="quspin.tools.evolution.expm_multiply_parallel.__init__">
-<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param">A</em>, <em class="sig-param">a=1.0</em>, <em class="sig-param">dtype=None</em>, <em class="sig-param">copy=False</em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/tools/expm_multiply_parallel_core/expm_multiply_parallel_core.html#expm_multiply_parallel.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#quspin.tools.evolution.expm_multiply_parallel.__init__" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">A</span></em>, <em class="sig-param"><span class="n">a</span><span class="o">=</span><span class="default_value">1.0</span></em>, <em class="sig-param"><span class="n">dtype</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">copy</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/tools/expm_multiply_parallel_core/expm_multiply_parallel_core.html#expm_multiply_parallel.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#quspin.tools.evolution.expm_multiply_parallel.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initializes <cite>expm_multiply_parallel</cite>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -201,35 +177,49 @@ The code snippet below initiates the class, and is required to run the example c
 </colgroup>
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#quspin.tools.evolution.expm_multiply_parallel.A" title="quspin.tools.evolution.expm_multiply_parallel.A"><code class="xref py py-obj docutils literal notranslate"><span class="pre">A</span></code></a></p></td>
-<td><p>scipy.sparse.csr_matrix: csr_matrix to be exponentiated.</p></td>
+<td><p>csr_matrix to be exponentiated.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#quspin.tools.evolution.expm_multiply_parallel.a" title="quspin.tools.evolution.expm_multiply_parallel.a"><code class="xref py py-obj docutils literal notranslate"><span class="pre">a</span></code></a></p></td>
-<td><p>scalar: value multiplying generator matrix <span class="math notranslate nohighlight">\(A\)</span> in matrix exponential: <span class="math notranslate nohighlight">\(\mathrm{e}^{aA}\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(\mathrm{e}^{aA}\)</span></p></td>
 </tr>
 </tbody>
 </table>
-<dl class="method">
+<dl class="py method">
 <dt id="quspin.tools.evolution.expm_multiply_parallel.A">
 <em class="property">property </em><code class="sig-name descname">A</code><a class="headerlink" href="#quspin.tools.evolution.expm_multiply_parallel.A" title="Permalink to this definition">¶</a></dt>
-<dd><p>scipy.sparse.csr_matrix: csr_matrix to be exponentiated.</p>
+<dd><p>csr_matrix to be exponentiated.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>scipy.sparse.csr_matrix</p>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="quspin.tools.evolution.expm_multiply_parallel.a">
 <em class="property">property </em><code class="sig-name descname">a</code><a class="headerlink" href="#quspin.tools.evolution.expm_multiply_parallel.a" title="Permalink to this definition">¶</a></dt>
-<dd><p>scalar: value multiplying generator matrix <span class="math notranslate nohighlight">\(A\)</span> in matrix exponential: <span class="math notranslate nohighlight">\(\mathrm{e}^{aA}\)</span></p>
+<dd><p><span class="math notranslate nohighlight">\(\mathrm{e}^{aA}\)</span></p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>scalar</p>
+</dd>
+<dt class="field-even">Type</dt>
+<dd class="field-even"><p>value multiplying generator matrix <span class="math notranslate nohighlight">\(A\)</span> in matrix exponential</p>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="quspin.tools.evolution.expm_multiply_parallel.dot">
-<code class="sig-name descname">dot</code><span class="sig-paren">(</span><em class="sig-param">v</em>, <em class="sig-param">work_array=None</em>, <em class="sig-param">overwrite_v=False</em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/tools/expm_multiply_parallel_core/expm_multiply_parallel_core.html#expm_multiply_parallel.dot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#quspin.tools.evolution.expm_multiply_parallel.dot" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">dot</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">v</span></em>, <em class="sig-param"><span class="n">work_array</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">overwrite_v</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/tools/expm_multiply_parallel_core/expm_multiply_parallel_core.html#expm_multiply_parallel.dot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#quspin.tools.evolution.expm_multiply_parallel.dot" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculates the action of <span class="math notranslate nohighlight">\(\mathrm{e}^{aA}\)</span> on a vector <span class="math notranslate nohighlight">\(v\)</span>.</p>
 <dl class="field-list">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><dl class="simple">
-<dt><strong>v</strong><span class="classifier">contiguous numpy.ndarray</span></dt><dd><p>array to apply <span class="math notranslate nohighlight">\(\mathrm{e}^{aA}\)</span> on.</p>
+<dt><strong>v</strong><span class="classifier">contiguous numpy.ndarray, 1d or 2d array</span></dt><dd><p>array to apply <span class="math notranslate nohighlight">\(\mathrm{e}^{aA}\)</span> on.</p>
 </dd>
-<dt><strong>work_array</strong><span class="classifier">contiguous numpy.ndarray, optional</span></dt><dd><p>array of <cite>shape = (2*len(v),)</cite> which is used as work_array space for the underlying c-code. This saves extra memory allocation for function operations.</p>
+<dt><strong>work_array</strong><span class="classifier">contiguous numpy.ndarray, optional</span></dt><dd><p>array can be any shape but must contain 2*v.size contiguous elements.
+This array is used as temporary memory space for the underlying c-code. This saves extra memory allocation for function operations.</p>
 </dd>
 <dt><strong>overwrite_v</strong><span class="classifier">bool</span></dt><dd><p>if set to <cite>True</cite>, the data in <cite>v</cite> is overwritten by the function. This saves extra memory allocation for the results.</p>
 </dd>
@@ -237,7 +227,7 @@ The code snippet below initiates the class, and is required to run the example c
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><dl>
-<dt><strong>numpy.ndarray</strong></dt><dd><p>result of <span class="math notranslate nohighlight">\(\mathrm{e}^{aA}v\)</span>.</p>
+<dt>numpy.ndarray</dt><dd><p>result of <span class="math notranslate nohighlight">\(\mathrm{e}^{aA}v\)</span>.</p>
 <p>If <cite>overwrite_v = True</cite> the dunction returns <cite>v</cite> with the data overwritten, otherwise the result is stored in a new array.</p>
 </dd>
 </dl>
@@ -263,9 +253,9 @@ The code snippet below initiates the class, and is required to run the example c
 </td></tr></table></div>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="quspin.tools.evolution.expm_multiply_parallel.set_a">
-<code class="sig-name descname">set_a</code><span class="sig-paren">(</span><em class="sig-param">a</em>, <em class="sig-param">dtype=None</em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/tools/expm_multiply_parallel_core/expm_multiply_parallel_core.html#expm_multiply_parallel.set_a"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#quspin.tools.evolution.expm_multiply_parallel.set_a" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">set_a</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">a</span></em>, <em class="sig-param"><span class="n">dtype</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/tools/expm_multiply_parallel_core/expm_multiply_parallel_core.html#expm_multiply_parallel.set_a"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#quspin.tools.evolution.expm_multiply_parallel.set_a" title="Permalink to this definition">¶</a></dt>
 <dd><p>Sets the value of the property <cite>a</cite>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -341,13 +331,13 @@ The code snippet below initiates the class, and is required to run the example c
         <li class="right" >
           <a href="quspin.tools.evolution.evolve.html" title="quspin.tools.evolution.evolve"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.4 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.5 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../tools.html" >Tools module (<code class="xref py py-mod docutils literal notranslate"><span class="pre">quspin.tools</span></code>)</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &#169; Copyright 2016, Phillip Weinberg and Marin Bukov.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.4.0.
+        &#169; Copyright 2016, Phillip Weinberg, Markus Schmitt and Marin Bukov.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 3.0.4.
     </div>
   </body>
 </html>

@@ -1,7 +1,7 @@
 
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
     <meta charset="utf-8" /><script type="text/javascript">
 
@@ -15,7 +15,7 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-    <title>quspin.basis.basis_general.boson &#8212; QuSpin 0.3.4 documentation</title>
+    <title>quspin.basis.basis_general.boson &#8212; QuSpin 0.3.5 documentation</title>
     <link rel="stylesheet" href="../../../../static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../../static/pygments.css" type="text/css" />
     
@@ -38,7 +38,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">QuSpin 0.3.4 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">QuSpin 0.3.5 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -56,50 +56,49 @@
 <span class="kn">from</span> <span class="nn">scipy.special</span> <span class="kn">import</span> <span class="n">comb</span>
 
 <span class="k">def</span> <span class="nf">H_dim</span><span class="p">(</span><span class="n">Np</span><span class="p">,</span><span class="n">N</span><span class="p">,</span><span class="n">m_max</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Returns the total number of states in the bosonic Hilbert space</span>
+	<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	Returns the total number of states in the bosonic Hilbert space.</span>
 
-<span class="sd">    --- arguments:</span>
+<span class="sd">	Parameters</span>
+<span class="sd">	----------</span>
+<span class="sd">	Np: int</span>
+<span class="sd">		total number of bosons in lattice.</span>
+<span class="sd">	N: int </span>
+<span class="sd">		total number of sites.</span>
+<span class="sd">	m_max+1: int</span>
+<span class="sd">		maximum number of states per site. </span>
+<span class="sd">	</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+	<span class="n">Ns</span> <span class="o">=</span> <span class="mi">0</span>
+	<span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">Np</span><span class="o">//</span><span class="p">(</span><span class="n">m_max</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">):</span>
+		<span class="n">r_2</span> <span class="o">=</span> <span class="n">Np</span> <span class="o">-</span> <span class="n">r</span><span class="o">*</span><span class="p">(</span><span class="n">m_max</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+		<span class="k">if</span> <span class="n">r</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+			<span class="n">Ns</span> <span class="o">+=</span>  <span class="n">comb</span><span class="p">(</span><span class="n">N</span><span class="p">,</span><span class="n">r</span><span class="p">,</span><span class="n">exact</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="o">*</span> <span class="n">comb</span><span class="p">(</span><span class="n">N</span> <span class="o">+</span> <span class="n">r_2</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span><span class="n">r_2</span><span class="p">,</span><span class="n">exact</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+		<span class="k">else</span><span class="p">:</span>
+			<span class="n">Ns</span> <span class="o">+=</span> <span class="o">-</span><span class="n">comb</span><span class="p">(</span><span class="n">N</span><span class="p">,</span><span class="n">r</span><span class="p">,</span><span class="n">exact</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="o">*</span> <span class="n">comb</span><span class="p">(</span><span class="n">N</span> <span class="o">+</span> <span class="n">r_2</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span><span class="n">r_2</span><span class="p">,</span><span class="n">exact</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
-<span class="sd">    Np: total number of bosons in lattice</span>
-<span class="sd">    N: total number of sites</span>
-<span class="sd">    m_max+1: max number of states per site </span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">Ns</span> <span class="o">=</span> <span class="mi">0</span>
-    <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">Np</span><span class="o">//</span><span class="p">(</span><span class="n">m_max</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">):</span>
-        <span class="n">r_2</span> <span class="o">=</span> <span class="n">Np</span> <span class="o">-</span> <span class="n">r</span><span class="o">*</span><span class="p">(</span><span class="n">m_max</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">r</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="n">Ns</span> <span class="o">+=</span>  <span class="n">comb</span><span class="p">(</span><span class="n">N</span><span class="p">,</span><span class="n">r</span><span class="p">,</span><span class="n">exact</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="o">*</span> <span class="n">comb</span><span class="p">(</span><span class="n">N</span> <span class="o">+</span> <span class="n">r_2</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span><span class="n">r_2</span><span class="p">,</span><span class="n">exact</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">Ns</span> <span class="o">+=</span> <span class="o">-</span><span class="n">comb</span><span class="p">(</span><span class="n">N</span><span class="p">,</span><span class="n">r</span><span class="p">,</span><span class="n">exact</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="o">*</span> <span class="n">comb</span><span class="p">(</span><span class="n">N</span> <span class="o">+</span> <span class="n">r_2</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span><span class="n">r_2</span><span class="p">,</span><span class="n">exact</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-
-    <span class="k">return</span> <span class="n">Ns</span>
+	<span class="k">return</span> <span class="n">Ns</span>
 
 <span class="c1"># general basis for hardcore bosons/spin-1/2</span>
 <div class="viewcode-block" id="boson_basis_general"><a class="viewcode-back" href="../../../../generated/quspin.basis.boson_basis_general.html#quspin.basis.boson_basis_general">[docs]</a><span class="k">class</span> <span class="nc">boson_basis_general</span><span class="p">(</span><span class="n">hcb_basis_general</span><span class="p">,</span><span class="n">basis_general</span><span class="p">):</span>
 	<span class="sd">&quot;&quot;&quot;Constructs basis for boson operators for USER-DEFINED symmetries.</span>
 
-<span class="sd">	Any unitary symmetry transformation :math:`Q` of periodicity :math:`m_Q` (:math:`Q^{m_Q}=1`) has</span>
-<span class="sd">	eigenvalues :math:`\\exp(-2\\pi i q/m_Q)`, labelled by an ingeter :math:`q\\in\\{0,1,\\dots,m_Q-1\\}`.</span>
-<span class="sd">	These integers :math:`q` are used to define the symmetry blocks.</span>
+<span class="sd">	Any unitary symmetry transformation :math:`Q` of periodicity :math:`m_Q` (:math:`Q^{m_Q}=1`) has eigenvalues :math:`\\exp(-2\\pi i q/m_Q)`, labelled by an ingeter :math:`q\\in\\{0,1,\\dots,m_Q-1\\}`. These integers :math:`q` are used to define the symmetry blocks.</span>
 
-<span class="sd">	For instance, if :math:`Q=P` is parity (reflection), then :math:`q=0,1`. If :math:`Q=T` is translation by one lattice site,</span>
-<span class="sd">	then :math:`q` labels the mometum blocks in the same fashion as for the `..._basis_1d` classes. </span>
+<span class="sd">	For instance, if :math:`Q=P` is parity (reflection), then :math:`q=0,1`. If :math:`Q=T` is translation by one lattice site, then :math:`q` labels the mometum blocks in the same fashion as for the `..._basis_1d` classes. </span>
 
-<span class="sd">	User-defined symmetries with the `boson_basis_general` class can be programmed as follows. Suppose we have a system of</span>
-<span class="sd">	L sites, enumerated :math:`s=(s_0,s_1,\\dots,s_{L-1})`. There are two types of operations one can perform on the sites:</span>
+<span class="sd">	User-defined symmetries with the `boson_basis_general` class can be programmed as follows. Suppose we have a system of L sites, enumerated :math:`s=(s_0,s_1,\\dots,s_{L-1})`. There are two types of operations one can perform on the sites:</span>
 <span class="sd">		* exchange the labels of two sites: :math:`s_i \\leftrightarrow s_j` (e.g., translation, parity)</span>
 <span class="sd">		* invert the population on a given site: :math:`s_i\\leftrightarrow -(s_j+1)` (e.g., particle-hole symmetry, hardcore bosons only)</span>
 
-<span class="sd">	These two operations already comprise a variety of symmetries, including translation, parity (reflection) and </span>
-<span class="sd">	spin inversion. For a specific example, see below.</span>
+<span class="sd">	These two operations already comprise a variety of symmetries, including translation, parity (reflection) and spin inversion. For a specific example, see below.</span>
 
 <span class="sd">	The supported operator strings for `boson_basis_general` are:</span>
 
 <span class="sd">	.. math::</span>
 <span class="sd">		\\begin{array}{cccc}</span>
-<span class="sd">			\\texttt{basis}/\\texttt{opstr}   &amp;   \\texttt{&quot;I&quot;}   &amp;   \\texttt{&quot;+&quot;}   &amp;   \\texttt{&quot;-&quot;}  &amp;   \\texttt{&quot;n&quot;}   &amp;   \\texttt{&quot;z&quot;}     \\newline	</span>
-<span class="sd">			\\texttt{boson_basis_general}&amp;   \\hat{1}        &amp;   \\hat b^\\dagger      &amp;       \\hat b          &amp; \\hat b^\\dagger b     &amp;  \\hat b^\\dagger\\hat b - \\frac{\\mathrm{sps}-1}{2}  \\newline</span>
+<span class="sd">			\\texttt{basis}/\\texttt{opstr}   &amp;   \\texttt{&quot;I&quot;}   &amp;   \\texttt{&quot;+&quot;}   &amp;   \\texttt{&quot;-&quot;}  &amp;   \\texttt{&quot;n&quot;}   &amp;   \\texttt{&quot;z&quot;}	 \\newline	</span>
+<span class="sd">			\\texttt{boson_basis_general}&amp;   \\hat{1}		&amp;   \\hat b^\\dagger	  &amp;	   \\hat b		  &amp; \\hat b^\\dagger b	 &amp;  \\hat b^\\dagger\\hat b - \\frac{\\mathrm{sps}-1}{2}  \\newline</span>
 <span class="sd">		\\end{array}</span>
 
 <span class="sd">	Notes</span>
@@ -118,7 +117,7 @@
 <span class="sd">	The code snippet below shows how to construct the two-dimensional Bose-Hubbard model.</span>
 <span class="sd">	</span>
 <span class="sd">	.. math::</span>
-<span class="sd">		H = -J \\sum_{\\langle ij\\rangle} b^\dagger_i b_j + \\mathrm{h.c.} - \\mu\\sum_j n_j + \\frac{U}{2}\\sum_j n_j(n_j-1)</span>
+<span class="sd">		H = -J \\sum_{\\langle ij\\rangle} b^\\dagger_i b_j + \\mathrm{h.c.} - \\mu\\sum_j n_j + \\frac{U}{2}\\sum_j n_j(n_j-1)</span>
 
 <span class="sd">	Moreover, it demonstrates how to pass user-defined symmetries to the `boson_basis_general` constructor. In particular,</span>
 <span class="sd">	we do translation invariance and parity (reflection) (along each lattice direction).</span>
@@ -134,7 +133,7 @@
 		<span class="sd">&quot;&quot;&quot;Intializes the `boson_basis_general` object (basis for bosonic operators).</span>
 
 <span class="sd">		Parameters</span>
-<span class="sd">		-----------</span>
+<span class="sd">		----------</span>
 <span class="sd">		N: int</span>
 <span class="sd">			Number of sites.</span>
 <span class="sd">		Nb: {int,list}, optional</span>
@@ -374,13 +373,13 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">QuSpin 0.3.4 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">QuSpin 0.3.5 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &#169; Copyright 2016, Phillip Weinberg and Marin Bukov.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.4.0.
+        &#169; Copyright 2016, Phillip Weinberg, Markus Schmitt and Marin Bukov.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 3.0.4.
     </div>
   </body>
 </html>

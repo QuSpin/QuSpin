@@ -1,7 +1,7 @@
 
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
     <meta charset="utf-8" /><script type="text/javascript">
 
@@ -15,7 +15,7 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-    <title>quspin.tools.block_tools.block_ops &#8212; QuSpin 0.3.4 documentation</title>
+    <title>quspin.tools.block_tools.block_ops &#8212; QuSpin 0.3.5 documentation</title>
     <link rel="stylesheet" href="../static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../static/pygments.css" type="text/css" />
     
@@ -46,7 +46,7 @@
         <li class="right" >
           <a href="quspin.tools.measurements.obs_vs_time.html" title="quspin.tools.measurements.obs_vs_time"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.4 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.5 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../tools.html" accesskey="U">Tools module (<code class="xref py py-mod docutils literal notranslate"><span class="pre">quspin.tools</span></code>)</a> &#187;</li> 
       </ul>
     </div>  
@@ -59,12 +59,13 @@
   <style> .red {color:#ff0000; font-weight:bold; font-style:italic; } </style>
 <style> .green {color:#00b200; font-weight:bold; font-style:italic; } </style><div class="section" id="quspin-tools-block-tools-block-ops">
 <h1>quspin.tools.block_tools.block_ops<a class="headerlink" href="#quspin-tools-block-tools-block-ops" title="Permalink to this headline">¶</a></h1>
-<dl class="class">
+<dl class="py class">
 <dt id="quspin.tools.block_tools.block_ops">
-<em class="property">class </em><code class="sig-prename descclassname">quspin.tools.block_tools.</code><code class="sig-name descname">block_ops</code><span class="sig-paren">(</span><em class="sig-param">blocks</em>, <em class="sig-param">static</em>, <em class="sig-param">dynamic</em>, <em class="sig-param">basis_con</em>, <em class="sig-param">basis_args</em>, <em class="sig-param">dtype</em>, <em class="sig-param">basis_kwargs={}</em>, <em class="sig-param">get_proj_kwargs={}</em>, <em class="sig-param">save_previous_data=True</em>, <em class="sig-param">compute_all_blocks=False</em>, <em class="sig-param">check_symm=True</em>, <em class="sig-param">check_herm=True</em>, <em class="sig-param">check_pcon=True</em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/tools/block_tools.html#block_ops"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#quspin.tools.block_tools.block_ops" title="Permalink to this definition">¶</a></dt>
-<dd><p>Splits up the dynamics of a state over various symmetry sectors.</p>
-<p>Particularly useful if the initial state does NOT obey a symmetry but the hamiltonian does. 
-Moreover, we provide a multiprocessing option which allows the user to split up the dynamics 
+<em class="property">class </em><code class="sig-prename descclassname">quspin.tools.block_tools.</code><code class="sig-name descname">block_ops</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">blocks</span></em>, <em class="sig-param"><span class="n">static</span></em>, <em class="sig-param"><span class="n">dynamic</span></em>, <em class="sig-param"><span class="n">basis_con</span></em>, <em class="sig-param"><span class="n">basis_args</span></em>, <em class="sig-param"><span class="n">dtype</span></em>, <em class="sig-param"><span class="n">basis_kwargs</span><span class="o">=</span><span class="default_value">{}</span></em>, <em class="sig-param"><span class="n">get_proj_kwargs</span><span class="o">=</span><span class="default_value">{}</span></em>, <em class="sig-param"><span class="n">save_previous_data</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">compute_all_blocks</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">check_symm</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">check_herm</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">check_pcon</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/tools/block_tools.html#block_ops"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#quspin.tools.block_tools.block_ops" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Splits up the dynamics of a state over various symmetry sectors.</p>
+<p>Particularly useful if the initial state does NOT obey a symmetry but the hamiltonian does.
+Moreover, we provide a multiprocessing option which allows the user to split up the dynamics
 over multiple processing cores.</p>
 <p>Can be used to calculate nonequal time correlators in symmetry-reduced sectors.</p>
 <p class="rubric">Notes</p>
@@ -177,55 +178,14 @@ The code snippet below initiates the class, and is required to run the example c
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;total H-space size: </span><span class="si">{}</span><span class="s2">, initial state: |</span><span class="si">{}</span><span class="s2">&gt;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">basis</span><span class="o">.</span><span class="n">Ns</span><span class="p">,</span><span class="n">state_str</span><span class="p">))</span>
 </pre></div>
 </td></tr></table></div>
-<dl class="field-list simple">
-<dt class="field-odd">Attributes</dt>
-<dd class="field-odd"><dl class="simple">
-<dt><a class="reference internal" href="#quspin.tools.block_tools.block_ops.H_dict" title="quspin.tools.block_tools.block_ops.H_dict"><code class="xref py py-obj docutils literal notranslate"><span class="pre">H_dict</span></code></a></dt><dd><p>dict: dictionary which contains the block Hamiltonians under keys labelled by the symmetry blocks,</p>
-</dd>
-<dt><a class="reference internal" href="#quspin.tools.block_tools.block_ops.P_dict" title="quspin.tools.block_tools.block_ops.P_dict"><code class="xref py py-obj docutils literal notranslate"><span class="pre">P_dict</span></code></a></dt><dd><p>dict: dictionary which contains the block projectors under keys labelled by the symmetry blocks,</p>
-</dd>
-<dt><a class="reference internal" href="#quspin.tools.block_tools.block_ops.basis_dict" title="quspin.tools.block_tools.block_ops.basis_dict"><code class="xref py py-obj docutils literal notranslate"><span class="pre">basis_dict</span></code></a></dt><dd><p>dict: dictionary which contains the <cite>basis</cite> objects under keys labelled by the symmetry blocks,</p>
-</dd>
-<dt><a class="reference internal" href="#quspin.tools.block_tools.block_ops.dtype" title="quspin.tools.block_tools.block_ops.dtype"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dtype</span></code></a></dt><dd><p>type: numpy data type to store the block hamiltonians in.</p>
-</dd>
-<dt><a class="reference internal" href="#quspin.tools.block_tools.block_ops.dynamic" title="quspin.tools.block_tools.block_ops.dynamic"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dynamic</span></code></a></dt><dd><p>list: contains the dynamic operators used to construct the symmetry-block Hamiltonians.</p>
-</dd>
-<dt><a class="reference internal" href="#quspin.tools.block_tools.block_ops.save_previous_data" title="quspin.tools.block_tools.block_ops.save_previous_data"><code class="xref py py-obj docutils literal notranslate"><span class="pre">save_previous_data</span></code></a></dt><dd><p>bool: reflects state of optimal argument <cite>save_previous_data</cite>.</p>
-</dd>
-<dt><a class="reference internal" href="#quspin.tools.block_tools.block_ops.static" title="quspin.tools.block_tools.block_ops.static"><code class="xref py py-obj docutils literal notranslate"><span class="pre">static</span></code></a></dt><dd><p>list: contains the static operators used to construct the symmetry-block Hamiltonians.</p>
-</dd>
-</dl>
-</dd>
-</dl>
-<p class="rubric">Methods</p>
-<table class="longtable docutils align-default">
-<colgroup>
-<col style="width: 10%" />
-<col style="width: 90%" />
-</colgroup>
-<tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#quspin.tools.block_tools.block_ops.compute_all_blocks" title="quspin.tools.block_tools.block_ops.compute_all_blocks"><code class="xref py py-obj docutils literal notranslate"><span class="pre">compute_all_blocks</span></code></a>()</p></td>
-<td><p>Sets <cite>compute_all_blocks = True</cite>.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#quspin.tools.block_tools.block_ops.evolve" title="quspin.tools.block_tools.block_ops.evolve"><code class="xref py py-obj docutils literal notranslate"><span class="pre">evolve</span></code></a>(psi_0, t0, times[, iterate, n_jobs, …])</p></td>
-<td><p>Creates symmetry blocks of the Hamiltonian and then uses them to run <cite>hamiltonian.evolve()</cite> in parallel.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#quspin.tools.block_tools.block_ops.expm" title="quspin.tools.block_tools.block_ops.expm"><code class="xref py py-obj docutils literal notranslate"><span class="pre">expm</span></code></a>(psi_0[, H_time_eval, iterate, n_jobs, …])</p></td>
-<td><p>Creates symmetry blocks of the Hamiltonian and then uses them to run <cite>_expm_multiply()</cite> in parallel.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#quspin.tools.block_tools.block_ops.update_blocks" title="quspin.tools.block_tools.block_ops.update_blocks"><code class="xref py py-obj docutils literal notranslate"><span class="pre">update_blocks</span></code></a>(blocks, basis_con, basis_args)</p></td>
-<td><p>Allows to update the <cite>blocks</cite> variable of the class.</p></td>
-</tr>
-</tbody>
-</table>
-<dl class="method">
+<dl class="py method">
 <dt id="quspin.tools.block_tools.block_ops.__init__">
-<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param">blocks</em>, <em class="sig-param">static</em>, <em class="sig-param">dynamic</em>, <em class="sig-param">basis_con</em>, <em class="sig-param">basis_args</em>, <em class="sig-param">dtype</em>, <em class="sig-param">basis_kwargs={}</em>, <em class="sig-param">get_proj_kwargs={}</em>, <em class="sig-param">save_previous_data=True</em>, <em class="sig-param">compute_all_blocks=False</em>, <em class="sig-param">check_symm=True</em>, <em class="sig-param">check_herm=True</em>, <em class="sig-param">check_pcon=True</em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/tools/block_tools.html#block_ops.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#quspin.tools.block_tools.block_ops.__init__" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">blocks</span></em>, <em class="sig-param"><span class="n">static</span></em>, <em class="sig-param"><span class="n">dynamic</span></em>, <em class="sig-param"><span class="n">basis_con</span></em>, <em class="sig-param"><span class="n">basis_args</span></em>, <em class="sig-param"><span class="n">dtype</span></em>, <em class="sig-param"><span class="n">basis_kwargs</span><span class="o">=</span><span class="default_value">{}</span></em>, <em class="sig-param"><span class="n">get_proj_kwargs</span><span class="o">=</span><span class="default_value">{}</span></em>, <em class="sig-param"><span class="n">save_previous_data</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">compute_all_blocks</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">check_symm</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">check_herm</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">check_pcon</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/tools/block_tools.html#block_ops.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#quspin.tools.block_tools.block_ops.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Instantiates the <cite>block_ops</cite> class.</p>
 <dl class="field-list">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><dl>
-<dt><strong>blocks</strong><span class="classifier">list/tuple/iterator</span></dt><dd><p>Contains the symmetry blocks to construct the Hamiltonian with, 
+<dt><strong>blocks</strong><span class="classifier">list/tuple/iterator</span></dt><dd><p>Contains the symmetry blocks to construct the Hamiltonian with,
 as dictionaries or <cite>hamiltonian</cite> objects.</p>
 </dd>
 <dt><strong>static</strong><span class="classifier">list</span></dt><dd><p>Static operator list used to construct the block Hamiltonians. Follows <cite>hamiltonian</cite> format.</p>
@@ -243,7 +203,7 @@ Contains all required arguments for the basis.</p>
 </dd>
 <dt><strong>get_proj_kwargs</strong><span class="classifier">dict, optional</span></dt><dd><p>Dictionary of keyword arguments for <cite>basis.get_proj()</cite> and <cite>basis.project_from()</cite>.</p>
 </dd>
-<dt><strong>save_previous_data</strong><span class="classifier">bool, optional</span></dt><dd><p>To do time evolution the <cite>block_ops</cite> class constructs Hamiltonians, which can take time. 
+<dt><strong>save_previous_data</strong><span class="classifier">bool, optional</span></dt><dd><p>To do time evolution the <cite>block_ops</cite> class constructs Hamiltonians, which can take time.
 Set this flag to <cite>True</cite>, and the class will save previously calculated Hamiltonians, so
 next time one needs to do evolution in that block, the code does NOT have to calculate it again.
 Default is <cite>True</cite>.</p>
@@ -295,50 +255,65 @@ Default is <cite>False</cite>.</p>
 </colgroup>
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#quspin.tools.block_tools.block_ops.H_dict" title="quspin.tools.block_tools.block_ops.H_dict"><code class="xref py py-obj docutils literal notranslate"><span class="pre">H_dict</span></code></a></p></td>
-<td><p>dict: dictionary which contains the block Hamiltonians under keys labelled by the symmetry blocks, e.g.</p></td>
+<td><p>dictionary which contains the block Hamiltonians under keys labelled by the symmetry blocks, e.g.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#quspin.tools.block_tools.block_ops.P_dict" title="quspin.tools.block_tools.block_ops.P_dict"><code class="xref py py-obj docutils literal notranslate"><span class="pre">P_dict</span></code></a></p></td>
-<td><p>dict: dictionary which contains the block projectors under keys labelled by the symmetry blocks, e.g.</p></td>
+<td><p>dictionary which contains the block projectors under keys labelled by the symmetry blocks, e.g.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#quspin.tools.block_tools.block_ops.basis_dict" title="quspin.tools.block_tools.block_ops.basis_dict"><code class="xref py py-obj docutils literal notranslate"><span class="pre">basis_dict</span></code></a></p></td>
-<td><p>dict: dictionary which contains the <cite>basis</cite> objects under keys labelled by the symmetry blocks, e.g.</p></td>
+<td><p>dictionary which contains the <cite>basis</cite> objects under keys labelled by the symmetry blocks, e.g.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#quspin.tools.block_tools.block_ops.dtype" title="quspin.tools.block_tools.block_ops.dtype"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dtype</span></code></a></p></td>
-<td><p>type: numpy data type to store the block hamiltonians in.</p></td>
+<td><p>numpy data type to store the block hamiltonians in.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#quspin.tools.block_tools.block_ops.dynamic" title="quspin.tools.block_tools.block_ops.dynamic"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dynamic</span></code></a></p></td>
-<td><p>list: contains the dynamic operators used to construct the symmetry-block Hamiltonians.</p></td>
+<td><p>contains the dynamic operators used to construct the symmetry-block Hamiltonians.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#quspin.tools.block_tools.block_ops.save_previous_data" title="quspin.tools.block_tools.block_ops.save_previous_data"><code class="xref py py-obj docutils literal notranslate"><span class="pre">save_previous_data</span></code></a></p></td>
-<td><p>bool: reflects state of optimal argument <cite>save_previous_data</cite>.</p></td>
+<td><p>reflects state of optimal argument <cite>save_previous_data</cite>.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#quspin.tools.block_tools.block_ops.static" title="quspin.tools.block_tools.block_ops.static"><code class="xref py py-obj docutils literal notranslate"><span class="pre">static</span></code></a></p></td>
-<td><p>list: contains the static operators used to construct the symmetry-block Hamiltonians.</p></td>
+<td><p>contains the static operators used to construct the symmetry-block Hamiltonians.</p></td>
 </tr>
 </tbody>
 </table>
-<dl class="method">
+<dl class="py method">
 <dt id="quspin.tools.block_tools.block_ops.H_dict">
 <em class="property">property </em><code class="sig-name descname">H_dict</code><a class="headerlink" href="#quspin.tools.block_tools.block_ops.H_dict" title="Permalink to this definition">¶</a></dt>
-<dd><p>dict: dictionary which contains the block Hamiltonians under keys labelled by the symmetry blocks,
+<dd><p>dictionary which contains the block Hamiltonians under keys labelled by the symmetry blocks,
 e.g. <cite>str(block)</cite> where <cite>block</cite> is a block dictionary variable.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="quspin.tools.block_tools.block_ops.P_dict">
 <em class="property">property </em><code class="sig-name descname">P_dict</code><a class="headerlink" href="#quspin.tools.block_tools.block_ops.P_dict" title="Permalink to this definition">¶</a></dt>
-<dd><p>dict: dictionary which contains the block projectors under keys labelled by the symmetry blocks,
+<dd><p>dictionary which contains the block projectors under keys labelled by the symmetry blocks,
 e.g. <cite>str(block)</cite> where <cite>block</cite> is a block dictionary variable.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="quspin.tools.block_tools.block_ops.basis_dict">
 <em class="property">property </em><code class="sig-name descname">basis_dict</code><a class="headerlink" href="#quspin.tools.block_tools.block_ops.basis_dict" title="Permalink to this definition">¶</a></dt>
-<dd><p>dict: dictionary which contains the <cite>basis</cite> objects under keys labelled by the symmetry blocks,
+<dd><p>dictionary which contains the <cite>basis</cite> objects under keys labelled by the symmetry blocks,
 e.g. <cite>str(block)</cite> where <cite>block</cite> is a block dictionary variable.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="quspin.tools.block_tools.block_ops.compute_all_blocks">
 <code class="sig-name descname">compute_all_blocks</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/tools/block_tools.html#block_ops.compute_all_blocks"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#quspin.tools.block_tools.block_ops.compute_all_blocks" title="Permalink to this definition">¶</a></dt>
 <dd><p>Sets <cite>compute_all_blocks = True</cite>.</p>
@@ -351,40 +326,50 @@ e.g. <cite>str(block)</cite> where <cite>block</cite> is a block dictionary vari
 </td></tr></table></div>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="quspin.tools.block_tools.block_ops.dtype">
 <em class="property">property </em><code class="sig-name descname">dtype</code><a class="headerlink" href="#quspin.tools.block_tools.block_ops.dtype" title="Permalink to this definition">¶</a></dt>
-<dd><p>type: numpy data type to store the block hamiltonians in.</p>
+<dd><p>numpy data type to store the block hamiltonians in.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>type</p>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="quspin.tools.block_tools.block_ops.dynamic">
 <em class="property">property </em><code class="sig-name descname">dynamic</code><a class="headerlink" href="#quspin.tools.block_tools.block_ops.dynamic" title="Permalink to this definition">¶</a></dt>
-<dd><p>list: contains the dynamic operators used to construct the symmetry-block Hamiltonians.</p>
+<dd><p>contains the dynamic operators used to construct the symmetry-block Hamiltonians.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="quspin.tools.block_tools.block_ops.evolve">
-<code class="sig-name descname">evolve</code><span class="sig-paren">(</span><em class="sig-param">psi_0</em>, <em class="sig-param">t0</em>, <em class="sig-param">times</em>, <em class="sig-param">iterate=False</em>, <em class="sig-param">n_jobs=1</em>, <em class="sig-param">block_diag=False</em>, <em class="sig-param">stack_state=False</em>, <em class="sig-param">imag_time=False</em>, <em class="sig-param">solver_name='dop853'</em>, <em class="sig-param">**solver_args</em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/tools/block_tools.html#block_ops.evolve"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#quspin.tools.block_tools.block_ops.evolve" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">evolve</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">psi_0</span></em>, <em class="sig-param"><span class="n">t0</span></em>, <em class="sig-param"><span class="n">times</span></em>, <em class="sig-param"><span class="n">iterate</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">n_jobs</span><span class="o">=</span><span class="default_value">1</span></em>, <em class="sig-param"><span class="n">block_diag</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">stack_state</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">imag_time</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">solver_name</span><span class="o">=</span><span class="default_value">'dop853'</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">solver_args</span></em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/tools/block_tools.html#block_ops.evolve"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#quspin.tools.block_tools.block_ops.evolve" title="Permalink to this definition">¶</a></dt>
 <dd><p>Creates symmetry blocks of the Hamiltonian and then uses them to run <cite>hamiltonian.evolve()</cite> in parallel.</p>
 <p><strong>Arguments NOT described below can be found in the documentation for the `hamiltonian.evolve()` method.</strong></p>
 <dl class="field-list">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><dl>
-<dt><strong>psi_0</strong><span class="classifier">numpy.ndarray, list, tuple</span></dt><dd><p>Quantum state which defined on the full Hilbert space of the problem. 
+<dt><strong>psi_0</strong><span class="classifier">numpy.ndarray, list, tuple</span></dt><dd><p>Quantum state which defined on the full Hilbert space of the problem.
 Does not need to obey and sort of symmetry.</p>
 </dd>
 <dt><strong>t0</strong><span class="classifier">float</span></dt><dd><p>Inistial time to start the evolution at.</p>
 </dd>
 <dt><strong>times</strong><span class="classifier">numpy.ndarray, list</span></dt><dd><p>Contains the times to compute the solution at. Must be some an iterable object.</p>
 </dd>
-<dt><strong>iterate</strong><span class="classifier">bool, optional</span></dt><dd><p>Flag to return generator when set to <cite>True</cite>. Otherwise the output is an array of states. 
+<dt><strong>iterate</strong><span class="classifier">bool, optional</span></dt><dd><p>Flag to return generator when set to <cite>True</cite>. Otherwise the output is an array of states.
 Default is ‘False’.</p>
 </dd>
 <dt><strong>n_jobs</strong><span class="classifier">int, optional</span></dt><dd><p>Number of processes requested for the computation time evolution dynamics.</p>
-<p>NOTE: one of those processes is used to gather results. For best performance, all blocks 
+<p>NOTE: one of those processes is used to gather results. For best performance, all blocks
 should be approximately the same size and <cite>n_jobs-1</cite> must be a common devisor of the number of
-blocks, such that there is roughly an equal workload for each process. Otherwise the computation 
+blocks, such that there is roughly an equal workload for each process. Otherwise the computation
 will be as slow as the slowest process.</p>
 </dd>
 <dt><strong>block_diag</strong><span class="classifier">bool, optional</span></dt><dd><p>When set to <cite>True</cite>, this flag puts the Hamiltonian matrices for the separate symemtry blocks
@@ -396,20 +381,20 @@ blocks in a single giant sparse block diagonal matrix. Default is <cite>False</c
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><dl>
-<dt><strong>obj</strong></dt><dd><p>if <cite>iterate = True</cite>, returns generator which generates the time dependent state in the 
+<dt>obj</dt><dd><p>if <cite>iterate = True</cite>, returns generator which generates the time dependent state in the
 full H-space basis.</p>
-<p>if <cite>iterate = False</cite>, returns <cite>numpy.ndarray</cite> which has the time-dependent states in the 
+<p>if <cite>iterate = False</cite>, returns <cite>numpy.ndarray</cite> which has the time-dependent states in the
 full H-space basis in the rows.</p>
 </dd>
 </dl>
 </dd>
 <dt class="field-odd">Raises</dt>
 <dd class="field-odd"><dl class="simple">
-<dt><strong>ValueError</strong></dt><dd><p>Variable <cite>imag_time=True</cite> option on <cite>hamiltonian.evolve()</cite> method not supported.</p>
+<dt>ValueError</dt><dd><p>Variable <cite>imag_time=True</cite> option on <cite>hamiltonian.evolve()</cite> method not supported.</p>
 </dd>
-<dt><strong>ValueError</strong></dt><dd><p><cite>iterate=True</cite> requires <cite>times</cite> to be an array or a list.</p>
+<dt>ValueError</dt><dd><p><cite>iterate=True</cite> requires <cite>times</cite> to be an array or a list.</p>
 </dd>
-<dt><strong>RuntimeError</strong></dt><dd><p>Terminates when initial state has no projection onto the specified symmetry blocks.</p>
+<dt>RuntimeError</dt><dd><p>Terminates when initial state has no projection onto the specified symmetry blocks.</p>
 </dd>
 </dl>
 </dd>
@@ -431,28 +416,28 @@ full H-space basis in the rows.</p>
 </td></tr></table></div>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="quspin.tools.block_tools.block_ops.expm">
-<code class="sig-name descname">expm</code><span class="sig-paren">(</span><em class="sig-param">psi_0</em>, <em class="sig-param">H_time_eval=0.0</em>, <em class="sig-param">iterate=False</em>, <em class="sig-param">n_jobs=1</em>, <em class="sig-param">block_diag=False</em>, <em class="sig-param">a=(-0-1j)</em>, <em class="sig-param">start=None</em>, <em class="sig-param">stop=None</em>, <em class="sig-param">endpoint=None</em>, <em class="sig-param">num=None</em>, <em class="sig-param">shift=None</em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/tools/block_tools.html#block_ops.expm"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#quspin.tools.block_tools.block_ops.expm" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">expm</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">psi_0</span></em>, <em class="sig-param"><span class="n">H_time_eval</span><span class="o">=</span><span class="default_value">0.0</span></em>, <em class="sig-param"><span class="n">iterate</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">n_jobs</span><span class="o">=</span><span class="default_value">1</span></em>, <em class="sig-param"><span class="n">block_diag</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">a</span><span class="o">=</span><span class="default_value">- 0 - 1j</span></em>, <em class="sig-param"><span class="n">start</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">stop</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">endpoint</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">num</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">shift</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/tools/block_tools.html#block_ops.expm"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#quspin.tools.block_tools.block_ops.expm" title="Permalink to this definition">¶</a></dt>
 <dd><p>Creates symmetry blocks of the Hamiltonian and then uses them to run <cite>_expm_multiply()</cite> in parallel.</p>
 <p><strong>Arguments NOT described below can be found in the documentation for the `exp_op` class.</strong></p>
 <dl class="field-list">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><dl>
-<dt><strong>psi_0</strong><span class="classifier">numpy.ndarray, list, tuple</span></dt><dd><p>Quantum state which defined on the full Hilbert space of the problem. 
+<dt><strong>psi_0</strong><span class="classifier">numpy.ndarray, list, tuple</span></dt><dd><p>Quantum state which defined on the full Hilbert space of the problem.
 Does not need to obey and sort of symmetry.</p>
 </dd>
 <dt><strong>t0</strong><span class="classifier">float</span></dt><dd><p>Inistial time to start the evolution at.</p>
 </dd>
 <dt><strong>H_time_eval</strong><span class="classifier">numpy.ndarray, list</span></dt><dd><p>Times to evaluate the Hamiltonians at when doing the matrix exponentiation.</p>
 </dd>
-<dt><strong>iterate</strong><span class="classifier">bool, optional</span></dt><dd><p>Flag to return generator when set to <cite>True</cite>. Otherwise the output is an array of states. 
+<dt><strong>iterate</strong><span class="classifier">bool, optional</span></dt><dd><p>Flag to return generator when set to <cite>True</cite>. Otherwise the output is an array of states.
 Default is ‘False’.</p>
 </dd>
 <dt><strong>n_jobs</strong><span class="classifier">int, optional</span></dt><dd><p>Number of processes requested for the computation time evolution dynamics.</p>
-<p>NOTE: one of those processes is used to gather results. For best performance, all blocks 
+<p>NOTE: one of those processes is used to gather results. For best performance, all blocks
 should be approximately the same size and <cite>n_jobs-1</cite> must be a common devisor of the number of
-blocks, such that there is roughly an equal workload for each process. Otherwise the computation 
+blocks, such that there is roughly an equal workload for each process. Otherwise the computation
 will be as slow as the slowest process.</p>
 </dd>
 <dt><strong>block_diag</strong><span class="classifier">bool, optional</span></dt><dd><p>When set to <cite>True</cite>, this flag puts the Hamiltonian matrices for the separate symemtri blocks
@@ -464,18 +449,18 @@ blocks in a single giant sparse block diagonal matrix. Default is <cite>False</c
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><dl>
-<dt><strong>obj</strong></dt><dd><p>if <cite>iterate = True</cite>, returns generator which generates the time dependent state in the 
+<dt>obj</dt><dd><p>if <cite>iterate = True</cite>, returns generator which generates the time dependent state in the
 full H-space basis.</p>
-<p>if <cite>iterate = False</cite>, returns <cite>numpy.ndarray</cite> which has the time-dependent states in the 
+<p>if <cite>iterate = False</cite>, returns <cite>numpy.ndarray</cite> which has the time-dependent states in the
 full H-space basis in the rows.</p>
 </dd>
 </dl>
 </dd>
 <dt class="field-odd">Raises</dt>
 <dd class="field-odd"><dl class="simple">
-<dt><strong>ValueError</strong></dt><dd><p>Various <cite>ValueError`s of `exp_op</cite> class.</p>
+<dt>ValueError</dt><dd><p>Various <cite>ValueError`s of `exp_op</cite> class.</p>
 </dd>
-<dt><strong>RuntimeError</strong></dt><dd><p>Terminates when initial state has no projection onto the specified symmetry blocks.</p>
+<dt>RuntimeError</dt><dd><p>Terminates when initial state has no projection onto the specified symmetry blocks.</p>
 </dd>
 </dl>
 </dd>
@@ -501,26 +486,36 @@ full H-space basis in the rows.</p>
 </td></tr></table></div>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="quspin.tools.block_tools.block_ops.save_previous_data">
 <em class="property">property </em><code class="sig-name descname">save_previous_data</code><a class="headerlink" href="#quspin.tools.block_tools.block_ops.save_previous_data" title="Permalink to this definition">¶</a></dt>
-<dd><p>bool: reflects state of optimal argument <cite>save_previous_data</cite>.</p>
+<dd><p>reflects state of optimal argument <cite>save_previous_data</cite>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="quspin.tools.block_tools.block_ops.static">
 <em class="property">property </em><code class="sig-name descname">static</code><a class="headerlink" href="#quspin.tools.block_tools.block_ops.static" title="Permalink to this definition">¶</a></dt>
-<dd><p>list: contains the static operators used to construct the symmetry-block Hamiltonians.</p>
+<dd><p>contains the static operators used to construct the symmetry-block Hamiltonians.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="quspin.tools.block_tools.block_ops.update_blocks">
-<code class="sig-name descname">update_blocks</code><span class="sig-paren">(</span><em class="sig-param">blocks</em>, <em class="sig-param">basis_con</em>, <em class="sig-param">basis_args</em>, <em class="sig-param">compute_all_blocks=False</em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/tools/block_tools.html#block_ops.update_blocks"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#quspin.tools.block_tools.block_ops.update_blocks" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">update_blocks</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">blocks</span></em>, <em class="sig-param"><span class="n">basis_con</span></em>, <em class="sig-param"><span class="n">basis_args</span></em>, <em class="sig-param"><span class="n">compute_all_blocks</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/tools/block_tools.html#block_ops.update_blocks"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#quspin.tools.block_tools.block_ops.update_blocks" title="Permalink to this definition">¶</a></dt>
 <dd><p>Allows to update the <cite>blocks</cite> variable of the class.</p>
 <dl class="field-list">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><dl>
-<dt><strong>blocks</strong><span class="classifier">list/tuple/iterator</span></dt><dd><p>Contains the new symmetry blocks to be added to the <cite>basis_dict</cite> attribute of the class, 
+<dt><strong>blocks</strong><span class="classifier">list/tuple/iterator</span></dt><dd><p>Contains the new symmetry blocks to be added to the <cite>basis_dict</cite> attribute of the class,
 as dictionaries or <cite>hamiltonian</cite> objects.</p>
 </dd>
 <dt><strong>basis_con</strong><span class="classifier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">basis</span></code></span></dt><dd><p>Basis constructor used to build the basis objects to create the new block diagonal Hamiltonians.</p>
@@ -588,13 +583,13 @@ Default is <cite>False</cite>.</p>
         <li class="right" >
           <a href="quspin.tools.measurements.obs_vs_time.html" title="quspin.tools.measurements.obs_vs_time"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.4 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.5 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../tools.html" >Tools module (<code class="xref py py-mod docutils literal notranslate"><span class="pre">quspin.tools</span></code>)</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &#169; Copyright 2016, Phillip Weinberg and Marin Bukov.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.4.0.
+        &#169; Copyright 2016, Phillip Weinberg, Markus Schmitt and Marin Bukov.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 3.0.4.
     </div>
   </body>
 </html>

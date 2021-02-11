@@ -1,7 +1,7 @@
 
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
     <meta charset="utf-8" /><script type="text/javascript">
 
@@ -15,7 +15,7 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-    <title>quspin.tools.lanczos._lanczos_utils &#8212; QuSpin 0.3.4 documentation</title>
+    <title>quspin.tools.lanczos._lanczos_utils &#8212; QuSpin 0.3.5 documentation</title>
     <link rel="stylesheet" href="../../../../static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../../static/pygments.css" type="text/css" />
     
@@ -38,7 +38,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">QuSpin 0.3.4 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">QuSpin 0.3.5 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -50,12 +50,20 @@
             
   <h1>Source code for quspin.tools.lanczos._lanczos_utils</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">_np</span>
-<span class="kn">from</span> <span class="nn">scipy.linalg.blas</span> <span class="kn">import</span> <span class="n">get_blas_funcs</span>
 <span class="kn">from</span> <span class="nn">scipy.linalg</span> <span class="kn">import</span> <span class="n">eigh_tridiagonal</span>
 <span class="kn">from</span> <span class="nn">copy</span> <span class="kn">import</span> <span class="n">deepcopy</span>
-
+<span class="kn">from</span> <span class="nn">numba</span> <span class="kn">import</span> <span class="n">njit</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;lanczos_full&quot;</span><span class="p">,</span><span class="s2">&quot;lanczos_iter&quot;</span><span class="p">,</span><span class="s2">&quot;lin_comb_Q_T&quot;</span><span class="p">]</span>
+
+
+
+<span class="nd">@njit</span>
+<span class="k">def</span> <span class="nf">_axpy</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">a</span><span class="p">):</span>
+	<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">size</span><span class="p">):</span>
+		<span class="n">y</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+=</span> <span class="n">a</span> <span class="o">*</span> <span class="n">x</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+
+
 
 
 <span class="k">def</span> <span class="nf">_lanczos_vec_iter_core</span><span class="p">(</span><span class="n">A</span><span class="p">,</span><span class="n">v0</span><span class="p">,</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">):</span>
@@ -70,11 +78,10 @@
 	<span class="n">q_view</span> <span class="o">=</span> <span class="n">q</span><span class="p">[:]</span>
 	<span class="n">q_view</span><span class="o">.</span><span class="n">setflags</span><span class="p">(</span><span class="n">write</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">uic</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
 
-	<span class="k">yield</span> <span class="n">q_view</span> <span class="c1"># return non-writable array</span>
+
 
 	<span class="n">m</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">size</span>
 	<span class="n">n</span> <span class="o">=</span> <span class="n">q</span><span class="o">.</span><span class="n">size</span>
-	<span class="n">axpy</span> <span class="o">=</span> <span class="n">get_blas_funcs</span><span class="p">(</span><span class="s1">&#39;axpy&#39;</span><span class="p">,</span> <span class="n">arrays</span><span class="o">=</span><span class="p">(</span><span class="n">q</span><span class="p">,))</span>
 
 	<span class="n">v</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">v0</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
 	<span class="n">r</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">v0</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
@@ -86,22 +93,24 @@
 		<span class="n">r</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">q</span><span class="p">)</span>
 		<span class="n">use_out</span> <span class="o">=</span> <span class="kc">False</span>
 
-	<span class="n">axpy</span><span class="p">(</span><span class="n">q</span><span class="p">,</span><span class="n">r</span><span class="p">,</span><span class="n">n</span><span class="p">,</span><span class="o">-</span><span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+	<span class="n">_axpy</span><span class="p">(</span><span class="n">q</span><span class="p">,</span><span class="n">r</span><span class="p">,</span><span class="o">-</span><span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+
+	<span class="k">yield</span> <span class="n">q_view</span> <span class="c1"># return non-writable array</span>
 
 	<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="n">m</span><span class="p">,</span><span class="mi">1</span><span class="p">):</span>
 		<span class="n">v</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">q</span><span class="p">[:]</span>
 
 		<span class="n">_np</span><span class="o">.</span><span class="n">divide</span><span class="p">(</span><span class="n">r</span><span class="p">,</span><span class="n">b</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span><span class="n">out</span><span class="o">=</span><span class="n">q</span><span class="p">)</span>
 
-		<span class="k">yield</span> <span class="n">q_view</span> <span class="c1"># return non-writable array</span>
-
 		<span class="k">if</span> <span class="n">use_out</span><span class="p">:</span>
 			<span class="n">A</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">q</span><span class="p">,</span><span class="n">out</span><span class="o">=</span><span class="n">r</span><span class="p">)</span>
 		<span class="k">else</span><span class="p">:</span>
 			<span class="n">r</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">q</span><span class="p">)</span>
 
-		<span class="n">axpy</span><span class="p">(</span><span class="n">v</span><span class="p">,</span><span class="n">r</span><span class="p">,</span><span class="n">n</span><span class="p">,</span><span class="o">-</span><span class="n">b</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
-		<span class="n">axpy</span><span class="p">(</span><span class="n">q</span><span class="p">,</span><span class="n">r</span><span class="p">,</span><span class="n">n</span><span class="p">,</span><span class="o">-</span><span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+		<span class="n">_axpy</span><span class="p">(</span><span class="n">v</span><span class="p">,</span><span class="n">r</span><span class="p">,</span><span class="o">-</span><span class="n">b</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+		<span class="n">_axpy</span><span class="p">(</span><span class="n">q</span><span class="p">,</span><span class="n">r</span><span class="p">,</span><span class="o">-</span><span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+
+		<span class="k">yield</span> <span class="n">q_view</span> <span class="c1"># return non-writable array</span>
 
 
 <span class="k">class</span> <span class="nc">_lanczos_vec_iter</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
@@ -114,7 +123,11 @@
 	<span class="k">def</span> <span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 		<span class="k">return</span> <span class="n">_lanczos_vec_iter_core</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_A</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">_v0</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">_a</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">_b</span><span class="p">)</span>
 
-
+	<span class="k">def</span> <span class="fm">__del__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_A</span>
+		<span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_v0</span>
+		<span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_b</span>
+		<span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_a</span>
 
 <div class="viewcode-block" id="lanczos_full"><a class="viewcode-back" href="../../../../generated/quspin.tools.lanczos.lanczos_full.html#quspin.tools.lanczos.lanczos_full">[docs]</a><span class="k">def</span> <span class="nf">lanczos_full</span><span class="p">(</span><span class="n">A</span><span class="p">,</span><span class="n">v0</span><span class="p">,</span><span class="n">m</span><span class="p">,</span><span class="n">full_ortho</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">out</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">eps</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 	<span class="sd">&quot;&quot;&quot; Creates Lanczos basis; diagonalizes Krylov subspace in Lanczos basis.</span>
@@ -123,6 +136,7 @@
 <span class="sd">	</span>
 <span class="sd">	* an :math:`n\\times m` matrix  :math:`Q`, and </span>
 <span class="sd">	* a real symmetric tridiagonal matrix :math:`T=Q^\\dagger A Q` of size :math:`m\\times m`. The matrix :math:`T` can be represented via its eigendecomposition `(E,V)`: :math:`T=V\\mathrm{diag}(E)V^T`. </span>
+<span class="sd">	</span>
 <span class="sd">	This function computes the triple :math:`(E,V,Q^T)`.</span>
 
 <span class="sd">	:red:`NOTE:` This function returns :math:`Q^T;\\,Q^T` is (in general) different from :math:`Q^\\dagger`.</span>
@@ -197,8 +211,6 @@
 	<span class="n">b</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">m</span><span class="p">,),</span><span class="n">dtype</span><span class="o">=</span><span class="n">v</span><span class="o">.</span><span class="n">real</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
 	<span class="n">a</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">m</span><span class="p">,),</span><span class="n">dtype</span><span class="o">=</span><span class="n">v</span><span class="o">.</span><span class="n">real</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
 
-	<span class="c1"># get function : y &lt;- y + a * x</span>
-	<span class="n">axpy</span> <span class="o">=</span> <span class="n">get_blas_funcs</span><span class="p">(</span><span class="s1">&#39;axpy&#39;</span><span class="p">,</span> <span class="n">arrays</span><span class="o">=</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">v</span><span class="p">))</span>
 
 	<span class="k">if</span> <span class="n">eps</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
 		<span class="n">eps</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">finfo</span><span class="p">(</span><span class="n">dtype</span><span class="p">)</span><span class="o">.</span><span class="n">eps</span>
@@ -217,7 +229,7 @@
 
 	<span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">vdot</span><span class="p">(</span><span class="n">Q</span><span class="p">[</span><span class="mi">0</span><span class="p">,:],</span><span class="n">r</span><span class="p">)</span><span class="o">.</span><span class="n">real</span>
 
-	<span class="n">axpy</span><span class="p">(</span><span class="n">Q</span><span class="p">[</span><span class="mi">0</span><span class="p">,:],</span><span class="n">r</span><span class="p">,</span><span class="n">n</span><span class="p">,</span><span class="o">-</span><span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+	<span class="n">_axpy</span><span class="p">(</span><span class="n">Q</span><span class="p">[</span><span class="mi">0</span><span class="p">,:],</span><span class="n">r</span><span class="p">,</span><span class="o">-</span><span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
 	<span class="n">b</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
 
 	<span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
@@ -231,10 +243,10 @@
 		<span class="k">else</span><span class="p">:</span>
 			<span class="n">r</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">Q</span><span class="p">[</span><span class="n">i</span><span class="p">,:])</span>
 
-		<span class="n">axpy</span><span class="p">(</span><span class="n">v</span><span class="p">,</span><span class="n">r</span><span class="p">,</span><span class="n">n</span><span class="p">,</span><span class="o">-</span><span class="n">b</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+		<span class="n">_axpy</span><span class="p">(</span><span class="n">v</span><span class="p">,</span><span class="n">r</span><span class="p">,</span><span class="o">-</span><span class="n">b</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
 
 		<span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">vdot</span><span class="p">(</span><span class="n">Q</span><span class="p">[</span><span class="n">i</span><span class="p">,:],</span><span class="n">r</span><span class="p">)</span><span class="o">.</span><span class="n">real</span>
-		<span class="n">axpy</span><span class="p">(</span><span class="n">Q</span><span class="p">[</span><span class="n">i</span><span class="p">,:],</span><span class="n">r</span><span class="p">,</span><span class="n">n</span><span class="p">,</span><span class="o">-</span><span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+		<span class="n">_axpy</span><span class="p">(</span><span class="n">Q</span><span class="p">[</span><span class="n">i</span><span class="p">,:],</span><span class="n">r</span><span class="p">,</span><span class="o">-</span><span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
 
 		<span class="n">b</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
 		<span class="k">if</span> <span class="n">b</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">eps</span><span class="p">:</span>
@@ -243,9 +255,9 @@
 
 
 	<span class="k">if</span> <span class="n">full_ortho</span><span class="p">:</span>
-		<span class="n">q</span><span class="p">,</span><span class="n">_</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">qr</span><span class="p">(</span><span class="n">Q</span><span class="p">[:</span><span class="n">m</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+		<span class="n">q</span><span class="p">,</span><span class="n">_</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">qr</span><span class="p">(</span><span class="n">Q</span><span class="p">[:</span><span class="n">m</span><span class="p">]</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
 
-		<span class="n">Q</span><span class="p">[:</span><span class="n">m</span><span class="o">+</span><span class="mi">1</span><span class="p">,:]</span> <span class="o">=</span> <span class="n">q</span><span class="o">.</span><span class="n">T</span><span class="p">[</span><span class="o">...</span><span class="p">]</span>
+		<span class="n">Q</span><span class="p">[:</span><span class="n">m</span><span class="p">,:]</span> <span class="o">=</span> <span class="n">q</span><span class="o">.</span><span class="n">T</span><span class="p">[</span><span class="o">...</span><span class="p">]</span>
 
 		<span class="n">h</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">m</span><span class="p">,</span><span class="n">m</span><span class="p">),</span><span class="n">dtype</span><span class="o">=</span><span class="n">a</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
 
@@ -256,7 +268,7 @@
 				<span class="n">r</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">Q</span><span class="p">[</span><span class="n">i</span><span class="p">,:])</span>
 
 			<span class="n">_np</span><span class="o">.</span><span class="n">conj</span><span class="p">(</span><span class="n">r</span><span class="p">,</span><span class="n">out</span><span class="o">=</span><span class="n">r</span><span class="p">)</span>
-			<span class="n">h</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">i</span><span class="p">:]</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">Q</span><span class="p">[</span><span class="n">i</span><span class="p">:,:],</span><span class="n">r</span><span class="p">)</span><span class="o">.</span><span class="n">real</span>
+			<span class="n">h</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">i</span><span class="p">:]</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">Q</span><span class="p">[</span><span class="n">i</span><span class="p">:</span><span class="n">m</span><span class="p">,:],</span><span class="n">r</span><span class="p">)</span><span class="o">.</span><span class="n">real</span>
 
 		<span class="n">E</span><span class="p">,</span><span class="n">V</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">eigh</span><span class="p">(</span><span class="n">h</span><span class="p">,</span><span class="n">UPLO</span><span class="o">=</span><span class="s2">&quot;U&quot;</span><span class="p">)</span>
 
@@ -274,13 +286,14 @@
 <span class="sd">	</span>
 <span class="sd">	* an :math:`n\\times m` matrix  :math:`Q`, and </span>
 <span class="sd">	* a real symmetric tridiagonal matrix :math:`T=Q^\\dagger A Q` of size :math:`m\\times m`. The matrix :math:`T` can be represented via its eigendecomposition `(E,V)`: :math:`T=V\\mathrm{diag}(E)V^T`. </span>
+
 <span class="sd">	This function computes the triple :math:`(E,V,Q^T)`.</span>
 
 <span class="sd">	:red:`NOTE:` This function returns :math:`Q^T;\\,Q^T` is (in general) different from :math:`Q^\\dagger`.</span>
 <span class="sd"> </span>
 
 <span class="sd">	Parameters</span>
-<span class="sd">	-----------</span>
+<span class="sd">	----------</span>
 <span class="sd">	A : LinearOperator, hamiltonian, numpy.ndarray, etc. with a &#39;dot&#39; method and a &#39;dtype&#39; method.</span>
 <span class="sd">		Python object representing a linear map to compute the Lanczos approximation to the largest eigenvalues/vectors of. Must contain a dot-product method, used as `A.dot(v)` and a dtype method, used as `A.dtype`, e.g. `hamiltonian`, `quantum_operator`, `quantum_LinearOperator`, sparse or dense matrix.</span>
 <span class="sd">	v0 : array_like, (n,)</span>
@@ -341,9 +354,6 @@
 	<span class="n">b</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">m</span><span class="p">,),</span><span class="n">dtype</span><span class="o">=</span><span class="n">q</span><span class="o">.</span><span class="n">real</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
 	<span class="n">a</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">m</span><span class="p">,),</span><span class="n">dtype</span><span class="o">=</span><span class="n">q</span><span class="o">.</span><span class="n">real</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
 
-	<span class="c1"># get function : y &lt;- y + a * x</span>
-	<span class="n">axpy</span> <span class="o">=</span> <span class="n">get_blas_funcs</span><span class="p">(</span><span class="s1">&#39;axpy&#39;</span><span class="p">,</span> <span class="n">arrays</span><span class="o">=</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">v</span><span class="p">))</span>
-
 	<span class="k">if</span> <span class="n">eps</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
 		<span class="n">eps</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">finfo</span><span class="p">(</span><span class="n">dtype</span><span class="p">)</span><span class="o">.</span><span class="n">eps</span>
 
@@ -360,7 +370,7 @@
 		<span class="n">use_out</span> <span class="o">=</span> <span class="kc">False</span>
 
 	<span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">vdot</span><span class="p">(</span><span class="n">q</span><span class="p">,</span><span class="n">r</span><span class="p">)</span><span class="o">.</span><span class="n">real</span>
-	<span class="n">axpy</span><span class="p">(</span><span class="n">q</span><span class="p">,</span><span class="n">r</span><span class="p">,</span><span class="n">n</span><span class="p">,</span><span class="o">-</span><span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+	<span class="n">_axpy</span><span class="p">(</span><span class="n">q</span><span class="p">,</span><span class="n">r</span><span class="p">,</span><span class="o">-</span><span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
 	<span class="n">b</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
 
 	<span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
@@ -374,22 +384,19 @@
 		<span class="k">else</span><span class="p">:</span>
 			<span class="n">r</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">q</span><span class="p">)</span>
 
-		<span class="n">axpy</span><span class="p">(</span><span class="n">v</span><span class="p">,</span><span class="n">r</span><span class="p">,</span><span class="n">n</span><span class="p">,</span><span class="o">-</span><span class="n">b</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+		<span class="n">_axpy</span><span class="p">(</span><span class="n">v</span><span class="p">,</span><span class="n">r</span><span class="p">,</span><span class="o">-</span><span class="n">b</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
 		<span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">vdot</span><span class="p">(</span><span class="n">q</span><span class="p">,</span><span class="n">r</span><span class="p">)</span><span class="o">.</span><span class="n">real</span>
-		<span class="n">axpy</span><span class="p">(</span><span class="n">q</span><span class="p">,</span><span class="n">r</span><span class="p">,</span><span class="n">n</span><span class="p">,</span><span class="o">-</span><span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+		<span class="n">_axpy</span><span class="p">(</span><span class="n">q</span><span class="p">,</span><span class="n">r</span><span class="p">,</span><span class="o">-</span><span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
 
 		<span class="n">b</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
 		<span class="k">if</span> <span class="n">b</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">eps</span><span class="p">:</span>
+			<span class="n">m</span> <span class="o">=</span> <span class="n">i</span>
 			<span class="k">break</span>
 
-	<span class="n">a</span> <span class="o">=</span> <span class="n">a</span><span class="p">[:</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-	<span class="n">b</span> <span class="o">=</span> <span class="n">b</span><span class="p">[:</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-	<span class="k">del</span> <span class="n">q</span><span class="p">,</span><span class="n">r</span><span class="p">,</span><span class="n">v</span>
-
-	<span class="n">E</span><span class="p">,</span><span class="n">V</span> <span class="o">=</span> <span class="n">eigh_tridiagonal</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">)</span>
+	<span class="n">E</span><span class="p">,</span><span class="n">V</span> <span class="o">=</span> <span class="n">eigh_tridiagonal</span><span class="p">(</span><span class="n">a</span><span class="p">[:</span><span class="n">m</span><span class="p">],</span><span class="n">b</span><span class="p">[:</span><span class="n">m</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
 
 	<span class="k">if</span> <span class="n">return_vec_iter</span><span class="p">:</span>
-		<span class="k">return</span> <span class="n">E</span><span class="p">,</span><span class="n">V</span><span class="p">,</span><span class="n">_lanczos_vec_iter</span><span class="p">(</span><span class="n">A</span><span class="p">,</span><span class="n">v0</span><span class="p">,</span><span class="n">a</span><span class="o">.</span><span class="n">copy</span><span class="p">(),</span><span class="n">b</span><span class="o">.</span><span class="n">copy</span><span class="p">())</span>
+		<span class="k">return</span> <span class="n">E</span><span class="p">,</span><span class="n">V</span><span class="p">,</span><span class="n">_lanczos_vec_iter</span><span class="p">(</span><span class="n">A</span><span class="p">,</span><span class="n">v0</span><span class="p">,</span><span class="n">a</span><span class="p">[:</span><span class="n">m</span><span class="p">],</span><span class="n">b</span><span class="p">[:</span><span class="n">m</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
 	<span class="k">else</span><span class="p">:</span>
 		<span class="k">return</span> <span class="n">E</span><span class="p">,</span><span class="n">V</span></div>
 
@@ -456,14 +463,14 @@
 	<span class="k">else</span><span class="p">:</span>
 		<span class="n">out</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">q</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
 
-	<span class="c1"># get function : y &lt;- y + a * x</span>
-	<span class="n">axpy</span> <span class="o">=</span> <span class="n">get_blas_funcs</span><span class="p">(</span><span class="s1">&#39;axpy&#39;</span><span class="p">,</span> <span class="n">arrays</span><span class="o">=</span><span class="p">(</span><span class="n">out</span><span class="p">,</span><span class="n">q</span><span class="p">))</span>	
 	
 	<span class="n">n</span> <span class="o">=</span> <span class="n">q</span><span class="o">.</span><span class="n">size</span>
 
 	<span class="n">_np</span><span class="o">.</span><span class="n">multiply</span><span class="p">(</span><span class="n">q</span><span class="p">,</span><span class="n">coeff</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span>
 	<span class="k">for</span> <span class="n">weight</span><span class="p">,</span><span class="n">q</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">coeff</span><span class="p">[</span><span class="mi">1</span><span class="p">:],</span><span class="n">Q_iter</span><span class="p">):</span>
-		<span class="n">axpy</span><span class="p">(</span><span class="n">q</span><span class="p">,</span><span class="n">out</span><span class="p">,</span><span class="n">n</span><span class="p">,</span><span class="n">weight</span><span class="p">)</span>
+		<span class="n">_axpy</span><span class="p">(</span><span class="n">q</span><span class="p">,</span><span class="n">out</span><span class="p">,</span><span class="n">weight</span><span class="p">)</span>
+
+
 
 	<span class="k">return</span> <span class="n">out</span></div>
 </pre></div>
@@ -496,13 +503,13 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">QuSpin 0.3.4 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">QuSpin 0.3.5 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &#169; Copyright 2016, Phillip Weinberg and Marin Bukov.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.4.0.
+        &#169; Copyright 2016, Phillip Weinberg, Markus Schmitt and Marin Bukov.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 3.0.4.
     </div>
   </body>
 </html>

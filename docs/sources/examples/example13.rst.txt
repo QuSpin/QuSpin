@@ -1,4 +1,7 @@
+:orphan:
+
 .. _example13-label:
+
 
 Fermi-Hubbard model **without** doubly-occupied sites
 -----------------------------------------------------

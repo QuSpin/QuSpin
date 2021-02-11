@@ -11,16 +11,16 @@ sys.path.insert(0,qspin_path)
 #    a function which is used to calculate the entanglement      #
 #    entropy of a pure state.                                    #
 ##################################################################
-from quspin.operators import hamiltonian # Hamiltonians and operators
+from quspin.operators import quantum_operator # Hamiltonians and operators
 from quspin.basis import spin_basis_1d # Hilbert space spin basis
 from quspin.tools.measurements import ent_entropy, diag_ensemble # entropies
-from numpy.random import ranf,seed # pseudo random numbers
+from numpy.random import uniform,seed # pseudo random numbers
 from joblib import delayed,Parallel # parallelisation
 import numpy as np # generic math functions
 from time import time # timing package
 #
 ##### define simulation parameters #####
-n_real=20 # number of disorder realisations
+n_real=100 # number of disorder realisations
 n_jobs=2 # number of spawned processes used for parallelisation
 #
 ##### define model parameters #####
@@ -29,27 +29,29 @@ Jxy=1.0 # xy interaction
 Jzz_0=1.0 # zz interaction at time t=0
 h_MBL=3.9 # MBL disorder strength
 h_ETH=0.1 # delocalised disorder strength
-vs=np.logspace(-2.0,0.0,num=20,base=10) # log_2-spaced vector of ramp speeds
+vs=np.logspace(-3.0,0.0,num=20,base=10) # log_2-spaced vector of ramp speeds
 #
 ##### set up Heisenberg Hamiltonian with linearly varying zz-interaction #####
 # define linear ramp function
-v = 1.0 # declare ramp speed variable
-def ramp(t):
+def ramp(t,v):
 	return (0.5 + v*t)
-ramp_args=[]
 # compute basis in the 0-total magnetisation sector (requires L even)
-basis = spin_basis_1d(L,Nup=L//2,pauli=False)
+basis = spin_basis_1d(L,m=0,pauli=False)
 # define operators with OBC using site-coupling lists
 J_zz = [[Jzz_0,i,i+1] for i in range(L-1)] # OBC
 J_xy = [[Jxy/2.0,i,i+1] for i in range(L-1)] # OBC
-# static and dynamic lists
-static = [["+-",J_xy],["-+",J_xy]]
-dynamic =[["zz",J_zz,ramp,ramp_args]]
-# compute the time-dependent Heisenberg Hamiltonian
-H_XXZ = hamiltonian(static,dynamic,basis=basis,dtype=np.float64)
+# dictionary of operators for quantum_operator.
+# define XXZ chain parameters
+op_dict = dict(J_xy=[["+-",J_xy],["-+",J_xy]],J_zz=[["zz",J_zz]])
+# define operators for local disordered field.
+for i in range(L):
+	op = [[1.0,i]]
+	op_dict["hz"+str(i)] = [["z",op]]
+# costruct the quantum_operator
+H_XXZ = quantum_operator(op_dict,basis=basis,dtype=np.float64)
 #
 ##### calculate diagonal and entanglement entropies #####
-def realization(vs,H_XXZ,basis,real):
+def realization(vs,H_XXZ,real):
 	"""
 	This function computes the entropies for a single disorder realisation.
 	--- arguments ---
@@ -60,51 +62,66 @@ def realization(vs,H_XXZ,basis,real):
 	"""
 	ti = time() # get start time
 	#
-	global v # declare ramp speed v a global variable
-	#
 	seed() # the random number needs to be seeded for each parallel process
-	#
-	# draw random field uniformly from [-1.0,1.0] for each lattice site
-	unscaled_fields=-1+2*ranf((basis.L,))
-	# define z-field operator site-coupling list
-	h_z=[[unscaled_fields[i],i] for i in range(basis.L)]
-	# static list
-	disorder_field = [["z",h_z]]
-	# compute disordered z-field Hamiltonian
-	no_checks={"check_herm":False,"check_pcon":False,"check_symm":False}
-	Hz=hamiltonian(disorder_field,[],basis=basis,dtype=np.float64,**no_checks)
-	# compute the MBL and ETH Hamiltonians for the same disorder realisation
-	H_MBL=H_XXZ+h_MBL*Hz
-	H_ETH=H_XXZ+h_ETH*Hz
-	#
-	### ramp in MBL phase ###
-	v=1.0 # reset ramp speed to unity
-	# calculate the energy at infinite temperature for initial MBL Hamiltonian
-	eigsh_args={"k":2,"which":"BE","maxiter":1E4,"return_eigenvectors":False}
-	Emin,Emax=H_MBL.eigsh(time=0.0,**eigsh_args)
+	N = H_XXZ.basis.N
+	basis = H_XXZ.basis
+	hz = uniform(-1,1,size=N)
+	# define parameters to pass into quantum_operator for 
+	# hamiltonian at end of ramp
+	pars_MBL = {"hz"+str(i):h_MBL*hz[i] for i in range(N)}
+	pars_ETH = {"hz"+str(i):h_ETH*hz[i] for i in range(N)}
+	# 
+	pars_MBL["J_xy"] = 1.0
+	pars_ETH["J_xy"] = 1.0
+	# J_zz = 1 at end of the ramp for all velocities
+	pars_MBL["J_zz"] = 1.0
+	pars_ETH["J_zz"] = 1.0
+	# diagonalize 
+	E_MBL,V_MBL = H_XXZ.eigh(pars=pars_MBL)
+	E_ETH,V_ETH = H_XXZ.eigh(pars=pars_ETH)
+	# reset J_zz to be initial value:
+	pars_MBL["J_zz"] = 0.5
+	# get many-body bandwidth at t=0
+	eigsh_args=dict(k=2,which="BE",maxiter=1E4,return_eigenvectors=False,pars=pars_MBL)
+	Emin,Emax=H_XXZ.eigsh(**eigsh_args)
+	# calculating middle of spectrum
 	E_inf_temp=(Emax+Emin)/2.0
 	# calculate nearest eigenstate to energy at infinite temperature
-	E,psi_0=H_MBL.eigsh(time=0.0,k=1,sigma=E_inf_temp,maxiter=1E4)
+	E,psi_0=H_XXZ.eigsh(pars=pars_MBL,k=1,sigma=E_inf_temp,maxiter=1E4)
 	psi_0=psi_0.reshape((-1,))
-	# calculate the eigensystem of the final MBL hamiltonian
-	E_final,V_final=H_MBL.eigh(time=(0.5/vs[-1]))
-	# evolve states and calculate entropies in MBL phase
-	run_MBL=[_do_ramp(psi_0,H_MBL,basis,v,E_final,V_final) for v in vs]
+
+	run_MBL = []
+
+	for v in vs:
+		# update J_zz to be time-dependent operator
+		pars_MBL["J_zz"] = (ramp,(v,))
+		# get hamiltonian
+		H = H_XXZ.tohamiltonian(pars=pars_MBL)
+		# evolve state and calculate oberservables. 
+		run_MBL.append(_do_ramp(psi_0,H,basis,v,E_MBL,V_MBL))
+
 	run_MBL=np.vstack(run_MBL).T
-	#
-	###  ramp in ETH phase ###
-	v=1.0 # reset ramp speed to unity
-	# calculate the energy at infinite temperature for initial ETH hamiltonian
-	Emin,Emax=H_ETH.eigsh(time=0.0,**eigsh_args)
+	# reset J_zz to be initial value:
+	pars_ETH["J_zz"] = 0.5
+	# get many-body bandwidth at t=0
+	eigsh_args=dict(k=2,which="BE",maxiter=1E4,return_eigenvectors=False,pars=pars_ETH)
+	Emin,Emax=H_XXZ.eigsh(**eigsh_args)
+	# calculating middle of spectrum
 	E_inf_temp=(Emax+Emin)/2.0
 	# calculate nearest eigenstate to energy at infinite temperature
-	E,psi_0=H_ETH.eigsh(time=0.0,k=1,sigma=E_inf_temp,maxiter=1E4)
+	E,psi_0=H_XXZ.eigsh(pars=pars_ETH,k=1,sigma=E_inf_temp,maxiter=1E4)
 	psi_0=psi_0.reshape((-1,))
-	# calculate the eigensystem of the final ETH hamiltonian
-	E_final,V_final=H_ETH.eigh(time=(0.5/vs[-1]))
-	# evolve states and calculate entropies in ETH phase
-	run_ETH=[_do_ramp(psi_0,H_ETH,basis,v,E_final,V_final) for v in vs]
-	run_ETH=np.vstack(run_ETH).T # stack vertically elements of list run_ETH
+
+	run_ETH = []
+
+	for v in vs:
+		# update J_zz to be time-dependent operator
+		pars_ETH["J_zz"] = (ramp,(v,))
+		# get hamiltonian
+		H = H_XXZ.tohamiltonian(pars=pars_ETH)
+		# evolve state and calculate oberservables. 
+		run_ETH.append(_do_ramp(psi_0,H,basis,v,E_ETH,V_ETH))
+	run_ETH=np.vstack(run_ETH).T
 	# show time taken
 	print("realization {0}/{1} took {2:.2f} sec".format(real+1,n_real,time()-ti))
 	#
@@ -127,7 +144,7 @@ def _do_ramp(psi_0,H,basis,v,E_final,V_final):
 	psi = H.evolve(psi_0,0.0,t_f)
 	# calculate entanglement entropy
 	subsys = range(basis.L//2) # define subsystem
-	Sent = ent_entropy(psi,basis,chain_subsys=subsys)["Sent"]
+	Sent = basis.ent_entropy(psi,chain_subsys=subsys)["Sent"]
 	# calculate diagonal entropy in the basis of H(t_f)
 	S_d = diag_ensemble(basis.L,psi,E_final,V_final,Sd_Renyi=True)["Sd_pure"]
 	#
@@ -136,11 +153,12 @@ def _do_ramp(psi_0,H,basis,v,E_final,V_final):
 ##### produce data for n_real disorder realisations #####
 # __name__ == '__main__' required to use joblib in Windows.
 if __name__ == '__main__':
-	"""
+
 	# alternative way without parallelisation
-	data = np.asarray([realization(vs,H_XXZ,basis,i) for i in range(n_real)])
+	data = np.asarray([realization(vs,H_XXZ,i) for i in range(n_real)])
 	"""
 	data = np.asarray(Parallel(n_jobs=n_jobs)(delayed(realization)(vs,H_XXZ,basis,i) for i in range(n_real)))
+	"""
 	#
 	run_MBL,run_ETH = zip(*data) # extract MBL and data
 	# average over disorder
@@ -160,13 +178,12 @@ if __name__ == '__main__':
 	pltarr1[0].tick_params(labelsize=16)
 	# subplot 2: entanglement entropy vs ramp speed
 	pltarr1[1].plot(vs,mean_MBL[1],marker=".",color="blue") # plot data
-	pltarr1[1].set_ylabel("$s_\mathrm{ent}(t_f)$",fontsize=22) # label y-axis
+	pltarr1[1].set_ylabel("$s_\\mathrm{ent}(t_f)$",fontsize=22) # label y-axis
 	pltarr1[1].set_xlabel("$v/J_{zz}(0)$",fontsize=22) # label x-axis
 	pltarr1[1].set_xscale("log") # set log scale on x-axis
 	pltarr1[1].grid(True,which='both') # plot grid
 	pltarr1[1].tick_params(labelsize=16)
 	# save figure
-	plt.tight_layout()
 	fig.savefig('example1_MBL.pdf', bbox_inches='tight')
 	#
 	### ETH plot ###
@@ -180,14 +197,12 @@ if __name__ == '__main__':
 	pltarr2[0].tick_params(labelsize=16)
 	# subplot 2: entanglement entropy vs ramp speed
 	pltarr2[1].plot(vs,mean_ETH[1],marker=".",color="green") # plot data
-	pltarr2[1].set_ylabel("$s_\mathrm{ent}(t_f)$",fontsize=22) # label y-axis
+	pltarr2[1].set_ylabel("$s_\\mathrm{ent}(t_f)$",fontsize=22) # label y-axis
 	pltarr2[1].set_xlabel("$v/J_{zz}(0)$",fontsize=22) # label x-axis
 	pltarr2[1].set_xscale("log") # set log scale on x-axis
 	pltarr2[1].grid(True,which='both') # plot grid
 	pltarr2[1].tick_params(labelsize=16)
 	# save figure
-	plt.tight_layout()
-	plt.savefig('example1_ETH.pdf', bbox_inches='tight')
+	fig.savefig('example1_ETH.pdf', bbox_inches='tight')
 	#
-	#plt.show() # show plots
-	plt.close()
+	plt.show() # show plots
