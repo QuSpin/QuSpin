@@ -1,0 +1,868 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="50mm"
+   height="50mm"
+   viewBox="0 0 50 50"
+   version="1.1"
+   id="svg8"
+   inkscape:version="1.0.1 (0767f8302a, 2020-10-17)"
+   sodipodi:docname="lat_plaq.svg"
+   inkscape:export-filename="/home/phillip/Documents/ED_python/QuSpin_nlce/sphinx/source/images/plaquet_lattice_embed.png"
+   inkscape:export-xdpi="192"
+   inkscape:export-ydpi="192">
+  <defs
+     id="defs2">
+    <clipPath
+       clipPathUnits="userSpaceOnUse"
+       id="clipPath34">
+      <rect
+         style="fill:none;stroke:#000000;stroke-width:0.264583"
+         id="rect36"
+         width="53.752087"
+         height="55.298233"
+         x="-11.547173"
+         y="173.52887" />
+    </clipPath>
+  </defs>
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="2.8284271"
+     inkscape:cx="82.883466"
+     inkscape:cy="115.52449"
+     inkscape:document-units="mm"
+     inkscape:current-layer="layer1"
+     inkscape:document-rotation="0"
+     showgrid="false"
+     inkscape:snap-global="false"
+     inkscape:window-width="1920"
+     inkscape:window-height="948"
+     inkscape:window-x="0"
+     inkscape:window-y="27"
+     inkscape:window-maximized="1" />
+  <metadata
+     id="metadata5">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <path
+       style="fill:none;stroke:#ff00ff;stroke-width:0.323308;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:0.969927, 0.323308;stroke-dashoffset:0;stroke-opacity:1"
+       d="M 35.822352,1.9837291 0.72211254,37.083966"
+       id="path883-7"
+       inkscape:export-filename="/home/phillip/Documents/ED_python/QuSpin_nlce/sphinx/source/images/g604-2-7-75.png"
+       inkscape:export-xdpi="192"
+       inkscape:export-ydpi="192" />
+    <path
+       style="fill:none;stroke:#ff00ff;stroke-width:0.32331;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:0.969929, 0.32331;stroke-dashoffset:0;stroke-opacity:1"
+       d="M 0,19.017666 H 49.63923"
+       id="path883"
+       inkscape:export-filename="/home/phillip/Documents/ED_python/QuSpin_nlce/sphinx/source/images/g604-2-7-75.png"
+       inkscape:export-xdpi="192"
+       inkscape:export-ydpi="192" />
+    <g
+       id="g139"
+       transform="matrix(1.3258989,0,0,1.3258989,-1.5547996,-1.4542186)"
+       style="stroke:#0000ff;stroke-opacity:1"
+       inkscape:export-filename="/home/phillip/Documents/ED_python/QuSpin_nlce/sphinx/source/images/g604-2-7-75.png"
+       inkscape:export-xdpi="192"
+       inkscape:export-ydpi="192">
+      <path
+         style="fill:none;stroke:#0000ff;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+         d="m 23.196722,5.5513942 -9.819992,9.9181288 9.821857,9.934173"
+         id="path881" />
+      <path
+         sodipodi:type="star"
+         style="fill:#000000;stroke:#0000ff;stroke-width:0.156238;stroke-opacity:1"
+         id="path115"
+         sodipodi:sides="3"
+         sodipodi:cx="23.133301"
+         sodipodi:cy="5.669971"
+         sodipodi:r1="0.4590196"
+         sodipodi:r2="0.2174864"
+         sodipodi:arg1="1.3087673"
+         sodipodi:arg2="2.3559648"
+         inkscape:flatsided="true"
+         inkscape:rounded="0"
+         inkscape:randomized="0"
+         d="M 23.252206,6.1133226 22.689895,5.5512698 23.457802,5.3453206 Z"
+         inkscape:transform-center-x="0.026251236"
+         inkscape:transform-center-y="-0.099095569"
+         transform="rotate(-1.3143861,22.714271,6.9565664)" />
+      <path
+         sodipodi:type="star"
+         style="fill:#000000;stroke:#0000ff;stroke-width:0.156238;stroke-opacity:1"
+         id="path115-3"
+         sodipodi:sides="3"
+         sodipodi:cx="23.133301"
+         sodipodi:cy="5.669971"
+         sodipodi:r1="0.4590196"
+         sodipodi:r2="0.2174864"
+         sodipodi:arg1="1.3087673"
+         sodipodi:arg2="2.3559648"
+         inkscape:flatsided="true"
+         inkscape:rounded="0"
+         inkscape:randomized="0"
+         d="M 23.252206,6.1133226 22.689895,5.5512698 23.457802,5.3453206 Z"
+         inkscape:transform-center-x="0.10252901"
+         inkscape:transform-center-y="-0.20351147"
+         transform="rotate(-27.287177,63.703185,15.50944)" />
+    </g>
+    <path
+       style="fill:none;stroke:#ff00ff;stroke-width:0.323308;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:0.969927, 0.323308;stroke-dashoffset:0;stroke-opacity:1"
+       d="M 19.002535,0.28552272 V 49.924754"
+       id="path883-6"
+       inkscape:export-filename="/home/phillip/Documents/ED_python/QuSpin_nlce/sphinx/source/images/g604-2-7-75.png"
+       inkscape:export-xdpi="192"
+       inkscape:export-ydpi="192" />
+    <g
+       id="g604"
+       transform="matrix(1.2661713,0,0,1.2688419,-0.13143009,-0.13873261)"
+       inkscape:export-filename="/home/phillip/Documents/ED_python/QuSpin_nlce/sphinx/source/images/g604-2-7-75.png"
+       inkscape:export-xdpi="192"
+       inkscape:export-ydpi="192">
+      <rect
+         style="fill:none;stroke:#000000;stroke-width:0.397126"
+         id="rect38"
+         width="9.6028738"
+         height="9.6028738"
+         x="0.69856298"
+         y="0.69856298" />
+      <rect
+         style="fill:#00ff00;stroke:#00ff00;stroke-width:0.218392"
+         id="rect40"
+         width="0.78160739"
+         height="0.78160787"
+         x="5.1091962"
+         y="5.1091962" />
+      <ellipse
+         style="fill:#ff0000;stroke:#ff0000;stroke-width:0.25462"
+         id="path149"
+         cx="0.71253872"
+         cy="0.70219266"
+         rx="0.37268987"
+         ry="0.37269011" />
+      <ellipse
+         style="fill:#ff0000;stroke:#ff0000;stroke-width:0.25462"
+         id="path149-9"
+         cx="10.299441"
+         cy="0.68224716"
+         rx="0.37268987"
+         ry="0.37269011" />
+      <ellipse
+         style="fill:#ff0000;stroke:#ff0000;stroke-width:0.25462"
+         id="path149-9-2"
+         cx="0.71683925"
+         cy="10.264196"
+         rx="0.37268987"
+         ry="0.37269011" />
+      <ellipse
+         style="fill:#ff0000;stroke:#ff0000;stroke-width:0.25462"
+         id="path149-9-2-2"
+         cx="10.31137"
+         cy="10.254666"
+         rx="0.37268987"
+         ry="0.37269011" />
+      <rect
+         style="fill:none;stroke:#000000;stroke-width:0.397126"
+         id="rect518"
+         width="9.6028738"
+         height="9.6028738"
+         x="0.69856298"
+         y="0.69856298" />
+      <rect
+         style="fill:#00ff00;stroke:#00ff00;stroke-width:0.218392"
+         id="rect520"
+         width="0.78160739"
+         height="0.78160787"
+         x="5.1091962"
+         y="5.1091962" />
+      <ellipse
+         style="fill:#ff0000;stroke:#ff0000;stroke-width:0.25462"
+         id="ellipse522"
+         cx="0.71253872"
+         cy="0.70219266"
+         rx="0.37268987"
+         ry="0.37269011" />
+      <ellipse
+         style="fill:#ff0000;stroke:#ff0000;stroke-width:0.25462"
+         id="ellipse524"
+         cx="10.299441"
+         cy="0.68224716"
+         rx="0.37268987"
+         ry="0.37269011" />
+      <ellipse
+         style="fill:#ff0000;stroke:#ff0000;stroke-width:0.25462"
+         id="ellipse526"
+         cx="0.71683925"
+         cy="10.264196"
+         rx="0.37268987"
+         ry="0.37269011" />
+      <ellipse
+         style="fill:#ff0000;stroke:#ff0000;stroke-width:0.25462"
+         id="ellipse528"
+         cx="10.31137"
+         cy="10.254666"
+         rx="0.37268987"
+         ry="0.37269011" />
+    </g>
+    <g
+       id="g604-2"
+       transform="matrix(1.2661713,0,0,1.2688419,12.04695,11.937492)"
+       inkscape:export-filename="/home/phillip/Documents/ED_python/QuSpin_nlce/sphinx/source/images/g604-2-7-75.png"
+       inkscape:export-xdpi="192"
+       inkscape:export-ydpi="192">
+      <rect
+         style="fill:none;stroke:#000000;stroke-width:0.397126"
+         id="rect38-0"
+         width="9.6028738"
+         height="9.6028738"
+         x="0.69856298"
+         y="0.69856298" />
+      <rect
+         style="fill:#00ff00;stroke:#00ff00;stroke-width:0.218392"
+         id="rect40-6"
+         width="0.78160739"
+         height="0.78160787"
+         x="5.1091962"
+         y="5.1091962" />
+      <ellipse
+         style="fill:#ff0000;stroke:#ff0000;stroke-width:0.25462"
+         id="path149-8"
+         cx="0.71253872"
+         cy="0.70219266"
+         rx="0.37268987"
+         ry="0.37269011" />
+      <ellipse
+         style="fill:#ff0000;stroke:#ff0000;stroke-width:0.25462"
+         id="path149-9-9"
+         cx="10.299441"
+         cy="0.68224716"
+         rx="0.37268987"
+         ry="0.37269011" />
+      <ellipse
+         style="fill:#ff0000;stroke:#ff0000;stroke-width:0.25462"
+         id="path149-9-2-26"
+         cx="0.71683925"
+         cy="10.264196"
+         rx="0.37268987"
+         ry="0.37269011" />
+      <ellipse
+         style="fill:#ff0000;stroke:#ff0000;stroke-width:0.25462"
+         id="path149-9-2-2-6"
+         cx="10.31137"
+         cy="10.254666"
+         rx="0.37268987"
+         ry="0.37269011" />
+      <rect
+         style="fill:none;stroke:#000000;stroke-width:0.397126"
+         id="rect518-4"
+         width="9.6028738"
+         height="9.6028738"
+         x="0.69856298"
+         y="0.69856298" />
+      <rect
+         style="fill:#00ff00;stroke:#00ff00;stroke-width:0.218392"
+         id="rect520-9"
+         width="0.78160739"
+         height="0.78160787"
+         x="5.1091962"
+         y="5.1091962" />
+      <ellipse
+         style="fill:#ff0000;stroke:#ff0000;stroke-width:0.25462"
+         id="ellipse522-5"
+         cx="0.71253872"
+         cy="0.70219266"
+         rx="0.37268987"
+         ry="0.37269011" />
+      <ellipse
+         style="fill:#ff0000;stroke:#ff0000;stroke-width:0.25462"
+         id="ellipse524-0"
+         cx="10.299441"
+         cy="0.68224716"
+         rx="0.37268987"
+         ry="0.37269011" />
+      <ellipse
+         style="fill:#ff0000;stroke:#ff0000;stroke-width:0.25462"
+         id="ellipse526-4"
+         cx="0.71683925"
+         cy="10.264196"
+         rx="0.37268987"
+         ry="0.37269011" />
+      <ellipse
+         style="fill:#ff0000;stroke:#ff0000;stroke-width:0.25462"
+         id="ellipse528-8"
+         cx="10.31137"
+         cy="10.254666"
+         rx="0.37268987"
+         ry="0.37269011" />
+    </g>
+    <g
+       id="g604-2-7"
+       transform="matrix(1.2661713,0,0,1.2688419,-0.13143009,24.084925)"
+       inkscape:export-filename="/home/phillip/Documents/ED_python/QuSpin_nlce/sphinx/source/images/g604-2-7-75.png"
+       inkscape:export-xdpi="192"
+       inkscape:export-ydpi="192">
+      <rect
+         style="fill:none;stroke:#000000;stroke-width:0.397126"
+         id="rect38-0-1"
+         width="9.6028738"
+         height="9.6028738"
+         x="0.69856298"
+         y="0.69856298" />
+      <rect
+         style="fill:#00ff00;stroke:#00ff00;stroke-width:0.218392"
+         id="rect40-6-7"
+         width="0.78160739"
+         height="0.78160787"
+         x="5.1091962"
+         y="5.1091962" />
+      <ellipse
+         style="fill:#ff0000;stroke:#ff0000;stroke-width:0.25462"
+         id="path149-8-2"
+         cx="0.71253872"
+         cy="0.70219266"
+         rx="0.37268987"
+         ry="0.37269011" />
+      <ellipse
+         style="fill:#ff0000;stroke:#ff0000;stroke-width:0.25462"
+         id="path149-9-9-7"
+         cx="10.299441"
+         cy="0.68224716"
+         rx="0.37268987"
+         ry="0.37269011" />
+      <ellipse
+         style="fill:#ff0000;stroke:#ff0000;stroke-width:0.25462"
+         id="path149-9-2-26-2"
+         cx="0.71683925"
+         cy="10.264196"
+         rx="0.37268987"
+         ry="0.37269011" />
+      <ellipse
+         style="fill:#ff0000;stroke:#ff0000;stroke-width:0.25462"
+         id="path149-9-2-2-6-2"
+         cx="10.31137"
+         cy="10.254666"
+         rx="0.37268987"
+         ry="0.37269011" />
+      <rect
+         style="fill:none;stroke:#000000;stroke-width:0.397126"
+         id="rect518-4-6"
+         width="9.6028738"
+         height="9.6028738"
+         x="0.69856298"
+         y="0.69856298" />
+      <rect
+         style="fill:#00ff00;stroke:#00ff00;stroke-width:0.218392"
+         id="rect520-9-1"
+         width="0.78160739"
+         height="0.78160787"
+         x="5.1091962"
+         y="5.1091962" />
+      <ellipse
+         style="fill:#ff0000;stroke:#ff0000;stroke-width:0.25462"
+         id="ellipse522-5-0"
+         cx="0.71253872"
+         cy="0.70219266"
+         rx="0.37268987"
+         ry="0.37269011" />
+      <ellipse
+         style="fill:#ff0000;stroke:#ff0000;stroke-width:0.25462"
+         id="ellipse524-0-6"
+         cx="10.299441"
+         cy="0.68224716"
+         rx="0.37268987"
+         ry="0.37269011" />
+      <ellipse
+         style="fill:#ff0000;stroke:#ff0000;stroke-width:0.25462"
+         id="ellipse526-4-1"
+         cx="0.71683925"
+         cy="10.264196"
+         rx="0.37268987"
+         ry="0.37269011" />
+      <ellipse
+         style="fill:#ff0000;stroke:#ff0000;stroke-width:0.25462"
+         id="ellipse528-8-5"
+         cx="10.31137"
+         cy="10.254666"
+         rx="0.37268987"
+         ry="0.37269011" />
+    </g>
+    <g
+       id="g604-2-7-9"
+       transform="matrix(1.2661713,0,0,1.2688419,24.203475,24.049822)"
+       inkscape:export-filename="/home/phillip/Documents/ED_python/QuSpin_nlce/sphinx/source/images/g604-2-7-75.png"
+       inkscape:export-xdpi="192"
+       inkscape:export-ydpi="192">
+      <rect
+         style="fill:none;stroke:#000000;stroke-width:0.397126"
+         id="rect38-0-1-4"
+         width="9.6028738"
+         height="9.6028738"
+         x="0.69856298"
+         y="0.69856298" />
+      <rect
+         style="fill:#00ff00;stroke:#00ff00;stroke-width:0.218392"
+         id="rect40-6-7-9"
+         width="0.78160739"
+         height="0.78160787"
+         x="5.1091962"
+         y="5.1091962" />
+      <ellipse
+         style="fill:#ff0000;stroke:#ff0000;stroke-width:0.25462"
+         id="path149-8-2-0"
+         cx="0.71253872"
+         cy="0.70219266"
+         rx="0.37268987"
+         ry="0.37269011" />
+      <ellipse
+         style="fill:#ff0000;stroke:#ff0000;stroke-width:0.25462"
+         id="path149-9-9-7-9"
+         cx="10.299441"
+         cy="0.68224716"
+         rx="0.37268987"
+         ry="0.37269011" />
+      <ellipse
+         style="fill:#ff0000;stroke:#ff0000;stroke-width:0.25462"
+         id="path149-9-2-26-2-1"
+         cx="0.71683925"
+         cy="10.264196"
+         rx="0.37268987"
+         ry="0.37269011" />
+      <ellipse
+         style="fill:#ff0000;stroke:#ff0000;stroke-width:0.25462"
+         id="path149-9-2-2-6-2-7"
+         cx="10.31137"
+         cy="10.254666"
+         rx="0.37268987"
+         ry="0.37269011" />
+      <rect
+         style="fill:none;stroke:#000000;stroke-width:0.397126"
+         id="rect518-4-6-7"
+         width="9.6028738"
+         height="9.6028738"
+         x="0.69856298"
+         y="0.69856298" />
+      <rect
+         style="fill:#00ff00;stroke:#00ff00;stroke-width:0.218392"
+         id="rect520-9-1-1"
+         width="0.78160739"
+         height="0.78160787"
+         x="5.1091962"
+         y="5.1091962" />
+      <ellipse
+         style="fill:#ff0000;stroke:#ff0000;stroke-width:0.25462"
+         id="ellipse522-5-0-1"
+         cx="0.71253872"
+         cy="0.70219266"
+         rx="0.37268987"
+         ry="0.37269011" />
+      <ellipse
+         style="fill:#ff0000;stroke:#ff0000;stroke-width:0.25462"
+         id="ellipse524-0-6-5"
+         cx="10.299441"
+         cy="0.68224716"
+         rx="0.37268987"
+         ry="0.37269011" />
+      <ellipse
+         style="fill:#ff0000;stroke:#ff0000;stroke-width:0.25462"
+         id="ellipse526-4-1-9"
+         cx="0.71683925"
+         cy="10.264196"
+         rx="0.37268987"
+         ry="0.37269011" />
+      <ellipse
+         style="fill:#ff0000;stroke:#ff0000;stroke-width:0.25462"
+         id="ellipse528-8-5-7"
+         cx="10.31137"
+         cy="10.254666"
+         rx="0.37268987"
+         ry="0.37269011" />
+    </g>
+    <g
+       id="g604-2-7-7"
+       transform="matrix(1.2661713,0,0,1.2688419,24.182848,-0.23124271)"
+       inkscape:export-filename="/home/phillip/Documents/ED_python/QuSpin_nlce/sphinx/source/images/g604-2-7-75.png"
+       inkscape:export-xdpi="192"
+       inkscape:export-ydpi="192">
+      <rect
+         style="fill:none;stroke:#000000;stroke-width:0.397126"
+         id="rect38-0-1-6"
+         width="9.6028738"
+         height="9.6028738"
+         x="0.69856298"
+         y="0.69856298" />
+      <rect
+         style="fill:#00ff00;stroke:#00ff00;stroke-width:0.218392"
+         id="rect40-6-7-7"
+         width="0.78160739"
+         height="0.78160787"
+         x="5.1091962"
+         y="5.1091962" />
+      <ellipse
+         style="fill:#ff0000;stroke:#ff0000;stroke-width:0.25462"
+         id="path149-8-2-3"
+         cx="0.71253872"
+         cy="0.70219266"
+         rx="0.37268987"
+         ry="0.37269011" />
+      <ellipse
+         style="fill:#ff0000;stroke:#ff0000;stroke-width:0.25462"
+         id="path149-9-9-7-6"
+         cx="10.299441"
+         cy="0.68224716"
+         rx="0.37268987"
+         ry="0.37269011" />
+      <ellipse
+         style="fill:#ff0000;stroke:#ff0000;stroke-width:0.25462"
+         id="path149-9-2-26-2-5"
+         cx="0.71683925"
+         cy="10.264196"
+         rx="0.37268987"
+         ry="0.37269011" />
+      <ellipse
+         style="fill:#ff0000;stroke:#ff0000;stroke-width:0.25462"
+         id="path149-9-2-2-6-2-6"
+         cx="10.31137"
+         cy="10.254666"
+         rx="0.37268987"
+         ry="0.37269011" />
+      <rect
+         style="fill:none;stroke:#000000;stroke-width:0.397126"
+         id="rect518-4-6-3"
+         width="9.6028738"
+         height="9.6028738"
+         x="0.69856298"
+         y="0.69856298" />
+      <rect
+         style="fill:#00ff00;stroke:#00ff00;stroke-width:0.218392"
+         id="rect520-9-1-9"
+         width="0.78160739"
+         height="0.78160787"
+         x="5.1091962"
+         y="5.1091962" />
+      <ellipse
+         style="fill:#ff0000;stroke:#ff0000;stroke-width:0.25462"
+         id="ellipse522-5-0-4"
+         cx="0.71253872"
+         cy="0.70219266"
+         rx="0.37268987"
+         ry="0.37269011" />
+      <ellipse
+         style="fill:#ff0000;stroke:#ff0000;stroke-width:0.25462"
+         id="ellipse524-0-6-8"
+         cx="10.299441"
+         cy="0.68224716"
+         rx="0.37268987"
+         ry="0.37269011" />
+      <ellipse
+         style="fill:#ff0000;stroke:#ff0000;stroke-width:0.25462"
+         id="ellipse526-4-1-1"
+         cx="0.71683925"
+         cy="10.264196"
+         rx="0.37268987"
+         ry="0.37269011" />
+      <ellipse
+         style="fill:#ff0000;stroke:#ff0000;stroke-width:0.25462"
+         id="ellipse528-8-5-2"
+         cx="10.31137"
+         cy="10.254666"
+         rx="0.37268987"
+         ry="0.37269011" />
+    </g>
+    <g
+       id="g604-2-7-93"
+       transform="matrix(1.2661713,0,0,1.2688419,36.310954,11.950509)"
+       inkscape:export-filename="/home/phillip/Documents/ED_python/QuSpin_nlce/sphinx/source/images/g604-2-7-75.png"
+       inkscape:export-xdpi="192"
+       inkscape:export-ydpi="192">
+      <rect
+         style="fill:none;stroke:#000000;stroke-width:0.397126"
+         id="rect38-0-1-9"
+         width="9.6028738"
+         height="9.6028738"
+         x="0.69856298"
+         y="0.69856298" />
+      <rect
+         style="fill:#00ff00;stroke:#00ff00;stroke-width:0.218392"
+         id="rect40-6-7-0"
+         width="0.78160739"
+         height="0.78160787"
+         x="5.1091962"
+         y="5.1091962" />
+      <ellipse
+         style="fill:#ff0000;stroke:#ff0000;stroke-width:0.25462"
+         id="path149-8-2-8"
+         cx="0.71253872"
+         cy="0.70219266"
+         rx="0.37268987"
+         ry="0.37269011" />
+      <ellipse
+         style="fill:#ff0000;stroke:#ff0000;stroke-width:0.25462"
+         id="path149-9-9-7-8"
+         cx="10.299441"
+         cy="0.68224716"
+         rx="0.37268987"
+         ry="0.37269011" />
+      <ellipse
+         style="fill:#ff0000;stroke:#ff0000;stroke-width:0.25462"
+         id="path149-9-2-26-2-50"
+         cx="0.71683925"
+         cy="10.264196"
+         rx="0.37268987"
+         ry="0.37269011" />
+      <ellipse
+         style="fill:#ff0000;stroke:#ff0000;stroke-width:0.25462"
+         id="path149-9-2-2-6-2-9"
+         cx="10.31137"
+         cy="10.254666"
+         rx="0.37268987"
+         ry="0.37269011" />
+      <rect
+         style="fill:none;stroke:#000000;stroke-width:0.397126"
+         id="rect518-4-6-6"
+         width="9.6028738"
+         height="9.6028738"
+         x="0.69856298"
+         y="0.69856298" />
+      <rect
+         style="fill:#00ff00;stroke:#00ff00;stroke-width:0.218392"
+         id="rect520-9-1-3"
+         width="0.78160739"
+         height="0.78160787"
+         x="5.1091962"
+         y="5.1091962" />
+      <ellipse
+         style="fill:#ff0000;stroke:#ff0000;stroke-width:0.25462"
+         id="ellipse522-5-0-8"
+         cx="0.71253872"
+         cy="0.70219266"
+         rx="0.37268987"
+         ry="0.37269011" />
+      <ellipse
+         style="fill:#ff0000;stroke:#ff0000;stroke-width:0.25462"
+         id="ellipse524-0-6-56"
+         cx="10.299441"
+         cy="0.68224716"
+         rx="0.37268987"
+         ry="0.37269011" />
+      <ellipse
+         style="fill:#ff0000;stroke:#ff0000;stroke-width:0.25462"
+         id="ellipse526-4-1-11"
+         cx="0.71683925"
+         cy="10.264196"
+         rx="0.37268987"
+         ry="0.37269011" />
+      <ellipse
+         style="fill:#ff0000;stroke:#ff0000;stroke-width:0.25462"
+         id="ellipse528-8-5-5"
+         cx="10.31137"
+         cy="10.254666"
+         rx="0.37268987"
+         ry="0.37269011" />
+    </g>
+    <g
+       id="g604-2-7-98"
+       transform="matrix(1.2661713,0,0,1.2688419,12.057138,36.158728)"
+       inkscape:export-filename="/home/phillip/Documents/ED_python/QuSpin_nlce/sphinx/source/images/g604-2-7-75.png"
+       inkscape:export-xdpi="192"
+       inkscape:export-ydpi="192">
+      <rect
+         style="fill:none;stroke:#000000;stroke-width:0.397126"
+         id="rect38-0-1-48"
+         width="9.6028738"
+         height="9.6028738"
+         x="0.69856298"
+         y="0.69856298" />
+      <rect
+         style="fill:#00ff00;stroke:#00ff00;stroke-width:0.218392"
+         id="rect40-6-7-1"
+         width="0.78160739"
+         height="0.78160787"
+         x="5.1091962"
+         y="5.1091962" />
+      <ellipse
+         style="fill:#ff0000;stroke:#ff0000;stroke-width:0.25462"
+         id="path149-8-2-03"
+         cx="0.71253872"
+         cy="0.70219266"
+         rx="0.37268987"
+         ry="0.37269011" />
+      <ellipse
+         style="fill:#ff0000;stroke:#ff0000;stroke-width:0.25462"
+         id="path149-9-9-7-0"
+         cx="10.299441"
+         cy="0.68224716"
+         rx="0.37268987"
+         ry="0.37269011" />
+      <ellipse
+         style="fill:#ff0000;stroke:#ff0000;stroke-width:0.25462"
+         id="path149-9-2-26-2-4"
+         cx="0.71683925"
+         cy="10.264196"
+         rx="0.37268987"
+         ry="0.37269011" />
+      <ellipse
+         style="fill:#ff0000;stroke:#ff0000;stroke-width:0.25462"
+         id="path149-9-2-2-6-2-4"
+         cx="10.31137"
+         cy="10.254666"
+         rx="0.37268987"
+         ry="0.37269011" />
+      <rect
+         style="fill:none;stroke:#000000;stroke-width:0.397126"
+         id="rect518-4-6-4"
+         width="9.6028738"
+         height="9.6028738"
+         x="0.69856298"
+         y="0.69856298" />
+      <rect
+         style="fill:#00ff00;stroke:#00ff00;stroke-width:0.218392"
+         id="rect520-9-1-4"
+         width="0.78160739"
+         height="0.78160787"
+         x="5.1091962"
+         y="5.1091962" />
+      <ellipse
+         style="fill:#ff0000;stroke:#ff0000;stroke-width:0.25462"
+         id="ellipse522-5-0-7"
+         cx="0.71253872"
+         cy="0.70219266"
+         rx="0.37268987"
+         ry="0.37269011" />
+      <ellipse
+         style="fill:#ff0000;stroke:#ff0000;stroke-width:0.25462"
+         id="ellipse524-0-6-6"
+         cx="10.299441"
+         cy="0.68224716"
+         rx="0.37268987"
+         ry="0.37269011" />
+      <ellipse
+         style="fill:#ff0000;stroke:#ff0000;stroke-width:0.25462"
+         id="ellipse526-4-1-3"
+         cx="0.71683925"
+         cy="10.264196"
+         rx="0.37268987"
+         ry="0.37269011" />
+      <ellipse
+         style="fill:#ff0000;stroke:#ff0000;stroke-width:0.25462"
+         id="ellipse528-8-5-1"
+         cx="10.31137"
+         cy="10.254666"
+         rx="0.37268987"
+         ry="0.37269011" />
+    </g>
+    <g
+       id="g604-2-7-75"
+       transform="matrix(1.2661713,0,0,1.2688419,36.30825,36.235179)"
+       inkscape:export-filename="/home/phillip/Documents/ED_python/QuSpin_nlce/sphinx/source/images/g604-2-7-75.png"
+       inkscape:export-xdpi="192"
+       inkscape:export-ydpi="192">
+      <rect
+         style="fill:none;stroke:#000000;stroke-width:0.397126"
+         id="rect38-0-1-96"
+         width="9.6028738"
+         height="9.6028738"
+         x="0.69856298"
+         y="0.69856298" />
+      <rect
+         style="fill:#00ff00;stroke:#00ff00;stroke-width:0.218392"
+         id="rect40-6-7-2"
+         width="0.78160739"
+         height="0.78160787"
+         x="5.1091962"
+         y="5.1091962" />
+      <ellipse
+         style="fill:#ff0000;stroke:#ff0000;stroke-width:0.25462"
+         id="path149-8-2-1"
+         cx="0.71253872"
+         cy="0.70219266"
+         rx="0.37268987"
+         ry="0.37269011" />
+      <ellipse
+         style="fill:#ff0000;stroke:#ff0000;stroke-width:0.25462"
+         id="path149-9-9-7-7"
+         cx="10.299441"
+         cy="0.68224716"
+         rx="0.37268987"
+         ry="0.37269011" />
+      <ellipse
+         style="fill:#ff0000;stroke:#ff0000;stroke-width:0.25462"
+         id="path149-9-2-26-2-8"
+         cx="0.71683925"
+         cy="10.264196"
+         rx="0.37268987"
+         ry="0.37269011" />
+      <ellipse
+         style="fill:#ff0000;stroke:#ff0000;stroke-width:0.25462"
+         id="path149-9-2-2-6-2-5"
+         cx="10.31137"
+         cy="10.254666"
+         rx="0.37268987"
+         ry="0.37269011" />
+      <rect
+         style="fill:none;stroke:#000000;stroke-width:0.397126"
+         id="rect518-4-6-74"
+         width="9.6028738"
+         height="9.6028738"
+         x="0.69856298"
+         y="0.69856298" />
+      <rect
+         style="fill:#00ff00;stroke:#00ff00;stroke-width:0.218392"
+         id="rect520-9-1-18"
+         width="0.78160739"
+         height="0.78160787"
+         x="5.1091962"
+         y="5.1091962" />
+      <ellipse
+         style="fill:#ff0000;stroke:#ff0000;stroke-width:0.25462"
+         id="ellipse522-5-0-5"
+         cx="0.71253872"
+         cy="0.70219266"
+         rx="0.37268987"
+         ry="0.37269011" />
+      <ellipse
+         style="fill:#ff0000;stroke:#ff0000;stroke-width:0.25462"
+         id="ellipse524-0-6-9"
+         cx="10.299441"
+         cy="0.68224716"
+         rx="0.37268987"
+         ry="0.37269011" />
+      <ellipse
+         style="fill:#ff0000;stroke:#ff0000;stroke-width:0.25462"
+         id="ellipse526-4-1-7"
+         cx="0.71683925"
+         cy="10.264196"
+         rx="0.37268987"
+         ry="0.37269011" />
+      <ellipse
+         style="fill:#ff0000;stroke:#ff0000;stroke-width:0.25462"
+         id="ellipse528-8-5-53"
+         cx="10.31137"
+         cy="10.254666"
+         rx="0.37268987"
+         ry="0.37269011" />
+    </g>
+  </g>
+</svg>
