@@ -1,4 +1,4 @@
-﻿quspin.operators.hamiltonian
+quspin.operators.hamiltonian
 ============================
 
 .. currentmodule:: quspin.operators

@@ -9,7 +9,12 @@ os.environ['MKL_NUM_THREADS']='1' # set number of MKL threads to run in parallel
 #
 quspin_path = os.path.join(os.getcwd(),"../../")
 sys.path.insert(0,quspin_path)
-#
+######################################################################
+#                            example 23                              #
+# This example shows how to use the `user_basis` to define Gell-Mann #
+# operators. This allows to construct Hamiltonians using the 8 SU(3) #
+# generators.                                                        #
+######################################################################
 from quspin.operators import hamiltonian # Hamiltonians and operators
 from quspin.basis import boson_basis_1d # Hilbert space spin basis_1d
 from quspin.basis.user import user_basis # Hilbert space user basis

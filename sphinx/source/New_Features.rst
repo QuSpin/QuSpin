@@ -1,6 +1,6 @@
 
 
-:green:`QuSpin 0.3.5` (released on 2021.02.01)
+:green:`QuSpin 0.3.5` (released on 2021.02.15)
 ================================================
 
 
@@ -16,7 +16,7 @@ Complete list of the most recent features
 =========================================
 
 
-Added in v. 0.3.5 (2021.02.01)
+Added in v. 0.3.5 (2021.02.15)
 ------------------------------
 
 Improved Functionality
@@ -37,6 +37,7 @@ New Attributes, Functions, Methods, Classes, and Examples
 * :red:`deprecated` function `tools.misc.csr_matvec`.
 * added Majorana fermion operator strings to the `*_fermion_basis_general`.
 * added `int_to_state` and `state_to_int` functions to `spinful_fermion_basis_*` classes.
+* added properties `shape` and `ndim` to classes in the `operator` module. 
 * new examples: 
 	* Majorana fermion operators, cf. :ref:`example23-label`;
 	* Gell-Mann operators for spin-1 systems, cf. :ref:`example24-label`;

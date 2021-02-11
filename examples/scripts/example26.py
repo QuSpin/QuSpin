@@ -7,87 +7,99 @@ os.environ['MKL_NUM_THREADS']='1' # set number of MKL threads to run in parallel
 #
 quspin_path = os.path.join(os.getcwd(),"../../")
 sys.path.insert(0,quspin_path)
-
-
+#######################################################################
+#                            example 26                               #
+# This example shows how to use the `Op-shit_sector` method of the    #
+# general basis class to compute spectral functions using symmetries. #
+#######################################################################
 from quspin.basis import spin_basis_general
 from quspin.operators import hamiltonian,quantum_LinearOperator
 import scipy.sparse as sp
 import numexpr,cProfile
 import numpy as np
 import matplotlib.pyplot as plt
-
-
-
-
+#
+#
+# define custom LinearOperator object that generates the left hand side of the equation.
+#
 class LHS(sp.linalg.LinearOperator):
-	# LinearOperator that generates the left hand side of the equation.
+	#
 	def __init__(self,H,omega,eta,E0,kwargs={}):
-		self._H = H
-		self._S = omega +1j*eta + E0 
-		self._kwargs = kwargs
-
+		self._H = H # Hamiltonian
+		self._z = omega +1j*eta + E0 # complex energy
+		self._kwargs = kwargs # arguments
+	#
 	@property
 	def shape(self):
 		return (self._H.Ns,self._H.Ns)
-	
+	#
 	@property
 	def dtype(self):
 		return np.dtype(self._H.dtype)
-	
+	#
 	def _matvec(self,v):
-		return self._S * v - self._H.dot(v,**self._kwargs)
-
+		# left multiplication
+		return self._z * v - self._H.dot(v,**self._kwargs)
+	#
 	def _rmatvec(self,v):
-		return self._S.conj() * v - self._H.dot(v,**self._kwargs)
-
-# calculate action without constructing the Hamiltonian matrix
-on_the_fly = False
+		# right multiplication
+		return self._z.conj() * v - self._H.dot(v,**self._kwargs)
+#
+##### calculate action without constructing the Hamiltonian matrix
+#
+on_the_fly = False # toggles between using a `hamiltnian` or a `quantum_LinearOperator` object
 # chain length
 L = 12
-# local spin 
+# on-site spin size 
 S = "1/2"
-# translation transformation
+# translation transformation on the lattice sites [0,...,L-1]
 T = (np.arange(L)+1)%L
-# this example does not work for these conditions because ground-state sector is no q=0 and S=1/2
+# this example does not work under these conditions because ground-state sector is not q=0
 if (L//2)%2 != 0:
-	raise ValueError("Example is not written for heisenberg chains with L=4*n+2.")
+	raise ValueError("Example requires modifications for Heisenberg chains with L=4*n+2.")
 if L%2 != 0:
-	raise ValueError("Example is not written for heisenberg chains with odd number of sites.")
+	raise ValueError("Example requires modifications for Heisenberg chains with odd number of sites.")
 # construct basis
 basis0 = spin_basis_general(L,S=S,m=0,pauli=False,kblock=(T,0))
 # construct static list for Heisenberg chain
 Jzz_list = [[1.0,i,(i+1)%L] for i in range(L)]
 Jxy_list = [[0.5,i,(i+1)%L] for i in range(L)]
 static = [["zz",Jzz_list],["+-",Jxy_list],["-+",Jxy_list]]
-# construct operator for Hamiltonian in ground state sector
+# construct operator for Hamiltonian in the ground state sector
 if on_the_fly:
 	H0 = quantum_LinearOperator(static,basis=basis0,dtype=np.float64)
 else:
 	H0 = hamiltonian(static,[],basis=basis0,dtype=np.float64)
-# calculate ground state.
+# calculate ground state
 [E0],psi0 = H0.eigsh(k=1,which="SA")
 psi0 = psi0.ravel()
-# list of possible momentum sectors
-# excluding k=pi because the peak is large
+# define all possible momentum sectors excluding q=L/2 (pi-momentum) where the peak is abnormally large
 qs = np.arange(-L//2+1,L//2,1)
-# list of omegas to calculate spectral function
+# define frequencies to calculate spectral function for
 omegas = np.arange(0,4,0.05)
-# broadening factor
+# spectral peaks broadening factor
 eta = 0.1
 # allocate arrays to store data
 Gzz = np.zeros(omegas.shape+qs.shape,dtype=np.complex128)
 Gpm = np.zeros(omegas.shape+qs.shape,dtype=np.complex128)
-# looping over momentum sectors
+# loop over momentum sectors
 for j,q in enumerate(qs):
 	print("computing momentum block q={}".format(q) )
 	# define block
-	block = dict(kblock=(T,q))
-	# define operator list to Op_shift_sector
+	block = dict(qblock=(T,q))
+	#
+	####################################################################
+	#
+	# ---------------------------------------------------- #
+	#                 calculation but for SzSz             #
+	# ---------------------------------------------------- #
+	#
+	# define operator list for Op_shift_sector
 	f = lambda i:np.exp(-2j*np.pi*q*i/L)/np.sqrt(L)
 	Op_list = [["z",[i],f(i)] for i in range(L)]
 	# define basis
 	basisq = spin_basis_general(L,S=S,m=0,pauli=False,**block)
-	# define operators for the sector.
+	# define operators in the q-momentum sector
 	if on_the_fly:
 		Hq = quantum_LinearOperator(static,basis=basisq,dtype=np.complex128,
 			check_symm=False,check_pcon=False,check_herm=False)
@@ -96,26 +108,31 @@ for j,q in enumerate(qs):
 			check_symm=False,check_pcon=False,check_herm=False)
 	# shift sectors
 	psiA = basisq.Op_shift_sector(basis0,Op_list,psi0)
-	# use vector correction method:
-	# solve (z-H)|x> = |A> solve for |x> 
-	# using iterative solver for each omega
+	#
+	### apply vector correction method
+	#
+	# solve (z-H)|x> = |A> solve for |x>  using iterative solver for each omega
 	for i,omega in enumerate(omegas):
 		lhs = LHS(Hq,omega,eta,E0)
 		x,*_ = sp.linalg.bicg(lhs,psiA)
 		Gzz[i,j] = -np.vdot(psiA,x)/np.pi
+	#
+	#####################################################################
+	#
 	# ---------------------------------------------------- #
 	#            same calculation but for S-S+             #
 	# ---------------------------------------------------- #
-	# divide by extra sqrt(2) to get extra factor of 1/2 when taking sandwich
+	#
+	# divide by extra sqrt(2) to get extra factor of 1/2 when taking sandwich: needed since H = 1/2 (S^+_i S^-_j + h.c.) + S^z_j S^z_j
 	f = lambda i:np.exp(-2j*np.pi*q*i/L)*np.sqrt(1.0/(2*L))
 	Op_list = [["+",[i],f(i)] for i in range(L)]
 	# change S_z projection up by S for action of S+ operator
 	S_z_tot = 0 + eval(S)
-	# calculate magnetization density from S_z_tot as define in docs
+	# calculate magnetization density from S_z_tot as defined in the documentation
 	# m = S_z_tot / (S * N), S: local spin (as number), N: total spins
 	m = S_z_tot/(eval(S)*L) 
 	basisq = spin_basis_general(L,S=S,m=m,pauli=False,**block)
-	# define operators for the sector.
+	# define operators in the q-momentum sector
 	if on_the_fly:
 		Hq = quantum_LinearOperator(static,basis=basisq,dtype=np.complex128,
 			check_symm=False,check_pcon=False,check_herm=False)
@@ -124,17 +141,25 @@ for j,q in enumerate(qs):
 			check_symm=False,check_pcon=False,check_herm=False)
 	# shift sectors
 	psiA = basisq.Op_shift_sector(basis0,Op_list,psi0)
-	# use vector correction method:
-	# solve (z-H)|x> = |A> solve for |x> 
-	# using iterative solver
+	#
+	### apply vector correction method
+	#
+	# solve (z-H)|x> = |A> solve for |x>  using iterative solver for each omega
 	for i,omega in enumerate(omegas):
 		lhs = LHS(Hq,omega,eta,E0)
 		x,*_ = sp.linalg.bicg(lhs,psiA)
 		Gpm[i,j] = -np.vdot(psiA,x)/np.pi
-# plot results
-qs = 2*np.pi*qs/L
+#
+##### plot results
+#
+ks = 2*np.pi*qs/L # compute physical momentum values
 f,(ax1,ax2) = plt.subplots(2,1,figsize=(3,4),sharex=True)
-ax1.pcolormesh(qs,omegas,Gzz.imag,shading='nearest')
-ax2.pcolormesh(qs,omegas,Gpm.imag,shading='nearest')
-f.subplots_adjust(hspace=0.01)
-plt.show()
+ax1.pcolormesh(ks,omegas,Gzz.imag,shading='nearest')
+ax2.pcolormesh(ks,omegas,Gpm.imag,shading='nearest')
+ax2.set_xlabel('$k$')
+ax2.set_ylabel('$\\omega$')
+ax1.set_ylabel('$\\omega$')
+ax1.set_title('$G_{zz}(\\omega,k)$')
+ax2.set_title('$G_{+-}(\\omega,k)$')
+#plt.show()
+plt.close()

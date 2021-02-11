@@ -326,6 +326,7 @@ class quantum_operator(object):
 
 	@property
 	def shape(self):
+		"""tuple: shape of the `quantum_operator` object, always equal to `(Ns,Ns)`."""
 		return self._shape
 	
 
