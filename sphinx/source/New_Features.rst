@@ -42,6 +42,7 @@ New Attributes, Functions, Methods, Classes, and Examples
 	* Majorana fermion operators, cf. :ref:`example23-label`;
 	* Gell-Mann operators for spin-1 systems, cf. :ref:`example24-label`;
 	* Majorana SYK model, cf. :ref:`example25-label`.
+	* Calculation of spectral functions using symmetries, cf. :ref:`example26-label`.
 
 
 
@@ -51,7 +52,7 @@ Added in v. 0.3.4 (2020.04.17)
 Improved Functionality
 ++++++++++++++++++++++
 
-* :red:`discontinued` support for python 2.7 support. Installing QuSpin for py27 will by defult result in version 0.3.3.
+* :red:`discontinued` support for python 2.7. Installing QuSpin for py27 will by defult result in version 0.3.3.
 * :red:`deprecated` function `basis.get_vec()`: use `basis.project_from()` instead.
 * revised `user_basis` tutorial for spinless fermions and introduced function `_count_particles_32()`.
 * added optional arguments `svd_solver`, `svd_kwargs` to `basis.ent_entropy()`; allows to use some scipy svd solvers, which are typically more stable. 
