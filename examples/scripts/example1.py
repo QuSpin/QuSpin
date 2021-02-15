@@ -127,7 +127,7 @@ def _do_ramp(psi_0,H,basis,v,E_final,V_final):
 	psi = H.evolve(psi_0,0.0,t_f)
 	# calculate entanglement entropy
 	subsys = range(basis.L//2) # define subsystem
-	Sent = ent_entropy(psi,basis,chain_subsys=subsys)["Sent"]
+	Sent = basis.ent_entropy(psi,sub_sys_A=subsys)["Sent_A"]
 	# calculate diagonal entropy in the basis of H(t_f)
 	S_d = diag_ensemble(basis.L,psi,E_final,V_final,Sd_Renyi=True)["Sd_pure"]
 	#
