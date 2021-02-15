@@ -25,6 +25,7 @@ quspin.basis.tensor\_basis
       ~tensor_basis.index
       ~tensor_basis.inplace_Op
       ~tensor_basis.partial_trace
+      ~tensor_basis.project_from
    
    
 

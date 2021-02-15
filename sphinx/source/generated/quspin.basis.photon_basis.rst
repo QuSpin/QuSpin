@@ -25,6 +25,7 @@ quspin.basis.photon\_basis
       ~photon_basis.index
       ~photon_basis.inplace_Op
       ~photon_basis.partial_trace
+      ~photon_basis.project_from
    
    
 

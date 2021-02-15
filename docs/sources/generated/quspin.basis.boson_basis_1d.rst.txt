@@ -26,6 +26,7 @@ quspin.basis.boson\_basis\_1d
       ~boson_basis_1d.inplace_Op
       ~boson_basis_1d.int_to_state
       ~boson_basis_1d.partial_trace
+      ~boson_basis_1d.project_from
       ~boson_basis_1d.state_to_int
    
    

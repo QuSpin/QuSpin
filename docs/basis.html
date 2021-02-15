@@ -1,7 +1,7 @@
 
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
     <meta charset="utf-8" /><script type="text/javascript">
 
@@ -15,7 +15,7 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-    <title>Basis module (quspin.basis) &#8212; QuSpin 0.3.4 documentation</title>
+    <title>Basis module (quspin.basis) &#8212; QuSpin 0.3.5 documentation</title>
     <link rel="stylesheet" href="static/classic.css" type="text/css" />
     <link rel="stylesheet" href="static/pygments.css" type="text/css" />
     
@@ -29,7 +29,7 @@
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="quspin.basis.spin_basis_1d" href="generated/quspin.basis.spin_basis_1d.html" />
-    <link rel="prev" title="QuSpin 0.3.4 (released on 2020.04.17)" href="New_Features.html" /> 
+    <link rel="prev" title="QuSpin 0.3.5 (released on 2021.02.15)" href="New_Features.html" /> 
   </head><body>
     <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
@@ -44,9 +44,9 @@
           <a href="generated/quspin.basis.spin_basis_1d.html" title="quspin.basis.spin_basis_1d"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="New_Features.html" title="QuSpin 0.3.4 (released on 2020.04.17)"
+          <a href="New_Features.html" title="QuSpin 0.3.5 (released on 2021.02.15)"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">QuSpin 0.3.4 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">QuSpin 0.3.5 documentation</a> &#187;</li> 
       </ul>
     </div>  
 
@@ -62,14 +62,18 @@
 <p>The following table shows the available operator strings for the different bases (<cite>sps</cite> is the onsite Hilbert space dimension):</p>
 <div class="math notranslate nohighlight">
 \[\begin{array}{cccc}
-   \texttt{basis}/\texttt{opstr}   &amp;   \texttt{&quot;I&quot;}   &amp;   \texttt{&quot;+&quot;}   &amp;   \texttt{&quot;-&quot;}  &amp;   \texttt{&quot;n&quot;}   &amp;   \texttt{&quot;z&quot;}   &amp;   \texttt{&quot;x&quot;}   &amp;   \texttt{&quot;y&quot;}  \newline  
+   \texttt{basis}/\texttt{opstr}   &amp;   \texttt{&quot;I&quot;}   &amp;   \texttt{&quot;+&quot;}   &amp;   \texttt{&quot;-&quot;}  &amp;   \texttt{&quot;n&quot;}   &amp;   \texttt{&quot;z&quot;}   &amp;   \texttt{&quot;x&quot;}   &amp;   \texttt{&quot;y&quot;}  \newline
    \texttt{spin_basis_*} &amp;   \hat{1}        &amp;   \hat S^+(\hat\sigma^+)       &amp;   \hat S^-(\hat\sigma^-)      &amp;         -         &amp;   \hat S^z(\hat\sigma^z)       &amp;   \hat S^x(\hat\sigma^x)     &amp;   \hat S^y(\hat\sigma^y)  \  \newline
    \texttt{boson_basis_*}&amp;   \hat{1}        &amp;   \hat b^\dagger      &amp;       \hat b          &amp; \hat b^\dagger \hat b     &amp;  \hat b^\dagger\hat b - \frac{\mathrm{sps}-1}{2}       &amp;   -       &amp;   -  \newline
-   \texttt{*_fermion_basis_*}&amp; \hat{1}        &amp;   \hat c^\dagger      &amp;       \hat c          &amp; \hat c^\dagger \hat c     &amp;  \hat c^\dagger\hat c - \frac{1}{2}       &amp;   -       &amp;   -  \newline
+   \texttt{*_fermion_basis_*}&amp; \hat{1}        &amp;   \hat c^\dagger      &amp;       \hat c          &amp; \hat c^\dagger \hat c     &amp;  \hat c^\dagger\hat c - \frac{1}{2}       &amp;   \hat c + \hat c^\dagger       &amp;   -i\left( \hat c - \hat c^\dagger\right)  \newline
 \end{array}\]</div>
-<p><strong>Note:</strong> The default operators for spin-1/2 are the Pauli matrices, NOT the spin operators. To change this, see
-the argument <cite>pauli</cite> of the <cite>spin_basis_*</cite> classes. Higher spins can only be defined using the spin operators, and do NOT support
-the operator strings “x” and “y”.</p>
+<p><strong>Notes:</strong></p>
+<ul class="simple">
+<li><p>The default operators for spin-1/2 are the Pauli matrices, NOT the spin operators. To change this, see the argument <cite>pauli</cite> of the <cite>spin_basis_*</cite> classes.</p></li>
+<li><p>Higher spins can only be defined using the spin operators, and do NOT support the operator strings “x” and “y”.</p></li>
+<li><p>The fermion operator strings “x” and “y” are present only in the <em>general</em> basis fermion classes, and correspond to real fermions, i.e. Majorana operators (note the sign difference between “y” and the <span class="math notranslate nohighlight">\(\sigma^y\)</span> Pauli matrix, which is convention).</p></li>
+<li><p>The variable <cite>sps</cite> in the definition of the bosonic <cite>“z”</cite> operator stands for “states per site”, i.e., the local on-site Hilbert space dimension.</p></li>
+</ul>
 <div class="section" id="one-dimensional-symmetries">
 <h2>one-dimensional symmetries<a class="headerlink" href="#one-dimensional-symmetries" title="Permalink to this headline">¶</a></h2>
 <table class="longtable docutils align-default">
@@ -166,7 +170,7 @@ the operator strings “x” and “y”.</p>
 </div>
 <div class="section" id="large-integer-support-for-general-basis-classes">
 <h2>large integer support for general basis classes<a class="headerlink" href="#large-integer-support-for-general-basis-classes" title="Permalink to this headline">¶</a></h2>
-<p>To construct <cite>*_basis_general</cite> classes with more than 64 lattice sites, QuSpin uses custom unsigned integer types for the integer 
+<p>To construct <cite>*_basis_general</cite> classes with more than 64 lattice sites, QuSpin uses custom unsigned integer types for the integer
 representation of many-body states.</p>
 <div class="section" id="a-custom-large-integer-data-types-supported-in-general-basis">
 <h3>a) custom large integer data types supported in general basis<a class="headerlink" href="#a-custom-large-integer-data-types-supported-in-general-basis" title="Permalink to this headline">¶</a></h3>
@@ -275,7 +279,7 @@ representation of many-body states.</p>
 
   <h4>Previous topic</h4>
   <p class="topless"><a href="New_Features.html"
-                        title="previous chapter"><span class="red">QuSpin 0.3.4</span> (released on 2020.04.17)</a></p>
+                        title="previous chapter"><span class="green">QuSpin 0.3.5</span> (released on 2021.02.15)</a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="generated/quspin.basis.spin_basis_1d.html"
                         title="next chapter">quspin.basis.spin_basis_1d</a></p>
@@ -313,14 +317,14 @@ representation of many-body states.</p>
           <a href="generated/quspin.basis.spin_basis_1d.html" title="quspin.basis.spin_basis_1d"
              >next</a> |</li>
         <li class="right" >
-          <a href="New_Features.html" title="QuSpin 0.3.4 (released on 2020.04.17)"
+          <a href="New_Features.html" title="QuSpin 0.3.5 (released on 2021.02.15)"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">QuSpin 0.3.4 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">QuSpin 0.3.5 documentation</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &#169; Copyright 2016, Phillip Weinberg and Marin Bukov.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.4.0.
+        &#169; Copyright 2016, Phillip Weinberg, Markus Schmitt and Marin Bukov.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 3.0.4.
     </div>
   </body>
 </html>

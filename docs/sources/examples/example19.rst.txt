@@ -1,4 +1,7 @@
+:orphan:
+
 .. _example19-label:
+
 
 Autocorrelation functions using symmetries
 ------------------------------------------

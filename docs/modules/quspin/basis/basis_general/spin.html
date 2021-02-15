@@ -1,7 +1,7 @@
 
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
     <meta charset="utf-8" /><script type="text/javascript">
 
@@ -15,7 +15,7 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-    <title>quspin.basis.basis_general.spin &#8212; QuSpin 0.3.4 documentation</title>
+    <title>quspin.basis.basis_general.spin &#8212; QuSpin 0.3.5 documentation</title>
     <link rel="stylesheet" href="../../../../static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../../static/pygments.css" type="text/css" />
     
@@ -38,7 +38,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">QuSpin 0.3.4 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">QuSpin 0.3.5 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -62,20 +62,15 @@
 <div class="viewcode-block" id="spin_basis_general"><a class="viewcode-back" href="../../../../generated/quspin.basis.spin_basis_general.html#quspin.basis.spin_basis_general">[docs]</a><span class="k">class</span> <span class="nc">spin_basis_general</span><span class="p">(</span><span class="n">hcb_basis_general</span><span class="p">,</span><span class="n">higher_spin_basis_general</span><span class="p">):</span>
 	<span class="sd">&quot;&quot;&quot;Constructs basis for spin operators for USER-DEFINED symmetries.</span>
 
-<span class="sd">	Any unitary symmetry transformation :math:`Q` of periodicity :math:`m_Q` (:math:`Q^{m_Q}=1`) has</span>
-<span class="sd">	eigenvalues :math:`\\exp(-2\\pi i q/m_Q)`, labelled by an ingeter :math:`q\\in\\{0,1,\\dots,m_Q-1\\}`.</span>
-<span class="sd">	These integers :math:`q` are used to define the symmetry blocks.</span>
+<span class="sd">	Any unitary symmetry transformation :math:`Q` of periodicity :math:`m_Q` (:math:`Q^{m_Q}=1`) has eigenvalues :math:`\\exp(-2\\pi i q/m_Q)`, labelled by an ingeter :math:`q\\in\\{0,1,\\dots,m_Q-1\\}`. These integers :math:`q` are used to define the symmetry blocks.</span>
 
-<span class="sd">	For instance, if :math:`Q=P` is parity (reflection), then :math:`q=0,1`. If :math:`Q=T` is translation by one lattice site,</span>
-<span class="sd">	then :math:`q` labels the mometum blocks in the same fashion as for the `..._basis_1d` classes. </span>
+<span class="sd">	For instance, if :math:`Q=P` is parity (reflection), then :math:`q=0,1`. If :math:`Q=T` is translation by one lattice site, then :math:`q` labels the mometum blocks in the same fashion as for the `..._basis_1d` classes. </span>
 
-<span class="sd">	User-defined symmetries with the `spin_basis_general` class can be programmed as follows. Suppose we have a system of</span>
-<span class="sd">	L sites, enumerated :math:`s=(s_0,s_1,\\dots,s_{L-1})`. There are two types of operations one can perform on the sites:</span>
+<span class="sd">	User-defined symmetries with the `spin_basis_general` class can be programmed as follows. Suppose we have a system of L sites, enumerated :math:`s=(s_0,s_1,\\dots,s_{L-1})`. There are two types of operations one can perform on the sites:</span>
 <span class="sd">		* exchange the labels of two sites: :math:`s_i \\leftrightarrow s_j` (e.g., translation, parity)</span>
 <span class="sd">		* invert the population on a given site: :math:`s_i\\leftrightarrow -(s_j+1)` (e.g., spin inversion)</span>
 
-<span class="sd">	These two operations already comprise a variety of symmetries, including translation, parity (reflection) and </span>
-<span class="sd">	spin inversion. For a specific example, see below.</span>
+<span class="sd">	These two operations already comprise a variety of symmetries, including translation, parity (reflection) and spin inversion. For a specific example, see below.</span>
 
 <span class="sd">	The supported operator strings for `spin_basis_general` are:</span>
 
@@ -421,7 +416,7 @@
 				<span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">opstr</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;I&quot;</span><span class="p">,</span><span class="s2">&quot;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;+&quot;</span><span class="p">,</span><span class="s2">&quot;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;-&quot;</span><span class="p">,</span><span class="s2">&quot;&quot;</span><span class="p">))</span>
 				<span class="n">ME</span> <span class="o">*=</span> <span class="p">(</span><span class="mi">1</span><span class="o">&lt;&lt;</span><span class="n">n</span><span class="p">)</span>
 		<span class="k">else</span><span class="p">:</span>
-			<span class="k">return</span> <span class="n">higher_spin_basis_general</span><span class="o">.</span><span class="n">Op_bra_ket</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">opstr</span><span class="p">,</span><span class="n">indx</span><span class="p">,</span><span class="n">J</span><span class="p">,</span><span class="n">dtype</span><span class="p">,</span><span class="n">ket_states</span><span class="p">)</span>
+			<span class="k">return</span> <span class="n">higher_spin_basis_general</span><span class="o">.</span><span class="n">Op_bra_ket</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">opstr</span><span class="p">,</span><span class="n">indx</span><span class="p">,</span><span class="n">J</span><span class="p">,</span><span class="n">dtype</span><span class="p">,</span><span class="n">ket_states</span><span class="p">,</span><span class="n">reduce_output</span><span class="o">=</span><span class="n">reduce_output</span><span class="p">)</span>
 
 		<span class="k">return</span> <span class="n">ME</span><span class="p">,</span><span class="n">bra</span><span class="p">,</span><span class="n">ket</span></div></div>
 </pre></div>
@@ -454,13 +449,13 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">QuSpin 0.3.4 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">QuSpin 0.3.5 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &#169; Copyright 2016, Phillip Weinberg and Marin Bukov.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.4.0.
+        &#169; Copyright 2016, Phillip Weinberg, Markus Schmitt and Marin Bukov.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 3.0.4.
     </div>
   </body>
 </html>

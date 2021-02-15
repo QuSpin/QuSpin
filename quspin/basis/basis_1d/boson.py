@@ -43,7 +43,7 @@ class boson_basis_1d(basis_1d):
 		"""Intializes the `boson_basis_1d` object (basis for bosonic operators).
 
 		Parameters
-		-----------
+		----------
 		L: int
 			Length of chain/number of sites.
 		Nb: {int,list}, optional

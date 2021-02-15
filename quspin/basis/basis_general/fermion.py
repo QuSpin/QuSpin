@@ -1,6 +1,7 @@
 from ._basis_general_core import spinful_fermion_basis_core_wrap
 from ._basis_general_core import spinless_fermion_basis_core_wrap
 from ._basis_general_core import get_basis_type,basis_zeros
+from ._basis_general_core import basis_int_to_python_int #,_get_basis_index
 from .base_general import basis_general,_check_symm_map
 from ..base import MAXPRINT
 import numpy as _np
@@ -11,27 +12,22 @@ from scipy.special import comb
 class spinless_fermion_basis_general(basis_general):
 	"""Constructs basis for spinless fermion operators for USER-DEFINED symmetries.
 
-	Any unitary symmetry transformation :math:`Q` of periodicity :math:`m_Q` (:math:`Q^{m_Q}=1`) has
-	eigenvalues :math:`\\exp(-2\\pi i q/m_Q)`, labelled by an ingeter :math:`q\\in\\{0,1,\\dots,m_Q-1\\}`.
-	These integers :math:`q` are used to define the symmetry blocks.
+	Any unitary symmetry transformation :math:`Q` of periodicity :math:`m_Q` (:math:`Q^{m_Q}=1`) has eigenvalues :math:`\\exp(-2\\pi i q/m_Q)`, labelled by an ingeter :math:`q\\in\\{0,1,\\dots,m_Q-1\\}`. These integers :math:`q` are used to define the symmetry blocks.
 
-	For instance, if :math:`Q=P` is parity (reflection), then :math:`q=0,1`. If :math:`Q=T` is translation by one lattice site,
-	then :math:`q` labels the mometum blocks in the same fashion as for the `..._basis_1d` classes. 
+	For instance, if :math:`Q=P` is parity (reflection), then :math:`q=0,1`. If :math:`Q=T` is translation by one lattice site, then :math:`q` labels the mometum blocks in the same fashion as for the `..._basis_1d` classes. 
 
-	User-defined symmetries with the `spinless_fermion_basis_general` class can be programmed as follows. Suppose we have a system of
-	L sites, enumerated :math:`s=(s_0,s_1,\\dots,s_{L-1})`. There are two types of operations one can perform on the sites:
+	User-defined symmetries with the `spinless_fermion_basis_general` class can be programmed as follows. Suppose we have a system of L sites, enumerated :math:`s=(s_0,s_1,\\dots,s_{L-1})`. There are two types of operations one can perform on the sites:
 		* exchange the labels of two sites: :math:`s_i \\leftrightarrow s_j` (e.g., translation, parity)
 		* invert the **fermion population** on a given site with appropriate sign flip (see `"z"` operator string) :math:`c_j^\\dagger\\to (-1)^j c_j`: :math:`s_i\\leftrightarrow -(s_j+1)` (e.g., particle-hole symmetry)
 		
-	These two operations already comprise a variety of symmetries, including translation, parity (reflection) and 
-	population inversion. For a specific example, see below.
+	These two operations already comprise a variety of symmetries, including translation, parity (reflection) and population inversion. For a specific example, see below.
 
 	The supported operator strings for `spinless_fermion_basis_general` are:
 
 	.. math::
 		\\begin{array}{cccc}
-			\\texttt{basis}/\\texttt{opstr}   &   \\texttt{"I"}   &   \\texttt{"+"}   &   \\texttt{"-"}  &   \\texttt{"n"}   &   \\texttt{"z"}    \\newline	
-			\\texttt{spinless_fermion_basis_general}& \\hat{1}        &   \\hat c^\\dagger      &       \\hat c          & \\hat c^\\dagger c     &  \\hat c^\\dagger\\hat c - \\frac{1}{2}      \\newline
+			\\texttt{basis}/\\texttt{opstr}   &   \\texttt{"I"}   &   \\texttt{"+"}   &   \\texttt{"-"}  &   \\texttt{"n"}   &   \\texttt{"z"}    &   \\texttt{"x"}    &   \\texttt{"y"}    \\newline	
+			\\texttt{spinless_fermion_basis_general}& \\hat{1}        &   \\hat c^\\dagger      &       \\hat c          & \\hat c^\\dagger c     &  \\hat c^\\dagger\\hat c - \\frac{1}{2}  &   \\hat c + \\hat c^\\dagger    &   -i\\left( \\hat c - \\hat c^\\dagger\\right)   \\newline
 		\\end{array}
 
 	Notes
@@ -39,6 +35,7 @@ class spinless_fermion_basis_general(basis_general):
 
 	* For particle-hole symmetry, please use exclusively the operator string `"z"` (see table), otherwise the automatic symmetry check will raise an error when set to `check_symm=True`.
 	* QuSpin raises a warning to alert the reader when non-commuting symmetries are passed. In such cases, we recommend the user to manually check the combined usage of symmetries by, e.g., comparing the eigenvalues.
+	* The fermion operator strings "x" and "y" correspond to real fermions, i.e. Majorana operators (note the sign difference between "y" and the :math:`\\sigma^y` Pauli matrix, which is convention).
 
 
 	Examples
@@ -169,9 +166,12 @@ class spinless_fermion_basis_general(basis_general):
 							"\n\t+: raising operator"+
 							"\n\t-: lowering operator"+
 							"\n\tn: number operator"+
-							"\n\tz: c-symm number operator")
+							"\n\tz: c-symm number operator"+
+							"\n\tx: majorana x-operator"+
+							"\n\ty: majorana y-operator"
+							)
 
-		self._allowed_ops=set(["I","n","+","-","z"])
+		self._allowed_ops=set(["I","n","+","-","z","x","y"])
 		
 	def __setstate__(self,state):
 		self.__dict__.update(state)
@@ -261,15 +261,12 @@ def process_spinful_map(N,map,q):
 class spinful_fermion_basis_general(spinless_fermion_basis_general):
 	"""Constructs basis for spinful fermion operators for USER-DEFINED symmetries.
 
-	Any unitary symmetry transformation :math:`Q` of periodicity :math:`m_Q` (:math:`Q^{m_Q}=1`) has
-	eigenvalues :math:`\\exp(-2\\pi i q/m_Q)`, labelled by an ingeter :math:`q\\in\\{0,1,\\dots,m_Q-1\\}`.
-	These integers :math:`q` are used to define the symmetry blocks.
+	Any unitary symmetry transformation :math:`Q` of periodicity :math:`m_Q` (:math:`Q^{m_Q}=1`) has eigenvalues :math:`\\exp(-2\\pi i q/m_Q)`, labelled by an ingeter :math:`q\\in\\{0,1,\\dots,m_Q-1\\}`. These integers :math:`q` are used to define the symmetry blocks.
 
-	For instance, if :math:`Q=P` is parity (reflection), then :math:`q=0,1`. If :math:`Q=T` is translation by one lattice site,
-	then :math:`q` labels the mometum blocks in the same fashion as for the `..._basis_1d` classes. 
+	For instance, if :math:`Q=P` is parity (reflection), then :math:`q=0,1`. If :math:`Q=T` is translation by one lattice site, then :math:`q` labels the mometum blocks in the same fashion as for the `..._basis_1d` classes. 
 
 	User-defined symmetries with the `spinful_fermion_basis_general` class can be programmed in two equivalent ways: *simple* and *advanced*.
-		* *simple* symmetry definition (see optional argument `simple_symm`) uses the pipe symbol, |, in the operator string (see site-coupling lists in example below) to distinguish between the spin-up and spin-down species. Suppose we have a system of L sites. In the *simple* case, the lattice sites are enumerated :math:`s=(s_0,s_1,\\dots,s_{L-1})` for **both** spin-up and spin-down. There are two types of operations one can perform on the sites:
+		* *simple* symmetry definition (see optional argument `simple_symm`) uses the pipe symbol, "|", in the operator string (see site-coupling lists in example below) to distinguish between the spin-up and spin-down species. Suppose we have a system of L sites. In the *simple* case, the lattice sites are enumerated :math:`s=(s_0,s_1,\\dots,s_{L-1})` for **both** spin-up and spin-down. There are two types of operations one can perform on the sites:
 			* exchange the labels of two sites: :math:`s_i \\leftrightarrow s_j` (e.g., translation, parity)
 			* invert the **fermion spin** on a given site: :math:`s_i\\leftrightarrow -(s_j+1)` (e.g., fermion spin inversion)
 
@@ -278,15 +275,14 @@ class spinful_fermion_basis_general(spinless_fermion_basis_general):
 			* invert the **fermion population** on a given site with appropriate sign flip (see `"z"` operator string) :math:`c_j^\\dagger\\to (-1)^j c_j`: :math:`s_i\\leftrightarrow -(s_j+1)` (e.g., particle-hole symmetry)
 	
 
-	These two operations already comprise a variety of symmetries, including translation, parity (reflection), fermion-spin inversion
-	and particle-hole like symmetries. For specific examples, see below.
+	These two operations already comprise a variety of symmetries, including translation, parity (reflection), fermion-spin inversion and particle-hole like symmetries. For specific examples, see below.
 
 	The supported operator strings for `spinful_fermion_basis_general` are:
 
 	.. math::
 		\\begin{array}{cccc}
-			\\texttt{basis}/\\texttt{opstr}   &   \\texttt{"I"}   &   \\texttt{"+"}   &   \\texttt{"-"}  &   \\texttt{"n"}   &   \\texttt{"z"}    \\newline	
-			\\texttt{spinful_fermion_basis_general}& \\hat{1}        &   \\hat c^\\dagger      &       \\hat c          & \\hat c^\\dagger c     &  \\hat c^\\dagger\\hat c - \\frac{1}{2}      \\newline
+			\\texttt{basis}/\\texttt{opstr}   &   \\texttt{"I"}   &   \\texttt{"+"}   &   \\texttt{"-"}  &   \\texttt{"n"}   &   \\texttt{"z"}    &   \\texttt{"x"}    &   \\texttt{"y"}    \\newline	
+			\\texttt{spinful_fermion_basis_general}& \\hat{1}        &   \\hat c^\\dagger      &       \\hat c          & \\hat c^\\dagger c     &  \\hat c^\\dagger\\hat c - \\frac{1}{2}  &   \\hat c + \\hat c^\\dagger    &   -i\\left( \\hat c - \\hat c^\\dagger\\right)   \\newline
 		\\end{array}
 
 	Notes
@@ -295,6 +291,7 @@ class spinful_fermion_basis_general(spinless_fermion_basis_general):
 	* The definition of the operation :math:`s_i\\leftrightarrow -(s_j+1)` **differs** for the *simple* and *advanced* cases.
 	* For particle-hole symmetry, please use exclusively the operator string `"z"` (see table), otherwise the automatic symmetry check will raise an error when set to `check_symm=True`.
 	* QuSpin raises a warning to alert the reader when non-commuting symmetries are passed. In such cases, we recommend the user to manually check the combined usage of symmetries by, e.g., comparing the eigenvalues.
+	* The fermion operator strings "x" and "y" correspond to real fermions, i.e. Majorana operators (note the sign difference between "y" and the :math:`\\sigma^y` Pauli matrix, which is convention).
 
 
 	Examples
@@ -464,7 +461,7 @@ class spinful_fermion_basis_general(spinless_fermion_basis_general):
 
 		self._pcon_args = dict(N=N,Nf=Nf)
 
-		if len(self._pers)>0:
+		if len(self._pers)>0 or not double_occupancy:
 			if Ns_block_est is None:
 				self._Ns = int(float(self._Ns)/_np.multiply.reduce(self._pers))*4
 			else:
@@ -497,9 +494,11 @@ class spinful_fermion_basis_general(spinless_fermion_basis_general):
 							"\n\t+: raising operator"+
 							"\n\t-: lowering operator"+
 							"\n\tn: number operator"+
-							"\n\tz: c-symm number operator")
+							"\n\tz: c-symm number operator"+
+							"\n\tx: majorana x-operator"+
+							"\n\ty: majorana y-operator")
 
-		self._allowed_ops=set(["I","n","+","-","z"])
+		self._allowed_ops=set(["I","n","+","-","z","x","y"])
 		
 	def __setstate__(self,state):
 		self.__dict__.update(state)
@@ -507,7 +506,8 @@ class spinful_fermion_basis_general(spinless_fermion_basis_general):
 
 	@property
 	def _fermion_basis(self):
-		return True 
+		return True
+
 
 	#################################################
 	# override for _inplace_Op and Op_shift_sector. #
@@ -592,9 +592,10 @@ class spinful_fermion_basis_general(spinless_fermion_basis_general):
 		>>>				sparse=False,alpha=1.0,sparse_diag=True,subsys_ordering=True)
 
 		"""
+		N_sites = self.N//2
 		if self._simple_symm:
 			if sub_sys_A is None:
-				sub_sys_A = (list(range(self.N//2)),list(range(self.N//2)))
+				sub_sys_A = (list(range(N_sites//2)),list(range(N_sites//2)))
 
 			if type(sub_sys_A) is tuple and len(sub_sys_A) != 2:
 				raise ValueError("sub_sys_A must be a tuple which contains the subsystems for the up spins in the \
@@ -603,10 +604,10 @@ class spinful_fermion_basis_general(spinless_fermion_basis_general):
 			sub_sys_A_up,sub_sys_A_down = sub_sys_A
 
 			sub_sys_A = list(sub_sys_A_up)
-			sub_sys_A.extend([i+self.N for i in sub_sys_A_down])
+			sub_sys_A.extend([i+N_sites for i in sub_sys_A_down])
 		else:
 			if sub_sys_A is None:
-				sub_sys_A = [i for i in range(self.N//2)]+[self.N+i for i in range(self.N//2)]
+				sub_sys_A = [i for i in range(N_sites//2)]+[N_sites+i for i in range(N_sites//2)]
 
 		return spinless_fermion_basis_general._ent_entropy(self,state,sub_sys_A,density=density,
 						subsys_ordering=subsys_ordering,return_rdm=return_rdm,
@@ -643,7 +644,7 @@ class spinful_fermion_basis_general(spinless_fermion_basis_general):
 		else:
 			new_op_list = op_list
 
-		return spinless_fermion_basis_general.Op_shift_sector(other_basis,new_op_list,v_in,v_out=v_out,dtype=dtype)	
+		return spinless_fermion_basis_general.Op_shift_sector(self,other_basis,new_op_list,v_in,v_out=v_out,dtype=dtype)	
 
 	Op_shift_sector.__doc__ = spinless_fermion_basis_general.Op_shift_sector.__doc__
 
@@ -699,11 +700,51 @@ class spinful_fermion_basis_general(spinless_fermion_basis_general):
 		else:
 			raise ValueError("state must be representive state in basis.")
 
-	def int_to_state(self,*args):
-		""" Not Implemented."""
+	def int_to_state(self,state,bracket_notation=True):
 
-	def state_to_int(self,*args):
-		""" Not Implemented."""
+		state = basis_int_to_python_int(state)
+
+		n_space = len(str(self.sps))
+
+		if self.N <= 64:
+			bits_up   = ((state>>(self.N-i-1))&1 for i in range(self.N//2))
+			s_str_up   = (" ".join(("{:1d}").format(bit) for bit in bits_up))
+			
+			bits_down = ((state>>(self.N//2-i-1))&1 for i in range(self.N//2))
+			s_str_down = (" ".join(("{:1d}").format(bit) for bit in bits_down))
+
+		else:
+			left_bits_up = (state//int(self.sps**(self.N-i-1))%self.sps for i in range(16))
+			right_bits_up = (state//int(self.sps**(self.N-i-1))%self.sps for i in range(self.N//2-16,self.N//2,1))
+
+			str_list_up = [("{:"+str(n_space)+"d}").format(bit) for bit in left_bits_up]
+			str_list_up.append("...")
+			str_list_up.extend(("{:"+str(n_space)+"d}").format(bit) for bit in right_bits_up)
+			s_str_up = (" ".join(str_list_up))
+
+
+			left_bits_down = (state//int(self.sps**(self.N//2-i-1))%self.sps for i in range(16))
+			right_bits_down = (state//int(self.sps**(self.N//2-i-1))%self.sps for i in range(self.N//2-16,self.N//2,1))
+
+			str_list_down = [("{:"+str(n_space)+"d}").format(bit) for bit in left_bits_down]
+			str_list_down.append("...")
+			str_list_down.extend(("{:"+str(n_space)+"d}").format(bit) for bit in right_bits_down)
+			s_str_down = (" ".join(str_list_down))
+
+		if bracket_notation:
+			return "|"+s_str_up+">"  + "|"+s_str_down+">"
+		else:
+			return (s_str_up+s_str_down).replace(' ', '')
+
+	int_to_state.__doc__ = spinless_fermion_basis_general.int_to_state.__doc__
+
+
+	def state_to_int(self,state):
+		state = state.replace('|','').replace('>','').replace('<','')
+		up_state, down_state = state[:self.N//2], state[self.N//2:]
+		return basis_int_to_python_int(self._basis[self.index(up_state, down_state)])
+
+	state_to_int.__doc__ = spinless_fermion_basis_general.state_to_int.__doc__
 
 	def Op_bra_ket(self,opstr,indx,J,dtype,ket_states,reduce_output=True):
 		
@@ -743,7 +784,7 @@ class spinful_fermion_basis_general(spinless_fermion_basis_general):
 		'''
 		return spinless_fermion_basis_general.Op_bra_ket(self,opstr,indx,J,dtype,ket_states,reduce_output=reduce_output)
 
-
+	"""
 	def _get_state(self,b):
 		b = int(b)
 		bits_left = ((b>>(self.N-i-1))&1 for i in range(self.N//2))
@@ -751,17 +792,8 @@ class spinful_fermion_basis_general(spinless_fermion_basis_general):
 		bits_right = ((b>>(self.N//2-i-1))&1 for i in range(self.N//2))
 		state_right = "|"+(" ".join(("{:1d}").format(bit) for bit in bits_right))+">"
 		return state_left+state_right
+	"""
 
-	def _get__str__(self):
-		temp1 = "     {0:"+str(len(str(self.Ns)))+"d}.  "
-		if self._Ns > MAXPRINT:
-			half = MAXPRINT // 2
-			str_list = [(temp1.format(i))+self._get_state(b) for i,b in zip(range(half),self._basis[:half])]
-			str_list.extend([(temp1.format(i))+self._get_state(b) for i,b in zip(range(self._Ns-half,self._Ns,1),self._basis[-half:])])
-		else:
-			str_list = [(temp1.format(i))+self._get_state(b) for i,b in enumerate(self._basis)]
-
-		return tuple(str_list)
 
 	def _sort_opstr(self,op):
 

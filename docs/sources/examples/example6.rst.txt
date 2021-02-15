@@ -1,4 +1,7 @@
+:orphan:
+
 .. _example6-label:
+
 
 Many-Body Localization in the Fermi-Hubbard Model
 -------------------------------------------------

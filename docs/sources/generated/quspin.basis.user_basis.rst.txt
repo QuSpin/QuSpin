@@ -32,6 +32,8 @@ quspin.basis.user\_basis
       ~user_basis.make_basis_blocks
       ~user_basis.normalization
       ~user_basis.partial_trace
+      ~user_basis.project_from
+      ~user_basis.project_to
       ~user_basis.representative
       ~user_basis.state_to_int
    

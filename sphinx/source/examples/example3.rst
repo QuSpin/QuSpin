@@ -1,4 +1,7 @@
+:orphan:
+
 .. _example3-label:
+
 
 Quantised Light-Atom Interactions in the Semi-classical Limit: Recovering the Periodically Driven Atom
 ------------------------------------------------------------------------------------------------------

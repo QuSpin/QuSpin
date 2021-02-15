@@ -305,7 +305,7 @@ Parity is the reflection of a state w.r.t. the middle of the chain.
 
 
 translation in 1d for any system size `N`
-........................................`
+...........................................
 
 We consider translation by `shift=1` sites, but the code can easily be generalized to a larger-shift translation. 
 
@@ -457,5 +457,7 @@ Scripts to demonstrate the additional functionality introduced by the `user_basi
 * :ref:`example14-label`, :download:`download script <../../examples/scripts/example14.py>`
 * :ref:`example15-label`, :download:`download script <../../examples/scripts/example15.py>`
 * :ref:`example16-label`, :download:`download script <../../examples/scripts/example16.py>`
+* :ref:`example23-label`, :download:`download script <../../examples/scripts/example23.py>`
+* :ref:`example24-label`, :download:`download script <../../examples/scripts/example24.py>`
 
 

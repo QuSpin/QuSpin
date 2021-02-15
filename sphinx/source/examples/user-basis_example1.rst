@@ -1,4 +1,7 @@
+:orphan:
+
 .. _user-basis_example1-label:
+
 
 spinless fermions with nearest-neighbor interactions in 1d
 ----------------------------------------------------------

@@ -1,6 +1,6 @@
 # **QuSpin**
 
-QuSpin is an open-source Python package for exact diagonalization and quantum dynamics of arbitrary boson, fermion and spin many-body systems, supporting the use of various (user-defined) symmetries in one and higher dimensional lattice systems and (imaginary) time evolution following a user-specified driving protocol. 
+QuSpin is an open-source Python package for Exact Diagonalization and quantum dynamics of arbitrary boson, fermion and spin many-body systems, supporting the use of various (user-defined) symmetries in one and higher dimensional lattice systems and (imaginary) time evolution following a user-specified driving protocol. 
 
 The complete ***Documentation*** for QuSpin (including a number of recent tutorials) can be found at 
 
@@ -56,8 +56,8 @@ setup.py install --default-compiler-flags
 <!--- begin packages --->
 For the **manual installation** you must have all the prerequisite python packages installed:
  * [scipy](https://www.scipy.org)>=0.19.1
- * [numpy](http://www.numpy.org)>=1.17.2
- * [cython](https://www.cython.org)>0.29
+ * [numpy](http://www.numpy.org)>=1.17.4
+ * [cython](https://www.cython.org)>=0.29
  * [joblib](https://pythonhosted.org/joblib/)
  * [six](https://pythonhosted.org/six/)
  * [dill](https://pypi.python.org/pypi/dill)

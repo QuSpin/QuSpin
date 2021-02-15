@@ -1,7 +1,7 @@
 
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
     <meta charset="utf-8" /><script type="text/javascript">
 
@@ -15,7 +15,7 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-    <title>quspin.tools.misc.mean_level_spacing &#8212; QuSpin 0.3.4 documentation</title>
+    <title>quspin.tools.misc.mean_level_spacing &#8212; QuSpin 0.3.5 documentation</title>
     <link rel="stylesheet" href="../static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../static/pygments.css" type="text/css" />
     
@@ -46,7 +46,7 @@
         <li class="right" >
           <a href="quspin.tools.misc.get_matvec_function.html" title="quspin.tools.misc.get_matvec_function"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.4 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.5 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../tools.html" accesskey="U">Tools module (<code class="xref py py-mod docutils literal notranslate"><span class="pre">quspin.tools</span></code>)</a> &#187;</li> 
       </ul>
     </div>  
@@ -59,11 +59,11 @@
   <style> .red {color:#ff0000; font-weight:bold; font-style:italic; } </style>
 <style> .green {color:#00b200; font-weight:bold; font-style:italic; } </style><div class="section" id="quspin-tools-misc-mean-level-spacing">
 <h1>quspin.tools.misc.mean_level_spacing<a class="headerlink" href="#quspin-tools-misc-mean-level-spacing" title="Permalink to this headline">¶</a></h1>
-<dl class="function">
+<dl class="py function">
 <dt id="quspin.tools.misc.mean_level_spacing">
-<code class="sig-prename descclassname">quspin.tools.misc.</code><code class="sig-name descname">mean_level_spacing</code><span class="sig-paren">(</span><em class="sig-param">E</em>, <em class="sig-param">verbose=True</em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/tools/misc.html#mean_level_spacing"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#quspin.tools.misc.mean_level_spacing" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">quspin.tools.misc.</code><code class="sig-name descname">mean_level_spacing</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">E</span></em>, <em class="sig-param"><span class="n">verbose</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/tools/misc.html#mean_level_spacing"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#quspin.tools.misc.mean_level_spacing" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculates the mean-level spacing of an energy spectrum.</p>
-<p>See mean level spacing, <span class="math notranslate nohighlight">\(\langle\tilde r_\mathrm{W}\rangle\)</span>, in 
+<p>See mean level spacing, <span class="math notranslate nohighlight">\(\langle\tilde r_\mathrm{W}\rangle\)</span>, in
 <a class="reference external" href="https://arxiv.org/pdf/1212.5611.pdf">arXiv:1212.5611</a> for more details.</p>
 <p>For Wigner-Dyson statistics, we have <span class="math notranslate nohighlight">\(\langle\tilde r_\mathrm{W}\rangle\approx 0.53\)</span>, while
 for Poisson statistics: <span class="math notranslate nohighlight">\(\langle\tilde r_\mathrm{W}\rangle\approx 0.38\)</span>.</p>
@@ -78,9 +78,9 @@ for Poisson statistics: <span class="math notranslate nohighlight">\(\langle\til
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><dl class="simple">
-<dt><strong>float</strong></dt><dd><p>mean-level spacing.</p>
+<dt>float</dt><dd><p>mean-level spacing.</p>
 </dd>
-<dt><strong>nan</strong></dt><dd><p>if spectrum <cite>E</cite> has degeneracies.</p>
+<dt>nan</dt><dd><p>if spectrum <cite>E</cite> has degeneracies.</p>
 </dd>
 </dl>
 </dd>
@@ -193,13 +193,13 @@ spectrum of the ergodic Hamiltonian <span class="math notranslate nohighlight">\
         <li class="right" >
           <a href="quspin.tools.misc.get_matvec_function.html" title="quspin.tools.misc.get_matvec_function"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.4 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.5 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../tools.html" >Tools module (<code class="xref py py-mod docutils literal notranslate"><span class="pre">quspin.tools</span></code>)</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &#169; Copyright 2016, Phillip Weinberg and Marin Bukov.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.4.0.
+        &#169; Copyright 2016, Phillip Weinberg, Markus Schmitt and Marin Bukov.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 3.0.4.
     </div>
   </body>
 </html>

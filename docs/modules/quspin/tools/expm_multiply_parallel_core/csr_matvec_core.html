@@ -1,7 +1,7 @@
 
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
     <meta charset="utf-8" /><script type="text/javascript">
 
@@ -15,7 +15,7 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-    <title>quspin.tools.expm_multiply_parallel_core.csr_matvec_core &#8212; QuSpin 0.3.4 documentation</title>
+    <title>quspin.tools.expm_multiply_parallel_core.csr_matvec_core &#8212; QuSpin 0.3.5 documentation</title>
     <link rel="stylesheet" href="../../../../static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../../static/pygments.css" type="text/css" />
     
@@ -38,7 +38,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">QuSpin 0.3.4 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">QuSpin 0.3.5 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -56,43 +56,9 @@
 
 
 <div class="viewcode-block" id="csr_matvec"><a class="viewcode-back" href="../../../../generated/quspin.tools.misc.csr_matvec.html#quspin.tools.misc.csr_matvec">[docs]</a><span class="k">def</span> <span class="nf">csr_matvec</span><span class="p">(</span><span class="n">A</span><span class="p">,</span><span class="n">v</span><span class="p">,</span><span class="n">a</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">out</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">overwrite_out</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-	<span class="sd">&quot;&quot;&quot;Calculates matrix vector products :math:`x += a A y` or :math:`x = a A y` with csr matrix.</span>
+	<span class="sd">&quot;&quot;&quot;DEPRICATED (cf `matvec`). Calculates matrix vector products :math:`x += a A y` or :math:`x = a A y` with csr matrix.</span>
 
-<span class="sd">	**This function is DEPRICATED** starting from QuSpin 0.3.1.</span>
-
-<span class="sd">	Notes</span>
-<span class="sd">	-----</span>
-<span class="sd">	* For QuSpin builds which support OpenMP this function will be multithreaded. </span>
-<span class="sd">	* Using `out=v` will result in incorrect results. </span>
-<span class="sd">	* If format of A is not &#39;csr&#39; the matrix will be converted to `csr` format.</span>
-
-<span class="sd">	Examples</span>
-<span class="sd">	--------</span>
-
-<span class="sd">	Parameters</span>
-<span class="sd">	-----------</span>
-<span class="sd">	A : scipy.spmatrix</span>
-<span class="sd">		Sparse matrix to take the dot product. </span>
-<span class="sd">	v : array_like</span>
-<span class="sd">		array which contains the vector to take the product with. </span>
-<span class="sd">	a : scalar, optional</span>
-<span class="sd">		value to scale the vector with after the product with `A` is taken.</span>
-<span class="sd">	out : array_like</span>
-<span class="sd">		output array to put the results of the calculation.</span>
-<span class="sd">	overwrite_out : bool, optional</span>
-<span class="sd">		If set to `True`, the function overwrites the values in `out` with the result. otherwise the result is</span>
-<span class="sd">		added to the values in `out`. </span>
-
-<span class="sd">	Returns</span>
-<span class="sd">	--------</span>
-<span class="sd">	numpy.ndarray</span>
-<span class="sd">		result of :math:`a A v`. </span>
-
-<span class="sd">		If `out` is not None and `overwrite_out = True` the dunction returns `out` with the data overwritten, </span>
-<span class="sd">		otherwise if `overwrite_out = False` the result is added to `out`.</span>
-
-<span class="sd">		If `out` is None the result is stored in a new array which is returned by the function. </span>
-<span class="sd">	</span>
+<span class="sd">	:red:`Note: we recommend the use of &quot;tools.misc.matvec()&quot; instead of this function. This function is now deprecated!`</span>
 
 <span class="sd">	&quot;&quot;&quot;</span>
 	<span class="k">if</span> <span class="ow">not</span> <span class="n">issparse</span><span class="p">(</span><span class="n">A</span><span class="p">):</span>
@@ -154,13 +120,13 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">QuSpin 0.3.4 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">QuSpin 0.3.5 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &#169; Copyright 2016, Phillip Weinberg and Marin Bukov.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.4.0.
+        &#169; Copyright 2016, Phillip Weinberg, Markus Schmitt and Marin Bukov.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 3.0.4.
     </div>
   </body>
 </html>

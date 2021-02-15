@@ -56,14 +56,14 @@ class lattice_basis(basis):
 
 		Notes
 		-----
-		This function is the einverse of `state_to_int`.
+		This function is the inverse of `state_to_int`.
 
 		Parameters
 		-----------
 		state : int
 			Defines the Fock state in integer representation in underlying lattice `basis`.
 		bracket_notation : bool, optional
-			Toggles whether to return the state in |str> notation.
+			Toggles whether to return the state in `|str>` notation.
 
 		Returns
 		--------
@@ -591,6 +591,7 @@ class lattice_basis(basis):
 			str_list.extend([(temp1.format(i))+self.int_to_state(b)+temp2.format(b) for i,b in zip(range(self._Ns-half,self._Ns,1),self._basis[-half:])])
 		else:
 			str_list = [(temp1.format(i))+self.int_to_state(b)+temp2.format(b) for i,b in enumerate(self._basis)]
+
 
 		return tuple(str_list)
 

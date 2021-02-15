@@ -25,7 +25,7 @@ Np=N//2 # total number of bosons
 #
 ######  function to call when applying operators
 @cfunc(op_sig_32,
-	locals=dict(s=int32,n=int32,b=uint32,occ=int32,sps=uint32,me_offdiag=float64,me_diag=float64), )
+	locals=dict(b=uint32,occ=int32,sps=uint32,me_offdiag=float64,me_diag=float64), )
 def op(op_struct_ptr,op_str,site_ind,N,args):
 	# using struct pointer to pass op_struct_ptr back to C++ see numba Records
 	op_struct = carray(op_struct_ptr,1)[0]
@@ -36,8 +36,6 @@ def op(op_struct_ptr,op_str,site_ind,N,args):
 	#
 	site_ind = N - site_ind - 1 # convention for QuSpin for mapping from bits to sites.
 	occ = (op_struct.state//sps**site_ind)%sps # occupation
-	n = (op_struct.state>>site_ind)&1 # either 0 or 1
-	s = (((op_struct.state>>site_ind)&1)<<1)-1 # either -1 or 1
 	b = sps**site_ind
 	#
 	if op_str==43: # "+" is integer value 43 = ord("+")

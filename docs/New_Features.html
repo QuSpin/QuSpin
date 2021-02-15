@@ -1,7 +1,7 @@
 
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
     <meta charset="utf-8" /><script type="text/javascript">
 
@@ -15,7 +15,7 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-    <title>QuSpin 0.3.4 (released on 2020.04.17) &#8212; QuSpin 0.3.4 documentation</title>
+    <title>QuSpin 0.3.5 (released on 2021.02.15) &#8212; QuSpin 0.3.5 documentation</title>
     <link rel="stylesheet" href="static/classic.css" type="text/css" />
     <link rel="stylesheet" href="static/pygments.css" type="text/css" />
     
@@ -46,7 +46,7 @@
         <li class="right" >
           <a href="index.html" title="Welcome to the Official QuSpin Documentation!"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">QuSpin 0.3.4 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">QuSpin 0.3.5 documentation</a> &#187;</li> 
       </ul>
     </div>  
 
@@ -56,23 +56,64 @@
           <div class="body" role="main">
             
   <style> .red {color:#ff0000; font-weight:bold; font-style:italic; } </style>
-<style> .green {color:#00b200; font-weight:bold; font-style:italic; } </style><div class="section" id="quspin-0-3-4-released-on-2020-04-17">
-<h1><span class="red">QuSpin 0.3.4</span> (released on 2020.04.17)<a class="headerlink" href="#quspin-0-3-4-released-on-2020-04-17" title="Permalink to this headline">¶</a></h1>
+<style> .green {color:#00b200; font-weight:bold; font-style:italic; } </style><div class="section" id="quspin-0-3-5-released-on-2021-02-15">
+<h1><span class="green">QuSpin 0.3.5</span> (released on 2021.02.15)<a class="headerlink" href="#quspin-0-3-5-released-on-2021-02-15" title="Permalink to this headline">¶</a></h1>
 </div>
 <div class="section" id="highlights-lanczos-module-now-here-constrained-hilbert-spaces-support-available-openmp-support-available">
-<h1><span class="green">Highlights:</span> Lanczos module now here; Constrained Hilbert spaces support available; OpenMP support available!<a class="headerlink" href="#highlights-lanczos-module-now-here-constrained-hilbert-spaces-support-available-openmp-support-available" title="Permalink to this headline">¶</a></h1>
+<h1><span class="red">Highlights:</span> Lanczos module now here; Constrained Hilbert spaces support available; OpenMP support available!<a class="headerlink" href="#highlights-lanczos-module-now-here-constrained-hilbert-spaces-support-available-openmp-support-available" title="Permalink to this headline">¶</a></h1>
 <p>Check out <a class="reference internal" href="parallelization.html#parallelization-label"><span class="std std-ref">Parallel Computing Support</span></a> and the example script <a class="reference internal" href="examples/example12.html#example12-label"><span class="std std-ref">Parallel Computing in QuSpin</span></a>.</p>
 <p>For a tutorial in QuSpin’s <cite>user_basis</cite> which allows the user to define custom bases with constraints, check out: <a class="reference internal" href="user_basis.html#user-basis-label"><span class="std std-ref">A tutorial on QuSpin’s user_basis</span></a>.</p>
 </div>
 <div class="section" id="complete-list-of-the-most-recent-features">
 <h1>Complete list of the most recent features<a class="headerlink" href="#complete-list-of-the-most-recent-features" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="added-in-v-0-3-4-2020-04-17">
-<h2>Added in v. 0.3.4 (2020.04.17)<a class="headerlink" href="#added-in-v-0-3-4-2020-04-17" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="added-in-v-0-3-5-2021-02-15">
+<h2>Added in v. 0.3.5 (2021.02.15)<a class="headerlink" href="#added-in-v-0-3-5-2021-02-15" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="improved-functionality">
 <h3>Improved Functionality<a class="headerlink" href="#improved-functionality" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
-<li><p><span class="red">discontinuing</span> python 2.7 support. Installing QuSpin for py27 will by defult result in version 0.3.3.</p></li>
-<li><p><span class="red">deprecating</span> function <cite>basis.get_vec()</cite>: use <cite>basis.project_from()</cite> instead.</p></li>
+<li><p>adding python 3.8 support</p></li>
+<li><p>adding quspin application to test quspin on hpc clusters.</p></li>
+<li><p>added 2d array/batch support to <cite>tools.evolution.expm_multiply_parallel</cite>.</p></li>
+<li><p>fixed errors caused by new releases of some of the dependencies.</p></li>
+<li><dl class="simple">
+<dt>fixed bugs with:</dt><dd><ul>
+<li><p>particle-hole symmetry in <cite>*_fermion_basis_general</cite>;</p></li>
+<li><p>memory leakage in <cite>tools.lanczos</cite>;</p></li>
+<li><p>the <cite>reduce_output</cite> argument of <cite>basis_general.Op_bra_ket()</cite>.</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</div>
+<div class="section" id="new-attributes-functions-methods-classes-and-examples">
+<h3>New Attributes, Functions, Methods, Classes, and Examples<a class="headerlink" href="#new-attributes-functions-methods-classes-and-examples" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p><span class="red">deprecated</span> function <cite>tools.misc.csr_matvec</cite>.</p></li>
+<li><p>added Majorana fermion operator strings to the <cite>*_fermion_basis_general</cite>.</p></li>
+<li><p>added <cite>int_to_state</cite> and <cite>state_to_int</cite> functions to <cite>spinful_fermion_basis_*</cite> classes.</p></li>
+<li><p>added properties <cite>shape</cite> and <cite>ndim</cite> to classes in the <cite>operator</cite> module.</p></li>
+<li><dl class="simple">
+<dt>new examples:</dt><dd><ul>
+<li><p>Majorana fermion operators, cf. <a class="reference internal" href="examples/example23.html#example23-label"><span class="std std-ref">Gell-Mann Operators for Spin-1 systems</span></a>;</p></li>
+<li><p>Gell-Mann operators for spin-1 systems, cf. <a class="reference internal" href="examples/example24.html#example24-label"><span class="std std-ref">Majorana Fermions: Spinless Fermi-Hubbard Model</span></a>;</p></li>
+<li><p>Majorana SYK model, cf. <a class="reference internal" href="examples/example25.html#example25-label"><span class="std std-ref">Majorana Fermions: SYK Model</span></a>.</p></li>
+<li><p>Calculation of spectral functions using symmetries, cf. <a class="reference internal" href="examples/example26.html#example26-label"><span class="std std-ref">Direct Calculation of spectral functions using symmetries</span></a>.</p></li>
+<li><p>Tutorial on using QuSpin <cite>basis</cite> objects, cf. <a class="reference internal" href="examples/example00.html#example-00-label"><span class="std std-ref">Basics of QuSpin basis objects</span></a>.</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</div>
+</div>
+<div class="section" id="added-in-v-0-3-4-2020-04-17">
+<h2>Added in v. 0.3.4 (2020.04.17)<a class="headerlink" href="#added-in-v-0-3-4-2020-04-17" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id1">
+<h3>Improved Functionality<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p><span class="red">discontinued</span> support for python 2.7. Installing QuSpin for py27 will by defult result in version 0.3.3.</p></li>
+<li><p><span class="red">deprecated</span> function <cite>basis.get_vec()</cite>: use <cite>basis.project_from()</cite> instead.</p></li>
 <li><p>revised <cite>user_basis</cite> tutorial for spinless fermions and introduced function <cite>_count_particles_32()</cite>.</p></li>
 <li><p>added optional arguments <cite>svd_solver</cite>, <cite>svd_kwargs</cite> to <cite>basis.ent_entropy()</cite>; allows to use some scipy svd solvers, which are typically more stable.</p></li>
 <li><p><cite>expm_multiply_parallel</cite> now supports the option to give the operator an explicit dtype, see example <a class="reference internal" href="examples/example22.html#example22-label"><span class="std std-ref">Efficient time evolution: expm_multiply_parallel</span></a>.</p></li>
@@ -98,8 +139,8 @@
 </div>
 <div class="section" id="added-in-v-0-3-3-2019-10-15">
 <h2>Added in v. 0.3.3 (2019.10.15)<a class="headerlink" href="#added-in-v-0-3-3-2019-10-15" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="id1">
-<h3>Improved Functionality<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id2">
+<h3>Improved Functionality<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li><p>introducing improvements to Example <a class="reference internal" href="examples/example11.html#example11-label"><span class="std std-ref">Monte Carlo Sampling Expectation Values of Obsevables</span></a> to perform Monte Carlo sampling in the symmetry-reduced Hilbert space.</p></li>
 <li><dl class="simple">
@@ -117,8 +158,8 @@
 <li><p>fixed a number of small bugs.</p></li>
 </ul>
 </div>
-<div class="section" id="id2">
-<h3>New Attributes, Functions, Methods and Classes<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id3">
+<h3>New Attributes, Functions, Methods and Classes<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li><p>adding <cite>*_basis_general.get_amp()</cite> function method which effectively provides a partial <cite>get_vec()</cite> function but does not require the basis to be constructed ahead of time.</p></li>
 <li><p>adding optional argument <cite>double_occupancy</cite> to the <cite>spinful_fermion_basis_*</cite> classes to control whether doubly occupied sites should be part of the basis or not.</p></li>
@@ -130,8 +171,8 @@
 </div>
 <div class="section" id="added-in-v-0-3-2-2019-03-11">
 <h2>Added in v. 0.3.2 (2019.03.11)<a class="headerlink" href="#added-in-v-0-3-2-2019-03-11" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="id3">
-<h3>Improved Functionality<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id4">
+<h3>Improved Functionality<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li><p>improved performance for matrix vector product in _oputils and expm_multiply_parallel. Leads to significant speedup in the <cite>hamiltonian</cite> and <cite>quantum_operator</cite> classes (e.g. in the <cite>hamiltonian.evolve()</cite> function) and the <cite>tools.evolution.expm_multiply_parallel()</cite> function.</p></li>
 </ul>
@@ -139,8 +180,8 @@
 </div>
 <div class="section" id="added-in-v-0-3-1-2019-03-08">
 <h2>Added in v. 0.3.1 (2019.03.08)<a class="headerlink" href="#added-in-v-0-3-1-2019-03-08" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="id4">
-<h3>Improved Functionality<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id5">
+<h3>Improved Functionality<a class="headerlink" href="#id5" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li><p>support for python 3.7.</p></li>
 <li><p><span class="red">discontinued support</span> for python 3.5 on all platforms and python 2.7 on windows. QuSpin for these versions will remain available to download up to and including QuSpin 0.3.0, but they are no longer being maintained.</p></li>
@@ -155,8 +196,8 @@
 <li><p>large integer support for <cite>*_general_basis</cite> classes allows to build lattices with more than 64 sites.</p></li>
 </ul>
 </div>
-<div class="section" id="id5">
-<h3>New Attributes, Functions, Methods and Classes<a class="headerlink" href="#id5" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id6">
+<h3>New Attributes, Functions, Methods and Classes<a class="headerlink" href="#id6" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li><p>new argument <cite>make_basis</cite> for <cite>*_basis_general</cite> classes allows to use some of the basis functionality without constructing the basis.</p></li>
 <li><p>new <cite>*_basis_general</cite> class methods: <cite>Op_bra_ket()</cite>, <cite>representative()</cite>, <cite>normalization()</cite>, <cite>inplace_Op()</cite>.</p></li>
@@ -180,26 +221,31 @@
         <div class="sphinxsidebarwrapper">
   <h3><a href="index.html">Table of Contents</a></h3>
   <ul>
-<li><a class="reference internal" href="#"><span class="red">QuSpin 0.3.4</span> (released on 2020.04.17)</a></li>
-<li><a class="reference internal" href="#highlights-lanczos-module-now-here-constrained-hilbert-spaces-support-available-openmp-support-available"><span class="green">Highlights:</span> Lanczos module now here; Constrained Hilbert spaces support available; OpenMP support available!</a></li>
+<li><a class="reference internal" href="#"><span class="green">QuSpin 0.3.5</span> (released on 2021.02.15)</a></li>
+<li><a class="reference internal" href="#highlights-lanczos-module-now-here-constrained-hilbert-spaces-support-available-openmp-support-available"><span class="red">Highlights:</span> Lanczos module now here; Constrained Hilbert spaces support available; OpenMP support available!</a></li>
 <li><a class="reference internal" href="#complete-list-of-the-most-recent-features">Complete list of the most recent features</a><ul>
-<li><a class="reference internal" href="#added-in-v-0-3-4-2020-04-17">Added in v. 0.3.4 (2020.04.17)</a><ul>
+<li><a class="reference internal" href="#added-in-v-0-3-5-2021-02-15">Added in v. 0.3.5 (2021.02.15)</a><ul>
 <li><a class="reference internal" href="#improved-functionality">Improved Functionality</a></li>
+<li><a class="reference internal" href="#new-attributes-functions-methods-classes-and-examples">New Attributes, Functions, Methods, Classes, and Examples</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#added-in-v-0-3-4-2020-04-17">Added in v. 0.3.4 (2020.04.17)</a><ul>
+<li><a class="reference internal" href="#id1">Improved Functionality</a></li>
 <li><a class="reference internal" href="#new-attributes-functions-methods-and-classes">New Attributes, Functions, Methods and Classes</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#added-in-v-0-3-3-2019-10-15">Added in v. 0.3.3 (2019.10.15)</a><ul>
-<li><a class="reference internal" href="#id1">Improved Functionality</a></li>
-<li><a class="reference internal" href="#id2">New Attributes, Functions, Methods and Classes</a></li>
+<li><a class="reference internal" href="#id2">Improved Functionality</a></li>
+<li><a class="reference internal" href="#id3">New Attributes, Functions, Methods and Classes</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#added-in-v-0-3-2-2019-03-11">Added in v. 0.3.2 (2019.03.11)</a><ul>
-<li><a class="reference internal" href="#id3">Improved Functionality</a></li>
+<li><a class="reference internal" href="#id4">Improved Functionality</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#added-in-v-0-3-1-2019-03-08">Added in v. 0.3.1 (2019.03.08)</a><ul>
-<li><a class="reference internal" href="#id4">Improved Functionality</a></li>
-<li><a class="reference internal" href="#id5">New Attributes, Functions, Methods and Classes</a></li>
+<li><a class="reference internal" href="#id5">Improved Functionality</a></li>
+<li><a class="reference internal" href="#id6">New Attributes, Functions, Methods and Classes</a></li>
 </ul>
 </li>
 </ul>
@@ -248,12 +294,12 @@
         <li class="right" >
           <a href="index.html" title="Welcome to the Official QuSpin Documentation!"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">QuSpin 0.3.4 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">QuSpin 0.3.5 documentation</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &#169; Copyright 2016, Phillip Weinberg and Marin Bukov.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.4.0.
+        &#169; Copyright 2016, Phillip Weinberg, Markus Schmitt and Marin Bukov.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 3.0.4.
     </div>
   </body>
 </html>

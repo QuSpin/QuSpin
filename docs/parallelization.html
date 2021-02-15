@@ -1,7 +1,7 @@
 
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
     <meta charset="utf-8" /><script type="text/javascript">
 
@@ -15,7 +15,7 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-    <title>Parallel Computing Support &#8212; QuSpin 0.3.4 documentation</title>
+    <title>Parallel Computing Support &#8212; QuSpin 0.3.5 documentation</title>
     <link rel="stylesheet" href="static/classic.css" type="text/css" />
     <link rel="stylesheet" href="static/pygments.css" type="text/css" />
     
@@ -46,7 +46,7 @@
         <li class="right" >
           <a href="Examples.html" title="Examples"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">QuSpin 0.3.4 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">QuSpin 0.3.5 documentation</a> &#187;</li> 
       </ul>
     </div>  
 
@@ -80,21 +80,24 @@
 <h3>1.2. Multi-threaded support for QuSpin functions:<a class="headerlink" href="#multi-threaded-support-for-quspin-functions" title="Permalink to this headline">¶</a></h3>
 <p>All the support for QuSpin’s OpenMP multi-threading can be accessed using the OpenMP environment variable: <cite>OMP_NUM_THREADS</cite>. Simply put, if you want to use multiple cores when running your script, set that variable equal to the number of cores you request during the calculation. Then the segments of code which use OpenMP will automatically begin to use those extra cores.</p>
 <p>There are two ways to set up the OpenMP environment variable:</p>
-<p>1) in the terminal/Anaconda prompt, set</p>
+<ol class="arabic simple">
+<li><p>in the terminal/Anaconda prompt, set</p></li>
+</ol>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ export OMP_NUM_THREADS = 4
 $ echo $OMP_NUM_THREADS
 </pre></div>
 </div>
 <p>Make sure you run your script from that terminal window. If you run your code from a different terminal window, you have to set this variable again.</p>
-<p>2) in the beginning of your python script, <strong>before you import QuSpin</strong>,  set</p>
+<ol class="arabic simple" start="2">
+<li><p>in the beginning of your python script, <strong>before you import QuSpin</strong>,  set</p></li>
+</ol>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">os</span>
 <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s1">&#39;OMP_NUM_THREADS&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;4&#39;</span> <span class="c1"># set number of OpenMP threads to run in parallel</span>
 </pre></div>
 </div>
 <p>This allows to change the OpenMP variable dynamically from your python script.</p>
-<p>While this is very convenient, it does not make it clear which segments of the code will run faster. Thus, let us now go over all features which take advantage of this multi-threading. The function <cite>tools.misc.csr_matvec()</cite> wraps an efficient version of csr matrix-vector product based on a scheme which provides equal work load to all the threads, regardless of the sparsity structure of the matrix (see <a class="reference external" href="https://ieeexplore.ieee.org/document/7877136">this paper</a> for more details). This speedup will be inherited by the function <cite>tools.evolution.expm_multiply_parallel()</cite>, which creates a more efficient multi-threaded version of SciPy’s <cite>SciPy.sparse.linalg.expm_multiply</cite> function.
-Notice that these function would have to be explicitly used by the user in order for a calculation to gain speedup via OMP.</p>
 <p>In QuSpin 0.3.1 we have worked on trying to make the user experience seamless so that the user does not need to write special code in order to take advantage of these parallelized functions, much like how NumPy uses MKL for doing linear algebra operations. In the next two sections we discuss where the new OpenMP support happens so that one can more easily write new code which takes advantage of it.</p>
+<p>While this is very convenient, it does not make it clear which segments of the code will run faster. Thus, let us now go over all features which take advantage of this multi-threading.</p>
 <div class="section" id="parallel-support-in-the-operator-module-hamiltonian-quantum-operator-and-quantum-linearoperator">
 <h4>1.2.1 Parallel support in the operator module: <cite>hamiltonian</cite>, <cite>quantum_operator</cite> and <cite>quantum_LinearOperator</cite><a class="headerlink" href="#parallel-support-in-the-operator-module-hamiltonian-quantum-operator-and-quantum-linearoperator" title="Permalink to this headline">¶</a></h4>
 <p>One of the most ubiquitous operations in exact diagonalization codes is the matrix-vector product: the matrix represents a quantum operator and the vector – the quantum state being acted on by the operator. This is used pretty much everywhere except for full diagonalization of the matrix: from evolution to Lanczos methods.</p>
@@ -122,26 +125,41 @@ Notice that these function would have to be explicitly used by the user in order
 Additionally, we have also added an implementation of <cite>inplace_Op</cite> which is used to do ‘on the fly’ calculation of an operator acting on a state using multi-threading OpenMP speed-up (which can be accessed simply by using any general basis in the <cite>quantum_LinearOperator</cite> class).</p>
 <p>Note that the <cite>*_basis_1d</cite> classes do <strong>not</strong> support OpenMP.</p>
 </div>
+<div class="section" id="parallel-support-in-tools-module">
+<h4>1.2.3 Parallel support in <cite>tools</cite> module<a class="headerlink" href="#parallel-support-in-tools-module" title="Permalink to this headline">¶</a></h4>
+<p>The function <cite>tools.misc.matvec()</cite> wraps an efficient version of various matrix-vector products based on a scheme which provides equal work load to all the threads, regardless of the sparsity structure of the matrix (see <a class="reference external" href="https://ieeexplore.ieee.org/document/7877136">this paper</a> for more details). This speedup will be automatically inherited by the function <cite>tools.evolution.expm_multiply_parallel()</cite>, which creates a more efficient multi-threaded version of SciPy’s <cite>SciPy.sparse.linalg.expm_multiply</cite> function, and also by the <cite>dot</cite> attribute of the classes in the Operators module (and hence, for instance, also in the <cite>evolve</cite> functions).</p>
+<p>Notice that the Tools module functions would have to be explicitly used by the user in order for a calculation to gain speedup via OMP.</p>
 </div>
 </div>
-<div class="section" id="multi-threading-via-mkl-and-numpy-scipy-in-quspin">
-<h2>2. Multi-threading via MKL and NumPy/SciPy in QuSpin:<a class="headerlink" href="#multi-threading-via-mkl-and-numpy-scipy-in-quspin" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="multi-threading-via-mkl-and-numpy-scipy-functions-in-quspin">
+<h2>2. Multi-threading via MKL and NumPy/SciPy Functions in QuSpin:<a class="headerlink" href="#multi-threading-via-mkl-and-numpy-scipy-functions-in-quspin" title="Permalink to this headline">¶</a></h2>
 <p>Depending on the version of NumPy you have installed, you may also be able to access some additional multi-threading to speed up diagonalization, e.g. using <cite>eigh()</cite>, <cite>eigvalsh()</cite>, or <cite>svd()</cite> operations during calculations of eigenvalues/vectors or entanglement entropy.
 To do this, the default version of NumPy installed with Anaconda must be linked against Intel’s Math Kernel Library (MKL) which implemented very efficient multi-threaded variations of LAPACK functions. If you use Anaconda 2.5 or later, MKL is the default numpy version. To turn on the multi-threading, simply use the MKL environment variables. For more info visit this <a class="reference external" href="https://software.intel.com/en-us/mkl-linux-developer-guide-intel-mkl-specific-environment-variables-for-openmp-threading-control">MKL website</a>.</p>
 <p>There are two ways to set up the MKL environment variable:</p>
-<p>1) in the terminal/Anaconda prompt, set</p>
+<ol class="arabic simple">
+<li><p>in the terminal/Anaconda prompt, set</p></li>
+</ol>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ export MKL_NUM_THREADS = 4
 $ echo $MKL_NUM_THREADS
 </pre></div>
 </div>
 <p>Make sure you run your script from that terminal window. If you run your code from a different terminal window, you have to set this variable again.</p>
-<p>2) in the beginning of your python script, <strong>before you import NumPy or SciPy</strong> set</p>
+<ol class="arabic simple" start="2">
+<li><p>in the beginning of your python script, <strong>before you import NumPy or SciPy</strong> set</p></li>
+</ol>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">os</span>
 <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s1">&#39;MKL_NUM_THREADS&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;4&#39;</span> <span class="c1"># set number of MKL threads to run in parallel</span>
 </pre></div>
 </div>
 <p>This allows to change the MKL variable dynamically from your python script.</p>
 <p>Another useful python package for changing the number of cores MKL is using at runtime is <a class="reference external" href="https://docs.anaconda.com/mkl-service/">mkl-service</a>. For more information about MKL-accelerated versions of NumPy, check out this <a class="reference external" href="https://docs.anaconda.com/mkl-optimizations/">website</a>.</p>
+<p>There is the possibility for an extra speedup for people who use Anaconda installs with a <cite>numpy</cite> build that uses the Intel MKL library. If they have an <strong>AMD CPU</strong>, MKL will not enable any SIMD instructions for it leading to about 1/4 the speed the chip is capable of for linear algebra. However, an environment variable can be set to force SIMD instructions to be used anyway (<strong>Intel CPU</strong> users don’t have to worry about this, nor does anyone who is using a <cite>numpy</cite> built on top of <cite>OpenBLAS</cite> or <cite>BLIS</cite>).</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">os</span>
+<span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s1">&#39;MKL_DEBUG_CPU_TYPE&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;5&#39;</span> <span class="c1"># AVX2 instructions; good for any Ryzen-era CPU and probably some earlier ones.</span>
+<span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s1">&#39;MKL_DEBUG_CPU_TYPE&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;4&#39;</span> <span class="c1"># AVX instructions; good for any reasonably recent AMD CPU.</span>
+</pre></div>
+</div>
 </div>
 </div>
 
@@ -159,11 +177,12 @@ $ echo $MKL_NUM_THREADS
 <li><a class="reference internal" href="#multi-threaded-support-for-quspin-functions">1.2. Multi-threaded support for QuSpin functions:</a><ul>
 <li><a class="reference internal" href="#parallel-support-in-the-operator-module-hamiltonian-quantum-operator-and-quantum-linearoperator">1.2.1 Parallel support in the operator module: <cite>hamiltonian</cite>, <cite>quantum_operator</cite> and <cite>quantum_LinearOperator</cite></a></li>
 <li><a class="reference internal" href="#parallel-support-in-the-general-basis-classes-basis-general">1.2.2 Parallel support in the general basis classes <cite>*_basis_general</cite></a></li>
+<li><a class="reference internal" href="#parallel-support-in-tools-module">1.2.3 Parallel support in <cite>tools</cite> module</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a class="reference internal" href="#multi-threading-via-mkl-and-numpy-scipy-in-quspin">2. Multi-threading via MKL and NumPy/SciPy in QuSpin:</a></li>
+<li><a class="reference internal" href="#multi-threading-via-mkl-and-numpy-scipy-functions-in-quspin">2. Multi-threading via MKL and NumPy/SciPy Functions in QuSpin:</a></li>
 </ul>
 </li>
 </ul>
@@ -210,12 +229,12 @@ $ echo $MKL_NUM_THREADS
         <li class="right" >
           <a href="Examples.html" title="Examples"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">QuSpin 0.3.4 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">QuSpin 0.3.5 documentation</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &#169; Copyright 2016, Phillip Weinberg and Marin Bukov.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.4.0.
+        &#169; Copyright 2016, Phillip Weinberg, Markus Schmitt and Marin Bukov.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 3.0.4.
     </div>
   </body>
 </html>

@@ -32,6 +32,8 @@ quspin.basis.spin\_basis\_general
       ~spin_basis_general.make_basis_blocks
       ~spin_basis_general.normalization
       ~spin_basis_general.partial_trace
+      ~spin_basis_general.project_from
+      ~spin_basis_general.project_to
       ~spin_basis_general.representative
       ~spin_basis_general.state_to_int
    

@@ -1,7 +1,7 @@
 
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
     <meta charset="utf-8" /><script type="text/javascript">
 
@@ -15,7 +15,7 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-    <title>quspin.basis.basis_1d.fermion &#8212; QuSpin 0.3.4 documentation</title>
+    <title>quspin.basis.basis_1d.fermion &#8212; QuSpin 0.3.5 documentation</title>
     <link rel="stylesheet" href="../../../../static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../../static/pygments.css" type="text/css" />
     
@@ -38,7 +38,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">QuSpin 0.3.4 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">QuSpin 0.3.5 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -224,7 +224,8 @@
 <span class="sd">	Notes</span>
 <span class="sd">	-----</span>
 
-<span class="sd">	* The `spinful_fermion_basis` operator strings are separated by a pipe symbol, |, to distinguish the spin-up from spin-down species. However, the index array has NO pipe symbol.</span>
+<span class="sd">	* The `spinful_fermion_basis` operator strings are separated by a pipe symbol, &quot;|&quot;, to distinguish the spin-up from spin-down species. However, the index array has NO pipe symbol.</span>
+<span class="sd">	</span>
 <span class="sd">	* Particle-hole like symmetries for fermions can be programmed using the `spinful_fermion_basis_general` class.</span>
 
 
@@ -424,6 +425,16 @@
 		<span class="n">basis_1d</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">spf_basis</span><span class="p">,</span><span class="n">spf_ops</span><span class="p">,</span><span class="n">L</span><span class="p">,</span><span class="n">Np</span><span class="o">=</span><span class="n">Nf_list</span><span class="p">,</span><span class="n">pars</span><span class="o">=</span><span class="n">pars</span><span class="p">,</span><span class="n">count_particles</span><span class="o">=</span><span class="n">count_particles</span><span class="p">,</span><span class="o">**</span><span class="n">blocks</span><span class="p">)</span></div>
 		
 
+	<span class="nd">@property</span>
+	<span class="k">def</span> <span class="nf">N</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;int: Total number of sites (spin-up + spin-down) the basis is constructed with; `N=2L`.&quot;&quot;&quot;</span>
+		<span class="k">return</span> <span class="mi">2</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">_L</span>
+
+	<span class="nd">@property</span>
+	<span class="k">def</span> <span class="nf">_fermion_basis</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="k">return</span> <span class="kc">True</span> 
+
+
 	<span class="k">def</span> <span class="nf">_Op</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">opstr</span><span class="p">,</span><span class="n">indx</span><span class="p">,</span><span class="n">J</span><span class="p">,</span><span class="n">dtype</span><span class="p">):</span>
 		
 		<span class="n">i</span> <span class="o">=</span> <span class="n">opstr</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s2">&quot;|&quot;</span><span class="p">)</span>
@@ -485,11 +496,52 @@
 		<span class="k">else</span><span class="p">:</span>
 			<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;state must be representive state in basis.&quot;</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="spinful_fermion_basis_1d.int_to_state"><a class="viewcode-back" href="../../../../generated/quspin.basis.spinful_fermion_basis_1d.html#quspin.basis.spinful_fermion_basis_1d.int_to_state">[docs]</a>	<span class="k">def</span> <span class="nf">int_to_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
-		<span class="sd">&quot;&quot;&quot; Not Implemented.&quot;&quot;&quot;</span></div>
+<div class="viewcode-block" id="spinful_fermion_basis_1d.int_to_state"><a class="viewcode-back" href="../../../../generated/quspin.basis.spinful_fermion_basis_1d.html#quspin.basis.spinful_fermion_basis_1d.int_to_state">[docs]</a>	<span class="k">def</span> <span class="nf">int_to_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">state</span><span class="p">,</span><span class="n">bracket_notation</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 
-<div class="viewcode-block" id="spinful_fermion_basis_1d.state_to_int"><a class="viewcode-back" href="../../../../generated/quspin.basis.spinful_fermion_basis_1d.html#quspin.basis.spinful_fermion_basis_1d.state_to_int">[docs]</a>	<span class="k">def</span> <span class="nf">state_to_int</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
-		<span class="sd">&quot;&quot;&quot; Not Implemented.&quot;&quot;&quot;</span></div>
+		<span class="k">if</span> <span class="nb">int</span><span class="p">(</span><span class="n">state</span><span class="p">)</span><span class="o">!=</span><span class="n">state</span><span class="p">:</span>
+			<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;state must be integer&quot;</span><span class="p">)</span>
+
+		<span class="n">n_space</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sps</span><span class="p">))</span>
+
+		<span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">N</span> <span class="o">&lt;=</span> <span class="mi">64</span><span class="p">:</span>
+			<span class="n">bits_up</span>   <span class="o">=</span> <span class="p">((</span><span class="n">state</span><span class="o">&gt;&gt;</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">N</span><span class="o">-</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span><span class="o">&amp;</span><span class="mi">1</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">N</span><span class="o">//</span><span class="mi">2</span><span class="p">))</span>
+			<span class="n">s_str_up</span>   <span class="o">=</span> <span class="p">(</span><span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">((</span><span class="s2">&quot;</span><span class="si">{:1d}</span><span class="s2">&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">bit</span><span class="p">)</span> <span class="k">for</span> <span class="n">bit</span> <span class="ow">in</span> <span class="n">bits_up</span><span class="p">))</span>
+			
+			<span class="n">bits_down</span> <span class="o">=</span> <span class="p">((</span><span class="n">state</span><span class="o">&gt;&gt;</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">N</span><span class="o">//</span><span class="mi">2</span><span class="o">-</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span><span class="o">&amp;</span><span class="mi">1</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">N</span><span class="o">//</span><span class="mi">2</span><span class="p">))</span>
+			<span class="n">s_str_down</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">((</span><span class="s2">&quot;</span><span class="si">{:1d}</span><span class="s2">&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">bit</span><span class="p">)</span> <span class="k">for</span> <span class="n">bit</span> <span class="ow">in</span> <span class="n">bits_down</span><span class="p">))</span>
+
+		<span class="k">else</span><span class="p">:</span>
+			<span class="n">left_bits_up</span> <span class="o">=</span> <span class="p">(</span><span class="n">state</span><span class="o">//</span><span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sps</span><span class="o">**</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">N</span><span class="o">-</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span><span class="o">%</span><span class="bp">self</span><span class="o">.</span><span class="n">sps</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">16</span><span class="p">))</span>
+			<span class="n">right_bits_up</span> <span class="o">=</span> <span class="p">(</span><span class="n">state</span><span class="o">//</span><span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sps</span><span class="o">**</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">N</span><span class="o">-</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span><span class="o">%</span><span class="bp">self</span><span class="o">.</span><span class="n">sps</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">N</span><span class="o">//</span><span class="mi">2</span><span class="o">-</span><span class="mi">16</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">N</span><span class="o">//</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">))</span>
+
+			<span class="n">str_list_up</span> <span class="o">=</span> <span class="p">[(</span><span class="s2">&quot;{:&quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">n_space</span><span class="p">)</span><span class="o">+</span><span class="s2">&quot;d}&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">bit</span><span class="p">)</span> <span class="k">for</span> <span class="n">bit</span> <span class="ow">in</span> <span class="n">left_bits_up</span><span class="p">]</span>
+			<span class="n">str_list_up</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;...&quot;</span><span class="p">)</span>
+			<span class="n">str_list_up</span><span class="o">.</span><span class="n">extend</span><span class="p">((</span><span class="s2">&quot;{:&quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">n_space</span><span class="p">)</span><span class="o">+</span><span class="s2">&quot;d}&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">bit</span><span class="p">)</span> <span class="k">for</span> <span class="n">bit</span> <span class="ow">in</span> <span class="n">right_bits_up</span><span class="p">)</span>
+			<span class="n">s_str_up</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">str_list_up</span><span class="p">))</span>
+
+
+			<span class="n">left_bits_down</span> <span class="o">=</span> <span class="p">(</span><span class="n">state</span><span class="o">//</span><span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sps</span><span class="o">**</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">N</span><span class="o">//</span><span class="mi">2</span><span class="o">-</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span><span class="o">%</span><span class="bp">self</span><span class="o">.</span><span class="n">sps</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">16</span><span class="p">))</span>
+			<span class="n">right_bits_down</span> <span class="o">=</span> <span class="p">(</span><span class="n">state</span><span class="o">//</span><span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sps</span><span class="o">**</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">N</span><span class="o">//</span><span class="mi">2</span><span class="o">-</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span><span class="o">%</span><span class="bp">self</span><span class="o">.</span><span class="n">sps</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">N</span><span class="o">//</span><span class="mi">2</span><span class="o">-</span><span class="mi">16</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">N</span><span class="o">//</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">))</span>
+
+			<span class="n">str_list_down</span> <span class="o">=</span> <span class="p">[(</span><span class="s2">&quot;{:&quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">n_space</span><span class="p">)</span><span class="o">+</span><span class="s2">&quot;d}&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">bit</span><span class="p">)</span> <span class="k">for</span> <span class="n">bit</span> <span class="ow">in</span> <span class="n">left_bits_down</span><span class="p">]</span>
+			<span class="n">str_list_down</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;...&quot;</span><span class="p">)</span>
+			<span class="n">str_list_down</span><span class="o">.</span><span class="n">extend</span><span class="p">((</span><span class="s2">&quot;{:&quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">n_space</span><span class="p">)</span><span class="o">+</span><span class="s2">&quot;d}&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">bit</span><span class="p">)</span> <span class="k">for</span> <span class="n">bit</span> <span class="ow">in</span> <span class="n">right_bits_down</span><span class="p">)</span>
+			<span class="n">s_str_down</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">str_list_down</span><span class="p">))</span>
+
+		<span class="k">if</span> <span class="n">bracket_notation</span><span class="p">:</span>
+			<span class="k">return</span> <span class="s2">&quot;|&quot;</span><span class="o">+</span><span class="n">s_str_up</span><span class="o">+</span><span class="s2">&quot;&gt;&quot;</span>  <span class="o">+</span> <span class="s2">&quot;|&quot;</span><span class="o">+</span><span class="n">s_str_down</span><span class="o">+</span><span class="s2">&quot;&gt;&quot;</span>
+		<span class="k">else</span><span class="p">:</span>
+			<span class="k">return</span> <span class="p">(</span><span class="n">s_str_up</span><span class="o">+</span><span class="n">s_str_down</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span></div>
+
+	<span class="n">int_to_state</span><span class="o">.</span><span class="vm">__doc__</span> <span class="o">=</span> <span class="n">spinless_fermion_basis_1d</span><span class="o">.</span><span class="n">int_to_state</span><span class="o">.</span><span class="vm">__doc__</span>
+
+
+<div class="viewcode-block" id="spinful_fermion_basis_1d.state_to_int"><a class="viewcode-back" href="../../../../generated/quspin.basis.spinful_fermion_basis_1d.html#quspin.basis.spinful_fermion_basis_1d.state_to_int">[docs]</a>	<span class="k">def</span> <span class="nf">state_to_int</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">state</span><span class="p">):</span>
+		<span class="n">state</span> <span class="o">=</span> <span class="n">state</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;|&#39;</span><span class="p">,</span><span class="s1">&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;&gt;&#39;</span><span class="p">,</span><span class="s1">&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;&lt;&#39;</span><span class="p">,</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+		<span class="n">up_state</span><span class="p">,</span> <span class="n">down_state</span> <span class="o">=</span> <span class="n">state</span><span class="p">[:</span><span class="bp">self</span><span class="o">.</span><span class="n">N</span><span class="o">//</span><span class="mi">2</span><span class="p">],</span> <span class="n">state</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">N</span><span class="o">//</span><span class="mi">2</span><span class="p">:]</span>
+		<span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_basis</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">up_state</span><span class="p">,</span> <span class="n">down_state</span><span class="p">)])</span></div>
+
+	<span class="n">state_to_int</span><span class="o">.</span><span class="vm">__doc__</span> <span class="o">=</span> <span class="n">spinless_fermion_basis_1d</span><span class="o">.</span><span class="n">state_to_int</span><span class="o">.</span><span class="vm">__doc__</span>
 
 <div class="viewcode-block" id="spinful_fermion_basis_1d.partial_trace"><a class="viewcode-back" href="../../../../generated/quspin.basis.spinful_fermion_basis_1d.html#quspin.basis.spinful_fermion_basis_1d.partial_trace">[docs]</a>	<span class="k">def</span> <span class="nf">partial_trace</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">state</span><span class="p">,</span><span class="n">sub_sys_A</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">density</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">subsys_ordering</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">return_rdm</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">enforce_pure</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">return_rdm_EVs</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">sparse</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">alpha</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span><span class="n">sparse_diag</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">maxiter</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 		<span class="sd">&quot;&quot;&quot;Calculates reduced density matrix, through a partial trace of a quantum state in a lattice `basis`.</span>
@@ -657,14 +709,7 @@
 	<span class="k">def</span> <span class="nf">__name__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 		<span class="k">return</span> <span class="s2">&quot;&lt;type &#39;qspin.basis.fermion_basis_1d&#39;&gt;&quot;</span>
 
-	<span class="nd">@property</span>
-	<span class="k">def</span> <span class="nf">N</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-		<span class="sd">&quot;&quot;&quot;int: Total number of sites (spin-up + spin-down) the basis is constructed with. NOTE: :math:`N=2L`.&quot;&quot;&quot;</span>
-		<span class="k">return</span> <span class="mi">2</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">_L</span>
-
-	<span class="nd">@property</span>
-	<span class="k">def</span> <span class="nf">_fermion_basis</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-		<span class="k">return</span> <span class="kc">True</span> 
+	
 
 	<span class="c1"># functions called in base class:</span>
 
@@ -680,25 +725,26 @@
 	<span class="k">def</span> <span class="nf">_expand_opstr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">op</span><span class="p">,</span><span class="n">num</span><span class="p">):</span>
 		<span class="k">return</span> <span class="n">_expand_opstr_spinful</span><span class="p">(</span><span class="n">op</span><span class="p">,</span><span class="n">num</span><span class="p">)</span> 
 
-	<span class="k">def</span> <span class="nf">_get_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">b</span><span class="p">):</span>
-		<span class="n">b</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
-		<span class="n">bits_left</span> <span class="o">=</span> <span class="p">((</span><span class="n">b</span><span class="o">&gt;&gt;</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">N</span><span class="o">-</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span><span class="o">&amp;</span><span class="mi">1</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">N</span><span class="o">//</span><span class="mi">2</span><span class="p">))</span>
-		<span class="n">state_left</span> <span class="o">=</span> <span class="s2">&quot;|&quot;</span><span class="o">+</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">((</span><span class="s2">&quot;</span><span class="si">{:1d}</span><span class="s2">&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">bit</span><span class="p">)</span> <span class="k">for</span> <span class="n">bit</span> <span class="ow">in</span> <span class="n">bits_left</span><span class="p">))</span><span class="o">+</span><span class="s2">&quot;&gt;&quot;</span>
-		<span class="n">bits_right</span> <span class="o">=</span> <span class="p">((</span><span class="n">b</span><span class="o">&gt;&gt;</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">N</span><span class="o">//</span><span class="mi">2</span><span class="o">-</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span><span class="o">&amp;</span><span class="mi">1</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">N</span><span class="o">//</span><span class="mi">2</span><span class="p">))</span>
-		<span class="n">state_right</span> <span class="o">=</span> <span class="s2">&quot;|&quot;</span><span class="o">+</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">((</span><span class="s2">&quot;</span><span class="si">{:1d}</span><span class="s2">&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">bit</span><span class="p">)</span> <span class="k">for</span> <span class="n">bit</span> <span class="ow">in</span> <span class="n">bits_right</span><span class="p">))</span><span class="o">+</span><span class="s2">&quot;&gt;&quot;</span>
-		<span class="k">return</span> <span class="n">state_left</span><span class="o">+</span><span class="n">state_right</span>
+	<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	def _get_state(self,b):</span>
+<span class="sd">		b = int(b)</span>
+<span class="sd">		bits_left = ((b&gt;&gt;(self.N-i-1))&amp;1 for i in range(self.N//2))</span>
+<span class="sd">		state_left = &quot;|&quot;+(&quot; &quot;.join((&quot;{:1d}&quot;).format(bit) for bit in bits_left))+&quot;&gt;&quot;</span>
+<span class="sd">		bits_right = ((b&gt;&gt;(self.N//2-i-1))&amp;1 for i in range(self.N//2))</span>
+<span class="sd">		state_right = &quot;|&quot;+(&quot; &quot;.join((&quot;{:1d}&quot;).format(bit) for bit in bits_right))+&quot;&gt;&quot;</span>
+<span class="sd">		return state_left+state_right</span>
 
-	<span class="k">def</span> <span class="nf">_get__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-		<span class="n">temp1</span> <span class="o">=</span> <span class="s2">&quot;     {0:&quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Ns</span><span class="p">)))</span><span class="o">+</span><span class="s2">&quot;d}.  &quot;</span>
-		<span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Ns</span> <span class="o">&gt;</span> <span class="n">MAXPRINT</span><span class="p">:</span>
-			<span class="n">half</span> <span class="o">=</span> <span class="n">MAXPRINT</span> <span class="o">//</span> <span class="mi">2</span>
-			<span class="n">str_list</span> <span class="o">=</span> <span class="p">[(</span><span class="n">temp1</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="p">))</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_state</span><span class="p">(</span><span class="n">b</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">b</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">half</span><span class="p">),</span><span class="bp">self</span><span class="o">.</span><span class="n">_basis</span><span class="p">[:</span><span class="n">half</span><span class="p">])]</span>
-			<span class="n">str_list</span><span class="o">.</span><span class="n">extend</span><span class="p">([(</span><span class="n">temp1</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="p">))</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_state</span><span class="p">(</span><span class="n">b</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">b</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_Ns</span><span class="o">-</span><span class="n">half</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">_Ns</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span><span class="bp">self</span><span class="o">.</span><span class="n">_basis</span><span class="p">[</span><span class="o">-</span><span class="n">half</span><span class="p">:])])</span>
-		<span class="k">else</span><span class="p">:</span>
-			<span class="n">str_list</span> <span class="o">=</span> <span class="p">[(</span><span class="n">temp1</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="p">))</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_state</span><span class="p">(</span><span class="n">b</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">b</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_basis</span><span class="p">)]</span>
+<span class="sd">	def _get__str__(self):</span>
+<span class="sd">		temp1 = &quot;     {0:&quot;+str(len(str(self.Ns)))+&quot;d}.  &quot;</span>
+<span class="sd">		if self._Ns &gt; MAXPRINT:</span>
+<span class="sd">			half = MAXPRINT // 2</span>
+<span class="sd">			str_list = [(temp1.format(i))+self._get_state(b) for i,b in zip(range(half),self._basis[:half])]</span>
+<span class="sd">			str_list.extend([(temp1.format(i))+self._get_state(b) for i,b in zip(range(self._Ns-half,self._Ns,1),self._basis[-half:])])</span>
+<span class="sd">		else:</span>
+<span class="sd">			str_list = [(temp1.format(i))+self._get_state(b) for i,b in enumerate(self._basis)]</span>
 
-		<span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">str_list</span><span class="p">)</span>
-
+<span class="sd">		return tuple(str_list)</span>
+<span class="sd">	&quot;&quot;&quot;</span>
 
 	<span class="k">def</span> <span class="nf">_check_symm</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">static</span><span class="p">,</span><span class="n">dynamic</span><span class="p">,</span><span class="n">photon_basis</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 		<span class="n">kblock</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_blocks_1d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;kblock&quot;</span><span class="p">)</span>
@@ -996,13 +1042,13 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">QuSpin 0.3.4 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">QuSpin 0.3.5 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &#169; Copyright 2016, Phillip Weinberg and Marin Bukov.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.4.0.
+        &#169; Copyright 2016, Phillip Weinberg, Markus Schmitt and Marin Bukov.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 3.0.4.
     </div>
   </body>
 </html>

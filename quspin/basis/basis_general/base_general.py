@@ -227,6 +227,7 @@ class basis_general(lattice_basis):
 			return s_str.replace(' ', '')
 
 	def _state_to_int(self,state):
+		state = state.replace('|','').replace('>','').replace('<','')
 		return basis_int_to_python_int(self._basis[self.index(state)])
 
 	def _index(self,s):
@@ -266,8 +267,7 @@ class basis_general(lattice_basis):
 		row = _np.empty(self._Ns,dtype=self._index_type)
 		ME = _np.empty(self._Ns,dtype=dtype)
 		# print(self._Ns)
-		N_me = self._core.op(row,col,ME,opstr,indx,J,self._basis,self._n,
-			self._basis_begin,self._basis_end,self._N_p)
+		self._core.op(row,col,ME,opstr,indx,J,self._basis,self._n,self._basis_begin,self._basis_end,self._N_p)
 
 		if _np.iscomplexobj(ME):
 			if ME.dtype == _np.complex64:
@@ -326,7 +326,7 @@ class basis_general(lattice_basis):
 
 		An operator, which does not conserve a symmetry, induces a change in the quantum number of a state defined in the corresponding symmetry sector. Hence, when the operator is applied on a quantum state, the state shifts the symmetry sector. `Op_shift_sector()` handles this automatically. 
 
-		:red:`NOTE: One has to make sure that the operator moves the state between the two sectors this function will not give the correct results otherwise.`
+		:red:`NOTE: One has to make sure that (i) the operator moves the state between the two sectors, and (ii) the two bases objects have the same symmetries. This function will not give the correct results otherwise.`
 
 		Formally  equivalent to:
 
@@ -427,8 +427,8 @@ class basis_general(lattice_basis):
 
 		Notes
 		-----
-		* particularly useful when a given operation canot be carried out in the symmetry-reduced basis
-		in a straightforward manner.
+		* particularly useful when a given operation canot be carried out in the symmetry-reduced basis in a straightforward manner.
+		
 		* see also `Op_shift_sector()`.
 
 		Parameters
@@ -863,7 +863,7 @@ class basis_general(lattice_basis):
 		ket_states : numpy.ndarray(int)
 			Ket states in integer representation. Must be of same data type as `basis`.
 		reduce_output: bool, optional
-			If set to `True`, the returned arrays have the same size as `ket_states`; If set to `False` zeros are purged.
+			If set to `False`, the returned arrays have the same size as `ket_states`; If set to `True` zeros are purged.
 
 		Returns
 		--------
@@ -905,7 +905,7 @@ class basis_general(lattice_basis):
 		ME = _np.zeros(ket_states.shape[0],dtype=dtype)
 
 		self._core.op_bra_ket(ket_states,bra,ME,opstr,indx,J,self._Np)
-		
+
 		if reduce_output: 
 			# remove nan's matrix elements
 			mask = _np.logical_not(_np.logical_or(_np.isnan(ME),_np.abs(ME)==0.0))

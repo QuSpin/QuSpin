@@ -1,7 +1,7 @@
 
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
     <meta charset="utf-8" /><script type="text/javascript">
 
@@ -15,7 +15,7 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-    <title>quspin.basis.basis_general.fermion &#8212; QuSpin 0.3.4 documentation</title>
+    <title>quspin.basis.basis_general.fermion &#8212; QuSpin 0.3.5 documentation</title>
     <link rel="stylesheet" href="../../../../static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../../static/pygments.css" type="text/css" />
     
@@ -38,7 +38,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">QuSpin 0.3.4 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">QuSpin 0.3.5 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -52,6 +52,7 @@
 <span></span><span class="kn">from</span> <span class="nn">._basis_general_core</span> <span class="kn">import</span> <span class="n">spinful_fermion_basis_core_wrap</span>
 <span class="kn">from</span> <span class="nn">._basis_general_core</span> <span class="kn">import</span> <span class="n">spinless_fermion_basis_core_wrap</span>
 <span class="kn">from</span> <span class="nn">._basis_general_core</span> <span class="kn">import</span> <span class="n">get_basis_type</span><span class="p">,</span><span class="n">basis_zeros</span>
+<span class="kn">from</span> <span class="nn">._basis_general_core</span> <span class="kn">import</span> <span class="n">basis_int_to_python_int</span> <span class="c1">#,_get_basis_index</span>
 <span class="kn">from</span> <span class="nn">.base_general</span> <span class="kn">import</span> <span class="n">basis_general</span><span class="p">,</span><span class="n">_check_symm_map</span>
 <span class="kn">from</span> <span class="nn">..base</span> <span class="kn">import</span> <span class="n">MAXPRINT</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">_np</span>
@@ -62,27 +63,22 @@
 <div class="viewcode-block" id="spinless_fermion_basis_general"><a class="viewcode-back" href="../../../../generated/quspin.basis.spinless_fermion_basis_general.html#quspin.basis.spinless_fermion_basis_general">[docs]</a><span class="k">class</span> <span class="nc">spinless_fermion_basis_general</span><span class="p">(</span><span class="n">basis_general</span><span class="p">):</span>
 	<span class="sd">&quot;&quot;&quot;Constructs basis for spinless fermion operators for USER-DEFINED symmetries.</span>
 
-<span class="sd">	Any unitary symmetry transformation :math:`Q` of periodicity :math:`m_Q` (:math:`Q^{m_Q}=1`) has</span>
-<span class="sd">	eigenvalues :math:`\\exp(-2\\pi i q/m_Q)`, labelled by an ingeter :math:`q\\in\\{0,1,\\dots,m_Q-1\\}`.</span>
-<span class="sd">	These integers :math:`q` are used to define the symmetry blocks.</span>
+<span class="sd">	Any unitary symmetry transformation :math:`Q` of periodicity :math:`m_Q` (:math:`Q^{m_Q}=1`) has eigenvalues :math:`\\exp(-2\\pi i q/m_Q)`, labelled by an ingeter :math:`q\\in\\{0,1,\\dots,m_Q-1\\}`. These integers :math:`q` are used to define the symmetry blocks.</span>
 
-<span class="sd">	For instance, if :math:`Q=P` is parity (reflection), then :math:`q=0,1`. If :math:`Q=T` is translation by one lattice site,</span>
-<span class="sd">	then :math:`q` labels the mometum blocks in the same fashion as for the `..._basis_1d` classes. </span>
+<span class="sd">	For instance, if :math:`Q=P` is parity (reflection), then :math:`q=0,1`. If :math:`Q=T` is translation by one lattice site, then :math:`q` labels the mometum blocks in the same fashion as for the `..._basis_1d` classes. </span>
 
-<span class="sd">	User-defined symmetries with the `spinless_fermion_basis_general` class can be programmed as follows. Suppose we have a system of</span>
-<span class="sd">	L sites, enumerated :math:`s=(s_0,s_1,\\dots,s_{L-1})`. There are two types of operations one can perform on the sites:</span>
+<span class="sd">	User-defined symmetries with the `spinless_fermion_basis_general` class can be programmed as follows. Suppose we have a system of L sites, enumerated :math:`s=(s_0,s_1,\\dots,s_{L-1})`. There are two types of operations one can perform on the sites:</span>
 <span class="sd">		* exchange the labels of two sites: :math:`s_i \\leftrightarrow s_j` (e.g., translation, parity)</span>
 <span class="sd">		* invert the **fermion population** on a given site with appropriate sign flip (see `&quot;z&quot;` operator string) :math:`c_j^\\dagger\\to (-1)^j c_j`: :math:`s_i\\leftrightarrow -(s_j+1)` (e.g., particle-hole symmetry)</span>
 <span class="sd">		</span>
-<span class="sd">	These two operations already comprise a variety of symmetries, including translation, parity (reflection) and </span>
-<span class="sd">	population inversion. For a specific example, see below.</span>
+<span class="sd">	These two operations already comprise a variety of symmetries, including translation, parity (reflection) and population inversion. For a specific example, see below.</span>
 
 <span class="sd">	The supported operator strings for `spinless_fermion_basis_general` are:</span>
 
 <span class="sd">	.. math::</span>
 <span class="sd">		\\begin{array}{cccc}</span>
-<span class="sd">			\\texttt{basis}/\\texttt{opstr}   &amp;   \\texttt{&quot;I&quot;}   &amp;   \\texttt{&quot;+&quot;}   &amp;   \\texttt{&quot;-&quot;}  &amp;   \\texttt{&quot;n&quot;}   &amp;   \\texttt{&quot;z&quot;}    \\newline	</span>
-<span class="sd">			\\texttt{spinless_fermion_basis_general}&amp; \\hat{1}        &amp;   \\hat c^\\dagger      &amp;       \\hat c          &amp; \\hat c^\\dagger c     &amp;  \\hat c^\\dagger\\hat c - \\frac{1}{2}      \\newline</span>
+<span class="sd">			\\texttt{basis}/\\texttt{opstr}   &amp;   \\texttt{&quot;I&quot;}   &amp;   \\texttt{&quot;+&quot;}   &amp;   \\texttt{&quot;-&quot;}  &amp;   \\texttt{&quot;n&quot;}   &amp;   \\texttt{&quot;z&quot;}    &amp;   \\texttt{&quot;x&quot;}    &amp;   \\texttt{&quot;y&quot;}    \\newline	</span>
+<span class="sd">			\\texttt{spinless_fermion_basis_general}&amp; \\hat{1}        &amp;   \\hat c^\\dagger      &amp;       \\hat c          &amp; \\hat c^\\dagger c     &amp;  \\hat c^\\dagger\\hat c - \\frac{1}{2}  &amp;   \\hat c + \\hat c^\\dagger    &amp;   -i\\left( \\hat c - \\hat c^\\dagger\\right)   \\newline</span>
 <span class="sd">		\\end{array}</span>
 
 <span class="sd">	Notes</span>
@@ -90,6 +86,7 @@
 
 <span class="sd">	* For particle-hole symmetry, please use exclusively the operator string `&quot;z&quot;` (see table), otherwise the automatic symmetry check will raise an error when set to `check_symm=True`.</span>
 <span class="sd">	* QuSpin raises a warning to alert the reader when non-commuting symmetries are passed. In such cases, we recommend the user to manually check the combined usage of symmetries by, e.g., comparing the eigenvalues.</span>
+<span class="sd">	* The fermion operator strings &quot;x&quot; and &quot;y&quot; correspond to real fermions, i.e. Majorana operators (note the sign difference between &quot;y&quot; and the :math:`\\sigma^y` Pauli matrix, which is convention).</span>
 
 
 <span class="sd">	Examples</span>
@@ -220,9 +217,12 @@
 							<span class="s2">&quot;</span><span class="se">\n\t</span><span class="s2">+: raising operator&quot;</span><span class="o">+</span>
 							<span class="s2">&quot;</span><span class="se">\n\t</span><span class="s2">-: lowering operator&quot;</span><span class="o">+</span>
 							<span class="s2">&quot;</span><span class="se">\n\t</span><span class="s2">n: number operator&quot;</span><span class="o">+</span>
-							<span class="s2">&quot;</span><span class="se">\n\t</span><span class="s2">z: c-symm number operator&quot;</span><span class="p">)</span>
+							<span class="s2">&quot;</span><span class="se">\n\t</span><span class="s2">z: c-symm number operator&quot;</span><span class="o">+</span>
+							<span class="s2">&quot;</span><span class="se">\n\t</span><span class="s2">x: majorana x-operator&quot;</span><span class="o">+</span>
+							<span class="s2">&quot;</span><span class="se">\n\t</span><span class="s2">y: majorana y-operator&quot;</span>
+							<span class="p">)</span>
 
-		<span class="bp">self</span><span class="o">.</span><span class="n">_allowed_ops</span><span class="o">=</span><span class="nb">set</span><span class="p">([</span><span class="s2">&quot;I&quot;</span><span class="p">,</span><span class="s2">&quot;n&quot;</span><span class="p">,</span><span class="s2">&quot;+&quot;</span><span class="p">,</span><span class="s2">&quot;-&quot;</span><span class="p">,</span><span class="s2">&quot;z&quot;</span><span class="p">])</span></div>
+		<span class="bp">self</span><span class="o">.</span><span class="n">_allowed_ops</span><span class="o">=</span><span class="nb">set</span><span class="p">([</span><span class="s2">&quot;I&quot;</span><span class="p">,</span><span class="s2">&quot;n&quot;</span><span class="p">,</span><span class="s2">&quot;+&quot;</span><span class="p">,</span><span class="s2">&quot;-&quot;</span><span class="p">,</span><span class="s2">&quot;z&quot;</span><span class="p">,</span><span class="s2">&quot;x&quot;</span><span class="p">,</span><span class="s2">&quot;y&quot;</span><span class="p">])</span></div>
 		
 	<span class="k">def</span> <span class="nf">__setstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">state</span><span class="p">):</span>
 		<span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">state</span><span class="p">)</span>
@@ -312,15 +312,12 @@
 <div class="viewcode-block" id="spinful_fermion_basis_general"><a class="viewcode-back" href="../../../../generated/quspin.basis.spinful_fermion_basis_general.html#quspin.basis.spinful_fermion_basis_general">[docs]</a><span class="k">class</span> <span class="nc">spinful_fermion_basis_general</span><span class="p">(</span><span class="n">spinless_fermion_basis_general</span><span class="p">):</span>
 	<span class="sd">&quot;&quot;&quot;Constructs basis for spinful fermion operators for USER-DEFINED symmetries.</span>
 
-<span class="sd">	Any unitary symmetry transformation :math:`Q` of periodicity :math:`m_Q` (:math:`Q^{m_Q}=1`) has</span>
-<span class="sd">	eigenvalues :math:`\\exp(-2\\pi i q/m_Q)`, labelled by an ingeter :math:`q\\in\\{0,1,\\dots,m_Q-1\\}`.</span>
-<span class="sd">	These integers :math:`q` are used to define the symmetry blocks.</span>
+<span class="sd">	Any unitary symmetry transformation :math:`Q` of periodicity :math:`m_Q` (:math:`Q^{m_Q}=1`) has eigenvalues :math:`\\exp(-2\\pi i q/m_Q)`, labelled by an ingeter :math:`q\\in\\{0,1,\\dots,m_Q-1\\}`. These integers :math:`q` are used to define the symmetry blocks.</span>
 
-<span class="sd">	For instance, if :math:`Q=P` is parity (reflection), then :math:`q=0,1`. If :math:`Q=T` is translation by one lattice site,</span>
-<span class="sd">	then :math:`q` labels the mometum blocks in the same fashion as for the `..._basis_1d` classes. </span>
+<span class="sd">	For instance, if :math:`Q=P` is parity (reflection), then :math:`q=0,1`. If :math:`Q=T` is translation by one lattice site, then :math:`q` labels the mometum blocks in the same fashion as for the `..._basis_1d` classes. </span>
 
 <span class="sd">	User-defined symmetries with the `spinful_fermion_basis_general` class can be programmed in two equivalent ways: *simple* and *advanced*.</span>
-<span class="sd">		* *simple* symmetry definition (see optional argument `simple_symm`) uses the pipe symbol, |, in the operator string (see site-coupling lists in example below) to distinguish between the spin-up and spin-down species. Suppose we have a system of L sites. In the *simple* case, the lattice sites are enumerated :math:`s=(s_0,s_1,\\dots,s_{L-1})` for **both** spin-up and spin-down. There are two types of operations one can perform on the sites:</span>
+<span class="sd">		* *simple* symmetry definition (see optional argument `simple_symm`) uses the pipe symbol, &quot;|&quot;, in the operator string (see site-coupling lists in example below) to distinguish between the spin-up and spin-down species. Suppose we have a system of L sites. In the *simple* case, the lattice sites are enumerated :math:`s=(s_0,s_1,\\dots,s_{L-1})` for **both** spin-up and spin-down. There are two types of operations one can perform on the sites:</span>
 <span class="sd">			* exchange the labels of two sites: :math:`s_i \\leftrightarrow s_j` (e.g., translation, parity)</span>
 <span class="sd">			* invert the **fermion spin** on a given site: :math:`s_i\\leftrightarrow -(s_j+1)` (e.g., fermion spin inversion)</span>
 
@@ -329,15 +326,14 @@
 <span class="sd">			* invert the **fermion population** on a given site with appropriate sign flip (see `&quot;z&quot;` operator string) :math:`c_j^\\dagger\\to (-1)^j c_j`: :math:`s_i\\leftrightarrow -(s_j+1)` (e.g., particle-hole symmetry)</span>
 <span class="sd">	</span>
 
-<span class="sd">	These two operations already comprise a variety of symmetries, including translation, parity (reflection), fermion-spin inversion</span>
-<span class="sd">	and particle-hole like symmetries. For specific examples, see below.</span>
+<span class="sd">	These two operations already comprise a variety of symmetries, including translation, parity (reflection), fermion-spin inversion and particle-hole like symmetries. For specific examples, see below.</span>
 
 <span class="sd">	The supported operator strings for `spinful_fermion_basis_general` are:</span>
 
 <span class="sd">	.. math::</span>
 <span class="sd">		\\begin{array}{cccc}</span>
-<span class="sd">			\\texttt{basis}/\\texttt{opstr}   &amp;   \\texttt{&quot;I&quot;}   &amp;   \\texttt{&quot;+&quot;}   &amp;   \\texttt{&quot;-&quot;}  &amp;   \\texttt{&quot;n&quot;}   &amp;   \\texttt{&quot;z&quot;}    \\newline	</span>
-<span class="sd">			\\texttt{spinful_fermion_basis_general}&amp; \\hat{1}        &amp;   \\hat c^\\dagger      &amp;       \\hat c          &amp; \\hat c^\\dagger c     &amp;  \\hat c^\\dagger\\hat c - \\frac{1}{2}      \\newline</span>
+<span class="sd">			\\texttt{basis}/\\texttt{opstr}   &amp;   \\texttt{&quot;I&quot;}   &amp;   \\texttt{&quot;+&quot;}   &amp;   \\texttt{&quot;-&quot;}  &amp;   \\texttt{&quot;n&quot;}   &amp;   \\texttt{&quot;z&quot;}    &amp;   \\texttt{&quot;x&quot;}    &amp;   \\texttt{&quot;y&quot;}    \\newline	</span>
+<span class="sd">			\\texttt{spinful_fermion_basis_general}&amp; \\hat{1}        &amp;   \\hat c^\\dagger      &amp;       \\hat c          &amp; \\hat c^\\dagger c     &amp;  \\hat c^\\dagger\\hat c - \\frac{1}{2}  &amp;   \\hat c + \\hat c^\\dagger    &amp;   -i\\left( \\hat c - \\hat c^\\dagger\\right)   \\newline</span>
 <span class="sd">		\\end{array}</span>
 
 <span class="sd">	Notes</span>
@@ -346,6 +342,7 @@
 <span class="sd">	* The definition of the operation :math:`s_i\\leftrightarrow -(s_j+1)` **differs** for the *simple* and *advanced* cases.</span>
 <span class="sd">	* For particle-hole symmetry, please use exclusively the operator string `&quot;z&quot;` (see table), otherwise the automatic symmetry check will raise an error when set to `check_symm=True`.</span>
 <span class="sd">	* QuSpin raises a warning to alert the reader when non-commuting symmetries are passed. In such cases, we recommend the user to manually check the combined usage of symmetries by, e.g., comparing the eigenvalues.</span>
+<span class="sd">	* The fermion operator strings &quot;x&quot; and &quot;y&quot; correspond to real fermions, i.e. Majorana operators (note the sign difference between &quot;y&quot; and the :math:`\\sigma^y` Pauli matrix, which is convention).</span>
 
 
 <span class="sd">	Examples</span>
@@ -515,7 +512,7 @@
 
 		<span class="bp">self</span><span class="o">.</span><span class="n">_pcon_args</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">N</span><span class="o">=</span><span class="n">N</span><span class="p">,</span><span class="n">Nf</span><span class="o">=</span><span class="n">Nf</span><span class="p">)</span>
 
-		<span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_pers</span><span class="p">)</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">:</span>
+		<span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_pers</span><span class="p">)</span><span class="o">&gt;</span><span class="mi">0</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">double_occupancy</span><span class="p">:</span>
 			<span class="k">if</span> <span class="n">Ns_block_est</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
 				<span class="bp">self</span><span class="o">.</span><span class="n">_Ns</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_Ns</span><span class="p">)</span><span class="o">/</span><span class="n">_np</span><span class="o">.</span><span class="n">multiply</span><span class="o">.</span><span class="n">reduce</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_pers</span><span class="p">))</span><span class="o">*</span><span class="mi">4</span>
 			<span class="k">else</span><span class="p">:</span>
@@ -548,9 +545,11 @@
 							<span class="s2">&quot;</span><span class="se">\n\t</span><span class="s2">+: raising operator&quot;</span><span class="o">+</span>
 							<span class="s2">&quot;</span><span class="se">\n\t</span><span class="s2">-: lowering operator&quot;</span><span class="o">+</span>
 							<span class="s2">&quot;</span><span class="se">\n\t</span><span class="s2">n: number operator&quot;</span><span class="o">+</span>
-							<span class="s2">&quot;</span><span class="se">\n\t</span><span class="s2">z: c-symm number operator&quot;</span><span class="p">)</span>
+							<span class="s2">&quot;</span><span class="se">\n\t</span><span class="s2">z: c-symm number operator&quot;</span><span class="o">+</span>
+							<span class="s2">&quot;</span><span class="se">\n\t</span><span class="s2">x: majorana x-operator&quot;</span><span class="o">+</span>
+							<span class="s2">&quot;</span><span class="se">\n\t</span><span class="s2">y: majorana y-operator&quot;</span><span class="p">)</span>
 
-		<span class="bp">self</span><span class="o">.</span><span class="n">_allowed_ops</span><span class="o">=</span><span class="nb">set</span><span class="p">([</span><span class="s2">&quot;I&quot;</span><span class="p">,</span><span class="s2">&quot;n&quot;</span><span class="p">,</span><span class="s2">&quot;+&quot;</span><span class="p">,</span><span class="s2">&quot;-&quot;</span><span class="p">,</span><span class="s2">&quot;z&quot;</span><span class="p">])</span></div>
+		<span class="bp">self</span><span class="o">.</span><span class="n">_allowed_ops</span><span class="o">=</span><span class="nb">set</span><span class="p">([</span><span class="s2">&quot;I&quot;</span><span class="p">,</span><span class="s2">&quot;n&quot;</span><span class="p">,</span><span class="s2">&quot;+&quot;</span><span class="p">,</span><span class="s2">&quot;-&quot;</span><span class="p">,</span><span class="s2">&quot;z&quot;</span><span class="p">,</span><span class="s2">&quot;x&quot;</span><span class="p">,</span><span class="s2">&quot;y&quot;</span><span class="p">])</span></div>
 		
 	<span class="k">def</span> <span class="nf">__setstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">state</span><span class="p">):</span>
 		<span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">state</span><span class="p">)</span>
@@ -558,7 +557,8 @@
 
 	<span class="nd">@property</span>
 	<span class="k">def</span> <span class="nf">_fermion_basis</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-		<span class="k">return</span> <span class="kc">True</span> 
+		<span class="k">return</span> <span class="kc">True</span>
+
 
 	<span class="c1">#################################################</span>
 	<span class="c1"># override for _inplace_Op and Op_shift_sector. #</span>
@@ -643,9 +643,10 @@
 <span class="sd">		&gt;&gt;&gt;				sparse=False,alpha=1.0,sparse_diag=True,subsys_ordering=True)</span>
 
 <span class="sd">		&quot;&quot;&quot;</span>
+		<span class="n">N_sites</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">N</span><span class="o">//</span><span class="mi">2</span>
 		<span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_simple_symm</span><span class="p">:</span>
 			<span class="k">if</span> <span class="n">sub_sys_A</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-				<span class="n">sub_sys_A</span> <span class="o">=</span> <span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">N</span><span class="o">//</span><span class="mi">2</span><span class="p">)),</span><span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">N</span><span class="o">//</span><span class="mi">2</span><span class="p">)))</span>
+				<span class="n">sub_sys_A</span> <span class="o">=</span> <span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">N_sites</span><span class="o">//</span><span class="mi">2</span><span class="p">)),</span><span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">N_sites</span><span class="o">//</span><span class="mi">2</span><span class="p">)))</span>
 
 			<span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">sub_sys_A</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">tuple</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">sub_sys_A</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">:</span>
 				<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;sub_sys_A must be a tuple which contains the subsystems for the up spins in the </span><span class="se">\</span>
@@ -654,10 +655,10 @@
 			<span class="n">sub_sys_A_up</span><span class="p">,</span><span class="n">sub_sys_A_down</span> <span class="o">=</span> <span class="n">sub_sys_A</span>
 
 			<span class="n">sub_sys_A</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">sub_sys_A_up</span><span class="p">)</span>
-			<span class="n">sub_sys_A</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="n">i</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">N</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">sub_sys_A_down</span><span class="p">])</span>
+			<span class="n">sub_sys_A</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="n">i</span><span class="o">+</span><span class="n">N_sites</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">sub_sys_A_down</span><span class="p">])</span>
 		<span class="k">else</span><span class="p">:</span>
 			<span class="k">if</span> <span class="n">sub_sys_A</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-				<span class="n">sub_sys_A</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">N</span><span class="o">//</span><span class="mi">2</span><span class="p">)]</span><span class="o">+</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">N</span><span class="o">+</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">N</span><span class="o">//</span><span class="mi">2</span><span class="p">)]</span>
+				<span class="n">sub_sys_A</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N_sites</span><span class="o">//</span><span class="mi">2</span><span class="p">)]</span><span class="o">+</span><span class="p">[</span><span class="n">N_sites</span><span class="o">+</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N_sites</span><span class="o">//</span><span class="mi">2</span><span class="p">)]</span>
 
 		<span class="k">return</span> <span class="n">spinless_fermion_basis_general</span><span class="o">.</span><span class="n">_ent_entropy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">state</span><span class="p">,</span><span class="n">sub_sys_A</span><span class="p">,</span><span class="n">density</span><span class="o">=</span><span class="n">density</span><span class="p">,</span>
 						<span class="n">subsys_ordering</span><span class="o">=</span><span class="n">subsys_ordering</span><span class="p">,</span><span class="n">return_rdm</span><span class="o">=</span><span class="n">return_rdm</span><span class="p">,</span>
@@ -694,7 +695,7 @@
 		<span class="k">else</span><span class="p">:</span>
 			<span class="n">new_op_list</span> <span class="o">=</span> <span class="n">op_list</span>
 
-		<span class="k">return</span> <span class="n">spinless_fermion_basis_general</span><span class="o">.</span><span class="n">Op_shift_sector</span><span class="p">(</span><span class="n">other_basis</span><span class="p">,</span><span class="n">new_op_list</span><span class="p">,</span><span class="n">v_in</span><span class="p">,</span><span class="n">v_out</span><span class="o">=</span><span class="n">v_out</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>	</div>
+		<span class="k">return</span> <span class="n">spinless_fermion_basis_general</span><span class="o">.</span><span class="n">Op_shift_sector</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">other_basis</span><span class="p">,</span><span class="n">new_op_list</span><span class="p">,</span><span class="n">v_in</span><span class="p">,</span><span class="n">v_out</span><span class="o">=</span><span class="n">v_out</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>	</div>
 
 	<span class="n">Op_shift_sector</span><span class="o">.</span><span class="vm">__doc__</span> <span class="o">=</span> <span class="n">spinless_fermion_basis_general</span><span class="o">.</span><span class="n">Op_shift_sector</span><span class="o">.</span><span class="vm">__doc__</span>
 
@@ -750,11 +751,51 @@
 		<span class="k">else</span><span class="p">:</span>
 			<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;state must be representive state in basis.&quot;</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="spinful_fermion_basis_general.int_to_state"><a class="viewcode-back" href="../../../../generated/quspin.basis.spinful_fermion_basis_general.html#quspin.basis.spinful_fermion_basis_general.int_to_state">[docs]</a>	<span class="k">def</span> <span class="nf">int_to_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
-		<span class="sd">&quot;&quot;&quot; Not Implemented.&quot;&quot;&quot;</span></div>
+<div class="viewcode-block" id="spinful_fermion_basis_general.int_to_state"><a class="viewcode-back" href="../../../../generated/quspin.basis.spinful_fermion_basis_general.html#quspin.basis.spinful_fermion_basis_general.int_to_state">[docs]</a>	<span class="k">def</span> <span class="nf">int_to_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">state</span><span class="p">,</span><span class="n">bracket_notation</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 
-<div class="viewcode-block" id="spinful_fermion_basis_general.state_to_int"><a class="viewcode-back" href="../../../../generated/quspin.basis.spinful_fermion_basis_general.html#quspin.basis.spinful_fermion_basis_general.state_to_int">[docs]</a>	<span class="k">def</span> <span class="nf">state_to_int</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
-		<span class="sd">&quot;&quot;&quot; Not Implemented.&quot;&quot;&quot;</span></div>
+		<span class="n">state</span> <span class="o">=</span> <span class="n">basis_int_to_python_int</span><span class="p">(</span><span class="n">state</span><span class="p">)</span>
+
+		<span class="n">n_space</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sps</span><span class="p">))</span>
+
+		<span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">N</span> <span class="o">&lt;=</span> <span class="mi">64</span><span class="p">:</span>
+			<span class="n">bits_up</span>   <span class="o">=</span> <span class="p">((</span><span class="n">state</span><span class="o">&gt;&gt;</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">N</span><span class="o">-</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span><span class="o">&amp;</span><span class="mi">1</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">N</span><span class="o">//</span><span class="mi">2</span><span class="p">))</span>
+			<span class="n">s_str_up</span>   <span class="o">=</span> <span class="p">(</span><span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">((</span><span class="s2">&quot;</span><span class="si">{:1d}</span><span class="s2">&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">bit</span><span class="p">)</span> <span class="k">for</span> <span class="n">bit</span> <span class="ow">in</span> <span class="n">bits_up</span><span class="p">))</span>
+			
+			<span class="n">bits_down</span> <span class="o">=</span> <span class="p">((</span><span class="n">state</span><span class="o">&gt;&gt;</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">N</span><span class="o">//</span><span class="mi">2</span><span class="o">-</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span><span class="o">&amp;</span><span class="mi">1</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">N</span><span class="o">//</span><span class="mi">2</span><span class="p">))</span>
+			<span class="n">s_str_down</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">((</span><span class="s2">&quot;</span><span class="si">{:1d}</span><span class="s2">&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">bit</span><span class="p">)</span> <span class="k">for</span> <span class="n">bit</span> <span class="ow">in</span> <span class="n">bits_down</span><span class="p">))</span>
+
+		<span class="k">else</span><span class="p">:</span>
+			<span class="n">left_bits_up</span> <span class="o">=</span> <span class="p">(</span><span class="n">state</span><span class="o">//</span><span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sps</span><span class="o">**</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">N</span><span class="o">-</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span><span class="o">%</span><span class="bp">self</span><span class="o">.</span><span class="n">sps</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">16</span><span class="p">))</span>
+			<span class="n">right_bits_up</span> <span class="o">=</span> <span class="p">(</span><span class="n">state</span><span class="o">//</span><span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sps</span><span class="o">**</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">N</span><span class="o">-</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span><span class="o">%</span><span class="bp">self</span><span class="o">.</span><span class="n">sps</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">N</span><span class="o">//</span><span class="mi">2</span><span class="o">-</span><span class="mi">16</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">N</span><span class="o">//</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">))</span>
+
+			<span class="n">str_list_up</span> <span class="o">=</span> <span class="p">[(</span><span class="s2">&quot;{:&quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">n_space</span><span class="p">)</span><span class="o">+</span><span class="s2">&quot;d}&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">bit</span><span class="p">)</span> <span class="k">for</span> <span class="n">bit</span> <span class="ow">in</span> <span class="n">left_bits_up</span><span class="p">]</span>
+			<span class="n">str_list_up</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;...&quot;</span><span class="p">)</span>
+			<span class="n">str_list_up</span><span class="o">.</span><span class="n">extend</span><span class="p">((</span><span class="s2">&quot;{:&quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">n_space</span><span class="p">)</span><span class="o">+</span><span class="s2">&quot;d}&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">bit</span><span class="p">)</span> <span class="k">for</span> <span class="n">bit</span> <span class="ow">in</span> <span class="n">right_bits_up</span><span class="p">)</span>
+			<span class="n">s_str_up</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">str_list_up</span><span class="p">))</span>
+
+
+			<span class="n">left_bits_down</span> <span class="o">=</span> <span class="p">(</span><span class="n">state</span><span class="o">//</span><span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sps</span><span class="o">**</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">N</span><span class="o">//</span><span class="mi">2</span><span class="o">-</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span><span class="o">%</span><span class="bp">self</span><span class="o">.</span><span class="n">sps</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">16</span><span class="p">))</span>
+			<span class="n">right_bits_down</span> <span class="o">=</span> <span class="p">(</span><span class="n">state</span><span class="o">//</span><span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sps</span><span class="o">**</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">N</span><span class="o">//</span><span class="mi">2</span><span class="o">-</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span><span class="o">%</span><span class="bp">self</span><span class="o">.</span><span class="n">sps</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">N</span><span class="o">//</span><span class="mi">2</span><span class="o">-</span><span class="mi">16</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">N</span><span class="o">//</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">))</span>
+
+			<span class="n">str_list_down</span> <span class="o">=</span> <span class="p">[(</span><span class="s2">&quot;{:&quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">n_space</span><span class="p">)</span><span class="o">+</span><span class="s2">&quot;d}&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">bit</span><span class="p">)</span> <span class="k">for</span> <span class="n">bit</span> <span class="ow">in</span> <span class="n">left_bits_down</span><span class="p">]</span>
+			<span class="n">str_list_down</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;...&quot;</span><span class="p">)</span>
+			<span class="n">str_list_down</span><span class="o">.</span><span class="n">extend</span><span class="p">((</span><span class="s2">&quot;{:&quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">n_space</span><span class="p">)</span><span class="o">+</span><span class="s2">&quot;d}&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">bit</span><span class="p">)</span> <span class="k">for</span> <span class="n">bit</span> <span class="ow">in</span> <span class="n">right_bits_down</span><span class="p">)</span>
+			<span class="n">s_str_down</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">str_list_down</span><span class="p">))</span>
+
+		<span class="k">if</span> <span class="n">bracket_notation</span><span class="p">:</span>
+			<span class="k">return</span> <span class="s2">&quot;|&quot;</span><span class="o">+</span><span class="n">s_str_up</span><span class="o">+</span><span class="s2">&quot;&gt;&quot;</span>  <span class="o">+</span> <span class="s2">&quot;|&quot;</span><span class="o">+</span><span class="n">s_str_down</span><span class="o">+</span><span class="s2">&quot;&gt;&quot;</span>
+		<span class="k">else</span><span class="p">:</span>
+			<span class="k">return</span> <span class="p">(</span><span class="n">s_str_up</span><span class="o">+</span><span class="n">s_str_down</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span></div>
+
+	<span class="n">int_to_state</span><span class="o">.</span><span class="vm">__doc__</span> <span class="o">=</span> <span class="n">spinless_fermion_basis_general</span><span class="o">.</span><span class="n">int_to_state</span><span class="o">.</span><span class="vm">__doc__</span>
+
+
+<div class="viewcode-block" id="spinful_fermion_basis_general.state_to_int"><a class="viewcode-back" href="../../../../generated/quspin.basis.spinful_fermion_basis_general.html#quspin.basis.spinful_fermion_basis_general.state_to_int">[docs]</a>	<span class="k">def</span> <span class="nf">state_to_int</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">state</span><span class="p">):</span>
+		<span class="n">state</span> <span class="o">=</span> <span class="n">state</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;|&#39;</span><span class="p">,</span><span class="s1">&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;&gt;&#39;</span><span class="p">,</span><span class="s1">&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;&lt;&#39;</span><span class="p">,</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+		<span class="n">up_state</span><span class="p">,</span> <span class="n">down_state</span> <span class="o">=</span> <span class="n">state</span><span class="p">[:</span><span class="bp">self</span><span class="o">.</span><span class="n">N</span><span class="o">//</span><span class="mi">2</span><span class="p">],</span> <span class="n">state</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">N</span><span class="o">//</span><span class="mi">2</span><span class="p">:]</span>
+		<span class="k">return</span> <span class="n">basis_int_to_python_int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_basis</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">up_state</span><span class="p">,</span> <span class="n">down_state</span><span class="p">)])</span></div>
+
+	<span class="n">state_to_int</span><span class="o">.</span><span class="vm">__doc__</span> <span class="o">=</span> <span class="n">spinless_fermion_basis_general</span><span class="o">.</span><span class="n">state_to_int</span><span class="o">.</span><span class="vm">__doc__</span>
 
 <div class="viewcode-block" id="spinful_fermion_basis_general.Op_bra_ket"><a class="viewcode-back" href="../../../../generated/quspin.basis.spinful_fermion_basis_general.html#quspin.basis.spinful_fermion_basis_general.Op_bra_ket">[docs]</a>	<span class="k">def</span> <span class="nf">Op_bra_ket</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">opstr</span><span class="p">,</span><span class="n">indx</span><span class="p">,</span><span class="n">J</span><span class="p">,</span><span class="n">dtype</span><span class="p">,</span><span class="n">ket_states</span><span class="p">,</span><span class="n">reduce_output</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 		
@@ -794,25 +835,16 @@
 <span class="sd">		&#39;&#39;&#39;</span>
 		<span class="k">return</span> <span class="n">spinless_fermion_basis_general</span><span class="o">.</span><span class="n">Op_bra_ket</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">opstr</span><span class="p">,</span><span class="n">indx</span><span class="p">,</span><span class="n">J</span><span class="p">,</span><span class="n">dtype</span><span class="p">,</span><span class="n">ket_states</span><span class="p">,</span><span class="n">reduce_output</span><span class="o">=</span><span class="n">reduce_output</span><span class="p">)</span></div>
 
+	<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	def _get_state(self,b):</span>
+<span class="sd">		b = int(b)</span>
+<span class="sd">		bits_left = ((b&gt;&gt;(self.N-i-1))&amp;1 for i in range(self.N//2))</span>
+<span class="sd">		state_left = &quot;|&quot;+(&quot; &quot;.join((&quot;{:1d}&quot;).format(bit) for bit in bits_left))+&quot;&gt;&quot;</span>
+<span class="sd">		bits_right = ((b&gt;&gt;(self.N//2-i-1))&amp;1 for i in range(self.N//2))</span>
+<span class="sd">		state_right = &quot;|&quot;+(&quot; &quot;.join((&quot;{:1d}&quot;).format(bit) for bit in bits_right))+&quot;&gt;&quot;</span>
+<span class="sd">		return state_left+state_right</span>
+<span class="sd">	&quot;&quot;&quot;</span>
 
-	<span class="k">def</span> <span class="nf">_get_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">b</span><span class="p">):</span>
-		<span class="n">b</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
-		<span class="n">bits_left</span> <span class="o">=</span> <span class="p">((</span><span class="n">b</span><span class="o">&gt;&gt;</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">N</span><span class="o">-</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span><span class="o">&amp;</span><span class="mi">1</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">N</span><span class="o">//</span><span class="mi">2</span><span class="p">))</span>
-		<span class="n">state_left</span> <span class="o">=</span> <span class="s2">&quot;|&quot;</span><span class="o">+</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">((</span><span class="s2">&quot;</span><span class="si">{:1d}</span><span class="s2">&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">bit</span><span class="p">)</span> <span class="k">for</span> <span class="n">bit</span> <span class="ow">in</span> <span class="n">bits_left</span><span class="p">))</span><span class="o">+</span><span class="s2">&quot;&gt;&quot;</span>
-		<span class="n">bits_right</span> <span class="o">=</span> <span class="p">((</span><span class="n">b</span><span class="o">&gt;&gt;</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">N</span><span class="o">//</span><span class="mi">2</span><span class="o">-</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span><span class="o">&amp;</span><span class="mi">1</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">N</span><span class="o">//</span><span class="mi">2</span><span class="p">))</span>
-		<span class="n">state_right</span> <span class="o">=</span> <span class="s2">&quot;|&quot;</span><span class="o">+</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">((</span><span class="s2">&quot;</span><span class="si">{:1d}</span><span class="s2">&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">bit</span><span class="p">)</span> <span class="k">for</span> <span class="n">bit</span> <span class="ow">in</span> <span class="n">bits_right</span><span class="p">))</span><span class="o">+</span><span class="s2">&quot;&gt;&quot;</span>
-		<span class="k">return</span> <span class="n">state_left</span><span class="o">+</span><span class="n">state_right</span>
-
-	<span class="k">def</span> <span class="nf">_get__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-		<span class="n">temp1</span> <span class="o">=</span> <span class="s2">&quot;     {0:&quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Ns</span><span class="p">)))</span><span class="o">+</span><span class="s2">&quot;d}.  &quot;</span>
-		<span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Ns</span> <span class="o">&gt;</span> <span class="n">MAXPRINT</span><span class="p">:</span>
-			<span class="n">half</span> <span class="o">=</span> <span class="n">MAXPRINT</span> <span class="o">//</span> <span class="mi">2</span>
-			<span class="n">str_list</span> <span class="o">=</span> <span class="p">[(</span><span class="n">temp1</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="p">))</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_state</span><span class="p">(</span><span class="n">b</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">b</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">half</span><span class="p">),</span><span class="bp">self</span><span class="o">.</span><span class="n">_basis</span><span class="p">[:</span><span class="n">half</span><span class="p">])]</span>
-			<span class="n">str_list</span><span class="o">.</span><span class="n">extend</span><span class="p">([(</span><span class="n">temp1</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="p">))</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_state</span><span class="p">(</span><span class="n">b</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">b</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_Ns</span><span class="o">-</span><span class="n">half</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">_Ns</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span><span class="bp">self</span><span class="o">.</span><span class="n">_basis</span><span class="p">[</span><span class="o">-</span><span class="n">half</span><span class="p">:])])</span>
-		<span class="k">else</span><span class="p">:</span>
-			<span class="n">str_list</span> <span class="o">=</span> <span class="p">[(</span><span class="n">temp1</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="p">))</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_state</span><span class="p">(</span><span class="n">b</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">b</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_basis</span><span class="p">)]</span>
-
-		<span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">str_list</span><span class="p">)</span>
 
 	<span class="k">def</span> <span class="nf">_sort_opstr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">op</span><span class="p">):</span>
 
@@ -1053,13 +1085,13 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">QuSpin 0.3.4 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">QuSpin 0.3.5 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &#169; Copyright 2016, Phillip Weinberg and Marin Bukov.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.4.0.
+        &#169; Copyright 2016, Phillip Weinberg, Markus Schmitt and Marin Bukov.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 3.0.4.
     </div>
   </body>
 </html>

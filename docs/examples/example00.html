@@ -1,0 +1,409 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" /><script type="text/javascript">
+
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-110543543-1']);
+      _gaq.push(['_trackPageview']);
+
+      (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+    </script>
+    <title>Basics of QuSpin basis objects &#8212; QuSpin 0.3.5 documentation</title>
+    <link rel="stylesheet" href="../static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../static/pygments.css" type="text/css" />
+    
+    <script id="documentation_options" data-url_root="../" src="../static/documentation_options.js"></script>
+    <script src="../static/jquery.js"></script>
+    <script src="../static/underscore.js"></script>
+    <script src="../static/doctools.js"></script>
+    <script src="../static/language_data.js"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.5 documentation</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <style> .red {color:#ff0000; font-weight:bold; font-style:italic; } </style>
+<style> .green {color:#00b200; font-weight:bold; font-style:italic; } </style><div class="section" id="basics-of-quspin-basis-objects">
+<span id="example-00-label"></span><h1>Basics of QuSpin <cite>basis</cite> objects<a class="headerlink" href="#basics-of-quspin-basis-objects" title="Permalink to this headline">¶</a></h1>
+<p>This tutorial shows how to define and interpret <cite>basis</cite> objects.</p>
+<p>In particular, we discuss how to define and read off physical states from the basis in the presence and absence of symmetries.</p>
+<dl class="simple">
+<dt><strong>Notes:</strong></dt><dd><ul class="simple">
+<li><p>we advise the users whenever possible to work with the <cite>basis_general</cite> objects, since they have enhanced functionality; However, occasionally it might be more convenient to work with the <cite>basis_1d</cite> objects where creating the basis might be a little bit faster.</p></li>
+<li><p>the <cite>general_basis</cite> objects have a much more pronounced functionality, including some useful methods like <cite>ent_entropy()</cite>, <cite>partial_trace()</cite>, <cite>Op_bra_ket()</cite>, <cite>Op_shift_sector()</cite>, <cite>get_amp()</cite>, <cite>representative()</cite>, <cite>normalization()</cite>, etc., see documentation.</p></li>
+</ul>
+</dd>
+</dl>
+</div>
+<div class="section" id="script">
+<h1>Script<a class="headerlink" href="#script" title="Permalink to this headline">¶</a></h1>
+<p><a class="reference download internal" download="" href="../downloads/d036651b960b085157edf037d348f473/example00.py"><code class="xref download docutils literal notranslate"><span class="pre">download</span> <span class="pre">script</span></code></a></p>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>  1
+  2
+  3
+  4
+  5
+  6
+  7
+  8
+  9
+ 10
+ 11
+ 12
+ 13
+ 14
+ 15
+ 16
+ 17
+ 18
+ 19
+ 20
+ 21
+ 22
+ 23
+ 24
+ 25
+ 26
+ 27
+ 28
+ 29
+ 30
+ 31
+ 32
+ 33
+ 34
+ 35
+ 36
+ 37
+ 38
+ 39
+ 40
+ 41
+ 42
+ 43
+ 44
+ 45
+ 46
+ 47
+ 48
+ 49
+ 50
+ 51
+ 52
+ 53
+ 54
+ 55
+ 56
+ 57
+ 58
+ 59
+ 60
+ 61
+ 62
+ 63
+ 64
+ 65
+ 66
+ 67
+ 68
+ 69
+ 70
+ 71
+ 72
+ 73
+ 74
+ 75
+ 76
+ 77
+ 78
+ 79
+ 80
+ 81
+ 82
+ 83
+ 84
+ 85
+ 86
+ 87
+ 88
+ 89
+ 90
+ 91
+ 92
+ 93
+ 94
+ 95
+ 96
+ 97
+ 98
+ 99
+100
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110
+111
+112
+113
+114
+115
+116
+117
+118
+119
+120
+121
+122
+123
+124
+125
+126
+127
+128
+129
+130
+131
+132
+133
+134
+135
+136
+137
+138
+139
+140
+141
+142
+143
+144
+145</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span><span class="p">,</span> <span class="n">division</span>
+<span class="c1">#</span>
+<span class="kn">import</span> <span class="nn">sys</span><span class="o">,</span><span class="nn">os</span>
+<span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s1">&#39;KMP_DUPLICATE_LIB_OK&#39;</span><span class="p">]</span><span class="o">=</span><span class="s1">&#39;True&#39;</span> <span class="c1"># uncomment this line if omp error occurs on OSX for python 3</span>
+<span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s1">&#39;OMP_NUM_THREADS&#39;</span><span class="p">]</span><span class="o">=</span><span class="s1">&#39;1&#39;</span> <span class="c1"># set number of OpenMP threads to run in parallel</span>
+<span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s1">&#39;MKL_NUM_THREADS&#39;</span><span class="p">]</span><span class="o">=</span><span class="s1">&#39;1&#39;</span> <span class="c1"># set number of MKL threads to run in parallel</span>
+<span class="c1">#</span>
+<span class="n">quspin_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">(),</span><span class="s2">&quot;../../&quot;</span><span class="p">)</span>
+<span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">quspin_path</span><span class="p">)</span>
+<span class="c1">#</span>
+<span class="c1"># line 12 and line 13 below are for development purposes and can be removed</span>
+<span class="n">qspin_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">(),</span><span class="s2">&quot;../../&quot;</span><span class="p">)</span>
+<span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">qspin_path</span><span class="p">)</span>
+<span class="c1">#####################################################################</span>
+<span class="c1">#                            example 00                             #</span>
+<span class="c1">#    In this script we demonstrate how to use QuSpin&#39;s              #</span>
+<span class="c1">#    `basis_general` routines to construct, interpret,              #</span>
+<span class="c1">#    and use basis objects.                                         #</span>
+<span class="c1">#####################################################################</span>
+<span class="kn">from</span> <span class="nn">quspin.basis</span> <span class="kn">import</span> <span class="n">spin_basis_general</span> <span class="c1"># Hilbert space spin basis</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span> <span class="c1"># generic math functions</span>
+<span class="c1">#</span>
+<span class="n">L</span><span class="o">=</span><span class="mi">2</span> <span class="c1"># system size</span>
+<span class="n">sites</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">L</span><span class="p">)</span> <span class="c1">#define sites</span>
+<span class="n">P</span><span class="o">=</span><span class="n">sites</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="c1"># define action of parity/reflection on the lattice sites</span>
+<span class="c1">#</span>
+<span class="c1">#############################################</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">----------------------------&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;---  NO  SYMMETRIES  -------&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;----------------------------</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="c1">#############################################</span>
+<span class="c1">#</span>
+<span class="c1">##### basis objects without symmetries</span>
+<span class="c1">#</span>
+<span class="n">basis</span><span class="o">=</span><span class="n">spin_basis_general</span><span class="p">(</span><span class="n">L</span><span class="p">,)</span>
+<span class="n">Ns</span> <span class="o">=</span> <span class="n">basis</span><span class="o">.</span><span class="n">Ns</span> <span class="c1"># number of states in the basis</span>
+<span class="c1">#</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">basis</span><span class="p">)</span>
+<span class="c1">#</span>
+<span class="c1"># states in integer representation</span>
+<span class="n">states</span><span class="o">=</span><span class="n">basis</span><span class="o">.</span><span class="n">states</span> <span class="c1"># = third column when printing the basis object (not consecutive if there are symmetries --&gt; see below)</span>
+<span class="n">array_inds</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">basis</span><span class="o">.</span><span class="n">Ns</span><span class="p">)</span> <span class="c1"># = first column when printing the basis object (always consecutive)</span>
+<span class="c1">#</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&#39;array index&#39; and &#39;states&#39; columns when printing the basis:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;array indices:&quot;</span><span class="p">,</span> <span class="n">array_inds</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;states in int rep:&quot;</span><span class="p">,</span> <span class="n">states</span><span class="p">)</span>
+<span class="c1"># find array index of a state from its integer representation; Note: the array index is crucial for reading-off matrix elements</span>
+<span class="n">s</span> <span class="o">=</span> <span class="n">basis</span><span class="o">.</span><span class="n">states</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+<span class="n">array_ind_s</span> <span class="o">=</span> <span class="n">basis</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="c1"># = array_inds[2] whenever there are no symmetries defined in the basis</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">print array index of s, and s (in int rep); Note: the array index is crucial for reading-off matrix elements&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">array_ind_s</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span>
+<span class="c1">#--------------------------------------------</span>
+<span class="c1">##### States: ket and integer representations</span>
+<span class="c1">#--------------------------------------------</span>
+<span class="c1"># find integer representation from Fock state string</span>
+<span class="n">fock_state_str_s</span> <span class="o">=</span> <span class="s1">&#39;|01&gt;&#39;</span> <span class="c1"># works also if the ket-forming strings | &gt; are omitted  </span>
+<span class="n">int_rep_s</span><span class="o">=</span><span class="n">basis</span><span class="o">.</span><span class="n">state_to_int</span><span class="p">(</span><span class="n">fock_state_str_s</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">print Fock state string of s, and s (in int rep):&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">fock_state_str_s</span><span class="p">,</span> <span class="n">int_rep_s</span><span class="p">)</span>
+<span class="c1">#</span>
+<span class="c1"># find Fock state string from integer representation</span>
+<span class="n">fock_s</span> <span class="o">=</span> <span class="n">basis</span><span class="o">.</span><span class="n">int_to_state</span><span class="p">(</span><span class="n">int_rep_s</span><span class="p">,</span><span class="n">bracket_notation</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">print Fock state string of s, and s (in int rep):&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">fock_s</span><span class="p">,</span> <span class="n">int_rep_s</span><span class="p">)</span>
+<span class="c1"># same as above but dropping the ket-forming strings | &gt;</span>
+<span class="n">fock_s</span> <span class="o">=</span> <span class="n">basis</span><span class="o">.</span><span class="n">int_to_state</span><span class="p">(</span><span class="n">int_rep_s</span><span class="p">,</span><span class="n">bracket_notation</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;print Fock state string (without | and &gt;) of s, and s (in int rep):&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">fock_s</span><span class="p">,</span> <span class="n">int_rep_s</span><span class="p">)</span>
+<span class="c1">#</span>
+<span class="c1"># find Fock state from array index</span>
+<span class="n">array_ind_s</span> <span class="o">=</span> <span class="mi">2</span>
+<span class="n">int_rep_s</span> <span class="o">=</span> <span class="n">basis</span><span class="o">.</span><span class="n">states</span><span class="p">[</span><span class="n">array_ind_s</span><span class="p">]</span>
+<span class="n">fock_s</span> <span class="o">=</span> <span class="n">basis</span><span class="o">.</span><span class="n">int_to_state</span><span class="p">(</span><span class="n">int_rep_s</span><span class="p">,</span><span class="n">bracket_notation</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">print array index, int rep, and fock state rep of s:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">array_ind_s</span><span class="p">,</span> <span class="n">int_rep_s</span><span class="p">,</span> <span class="n">fock_s</span><span class="p">)</span> <span class="c1"># compare with print(basis) output</span>
+<span class="c1">#--------------------------------------------</span>
+<span class="c1">##### States: array/vector representation</span>
+<span class="c1">#--------------------------------------------</span>
+<span class="c1"># define a zero vector of size set by the basis dimenion </span>
+<span class="n">psi_s</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">basis</span><span class="o">.</span><span class="n">Ns</span><span class="p">)</span>
+<span class="c1"># obtain array index for the fock state |01&gt;</span>
+<span class="n">array_ind_s</span><span class="o">=</span><span class="n">basis</span><span class="o">.</span><span class="n">index</span><span class="p">(</span> <span class="n">basis</span><span class="o">.</span><span class="n">state_to_int</span><span class="p">(</span><span class="s1">&#39;01&#39;</span><span class="p">)</span> <span class="p">)</span>
+<span class="c1"># construct the pure state |01&gt;</span>
+<span class="n">psi_s</span><span class="p">[</span><span class="n">array_ind_s</span><span class="p">]</span><span class="o">=</span><span class="mf">1.0</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">print state psi_s in the basis:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">psi_s</span><span class="p">)</span>
+<span class="c1">#</span>
+<span class="c1">#############################################</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n\n\n</span><span class="s2">----------------------------&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;-------  SYMMETRIES  -------&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;----------------------------</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="c1">#############################################</span>
+<span class="c1">#</span>
+<span class="c1">##### basis objects with symmetries</span>
+<span class="c1">#</span>
+<span class="n">basis_triplet</span><span class="o">=</span><span class="n">spin_basis_general</span><span class="p">(</span><span class="n">L</span><span class="p">,</span><span class="n">pblock</span><span class="o">=</span><span class="p">(</span><span class="n">P</span><span class="p">,</span><span class="mi">0</span><span class="p">))</span>
+<span class="n">basis_singlet</span><span class="o">=</span><span class="n">spin_basis_general</span><span class="p">(</span><span class="n">L</span><span class="p">,</span><span class="n">pblock</span><span class="o">=</span><span class="p">(</span><span class="n">P</span><span class="p">,</span><span class="mi">1</span><span class="p">))</span>
+<span class="c1">#</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;print full basis:&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">basis</span><span class="p">)</span>
+<span class="c1">#</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n\n</span><span class="s1">print pblock=+1 basis:</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">basis_triplet</span><span class="p">)</span>
+<span class="c1">#</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">  * integer rep column no longer consecutive! (|01&gt; falls outside symmetry sector)&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;  * array index column still consecutive! (but indices differ compared to full basis, e.g. for |00&gt;)&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;  * |11&gt; and |00&gt; invariant under parity, so they correspond to physical states |11&gt; and |00&gt;&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;  * |10&gt; not invariant under parity! It represents the physical symmetric superposition 1/sqrt(2)(|10&gt; + |01&gt;) [see bottom note when printing the symmetry-reduced basis]; quspin keeps track of the coefficient 1/sqrt(2) under the hood.&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n\n</span><span class="s1">print pblock=-1 basis:</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="c1">#</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">basis_singlet</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;  * |10&gt; here represents the physical ANIT-symmetric superposition 1/sqrt(2)(|10&gt; - |01&gt;) [see bottom note when printing the symmetry-reduced basis]&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;  *  NOTE: same state |01&gt; is used to label both the symmetric and antisymmetric superposition because in this cases quspin uses the smallest integer from the integer representations of the states comprising the superposition states.</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="c1">#</span>
+<span class="c1">#--------------------------------------------------</span>
+<span class="c1">##### transform states from one basis to the other</span>
+<span class="c1">#--------------------------------------------------</span>
+<span class="c1">#</span>
+<span class="n">array_ind_s</span><span class="o">=</span><span class="n">basis_triplet</span><span class="o">.</span><span class="n">index</span><span class="p">(</span> <span class="n">basis</span><span class="o">.</span><span class="n">state_to_int</span><span class="p">(</span><span class="s1">&#39;10&#39;</span><span class="p">)</span> <span class="p">)</span>
+<span class="n">psi_symm_s</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">basis_triplet</span><span class="o">.</span><span class="n">Ns</span><span class="p">)</span>
+<span class="n">psi_symm_s</span><span class="p">[</span><span class="n">array_ind_s</span><span class="p">]</span><span class="o">=</span><span class="mf">1.0</span> <span class="c1"># create the state |10&gt; + |01&gt; in basis_triplet</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;print state psi_symm_s in the symmetry-reduced basis_triplet:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">psi_symm_s</span><span class="p">)</span>
+<span class="c1"># </span>
+<span class="c1"># compute corresponding state in the full basis</span>
+<span class="n">psi_s</span> <span class="o">=</span> <span class="n">basis_triplet</span><span class="o">.</span><span class="n">project_from</span><span class="p">(</span><span class="n">psi_symm_s</span><span class="p">,</span><span class="n">sparse</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">print state psi_s in the full basis: (note the factor 1/sqrt(2) which comes out correct.&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">psi_s</span><span class="p">)</span>
+<span class="c1">#</span>
+<span class="c1"># one can also project a full-basis state to a symmetry-reduced basis</span>
+<span class="n">psi_s</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">basis</span><span class="o">.</span><span class="n">Ns</span><span class="p">)</span>
+<span class="n">array_ind_s</span><span class="o">==</span><span class="n">basis</span><span class="o">.</span><span class="n">index</span><span class="p">(</span> <span class="n">basis</span><span class="o">.</span><span class="n">state_to_int</span><span class="p">(</span><span class="s1">&#39;01&#39;</span><span class="p">)</span> <span class="p">)</span>
+<span class="n">psi_s</span><span class="p">[</span><span class="n">array_ind_s</span><span class="p">]</span><span class="o">=</span><span class="mf">1.0</span> <span class="c1"># create the state |01&gt; in the full basis</span>
+<span class="c1"># </span>
+<span class="n">psi_symm_s</span><span class="o">=</span><span class="n">basis_singlet</span><span class="o">.</span><span class="n">project_to</span><span class="p">(</span><span class="n">psi_s</span><span class="p">,</span><span class="n">sparse</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="c1"># projects |01&gt; to 1/sqrt(2) (|01&gt; - |10&gt;) in basis_singlet </span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">print state psi_symm_s in the symmetry-reduced basis_singlet; NOTE: projection does not give a normalized state!&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">psi_symm_s</span><span class="p">)</span>
+<span class="c1"># normalize</span>
+<span class="n">psi_symm_s</span> <span class="o">=</span> <span class="n">psi_symm_s</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">psi_symm_s</span><span class="p">)</span>
+<span class="c1"># </span>
+<span class="c1"># lift the projected state back to full basis</span>
+<span class="n">psi_symm_s</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">expand_dims</span><span class="p">(</span><span class="n">psi_symm_s</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span> <span class="c1"># required only when the basis_singlet contains a single state</span>
+<span class="n">psi_lifted_s</span> <span class="o">=</span> <span class="n">basis_singlet</span><span class="o">.</span><span class="n">project_from</span><span class="p">(</span><span class="n">psi_symm_s</span><span class="p">,</span><span class="n">sparse</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="c1"># corresponds to the projection 1/sqrt(2) (|01&gt; - |10&gt;) in the full basis</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">print state psi_lifted_s = 1/sqrt(2) (|01&gt; - |10&gt;) in the full basis; NOTE: info lost by the first projection!&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">psi_lifted_s</span><span class="p">)</span>
+</pre></div>
+</td></tr></table></div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Basics of QuSpin <cite>basis</cite> objects</a></li>
+<li><a class="reference internal" href="#script">Script</a></li>
+</ul>
+
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../sources/examples/example00.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.5 documentation</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2016, Phillip Weinberg, Markus Schmitt and Marin Bukov.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 3.0.4.
+    </div>
+  </body>
+</html>

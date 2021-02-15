@@ -72,13 +72,13 @@ I inline spinless_fermion_map_bits(I s,const int map[],const int N,P &sign){
 	bool f_count = 0;
 
 	for(int i=N-1;i>=0;--i){
-		int j = map[i];
-		I n = (s&1);
-		bool neg = j<0;
+		const int j = map[i];
+		const I n = (s&1);
+		const bool neg = j<0;
 
 		if(n){
 			pos_list[np++] = ( neg ? -(j+1) : j);
-			f_count ^= (neg&&(i&1));
+			// f_count ^= (neg&&(i&1)); do not change sign based on PH transformation
 		}
 		ss ^= ( neg ? (n^1)<<(N+j) : n<<(N-j-1) );
 
@@ -109,12 +109,12 @@ class spinless_fermion_basis_core : public hcb_basis_core<I,P>
 {
 
 	public:
-		spinless_fermion_basis_core(const int _N) : \
-		hcb_basis_core<I>::hcb_basis_core(_N,true) { }
+		spinless_fermion_basis_core(const int _N,const bool _pre_check=false) : \
+		hcb_basis_core<I>::hcb_basis_core(_N,true,_pre_check) { }
 
 		spinless_fermion_basis_core(const int _N,const int _nt,const int _maps[], \
-						   const int _pers[], const int _qs[]) : \
-		hcb_basis_core<I>::hcb_basis_core(_N,_nt,_maps,_pers,_qs,true) {}
+						   const int _pers[], const int _qs[],const bool _pre_check=false) : \
+		hcb_basis_core<I>::hcb_basis_core(_N,_nt,_maps,_pers,_qs,true,_pre_check) {}
 
 		~spinless_fermion_basis_core(){}
 
@@ -179,6 +179,14 @@ class spinless_fermion_basis_core : public hcb_basis_core<I,P>
 				switch(op){
 					case 'z':
 						m *= (a?0.5:-0.5);
+						break;
+					case 'x':
+						m *= sign;
+						r ^= b;
+						break;
+					case 'y': // corresponds to -\sigma^y
+						m *= (a?std::complex<double>(0,-1.0*sign):std::complex<double>(0,+1.0*sign));
+						r ^= b;
 						break;
 					case 'n':
 						m *= (a?1:0);

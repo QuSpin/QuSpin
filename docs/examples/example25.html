@@ -1,0 +1,216 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" /><script type="text/javascript">
+
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-110543543-1']);
+      _gaq.push(['_trackPageview']);
+
+      (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+    </script>
+    <title>Majorana Fermions: SYK Model &#8212; QuSpin 0.3.5 documentation</title>
+    <link rel="stylesheet" href="../static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../static/pygments.css" type="text/css" />
+    
+    <script id="documentation_options" data-url_root="../" src="../static/documentation_options.js"></script>
+    <script src="../static/jquery.js"></script>
+    <script src="../static/underscore.js"></script>
+    <script src="../static/doctools.js"></script>
+    <script src="../static/language_data.js"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.5 documentation</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <style> .red {color:#ff0000; font-weight:bold; font-style:italic; } </style>
+<style> .green {color:#00b200; font-weight:bold; font-style:italic; } </style><div class="section" id="majorana-fermions-syk-model">
+<span id="example25-label"></span><h1>Majorana Fermions: SYK Model<a class="headerlink" href="#majorana-fermions-syk-model" title="Permalink to this headline">¶</a></h1>
+<p>In this example, we show how to define the Sachdev-Ye-Kitaev model with Majorana fermions.</p>
+<p>The Hamiltonian is given by</p>
+<div class="math notranslate nohighlight">
+\[H = -\frac{1}{4!}\sum_{i,j,k,l=0}^{L-1} J_{ijkl} c^x_{i}c^x_{j}c^x_{k}c^x_{l},\]</div>
+<p>where <span class="math notranslate nohighlight">\(J_{ijkl}\)</span> is a random all-to-all interaction strength which is normally distributed with zero mean and unit variance, and <span class="math notranslate nohighlight">\(c_j^x\)</span> is a Majorana fermion satisfying <span class="math notranslate nohighlight">\(c_j^x=(c_j^x)^\dagger\)</span>, <span class="math notranslate nohighlight">\((c_j^x)^2=1\)</span>, and <span class="math notranslate nohighlight">\(\{c_i^x,c_j^x\}=0\)</span> for <span class="math notranslate nohighlight">\(i\neq j\)</span>.</p>
+<p>The script below uses the <cite>spinless_fermion_basis_general</cite> class to define the above Hamiltonian. Note that, the same Hamiltonian can equivalently be built using the alternative Majorana operator <span class="math notranslate nohighlight">\(c^y\)</span>.</p>
+</div>
+<div class="section" id="script">
+<h1>Script<a class="headerlink" href="#script" title="Permalink to this headline">¶</a></h1>
+<p><a class="reference download internal" download="" href="../downloads/a0e46341bc864ed40ed5e1184d9192f6/example25.py"><code class="xref download docutils literal notranslate"><span class="pre">download</span> <span class="pre">script</span></code></a></p>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span><span class="p">,</span> <span class="n">division</span>
+<span class="c1">#</span>
+<span class="kn">import</span> <span class="nn">sys</span><span class="o">,</span><span class="nn">os</span>
+<span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s1">&#39;KMP_DUPLICATE_LIB_OK&#39;</span><span class="p">]</span><span class="o">=</span><span class="s1">&#39;True&#39;</span> <span class="c1"># uncomment this line if omp error occurs on OSX for python 3</span>
+<span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s1">&#39;OMP_NUM_THREADS&#39;</span><span class="p">]</span><span class="o">=</span><span class="s1">&#39;1&#39;</span> <span class="c1"># set number of OpenMP threads to run in parallel</span>
+<span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s1">&#39;MKL_NUM_THREADS&#39;</span><span class="p">]</span><span class="o">=</span><span class="s1">&#39;1&#39;</span> <span class="c1"># set number of MKL threads to run in parallel</span>
+<span class="c1">#</span>
+<span class="n">quspin_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">(),</span><span class="s2">&quot;../../&quot;</span><span class="p">)</span>
+<span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">quspin_path</span><span class="p">)</span>
+<span class="c1">######################################################################</span>
+<span class="c1">#                            example 25                              #</span>
+<span class="c1"># This example shows how to define the Sachdev-Ye-Kitaev Hamiltonian #</span>
+<span class="c1">######################################################################</span>
+<span class="kn">from</span> <span class="nn">quspin.operators</span> <span class="kn">import</span> <span class="n">hamiltonian</span> <span class="c1"># Hamiltonians and operators</span>
+<span class="kn">from</span> <span class="nn">quspin.basis</span> <span class="kn">import</span> <span class="n">spinless_fermion_basis_general</span> <span class="c1"># Hilbert space fermion basis</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span> 
+<span class="kn">from</span> <span class="nn">scipy.special</span> <span class="kn">import</span> <span class="n">factorial</span>
+<span class="c1">#</span>
+<span class="c1"># set seed of RNG</span>
+<span class="n">seed</span><span class="o">=</span><span class="mi">0</span>
+<span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="n">seed</span><span class="p">)</span>
+<span class="c1">#</span>
+<span class="c1">#</span>
+<span class="c1">##### model parameters #####</span>
+<span class="c1">#</span>
+<span class="n">L</span><span class="o">=</span><span class="mi">6</span> <span class="c1"># number of lattice sites</span>
+<span class="c1">#</span>
+<span class="n">J</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="n">L</span><span class="p">,</span><span class="n">L</span><span class="p">,</span><span class="n">L</span><span class="p">,</span><span class="n">L</span><span class="p">))</span> <span class="c1"># random interaction J_{ijkl} of zero mean and unit variance</span>
+<span class="c1">#</span>
+<span class="c1">##### create Hamiltonian #####</span>
+<span class="c1">#</span>
+<span class="c1"># site-coupling list</span>
+<span class="n">SYK_int</span> <span class="o">=</span> <span class="p">[[</span><span class="o">-</span><span class="mf">1.0</span><span class="o">/</span><span class="n">factorial</span><span class="p">(</span><span class="mf">4.0</span><span class="p">)</span> <span class="o">*</span> <span class="n">J</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">,</span><span class="n">k</span><span class="p">,</span><span class="n">l</span><span class="p">],</span> <span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">,</span><span class="n">k</span><span class="p">,</span><span class="n">l</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">L</span><span class="p">)</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">L</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">L</span><span class="p">)</span> <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">L</span><span class="p">)]</span>
+<span class="c1"># static list</span>
+<span class="n">static</span><span class="o">=</span><span class="p">[[</span><span class="s1">&#39;xxxx&#39;</span><span class="p">,</span><span class="n">SYK_int</span><span class="p">],]</span>
+<span class="c1">#static=[[&#39;yyyy&#39;,SYK_int],] # alternative definition, equivalent spectrum</span>
+<span class="c1">#</span>
+<span class="c1">##### create basis #####</span>
+<span class="c1">#</span>
+<span class="n">basis</span> <span class="o">=</span> <span class="n">spinless_fermion_basis_general</span><span class="p">(</span><span class="n">L</span><span class="p">,)</span>
+<span class="c1">#</span>
+<span class="c1">##### create Hamiltonian #####</span>
+<span class="c1">#</span>
+<span class="n">H_SYK</span> <span class="o">=</span> <span class="n">hamiltonian</span><span class="p">(</span><span class="n">static</span><span class="p">,[],</span><span class="n">basis</span><span class="o">=</span><span class="n">basis</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span> <span class="c1"># caution: matrix is NOT sparse (!)</span>
+<span class="c1">#</span>
+<span class="c1"># compute entire spectrum</span>
+<span class="n">E</span> <span class="o">=</span> <span class="n">H_SYK</span><span class="o">.</span><span class="n">eigvalsh</span><span class="p">()</span>
+<span class="c1">#</span>
+<span class="c1"># print the lowest 4 eigenvalues</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">E</span><span class="p">[:</span><span class="mi">4</span><span class="p">])</span>
+</pre></div>
+</td></tr></table></div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Majorana Fermions: SYK Model</a></li>
+<li><a class="reference internal" href="#script">Script</a></li>
+</ul>
+
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../sources/examples/example25.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.5 documentation</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2016, Phillip Weinberg, Markus Schmitt and Marin Bukov.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 3.0.4.
+    </div>
+  </body>
+</html>

@@ -1,7 +1,7 @@
 
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
     <meta charset="utf-8" /><script type="text/javascript">
 
@@ -15,7 +15,7 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-    <title>quspin.tools.measurements.obs_vs_time &#8212; QuSpin 0.3.4 documentation</title>
+    <title>quspin.tools.measurements.obs_vs_time &#8212; QuSpin 0.3.5 documentation</title>
     <link rel="stylesheet" href="../static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../static/pygments.css" type="text/css" />
     
@@ -46,7 +46,7 @@
         <li class="right" >
           <a href="quspin.tools.measurements.diag_ensemble.html" title="quspin.tools.measurements.diag_ensemble"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.4 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.5 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../tools.html" accesskey="U">Tools module (<code class="xref py py-mod docutils literal notranslate"><span class="pre">quspin.tools</span></code>)</a> &#187;</li> 
       </ul>
     </div>  
@@ -59,11 +59,11 @@
   <style> .red {color:#ff0000; font-weight:bold; font-style:italic; } </style>
 <style> .green {color:#00b200; font-weight:bold; font-style:italic; } </style><div class="section" id="quspin-tools-measurements-obs-vs-time">
 <h1>quspin.tools.measurements.obs_vs_time<a class="headerlink" href="#quspin-tools-measurements-obs-vs-time" title="Permalink to this headline">¶</a></h1>
-<dl class="function">
+<dl class="py function">
 <dt id="quspin.tools.measurements.obs_vs_time">
-<code class="sig-prename descclassname">quspin.tools.measurements.</code><code class="sig-name descname">obs_vs_time</code><span class="sig-paren">(</span><em class="sig-param">psi_t</em>, <em class="sig-param">times</em>, <em class="sig-param">Obs_dict</em>, <em class="sig-param">return_state=False</em>, <em class="sig-param">Sent_args={}</em>, <em class="sig-param">enforce_pure=False</em>, <em class="sig-param">verbose=False</em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/tools/measurements.html#obs_vs_time"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#quspin.tools.measurements.obs_vs_time" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">quspin.tools.measurements.</code><code class="sig-name descname">obs_vs_time</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">psi_t</span></em>, <em class="sig-param"><span class="n">times</span></em>, <em class="sig-param"><span class="n">Obs_dict</span></em>, <em class="sig-param"><span class="n">return_state</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">Sent_args</span><span class="o">=</span><span class="default_value">{}</span></em>, <em class="sig-param"><span class="n">enforce_pure</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">verbose</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/tools/measurements.html#obs_vs_time"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#quspin.tools.measurements.obs_vs_time" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculates expectation value of observable(s) as a function of time in a time-dependent state.</p>
-<p>This function computes the expectation of a time-dependent state <span class="math notranslate nohighlight">\(|\psi(t)\rangle\)</span> in a time-dependent observable <span class="math notranslate nohighlight">\(\mathcal{O}(t)\)</span>. 
+<p>This function computes the expectation of a time-dependent state <span class="math notranslate nohighlight">\(|\psi(t)\rangle\)</span> in a time-dependent observable <span class="math notranslate nohighlight">\(\mathcal{O}(t)\)</span>.
 It automatically handles the cases where only the state or only the observable is time-dependent.</p>
 <div class="math notranslate nohighlight">
 \[\langle\psi(t)|\mathcal{O}(t)|\psi(t)\rangle\]</div>
@@ -73,10 +73,10 @@ It automatically handles the cases where only the state or only the observable i
 <dt><strong>psi_t</strong><span class="classifier">{tuple,aray_like,generator}</span></dt><dd><p>Time-dependent state data; can be either one of:</p>
 <ul>
 <li><dl>
-<dt>tuple: <cite>psi_t = (psi, E, V)</cite> where </dt><dd><p>– np.ndarray: initial state <cite>psi</cite>.</p>
+<dt>tuple: <cite>psi_t = (psi, E, V)</cite> where</dt><dd><p>– np.ndarray: initial state <cite>psi</cite>.</p>
 <p>– np.ndarray: unitary matrix <cite>V</cite>, contains all eigenstates of the Hamiltonian <span class="math notranslate nohighlight">\(H\)</span>.</p>
 <dl class="simple">
-<dt>– np.ndarray: real-valued array <cite>E</cite>, contains all eigenvalues of the Hamiltonian <span class="math notranslate nohighlight">\(H\)</span>. </dt><dd><p>The order of the eigenvalues must correspond to the order of the columns of <cite>V</cite>.</p>
+<dt>– np.ndarray: real-valued array <cite>E</cite>, contains all eigenvalues of the Hamiltonian <span class="math notranslate nohighlight">\(H\)</span>.</dt><dd><p>The order of the eigenvalues must correspond to the order of the columns of <cite>V</cite>.</p>
 </dd>
 </dl>
 <p>Use this option when the initial state is evolved with a time-INdependent Hamiltonian <span class="math notranslate nohighlight">\(H\)</span>.</p>
@@ -84,7 +84,7 @@ It automatically handles the cases where only the state or only the observable i
 </dl>
 </li>
 <li><dl>
-<dt>numpy.ndarray: array with the states evaluated at <cite>times</cite> stored in the last dimension. </dt><dd><p>Can be 2D (single time-dependent state) or 3D (many time-dependent states or 
+<dt>numpy.ndarray: array with the states evaluated at <cite>times</cite> stored in the last dimension.</dt><dd><p>Can be 2D (single time-dependent state) or 3D (many time-dependent states or
 time-dep mixed density matrix, see <cite>enforce_pure</cite> argument.)</p>
 <p>Use this option for PARALLELISATION over many states.</p>
 </dd>
@@ -93,7 +93,7 @@ time-dep mixed density matrix, see <cite>enforce_pure</cite> argument.)</p>
 <li><p>obj: generator which generates the states.</p></li>
 </ul>
 </dd>
-<dt><strong>Obs_dict</strong><span class="classifier">dict</span></dt><dd><p>Dictionary with observables (e.g. <cite>hamiltonian objects</cite>) stored in the <cite>values</cite>, to calculate 
+<dt><strong>Obs_dict</strong><span class="classifier">dict</span></dt><dd><p>Dictionary with observables (e.g. <cite>hamiltonian objects</cite>) stored in the <cite>values</cite>, to calculate
 their time-dependent expectation value. Dictionary <cite>keys</cite> are chosen by user.</p>
 </dd>
 <dt><strong>times</strong><span class="classifier">numpy.ndarray</span></dt><dd><p>Vector of times to evaluate the expectation values at. This is important for time-dependent observables.</p>
@@ -109,7 +109,7 @@ entropy. The following key is required:</p>
 <li><p>“basis”: the basis used to build <cite>system_state</cite> in. Must be an instance of the <cite>basis</cite> class.</p></li>
 </ul>
 </div></blockquote>
-<p>The user can choose optional arguments according to those provided in the function method 
+<p>The user can choose optional arguments according to those provided in the function method
 <cite>basis.ent_entropy()</cite> of the <cite>basis</cite> class [preferred], or the function <cite>ent_entropy()</cite>.</p>
 <p>If only the <cite>basis</cite> is passed, the default parameters of <cite>basis.ent_entropy()</cite> are assumed.</p>
 </dd>
@@ -123,18 +123,18 @@ Default is <cite>False</cite>.</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><dl>
-<dt><strong>dict</strong></dt><dd><p>The following keys of the output are possible, depending on the choice of flags:</p>
+<dt>dict</dt><dd><p>The following keys of the output are possible, depending on the choice of flags:</p>
 <blockquote>
 <div><ul class="simple">
 <li><dl class="simple">
-<dt>“custom_name”: for each key of <cite>Obs_dict</cite>, the time-dependent expectation of the </dt><dd><p>corresponding observable <cite>Obs_dict[key]</cite> is calculated and returned under the user-defined name
+<dt>“custom_name”: for each key of <cite>Obs_dict</cite>, the time-dependent expectation of the</dt><dd><p>corresponding observable <cite>Obs_dict[key]</cite> is calculated and returned under the user-defined name
 for the observable.</p>
 </dd>
 </dl>
 </li>
 <li><p>“psi_t”: (optional) returns time-dependent state, if <cite>return_state=True</cite> or <cite>Srdm_args</cite> is nonempty.</p></li>
 <li><dl class="simple">
-<dt>“Sent_time”: (optional) returns dictionary with keys corresponding to the entanglement entropy </dt><dd><p>calculation for each time in <cite>times</cite>. Can have more keys than just “Sent_A”, e.g. if the reduced
+<dt>“Sent_time”: (optional) returns dictionary with keys corresponding to the entanglement entropy</dt><dd><p>calculation for each time in <cite>times</cite>. Can have more keys than just “Sent_A”, e.g. if the reduced
 DM was also requested (toggled through <cite>Srdm_args</cite>.)</p>
 </dd>
 </dl>
@@ -148,7 +148,7 @@ DM was also requested (toggled through <cite>Srdm_args</cite>.)</p>
 <p class="rubric">Examples</p>
 <p>The following example shows how to calculate the expectation values <span class="math notranslate nohighlight">\(\langle\psi_1(t)|H_1|\psi_1(t)\rangle\)</span>
 and <span class="math notranslate nohighlight">\(\langle\psi_1(t)|H_2|\psi_1(t)\rangle\)</span>.</p>
-<p>The initial state is an eigenstate of <span class="math notranslate nohighlight">\(H_1=\sum_j hS^x_j + g S^z_j\)</span>. The time evolution is done 
+<p>The initial state is an eigenstate of <span class="math notranslate nohighlight">\(H_1=\sum_j hS^x_j + g S^z_j\)</span>. The time evolution is done
 under <span class="math notranslate nohighlight">\(H_2=\sum_j JS^z_{j+1}S^z_j+ hS^x_j + g S^z_j\)</span>.</p>
 <div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
  2
@@ -275,13 +275,13 @@ under <span class="math notranslate nohighlight">\(H_2=\sum_j JS^z_{j+1}S^z_j+ h
         <li class="right" >
           <a href="quspin.tools.measurements.diag_ensemble.html" title="quspin.tools.measurements.diag_ensemble"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.4 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.5 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../tools.html" >Tools module (<code class="xref py py-mod docutils literal notranslate"><span class="pre">quspin.tools</span></code>)</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &#169; Copyright 2016, Phillip Weinberg and Marin Bukov.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.4.0.
+        &#169; Copyright 2016, Phillip Weinberg, Markus Schmitt and Marin Bukov.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 3.0.4.
     </div>
   </body>
 </html>
