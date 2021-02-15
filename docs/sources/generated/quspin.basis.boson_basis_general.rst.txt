@@ -32,6 +32,8 @@ quspin.basis.boson\_basis\_general
       ~boson_basis_general.make_basis_blocks
       ~boson_basis_general.normalization
       ~boson_basis_general.partial_trace
+      ~boson_basis_general.project_from
+      ~boson_basis_general.project_to
       ~boson_basis_general.representative
       ~boson_basis_general.state_to_int
    

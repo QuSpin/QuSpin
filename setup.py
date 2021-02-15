@@ -52,8 +52,10 @@ def setup_package():
 	metadata = dict(
 		name='quspin',
 		version=version,
-		maintainer="Phillip Weinberg, Marin Bukov",
-		maintainer_email="weinbe58@bu.edu,mgbukov@berkeley.edu",
+		author="Phillip Weinberg, Marin Bukov",
+		author_email="weinbe58@gmail.com",
+		maintainer="Phillip Weinberg, Marin Bukov, Markus Schmitt",
+		maintainer_email="weinbe58@gmail.com",
 		download_url="https://github.com/weinbe58/QuSpin.git",
 		license='BSD',
 		platforms=["Unix","Windows"]

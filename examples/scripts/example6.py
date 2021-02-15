@@ -113,7 +113,7 @@ for w in w_list:
 	plt.errorbar(t,I_avg,I_error,marker=".",label="w={:.2f}".format(w))
 # configuring plots
 plt.xlabel("$Jt$",fontsize=18)
-plt.ylabel("$\mathcal{I}$",fontsize=18)
+plt.ylabel("$\\mathcal{I}$",fontsize=18)
 plt.grid(True)
 plt.tick_params(labelsize=16)
 plt.legend(loc=0)

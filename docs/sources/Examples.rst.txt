@@ -10,6 +10,7 @@ The following Python scripts demonstrate basic and advanced functionality of QuS
 To run the example scripts, besides QuSpin, you have to also install `matplotlib <https://matplotlib.org/users/installing.html>`_ (e.g. by using anaconda):
 	
 	* Getting started
+		* :green:`NEW:` :ref:`example_00-label`, :download:`download script <../../examples/scripts/example00.py>`
 		* :ref:`example0-label`, :download:`download script <../../examples/scripts/example0.py>`
 		* :ref:`example8-label`, :download:`download script <../../examples/scripts/example8.py>`
 	
@@ -31,18 +32,24 @@ To run the example scripts, besides QuSpin, you have to also install `matplotlib
 			* :ref:`example6-label`, :download:`download script <../../examples/scripts/example6.py>`
 			* :ref:`example1-label`, :download:`download script <../../examples/scripts/example1.py>`
 			* :ref:`example10-label`, :download:`download script <../../examples/scripts/example10.py>`
+			* :green:`NEW:` :ref:`example25-label`, :download:`download script <../../examples/scripts/example25.py>`
 			
 	* Advanced usage
 		* :ref:`example14-label`, :download:`download script <../../examples/scripts/example14.py>`
 		* :ref:`example15-label`, :download:`download script <../../examples/scripts/example15.py>`
 		* :ref:`example16-label`, :download:`download script <../../examples/scripts/example16.py>`
-		* :red:`NEW:` :ref:`example19-label`, :download:`download script <../../examples/scripts/example19.py>`
+		* :ref:`example19-label`, :download:`download script <../../examples/scripts/example19.py>`
+		* :green:`NEW:` :ref:`example26-label`, :download:`download script <../../examples/scripts/example26.py>`
+		* :green:`NEW:` :ref:`example23-label`, :download:`download script <../../examples/scripts/example23.py>`
+		* :green:`NEW:` :ref:`example24-label`, :download:`download script <../../examples/scripts/example24.py>`
+		
 	
+
 	* Algorithms and Routines
 		* :ref:`example11-label`, :download:`download script <../../examples/scripts/example11.py>`
-		* :red:`NEW:` :ref:`example22-label`, :download:`download script <../../examples/scripts/example22.py>`
-		* :red:`NEW:` :ref:`example20-label`, :download:`download script <../../examples/scripts/example20.py>`
-		* :red:`NEW:` :ref:`example21-label`, :download:`download script <../../examples/scripts/example21.py>`
+		* :ref:`example22-label`, :download:`download script <../../examples/scripts/example22.py>`
+		* :ref:`example20-label`, :download:`download script <../../examples/scripts/example20.py>`
+		* :ref:`example21-label`, :download:`download script <../../examples/scripts/example21.py>`
 
 		
 

@@ -1,4 +1,7 @@
+:orphan:
+
 .. _example14-label:
+
 
 Quantum scars Hamiltonian: spin-1/2 system with Hilbert space constraint
 ------------------------------------------------------------------------

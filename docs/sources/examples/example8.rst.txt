@@ -1,7 +1,9 @@
+:orphan:
+
 .. _example8-label:
 
 User-defined ODEs: the Gross-Pitaevskii Equation and Nonlinear Time Evolution
-----------------------------------------------------------
+-----------------------------------------------------------------------------
 
 
 This example shows how to code up the Gross-Pitaevskii equation for a system in a one-dimensional lattice subject to a harmonic trapping potential:

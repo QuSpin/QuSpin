@@ -1,4 +1,7 @@
+:orphan:
+
 .. _example22-label:
+
 
 Efficient time evolution: expm_multiply_parallel
 ------------------------------------------------
@@ -27,7 +30,7 @@ We choose as the initial state the ground state of the average Hamiltonian :math
 	\mathcal{E}_\mathrm{ave}(\ell T) &= \frac{1}{L}\langle\psi(\ell T)| H_\mathrm{ave} |\psi(\ell T)\rangle, \quad |\psi(\ell T)\rangle = [\exp(-i H_1 T/2)\exp(-i H_0 T/2)]^\ell|\psi(0)\rangle,  \\
 	s_\mathrm{ent}(\ell T) &= \frac{1}{L_A} \mathrm{tr}_A \left[ \rho_A(\ell T)\log \rho_A(\ell T)\right], \quad \rho_A(\ell T) = \mathrm{tr}_{L \backslash L_A} |\psi(\ell T)\rangle\langle\psi(\ell T)|.
 
-We compare the entanglement entropy density value to the Page value, which takes into account finite-size corrections. As expected, the system heats up quickly to an infinite-temperature state.  
+We compare the entanglement entropy density value to the Page value [[D. N. Page, PRL *71*, 1291 (1993)]](https://journals.aps.org/prl/abstract/10.1103/PhysRevLett.71.1291), which takes into account finite-size corrections. As expected, the system heats up quickly to an infinite-temperature state.  
 
 Script
 ------

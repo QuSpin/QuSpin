@@ -1,0 +1,493 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" /><script type="text/javascript">
+
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-110543543-1']);
+      _gaq.push(['_trackPageview']);
+
+      (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+    </script>
+    <title>Majorana Fermions: Spinless Fermi-Hubbard Model &#8212; QuSpin 0.3.5 documentation</title>
+    <link rel="stylesheet" href="../static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../static/pygments.css" type="text/css" />
+    
+    <script id="documentation_options" data-url_root="../" src="../static/documentation_options.js"></script>
+    <script src="../static/jquery.js"></script>
+    <script src="../static/underscore.js"></script>
+    <script src="../static/doctools.js"></script>
+    <script src="../static/language_data.js"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.5 documentation</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <style> .red {color:#ff0000; font-weight:bold; font-style:italic; } </style>
+<style> .green {color:#00b200; font-weight:bold; font-style:italic; } </style><div class="section" id="majorana-fermions-spinless-fermi-hubbard-model">
+<span id="example24-label"></span><h1>Majorana Fermions: Spinless Fermi-Hubbard Model<a class="headerlink" href="#majorana-fermions-spinless-fermi-hubbard-model" title="Permalink to this headline">¶</a></h1>
+<p>In this example, we show how to use the <cite>user_basis</cite> class to define Majorana fermion operators. We then show how to construct the Hamiltonian for the spinless Fermi-Hubbard model in the Majorana representation. Starting from version 0.3.5 the Majorana operator strings <cite>“x”</cite> and <cite>“y”</cite> are also available in the <cite>*fermion_basis_general</cite> classes.</p>
+<p>Consider first a single fermion described by the creation and annihilation operators <span class="math notranslate nohighlight">\(c^\dagger,c\)</span>. One can decompose one complex fermion into two real-valued Majorana fermion modes <span class="math notranslate nohighlight">\(c^x, c^y\)</span>, defined by the operators</p>
+<div class="math notranslate nohighlight">
+\[c^x = c + c^\dagger,\qquad c^y = -i(c - c^\dagger),\]</div>
+<p>which obey the fermion commutation relations <span class="math notranslate nohighlight">\(\{c^x, c^y\}=0\)</span>, <span class="math notranslate nohighlight">\(\left(c^\alpha\right)^2 = 1\)</span>, for <span class="math notranslate nohighlight">\(\alpha=x,y\)</span>.</p>
+<p>The inverse transformation is given by</p>
+<div class="math notranslate nohighlight">
+\[c = \frac{1}{2}\left( c^x + i c^y \right), \qquad c^\dagger = \frac{1}{2}\left( c^x - i c^y \right).\]</div>
+<p>Here, we choose to denote the Majorana operators by <span class="math notranslate nohighlight">\(c^x, c^y\)</span>, due to a formal relation with the Pauli matrices: <span class="math notranslate nohighlight">\(c^x = \sigma^x\)</span>, <span class="math notranslate nohighlight">\(c^y = -\sigma^y\)</span> (<strong>NB:</strong> the extra negative sign appearing for <span class="math notranslate nohighlight">\(c^y\)</span> is because of the standard convention for the definition of Majorana modes), <span class="math notranslate nohighlight">\(c^\dagger = \sigma^+\)</span>, and <span class="math notranslate nohighlight">\(c = \sigma^-\)</span>.</p>
+<p>One can then generalize the Majorana decomposition to every site <span class="math notranslate nohighlight">\(j\)</span> of the lattice: <span class="math notranslate nohighlight">\(c^x_j, c^y_j\)</span>.</p>
+<p>To implement Majorana modes in QuSpin, we use the versatility of the <cite>user_basis</cite> to define the on-site action of the corresponding operators (please consult this post – <a class="reference internal" href="../user_basis.html#user-basis-label"><span class="std std-ref">A tutorial on QuSpin’s user_basis</span></a> – for more detailed explanations on using the <cite>user_basis</cite> class). To do this, we define new fermionic operator strings <cite>x</cite> and <cite>y</cite>, corresponding to the two Majorana modes <span class="math notranslate nohighlight">\(c^x\)</span> and :math:c^y`, respectively. The definition of <cite>x</cite> and <cite>y</cite> follows the exact same procedure, as in the spin-1/2 basis (cf. <a class="reference internal" href="user-basis_example0.html#user-basis-example0-label"><span class="std std-ref">spin-1/2 Heisenberg model in 1d</span></a>), with the notable difference that one has to accomodate for the <cite>sign</cite>, arising from counting the number of fermions up to the lattice site the operator is applied.</p>
+<p>Having access to Majorana operator strings allows us to implement Hamiltonians in the Majorana representation. To demonstrate this, we use the spinless Fermi-Hubbard model:</p>
+<div class="math notranslate nohighlight">
+\[H = \sum_{j=0}^{L-1} J\left(c^\dagger_{j} c_{j+1} + \mathrm{h.c.}\right) + U n_{j}n_{j+1},\]</div>
+<p>where <span class="math notranslate nohighlight">\(J\)</span> is the hopping matrix element, and <span class="math notranslate nohighlight">\(U\)</span> is the nearest-neighbor interaction strength.</p>
+<p>In the Majorana representation, the same Hamiltonian reads as</p>
+<div class="math notranslate nohighlight">
+\[H = \sum_{j=0}^{L-1} \frac{iJ}{2}\left( c^x_j c^y_{j+1} - c^y_j c^x_{j+1} \right) + \frac{U}{4}\left(1 + 2ic^x_j c^y_j - c^x_j c^y_j c^x_{j+1} c^y_{j+1} \right).\]</div>
+<p>The script below uses the <cite>user_basis</cite> class to define an enlarged fermion basis which allows to implement both Hamiltonians. We then compare the two matrices. Note that the <cite>user_basis</cite> readily allows one to apply symmetries to the Hamiltonian in the Majorana representation.</p>
+</div>
+<div class="section" id="script">
+<h1>Script<a class="headerlink" href="#script" title="Permalink to this headline">¶</a></h1>
+<p><a class="reference download internal" download="" href="../downloads/0cc5da8312210b433039a051ffa2dae0/example24.py"><code class="xref download docutils literal notranslate"><span class="pre">download</span> <span class="pre">script</span></code></a></p>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>  1
+  2
+  3
+  4
+  5
+  6
+  7
+  8
+  9
+ 10
+ 11
+ 12
+ 13
+ 14
+ 15
+ 16
+ 17
+ 18
+ 19
+ 20
+ 21
+ 22
+ 23
+ 24
+ 25
+ 26
+ 27
+ 28
+ 29
+ 30
+ 31
+ 32
+ 33
+ 34
+ 35
+ 36
+ 37
+ 38
+ 39
+ 40
+ 41
+ 42
+ 43
+ 44
+ 45
+ 46
+ 47
+ 48
+ 49
+ 50
+ 51
+ 52
+ 53
+ 54
+ 55
+ 56
+ 57
+ 58
+ 59
+ 60
+ 61
+ 62
+ 63
+ 64
+ 65
+ 66
+ 67
+ 68
+ 69
+ 70
+ 71
+ 72
+ 73
+ 74
+ 75
+ 76
+ 77
+ 78
+ 79
+ 80
+ 81
+ 82
+ 83
+ 84
+ 85
+ 86
+ 87
+ 88
+ 89
+ 90
+ 91
+ 92
+ 93
+ 94
+ 95
+ 96
+ 97
+ 98
+ 99
+100
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110
+111
+112
+113
+114
+115
+116
+117
+118
+119
+120
+121
+122
+123
+124
+125
+126
+127
+128
+129
+130
+131
+132
+133
+134
+135
+136
+137
+138
+139
+140
+141
+142
+143
+144
+145
+146
+147
+148
+149
+150
+151
+152
+153
+154
+155
+156
+157
+158
+159
+160
+161
+162
+163
+164
+165
+166
+167
+168
+169
+170
+171
+172
+173
+174
+175
+176
+177
+178
+179
+180
+181
+182</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span><span class="p">,</span> <span class="n">division</span>
+<span class="c1">#</span>
+<span class="kn">import</span> <span class="nn">sys</span><span class="o">,</span><span class="nn">os</span>
+<span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s1">&#39;KMP_DUPLICATE_LIB_OK&#39;</span><span class="p">]</span><span class="o">=</span><span class="s1">&#39;True&#39;</span> <span class="c1"># uncomment this line if omp error occurs on OSX for python 3</span>
+<span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s1">&#39;OMP_NUM_THREADS&#39;</span><span class="p">]</span><span class="o">=</span><span class="s1">&#39;1&#39;</span> <span class="c1"># set number of OpenMP threads to run in parallel</span>
+<span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s1">&#39;MKL_NUM_THREADS&#39;</span><span class="p">]</span><span class="o">=</span><span class="s1">&#39;1&#39;</span> <span class="c1"># set number of MKL threads to run in parallel</span>
+<span class="c1">#</span>
+<span class="n">quspin_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">(),</span><span class="s2">&quot;../../&quot;</span><span class="p">)</span>
+<span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">quspin_path</span><span class="p">)</span>
+<span class="c1">################################################################################</span>
+<span class="c1">#                              example 24                                      #</span>
+<span class="c1"># This example shows how to use the `user_basis` to define Majorana operators. #</span>
+<span class="c1">################################################################################</span>
+<span class="kn">from</span> <span class="nn">quspin.operators</span> <span class="kn">import</span> <span class="n">hamiltonian</span> <span class="c1"># Hamiltonians and operators</span>
+<span class="kn">from</span> <span class="nn">quspin.basis</span> <span class="kn">import</span> <span class="n">spinless_fermion_basis_1d</span> <span class="c1"># Hilbert space fermion basis_1d</span>
+<span class="kn">from</span> <span class="nn">quspin.basis.user</span> <span class="kn">import</span> <span class="n">user_basis</span> <span class="c1"># Hilbert space user basis</span>
+<span class="kn">from</span> <span class="nn">quspin.basis.user</span> <span class="kn">import</span> <span class="n">next_state_sig_32</span><span class="p">,</span><span class="n">op_sig_32</span><span class="p">,</span><span class="n">map_sig_32</span><span class="p">,</span><span class="n">count_particles_sig_32</span> <span class="c1"># user basis data types signatures</span>
+<span class="kn">from</span> <span class="nn">numba</span> <span class="kn">import</span> <span class="n">carray</span><span class="p">,</span><span class="n">cfunc</span><span class="p">,</span><span class="n">jit</span> <span class="c1"># numba helper functions</span>
+<span class="kn">from</span> <span class="nn">numba</span> <span class="kn">import</span> <span class="n">uint32</span><span class="p">,</span><span class="n">int32</span> <span class="c1"># numba data types</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">scipy.special</span> <span class="kn">import</span> <span class="n">comb</span>
+<span class="n">np</span><span class="o">.</span><span class="n">set_printoptions</span><span class="p">(</span><span class="n">suppress</span><span class="o">=</span><span class="s1">&#39;True&#39;</span><span class="p">,</span> <span class="n">precision</span><span class="o">=</span><span class="mi">6</span><span class="p">)</span>
+<span class="c1">#</span>
+<span class="n">N</span><span class="o">=</span><span class="mi">6</span> <span class="c1"># lattice sites</span>
+<span class="c1">#</span>
+<span class="c1">############   create soinless fermion user basis object   #############</span>
+<span class="c1">#</span>
+<span class="nd">@jit</span><span class="p">(</span><span class="n">uint32</span><span class="p">(</span><span class="n">uint32</span><span class="p">,</span><span class="n">uint32</span><span class="p">),</span><span class="nb">locals</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">f_count</span><span class="o">=</span><span class="n">uint32</span><span class="p">,),</span><span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">nogil</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">_count_particles_32</span><span class="p">(</span><span class="n">state</span><span class="p">,</span><span class="n">site_ind</span><span class="p">):</span>
+	<span class="c1"># auxiliary function to count number of fermions, i.e. 1&#39;s in bit configuration of the state, up to site site_ind</span>
+	<span class="c1"># CAUTION: 32-bit integers code only!</span>
+	<span class="n">f_count</span> <span class="o">=</span> <span class="n">state</span> <span class="o">&amp;</span> <span class="p">((</span><span class="mh">0x7FFFFFFF</span><span class="p">)</span> <span class="o">&gt;&gt;</span> <span class="p">(</span><span class="mi">31</span> <span class="o">-</span> <span class="n">site_ind</span><span class="p">));</span>
+	<span class="n">f_count</span> <span class="o">=</span> <span class="n">f_count</span> <span class="o">-</span> <span class="p">((</span><span class="n">f_count</span> <span class="o">&gt;&gt;</span> <span class="mi">1</span><span class="p">)</span> <span class="o">&amp;</span> <span class="mh">0x55555555</span><span class="p">);</span>
+	<span class="n">f_count</span> <span class="o">=</span> <span class="p">(</span><span class="n">f_count</span> <span class="o">&amp;</span> <span class="mh">0x33333333</span><span class="p">)</span> <span class="o">+</span> <span class="p">((</span><span class="n">f_count</span> <span class="o">&gt;&gt;</span> <span class="mi">2</span><span class="p">)</span> <span class="o">&amp;</span> <span class="mh">0x33333333</span><span class="p">);</span>
+	<span class="k">return</span> <span class="p">(((</span><span class="n">f_count</span> <span class="o">+</span> <span class="p">(</span><span class="n">f_count</span> <span class="o">&gt;&gt;</span> <span class="mi">4</span><span class="p">))</span> <span class="o">&amp;</span> <span class="mh">0x0F0F0F0F</span><span class="p">)</span> <span class="o">*</span> <span class="mh">0x01010101</span><span class="p">)</span> <span class="o">&gt;&gt;</span> <span class="mi">24</span>
+<span class="c1">#</span>
+<span class="nd">@cfunc</span><span class="p">(</span><span class="n">op_sig_32</span><span class="p">,</span>
+	<span class="nb">locals</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">s</span><span class="o">=</span><span class="n">int32</span><span class="p">,</span><span class="n">sign</span><span class="o">=</span><span class="n">int32</span><span class="p">,</span><span class="n">n</span><span class="o">=</span><span class="n">int32</span><span class="p">,</span><span class="n">b</span><span class="o">=</span><span class="n">uint32</span><span class="p">,</span><span class="n">f_count</span><span class="o">=</span><span class="n">uint32</span><span class="p">),</span> <span class="p">)</span>
+<span class="k">def</span> <span class="nf">op</span><span class="p">(</span><span class="n">op_struct_ptr</span><span class="p">,</span><span class="n">op_str</span><span class="p">,</span><span class="n">site_ind</span><span class="p">,</span><span class="n">N</span><span class="p">,</span><span class="n">args</span><span class="p">):</span>
+	<span class="c1"># using struct pointer to pass op_struct_ptr back to C++ see numba Records</span>
+	<span class="n">op_struct</span> <span class="o">=</span> <span class="n">carray</span><span class="p">(</span><span class="n">op_struct_ptr</span><span class="p">,</span><span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+	<span class="n">err</span> <span class="o">=</span> <span class="mi">0</span>
+	<span class="c1">#</span>
+	<span class="n">site_ind</span> <span class="o">=</span> <span class="n">N</span> <span class="o">-</span> <span class="n">site_ind</span> <span class="o">-</span> <span class="mi">1</span> <span class="c1"># convention for QuSpin for mapping from bits to sites.</span>
+	<span class="c1">#####</span>
+	<span class="n">f_count</span> <span class="o">=</span> <span class="n">_count_particles_32</span><span class="p">(</span><span class="n">op_struct</span><span class="o">.</span><span class="n">state</span><span class="p">,</span><span class="n">site_ind</span><span class="p">)</span>
+	<span class="c1">#####</span>
+	<span class="n">sign</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span> <span class="k">if</span> <span class="n">f_count</span><span class="o">&amp;</span><span class="mi">1</span> <span class="k">else</span> <span class="mi">1</span>
+	<span class="n">n</span> <span class="o">=</span> <span class="p">(</span><span class="n">op_struct</span><span class="o">.</span><span class="n">state</span><span class="o">&gt;&gt;</span><span class="n">site_ind</span><span class="p">)</span><span class="o">&amp;</span><span class="mi">1</span> <span class="c1"># either 0 or 1</span>
+	<span class="n">b</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="o">&lt;&lt;</span><span class="n">site_ind</span><span class="p">)</span>
+	<span class="c1">#</span>
+	<span class="k">if</span> <span class="n">op_str</span><span class="o">==</span><span class="mi">120</span><span class="p">:</span> <span class="c1"># &quot;x&quot; is integer value 120 = ord(&quot;x&quot;)</span>
+		<span class="n">op_struct</span><span class="o">.</span><span class="n">state</span> <span class="o">^=</span> <span class="n">b</span>
+		<span class="n">op_struct</span><span class="o">.</span><span class="n">matrix_ele</span> <span class="o">*=</span> <span class="n">sign</span>
+
+	<span class="k">elif</span> <span class="n">op_str</span><span class="o">==</span><span class="mi">121</span><span class="p">:</span> <span class="c1"># &quot;y&quot; is integer value 120 = ord(&quot;y&quot;)</span>
+		<span class="n">op_struct</span><span class="o">.</span><span class="n">state</span> <span class="o">^=</span> <span class="n">b</span>
+		<span class="n">op_struct</span><span class="o">.</span><span class="n">matrix_ele</span> <span class="o">*=</span> <span class="o">-</span><span class="mf">1.0</span><span class="n">j</span><span class="o">*</span><span class="n">sign</span><span class="o">*</span><span class="p">((</span><span class="n">n</span><span class="o">&lt;&lt;</span><span class="mi">1</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+	
+	<span class="k">elif</span> <span class="n">op_str</span><span class="o">==</span><span class="mi">43</span><span class="p">:</span> <span class="c1"># &quot;+&quot; is integer value 43 = ord(&quot;+&quot;)</span>
+		<span class="n">op_struct</span><span class="o">.</span><span class="n">matrix_ele</span> <span class="o">*=</span> <span class="p">(</span><span class="mf">0.0</span> <span class="k">if</span> <span class="n">n</span> <span class="k">else</span> <span class="n">sign</span><span class="p">)</span>
+		<span class="n">op_struct</span><span class="o">.</span><span class="n">state</span> <span class="o">^=</span> <span class="n">b</span> <span class="c1"># create fermion</span>
+
+	<span class="k">elif</span> <span class="n">op_str</span><span class="o">==</span><span class="mi">45</span><span class="p">:</span> <span class="c1"># &quot;-&quot; is integer value 45 = ord(&quot;-&quot;)</span>
+		<span class="n">op_struct</span><span class="o">.</span><span class="n">matrix_ele</span> <span class="o">*=</span> <span class="p">(</span><span class="n">sign</span> <span class="k">if</span> <span class="n">n</span> <span class="k">else</span> <span class="mf">0.0</span><span class="p">)</span>
+		<span class="n">op_struct</span><span class="o">.</span><span class="n">state</span> <span class="o">^=</span> <span class="n">b</span> <span class="c1"># create fermion</span>
+		
+	<span class="k">elif</span> <span class="n">op_str</span><span class="o">==</span><span class="mi">110</span><span class="p">:</span> <span class="c1"># &quot;n&quot; is integer value 110 = ord(&quot;n&quot;)</span>
+		<span class="n">op_struct</span><span class="o">.</span><span class="n">matrix_ele</span> <span class="o">*=</span> <span class="n">n</span>
+
+	<span class="k">elif</span> <span class="n">op_str</span><span class="o">==</span><span class="mi">73</span><span class="p">:</span> <span class="c1"># &quot;I&quot; is integer value 73 = ord(&quot;I&quot;)</span>
+		<span class="k">pass</span>
+
+	<span class="k">else</span><span class="p">:</span>
+		<span class="n">op_struct</span><span class="o">.</span><span class="n">matrix_ele</span> <span class="o">=</span> <span class="mi">0</span>
+		<span class="n">err</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+	<span class="c1">#</span>
+	<span class="k">return</span> <span class="n">err</span>
+<span class="n">op_args</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([],</span><span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">uint32</span><span class="p">)</span>
+<span class="c1">#</span>
+<span class="c1">######  define symmetry maps</span>
+<span class="c1">#</span>
+<span class="nd">@cfunc</span><span class="p">(</span><span class="n">map_sig_32</span><span class="p">,</span>
+	<span class="nb">locals</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">shift</span><span class="o">=</span><span class="n">uint32</span><span class="p">,</span><span class="n">xmax</span><span class="o">=</span><span class="n">uint32</span><span class="p">,</span><span class="n">x1</span><span class="o">=</span><span class="n">uint32</span><span class="p">,</span><span class="n">x2</span><span class="o">=</span><span class="n">uint32</span><span class="p">,</span><span class="n">period</span><span class="o">=</span><span class="n">int32</span><span class="p">,</span><span class="n">l</span><span class="o">=</span><span class="n">int32</span><span class="p">,</span><span class="n">f_count1</span><span class="o">=</span><span class="n">int32</span><span class="p">,</span><span class="n">f_count2</span><span class="o">=</span><span class="n">int32</span><span class="p">)</span> <span class="p">)</span>
+<span class="k">def</span> <span class="nf">translation</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">N</span><span class="p">,</span><span class="n">sign_ptr</span><span class="p">,</span><span class="n">args</span><span class="p">):</span>
+	<span class="sd">&quot;&quot;&quot; works for all system sizes N. &quot;&quot;&quot;</span>
+	<span class="n">shift</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="c1"># translate state by shift sites</span>
+	<span class="n">period</span> <span class="o">=</span> <span class="n">N</span> <span class="c1"># periodicity/cyclicity of translation</span>
+	<span class="n">xmax</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+	<span class="c1">#</span>
+	<span class="n">l</span> <span class="o">=</span> <span class="p">(</span><span class="n">shift</span><span class="o">+</span><span class="n">period</span><span class="p">)</span><span class="o">%</span><span class="n">period</span>
+	<span class="n">x1</span> <span class="o">=</span> <span class="p">(</span><span class="n">x</span> <span class="o">&gt;&gt;</span> <span class="p">(</span><span class="n">period</span> <span class="o">-</span> <span class="n">l</span><span class="p">))</span>
+	<span class="n">x2</span> <span class="o">=</span> <span class="p">((</span><span class="n">x</span> <span class="o">&lt;&lt;</span> <span class="n">l</span><span class="p">)</span> <span class="o">&amp;</span> <span class="n">xmax</span><span class="p">)</span>
+	<span class="c1">#</span>
+	<span class="c1">#####</span>
+	<span class="c1"># count number of fermions, i.e. 1&#39;s in bit configuration of x1</span>
+	<span class="n">f_count1</span> <span class="o">=</span> <span class="n">_count_particles_32</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span><span class="n">period</span><span class="p">)</span>
+	<span class="c1"># count number of fermions, i.e. 1&#39;s in bit configuration of x2</span>
+	<span class="n">f_count2</span> <span class="o">=</span> <span class="n">_count_particles_32</span><span class="p">(</span><span class="n">x2</span><span class="p">,</span><span class="n">period</span><span class="p">)</span>
+	<span class="c1">#####</span>
+	<span class="c1"># compute fermion sign</span>
+	<span class="n">sign_ptr</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*=</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span> <span class="k">if</span> <span class="p">((</span><span class="n">f_count1</span><span class="o">&amp;</span><span class="mi">1</span><span class="p">)</span><span class="o">&amp;</span><span class="p">(</span><span class="n">f_count2</span><span class="o">&amp;</span><span class="mi">1</span><span class="p">)</span><span class="o">&amp;</span><span class="mi">1</span><span class="p">)</span> <span class="k">else</span> <span class="mi">1</span><span class="p">)</span>
+	<span class="c1">#</span>
+	<span class="k">return</span> <span class="p">(</span><span class="n">x2</span> <span class="o">|</span> <span class="n">x1</span><span class="p">)</span>
+<span class="n">T_args</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,(</span><span class="mi">1</span><span class="o">&lt;&lt;</span><span class="n">N</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span><span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">uint32</span><span class="p">)</span>
+<span class="c1">#</span>
+<span class="nd">@cfunc</span><span class="p">(</span><span class="n">map_sig_32</span><span class="p">,</span>
+	<span class="nb">locals</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">out</span><span class="o">=</span><span class="n">uint32</span><span class="p">,</span><span class="n">s</span><span class="o">=</span><span class="n">uint32</span><span class="p">,</span><span class="n">f_count</span><span class="o">=</span><span class="n">int32</span><span class="p">)</span> <span class="p">)</span>
+<span class="k">def</span> <span class="nf">parity</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">N</span><span class="p">,</span><span class="n">sign_ptr</span><span class="p">,</span><span class="n">args</span><span class="p">):</span>
+	<span class="sd">&quot;&quot;&quot; works for all system sizes N. &quot;&quot;&quot;</span>
+	<span class="n">out</span> <span class="o">=</span> <span class="mi">0</span>
+	<span class="n">s</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+	<span class="c1">#</span>
+	<span class="c1">#####</span>
+	<span class="c1"># count number of fermions, i.e. 1&#39;s in bit configuration of the state</span>
+	<span class="n">f_count</span> <span class="o">=</span> <span class="n">_count_particles_32</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">N</span><span class="p">)</span>
+	<span class="c1">#####</span>
+	<span class="n">sign_ptr</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*=</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span> <span class="k">if</span> <span class="p">((</span><span class="n">f_count</span><span class="o">&amp;</span><span class="mi">2</span><span class="p">)</span> <span class="ow">and</span> <span class="mi">1</span><span class="p">)</span> <span class="k">else</span> <span class="mi">1</span><span class="p">)</span>
+	<span class="c1">#</span>
+	<span class="n">out</span> <span class="o">^=</span> <span class="p">(</span><span class="n">x</span><span class="o">&amp;</span><span class="mi">1</span><span class="p">)</span>
+	<span class="n">x</span> <span class="o">&gt;&gt;=</span> <span class="mi">1</span>
+	<span class="k">while</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+		<span class="n">out</span> <span class="o">&lt;&lt;=</span> <span class="mi">1</span>
+		<span class="n">out</span> <span class="o">^=</span> <span class="p">(</span><span class="n">x</span><span class="o">&amp;</span><span class="mi">1</span><span class="p">)</span>
+		<span class="n">x</span> <span class="o">&gt;&gt;=</span> <span class="mi">1</span>
+		<span class="n">s</span> <span class="o">-=</span> <span class="mi">1</span>
+	<span class="c1">#</span>
+	<span class="n">out</span> <span class="o">&lt;&lt;=</span> <span class="n">s</span>
+	<span class="k">return</span> <span class="n">out</span>
+<span class="n">P_args</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">N</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span><span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">uint32</span><span class="p">)</span>
+<span class="c1">#</span>
+<span class="c1">######  construct user_basis </span>
+<span class="c1"># define maps dict</span>
+<span class="n">maps</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">T_block</span><span class="o">=</span><span class="p">(</span><span class="n">translation</span><span class="p">,</span><span class="n">N</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="n">T_args</span><span class="p">),</span> <span class="n">P_block</span><span class="o">=</span><span class="p">(</span><span class="n">parity</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="n">P_args</span><span class="p">),</span> <span class="p">)</span> 
+<span class="c1">#maps = dict(P_block=(parity,2,0,P_args), )</span>
+<span class="c1">#maps = dict(T_block=(translation,N,0,T_args) ) </span>
+<span class="n">op_dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">op</span><span class="o">=</span><span class="n">op</span><span class="p">,</span><span class="n">op_args</span><span class="o">=</span><span class="n">op_args</span><span class="p">)</span>
+<span class="c1"># create user basiss</span>
+<span class="n">basis</span> <span class="o">=</span> <span class="n">user_basis</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">uint32</span><span class="p">,</span><span class="n">N</span><span class="p">,</span><span class="n">op_dict</span><span class="p">,</span><span class="n">allowed_ops</span><span class="o">=</span><span class="nb">set</span><span class="p">(</span><span class="s2">&quot;xy+-nI&quot;</span><span class="p">),</span><span class="n">sps</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span><span class="o">**</span><span class="n">maps</span><span class="p">)</span>
+<span class="c1">#</span>
+<span class="c1">#</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">basis</span><span class="p">)</span>
+<span class="c1">#</span>
+<span class="c1">############   create and compare Hamiltonians   #############</span>
+<span class="c1">#</span>
+<span class="c1">##### Hamiltonian in using Majoranas </span>
+<span class="c1">#</span>
+<span class="n">J</span><span class="o">=-</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mf">2.0</span><span class="p">)</span> <span class="c1"># hoppping</span>
+<span class="n">U</span><span class="o">=+</span><span class="mf">1.0</span> <span class="c1"># nn interaction</span>
+<span class="c1">#</span>
+<span class="n">hop_term_p</span><span class="o">=</span><span class="p">[[</span><span class="o">+</span><span class="mf">0.5</span><span class="n">j</span><span class="o">*</span><span class="n">J</span><span class="p">,</span><span class="n">j</span><span class="p">,(</span><span class="n">j</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">%</span><span class="n">N</span><span class="p">]</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">)]</span>
+<span class="n">hop_term_m</span><span class="o">=</span><span class="p">[[</span><span class="o">-</span><span class="mf">0.5</span><span class="n">j</span><span class="o">*</span><span class="n">J</span><span class="p">,</span><span class="n">j</span><span class="p">,(</span><span class="n">j</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">%</span><span class="n">N</span><span class="p">]</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">)]</span>
+<span class="n">density_term</span><span class="o">=</span><span class="p">[[</span><span class="o">+</span><span class="mf">0.5</span><span class="n">j</span><span class="o">*</span><span class="n">U</span><span class="p">,</span><span class="n">j</span><span class="p">,</span><span class="n">j</span><span class="p">]</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">)]</span>
+<span class="n">int_term</span><span class="o">=</span><span class="p">[[</span><span class="o">-</span><span class="mf">0.25</span><span class="o">*</span><span class="n">U</span><span class="p">,</span><span class="n">j</span><span class="p">,</span><span class="n">j</span><span class="p">,(</span><span class="n">j</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">%</span><span class="n">N</span><span class="p">,(</span><span class="n">j</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">%</span><span class="n">N</span><span class="p">]</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">)]</span>
+<span class="n">id_term</span><span class="o">=</span><span class="p">[[</span><span class="mf">0.25</span><span class="o">*</span><span class="n">U</span><span class="p">,</span><span class="n">j</span><span class="p">]</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">)]</span>
+<span class="c1">#</span>
+<span class="n">static</span><span class="o">=</span><span class="p">[[</span><span class="s1">&#39;xy&#39;</span><span class="p">,</span><span class="n">hop_term_p</span><span class="p">],[</span><span class="s1">&#39;yx&#39;</span><span class="p">,</span><span class="n">hop_term_m</span><span class="p">],</span> 					<span class="c1"># kinetic energy</span>
+		<span class="p">[</span><span class="s1">&#39;I&#39;</span><span class="p">,</span><span class="n">id_term</span><span class="p">],[</span><span class="s1">&#39;xy&#39;</span><span class="p">,</span><span class="n">density_term</span><span class="p">],[</span><span class="s1">&#39;xyxy&#39;</span><span class="p">,</span><span class="n">int_term</span><span class="p">],</span>	<span class="c1"># nn interaction energy</span>
+		<span class="p">]</span>
+<span class="n">dynamic</span><span class="o">=</span><span class="p">[]</span>
+<span class="c1">#</span>
+<span class="n">no_checks</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">check_symm</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">check_pcon</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">check_herm</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">H_majorana</span><span class="o">=</span><span class="n">hamiltonian</span><span class="p">(</span><span class="n">static</span><span class="p">,[],</span><span class="n">basis</span><span class="o">=</span><span class="n">basis</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">,</span><span class="o">**</span><span class="n">no_checks</span><span class="p">)</span>
+<span class="c1">#</span>
+<span class="c1">#</span>
+<span class="c1">##### Hamiltonian using complex fermions</span>
+<span class="c1">#</span>
+<span class="c1">#</span>
+<span class="n">hopping_pm</span><span class="o">=</span><span class="p">[[</span><span class="o">+</span><span class="n">J</span><span class="p">,</span><span class="n">j</span><span class="p">,(</span><span class="n">j</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">%</span><span class="n">N</span><span class="p">]</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">)]</span>
+<span class="n">hopping_mp</span><span class="o">=</span><span class="p">[[</span><span class="o">-</span><span class="n">J</span><span class="p">,</span><span class="n">j</span><span class="p">,(</span><span class="n">j</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">%</span><span class="n">N</span><span class="p">]</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">)]</span>
+<span class="n">nn_int</span><span class="o">=</span><span class="p">[[</span><span class="n">U</span><span class="p">,</span><span class="n">j</span><span class="p">,(</span><span class="n">j</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">%</span><span class="n">N</span><span class="p">]</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">)]</span>
+<span class="c1">#</span>
+<span class="n">static</span><span class="o">=</span><span class="p">[[</span><span class="s2">&quot;+-&quot;</span><span class="p">,</span><span class="n">hopping_pm</span><span class="p">],[</span><span class="s2">&quot;-+&quot;</span><span class="p">,</span><span class="n">hopping_mp</span><span class="p">],[</span><span class="s2">&quot;nn&quot;</span><span class="p">,</span><span class="n">nn_int</span><span class="p">]]</span>
+<span class="n">dynamic</span><span class="o">=</span><span class="p">[]</span>
+<span class="c1">#</span>
+<span class="n">no_checks</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">check_symm</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">check_pcon</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">check_herm</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">H</span><span class="o">=</span><span class="n">hamiltonian</span><span class="p">(</span><span class="n">static</span><span class="p">,[],</span><span class="n">basis</span><span class="o">=</span><span class="n">basis</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">,</span><span class="o">**</span><span class="n">no_checks</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">H</span><span class="o">.</span><span class="n">toarray</span><span class="p">())</span>
+<span class="nb">print</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">H_majorana</span><span class="o">.</span><span class="n">toarray</span><span class="p">())</span>
+<span class="nb">print</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">((</span><span class="n">H</span><span class="o">-</span><span class="n">H_majorana</span><span class="p">)</span><span class="o">.</span><span class="n">toarray</span><span class="p">()))</span>
+</pre></div>
+</td></tr></table></div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Majorana Fermions: Spinless Fermi-Hubbard Model</a></li>
+<li><a class="reference internal" href="#script">Script</a></li>
+</ul>
+
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../sources/examples/example24.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.5 documentation</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2016, Phillip Weinberg, Markus Schmitt and Marin Bukov.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 3.0.4.
+    </div>
+  </body>
+</html>

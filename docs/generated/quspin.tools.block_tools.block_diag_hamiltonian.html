@@ -1,7 +1,7 @@
 
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
     <meta charset="utf-8" /><script type="text/javascript">
 
@@ -15,7 +15,7 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-    <title>quspin.tools.block_tools.block_diag_hamiltonian &#8212; QuSpin 0.3.4 documentation</title>
+    <title>quspin.tools.block_tools.block_diag_hamiltonian &#8212; QuSpin 0.3.5 documentation</title>
     <link rel="stylesheet" href="../static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../static/pygments.css" type="text/css" />
     
@@ -46,7 +46,7 @@
         <li class="right" >
           <a href="quspin.tools.block_tools.block_ops.html" title="quspin.tools.block_tools.block_ops"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.4 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.5 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../tools.html" accesskey="U">Tools module (<code class="xref py py-mod docutils literal notranslate"><span class="pre">quspin.tools</span></code>)</a> &#187;</li> 
       </ul>
     </div>  
@@ -59,9 +59,9 @@
   <style> .red {color:#ff0000; font-weight:bold; font-style:italic; } </style>
 <style> .green {color:#00b200; font-weight:bold; font-style:italic; } </style><div class="section" id="quspin-tools-block-tools-block-diag-hamiltonian">
 <h1>quspin.tools.block_tools.block_diag_hamiltonian<a class="headerlink" href="#quspin-tools-block-tools-block-diag-hamiltonian" title="Permalink to this headline">¶</a></h1>
-<dl class="function">
+<dl class="py function">
 <dt id="quspin.tools.block_tools.block_diag_hamiltonian">
-<code class="sig-prename descclassname">quspin.tools.block_tools.</code><code class="sig-name descname">block_diag_hamiltonian</code><span class="sig-paren">(</span><em class="sig-param">blocks</em>, <em class="sig-param">static</em>, <em class="sig-param">dynamic</em>, <em class="sig-param">basis_con</em>, <em class="sig-param">basis_args</em>, <em class="sig-param">dtype</em>, <em class="sig-param">basis_kwargs={}</em>, <em class="sig-param">get_proj_kwargs={}</em>, <em class="sig-param">get_proj=True</em>, <em class="sig-param">check_symm=True</em>, <em class="sig-param">check_herm=True</em>, <em class="sig-param">check_pcon=True</em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/tools/block_tools.html#block_diag_hamiltonian"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#quspin.tools.block_tools.block_diag_hamiltonian" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">quspin.tools.block_tools.</code><code class="sig-name descname">block_diag_hamiltonian</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">blocks</span></em>, <em class="sig-param"><span class="n">static</span></em>, <em class="sig-param"><span class="n">dynamic</span></em>, <em class="sig-param"><span class="n">basis_con</span></em>, <em class="sig-param"><span class="n">basis_args</span></em>, <em class="sig-param"><span class="n">dtype</span></em>, <em class="sig-param"><span class="n">basis_kwargs</span><span class="o">=</span><span class="default_value">{}</span></em>, <em class="sig-param"><span class="n">get_proj_kwargs</span><span class="o">=</span><span class="default_value">{}</span></em>, <em class="sig-param"><span class="n">get_proj</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">check_symm</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">check_herm</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">check_pcon</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/tools/block_tools.html#block_diag_hamiltonian"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#quspin.tools.block_tools.block_diag_hamiltonian" title="Permalink to this definition">¶</a></dt>
 <dd><p>Block-diagonalises a Hamiltonian obeying a symmetry.</p>
 <p>The symmetry blocks are created via the argument ‘blocks’.</p>
 <dl class="field-list">
@@ -80,7 +80,7 @@ Contains all required arguments for the basis.</p>
 </dd>
 <dt><strong>dtype</strong><span class="classifier">‘type’</span></dt><dd><p>The data type (e.g. numpy.float64) to construct the Hamiltonian with.</p>
 </dd>
-<dt><strong>get_proj</strong><span class="classifier">bool, optional</span></dt><dd><p>Flag which tells the function to calculate and return the projector to the 
+<dt><strong>get_proj</strong><span class="classifier">bool, optional</span></dt><dd><p>Flag which tells the function to calculate and return the projector to the
 symmetry-block subpace requested. Default is ‘True’.</p>
 </dd>
 <dt><strong>basis_kwargs</strong><span class="classifier">dict, optional</span></dt><dd><p>Dictionary of keyword arguments to add when calling <cite>basis</cite> constructor.</p>
@@ -97,8 +97,8 @@ symmetry-block subpace requested. Default is ‘True’.</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><dl>
-<dt><strong>tuple</strong></dt><dd><dl>
-<dt>P<span class="classifier">scipy.sparse.csr </span></dt><dd><p>Projector to the symmetr-block subspace (e.g. Fourier transform in case of momentum blocks).</p>
+<dt>tuple</dt><dd><dl>
+<dt>P<span class="classifier">scipy.sparse.csr</span></dt><dd><p>Projector to the symmetr-block subspace (e.g. Fourier transform in case of momentum blocks).</p>
 </dd>
 <dt>H<span class="classifier"><cite>obj</cite></span></dt><dd><p><cite>hamiltonian</cite> object in block diagonal form.</p>
 </dd>
@@ -108,7 +108,7 @@ symmetry-block subpace requested. Default is ‘True’.</p>
 </dd>
 <dt class="field-odd">Raises</dt>
 <dd class="field-odd"><dl class="simple">
-<dt><strong>ValueError</strong></dt><dd><p>If <cite>blocks</cite> is not a list of <cite>hamiltonian</cite> objects or a list of dictionaries containing 
+<dt>ValueError</dt><dd><p>If <cite>blocks</cite> is not a list of <cite>hamiltonian</cite> objects or a list of dictionaries containing
 the symmetry sectors.</p>
 </dd>
 </dl>
@@ -239,13 +239,13 @@ the single-particle Hamiltonian</p>
         <li class="right" >
           <a href="quspin.tools.block_tools.block_ops.html" title="quspin.tools.block_tools.block_ops"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.4 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.5 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../tools.html" >Tools module (<code class="xref py py-mod docutils literal notranslate"><span class="pre">quspin.tools</span></code>)</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &#169; Copyright 2016, Phillip Weinberg and Marin Bukov.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.4.0.
+        &#169; Copyright 2016, Phillip Weinberg, Markus Schmitt and Marin Bukov.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 3.0.4.
     </div>
   </body>
 </html>

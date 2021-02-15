@@ -485,11 +485,13 @@ class hamiltonian(object):
 
 	@property
 	def shape(self):
+		"""tuple: shape of the `hamiltonian` object, always equal to `(Ns,Ns)`."""
 		return self._shape
 	
-	@property
-	def ndim(self):
-		return len(self._shape)
+	# @property
+	# def ndim(self):
+	# 	"""int: number of dimensions, always equal to 2. """
+	# 	return len(self._shape)
 	
 
 	@property

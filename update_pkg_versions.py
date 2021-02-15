@@ -110,10 +110,10 @@ numpy:{numpy_text:s}
 
 
 # version list for conda-build matrix
-numpy_versions = ["1.17.2"]
+numpy_versions = ["1.17.4"]
 python_versions = ["3.6",
                    "3.7",
-                   "3.8 # [not win]",
+                   "3.8",
                    ]
 
 # versions for python package lists
@@ -125,7 +125,7 @@ pkg_vers = {
 	"numba":"",
 	"numexpr":"",
 	"gmpy2":"",
-	"cython":">0.29",
+	"cython":">=0.29",
 	"boost":"",
 	"numpy":">="+numpy_versions[0],
 	"python":">="+python_versions[0],

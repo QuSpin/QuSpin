@@ -1,7 +1,7 @@
 
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
     <meta charset="utf-8" /><script type="text/javascript">
 
@@ -15,7 +15,7 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-    <title>Monte Carlo Sampling Expectation Values of Obsevables &#8212; QuSpin 0.3.4 documentation</title>
+    <title>Monte Carlo Sampling Expectation Values of Obsevables &#8212; QuSpin 0.3.5 documentation</title>
     <link rel="stylesheet" href="../static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../static/pygments.css" type="text/css" />
     
@@ -38,7 +38,7 @@
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.4 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.5 documentation</a> &#187;</li> 
       </ul>
     </div>  
 
@@ -61,13 +61,13 @@
 <div class="math notranslate nohighlight">
 \[\langle\psi|H|\psi\rangle = \sum_{s,s'} \psi_s^\ast H_{ss'}\psi_{s'} = \sum_s |\psi_s|^2 E_{s},\qquad E_s = \frac{1}{\psi_s}\sum_{s'}H_{ss'}\psi_{s'},\]</div>
 <p>where <span class="math notranslate nohighlight">\(\{|s\rangle\}_s\)</span> can be any basis, in particular the Fock (<span class="math notranslate nohighlight">\(z\)</span>-) basis used in QuSpin.</p>
-<p>The above expression suggests that one can use sampling methods, such as Monte Carlo, to estimate the expectation value of <span class="math notranslate nohighlight">\(\langle\psi|H|\psi\rangle\)</span> using the quantity <span class="math notranslate nohighlight">\(E_s\)</span> (sometimes referred to as the local energy) evaluated in samples drawn from the probability distribution <span class="math notranslate nohighlight">\(p_s=|\psi_s|^2\)</span>. If we have: (i) a function <span class="math notranslate nohighlight">\(s\mapsto\psi_s\)</span> which compues the amplitudes for every spin configuration <span class="math notranslate nohighlight">\(s\)</span>, and (ii) the matrix elements <span class="math notranslate nohighlight">\(H_{ss'}\)</span>, then</p>
+<p>The above expression suggests that one can use sampling methods, such as Monte Carlo, to estimate the expectation value of <span class="math notranslate nohighlight">\(\langle\psi|H|\psi\rangle\)</span> using the quantity <span class="math notranslate nohighlight">\(E_s\)</span> (sometimes referred to as the local energy) evaluated in samples drawn from the probability distribution <span class="math notranslate nohighlight">\(p_s=|\psi_s|^2\)</span>. If we have: (i) a function <span class="math notranslate nohighlight">\(s\mapsto\psi_s\)</span> which computes the amplitudes for every spin configuration <span class="math notranslate nohighlight">\(s\)</span>, and (ii) the matrix elements <span class="math notranslate nohighlight">\(H_{ss'}\)</span>, then</p>
 <div class="math notranslate nohighlight">
 \[\langle\psi|H|\psi\rangle \approx \frac{1}{N_\mathrm{MC}}\sum_{s\in\mathcal{S}} E_s,\]</div>
 <p>where <span class="math notranslate nohighlight">\(\mathcal{S}\)</span> contains <span class="math notranslate nohighlight">\(N_\mathrm{MC}\)</span> spin configurations sampled from <span class="math notranslate nohighlight">\(p_s=|\psi_s|^2\)</span>.</p>
 <p>Since this procedure does not require the the state <span class="math notranslate nohighlight">\(|\psi\rangle\)</span> to be normalized, ideas along these lines allow to look for variational approximations to the wavefunction <span class="math notranslate nohighlight">\(\psi_s\)</span> in large system sizes, for instance with the help of restricted Boltzmann machines [<a class="reference external" href="https://arxiv.org/abs/1606.02318">arXiv:1606.02318</a>].</p>
-<p>The code below performs Monte-Carlo (MC) sampling in the symmetry-reduced Hilbert space. New states are proposed by swapping the spin values on random lattice sites; this update can take a representative state outsite the symmetry-reduced basis, and we apply the <cite>basis.representative()</cite> function to project it back. To satisfy Detailed Balance in the MC acceptance/rejection condition, we use the function <cite>basis.get_amp()</cite> to compute the probability ratio in the full (symmetry-free) basis without actually constructing it.</p>
-<p>In the example below, we assume that we already have a quantum state <span class="math notranslate nohighlight">\(\psi_s\)</span> in the Fock basis, and we sample the expectation value of an operator <cite>H</cite> using the <cite>*_basis_general</cite> methods <cite>Op_bra_ket()</cite>, <cite>representative()</cite>, and <cite>get_amp()</cite> [cf. code lines 120, 139, 167 below]. These methods do not require to compute the full basis, and thus allow to develop techniques for reaching system sizes beyond exact diagonalization.</p>
+<p>The code below performs Monte-Carlo (MC) sampling in the symmetry-reduced Hilbert space. New states are proposed by swapping the spin values on random lattice sites; this update can take a representative state outside the symmetry-reduced basis, and we apply the <cite>basis.representative()</cite> function to project it back. To satisfy Detailed Balance in the MC acceptance/rejection condition, we use the function <cite>basis.get_amp()</cite> to compute the probability ratio in the full (symmetry-free) basis without actually constructing it.</p>
+<p>In the example below, we assume that we already have a quantum state <span class="math notranslate nohighlight">\(\psi_s\)</span> in the Fock basis, and we sample the expectation value of an operator <cite>H</cite> using the <cite>*_basis_general</cite> methods <cite>Op_bra_ket()</cite>, <cite>representative()</cite>, and <cite>get_amp()</cite>. These methods do not require to compute the full basis, and thus allow to develop techniques for reaching system sizes beyond exact diagonalization (cf. the <cite>basis</cite> optional argument <cite>make_basis</cite>, as well as <cite>block_order</cite> which can deliver extra speed).</p>
 </div>
 <div class="section" id="script">
 <h1>Script<a class="headerlink" href="#script" title="Permalink to this headline">¶</a></h1>
@@ -584,12 +584,12 @@
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.4 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.5 documentation</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &#169; Copyright 2016, Phillip Weinberg and Marin Bukov.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.4.0.
+        &#169; Copyright 2016, Phillip Weinberg, Markus Schmitt and Marin Bukov.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 3.0.4.
     </div>
   </body>
 </html>

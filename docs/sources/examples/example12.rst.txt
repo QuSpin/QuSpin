@@ -1,4 +1,7 @@
+:orphan:
+
 .. _example12-label:
+
 
 Parallel Computing in QuSpin
 ----------------------------
@@ -13,14 +16,17 @@ This example shows how to speed up QuSpin code via multi-threading by using
 
 To install quspin with OpenMP support using anaconda (see also :ref:`parallelization-label`), run 
 ::
+
 	$ conda install -c weinbe58 omp quspin
 
 The example below demonstrates how to use the OpenMP version of quspin for parallel computing. It is set up in such a way that the number of OpenMP and MKL threads is controlled from the command line [cf. code lines 8,9]. To run the script, run
 ::
+
 	$ python example12.py ${OMP_NUM_THREADS} ${MKL_NUM_THREADS}
 
 You can directly compare the speed for different values of the number of threads [make sure your machine's processor has more than one core]
 ::
+
 	$ python example12.py 1 1 # single-threaded computation
 	$ python example12.py 4 1 # multi-threaded OpenMP computation, speedup for basis functions, evolution, and matrix-vector multiplication
 	$ python example12.py 1 4 # multi-threaded MKL computation, speedup for diagonalization-like routines
@@ -30,9 +36,10 @@ Notice how, as explained in :ref:`parallelization-label`, `OMP_NUM_THREADS` impr
 
 **Note:** there is a common problem with using OpenMP on OSX with anaconda packages for Python 3, which may induce an error unrelated to QuSpin:
 ::
-	$ OMP: Error #15: Initializing libiomp5.dylib, but found libomp.dylib already initialized.
-However, this error can be disabled [at one's own risk!] until it is officially fixed, see code line 7 below. 
 
+	$ OMP: Error #15: Initializing libiomp5.dylib, but found libomp.dylib already initialized.
+
+However, this error can be disabled [at one's own risk!] until it is officially fixed, see code line 7 below. 
 
 Script
 ------

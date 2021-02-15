@@ -61,6 +61,7 @@ quspin.operators.hamiltonian
       ~hamiltonian.is_dense
       ~hamiltonian.nbytes
       ~hamiltonian.ndim
+      ~hamiltonian.shape
       ~hamiltonian.static
    
    

@@ -1,7 +1,7 @@
 
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
     <meta charset="utf-8" /><script type="text/javascript">
 
@@ -15,7 +15,7 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-    <title>A tutorial on QuSpin’s user_basis &#8212; QuSpin 0.3.4 documentation</title>
+    <title>A tutorial on QuSpin’s user_basis &#8212; QuSpin 0.3.5 documentation</title>
     <link rel="stylesheet" href="static/classic.css" type="text/css" />
     <link rel="stylesheet" href="static/pygments.css" type="text/css" />
     
@@ -42,7 +42,7 @@
         <li class="right" >
           <a href="parallelization.html" title="Parallel Computing Support"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">QuSpin 0.3.4 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">QuSpin 0.3.5 documentation</a> &#187;</li> 
       </ul>
     </div>  
 
@@ -320,8 +320,9 @@
         <span class="k">return</span> <span class="n">out</span>
 </pre></div>
 </div>
-<p>translation in 1d for any system size <cite>N</cite>
-………………………………….`</p>
+</div>
+<div class="section" id="translation-in-1d-for-any-system-size-n">
+<h4>translation in 1d for any system size <cite>N</cite><a class="headerlink" href="#translation-in-1d-for-any-system-size-n" title="Permalink to this headline">¶</a></h4>
 <p>We consider translation by <cite>shift=1</cite> sites, but the code can easily be generalized to a larger-shift translation.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">translation</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">N</span><span class="p">,</span><span class="n">sign_ptr</span><span class="p">,</span><span class="n">args</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; works for all system sizes N, spin-1/2 only. &quot;&quot;&quot;</span>
@@ -449,6 +450,8 @@
 <li><p><a class="reference internal" href="examples/example14.html#example14-label"><span class="std std-ref">Quantum scars Hamiltonian: spin-1/2 system with Hilbert space constraint</span></a>, <a class="reference download internal" download="" href="downloads/ce24628b1934b1aacd9f1ac29dfbc30e/example14.py"><code class="xref download docutils literal notranslate"><span class="pre">download</span> <span class="pre">script</span></code></a></p></li>
 <li><p><a class="reference internal" href="examples/example15.html#example15-label"><span class="std std-ref">Spin-1/2 system with sublattice particle consevation</span></a>, <a class="reference download internal" download="" href="downloads/c6fb308e3731bcee1b7864776743455f/example15.py"><code class="xref download docutils literal notranslate"><span class="pre">download</span> <span class="pre">script</span></code></a></p></li>
 <li><p><a class="reference internal" href="examples/example16.html#example16-label"><span class="std std-ref">Applying symmetries to reduce user-imported bases using QuSpin</span></a>, <a class="reference download internal" download="" href="downloads/dbdd6400ff1ff3f244148fb3a442525e/example16.py"><code class="xref download docutils literal notranslate"><span class="pre">download</span> <span class="pre">script</span></code></a></p></li>
+<li><p><a class="reference internal" href="examples/example23.html#example23-label"><span class="std std-ref">Gell-Mann Operators for Spin-1 systems</span></a>, <a class="reference download internal" download="" href="downloads/25f20672070bc09359d1b2414896faed/example23.py"><code class="xref download docutils literal notranslate"><span class="pre">download</span> <span class="pre">script</span></code></a></p></li>
+<li><p><a class="reference internal" href="examples/example24.html#example24-label"><span class="std std-ref">Majorana Fermions: Spinless Fermi-Hubbard Model</span></a>, <a class="reference download internal" download="" href="downloads/52293556b936bd2bddddce4265362036/example24.py"><code class="xref download docutils literal notranslate"><span class="pre">download</span> <span class="pre">script</span></code></a></p></li>
 </ul>
 </div>
 </div>
@@ -491,6 +494,7 @@
 <li><a class="reference internal" href="#symmetry-map-s-n-sign-ptr-args"><cite>symmetry_map(s, N, sign_ptr, args)</cite></a></li>
 <li><a class="reference internal" href="#system-size-independent-symmetries">System-size independent symmetries</a><ul>
 <li><a class="reference internal" href="#parity-in-1d-for-any-system-size-n">parity in 1d for any system size <cite>N</cite></a></li>
+<li><a class="reference internal" href="#translation-in-1d-for-any-system-size-n">translation in 1d for any system size <cite>N</cite></a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#symmetries-for-fixed-system-sizes-using-precomputed-masks">Symmetries for fixed system sizes using precomputed masks</a><ul>
@@ -551,12 +555,12 @@
         <li class="right" >
           <a href="parallelization.html" title="Parallel Computing Support"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">QuSpin 0.3.4 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">QuSpin 0.3.5 documentation</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &#169; Copyright 2016, Phillip Weinberg and Marin Bukov.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.4.0.
+        &#169; Copyright 2016, Phillip Weinberg, Markus Schmitt and Marin Bukov.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 3.0.4.
     </div>
   </body>
 </html>

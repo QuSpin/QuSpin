@@ -7,8 +7,8 @@ QuSpin is currently being supported for Python 2 and Python 3 which are a prereq
 
 For the **manual installation** you must have all the prerequisite python packages installed:
     * `scipy <https://www.scipy.org>`_>=0.19.1
-    * `numpy <http://www.numpy.org>`_>=1.17.2
-    * `cython <https://www.cython.org>`_>0.29
+    * `numpy <http://www.numpy.org>`_>=1.17.4
+    * `cython <https://www.cython.org>`_>=0.29
     * `joblib <https://pythonhosted.org/joblib/>`_
     * `six <https://pythonhosted.org/six/>`_
     * `dill <https://pypi.python.org/pypi/dill>`_

@@ -1,7 +1,7 @@
 
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
     <meta charset="utf-8" /><script type="text/javascript">
 
@@ -15,7 +15,7 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-    <title>quspin.basis.base &#8212; QuSpin 0.3.4 documentation</title>
+    <title>quspin.basis.base &#8212; QuSpin 0.3.5 documentation</title>
     <link rel="stylesheet" href="../../../static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../static/pygments.css" type="text/css" />
     
@@ -38,7 +38,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">QuSpin 0.3.4 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">QuSpin 0.3.5 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -194,7 +194,7 @@
 <span class="sd">		This function works with the `tensor_basis` and other basis which use the &quot;|&quot; symbol in the opstr.</span>
 
 <span class="sd">		Parameters</span>
-<span class="sd">		-----------</span>
+<span class="sd">		----------</span>
 <span class="sd">		v_in : array_like</span>
 <span class="sd">			state (or states stored in columns) to act on with the operator.</span>
 <span class="sd">		op_list : list</span>
@@ -232,7 +232,7 @@
 		<span class="sd">&quot;&quot;&quot;Constructs operator from a site-coupling list and an operator string in a lattice basis.</span>
 
 <span class="sd">		Parameters</span>
-<span class="sd">		-----------</span>
+<span class="sd">		----------</span>
 <span class="sd">		opstr : str</span>
 <span class="sd">			Operator string in the lattice basis format. For instance:</span>
 
@@ -306,13 +306,10 @@
 
 <span class="sd">		Notes</span>
 <span class="sd">		-----</span>
-<span class="sd">		This function can also be applied to trace out operators/observables defined by the input `state`, in which case one has </span>
-<span class="sd">		to additionally normalize the final output by the Hilbert space dimension of the traced-out space. </span>
-<span class="sd">		However, if an operator is defined in a symmetry-reduced basis, there is a :red:`caveat`. In such a case, one has to:</span>
+<span class="sd">		This function can also be applied to trace out operators/observables defined by the input `state`, in which case one has to additionally normalize the final output by the Hilbert space dimension of the traced-out space. However, if an operator is defined in a symmetry-reduced basis, there is a :red:`caveat`. In such a case, one has to:</span>
 <span class="sd">			(1) use the `basis.get_proj()` function to lift the operator to the full basis; </span>
 <span class="sd">			(2) apply `basis.partial_trace()`;</span>
 <span class="sd">			(3) repeat this procedure for all symmetry sectors, and sum up the resulting reduced operators [this is becauce one has to add in the information about how the operator acts on the full Hilbert space].</span>
-
 
 <span class="sd">		Parameters</span>
 <span class="sd">		-----------</span>
@@ -347,6 +344,7 @@
 <span class="sd">		--------</span>
 
 <span class="sd">		&gt;&gt;&gt; partial_trace(state,sub_sys_A=tuple(range(basis.N//2),return_rdm=&quot;A&quot;,enforce_pure=False,sparse=False,subsys_ordering=True)</span>
+
 
 <span class="sd">		&quot;&quot;&quot;</span>
 
@@ -947,13 +945,13 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">QuSpin 0.3.4 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">QuSpin 0.3.5 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &#169; Copyright 2016, Phillip Weinberg and Marin Bukov.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.4.0.
+        &#169; Copyright 2016, Phillip Weinberg, Markus Schmitt and Marin Bukov.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 3.0.4.
     </div>
   </body>
 </html>

@@ -1,4 +1,7 @@
+:orphan:
+
 .. _example15-label:
+
 
 Spin-1/2 system with sublattice particle consevation
 ----------------------------------------------------

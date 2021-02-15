@@ -1,7 +1,7 @@
 
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
     <meta charset="utf-8" /><script type="text/javascript">
 
@@ -15,7 +15,7 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-    <title>quspin.basis.bitwise_not &#8212; QuSpin 0.3.4 documentation</title>
+    <title>quspin.basis.bitwise_not &#8212; QuSpin 0.3.5 documentation</title>
     <link rel="stylesheet" href="../static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../static/pygments.css" type="text/css" />
     
@@ -46,7 +46,7 @@
         <li class="right" >
           <a href="quspin.basis.basis_int_to_python_int.html" title="quspin.basis.basis_int_to_python_int"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.4 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.5 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../basis.html" accesskey="U">Basis module (<code class="xref py py-mod docutils literal notranslate"><span class="pre">quspin.basis</span></code>)</a> &#187;</li> 
       </ul>
     </div>  
@@ -59,9 +59,9 @@
   <style> .red {color:#ff0000; font-weight:bold; font-style:italic; } </style>
 <style> .green {color:#00b200; font-weight:bold; font-style:italic; } </style><div class="section" id="quspin-basis-bitwise-not">
 <h1>quspin.basis.bitwise_not<a class="headerlink" href="#quspin-basis-bitwise-not" title="Permalink to this headline">¶</a></h1>
-<dl class="function">
+<dl class="py function">
 <dt id="quspin.basis.bitwise_not">
-<code class="sig-prename descclassname">quspin.basis.</code><code class="sig-name descname">bitwise_not</code><span class="sig-paren">(</span><em class="sig-param">x</em>, <em class="sig-param">out=None</em>, <em class="sig-param">where=None</em><span class="sig-paren">)</span><a class="headerlink" href="#quspin.basis.bitwise_not" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">quspin.basis.</code><code class="sig-name descname">bitwise_not</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">out</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">where</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#quspin.basis.bitwise_not" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bitwise NOT operation <cite>~x</cite>.</p>
 <p>Performs pair-wise bitwise NOT operation basis states in integer representation.</p>
 <dl class="field-list simple">
@@ -77,7 +77,7 @@
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><dl class="simple">
-<dt><strong>numpy.ndarray</strong></dt><dd><p>array of unsigned integers containing the result of the bitwise operation. Output is of same data type as <cite>x</cite>.</p>
+<dt>numpy.ndarray</dt><dd><p>array of unsigned integers containing the result of the bitwise operation. Output is of same data type as <cite>x</cite>.</p>
 </dd>
 </dl>
 </dd>
@@ -85,10 +85,10 @@
 <p class="rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">quspin.basis</span> <span class="kn">import</span> <span class="n">spin_basis_general</span><span class="p">,</span> <span class="n">basis_int_to_python_int</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">N</span><span class="o">=</span><span class="mi">100</span> <span class="c1"># sites</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">basis</span><span class="o">=</span><span class="n">spin_basis_general</span><span class="p">(</span><span class="n">N</span><span class="p">,</span><span class="n">Nup</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="c1"># 1 particle </span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">basis</span><span class="o">=</span><span class="n">spin_basis_general</span><span class="p">(</span><span class="n">N</span><span class="p">,</span><span class="n">Nup</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="c1"># 1 particle</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">x</span><span class="o">=</span><span class="p">[</span><span class="n">basis</span><span class="o">.</span><span class="n">states</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="c1"># large integer stored as a byte</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">not_x</span><span class="o">=</span><span class="n">bitwise_not</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="s1">&#39;original integer stored as a byte:&#39;</span><span class="p">)</span> 
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="s1">&#39;original integer stored as a byte:&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">x_int</span><span class="o">=</span><span class="n">basis_int_to_python_int</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="c1"># cast byte as python integer</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="s1">&#39;original integer in integer form:&#39;</span><span class="p">)</span>
@@ -149,13 +149,13 @@
         <li class="right" >
           <a href="quspin.basis.basis_int_to_python_int.html" title="quspin.basis.basis_int_to_python_int"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.4 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.5 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../basis.html" >Basis module (<code class="xref py py-mod docutils literal notranslate"><span class="pre">quspin.basis</span></code>)</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &#169; Copyright 2016, Phillip Weinberg and Marin Bukov.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.4.0.
+        &#169; Copyright 2016, Phillip Weinberg, Markus Schmitt and Marin Bukov.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 3.0.4.
     </div>
   </body>
 </html>

@@ -1,7 +1,7 @@
 
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
     <meta charset="utf-8" /><script type="text/javascript">
 
@@ -15,7 +15,7 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-    <title>quspin.operators.quantum_LinearOperator_core &#8212; QuSpin 0.3.4 documentation</title>
+    <title>quspin.operators.quantum_LinearOperator_core &#8212; QuSpin 0.3.5 documentation</title>
     <link rel="stylesheet" href="../../../static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../static/pygments.css" type="text/css" />
     
@@ -38,7 +38,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">QuSpin 0.3.4 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">QuSpin 0.3.5 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -231,12 +231,12 @@
 
 	<span class="nd">@property</span>
 	<span class="k">def</span> <span class="nf">T</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-		<span class="sd">&quot;&quot;&quot;:obj:`quantum_LinearOperator`: transposes the operator matrix: :math:`H_{ij}\\mapsto H_{ji}`.&quot;&quot;&quot;</span>
+		<span class="sd">&quot;&quot;&quot;:obj:`quantum_LinearOperator`: transposes the operator matrix, :math:`H_{ij}\\mapsto H_{ji}`.&quot;&quot;&quot;</span>
 		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">copy</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>
 
 	<span class="nd">@property</span>
 	<span class="k">def</span> <span class="nf">H</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-		<span class="sd">&quot;&quot;&quot;:obj:`quantum_LinearOperator`: transposes and conjugates the operator matrix: :math:`H_{ij}\\mapsto H_{ji}^*`.&quot;&quot;&quot;</span>
+		<span class="sd">&quot;&quot;&quot;:obj:`quantum_LinearOperator`: transposes and conjugates the operator matrix, :math:`H_{ij}\\mapsto H_{ji}^*`.&quot;&quot;&quot;</span>
 		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">getH</span><span class="p">(</span><span class="n">copy</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>
 
 	<span class="nd">@property</span>
@@ -391,7 +391,7 @@
 <span class="sd">		---------</span>
 <span class="sd">		&gt;&gt;&gt; H_fluct = H.quant_fluct(V,time=0,diagonal=False,check=True)</span>
 
-<span class="sd">		corresponds to :math:`\\Delta H = \\sqrt{ \\langle V|H^2(t=\\texttt{time})|V\\rangle - \\langle V|H(t=\\texttt{time})|V\\rangle^2 }`. </span>
+<span class="sd">		corresponds to :math:`\\left(\\Delta H\\right)^2 = \\langle V|H^2(t=\\texttt{time})|V\\rangle - \\langle V|H(t=\\texttt{time})|V\\rangle^2`. </span>
 <span class="sd">			 </span>
 <span class="sd">		&quot;&quot;&quot;</span>
 		<span class="kn">from</span> <span class="nn">.exp_op_core</span> <span class="kn">import</span> <span class="n">isexp_op</span>
@@ -934,13 +934,13 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">QuSpin 0.3.4 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">QuSpin 0.3.5 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &#169; Copyright 2016, Phillip Weinberg and Marin Bukov.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.4.0.
+        &#169; Copyright 2016, Phillip Weinberg, Markus Schmitt and Marin Bukov.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 3.0.4.
     </div>
   </body>
 </html>
