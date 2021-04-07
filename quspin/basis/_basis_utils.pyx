@@ -136,17 +136,18 @@ def _shuffle_sites(npy_intp sps,T_tup,A):
 
 
 @cython.boundscheck(False)
-def fermion_ptrace_sign(int N, state_type[::1] states, int8_t[::1] signs, object sub_sys_A):
+def fermion_ptrace_sign(int N, int8_t[::1] signs, object sub_sys_A):
 
     # compute subsystem B and construct the entire system
     sub_sys_B = list(set(range(N))-set(sub_sys_A) )
-    sys = _np.concatenate([sub_sys_A, sub_sys_B])
+    system = _np.concatenate([sub_sys_A, sub_sys_B])
 
-    cdef int Ns=states.shape[0]
-    cdef _np.ndarray map = _np.argsort(sys) # get inverse map
+    cdef uint64_t Ns=(<uint64_t>2)**N
+    cdef uint64_t j
+    cdef _np.ndarray map = _np.argsort(system) # get inverse map
     cdef void * ptr = _np.PyArray_GETPTR1(map,0)
 
     with nogil:
         for j in range(Ns):
-            fermion_ptrace_sign_core(states[j], <int*>ptr, N, signs[j])
+            fermion_ptrace_sign_core(Ns-j-1, <int*>ptr, N, signs[j])
 

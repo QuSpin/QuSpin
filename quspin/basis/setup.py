@@ -31,7 +31,7 @@ def cython_files():
 
 	cython_src = [
 					os.path.join(package_dir,"_basis_utils.pyx"),
-					os.path.join(package_dir,"basis_general/_basis_general_core/source","general_basis_types.pxd"),
+				#	os.path.join(package_dir,"basis_general/_basis_general_core/source","general_basis_types.pxd"),
 				]
 	cythonize(cython_src,include_path=get_include_dirs())
 

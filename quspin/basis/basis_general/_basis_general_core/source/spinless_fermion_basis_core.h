@@ -33,7 +33,7 @@ void mergeSort(I nums[],I work[],const I left,const I mid,const I right, bool  &
       }
       k++;
     }
-    //remaining iversions
+    //remaining isertions
     if((j&1) && ((leftLength-i)&1)){f_count ^= 1;}
     if (i >= leftLength) {
       //copy remaining elements from right
