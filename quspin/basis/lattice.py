@@ -196,7 +196,7 @@ class lattice_basis(basis):
 		
 			print(_np.concatenate([sub_sys_A, list(set(range(N))-set(sub_sys_A) ) ]))
 			
-			states=_np.arange(2**N, dtype=self._basis.dtype)
+			states=_np.arange(2**N-1,-1,-1, dtype=self._basis.dtype)
 			sign_array=_np.ones(states.shape, dtype=_np.int8)
 
 			fermion_ptrace_sign(N, states, sign_array, sub_sys_A)
