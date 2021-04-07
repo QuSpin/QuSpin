@@ -11,6 +11,7 @@ def get_include_dirs():
 
 	include_dirs = [numpy.get_include()]
 	include_dirs.append(os.path.join(package_dir,"_basis_utils"))
+	include_dirs.append(os.path.join(package_dir,"basis_general/_basis_general_core/source"))
 
 	
 	if sys.platform == "win32":
@@ -30,6 +31,7 @@ def cython_files():
 
 	cython_src = [
 					os.path.join(package_dir,"_basis_utils.pyx"),
+					os.path.join(package_dir,"basis_general/_basis_general_core/source","general_basis_types.pxd"),
 				]
 	cythonize(cython_src,include_path=get_include_dirs())
 
@@ -39,9 +41,9 @@ def configuration(parent_package='',top_path=None):
 	from numpy.distutils.misc_util import Configuration
 	import os,numpy,sys
 	config = Configuration('basis', parent_package, top_path)
-	config.add_subpackage('basis_1d')
-	config.add_subpackage('basis_general')
-	config.add_subpackage('transformations')
+	#config.add_subpackage('basis_1d')
+	#config.add_subpackage('basis_general')
+	#config.add_subpackage('transformations')
 
 	cython_files()
 
@@ -57,7 +59,11 @@ def configuration(parent_package='',top_path=None):
 	if sys.platform == "darwin":
 		extra_compile_args.append("-std=c++11")
 
-	depends = [os.path.join(package_dir,"_basis_utils","shuffle_sites.h")]
+	depends = [
+				os.path.join(package_dir,"_basis_utils","shuffle_sites.h"),
+				os.path.join(package_dir,"_basis_utils","fermion_ptrace_ordering.h"),
+				os.path.join(package_dir,"basis_general/_basis_general_core/source","spinless_fermion_basis_core.h"),	   
+			   ]
 	basis_utils_src = os.path.join(package_dir,"_basis_utils.cpp")	
 	config.add_extension('_basis_utils',sources=basis_utils_src,include_dirs=get_include_dirs(),
 							language="c++",depends=depends,extra_compile_args=extra_compile_args,extra_link_args=extra_link_args)

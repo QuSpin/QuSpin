@@ -14,6 +14,10 @@ from libcpp cimport bool
 import numpy as _np
 
 
+#from general_basis_types cimport *
+ctypedef fused state_type:
+    uint32_t
+    uint64_t
 
 
 ctypedef fused npy_type:
@@ -33,6 +37,9 @@ ctypedef fused npy_type:
 
 cdef extern from "shuffle_sites.h":
     void shuffle_sites_strid[T](const int32_t,const npy_intp*,const int32_t*,const npy_intp,const npy_intp,const T*,T*) nogil
+
+cdef extern from "fermion_ptrace_ordering.h":
+    void fermion_ptrace_sign_core[I,P](I, const int[], const int, P&) nogil
 
 
 
@@ -126,4 +133,18 @@ def _shuffle_sites(npy_intp sps,T_tup,A):
         return A_T
     else:
         return _np.ascontiguousarray(A)
+
+
+@cython.boundscheck(False)
+def fermion_ptrace_sign(int N, state_type[::1] states, int8_t[::1] signs, object sub_sys_A):
+
+    sub_sys_B = list(set(range(N))-set(sub_sys_A) )
+
+    cdef int Ns=states.shape[0]
+    cdef _np.ndarray map = _np.concatenate([sub_sys_A, sub_sys_B])
+    cdef void * ptr = _np.PyArray_GETPTR1(map,0)
+
+    with nogil:
+        for j in range(Ns):
+            fermion_ptrace_sign_core(states[j], <int*>ptr, N, signs[j])
 

@@ -7,6 +7,7 @@ import scipy.sparse as _sp
 from numpy.linalg import norm,eigvalsh
 from scipy.sparse.linalg import eigsh
 import warnings
+from ._basis_utils import fermion_ptrace_sign
 
 _dtypes={"f":_np.float32,"d":_np.float64,"F":_np.complex64,"D":_np.complex128}
 
@@ -176,8 +177,6 @@ class lattice_basis(basis):
 		if subsys_ordering:
 			sub_sys_A = sorted(sub_sys_A)
 
-		sps = self.sps
-		N = self.N
 
 		if not hasattr(state,"shape"):
 			state = _np.asanyarray(state)
@@ -187,8 +186,34 @@ class lattice_basis(basis):
 		if state.shape[0] != self.Ns:
 			raise ValueError("state shape {0} not compatible with Ns={1}".format(state.shape,self._Ns))
 
+
+		sps = self.sps
+		N = self.N
+
+		# compute signs for fermion bases AND non-contiguous subsystems: Q: what about PBC and sub_sys_A=[0, L-1]?
+		compute_signs=self._fermion_basis and _np.prod(_np.diff(sub_sys_A))!=1
+		if compute_signs:
+		
+			print(_np.concatenate([sub_sys_A, list(set(range(N))-set(sub_sys_A) ) ]))
+			
+			states=_np.arange(2**N, dtype=self._basis.dtype)
+			sign_array=_np.ones(states.shape, dtype=_np.int8)
+
+			fermion_ptrace_sign(N, states, sign_array, sub_sys_A)
+
+
+			for s,sign in zip(states,sign_array):
+				print(sign, self.int_to_state(s), )
+
+			exit()
+
+
+
 		if _sp.issparse(state) or sparse:
 			state=self.project_from(state,sparse=True).T
+
+			if compute_signs: # imprint fermion signs
+				state = (state.T*sign_array).T
 			
 			if state.shape[0] == 1:
 				# sparse_pure partial trace
@@ -218,17 +243,28 @@ class lattice_basis(basis):
 			if state.ndim==1:
 				# calculate full H-space representation of state
 				state=self.project_from(state,sparse=False)
+
+				if compute_signs: # imprint fermion signs
+					state *= sign_array
+
 				rdm_A,rdm_B = _lattice_partial_trace_pure(state.T,sub_sys_A,N,sps,return_rdm=return_rdm)
 
 			elif state.ndim==2: 
 				if state.shape[0]!=state.shape[1] or enforce_pure:
 					# calculate full H-space representation of state
 					state=self.project_from(state,sparse=False)
+
+					if compute_signs: # imprint fermion signs
+						state = (state.T*sign_array).T
+
 					rdm_A,rdm_B = _lattice_partial_trace_pure(state.T,sub_sys_A,N,sps,return_rdm=return_rdm)
 
 				else: 
 					proj = self.get_proj(_dtypes[state.dtype.char])
 					proj_state = proj*state*proj.H
+
+					if compute_signs: # imprint fermion signs
+						proj_state *= _np.outer(sign_array, sign_array)
 
 					shape0 = proj_state.shape
 					proj_state = proj_state.reshape((1,)+shape0)					
@@ -241,8 +277,12 @@ class lattice_basis(basis):
 				
 				Ns_full = proj.shape[0]
 				n_states = state.shape[0]
-				
-				gen = (proj*s*proj.H for s in state[:])
+
+				if compute_signs: # imprint fermion signs
+					signs_mask = _np.outer(sign_array, sign_array)
+					gen = (proj*(s*signs_mask)*proj.H for s in state[:])
+				else:
+					gen = (proj*s*proj.H for s in state[:])
 
 				proj_state = _np.zeros((n_states,Ns_full,Ns_full),dtype=_dtypes[state.dtype.char])
 				
@@ -292,8 +332,6 @@ class lattice_basis(basis):
 		if subsys_ordering:
 			sub_sys_A = sorted(sub_sys_A)
 
-		sps = self.sps
-		N = self.N
 
 		if not hasattr(state,"shape"):
 			state = _np.asanyarray(state)
@@ -302,6 +340,10 @@ class lattice_basis(basis):
 
 		if state.shape[0] != self.Ns:
 			raise ValueError("state shape {0} not compatible with Ns={1}".format(state.shape,self._Ns))
+
+
+		sps = self.sps
+		N = self.N
 
 		
 		pure=True # set pure state parameter to True
