@@ -855,7 +855,7 @@ class hamiltonian(object):
 		"""Calculates expectation value of `hamiltonian` operator at time `time`, in state `V`.
 
 		.. math::
-			\\langle V|H(t=\\texttt{time})|V\\rangle
+			\\langle V|H(t=\\texttt{time})|V\\rangle,\\qquad \\mathrm{tr}(V H(t=\\texttt{time}))
 
 		Parameters
 		-----------

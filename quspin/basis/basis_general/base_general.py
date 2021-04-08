@@ -182,6 +182,10 @@ class basis_general(lattice_basis):
 		obj_dict.pop("_core")
 		return obj_dict
 
+	@property
+	def _fermion_basis(self):
+		return False
+
 
 	@property
 	def description(self):

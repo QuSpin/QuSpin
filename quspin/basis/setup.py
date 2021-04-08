@@ -31,7 +31,6 @@ def cython_files():
 
 	cython_src = [
 					os.path.join(package_dir,"_basis_utils.pyx"),
-				#	os.path.join(package_dir,"basis_general/_basis_general_core/source","general_basis_types.pxd"),
 				]
 	cythonize(cython_src,include_path=get_include_dirs())
 
@@ -41,9 +40,9 @@ def configuration(parent_package='',top_path=None):
 	from numpy.distutils.misc_util import Configuration
 	import os,numpy,sys
 	config = Configuration('basis', parent_package, top_path)
-	#config.add_subpackage('basis_1d')
-	#config.add_subpackage('basis_general')
-	#config.add_subpackage('transformations')
+	config.add_subpackage('basis_1d')
+	config.add_subpackage('basis_general')
+	config.add_subpackage('transformations')
 
 	cython_files()
 

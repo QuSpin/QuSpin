@@ -495,6 +495,10 @@ class basis_1d(lattice_basis):
 		"""int: number of sites the basis is constructed with."""
 		return self._L
 
+	@property
+	def _fermion_basis(self):
+		return False
+
 
 
 	@property

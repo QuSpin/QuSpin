@@ -139,7 +139,25 @@ class lattice_basis(basis):
 		"""
 		return self._index(s)
 
+	def _ptrace_signs(self,N,sub_sys_A):
+		"""
+		Helper function to compute the signs for the partial trace for noncontiguous femrionic subsystems.
+		"""
 
+		sign_array=_np.ones((2**N,), dtype=_np.int8)
+
+		# compute subsystem B and construct the entire system
+		sub_sys_B = list(set(range(N))-set(sub_sys_A))
+		sub_sys_B.sort()
+		system = _np.concatenate((sub_sys_A, sub_sys_B))
+
+		# compute the map sich that system[pmap]=[0,1,...,L-1]
+		pmap = _np.argsort(system).astype(_np.int32)
+
+		# compute fermion signs resulting from pmap
+		fermion_ptrace_sign(N, sign_array, pmap)
+
+		return sign_array
 
 
 	def _partial_trace(self,state,sub_sys_A=None,subsys_ordering=True,return_rdm="A",enforce_pure=False,sparse=False):
@@ -190,21 +208,11 @@ class lattice_basis(basis):
 		sps = self.sps
 		N = self.N
 
-		# compute signs for fermion bases AND non-contiguous subsystems: Q: what about PBC and sub_sys_A=[0, L-1]?
-		compute_signs=self._fermion_basis and _np.prod(_np.diff(sub_sys_A))!=1
-		if compute_signs:
+		# compute signs for fermion bases AND non-contiguous subsystems w.r.t. the sign convention
+		compute_signs=self._fermion_basis # and _np.prod(_np.diff(sub_sys_A))!=1
 		
-			# print(_np.concatenate([sub_sys_A, list(set(range(N))-set(sub_sys_A) ) ]))
-			
-			sign_array=_np.ones((2**N,), dtype=_np.int8)
-
-			fermion_ptrace_sign(N, sign_array, sub_sys_A)
-
-
-			# for j,sign in enumerate(sign_array):
-			# 	print(sign, self.int_to_state(2**N-j-1), )
-
-			# exit()
+		if compute_signs:
+			 sign_array = self._ptrace_signs(N,sub_sys_A)
 
 
 
@@ -212,7 +220,7 @@ class lattice_basis(basis):
 			state=self.project_from(state,sparse=True).T
 
 			if compute_signs: # imprint fermion signs
-				state = (state.T*sign_array).T
+				state = state.multiply(sign_array)
 			
 			if state.shape[0] == 1:
 				# sparse_pure partial trace
@@ -254,7 +262,7 @@ class lattice_basis(basis):
 					state=self.project_from(state,sparse=False)
 
 					if compute_signs: # imprint fermion signs
-						state = (state.T*sign_array).T
+						state = (state.T * sign_array).T 
 
 					rdm_A,rdm_B = _lattice_partial_trace_pure(state.T,sub_sys_A,N,sps,return_rdm=return_rdm)
 
@@ -279,7 +287,7 @@ class lattice_basis(basis):
 
 				if compute_signs: # imprint fermion signs
 					signs_mask = _np.outer(sign_array, sign_array)
-					gen = (proj*(s*signs_mask)*proj.H for s in state[:])
+					gen = ( _np.multiply(proj*s*proj.H, signs_mask) for s in state[:])
 				else:
 					gen = (proj*s*proj.H for s in state[:])
 
@@ -344,6 +352,9 @@ class lattice_basis(basis):
 		sps = self.sps
 		N = self.N
 
+		# compute signs for fermion bases AND non-contiguous subsystems w.r.t. the sign convention
+		compute_signs=self._fermion_basis # and _np.prod(_np.diff(sub_sys_A))!=1
+
 		
 		pure=True # set pure state parameter to True
 		if _sp.issparse(state) or sparse:
@@ -352,9 +363,11 @@ class lattice_basis(basis):
 
 			sparse=True # set sparse flag to True
 			if state.shape[1] == 1:
+				# calls _partial_trace
 				p, rdm_A, rdm_B = self._p_pure_sparse(state,sub_sys_A,return_rdm=return_rdm,sparse_diag=sparse_diag,maxiter=maxiter)
 			else:
 				if state.shape[0]!=state.shape[1] or enforce_pure:
+					# calls _partial_trace
 					p, rdm_A, rdm_B = self._p_pure_sparse(state,sub_sys_A,return_rdm=return_rdm)
 				else: 
 					raise ValueError("Expecting a dense array for mixed states.")
@@ -362,12 +375,12 @@ class lattice_basis(basis):
 		else:
 			if state.ndim==1:
 				state = state.reshape((-1,1))
-				p, rdm_A, rdm_B = self._p_pure(state,sub_sys_A,svd_solver=svd_solver,svd_kwargs=svd_kwargs,return_rdm=return_rdm)
+				p, rdm_A, rdm_B = self._p_pure(state,sub_sys_A,svd_solver=svd_solver,svd_kwargs=svd_kwargs,return_rdm=return_rdm,compute_signs=compute_signs)
 			
 			elif state.ndim==2: 
 
 				if state.shape[0]!=state.shape[1] or enforce_pure:
-					p, rdm_A, rdm_B = self._p_pure(state,sub_sys_A,svd_solver=svd_solver,svd_kwargs=svd_kwargs,return_rdm=return_rdm)
+					p, rdm_A, rdm_B = self._p_pure(state,sub_sys_A,svd_solver=svd_solver,svd_kwargs=svd_kwargs,return_rdm=return_rdm,compute_signs=compute_signs)
 				else: # 2D mixed
 					pure=False
 					"""
@@ -382,7 +395,7 @@ class lattice_basis(basis):
 					"""
 					shape0 = state.shape
 					state = state.reshape(shape0+(1,))
-					p_A, p_B, rdm_A, rdm_B = self._p_mixed(state,sub_sys_A,return_rdm=return_rdm)
+					p_A, p_B, rdm_A, rdm_B = self._p_mixed(state,sub_sys_A,return_rdm=return_rdm,compute_signs=compute_signs)
 				
 			elif state.ndim==3: #3D DM 
 				pure=False
@@ -398,7 +411,7 @@ class lattice_basis(basis):
 				if _np.any( abs(_np.trace(state, axis1=1,axis2=2) - 1.0 > 1E3*_np.finfo(state.dtype).eps)  ):
 					raise ValueError("Expecting eigenvalues of DM to sum to unity!")
 				"""
-				p_A, p_B, rdm_A, rdm_B = self._p_mixed(state,sub_sys_A,return_rdm=return_rdm)
+				p_A, p_B, rdm_A, rdm_B = self._p_mixed(state,sub_sys_A,return_rdm=return_rdm,compute_signs=compute_signs)
 
 			else:
 				raise ValueError("state must have ndim < 4")
@@ -459,55 +472,7 @@ class lattice_basis(basis):
 
 	##### private methods
 
-	def _p_pure(self,state,sub_sys_A,svd_solver=None,svd_kwargs=None,return_rdm=None,): # default is None
-		
-		if svd_kwargs is None:
-			svd_kwargs=dict()
-
-		# calculate full H-space representation of state
-		state=self.project_from(state,sparse=False)
-		# put states in rows
-		state=state.T
-		# reshape state according to sub_sys_A
-		v=_lattice_reshape_pure(state,sub_sys_A,self.N,self._sps)
-		
-		rdm_A=None
-		rdm_B=None
-		
-		# perform SVD	
-		if return_rdm is None:
-			if (svd_solver is None) or (svd_solver==_np.linalg.svd):
-				lmbda = _np.linalg.svd(v, compute_uv=False) 
-			else: # custom solver
-				# preallocate
-				lmbda=_np.zeros(v.shape[0:2],dtype=state.dtype)
-				# loop over states
-				for j in range(v.shape[0]):
-					lmbda[j,...] = svd_solver(v[j,...], **svd_kwargs)	
-		else:
-			if (svd_solver is None) or (svd_solver==_np.linalg.svd):
-				U, lmbda, V =  _np.linalg.svd(v, full_matrices=False)
-			else: # custom solver
-				# preallocate
-				lmbda=_np.zeros(v.shape[0:2],dtype=state.dtype)
-				U=_np.zeros(v.shape,dtype=state.dtype)
-				V=_np.zeros_like(U)
-				# loop over states
-				for j in range(v.shape[0]):
-					U[j,...], lmbda[j,...], V[j,...] = svd_solver(v[j,...], **svd_kwargs)
-			
-			if return_rdm=='A':
-				rdm_A = _np.einsum('...ij,...j,...kj->...ik',U,lmbda**2,U.conj() )
-			elif return_rdm=='B':
-				rdm_B = _np.einsum('...ji,...j,...jk->...ik',V.conj(),lmbda**2,V )
-			elif return_rdm=='both':
-				rdm_A = _np.einsum('...ij,...j,...kj->...ik',U,lmbda**2,U.conj() )
-				rdm_B = _np.einsum('...ji,...j,...jk->...ik',V.conj(),lmbda**2,V )
-
-		
-		return lmbda**2 + _np.finfo(lmbda.dtype).eps, rdm_A, rdm_B
-
-	def _p_pure_sparse(self,state,sub_sys_A,return_rdm=None,sparse_diag=True,maxiter=None):
+	def _p_pure_sparse(self,state,sub_sys_A,return_rdm=None,sparse_diag=True,maxiter=None): # calls _partial_trace
 
 		partial_trace_args = dict(sub_sys_A=sub_sys_A,sparse=True,enforce_pure=True)
 
@@ -569,8 +534,65 @@ class lattice_basis(basis):
 				p = _np.stack(p_gen)
 
 		return p,rdm_A,rdm_B
+
+
+	def _p_pure(self,state,sub_sys_A,svd_solver=None,svd_kwargs=None,return_rdm=None,compute_signs=False,): # default is None
+		
+		if svd_kwargs is None:
+			svd_kwargs=dict()
+
+		# calculate full H-space representation of state
+		state=self.project_from(state,sparse=False)
+
+		if compute_signs: # imprint fermion signs
+			sign_array = self._ptrace_signs(self.N,sub_sys_A)
+			state = (state.T * sign_array).T 
+
+
+		# put states in rows
+		state=state.T
+		# reshape state according to sub_sys_A
+		v=_lattice_reshape_pure(state,sub_sys_A,self.N,self._sps)
+		
+		rdm_A=None
+		rdm_B=None
+		
+		# perform SVD	
+		if return_rdm is None:
+			if (svd_solver is None) or (svd_solver==_np.linalg.svd):
+				lmbda = _np.linalg.svd(v, compute_uv=False) 
+			else: # custom solver
+				# preallocate
+				lmbda=_np.zeros(v.shape[0:2],dtype=state.dtype)
+				# loop over states
+				for j in range(v.shape[0]):
+					lmbda[j,...] = svd_solver(v[j,...], **svd_kwargs)	
+		else:
+			if (svd_solver is None) or (svd_solver==_np.linalg.svd):
+				U, lmbda, V =  _np.linalg.svd(v, full_matrices=False)
+			else: # custom solver
+				# preallocate
+				lmbda=_np.zeros(v.shape[0:2],dtype=state.dtype)
+				U=_np.zeros(v.shape,dtype=state.dtype)
+				V=_np.zeros_like(U)
+				# loop over states
+				for j in range(v.shape[0]):
+					U[j,...], lmbda[j,...], V[j,...] = svd_solver(v[j,...], **svd_kwargs)
+			
+			if return_rdm=='A':
+				rdm_A = _np.einsum('...ij,...j,...kj->...ik',U,lmbda**2,U.conj() )
+			elif return_rdm=='B':
+				rdm_B = _np.einsum('...ji,...j,...jk->...ik',V.conj(),lmbda**2,V )
+			elif return_rdm=='both':
+				rdm_A = _np.einsum('...ij,...j,...kj->...ik',U,lmbda**2,U.conj() )
+				rdm_B = _np.einsum('...ji,...j,...jk->...ik',V.conj(),lmbda**2,V )
+
+		
+		return lmbda**2 + _np.finfo(lmbda.dtype).eps, rdm_A, rdm_B
+
 	
-	def _p_mixed(self,state,sub_sys_A,return_rdm=None):
+	
+	def _p_mixed(self,state,sub_sys_A,return_rdm=None,compute_signs=False,):
 		"""
 		This function calculates the eigenvalues of the reduced density matrix.
 		It will first calculate the partial trace of the full density matrix and
@@ -591,7 +613,13 @@ class lattice_basis(basis):
 		Ns_full = proj.shape[0]
 		n_states = state.shape[0]
 		
-		gen = (proj*s*proj.H for s in state[:])
+		if compute_signs: # imprint fermion signs
+			sign_array = self._ptrace_signs(self.N,sub_sys_A)
+			signs_mask = _np.outer(sign_array, sign_array)
+			gen = ( _np.multiply(proj*s*proj.H, signs_mask) for s in state[:])
+		else:
+			gen = (proj*s*proj.H for s in state[:])
+
 
 		proj_state = _np.zeros((n_states,Ns_full,Ns_full),dtype=_dtypes[state.dtype.char])
 		

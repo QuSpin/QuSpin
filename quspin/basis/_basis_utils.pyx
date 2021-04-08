@@ -14,11 +14,6 @@ from libcpp cimport bool
 import numpy as _np
 
 
-#from general_basis_types cimport *
-ctypedef fused state_type:
-    uint32_t
-    uint64_t
-
 
 ctypedef fused npy_type:
     int8_t
@@ -39,7 +34,7 @@ cdef extern from "shuffle_sites.h":
     void shuffle_sites_strid[T](const int32_t,const npy_intp*,const int32_t*,const npy_intp,const npy_intp,const T*,T*) nogil
 
 cdef extern from "fermion_ptrace_ordering.h":
-    void fermion_ptrace_sign_core[I,P](I, const int[], const int, P&) nogil
+    void fermion_ptrace_sign_core[I,P](I, const int32_t[], const int32_t, P&) nogil
 
 
 
@@ -136,20 +131,12 @@ def _shuffle_sites(npy_intp sps,T_tup,A):
 
 
 @cython.boundscheck(False)
-def fermion_ptrace_sign(int N, int8_t[::1] signs, object sub_sys_A):
-
-    # compute subsystem B and construct the entire system
-    sub_sys_B = list(set(range(N))-set(sub_sys_A))
-    sub_sys_B.sort()
-
-    system = _np.concatenate((sub_sys_A, sub_sys_B))
+def fermion_ptrace_sign(int N, int8_t[::1] signs, int32_t[::1] pmap):
 
     cdef npy_intp Ns = (<npy_intp>2)**N
     cdef npy_intp j = 0
-    cdef _np.ndarray pmap = _np.argsort(system).astype(_np.int32) # get inverse map
-    cdef void * ptr = _np.PyArray_GETPTR1(pmap,0)
-
+   
     with nogil:
         for j in range(Ns):
-            fermion_ptrace_sign_core(<uint64_t>(Ns-j-1), <int*>ptr, N, signs[j])
+            fermion_ptrace_sign_core(<uint64_t>(Ns-j-1), &pmap[0], N, signs[j])
 

@@ -1,10 +1,10 @@
 
 
-:green:`QuSpin 0.3.5` (released on 2021.02.15)
+:red:`QuSpin 0.3.6` (released on 2021.04.15)
 ================================================
 
 
-:red:`Highlights:` Lanczos module now here; Constrained Hilbert spaces support available; OpenMP support available!
+:green:`Highlights:` Lanczos module now here; Constrained Hilbert spaces support available; OpenMP support available!
 =====================================================================================================================
 
 Check out :ref:`parallelization-label` and the example script :ref:`example12-label`.
@@ -14,6 +14,16 @@ For a tutorial in QuSpin's `user_basis` which allows the user to define custom b
 
 Complete list of the most recent features 
 =========================================
+
+
+Added in v. 0.3.6 (2021.04.15)
+------------------------------
+
+Improved Functionality
+++++++++++++++++++++++
+* fixed a bug with *non-contiguous* subsystems in `basis.partial_trace()` and `basis.ent_entropy()` for the fermionic basis clases `*_fermion_basis_*`.
+* fixed a bug with defining mixed particle sectors in `*_fermion_basis_general`.
+
 
 
 Added in v. 0.3.5 (2021.02.15)
