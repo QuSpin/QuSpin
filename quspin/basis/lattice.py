@@ -194,17 +194,17 @@ class lattice_basis(basis):
 		compute_signs=self._fermion_basis and _np.prod(_np.diff(sub_sys_A))!=1
 		if compute_signs:
 		
-			print(_np.concatenate([sub_sys_A, list(set(range(N))-set(sub_sys_A) ) ]))
+			# print(_np.concatenate([sub_sys_A, list(set(range(N))-set(sub_sys_A) ) ]))
 			
 			sign_array=_np.ones((2**N,), dtype=_np.int8)
 
 			fermion_ptrace_sign(N, sign_array, sub_sys_A)
 
 
-			for j,sign in enumerate(sign_array):
-				print(sign, self.int_to_state(2**N-j-1), )
+			# for j,sign in enumerate(sign_array):
+			# 	print(sign, self.int_to_state(2**N-j-1), )
 
-			exit()
+			# exit()
 
 
 
