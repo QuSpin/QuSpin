@@ -28,7 +28,7 @@ class spinless_fermion_basis_1d(basis_1d):
 	The code snippet below shows how to use the `spinless_fermion_basis_1d` class to construct the basis in the zero momentum sector of positive parity for the fermion Hamiltonian 
 
 	.. math::
-		H(t)=-J\\sum_j c^\\dagger_{j+1}c_j + \\mathrm{h.c.} - \\mu\\sum_j n_j + U\\cos\\Omega t\\sum_j n_{j+1} n_j
+		H(t)=-J\\sum_j c_jc^\\dagger_{j+1} + \\mathrm{h.c.} - \\mu\\sum_j n_j + U\\cos\\Omega t\\sum_j n_j n_{j+1} 
 
 	.. literalinclude:: ../../doc_examples/spinless_fermion_basis_1d-example.py
 		:linenos:
