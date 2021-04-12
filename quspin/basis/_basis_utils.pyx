@@ -29,12 +29,16 @@ ctypedef fused npy_type:
     complex64_t
     complex128_t
 
+ctypedef fused phase_type:
+    int8_t
+    complex128_t
+
 
 cdef extern from "shuffle_sites.h":
     void shuffle_sites_strid[T](const int32_t,const npy_intp*,const int32_t*,const npy_intp,const npy_intp,const T*,T*) nogil
 
-cdef extern from "fermion_ptrace_ordering.h":
-    void fermion_ptrace_sign_core[I,P](I, const int32_t[], const int32_t, P&) nogil
+cdef extern from "ptrace_ordering.h":
+    int32_t partition_swaps[I](I, const int32_t[], const int32_t) nogil
 
 
 
@@ -131,12 +135,36 @@ def _shuffle_sites(npy_intp sps,T_tup,A):
 
 
 @cython.boundscheck(False)
-def fermion_ptrace_sign(int N, int8_t[::1] signs, int32_t[::1] pmap):
-
-    cdef npy_intp Ns = (<npy_intp>2)**N
+def fermion_ptrace_sign(int32_t[::1] pmap, uint64_t bit_mask, int8_t[::1] phases):
+    cdef npy_intp Ns = phases.size
     cdef npy_intp j = 0
+    cdef uint64_t s = 0
+    cdef int swap_count = 0
+    cdef int N = pmap.size
+    cdef int32_t * pmap_ptr = &pmap[0]
    
     with nogil:
         for j in range(Ns):
-            fermion_ptrace_sign_core(<uint64_t>(Ns-j-1), &pmap[0], N, signs[j])
+            s = (<uint64_t>(Ns-j-1)) & bit_mask
+            swap_count = partition_swaps(s,pmap_ptr,N)
+            phases[j] *= (-1 if swap_count&1 else 1)
+
+@cython.boundscheck(False)
+def anyon_ptrace_phase(int32_t[::1] pmap, uint64_t bit_mask, complex128_t[::1] phases,complex128_t swap_phase):
+    cdef npy_intp Ns = phases.size
+    cdef npy_intp j = 0
+    cdef uint64_t s = 0
+    cdef int swap_count = 0
+    cdef int N = pmap.size
+    cdef int32_t * pmap_ptr = &pmap[0]
+   
+    with nogil:
+        for j in range(Ns):
+            s = (<uint64_t>(Ns-j-1)) & bit_mask
+            swap_count = partition_swaps(s,pmap_ptr,N)
+            phases[j] *= swap_phase**swap_count
+
+
+
+
 

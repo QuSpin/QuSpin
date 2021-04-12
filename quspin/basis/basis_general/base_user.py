@@ -16,7 +16,6 @@ next_state_sig_64 = types.uint64(types.uint64,types.uint64,types.uint64,types.CP
 pre_check_state_sig_32 = types.uint32(types.uint32,types.uint32,types.CPointer(types.uint32))
 pre_check_state_sig_64 = types.uint64(types.uint64,types.uint64,types.CPointer(types.uint64))
 
-
 op_results_32 = types.Record.make_c_struct([
    ('matrix_ele', types.complex128),('state', types.uint32),
 ])
@@ -100,6 +99,38 @@ def _process_user_blocks(use_32bit,blocks_dict,block_order):
 		return {},[],[],[],[]
 
 
+def _noncommuting_bits(N,noncommuting_bits):
+	
+	completed_noncommuting_bits = []
+
+	for bits,swap_phase in site_info:
+		bits = _np.asarray(bits)
+		swap_phase = _np.asarray(swap_phase)
+
+		if _np.issubdtype(bits.dtype,np.int64):
+			raise TypeError("site list most contain only integers.")
+
+		if _np.array(swap_phase).ndim != 0:
+			raise ValueError("swap_phase must be scalar.")
+
+		if _np.any(_np.logical_and(bits < 0,bits >= N)):
+			raise ValueError("bit number outside of range of system.")
+
+		if swap_phase == -1:
+			swap_phase = swap_phase.astype(np.int8)
+		elif np.abs(swap_phase)!=1:
+			raise ValueError("must have |swap_phase|==1")
+		else:
+			if swap_phase == 1:
+				continue # skip 
+			else:
+				# swap_phase = swap_phase.astype(_np.complex128)
+				raise NotImplementedError("Abealian anyons are not supported for user_basis.")
+
+		completed_noncommuting_bits.append((bits,swap_phase))
+
+	return completed_noncommuting_bits
+
 
 class user_basis(basis_general):
 	"""Constructs basis for USER-DEFINED functionality of a basis object.
@@ -133,7 +164,7 @@ class user_basis(basis_general):
 
 	"""
 	def __init__(self,basis_dtype,N,op_dict,sps=2,pcon_dict=None,pre_check_state=None,allowed_ops=None,
-		parallel=False,Ns_block_est=None,_make_basis=True,block_order=None,_Np=None,**blocks):
+		parallel=False,Ns_block_est=None,_make_basis=True,block_order=None,noncommuting_bits=[],_Np=None,**blocks):
 		"""Intializes the `user_basis_general` object (basis for user defined ED calculations).
 
 		Parameters
@@ -181,10 +212,14 @@ class user_basis(basis_general):
 			turns on parallel code when constructing the basis even when no symmetries are implemented. Useful when constructing highly constrained Hilbert spaces with pre_check_state. 
 		sps: int, optional
 			The number of states per site (i.e. the local on-site Hilbert space dimension).
+		Ns_full: int, optional
+			Total number of states in the Hilbert space without any symmetries. For a single species this value is `sps**N`
 		Ns_block_est: int, optional
 			An estimate for the size of the symmetry reduced block, QuSpin does a simple estimate which is not always correct. 
 		block_order: tuple/list, optional
 			A list of strings containing the names of the symmetry blocks which specifies the order in which the symmetries will be applied to the state when calculating the basis. The first element in the list is applied to the state first followed by the second element, etc. If the list is not specificed the ordering is such that the symmetry with the largest cycle is the first, followed by the second largest, etc. 
+		noncommuting_bits: list, optional
+			A list of tuples specifying if bits belong to a group of sites that do not commute. The first element in each tuple represents the group of sites, and the second element represents the phase that is given during the exchange.
 		**blocks: optional
 			keyword arguments which pass the symmetry generator arrays. For instance:
 
@@ -214,8 +249,10 @@ class user_basis(basis_general):
 		self._basis_pcon = None
 		self._get_proj_pcon = False
 		self._made_basis = False # keeps track of whether the basis has been made
+		
+		self._noncommuting_bits = _noncommuting_bits(N,noncommuting_bits)
+		self._fermion_ba
 
-		Ns_full=sps**N
 		self._N = N
 		if basis_dtype not in [_np.uint32,_np.uint64]:
 			raise ValueError("basis_dtype must be either uint32 or uint64 for the given basis representation.")
@@ -229,7 +266,6 @@ class user_basis(basis_general):
 
 			raise ValueError("map_args must be a C-contiguous numpy array with dtype {}".format(basis_dtype))
 		
-
 
 		if type(op_dict) is dict:
 			if len(op_dict) != 2:

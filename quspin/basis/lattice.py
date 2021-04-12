@@ -7,7 +7,7 @@ import scipy.sparse as _sp
 from numpy.linalg import norm,eigvalsh
 from scipy.sparse.linalg import eigsh
 import warnings
-from ._basis_utils import fermion_ptrace_sign
+from ._basis_utils import fermion_ptrace_sign,anyon_ptrace_phase
 
 _dtypes={"f":_np.float32,"d":_np.float64,"F":_np.complex64,"D":_np.complex128}
 
@@ -19,6 +19,7 @@ class lattice_basis(basis):
 		self._unique_me = True
 		self._check_symm = None
 		self._check_pcon = None
+		self._noncommuting_bits = []
 		if self.__class__.__name__ == 'lattice_basis':
 			raise ValueError("This class is not intended"
 							 " to be instantiated directly.")
@@ -139,25 +140,35 @@ class lattice_basis(basis):
 		"""
 		return self._index(s)
 
-	def _ptrace_signs(self,N,sub_sys_A):
+	def _ptrace_signs(self,sub_sys_A):
 		"""
 		Helper function to compute the signs for the partial trace for noncontiguous femrionic subsystems.
 		"""
-
-		sign_array=_np.ones((2**N,), dtype=_np.int8)
-
 		# compute subsystem B and construct the entire system
-		sub_sys_B = list(set(range(N))-set(sub_sys_A))
+		sub_sys_B = list(set(range(self.N))-set(sub_sys_A))
 		sub_sys_B.sort()
 		system = _np.concatenate((sub_sys_A, sub_sys_B))
 
-		# compute the map sich that system[pmap]=[0,1,...,L-1]
+		# compute the map sich that system[pmap]=[0,1,...,N-1]
 		pmap = _np.argsort(system).astype(_np.int32)
+		# if mixing species of particles calculate signs 
+		# just for each set of sites
 
-		# compute fermion signs resulting from pmap
-		fermion_ptrace_sign(N, sign_array, pmap)
+		phase_dtype = _np.int8
 
-		return sign_array
+		for bits,phase in self.noncommuting_bits:
+			 phase_dtype = _np.result_type(phase_dtype,phase.dtype)
+
+		phase_array = _np.ones(2**self.N,dtype=phase_dtype)
+
+		for bits,phase in self.noncommuting_bits:
+			m = _np.array(sum(1 << b for b in bits), dtype=_np.uint64)
+			if phase.dtype == _np.int8:
+				fermion_ptrace_sign(pmap, m, phase_array)
+			elif phase.dtype == _np.complex128:
+				anyon_ptrace_phase(pmap, m, phase_array)
+
+		return phase_array
 
 
 	def _partial_trace(self,state,sub_sys_A=None,subsys_ordering=True,return_rdm="A",enforce_pure=False,sparse=False):
@@ -209,10 +220,10 @@ class lattice_basis(basis):
 		N = self.N
 
 		# compute signs for fermion bases AND non-contiguous subsystems w.r.t. the sign convention
-		compute_signs=self._fermion_basis # and _np.prod(_np.diff(sub_sys_A))!=1
+		compute_signs= len(self.noncommuting_bits) != 0 # and _np.prod(_np.diff(sub_sys_A))!=1
 		
 		if compute_signs:
-			 sign_array = self._ptrace_signs(N,sub_sys_A)
+			 sign_array = self._ptrace_signs(sub_sys_A)
 
 
 
@@ -545,7 +556,7 @@ class lattice_basis(basis):
 		state=self.project_from(state,sparse=False)
 
 		if compute_signs: # imprint fermion signs
-			sign_array = self._ptrace_signs(self.N,sub_sys_A)
+			sign_array = self._ptrace_signs(sub_sys_A)
 			state = (state.T * sign_array).T 
 
 
@@ -614,7 +625,7 @@ class lattice_basis(basis):
 		n_states = state.shape[0]
 		
 		if compute_signs: # imprint fermion signs
-			sign_array = self._ptrace_signs(self.N,sub_sys_A)
+			sign_array = self._ptrace_signs(sub_sys_A)
 			signs_mask = _np.outer(sign_array, sign_array)
 			gen = ( _np.multiply(proj*s*proj.H, signs_mask) for s in state[:])
 		else:
