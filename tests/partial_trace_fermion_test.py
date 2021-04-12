@@ -20,7 +20,7 @@ def test_pure_states(N=3,sparse=False,enforce_pure=False):
 		psi_full[inds,...]=1.0/np.sqrt(3.0)
 		psi_full = sps.csr_matrix(psi_full)
 	else:
-		psi_full=np.random.uniform(size=(basis_full.Ns,N))
+		psi_full=np.random.uniform(-1.0,1.0,size=(basis_full.Ns,N))
 		psi_full/=np.linalg.norm(psi_full)
 
 	rho_red=basis_full.partial_trace(psi_full,sub_sys_A=sub_sys_A,return_rdm='A',subsys_ordering=False, enforce_pure=False)
@@ -59,12 +59,12 @@ def test_mixed_states(N=3,sparse=False,enforce_pure=False):
 
 	else:
 		if N>1:
-			rdm_full=np.random.uniform(0.0,1.0,size=(basis_full.Ns,basis_full.Ns,N))
+			rdm_full=np.random.uniform(-1.0,1.0,size=(basis_full.Ns,basis_full.Ns,N))
 			# normalize and make positive definite
 			rdm_full = np.einsum('ji...,jk...->ik...',rdm_full.conj(),rdm_full)
 			rdm_full/=np.trace(rdm_full,axis1=0,axis2=1)
 		else:
-			rdm_full=np.random.uniform(0.0,1.0,size=(basis_full.Ns,basis_full.Ns,))
+			rdm_full=np.random.uniform(-1.0,1.0,size=(basis_full.Ns,basis_full.Ns,))
 			# normalize and make positive definite
 			rdm_full = np.einsum('ji...,jk...->ik...',rdm_full.conj(),rdm_full)
 			rdm_full/=np.trace(rdm_full)
