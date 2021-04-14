@@ -19,7 +19,6 @@ class lattice_basis(basis):
 		self._unique_me = True
 		self._check_symm = None
 		self._check_pcon = None
-		self._noncommuting_bits = []
 		if self.__class__.__name__ == 'lattice_basis':
 			raise ValueError("This class is not intended"
 							 " to be instantiated directly.")
@@ -148,7 +147,6 @@ class lattice_basis(basis):
 		sub_sys_B = list(set(range(self.N))-set(sub_sys_A))
 		sub_sys_B.sort()
 		system = _np.concatenate((sub_sys_A, sub_sys_B))
-
 		# compute the map sich that system[pmap]=[0,1,...,N-1]
 		pmap = _np.argsort(system).astype(_np.int32)
 		# if mixing species of particles calculate signs 
@@ -168,6 +166,9 @@ class lattice_basis(basis):
 			elif phase.dtype == _np.complex128:
 				anyon_ptrace_phase(pmap, m, phase_array)
 
+		# for i,sign in enumerate(phase_array):
+		# 	s = _np.array(2**self.N-i-1,dtype=_np.uint64)
+		# 	print(sign,self.int_to_state(s))
 		return phase_array
 
 
@@ -180,7 +181,6 @@ class lattice_basis(basis):
 			sub_sys_A = tuple(range(self.N//2))
 		elif len(sub_sys_A)==self.N:
 			raise ValueError("Size of subsystem must be strictly smaller than total system size N!")
-
 
 		N_A = len(sub_sys_A)
 		N_B = self.N - N_A
@@ -206,26 +206,21 @@ class lattice_basis(basis):
 		if subsys_ordering:
 			sub_sys_A = sorted(sub_sys_A)
 
-
 		if not hasattr(state,"shape"):
 			state = _np.asanyarray(state)
 			state = state.squeeze() # avoids artificial higher-dim reps of ndarray
 
-
 		if state.shape[0] != self.Ns:
 			raise ValueError("state shape {0} not compatible with Ns={1}".format(state.shape,self._Ns))
-
 
 		sps = self.sps
 		N = self.N
 
 		# compute signs for fermion bases AND non-contiguous subsystems w.r.t. the sign convention
 		compute_signs= len(self.noncommuting_bits) != 0 # and _np.prod(_np.diff(sub_sys_A))!=1
-		
+
 		if compute_signs:
 			 sign_array = self._ptrace_signs(sub_sys_A)
-
-
 
 		if _sp.issparse(state) or sparse:
 			state=self.project_from(state,sparse=True).T

@@ -1,7 +1,7 @@
 from .base_general import basis_general
 from ._basis_general_core import user_core_wrap
 import numpy as _np
-from numba import cfunc, types, njit
+from numba import cfunc, types
 try:
 	from numba.ccallback import CFunc # numba < 0.49.0
 except ModuleNotFoundError:
@@ -43,13 +43,7 @@ count_particles_sig_64 = types.void(types.uint64,types.CPointer(types.intc),type
 __all__ = ["map_sig_32","map_sig_64","next_state_sig_32",
 	"next_state_sig_64","op_func_sig_32","op_func_sig_64","user_basis"]
 
-@njit
-def is_sorted_decending(a):
-	for i in range(a.size-1):
-		if(a[i]<a[i+1]):
-			return False
 
-	return True
 
 def _process_user_blocks(use_32bit,blocks_dict,block_order):
 
@@ -103,11 +97,11 @@ def _noncommuting_bits(N,noncommuting_bits):
 	
 	completed_noncommuting_bits = []
 
-	for bits,swap_phase in site_info:
+	for bits,swap_phase in noncommuting_bits:
 		bits = _np.asarray(bits)
 		swap_phase = _np.asarray(swap_phase)
 
-		if _np.issubdtype(bits.dtype,np.int64):
+		if not _np.issubdtype(bits.dtype,_np.int64):
 			raise TypeError("site list most contain only integers.")
 
 		if _np.array(swap_phase).ndim != 0:
@@ -117,7 +111,7 @@ def _noncommuting_bits(N,noncommuting_bits):
 			raise ValueError("bit number outside of range of system.")
 
 		if swap_phase == -1:
-			swap_phase = swap_phase.astype(np.int8)
+			swap_phase = swap_phase.astype(_np.int8)
 		elif np.abs(swap_phase)!=1:
 			raise ValueError("must have |swap_phase|==1")
 		else:
@@ -251,8 +245,7 @@ class user_basis(basis_general):
 		self._made_basis = False # keeps track of whether the basis has been made
 		
 		self._noncommuting_bits = _noncommuting_bits(N,noncommuting_bits)
-		self._fermion_ba
-
+		Ns_full = sps**N
 		self._N = N
 		if basis_dtype not in [_np.uint32,_np.uint64]:
 			raise ValueError("basis_dtype must be either uint32 or uint64 for the given basis representation.")
@@ -511,7 +504,6 @@ class user_basis(basis_general):
 								next_state_args,pre_check_state,check_state_nosymm_args,parallel,
 								count_particles, count_particles_args, op_func, op_args)
 		self._core = user_core_wrap(*self._core_args)
-
 		self._N = N
 		self._Ns = Ns
 		self._Ns_block_est = self._Ns
@@ -528,11 +520,6 @@ class user_basis(basis_general):
 			self._Ns=1
 			self._basis=basis_zeros(self._Ns,dtype=self._basis_dtype)
 			self._n=_np.zeros(self._Ns,dtype=self._n_dtype)
-
-		if not is_sorted_decending(self._basis):
-			ind = _np.argsort(self._basis,kind="heapsort")[::-1]
-			self._basis = self._basis[ind]
-			self._n = self._n[ind]
 
 		if allowed_ops is None:
 			allowed_ops = set([chr(i) for i in range(256)]) # all characters allowed.

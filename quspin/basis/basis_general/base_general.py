@@ -4,8 +4,17 @@ import os,numexpr
 from ._basis_general_core.general_basis_utils import basis_int_to_python_int,_get_basis_index
 from ._basis_general_core import basis_zeros
 from ..lattice import lattice_basis
+from numba import njit
 import warnings
 
+
+@njit
+def _is_sorted_decending(a):
+	for i in range(a.size-1):
+		if(a[i]<a[i+1]):
+			return False
+
+	return True
 
 class GeneralBasisWarning(Warning):
 	pass
@@ -757,30 +766,41 @@ class basis_general(lattice_basis):
 		if Ns < 0:
 				raise ValueError("estimate for size of reduced Hilbert-space is too low, please double check that transformation mappings are correct or use 'Ns_block_est' argument to give an upper bound of the block size.")
 
-		# sort basis
-		if type(self._Np) is int or type(self._Np) is tuple or self._Np is None:
-			if Ns > 0:
-				# self._basis = basis[Ns-1::-1].copy()
-				# self._n = n[Ns-1::-1].copy()
-				# if Np_list is not None: self._Np_list = Np_list[Ns-1::-1].copy()
-				self._basis = basis[:Ns].copy()
-				self._n = n[:Ns].copy()
-				if Np_list is not None: self._Np_list = Np_list[:Ns].copy()
-			else:
-				self._basis = _np.array([],dtype=basis.dtype)
-				self._n = _np.array([],dtype=n.dtype)
-				if Np_list is not None: self._Np_list = _np.array([],dtype=Np_list.dtype)
+		# # sort basis
+		# if type(self._Np) is int or type(self._Np) is tuple or self._Np is None:
+		# 	if Ns > 0:
+		# 		# self._basis = basis[Ns-1::-1].copy()
+		# 		# self._n = n[Ns-1::-1].copy()
+		# 		# if Np_list is not None: self._Np_list = Np_list[Ns-1::-1].copy()
+		# 		self._basis = basis[:Ns].copy()
+		# 		self._n = n[:Ns].copy()
+		# 		if Np_list is not None: self._Np_list = Np_list[:Ns].copy()
+		# 	else:
+		# 		self._basis = _np.array([],dtype=basis.dtype)
+		# 		self._n = _np.array([],dtype=n.dtype)
+		# 		if Np_list is not None: self._Np_list = _np.array([],dtype=Np_list.dtype)
 
-			sort_basis = False
+		# 	sort_basis = False
+		# else:
+		# 	sort_basis = True
+
+		if Ns > 0:
+			# self._basis = basis[Ns-1::-1].copy()
+			# self._n = n[Ns-1::-1].copy()
+			# if Np_list is not None: self._Np_list = Np_list[Ns-1::-1].copy()
+			self._basis = basis[:Ns].copy()
+			self._n = n[:Ns].copy()
+			if Np_list is not None: self._Np_list = Np_list[:Ns].copy()
+
+			if not _is_sorted_decending(self._basis):
+				ind = _np.argsort(self._basis,kind="heapsort")[::-1]
+				self._basis = _np.asarray(self._basis[ind],order="C")
+				self._n =  _np.asarray(self._n[ind],order="C")
+				if Np_list is not None: self._Np_list = _np.asarray(self._Np_list[ind],order="C")
 		else:
-			sort_basis = True
-
-		if sort_basis:
-			ind = _np.argsort(basis[:Ns],kind="heapsort")[::-1]
-			self._basis = basis[ind].copy()
-			self._n = n[ind].copy()
-			if Np_list is not None: self._Np_list = Np_list[ind].copy()
-
+			self._basis = _np.array([],dtype=basis.dtype)
+			self._n = _np.array([],dtype=n.dtype)
+			if Np_list is not None: self._Np_list = _np.array([],dtype=Np_list.dtype)
 
 		self._Ns=Ns
 		self._Ns_block_est=Ns
@@ -827,6 +847,7 @@ class basis_general(lattice_basis):
 		else:
 			N_p = int(N_p)
 
+
 		if len(self._pers) == 0 and self._Np is None:
 			N_p = 0 # do not use blocks for full basis
 
@@ -837,7 +858,6 @@ class basis_general(lattice_basis):
 		else:
 			self._basis_begin = _np.array([],dtype=_np.intp)
 			self._basis_end   = _np.array([],dtype=_np.intp)
-
 
 	def Op_bra_ket(self,opstr,indx,J,dtype,ket_states,reduce_output=True):
 		"""Finds bra states which connect given ket states by operator from a site-coupling list and an operator string.

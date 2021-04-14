@@ -133,8 +133,11 @@ class user_basis_core : public general_basis_core<I,P>
 		int op(I &r,std::complex<double> &m,const int n_op,const char opstr[],const int indx[]){
 			I s = r;
 			op_results<I> res(m,r);
+
 			for(int j=n_op-1;j>=0;j--){
+
 				int err = (*op_func)(&res,opstr[j],indx[j],general_basis_core<I,P>::N,op_args);
+
 				if(err!=0){
 					return err;
 				}
@@ -143,6 +146,7 @@ class user_basis_core : public general_basis_core<I,P>
 					break;
 				}
 			}
+
 			m = res.m; r = res.r;
 			return 0;
 		}

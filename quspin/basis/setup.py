@@ -60,7 +60,7 @@ def configuration(parent_package='',top_path=None):
 
 	depends = [
 				os.path.join(package_dir,"_basis_utils","shuffle_sites.h"),
-				os.path.join(package_dir,"_basis_utils","fermion_ptrace_ordering.h"),
+				os.path.join(package_dir,"_basis_utils","ptrace_ordering.h"),
 				os.path.join(package_dir,"basis_general/_basis_general_core/source","spinless_fermion_basis_core.h"),	   
 			   ]
 	basis_utils_src = os.path.join(package_dir,"_basis_utils.cpp")	
