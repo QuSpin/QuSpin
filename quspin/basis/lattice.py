@@ -13,15 +13,24 @@ _dtypes={"f":_np.float32,"d":_np.float64,"F":_np.complex64,"D":_np.complex128}
 
 class lattice_basis(basis):
 	def __init__(self):
+		basis.__init__(self)
 		self._Ns = 0
 		self._basis = _np.asarray([])
 		self._operators = "no operators for base."
 		self._unique_me = True
 		self._check_symm = None
 		self._check_pcon = None
+		self._noncommuting_bits = []
+
 		if self.__class__.__name__ == 'lattice_basis':
 			raise ValueError("This class is not intended"
 							 " to be instantiated directly.")
+
+
+	@property
+	def noncommuting_bits(self):
+		"""list: list of bits that represent sites that do not commute along with the phase required from commuting sites"""
+		return self._noncommuting_bits
 
 	def __getitem__(self,key):
 		return self._basis.__getitem__(key)

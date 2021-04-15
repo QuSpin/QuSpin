@@ -1,7 +1,7 @@
 from .base_general import basis_general
 from ._basis_general_core import user_core_wrap
 import numpy as _np
-from numba import cfunc, types
+from numba import cfunc, types, njit
 try:
 	from numba.ccallback import CFunc # numba < 0.49.0
 except ModuleNotFoundError:
@@ -43,7 +43,13 @@ count_particles_sig_64 = types.void(types.uint64,types.CPointer(types.intc),type
 __all__ = ["map_sig_32","map_sig_64","next_state_sig_32",
 	"next_state_sig_64","op_func_sig_32","op_func_sig_64","user_basis"]
 
+@njit
+def _is_sorted_decending(a):
+	for i in range(a.size-1):
+		if(a[i]<a[i+1]):
+			return False
 
+	return True
 
 def _process_user_blocks(use_32bit,blocks_dict,block_order):
 
@@ -515,11 +521,18 @@ class user_basis(basis_general):
 		self._n_dtype = _np.min_scalar_type(nmax)
 
 		if _make_basis:	
-			self.make()
+			self.make(N_p=0)
 		else:
 			self._Ns=1
 			self._basis=basis_zeros(self._Ns,dtype=self._basis_dtype)
 			self._n=_np.zeros(self._Ns,dtype=self._n_dtype)
+
+		if not _is_sorted_decending(self._basis):
+			ind = _np.argsort(self._basis,kind="heapsort")[::-1]
+			self._basis = _np.asarray(self._basis[ind],order="C")
+			self._n =  _np.asarray(self._n[ind],order="C")
+
+		self.make_basis_blocks()
 
 		if allowed_ops is None:
 			allowed_ops = set([chr(i) for i in range(256)]) # all characters allowed.

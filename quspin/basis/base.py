@@ -43,7 +43,6 @@ class basis(object):
 		self._check_symm = None
 		self._check_pcon = None
 		self._check_herm = None
-		self._noncommuting_bits = []
 		if self.__class__.__name__ == 'basis':
 			raise ValueError("This class is not intended"
 							 " to be instantiated directly.")
@@ -73,11 +72,6 @@ class basis(object):
 		if any('block' in x for x in self._blocks): 
 			string += "\nThe states printed do NOT correspond to the physical states: see review arXiv:1101.3281 for more details about reference states for symmetry-reduced blocks.\n"
 		return string
-
-	@property
-	def noncommuting_bits(self):
-		"""list: list of bits that represent sites that do not commute along with the phase required from commuting sites"""
-		return self._noncommuting_bits
 
 	@property
 	def Ns(self):
