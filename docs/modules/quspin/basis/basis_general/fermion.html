@@ -175,11 +175,14 @@
 				<span class="n">Np_iter</span> <span class="o">=</span> <span class="nb">iter</span><span class="p">(</span><span class="n">Nf</span><span class="p">)</span>
 			<span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
 				<span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Nf must be integer or iterable object.&quot;</span><span class="p">)</span>
+
+			<span class="n">Nf</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">Nf</span><span class="p">)</span>
 			<span class="bp">self</span><span class="o">.</span><span class="n">_Ns</span> <span class="o">=</span> <span class="mi">0</span>
-			<span class="k">for</span> <span class="n">Nf</span> <span class="ow">in</span> <span class="n">Np_iter</span><span class="p">:</span>
-				<span class="k">if</span> <span class="n">Nf</span> <span class="o">&gt;</span> <span class="n">N</span> <span class="ow">or</span> <span class="n">Nf</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+
+			<span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">Nf</span><span class="p">:</span>
+				<span class="k">if</span> <span class="n">f</span> <span class="o">&gt;</span> <span class="n">N</span> <span class="ow">or</span> <span class="n">f</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
 					<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;particle number Nf must satisfy: 0 &lt;= Nf &lt;= N&quot;</span><span class="p">)</span>
-				<span class="bp">self</span><span class="o">.</span><span class="n">_Ns</span> <span class="o">+=</span> <span class="n">comb</span><span class="p">(</span><span class="n">N</span><span class="p">,</span><span class="n">Nf</span><span class="p">,</span><span class="n">exact</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+				<span class="bp">self</span><span class="o">.</span><span class="n">_Ns</span> <span class="o">+=</span> <span class="n">comb</span><span class="p">(</span><span class="n">N</span><span class="p">,</span><span class="n">f</span><span class="p">,</span><span class="n">exact</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
 		<span class="bp">self</span><span class="o">.</span><span class="n">_pcon_args</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">N</span><span class="o">=</span><span class="n">N</span><span class="p">,</span><span class="n">Nf</span><span class="o">=</span><span class="n">Nf</span><span class="p">)</span>
 
@@ -201,7 +204,8 @@
 		<span class="bp">self</span><span class="o">.</span><span class="n">_Ns_block_est</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_Ns</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">_N</span> <span class="o">=</span> <span class="n">N</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">_Np</span> <span class="o">=</span> <span class="n">Nf</span>
-		
+		<span class="bp">self</span><span class="o">.</span><span class="n">_noncommuting_bits</span> <span class="o">=</span> <span class="p">[(</span><span class="n">_np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">N</span><span class="p">),</span><span class="n">_np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="n">_np</span><span class="o">.</span><span class="n">int8</span><span class="p">))]</span>
+
 
 		<span class="c1"># make the basis; make() is function method of base_general</span>
 		<span class="k">if</span> <span class="n">make_basis</span><span class="p">:</span>		
@@ -227,11 +231,6 @@
 	<span class="k">def</span> <span class="nf">__setstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">state</span><span class="p">):</span>
 		<span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">state</span><span class="p">)</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">_core</span> <span class="o">=</span> <span class="n">spinless_fermion_basis_core_wrap</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_basis_dtype</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">_N</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">_maps</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">_pers</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">_qs</span><span class="p">)</span>
-
-
-	<span class="nd">@property</span>
-	<span class="k">def</span> <span class="nf">_fermion_basis</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-		<span class="k">return</span> <span class="kc">True</span> 
 
 	<span class="k">def</span> <span class="nf">_sort_opstr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">op</span><span class="p">):</span>
 		<span class="k">if</span> <span class="n">op</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s2">&quot;|&quot;</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
@@ -531,6 +530,7 @@
 		<span class="bp">self</span><span class="o">.</span><span class="n">_Ns_block_est</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_Ns</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">_Np</span> <span class="o">=</span> <span class="n">Nf</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">_double_occupancy</span> <span class="o">=</span> <span class="n">double_occupancy</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">_noncommuting_bits</span> <span class="o">=</span> <span class="p">[(</span><span class="n">_np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">N</span><span class="p">),</span><span class="n">_np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="n">_np</span><span class="o">.</span><span class="n">int8</span><span class="p">))]</span>
 
 		<span class="c1"># make the basis; make() is function method of base_general</span>
 		<span class="k">if</span> <span class="n">make_basis</span><span class="p">:</span>		
@@ -550,15 +550,10 @@
 							<span class="s2">&quot;</span><span class="se">\n\t</span><span class="s2">y: majorana y-operator&quot;</span><span class="p">)</span>
 
 		<span class="bp">self</span><span class="o">.</span><span class="n">_allowed_ops</span><span class="o">=</span><span class="nb">set</span><span class="p">([</span><span class="s2">&quot;I&quot;</span><span class="p">,</span><span class="s2">&quot;n&quot;</span><span class="p">,</span><span class="s2">&quot;+&quot;</span><span class="p">,</span><span class="s2">&quot;-&quot;</span><span class="p">,</span><span class="s2">&quot;z&quot;</span><span class="p">,</span><span class="s2">&quot;x&quot;</span><span class="p">,</span><span class="s2">&quot;y&quot;</span><span class="p">])</span></div>
-		
+
 	<span class="k">def</span> <span class="nf">__setstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">state</span><span class="p">):</span>
 		<span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">state</span><span class="p">)</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">_core</span> <span class="o">=</span> <span class="n">spinful_fermion_basis_core_wrap</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_basis_dtype</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">_N</span><span class="o">//</span><span class="mi">2</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">_maps</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">_pers</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">_qs</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">_double_occupancy</span><span class="p">)</span>
-
-	<span class="nd">@property</span>
-	<span class="k">def</span> <span class="nf">_fermion_basis</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-		<span class="k">return</span> <span class="kc">True</span>
-
 
 	<span class="c1">#################################################</span>
 	<span class="c1"># override for _inplace_Op and Op_shift_sector. #</span>

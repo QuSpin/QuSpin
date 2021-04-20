@@ -138,6 +138,7 @@ class boson_basis_general(hcb_basis_general,basis_general):
 			elif nb is not None:
 				Nb = int(nb*N)
 
+		self._noncommuting_bits = []
 		self._sps = sps
 		self._allowed_ops=set(["I","z","n","+","-"])
 		self._pcon_args = dict(N=N,Nb=Nb,sps=self._sps)

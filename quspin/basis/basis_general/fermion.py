@@ -124,11 +124,14 @@ class spinless_fermion_basis_general(basis_general):
 				Np_iter = iter(Nf)
 			except TypeError:
 				raise TypeError("Nf must be integer or iterable object.")
+
+			Nf = list(Nf)
 			self._Ns = 0
-			for Nf in Np_iter:
-				if Nf > N or Nf < 0:
+
+			for f in Nf:
+				if f > N or f < 0:
 					raise ValueError("particle number Nf must satisfy: 0 <= Nf <= N")
-				self._Ns += comb(N,Nf,exact=True)
+				self._Ns += comb(N,f,exact=True)
 
 		self._pcon_args = dict(N=N,Nf=Nf)
 
@@ -150,7 +153,8 @@ class spinless_fermion_basis_general(basis_general):
 		self._Ns_block_est=self._Ns
 		self._N = N
 		self._Np = Nf
-		
+		self._noncommuting_bits = [(_np.arange(self.N),_np.array(-1,dtype=_np.int8))]
+
 
 		# make the basis; make() is function method of base_general
 		if make_basis:		
@@ -176,11 +180,6 @@ class spinless_fermion_basis_general(basis_general):
 	def __setstate__(self,state):
 		self.__dict__.update(state)
 		self._core = spinless_fermion_basis_core_wrap(self._basis_dtype,self._N,self._maps,self._pers,self._qs)
-
-
-	@property
-	def _fermion_basis(self):
-		return True 
 
 	def _sort_opstr(self,op):
 		if op[0].count("|") > 0:
@@ -480,6 +479,7 @@ class spinful_fermion_basis_general(spinless_fermion_basis_general):
 		self._Ns_block_est=self._Ns
 		self._Np = Nf
 		self._double_occupancy = double_occupancy
+		self._noncommuting_bits = [(_np.arange(self.N),_np.array(-1,dtype=_np.int8))]
 
 		# make the basis; make() is function method of base_general
 		if make_basis:		
@@ -499,15 +499,10 @@ class spinful_fermion_basis_general(spinless_fermion_basis_general):
 							"\n\ty: majorana y-operator")
 
 		self._allowed_ops=set(["I","n","+","-","z","x","y"])
-		
+
 	def __setstate__(self,state):
 		self.__dict__.update(state)
 		self._core = spinful_fermion_basis_core_wrap(self._basis_dtype,self._N//2,self._maps,self._pers,self._qs,self._double_occupancy)
-
-	@property
-	def _fermion_basis(self):
-		return True
-
 
 	#################################################
 	# override for _inplace_Op and Op_shift_sector. #

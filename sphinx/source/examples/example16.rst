@@ -6,7 +6,7 @@
 Applying symmetries to reduce user-imported bases using QuSpin
 --------------------------------------------------------------
 
-This example makes use of the `user_basis` class to take a user-imported basis consisting of integers, and apply QuSpin to
+This example makes use of the `user_basis` class to take a user-imported basis consisting of ordered integers, and apply QuSpin to
 reduce it to a desired symmetry sector. 
 
 In the example, we manually construct the basis for a two-legged ladder (and handle it as a user-imported array of basis states). Then we use QuSpin to apply translation and parity (reflection) symmetries to reduce the Hilbert space dimension.

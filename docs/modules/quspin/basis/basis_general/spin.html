@@ -115,7 +115,7 @@
 <span class="sd">		N: int</span>
 <span class="sd">			number of sites.</span>
 <span class="sd">		Nup: {int,list}, optional</span>
-<span class="sd">			Total magnetisation, :math:`\\sum_j S^z_j`, projection. Can be integer or list to specify one or </span>
+<span class="sd">			Total magnetisation, :math:`Nup = NS + \\sum_j S^z_j, Nup\\ge 0`, and :math:`Nup = -NS + \\sum_j S^z_j, Nup&lt;0` projection. Can be integer or list to specify one or </span>
 <span class="sd">			more particle sectors. Negative values are taken to be subtracted from the fully polarized up state as: Nup_max + Nup + 1.</span>
 <span class="sd">			e.g. to get the Nup_max state use Nup = -1, for Nup_max-1 state use Nup = -2, etc.</span>
 <span class="sd">		m: float, optional</span>

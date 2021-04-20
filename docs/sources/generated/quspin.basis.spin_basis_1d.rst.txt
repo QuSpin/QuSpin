@@ -43,6 +43,7 @@ quspin.basis.spin\_basis\_1d
       ~spin_basis_1d.blocks
       ~spin_basis_1d.description
       ~spin_basis_1d.dtype
+      ~spin_basis_1d.noncommuting_bits
       ~spin_basis_1d.operators
       ~spin_basis_1d.sps
       ~spin_basis_1d.states

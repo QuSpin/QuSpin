@@ -6,7 +6,6 @@ from ._basis_general_core import basis_zeros
 from ..lattice import lattice_basis
 import warnings
 
-
 class GeneralBasisWarning(Warning):
 	pass
 
@@ -78,6 +77,7 @@ def check_symmetry_maps(item1,item2):
 
 class basis_general(lattice_basis):
 	def __init__(self,N,block_order=None,**kwargs):
+		lattice_basis.__init__(self)
 		self._unique_me = True
 		self._check_herm = True
 
@@ -181,6 +181,10 @@ class basis_general(lattice_basis):
 		obj_dict = dict(self.__dict__)
 		obj_dict.pop("_core")
 		return obj_dict
+
+	# @property
+	# def _fermion_basis(self):
+	# 	return False
 
 
 	@property
@@ -756,9 +760,6 @@ class basis_general(lattice_basis):
 		# sort basis
 		if type(self._Np) is int or type(self._Np) is tuple or self._Np is None:
 			if Ns > 0:
-				# self._basis = basis[Ns-1::-1].copy()
-				# self._n = n[Ns-1::-1].copy()
-				# if Np_list is not None: self._Np_list = Np_list[Ns-1::-1].copy()
 				self._basis = basis[:Ns].copy()
 				self._n = n[:Ns].copy()
 				if Np_list is not None: self._Np_list = Np_list[:Ns].copy()
@@ -771,12 +772,17 @@ class basis_general(lattice_basis):
 		else:
 			sort_basis = True
 
-		if sort_basis:
-			ind = _np.argsort(basis[:Ns],kind="heapsort")[::-1]
-			self._basis = basis[ind].copy()
-			self._n = n[ind].copy()
-			if Np_list is not None: self._Np_list = Np_list[ind].copy()
-
+		if Ns > 0:
+			# self._basis = basis[Ns-1::-1].copy()
+			# self._n = n[Ns-1::-1].copy()
+			# if Np_list is not None: self._Np_list = Np_list[Ns-1::-1].copy()
+			self._basis = basis[:Ns].copy()
+			self._n = n[:Ns].copy()
+			if Np_list is not None: self._Np_list = Np_list[:Ns].copy()
+		else:
+			self._basis = _np.array([],dtype=basis.dtype)
+			self._n = _np.array([],dtype=n.dtype)
+			if Np_list is not None: self._Np_list = _np.array([],dtype=Np_list.dtype)
 
 		self._Ns=Ns
 		self._Ns_block_est=Ns
@@ -823,6 +829,7 @@ class basis_general(lattice_basis):
 		else:
 			N_p = int(N_p)
 
+
 		if len(self._pers) == 0 and self._Np is None:
 			N_p = 0 # do not use blocks for full basis
 
@@ -833,7 +840,6 @@ class basis_general(lattice_basis):
 		else:
 			self._basis_begin = _np.array([],dtype=_np.intp)
 			self._basis_end   = _np.array([],dtype=_np.intp)
-
 
 	def Op_bra_ket(self,opstr,indx,J,dtype,ket_states,reduce_output=True):
 		"""Finds bra states which connect given ket states by operator from a site-coupling list and an operator string.
