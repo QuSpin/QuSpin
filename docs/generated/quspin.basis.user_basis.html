@@ -61,7 +61,7 @@
 <h1>quspin.basis.user_basis<a class="headerlink" href="#quspin-basis-user-basis" title="Permalink to this headline">¶</a></h1>
 <dl class="py class">
 <dt id="quspin.basis.user_basis">
-<em class="property">class </em><code class="sig-prename descclassname">quspin.basis.</code><code class="sig-name descname">user_basis</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">basis_dtype</span></em>, <em class="sig-param"><span class="n">N</span></em>, <em class="sig-param"><span class="n">op_dict</span></em>, <em class="sig-param"><span class="n">sps</span><span class="o">=</span><span class="default_value">2</span></em>, <em class="sig-param"><span class="n">pcon_dict</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">pre_check_state</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">allowed_ops</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">parallel</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">Ns_block_est</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">_make_basis</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">block_order</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">_Np</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">blocks</span></em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/basis/basis_general/base_user.html#user_basis"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#quspin.basis.user_basis" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">quspin.basis.</code><code class="sig-name descname">user_basis</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">basis_dtype</span></em>, <em class="sig-param"><span class="n">N</span></em>, <em class="sig-param"><span class="n">op_dict</span></em>, <em class="sig-param"><span class="n">sps</span><span class="o">=</span><span class="default_value">2</span></em>, <em class="sig-param"><span class="n">pcon_dict</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">pre_check_state</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">allowed_ops</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">parallel</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">Ns_block_est</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">_make_basis</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">block_order</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">noncommuting_bits</span><span class="o">=</span><span class="default_value">[]</span></em>, <em class="sig-param"><span class="n">_Np</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">blocks</span></em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/basis/basis_general/base_user.html#user_basis"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#quspin.basis.user_basis" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">quspin.basis.basis_general.base_general.basis_general</span></code></p>
 <p>Constructs basis for USER-DEFINED functionality of a basis object.</p>
 <p>The <cite>user_basis</cite> unveils the inner workings of QuSpin. This is the most advanced usage of the package, and requires some understanding of python,
@@ -305,7 +305,7 @@ constrained Hilbert space.</p>
 </td></tr></table></div>
 <dl class="py method">
 <dt id="quspin.basis.user_basis.__init__">
-<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">basis_dtype</span></em>, <em class="sig-param"><span class="n">N</span></em>, <em class="sig-param"><span class="n">op_dict</span></em>, <em class="sig-param"><span class="n">sps</span><span class="o">=</span><span class="default_value">2</span></em>, <em class="sig-param"><span class="n">pcon_dict</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">pre_check_state</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">allowed_ops</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">parallel</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">Ns_block_est</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">_make_basis</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">block_order</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">_Np</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">blocks</span></em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/basis/basis_general/base_user.html#user_basis.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#quspin.basis.user_basis.__init__" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">basis_dtype</span></em>, <em class="sig-param"><span class="n">N</span></em>, <em class="sig-param"><span class="n">op_dict</span></em>, <em class="sig-param"><span class="n">sps</span><span class="o">=</span><span class="default_value">2</span></em>, <em class="sig-param"><span class="n">pcon_dict</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">pre_check_state</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">allowed_ops</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">parallel</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">Ns_block_est</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">_make_basis</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">block_order</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">noncommuting_bits</span><span class="o">=</span><span class="default_value">[]</span></em>, <em class="sig-param"><span class="n">_Np</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">blocks</span></em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/basis/basis_general/base_user.html#user_basis.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#quspin.basis.user_basis.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Intializes the <cite>user_basis_general</cite> object (basis for user defined ED calculations).</p>
 <dl class="field-list">
 <dt class="field-odd">Parameters</dt>
@@ -395,9 +395,13 @@ representative state (i.e. belogs to a given symmetry sector) or not. This allow
 </dd>
 <dt><strong>sps: int, optional</strong></dt><dd><p>The number of states per site (i.e. the local on-site Hilbert space dimension).</p>
 </dd>
+<dt><strong>Ns_full: int, optional</strong></dt><dd><p>Total number of states in the Hilbert space without any symmetries. For a single species this value is <cite>sps**N</cite></p>
+</dd>
 <dt><strong>Ns_block_est: int, optional</strong></dt><dd><p>An estimate for the size of the symmetry reduced block, QuSpin does a simple estimate which is not always correct.</p>
 </dd>
 <dt><strong>block_order: tuple/list, optional</strong></dt><dd><p>A list of strings containing the names of the symmetry blocks which specifies the order in which the symmetries will be applied to the state when calculating the basis. The first element in the list is applied to the state first followed by the second element, etc. If the list is not specificed the ordering is such that the symmetry with the largest cycle is the first, followed by the second largest, etc.</p>
+</dd>
+<dt><strong>noncommuting_bits: list, optional</strong></dt><dd><p>A list of tuples specifying if bits belong to a group of sites that do not commute. The first element in each tuple represents the group of sites, and the second element represents the phase that is given during the exchange.</p>
 </dd>
 <dt><strong>**blocks: optional</strong></dt><dd><p>keyword arguments which pass the symmetry generator arrays. For instance:</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">basis</span><span class="p">(</span><span class="o">...</span><span class="p">,</span><span class="n">kxblock</span><span class="o">=</span><span class="p">(</span><span class="n">CFunc</span><span class="p">,</span><span class="n">m_Q</span><span class="p">,</span><span class="n">q</span><span class="p">,</span><span class="n">args</span><span class="p">),</span><span class="o">...</span><span class="p">)</span>
@@ -514,13 +518,16 @@ the basis will give undefined behavior.</p>
 <tr class="row-odd"><td><p><a class="reference internal" href="#quspin.basis.user_basis.dtype" title="quspin.basis.user_basis.dtype"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dtype</span></code></a></p></td>
 <td><p>data type of basis state integers.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#quspin.basis.user_basis.operators" title="quspin.basis.user_basis.operators"><code class="xref py py-obj docutils literal notranslate"><span class="pre">operators</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#quspin.basis.user_basis.noncommuting_bits" title="quspin.basis.user_basis.noncommuting_bits"><code class="xref py py-obj docutils literal notranslate"><span class="pre">noncommuting_bits</span></code></a></p></td>
+<td><p>list of bits that represent sites that do not commute along with the phase required from commuting sites</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#quspin.basis.user_basis.operators" title="quspin.basis.user_basis.operators"><code class="xref py py-obj docutils literal notranslate"><span class="pre">operators</span></code></a></p></td>
 <td><p>set of available operator strings.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#quspin.basis.user_basis.sps" title="quspin.basis.user_basis.sps"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sps</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#quspin.basis.user_basis.sps" title="quspin.basis.user_basis.sps"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sps</span></code></a></p></td>
 <td><p>number of states per site (i.e.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#quspin.basis.user_basis.states" title="quspin.basis.user_basis.states"><code class="xref py py-obj docutils literal notranslate"><span class="pre">states</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#quspin.basis.user_basis.states" title="quspin.basis.user_basis.states"><code class="xref py py-obj docutils literal notranslate"><span class="pre">states</span></code></a></p></td>
 <td><p>basis states stored in their integer representation.</p></td>
 </tr>
 </tbody>
@@ -1189,6 +1196,17 @@ for basis which small particle numbers as the blocks have very uneven sizes. To 
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">basis</span><span class="p">)</span>
 </pre></div>
 </div>
+</dd></dl>
+
+<dl class="py method">
+<dt id="quspin.basis.user_basis.noncommuting_bits">
+<em class="property">property </em><code class="sig-name descname">noncommuting_bits</code><a class="headerlink" href="#quspin.basis.user_basis.noncommuting_bits" title="Permalink to this definition">¶</a></dt>
+<dd><p>list of bits that represent sites that do not commute along with the phase required from commuting sites</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">

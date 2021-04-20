@@ -79,7 +79,7 @@
 <span class="sd">	The code snippet below shows how to use the `spinless_fermion_basis_1d` class to construct the basis in the zero momentum sector of positive parity for the fermion Hamiltonian </span>
 
 <span class="sd">	.. math::</span>
-<span class="sd">		H(t)=-J\\sum_j c^\\dagger_{j+1}c_j + \\mathrm{h.c.} - \\mu\\sum_j n_j + U\\cos\\Omega t\\sum_j n_{j+1} n_j</span>
+<span class="sd">		H(t)=-J\\sum_j c_jc^\\dagger_{j+1} + \\mathrm{h.c.} - \\mu\\sum_j n_j + U\\cos\\Omega t\\sum_j n_j n_{j+1} </span>
 
 <span class="sd">	.. literalinclude:: ../../doc_examples/spinless_fermion_basis_1d-example.py</span>
 <span class="sd">		:linenos:</span>
@@ -162,8 +162,8 @@
 		<span class="k">else</span><span class="p">:</span>
 			<span class="bp">self</span><span class="o">.</span><span class="n">_Np</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">Nf_list</span><span class="p">)</span>
 
-		<span class="bp">self</span><span class="o">.</span><span class="n">_blocks</span> <span class="o">=</span> <span class="n">blocks</span>			
 
+		<span class="bp">self</span><span class="o">.</span><span class="n">_blocks</span> <span class="o">=</span> <span class="n">blocks</span>			
 		<span class="bp">self</span><span class="o">.</span><span class="n">_sps</span> <span class="o">=</span> <span class="mi">2</span>
 		<span class="n">Imax</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="o">&lt;&lt;</span><span class="n">L</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span>
 		<span class="n">stag_A</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="mi">1</span><span class="o">&lt;&lt;</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">L</span><span class="p">,</span><span class="mi">2</span><span class="p">))</span>
@@ -177,12 +177,9 @@
 							<span class="s2">&quot;</span><span class="se">\n\t</span><span class="s2">z: c-symm number operator&quot;</span><span class="p">)</span>
 
 		<span class="bp">self</span><span class="o">.</span><span class="n">_allowed_ops</span> <span class="o">=</span> <span class="nb">set</span><span class="p">([</span><span class="s2">&quot;I&quot;</span><span class="p">,</span><span class="s2">&quot;+&quot;</span><span class="p">,</span><span class="s2">&quot;-&quot;</span><span class="p">,</span><span class="s2">&quot;n&quot;</span><span class="p">,</span><span class="s2">&quot;z&quot;</span><span class="p">])</span>
-		<span class="n">basis_1d</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">hcp_basis</span><span class="p">,</span><span class="n">hcp_ops</span><span class="p">,</span><span class="n">L</span><span class="p">,</span><span class="n">Np</span><span class="o">=</span><span class="n">Nf_list</span><span class="p">,</span><span class="n">pars</span><span class="o">=</span><span class="n">pars</span><span class="p">,</span><span class="n">count_particles</span><span class="o">=</span><span class="n">count_particles</span><span class="p">,</span><span class="o">**</span><span class="n">blocks</span><span class="p">)</span></div>
-		<span class="c1"># self._check_symm=None</span>
+		<span class="n">basis_1d</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">hcp_basis</span><span class="p">,</span><span class="n">hcp_ops</span><span class="p">,</span><span class="n">L</span><span class="p">,</span><span class="n">Np</span><span class="o">=</span><span class="n">Nf_list</span><span class="p">,</span><span class="n">pars</span><span class="o">=</span><span class="n">pars</span><span class="p">,</span><span class="n">count_particles</span><span class="o">=</span><span class="n">count_particles</span><span class="p">,</span><span class="o">**</span><span class="n">blocks</span><span class="p">)</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">_noncommuting_bits</span> <span class="o">=</span> <span class="p">[(</span><span class="n">_np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">N</span><span class="p">),</span><span class="n">_np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="n">_np</span><span class="o">.</span><span class="n">int8</span><span class="p">))]</span></div>
 
-	<span class="nd">@property</span>
-	<span class="k">def</span> <span class="nf">_fermion_basis</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-		<span class="k">return</span> <span class="kc">True</span> 
 
 
 	<span class="k">def</span> <span class="nf">__type__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -422,18 +419,13 @@
 							<span class="s2">&quot;</span><span class="se">\n\t</span><span class="s2">z: c-symm number operator&quot;</span><span class="p">)</span>
 
 		<span class="bp">self</span><span class="o">.</span><span class="n">_allowed_ops</span> <span class="o">=</span> <span class="nb">set</span><span class="p">([</span><span class="s2">&quot;I&quot;</span><span class="p">,</span><span class="s2">&quot;+&quot;</span><span class="p">,</span><span class="s2">&quot;-&quot;</span><span class="p">,</span><span class="s2">&quot;n&quot;</span><span class="p">,</span><span class="s2">&quot;z&quot;</span><span class="p">])</span>
-		<span class="n">basis_1d</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">spf_basis</span><span class="p">,</span><span class="n">spf_ops</span><span class="p">,</span><span class="n">L</span><span class="p">,</span><span class="n">Np</span><span class="o">=</span><span class="n">Nf_list</span><span class="p">,</span><span class="n">pars</span><span class="o">=</span><span class="n">pars</span><span class="p">,</span><span class="n">count_particles</span><span class="o">=</span><span class="n">count_particles</span><span class="p">,</span><span class="o">**</span><span class="n">blocks</span><span class="p">)</span></div>
-		
+		<span class="n">basis_1d</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">spf_basis</span><span class="p">,</span><span class="n">spf_ops</span><span class="p">,</span><span class="n">L</span><span class="p">,</span><span class="n">Np</span><span class="o">=</span><span class="n">Nf_list</span><span class="p">,</span><span class="n">pars</span><span class="o">=</span><span class="n">pars</span><span class="p">,</span><span class="n">count_particles</span><span class="o">=</span><span class="n">count_particles</span><span class="p">,</span><span class="o">**</span><span class="n">blocks</span><span class="p">)</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">_noncommuting_bits</span> <span class="o">=</span> <span class="p">[(</span><span class="n">_np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">N</span><span class="p">),</span><span class="n">_np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="n">_np</span><span class="o">.</span><span class="n">int8</span><span class="p">))]</span></div>
 
 	<span class="nd">@property</span>
 	<span class="k">def</span> <span class="nf">N</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 		<span class="sd">&quot;&quot;&quot;int: Total number of sites (spin-up + spin-down) the basis is constructed with; `N=2L`.&quot;&quot;&quot;</span>
 		<span class="k">return</span> <span class="mi">2</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">_L</span>
-
-	<span class="nd">@property</span>
-	<span class="k">def</span> <span class="nf">_fermion_basis</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-		<span class="k">return</span> <span class="kc">True</span> 
-
 
 	<span class="k">def</span> <span class="nf">_Op</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">opstr</span><span class="p">,</span><span class="n">indx</span><span class="p">,</span><span class="n">J</span><span class="p">,</span><span class="n">dtype</span><span class="p">):</span>
 		

@@ -254,7 +254,9 @@
 179
 180
 181
-182</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span><span class="p">,</span> <span class="n">division</span>
+182
+183
+184</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span><span class="p">,</span> <span class="n">division</span>
 <span class="c1">#</span>
 <span class="kn">import</span> <span class="nn">sys</span><span class="o">,</span><span class="nn">os</span>
 <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s1">&#39;KMP_DUPLICATE_LIB_OK&#39;</span><span class="p">]</span><span class="o">=</span><span class="s1">&#39;True&#39;</span> <span class="c1"># uncomment this line if omp error occurs on OSX for python 3</span>
@@ -385,14 +387,16 @@
 	<span class="k">return</span> <span class="n">out</span>
 <span class="n">P_args</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">N</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span><span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">uint32</span><span class="p">)</span>
 <span class="c1">#</span>
-<span class="c1">######  construct user_basis </span>
+<span class="c1">######  construct user_basis</span>
+<span class="c1"># define anti-commuting bits -- fermion signs on the integer bits (not sites!) that represent a fermion degree of freedom</span>
+<span class="n">noncommuting_bits</span> <span class="o">=</span> <span class="p">[(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">N</span><span class="p">),</span><span class="o">-</span><span class="mi">1</span><span class="p">)]</span> <span class="c1"># fermion signs are counted w.r.t. the shift operator &lt;&lt; </span>
 <span class="c1"># define maps dict</span>
 <span class="n">maps</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">T_block</span><span class="o">=</span><span class="p">(</span><span class="n">translation</span><span class="p">,</span><span class="n">N</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="n">T_args</span><span class="p">),</span> <span class="n">P_block</span><span class="o">=</span><span class="p">(</span><span class="n">parity</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="n">P_args</span><span class="p">),</span> <span class="p">)</span> 
 <span class="c1">#maps = dict(P_block=(parity,2,0,P_args), )</span>
 <span class="c1">#maps = dict(T_block=(translation,N,0,T_args) ) </span>
 <span class="n">op_dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">op</span><span class="o">=</span><span class="n">op</span><span class="p">,</span><span class="n">op_args</span><span class="o">=</span><span class="n">op_args</span><span class="p">)</span>
 <span class="c1"># create user basiss</span>
-<span class="n">basis</span> <span class="o">=</span> <span class="n">user_basis</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">uint32</span><span class="p">,</span><span class="n">N</span><span class="p">,</span><span class="n">op_dict</span><span class="p">,</span><span class="n">allowed_ops</span><span class="o">=</span><span class="nb">set</span><span class="p">(</span><span class="s2">&quot;xy+-nI&quot;</span><span class="p">),</span><span class="n">sps</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span><span class="o">**</span><span class="n">maps</span><span class="p">)</span>
+<span class="n">basis</span> <span class="o">=</span> <span class="n">user_basis</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">uint32</span><span class="p">,</span><span class="n">N</span><span class="p">,</span><span class="n">op_dict</span><span class="p">,</span><span class="n">allowed_ops</span><span class="o">=</span><span class="nb">set</span><span class="p">(</span><span class="s2">&quot;xy+-nI&quot;</span><span class="p">),</span><span class="n">sps</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span><span class="n">noncommuting_bits</span><span class="o">=</span><span class="n">noncommuting_bits</span><span class="p">,</span><span class="o">**</span><span class="n">maps</span><span class="p">)</span>
 <span class="c1">#</span>
 <span class="c1">#</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">basis</span><span class="p">)</span>

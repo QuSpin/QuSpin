@@ -298,13 +298,16 @@ sector.</p>
 <tr class="row-odd"><td><p><a class="reference internal" href="#quspin.basis.spinless_fermion_basis_general.dtype" title="quspin.basis.spinless_fermion_basis_general.dtype"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dtype</span></code></a></p></td>
 <td><p>data type of basis state integers.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#quspin.basis.spinless_fermion_basis_general.operators" title="quspin.basis.spinless_fermion_basis_general.operators"><code class="xref py py-obj docutils literal notranslate"><span class="pre">operators</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#quspin.basis.spinless_fermion_basis_general.noncommuting_bits" title="quspin.basis.spinless_fermion_basis_general.noncommuting_bits"><code class="xref py py-obj docutils literal notranslate"><span class="pre">noncommuting_bits</span></code></a></p></td>
+<td><p>list of bits that represent sites that do not commute along with the phase required from commuting sites</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#quspin.basis.spinless_fermion_basis_general.operators" title="quspin.basis.spinless_fermion_basis_general.operators"><code class="xref py py-obj docutils literal notranslate"><span class="pre">operators</span></code></a></p></td>
 <td><p>set of available operator strings.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#quspin.basis.spinless_fermion_basis_general.sps" title="quspin.basis.spinless_fermion_basis_general.sps"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sps</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#quspin.basis.spinless_fermion_basis_general.sps" title="quspin.basis.spinless_fermion_basis_general.sps"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sps</span></code></a></p></td>
 <td><p>number of states per site (i.e.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#quspin.basis.spinless_fermion_basis_general.states" title="quspin.basis.spinless_fermion_basis_general.states"><code class="xref py py-obj docutils literal notranslate"><span class="pre">states</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#quspin.basis.spinless_fermion_basis_general.states" title="quspin.basis.spinless_fermion_basis_general.states"><code class="xref py py-obj docutils literal notranslate"><span class="pre">states</span></code></a></p></td>
 <td><p>basis states stored in their integer representation.</p></td>
 </tr>
 </tbody>
@@ -973,6 +976,17 @@ for basis which small particle numbers as the blocks have very uneven sizes. To 
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">basis</span><span class="p">)</span>
 </pre></div>
 </div>
+</dd></dl>
+
+<dl class="py method">
+<dt id="quspin.basis.spinless_fermion_basis_general.noncommuting_bits">
+<em class="property">property </em><code class="sig-name descname">noncommuting_bits</code><a class="headerlink" href="#quspin.basis.spinless_fermion_basis_general.noncommuting_bits" title="Permalink to this definition">¶</a></dt>
+<dd><p>list of bits that represent sites that do not commute along with the phase required from commuting sites</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">

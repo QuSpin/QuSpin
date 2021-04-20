@@ -225,8 +225,8 @@ class lattice_basis(basis):
 		sps = self.sps
 		N = self.N
 
-		# compute signs for fermion bases AND non-contiguous subsystems w.r.t. the sign convention
-		compute_signs= len(self.noncommuting_bits) != 0 # and _np.prod(_np.diff(sub_sys_A))!=1
+		# compute signs for fermion bases
+		compute_signs = len(self.noncommuting_bits) != 0
 
 		if compute_signs:
 			 sign_array = self._ptrace_signs(sub_sys_A)
@@ -368,7 +368,7 @@ class lattice_basis(basis):
 		N = self.N
 
 		# compute signs for fermion bases AND non-contiguous subsystems w.r.t. the sign convention
-		compute_signs=self._fermion_basis # and _np.prod(_np.diff(sub_sys_A))!=1
+		compute_signs=len(self.noncommuting_bits) != 0
 
 		
 		pure=True # set pure state parameter to True

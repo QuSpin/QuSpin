@@ -57,7 +57,6 @@
 <span class="kn">from</span> <span class="nn">..lattice</span> <span class="kn">import</span> <span class="n">lattice_basis</span>
 <span class="kn">import</span> <span class="nn">warnings</span>
 
-
 <span class="k">class</span> <span class="nc">GeneralBasisWarning</span><span class="p">(</span><span class="ne">Warning</span><span class="p">):</span>
 	<span class="k">pass</span>
 
@@ -129,6 +128,7 @@
 
 <span class="k">class</span> <span class="nc">basis_general</span><span class="p">(</span><span class="n">lattice_basis</span><span class="p">):</span>
 	<span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">N</span><span class="p">,</span><span class="n">block_order</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+		<span class="n">lattice_basis</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">_unique_me</span> <span class="o">=</span> <span class="kc">True</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">_check_herm</span> <span class="o">=</span> <span class="kc">True</span>
 
@@ -232,6 +232,10 @@
 		<span class="n">obj_dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">)</span>
 		<span class="n">obj_dict</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;_core&quot;</span><span class="p">)</span>
 		<span class="k">return</span> <span class="n">obj_dict</span>
+
+	<span class="c1"># @property</span>
+	<span class="c1"># def _fermion_basis(self):</span>
+	<span class="c1"># 	return False</span>
 
 
 	<span class="nd">@property</span>
@@ -807,9 +811,6 @@
 		<span class="c1"># sort basis</span>
 		<span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_Np</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">int</span> <span class="ow">or</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_Np</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">tuple</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Np</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
 			<span class="k">if</span> <span class="n">Ns</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-				<span class="c1"># self._basis = basis[Ns-1::-1].copy()</span>
-				<span class="c1"># self._n = n[Ns-1::-1].copy()</span>
-				<span class="c1"># if Np_list is not None: self._Np_list = Np_list[Ns-1::-1].copy()</span>
 				<span class="bp">self</span><span class="o">.</span><span class="n">_basis</span> <span class="o">=</span> <span class="n">basis</span><span class="p">[:</span><span class="n">Ns</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
 				<span class="bp">self</span><span class="o">.</span><span class="n">_n</span> <span class="o">=</span> <span class="n">n</span><span class="p">[:</span><span class="n">Ns</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
 				<span class="k">if</span> <span class="n">Np_list</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Np_list</span> <span class="o">=</span> <span class="n">Np_list</span><span class="p">[:</span><span class="n">Ns</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
@@ -822,12 +823,17 @@
 		<span class="k">else</span><span class="p">:</span>
 			<span class="n">sort_basis</span> <span class="o">=</span> <span class="kc">True</span>
 
-		<span class="k">if</span> <span class="n">sort_basis</span><span class="p">:</span>
-			<span class="n">ind</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">basis</span><span class="p">[:</span><span class="n">Ns</span><span class="p">],</span><span class="n">kind</span><span class="o">=</span><span class="s2">&quot;heapsort&quot;</span><span class="p">)[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-			<span class="bp">self</span><span class="o">.</span><span class="n">_basis</span> <span class="o">=</span> <span class="n">basis</span><span class="p">[</span><span class="n">ind</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-			<span class="bp">self</span><span class="o">.</span><span class="n">_n</span> <span class="o">=</span> <span class="n">n</span><span class="p">[</span><span class="n">ind</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-			<span class="k">if</span> <span class="n">Np_list</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Np_list</span> <span class="o">=</span> <span class="n">Np_list</span><span class="p">[</span><span class="n">ind</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-
+		<span class="k">if</span> <span class="n">Ns</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+			<span class="c1"># self._basis = basis[Ns-1::-1].copy()</span>
+			<span class="c1"># self._n = n[Ns-1::-1].copy()</span>
+			<span class="c1"># if Np_list is not None: self._Np_list = Np_list[Ns-1::-1].copy()</span>
+			<span class="bp">self</span><span class="o">.</span><span class="n">_basis</span> <span class="o">=</span> <span class="n">basis</span><span class="p">[:</span><span class="n">Ns</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+			<span class="bp">self</span><span class="o">.</span><span class="n">_n</span> <span class="o">=</span> <span class="n">n</span><span class="p">[:</span><span class="n">Ns</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+			<span class="k">if</span> <span class="n">Np_list</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Np_list</span> <span class="o">=</span> <span class="n">Np_list</span><span class="p">[:</span><span class="n">Ns</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+		<span class="k">else</span><span class="p">:</span>
+			<span class="bp">self</span><span class="o">.</span><span class="n">_basis</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">array</span><span class="p">([],</span><span class="n">dtype</span><span class="o">=</span><span class="n">basis</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
+			<span class="bp">self</span><span class="o">.</span><span class="n">_n</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">array</span><span class="p">([],</span><span class="n">dtype</span><span class="o">=</span><span class="n">n</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
+			<span class="k">if</span> <span class="n">Np_list</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Np_list</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">array</span><span class="p">([],</span><span class="n">dtype</span><span class="o">=</span><span class="n">Np_list</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
 
 		<span class="bp">self</span><span class="o">.</span><span class="n">_Ns</span><span class="o">=</span><span class="n">Ns</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">_Ns_block_est</span><span class="o">=</span><span class="n">Ns</span>
@@ -874,6 +880,7 @@
 		<span class="k">else</span><span class="p">:</span>
 			<span class="n">N_p</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">N_p</span><span class="p">)</span>
 
+
 		<span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_pers</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Np</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
 			<span class="n">N_p</span> <span class="o">=</span> <span class="mi">0</span> <span class="c1"># do not use blocks for full basis</span>
 
@@ -884,7 +891,6 @@
 		<span class="k">else</span><span class="p">:</span>
 			<span class="bp">self</span><span class="o">.</span><span class="n">_basis_begin</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">array</span><span class="p">([],</span><span class="n">dtype</span><span class="o">=</span><span class="n">_np</span><span class="o">.</span><span class="n">intp</span><span class="p">)</span>
 			<span class="bp">self</span><span class="o">.</span><span class="n">_basis_end</span>   <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">array</span><span class="p">([],</span><span class="n">dtype</span><span class="o">=</span><span class="n">_np</span><span class="o">.</span><span class="n">intp</span><span class="p">)</span>
-
 
 	<span class="k">def</span> <span class="nf">Op_bra_ket</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">opstr</span><span class="p">,</span><span class="n">indx</span><span class="p">,</span><span class="n">J</span><span class="p">,</span><span class="n">dtype</span><span class="p">,</span><span class="n">ket_states</span><span class="p">,</span><span class="n">reduce_output</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 		<span class="sd">&quot;&quot;&quot;Finds bra states which connect given ket states by operator from a site-coupling list and an operator string.</span>

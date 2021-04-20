@@ -50,6 +50,7 @@ quspin.basis.boson\_basis\_general
       ~boson_basis_general.blocks
       ~boson_basis_general.description
       ~boson_basis_general.dtype
+      ~boson_basis_general.noncommuting_bits
       ~boson_basis_general.operators
       ~boson_basis_general.sps
       ~boson_basis_general.states
