@@ -219,7 +219,7 @@ class user_basis(basis_general):
 		block_order: tuple/list, optional
 			A list of strings containing the names of the symmetry blocks which specifies the order in which the symmetries will be applied to the state when calculating the basis. The first element in the list is applied to the state first followed by the second element, etc. If the list is not specificed the ordering is such that the symmetry with the largest cycle is the first, followed by the second largest, etc. 
 		noncommuting_bits: list, optional
-			A list of tuples specifying if bits belong to a group of sites that do not commute. The first element in each tuple represents the group of sites, and the second element represents the phase that is given during the exchange.
+			A list of tuples specifying if bits belong to a group of sites that do not commute. The first element in each tuple represents the group of sites, and the second element represents the phase-factor that is given during the exchange.
 		**blocks: optional
 			keyword arguments which pass the symmetry generator arrays. For instance:
 

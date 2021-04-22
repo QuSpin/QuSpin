@@ -1,4 +1,4 @@
-quspin.tools.Floquet.Floquet\_t\_vec
+﻿quspin.tools.Floquet.Floquet\_t\_vec
 ====================================
 
 .. currentmodule:: quspin.tools.Floquet

@@ -1,4 +1,4 @@
-quspin.tools.evolution.ED\_state\_vs\_time
+﻿quspin.tools.evolution.ED\_state\_vs\_time
 ==========================================
 
 .. currentmodule:: quspin.tools.evolution

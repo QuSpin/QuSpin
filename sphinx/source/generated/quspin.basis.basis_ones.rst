@@ -1,4 +1,4 @@
-quspin.basis.basis\_ones
+﻿quspin.basis.basis\_ones
 ========================
 
 .. currentmodule:: quspin.basis

@@ -1,4 +1,4 @@
-quspin.tools.misc.csr\_matvec
+﻿quspin.tools.misc.csr\_matvec
 =============================
 
 .. currentmodule:: quspin.tools.misc
