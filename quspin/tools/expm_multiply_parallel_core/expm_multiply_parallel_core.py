@@ -144,7 +144,7 @@ class expm_multiply_parallel(object):
         else:
             raise ValueError("expecting 'a' to be scalar.")
 
-    def dot(self,v,work_array=None,overwrite_v=False):
+    def dot(self,v,work_array=None,overwrite_v=False,tol=None):
         """Calculates the action of :math:`\\mathrm{e}^{aA}` on a vector :math:`v`. 
 
         Examples
@@ -162,8 +162,10 @@ class expm_multiply_parallel(object):
         work_array : contiguous numpy.ndarray, optional
             array can be any shape but must contain 2*v.size contiguous elements. 
             This array is used as temporary memory space for the underlying c-code. This saves extra memory allocation for function operations.
-        overwrite_v : bool
+        overwrite_v : bool, optoinal
             if set to `True`, the data in `v` is overwritten by the function. This saves extra memory allocation for the results.
+        tol: float, optoinal
+            tolerance value used to truncate Taylor expansion of matrix exponential. 
 
         Returns
         --------
@@ -214,7 +216,10 @@ class expm_multiply_parallel(object):
 
         a = _np.array(self._a,dtype=v_dtype)
         mu = _np.array(self._mu,dtype=v_dtype)
-        tol = _np.array(self._tol,dtype=mu.real.dtype)
+        if tol is not None:
+            tol = _np.array(tol,dtype=mu.real.dtype)
+        else:
+            tol = _np.array(self._tol,dtype=mu.real.dtype)
         if v.ndim == 1:
             _wrapper_expm_multiply(self._A.indptr,self._A.indices,self._A.data,
                         self._s,self._m_star,a,tol,mu,v,work_array.ravel())
