@@ -1,8 +1,9 @@
 from __future__ import print_function, division
 #
 import sys,os
-quspin_path = os.path.join(os.getcwd(),"../../")
+quspin_path = os.path.join(os.getcwd(),"../")
 sys.path.insert(0,quspin_path)
+
 from quspin.operators import hamiltonian
 from quspin.basis import spin_basis_1d,spin_basis_general # Hilbert space spin basis_1d
 from quspin.basis.user import user_basis # Hilbert space user basis

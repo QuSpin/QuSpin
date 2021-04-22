@@ -1,11 +1,11 @@
 
 #include "misc.h"
 
-template<class I>
-int inline partition_swaps(I s,const int map[],const int N){
+template<class I,class J>
+int inline partition_swaps(I s,const J map[],const int N){
 	// counts the number of swaps required to form the proper paritions
 	int np = 0;
-	int pos_list[N];
+	int pos_list[64];
 
 	for(int i=N-1;i>=0;--i){
 		if(s&1){
@@ -14,7 +14,7 @@ int inline partition_swaps(I s,const int map[],const int N){
 		s >>= 1;
 	}
 
-	return basis_general::countSwaps(pos_list,np);
+	return basis_general::countSwaps<uint64_t>(pos_list,np);
 
 }
 

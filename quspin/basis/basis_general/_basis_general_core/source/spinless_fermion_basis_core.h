@@ -87,7 +87,7 @@ I inline spinless_fermion_map_bits(I s,const int map[],const int N,P &sign){
 	}
 
 	// getf_count(pos_list,work,0,np-1,f_count);
-	int Nswap = countSwaps(pos_list,np);
+	int Nswap = countSwaps<I>(pos_list,np);
 	if(Nswap&1){sign *= -1;}
 
 	return ss;

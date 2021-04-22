@@ -14,7 +14,7 @@ namespace basis_general {
   
 /* This function merges two sorted arrays and returns inversion
    count in the arrays.*/
-int merge(int arr[], int temp[], int left, int mid, int right)
+int merge(int arr[], int temp[], const int left, const int mid, const int right)
 {
     int inv_count = 0;
   
@@ -55,14 +55,14 @@ int merge(int arr[], int temp[], int left, int mid, int right)
 /* An auxiliary recursive function that sorts the input
    array and returns the number of inversions in the
    array. */
-int _mergeSort(int arr[], int temp[], int left, int right)
+int _mergeSort(int arr[], int temp[], const int left, const int right)
 {
-    int mid, inv_count = 0;
+    int inv_count = 0;
     if (right > left)
     {
         /* Divide the array into two parts and call
           _mergeSortAndCountInv() for each of the parts */
-        mid = (right + left)/2;
+        const int mid = (right + left)/2;
   
         /* Inversion count will be sum of inversions in
            left-part, right-part and number of inversions
@@ -79,9 +79,10 @@ int _mergeSort(int arr[], int temp[], int left, int right)
   
 /* This function sorts the input array and returns the
    number of inversions in the array */
+template<class I>
 int countSwaps(int arr[], const int n)
 {
-	int work[n];
+	int work[bit_info<I>::bits];
     return _mergeSort(arr, work, 0, n - 1);
 }
 

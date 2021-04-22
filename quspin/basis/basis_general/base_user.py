@@ -107,7 +107,7 @@ def _noncommuting_bits(N,noncommuting_bits):
 		bits = _np.asarray(bits)
 		swap_phase = _np.asarray(swap_phase)
 
-		if not _np.issubdtype(bits.dtype,_np.int64):
+		if not _np.issubdtype(bits.dtype,_np.int):
 			raise TypeError("site list most contain only integers.")
 
 		if _np.array(swap_phase).ndim != 0:

@@ -38,7 +38,7 @@ cdef extern from "shuffle_sites.h":
     void shuffle_sites_strid[T](const int32_t,const npy_intp*,const int32_t*,const npy_intp,const npy_intp,const T*,T*) nogil
 
 cdef extern from "ptrace_ordering.h":
-    int32_t partition_swaps[I](I, const int32_t[], const int32_t) nogil
+    int32_t partition_swaps[I,J](I, const J[], const int32_t) nogil
 
 
 
@@ -141,12 +141,11 @@ def fermion_ptrace_sign(int32_t[::1] pmap, uint64_t bit_mask, int8_t[::1] phases
     cdef uint64_t s = 0
     cdef int swap_count = 0
     cdef int N = pmap.size
-    cdef int32_t * pmap_ptr = &pmap[0]
    
     with nogil:
         for j in range(Ns):
             s = (<uint64_t>(Ns-j-1)) & bit_mask
-            swap_count = partition_swaps(s,pmap_ptr,N)
+            swap_count = partition_swaps(s,&pmap[0],N)
             phases[j] *= (-1 if swap_count&1 else 1)
 
 @cython.boundscheck(False)
@@ -156,12 +155,11 @@ def anyon_ptrace_phase(int32_t[::1] pmap, uint64_t bit_mask, complex128_t[::1] p
     cdef uint64_t s = 0
     cdef int swap_count = 0
     cdef int N = pmap.size
-    cdef int32_t * pmap_ptr = &pmap[0]
    
     with nogil:
         for j in range(Ns):
             s = (<uint64_t>(Ns-j-1)) & bit_mask
-            swap_count = partition_swaps(s,pmap_ptr,N)
+            swap_count = partition_swaps(s,&pmap[0],N)
             phases[j] *= swap_phase**swap_count
 
 
