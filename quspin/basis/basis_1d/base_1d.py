@@ -59,7 +59,7 @@ class basis_1d(lattice_basis):
 		pzblock=blocks.get("pzblock")
 		a=blocks.get("a")
 
-		if type(L) is not int or L is 0:
+		if type(L) is not int or L == 0:
 			raise TypeError('L must be a positive integer')
 
 		if self.sps < 2:
