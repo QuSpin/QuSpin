@@ -3,8 +3,7 @@
 
 <html>
   <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><script type="text/javascript">
+    <meta charset="utf-8" /><script type="text/javascript">
 
       var _gaq = _gaq || [];
       _gaq.push(['_setAccount', 'UA-110543543-1']);
@@ -17,14 +16,15 @@
       })();
     </script>
     <title>quspin.tools.evolution.expm_multiply_parallel &#8212; QuSpin 0.3.6 documentation</title>
-    <link rel="stylesheet" href="../static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../static/pygments.css" type="text/css" />
     
     <script id="documentation_options" data-url_root="../" src="../static/documentation_options.js"></script>
     <script src="../static/jquery.js"></script>
     <script src="../static/underscore.js"></script>
     <script src="../static/doctools.js"></script>
-    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script src="../static/language_data.js"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -47,8 +47,7 @@
           <a href="quspin.tools.evolution.evolve.html" title="quspin.tools.evolution.evolve"
              accesskey="P">previous</a> |</li>
         <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.6 documentation</a> &#187;</li>
-          <li class="nav-item nav-item-1"><a href="../tools.html" accesskey="U">Tools module (<code class="xref py py-mod docutils literal notranslate"><span class="pre">quspin.tools</span></code>)</a> &#187;</li>
-        <li class="nav-item nav-item-this"><a href="">quspin.tools.evolution.expm_multiply_parallel</a></li> 
+          <li class="nav-item nav-item-1"><a href="../tools.html" accesskey="U">Tools module (<code class="xref py py-mod docutils literal notranslate"><span class="pre">quspin.tools</span></code>)</a> &#187;</li> 
       </ul>
     </div>  
 
@@ -162,7 +161,7 @@ The code snippet below initiates the class, and is required to run the example c
 <tr class="row-odd"><td><p><a class="reference internal" href="#quspin.tools.evolution.expm_multiply_parallel.__init__" title="quspin.tools.evolution.expm_multiply_parallel.__init__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__init__</span></code></a>(A[, a, dtype, copy])</p></td>
 <td><p>Initializes <cite>expm_multiply_parallel</cite>.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#quspin.tools.evolution.expm_multiply_parallel.dot" title="quspin.tools.evolution.expm_multiply_parallel.dot"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dot</span></code></a>(v[, work_array, overwrite_v])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#quspin.tools.evolution.expm_multiply_parallel.dot" title="quspin.tools.evolution.expm_multiply_parallel.dot"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dot</span></code></a>(v[, work_array, overwrite_v, tol])</p></td>
 <td><p>Calculates the action of <span class="math notranslate nohighlight">\(\mathrm{e}^{aA}\)</span> on a vector <span class="math notranslate nohighlight">\(v\)</span>.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#quspin.tools.evolution.expm_multiply_parallel.set_a" title="quspin.tools.evolution.expm_multiply_parallel.set_a"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_a</span></code></a>(a[, dtype])</p></td>
@@ -212,7 +211,7 @@ The code snippet below initiates the class, and is required to run the example c
 
 <dl class="py method">
 <dt id="quspin.tools.evolution.expm_multiply_parallel.dot">
-<code class="sig-name descname">dot</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">v</span></em>, <em class="sig-param"><span class="n">work_array</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">overwrite_v</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/tools/expm_multiply_parallel_core/expm_multiply_parallel_core.html#expm_multiply_parallel.dot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#quspin.tools.evolution.expm_multiply_parallel.dot" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">dot</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">v</span></em>, <em class="sig-param"><span class="n">work_array</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">overwrite_v</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">tol</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/tools/expm_multiply_parallel_core/expm_multiply_parallel_core.html#expm_multiply_parallel.dot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#quspin.tools.evolution.expm_multiply_parallel.dot" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculates the action of <span class="math notranslate nohighlight">\(\mathrm{e}^{aA}\)</span> on a vector <span class="math notranslate nohighlight">\(v\)</span>.</p>
 <dl class="field-list">
 <dt class="field-odd">Parameters</dt>
@@ -222,7 +221,9 @@ The code snippet below initiates the class, and is required to run the example c
 <dt><strong>work_array</strong><span class="classifier">contiguous numpy.ndarray, optional</span></dt><dd><p>array can be any shape but must contain 2*v.size contiguous elements.
 This array is used as temporary memory space for the underlying c-code. This saves extra memory allocation for function operations.</p>
 </dd>
-<dt><strong>overwrite_v</strong><span class="classifier">bool</span></dt><dd><p>if set to <cite>True</cite>, the data in <cite>v</cite> is overwritten by the function. This saves extra memory allocation for the results.</p>
+<dt><strong>overwrite_v</strong><span class="classifier">bool, optoinal</span></dt><dd><p>if set to <cite>True</cite>, the data in <cite>v</cite> is overwritten by the function. This saves extra memory allocation for the results.</p>
+</dd>
+<dt><strong>tol: float, optoinal</strong></dt><dd><p>tolerance value used to truncate Taylor expansion of matrix exponential.</p>
 </dd>
 </dl>
 </dd>
@@ -285,7 +286,6 @@ This array is used as temporary memory space for the underlying c-code. This sav
 </div>
 
 
-            <div class="clearer"></div>
           </div>
         </div>
       </div>
@@ -334,13 +334,12 @@ This array is used as temporary memory space for the underlying c-code. This sav
           <a href="quspin.tools.evolution.evolve.html" title="quspin.tools.evolution.evolve"
              >previous</a> |</li>
         <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.6 documentation</a> &#187;</li>
-          <li class="nav-item nav-item-1"><a href="../tools.html" >Tools module (<code class="xref py py-mod docutils literal notranslate"><span class="pre">quspin.tools</span></code>)</a> &#187;</li>
-        <li class="nav-item nav-item-this"><a href="">quspin.tools.evolution.expm_multiply_parallel</a></li> 
+          <li class="nav-item nav-item-1"><a href="../tools.html" >Tools module (<code class="xref py py-mod docutils literal notranslate"><span class="pre">quspin.tools</span></code>)</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2016, Phillip Weinberg, Markus Schmitt and Marin Bukov.
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.4.3.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 3.0.4.
     </div>
   </body>
 </html>

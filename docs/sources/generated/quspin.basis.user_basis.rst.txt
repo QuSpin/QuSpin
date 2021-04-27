@@ -1,4 +1,4 @@
-﻿quspin.basis.user\_basis
+quspin.basis.user\_basis
 ========================
 
 .. currentmodule:: quspin.basis

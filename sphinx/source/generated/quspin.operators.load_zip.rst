@@ -1,4 +1,4 @@
-﻿quspin.operators.load\_zip
+quspin.operators.load\_zip
 ==========================
 
 .. currentmodule:: quspin.operators

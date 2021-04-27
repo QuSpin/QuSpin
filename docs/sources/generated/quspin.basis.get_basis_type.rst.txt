@@ -1,4 +1,4 @@
-﻿quspin.basis.get\_basis\_type
+quspin.basis.get\_basis\_type
 =============================
 
 .. currentmodule:: quspin.basis

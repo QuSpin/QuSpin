@@ -1,6 +1,6 @@
 
 
-:red:`QuSpin 0.3.6` (released on 2021.04.22)
+:red:`QuSpin 0.3.6` (released on 2021.05.01)
 ================================================
 
 
@@ -16,7 +16,7 @@ Complete list of the most recent features
 =========================================
 
 
-Added in v. 0.3.6 (2021.04.22)
+Added in v. 0.3.6 (2021.05.01)
 ------------------------------
 
 Improved Functionality
@@ -24,6 +24,7 @@ Improved Functionality
 * fixed a bug with *non-contiguous* subsystems in `basis.partial_trace()` and `basis.ent_entropy()` for the fermionic basis clases `*_fermion_basis_*`.
 * fixed a bug with defining mixed particle sectors in `*_fermion_basis_general`.
 * fixed some typos in the documentation.
+* new `issues templates on Github <https://github.com/weinbe58/QuSpin/issues/new/choose>`_.
 
 
 New Attributes, Functions, Methods, Classes, and Examples

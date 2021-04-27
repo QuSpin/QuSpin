@@ -1,4 +1,4 @@
-﻿quspin.basis.bitwise\_xor
+quspin.basis.bitwise\_xor
 =========================
 
 .. currentmodule:: quspin.basis

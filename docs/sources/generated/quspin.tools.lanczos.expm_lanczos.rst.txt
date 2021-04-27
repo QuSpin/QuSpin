@@ -1,4 +1,4 @@
-﻿quspin.tools.lanczos.expm\_lanczos
+quspin.tools.lanczos.expm\_lanczos
 ==================================
 
 .. currentmodule:: quspin.tools.lanczos

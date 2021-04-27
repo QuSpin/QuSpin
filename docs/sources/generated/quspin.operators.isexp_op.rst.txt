@@ -1,4 +1,4 @@
-﻿quspin.operators.isexp\_op
+quspin.operators.isexp\_op
 ==========================
 
 .. currentmodule:: quspin.operators

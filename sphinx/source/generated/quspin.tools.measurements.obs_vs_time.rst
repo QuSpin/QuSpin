@@ -1,4 +1,4 @@
-﻿quspin.tools.measurements.obs\_vs\_time
+quspin.tools.measurements.obs\_vs\_time
 =======================================
 
 .. currentmodule:: quspin.tools.measurements

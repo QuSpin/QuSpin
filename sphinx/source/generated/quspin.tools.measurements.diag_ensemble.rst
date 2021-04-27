@@ -1,4 +1,4 @@
-﻿quspin.tools.measurements.diag\_ensemble
+quspin.tools.measurements.diag\_ensemble
 ========================================
 
 .. currentmodule:: quspin.tools.measurements

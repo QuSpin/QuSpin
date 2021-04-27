@@ -1,4 +1,4 @@
-﻿quspin.basis.python\_int\_to\_basis\_int
+quspin.basis.python\_int\_to\_basis\_int
 ========================================
 
 .. currentmodule:: quspin.basis

@@ -1,4 +1,4 @@
-﻿quspin.tools.misc.project\_op
+quspin.tools.misc.project\_op
 =============================
 
 .. currentmodule:: quspin.tools.misc
