@@ -14,7 +14,7 @@ int inline partition_swaps(I s,const J map[],const int N){
 		s >>= 1;
 	}
 
-	return basis_general::countSwaps<uint64_t>(pos_list,np);
+	return basis_general::countSwaps<npy_uint64>(pos_list,np);
 
 }
 
