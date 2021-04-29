@@ -21,6 +21,7 @@ Added in v. 0.3.6 (2021.05.01)
 
 Improved Functionality
 ++++++++++++++++++++++
+* adding python 3.9 support
 * fixed a bug with *non-contiguous* subsystems in `basis.partial_trace()` and `basis.ent_entropy()` for the fermionic basis clases `*_fermion_basis_*`.
 * fixed a bug with defining mixed particle sectors in `*_fermion_basis_general`.
 * fixed some typos in the documentation.
