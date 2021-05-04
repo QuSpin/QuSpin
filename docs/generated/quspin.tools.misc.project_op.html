@@ -3,7 +3,8 @@
 
 <html>
   <head>
-    <meta charset="utf-8" /><script type="text/javascript">
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><script type="text/javascript">
 
       var _gaq = _gaq || [];
       _gaq.push(['_setAccount', 'UA-110543543-1']);
@@ -16,15 +17,14 @@
       })();
     </script>
     <title>quspin.tools.misc.project_op &#8212; QuSpin 0.3.6 documentation</title>
-    <link rel="stylesheet" href="../static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../static/classic.css" type="text/css" />
     
     <script id="documentation_options" data-url_root="../" src="../static/documentation_options.js"></script>
     <script src="../static/jquery.js"></script>
     <script src="../static/underscore.js"></script>
     <script src="../static/doctools.js"></script>
-    <script src="../static/language_data.js"></script>
-    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -47,7 +47,8 @@
           <a href="quspin.tools.misc.mean_level_spacing.html" title="quspin.tools.misc.mean_level_spacing"
              accesskey="P">previous</a> |</li>
         <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.6 documentation</a> &#187;</li>
-          <li class="nav-item nav-item-1"><a href="../tools.html" accesskey="U">Tools module (<code class="xref py py-mod docutils literal notranslate"><span class="pre">quspin.tools</span></code>)</a> &#187;</li> 
+          <li class="nav-item nav-item-1"><a href="../tools.html" accesskey="U">Tools module (<code class="xref py py-mod docutils literal notranslate"><span class="pre">quspin.tools</span></code>)</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">quspin.tools.misc.project_op</a></li> 
       </ul>
     </div>  
 
@@ -61,7 +62,7 @@
 <h1>quspin.tools.misc.project_op<a class="headerlink" href="#quspin-tools-misc-project-op" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
 <dt id="quspin.tools.misc.project_op">
-<code class="sig-prename descclassname">quspin.tools.misc.</code><code class="sig-name descname">project_op</code><span class="sig-paren">(</span><em class="sig-param">Obs</em>, <em class="sig-param">proj</em>, <em class="sig-param">dtype=&lt;class 'numpy.complex128'&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/tools/misc.html#project_op"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#quspin.tools.misc.project_op" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname"><span class="pre">quspin.tools.misc.</span></code><code class="sig-name descname"><span class="pre">project_op</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="pre">Obs</span></em>, <em class="sig-param"><span class="pre">proj</span></em>, <em class="sig-param"><span class="pre">dtype=&lt;class</span> <span class="pre">'numpy.complex128'&gt;</span></em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/tools/misc.html#project_op"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quspin.tools.misc.project_op" title="Permalink to this definition">¶</a></dt>
 <dd><p>Projects observable onto symmetry-reduced subspace.</p>
 <p>This function takes an observable <cite>Obs</cite> and a reduced basis or a projector <cite>proj</cite>, and projects <cite>Obs</cite>
 onto that reduced basis.</p>
@@ -94,33 +95,33 @@ onto that reduced basis.</p>
 <p class="rubric">Examples</p>
 <p>The following example shows how to project an operator <span class="math notranslate nohighlight">\(H_1=\sum_j hS^x_j + g S^z_j\)</span> from the
 symmetry-reduced basis to the full basis.</p>
-<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
- 2
- 3
- 4
- 5
- 6
- 7
- 8
- 9
-10
-11
-12
-13
-14
-15
-16
-17
-18
-19
-20
-21
-22
-23
-24
-25
-26
-27</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">quspin.operators</span> <span class="kn">import</span> <span class="n">hamiltonian</span> <span class="c1"># Hamiltonians and operators</span>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span>
+<span class="normal">20</span>
+<span class="normal">21</span>
+<span class="normal">22</span>
+<span class="normal">23</span>
+<span class="normal">24</span>
+<span class="normal">25</span>
+<span class="normal">26</span>
+<span class="normal">27</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">quspin.operators</span> <span class="kn">import</span> <span class="n">hamiltonian</span> <span class="c1"># Hamiltonians and operators</span>
 <span class="kn">from</span> <span class="nn">quspin.basis</span> <span class="kn">import</span> <span class="n">spin_basis_1d</span> <span class="c1"># Hilbert space spin basis</span>
 <span class="kn">from</span> <span class="nn">quspin.tools.measurements</span> <span class="kn">import</span> <span class="n">project_op</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span> <span class="c1"># generic math functions</span>
@@ -154,6 +155,7 @@ symmetry-reduced basis to the full basis.</p>
 </div>
 
 
+            <div class="clearer"></div>
           </div>
         </div>
       </div>
@@ -202,12 +204,13 @@ symmetry-reduced basis to the full basis.</p>
           <a href="quspin.tools.misc.mean_level_spacing.html" title="quspin.tools.misc.mean_level_spacing"
              >previous</a> |</li>
         <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.6 documentation</a> &#187;</li>
-          <li class="nav-item nav-item-1"><a href="../tools.html" >Tools module (<code class="xref py py-mod docutils literal notranslate"><span class="pre">quspin.tools</span></code>)</a> &#187;</li> 
+          <li class="nav-item nav-item-1"><a href="../tools.html" >Tools module (<code class="xref py py-mod docutils literal notranslate"><span class="pre">quspin.tools</span></code>)</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">quspin.tools.misc.project_op</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2016, Phillip Weinberg, Markus Schmitt and Marin Bukov.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 3.0.4.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.5.4.
     </div>
   </body>
 </html>

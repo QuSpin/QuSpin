@@ -56,7 +56,7 @@ setup.py install --default-compiler-flags
 <!--- begin packages --->
 For the **manual installation** you must have all the prerequisite python packages installed:
  * [scipy](https://www.scipy.org)>=0.19.1
- * [numpy](http://www.numpy.org)>=1.17.4
+ * [numpy](http://www.numpy.org)>=1.19.2
  * [cython](https://www.cython.org)>=0.29
  * [joblib](https://pythonhosted.org/joblib/)
  * [six](https://pythonhosted.org/six/)
