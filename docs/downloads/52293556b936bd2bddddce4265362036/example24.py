@@ -129,14 +129,16 @@ def parity(x,N,sign_ptr,args):
 	return out
 P_args=np.array([N-1],dtype=np.uint32)
 #
-######  construct user_basis 
+######  construct user_basis
+# define anti-commuting bits -- fermion signs on the integer bits (not sites!) that represent a fermion degree of freedom
+noncommuting_bits = [(np.arange(N),-1)] # fermion signs are counted w.r.t. the shift operator << 
 # define maps dict
 maps = dict(T_block=(translation,N,0,T_args), P_block=(parity,2,0,P_args), ) 
 #maps = dict(P_block=(parity,2,0,P_args), )
 #maps = dict(T_block=(translation,N,0,T_args) ) 
 op_dict = dict(op=op,op_args=op_args)
 # create user basiss
-basis = user_basis(np.uint32,N,op_dict,allowed_ops=set("xy+-nI"),sps=2,**maps)
+basis = user_basis(np.uint32,N,op_dict,allowed_ops=set("xy+-nI"),sps=2,noncommuting_bits=noncommuting_bits,**maps)
 #
 #
 print(basis)

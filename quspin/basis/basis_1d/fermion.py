@@ -28,7 +28,7 @@ class spinless_fermion_basis_1d(basis_1d):
 	The code snippet below shows how to use the `spinless_fermion_basis_1d` class to construct the basis in the zero momentum sector of positive parity for the fermion Hamiltonian 
 
 	.. math::
-		H(t)=-J\\sum_j c^\\dagger_{j+1}c_j + \\mathrm{h.c.} - \\mu\\sum_j n_j + U\\cos\\Omega t\\sum_j n_{j+1} n_j
+		H(t)=-J\\sum_j c_jc^\\dagger_{j+1} + \\mathrm{h.c.} - \\mu\\sum_j n_j + U\\cos\\Omega t\\sum_j n_j n_{j+1} 
 
 	.. literalinclude:: ../../doc_examples/spinless_fermion_basis_1d-example.py
 		:linenos:
@@ -111,8 +111,8 @@ class spinless_fermion_basis_1d(basis_1d):
 		else:
 			self._Np = sum(Nf_list)
 
-		self._blocks = blocks			
 
+		self._blocks = blocks			
 		self._sps = 2
 		Imax = (1<<L)-1
 		stag_A = sum(1<<i for i in range(0,L,2))
@@ -127,11 +127,8 @@ class spinless_fermion_basis_1d(basis_1d):
 
 		self._allowed_ops = set(["I","+","-","n","z"])
 		basis_1d.__init__(self,hcp_basis,hcp_ops,L,Np=Nf_list,pars=pars,count_particles=count_particles,**blocks)
-		# self._check_symm=None
+		self._noncommuting_bits = [(_np.arange(self.N),_np.array(-1,dtype=_np.int8))]
 
-	@property
-	def _fermion_basis(self):
-		return True 
 
 
 	def __type__(self):
@@ -372,17 +369,12 @@ class spinful_fermion_basis_1d(spinless_fermion_basis_1d,basis_1d):
 
 		self._allowed_ops = set(["I","+","-","n","z"])
 		basis_1d.__init__(self,spf_basis,spf_ops,L,Np=Nf_list,pars=pars,count_particles=count_particles,**blocks)
-		
+		self._noncommuting_bits = [(_np.arange(self.N),_np.array(-1,dtype=_np.int8))]
 
 	@property
 	def N(self):
 		"""int: Total number of sites (spin-up + spin-down) the basis is constructed with; `N=2L`."""
 		return 2*self._L
-
-	@property
-	def _fermion_basis(self):
-		return True 
-
 
 	def _Op(self,opstr,indx,J,dtype):
 		

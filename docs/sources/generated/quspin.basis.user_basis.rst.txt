@@ -50,6 +50,7 @@ quspin.basis.user\_basis
       ~user_basis.blocks
       ~user_basis.description
       ~user_basis.dtype
+      ~user_basis.noncommuting_bits
       ~user_basis.operators
       ~user_basis.sps
       ~user_basis.states

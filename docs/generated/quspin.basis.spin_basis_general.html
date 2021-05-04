@@ -15,7 +15,7 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-    <title>quspin.basis.spin_basis_general &#8212; QuSpin 0.3.5 documentation</title>
+    <title>quspin.basis.spin_basis_general &#8212; QuSpin 0.3.6 documentation</title>
     <link rel="stylesheet" href="../static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../static/pygments.css" type="text/css" />
     
@@ -46,7 +46,7 @@
         <li class="right" >
           <a href="quspin.basis.spinful_fermion_basis_1d.html" title="quspin.basis.spinful_fermion_basis_1d"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.5 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.6 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../basis.html" accesskey="U">Basis module (<code class="xref py py-mod docutils literal notranslate"><span class="pre">quspin.basis</span></code>)</a> &#187;</li> 
       </ul>
     </div>  
@@ -173,7 +173,7 @@ use the two symemtries together to reduce the Hilbert space dimension.</p>
 <dd class="field-odd"><dl>
 <dt><strong>N: int</strong></dt><dd><p>number of sites.</p>
 </dd>
-<dt><strong>Nup: {int,list}, optional</strong></dt><dd><p>Total magnetisation, <span class="math notranslate nohighlight">\(\sum_j S^z_j\)</span>, projection. Can be integer or list to specify one or
+<dt><strong>Nup: {int,list}, optional</strong></dt><dd><p>Total magnetisation, <span class="math notranslate nohighlight">\(Nup = NS + \sum_j S^z_j, Nup\ge 0\)</span>, and <span class="math notranslate nohighlight">\(Nup = -NS + \sum_j S^z_j, Nup&lt;0\)</span> projection. Can be integer or list to specify one or
 more particle sectors. Negative values are taken to be subtracted from the fully polarized up state as: Nup_max + Nup + 1.
 e.g. to get the Nup_max state use Nup = -1, for Nup_max-1 state use Nup = -2, etc.</p>
 </dd>
@@ -318,13 +318,16 @@ sector.</p>
 <tr class="row-odd"><td><p><a class="reference internal" href="#quspin.basis.spin_basis_general.dtype" title="quspin.basis.spin_basis_general.dtype"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dtype</span></code></a></p></td>
 <td><p>data type of basis state integers.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#quspin.basis.spin_basis_general.operators" title="quspin.basis.spin_basis_general.operators"><code class="xref py py-obj docutils literal notranslate"><span class="pre">operators</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#quspin.basis.spin_basis_general.noncommuting_bits" title="quspin.basis.spin_basis_general.noncommuting_bits"><code class="xref py py-obj docutils literal notranslate"><span class="pre">noncommuting_bits</span></code></a></p></td>
+<td><p>list of bits that represent sites that do not commute along with the phase required from commuting sites</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#quspin.basis.spin_basis_general.operators" title="quspin.basis.spin_basis_general.operators"><code class="xref py py-obj docutils literal notranslate"><span class="pre">operators</span></code></a></p></td>
 <td><p>set of available operator strings.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#quspin.basis.spin_basis_general.sps" title="quspin.basis.spin_basis_general.sps"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sps</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#quspin.basis.spin_basis_general.sps" title="quspin.basis.spin_basis_general.sps"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sps</span></code></a></p></td>
 <td><p>number of states per site (i.e.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#quspin.basis.spin_basis_general.states" title="quspin.basis.spin_basis_general.states"><code class="xref py py-obj docutils literal notranslate"><span class="pre">states</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#quspin.basis.spin_basis_general.states" title="quspin.basis.spin_basis_general.states"><code class="xref py py-obj docutils literal notranslate"><span class="pre">states</span></code></a></p></td>
 <td><p>basis states stored in their integer representation.</p></td>
 </tr>
 </tbody>
@@ -996,6 +999,17 @@ for basis which small particle numbers as the blocks have very uneven sizes. To 
 </dd></dl>
 
 <dl class="py method">
+<dt id="quspin.basis.spin_basis_general.noncommuting_bits">
+<em class="property">property </em><code class="sig-name descname">noncommuting_bits</code><a class="headerlink" href="#quspin.basis.spin_basis_general.noncommuting_bits" title="Permalink to this definition">¶</a></dt>
+<dd><p>list of bits that represent sites that do not commute along with the phase required from commuting sites</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt id="quspin.basis.spin_basis_general.normalization">
 <code class="sig-name descname">normalization</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">states</span></em>, <em class="sig-param"><span class="n">out</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#quspin.basis.spin_basis_general.normalization" title="Permalink to this definition">¶</a></dt>
 <dd><p>Computes normalization of <cite>basis</cite> states.</p>
@@ -1308,7 +1322,7 @@ it is a square array. Default is <cite>False</cite>.</p>
         <li class="right" >
           <a href="quspin.basis.spinful_fermion_basis_1d.html" title="quspin.basis.spinful_fermion_basis_1d"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.5 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.6 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../basis.html" >Basis module (<code class="xref py py-mod docutils literal notranslate"><span class="pre">quspin.basis</span></code>)</a> &#187;</li> 
       </ul>
     </div>

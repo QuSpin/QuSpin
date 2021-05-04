@@ -15,7 +15,7 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-    <title>quspin.basis.spin_basis_1d &#8212; QuSpin 0.3.5 documentation</title>
+    <title>quspin.basis.spin_basis_1d &#8212; QuSpin 0.3.6 documentation</title>
     <link rel="stylesheet" href="../static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../static/pygments.css" type="text/css" />
     
@@ -46,7 +46,7 @@
         <li class="right" >
           <a href="../basis.html" title="Basis module (quspin.basis)"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.5 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.6 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../basis.html" accesskey="U">Basis module (<code class="xref py py-mod docutils literal notranslate"><span class="pre">quspin.basis</span></code>)</a> &#187;</li> 
       </ul>
     </div>  
@@ -265,13 +265,16 @@ e.g. to get the Nup_max state use Nup = -1, for Nup_max-1 state use Nup = -2, et
 <tr class="row-even"><td><p><a class="reference internal" href="#quspin.basis.spin_basis_1d.dtype" title="quspin.basis.spin_basis_1d.dtype"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dtype</span></code></a></p></td>
 <td><p>data type of basis state integers.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#quspin.basis.spin_basis_1d.operators" title="quspin.basis.spin_basis_1d.operators"><code class="xref py py-obj docutils literal notranslate"><span class="pre">operators</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#quspin.basis.spin_basis_1d.noncommuting_bits" title="quspin.basis.spin_basis_1d.noncommuting_bits"><code class="xref py py-obj docutils literal notranslate"><span class="pre">noncommuting_bits</span></code></a></p></td>
+<td><p>list of bits that represent sites that do not commute along with the phase required from commuting sites</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#quspin.basis.spin_basis_1d.operators" title="quspin.basis.spin_basis_1d.operators"><code class="xref py py-obj docutils literal notranslate"><span class="pre">operators</span></code></a></p></td>
 <td><p>set of available operator strings.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#quspin.basis.spin_basis_1d.sps" title="quspin.basis.spin_basis_1d.sps"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sps</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#quspin.basis.spin_basis_1d.sps" title="quspin.basis.spin_basis_1d.sps"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sps</span></code></a></p></td>
 <td><p>number of states per site (i.e.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#quspin.basis.spin_basis_1d.states" title="quspin.basis.spin_basis_1d.states"><code class="xref py py-obj docutils literal notranslate"><span class="pre">states</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#quspin.basis.spin_basis_1d.states" title="quspin.basis.spin_basis_1d.states"><code class="xref py py-obj docutils literal notranslate"><span class="pre">states</span></code></a></p></td>
 <td><p>basis states stored in their integer representation.</p></td>
 </tr>
 </tbody>
@@ -720,6 +723,17 @@ by <cite>index()</cite>.</p>
 </dd></dl>
 
 <dl class="py method">
+<dt id="quspin.basis.spin_basis_1d.noncommuting_bits">
+<em class="property">property </em><code class="sig-name descname">noncommuting_bits</code><a class="headerlink" href="#quspin.basis.spin_basis_1d.noncommuting_bits" title="Permalink to this definition">¶</a></dt>
+<dd><p>list of bits that represent sites that do not commute along with the phase required from commuting sites</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt id="quspin.basis.spin_basis_1d.operators">
 <em class="property">property </em><code class="sig-name descname">operators</code><a class="headerlink" href="#quspin.basis.spin_basis_1d.operators" title="Permalink to this definition">¶</a></dt>
 <dd><p>set of available operator strings.</p>
@@ -924,7 +938,7 @@ in a straightforward manner.</p>
         <li class="right" >
           <a href="../basis.html" title="Basis module (quspin.basis)"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.5 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.6 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../basis.html" >Basis module (<code class="xref py py-mod docutils literal notranslate"><span class="pre">quspin.basis</span></code>)</a> &#187;</li> 
       </ul>
     </div>

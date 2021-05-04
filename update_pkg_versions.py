@@ -7,7 +7,7 @@ import sys
 
 
 
-quspin_ver = '"0.3.5"'
+quspin_ver = '"0.3.6"'
 build_num = '"0"'
 
 

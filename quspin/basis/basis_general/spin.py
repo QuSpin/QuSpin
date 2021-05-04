@@ -64,7 +64,7 @@ class spin_basis_general(hcb_basis_general,higher_spin_basis_general):
 		N: int
 			number of sites.
 		Nup: {int,list}, optional
-			Total magnetisation, :math:`\\sum_j S^z_j`, projection. Can be integer or list to specify one or 
+			Total magnetisation, :math:`Nup = NS + \\sum_j S^z_j, Nup\\ge 0`, and :math:`Nup = -NS + \\sum_j S^z_j, Nup<0` projection. Can be integer or list to specify one or 
 			more particle sectors. Negative values are taken to be subtracted from the fully polarized up state as: Nup_max + Nup + 1.
 			e.g. to get the Nup_max state use Nup = -1, for Nup_max-1 state use Nup = -2, etc.
 		m: float, optional

@@ -44,7 +44,7 @@ class bitops:
 
 class basis_1d(lattice_basis):
 	def __init__(self,basis_module,ops_module,L,Np=None,pars=None,count_particles=False,**blocks):
-
+		lattice_basis.__init__(self)
 		if self.__class__.__name__ == "basis_1d":
 			raise ValueError("This class is not intended"
 							 " to be instantiated directly.")
@@ -59,7 +59,7 @@ class basis_1d(lattice_basis):
 		pzblock=blocks.get("pzblock")
 		a=blocks.get("a")
 
-		if type(L) is not int or L is 0:
+		if type(L) is not int or L == 0:
 			raise TypeError('L must be a positive integer')
 
 		if self.sps < 2:
@@ -494,6 +494,10 @@ class basis_1d(lattice_basis):
 	def N(self):
 		"""int: number of sites the basis is constructed with."""
 		return self._L
+
+	@property
+	def _fermion_basis(self):
+		return False
 
 
 

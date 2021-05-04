@@ -15,7 +15,7 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-    <title>quspin.basis.basis_general.spin &#8212; QuSpin 0.3.5 documentation</title>
+    <title>quspin.basis.basis_general.spin &#8212; QuSpin 0.3.6 documentation</title>
     <link rel="stylesheet" href="../../../../static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../../static/pygments.css" type="text/css" />
     
@@ -38,7 +38,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">QuSpin 0.3.5 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">QuSpin 0.3.6 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -115,7 +115,7 @@
 <span class="sd">		N: int</span>
 <span class="sd">			number of sites.</span>
 <span class="sd">		Nup: {int,list}, optional</span>
-<span class="sd">			Total magnetisation, :math:`\\sum_j S^z_j`, projection. Can be integer or list to specify one or </span>
+<span class="sd">			Total magnetisation, :math:`Nup = NS + \\sum_j S^z_j, Nup\\ge 0`, and :math:`Nup = -NS + \\sum_j S^z_j, Nup&lt;0` projection. Can be integer or list to specify one or </span>
 <span class="sd">			more particle sectors. Negative values are taken to be subtracted from the fully polarized up state as: Nup_max + Nup + 1.</span>
 <span class="sd">			e.g. to get the Nup_max state use Nup = -1, for Nup_max-1 state use Nup = -2, etc.</span>
 <span class="sd">		m: float, optional</span>
@@ -449,7 +449,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">QuSpin 0.3.5 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">QuSpin 0.3.6 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>

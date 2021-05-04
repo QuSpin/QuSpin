@@ -5,9 +5,11 @@
 #include "hcb_basis_core.h"
 #include "numpy/ndarraytypes.h"
 #include "openmp.h"
+#include "misc.h"
 
 namespace basis_general {
 
+/*
 template<class I>
 void mergeSort(I nums[],I work[],const I left,const I mid,const I right, bool  &f_count){
     I leftLength = mid - left + 1;
@@ -33,7 +35,7 @@ void mergeSort(I nums[],I work[],const I left,const I mid,const I right, bool  &
       }
       k++;
     }
-    //remaining iversions
+    //remaining isertions
     if((j&1) && ((leftLength-i)&1)){f_count ^= 1;}
     if (i >= leftLength) {
       //copy remaining elements from right
@@ -58,7 +60,7 @@ void getf_count(I nums[],I work[], I left, I right, bool &f_count){
       mergeSort(nums, work, left, mid, right, f_count);
     }
   }
-
+*/
 
 
 
@@ -68,8 +70,7 @@ I inline spinless_fermion_map_bits(I s,const int map[],const int N,P &sign){
 	I ss = 0;
 	int np = 0;
 	int pos_list[bit_info<I>::bits];
-	int work[bit_info<I>::bits];
-	bool f_count = 0;
+	
 
 	for(int i=N-1;i>=0;--i){
 		const int j = map[i];
@@ -85,8 +86,9 @@ I inline spinless_fermion_map_bits(I s,const int map[],const int N,P &sign){
 		s >>= 1;
 	}
 
-	getf_count(pos_list,work,0,np-1,f_count);
-	if(f_count){sign *= -1;}
+	// getf_count(pos_list,work,0,np-1,f_count);
+	int Nswap = countSwaps<I>(pos_list,np);
+	if(Nswap&1){sign *= -1;}
 
 	return ss;
 }

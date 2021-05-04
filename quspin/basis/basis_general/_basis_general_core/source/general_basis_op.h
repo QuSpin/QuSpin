@@ -550,7 +550,6 @@ general_op_core(general_basis_core<I,P> *B,
             const I s = r;
             m = A;
             int local_err = B->op(r,m,n_op,&opstr[0],&indx[0]);
-
             if(local_err == 0){
                 P sign = 1;
                 npy_intp j = i;

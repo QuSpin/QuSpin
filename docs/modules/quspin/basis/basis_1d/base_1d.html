@@ -15,7 +15,7 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-    <title>quspin.basis.basis_1d.base_1d &#8212; QuSpin 0.3.5 documentation</title>
+    <title>quspin.basis.basis_1d.base_1d &#8212; QuSpin 0.3.6 documentation</title>
     <link rel="stylesheet" href="../../../../static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../../static/pygments.css" type="text/css" />
     
@@ -38,7 +38,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">QuSpin 0.3.5 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">QuSpin 0.3.6 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -95,7 +95,7 @@
 
 <span class="k">class</span> <span class="nc">basis_1d</span><span class="p">(</span><span class="n">lattice_basis</span><span class="p">):</span>
 	<span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">basis_module</span><span class="p">,</span><span class="n">ops_module</span><span class="p">,</span><span class="n">L</span><span class="p">,</span><span class="n">Np</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">pars</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">count_particles</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="o">**</span><span class="n">blocks</span><span class="p">):</span>
-
+		<span class="n">lattice_basis</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 		<span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;basis_1d&quot;</span><span class="p">:</span>
 			<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;This class is not intended&quot;</span>
 							 <span class="s2">&quot; to be instantiated directly.&quot;</span><span class="p">)</span>
@@ -110,7 +110,7 @@
 		<span class="n">pzblock</span><span class="o">=</span><span class="n">blocks</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;pzblock&quot;</span><span class="p">)</span>
 		<span class="n">a</span><span class="o">=</span><span class="n">blocks</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;a&quot;</span><span class="p">)</span>
 
-		<span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">L</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="nb">int</span> <span class="ow">or</span> <span class="n">L</span> <span class="ow">is</span> <span class="mi">0</span><span class="p">:</span>
+		<span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">L</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="nb">int</span> <span class="ow">or</span> <span class="n">L</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
 			<span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;L must be a positive integer&#39;</span><span class="p">)</span>
 
 		<span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">sps</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
@@ -545,6 +545,10 @@
 	<span class="k">def</span> <span class="nf">N</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 		<span class="sd">&quot;&quot;&quot;int: number of sites the basis is constructed with.&quot;&quot;&quot;</span>
 		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_L</span>
+
+	<span class="nd">@property</span>
+	<span class="k">def</span> <span class="nf">_fermion_basis</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="k">return</span> <span class="kc">False</span>
 
 
 
@@ -1501,7 +1505,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">QuSpin 0.3.5 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">QuSpin 0.3.6 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>

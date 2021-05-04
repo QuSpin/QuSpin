@@ -50,6 +50,7 @@ quspin.basis.spinful\_fermion\_basis\_general
       ~spinful_fermion_basis_general.blocks
       ~spinful_fermion_basis_general.description
       ~spinful_fermion_basis_general.dtype
+      ~spinful_fermion_basis_general.noncommuting_bits
       ~spinful_fermion_basis_general.operators
       ~spinful_fermion_basis_general.sps
       ~spinful_fermion_basis_general.states

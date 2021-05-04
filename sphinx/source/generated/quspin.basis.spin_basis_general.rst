@@ -50,6 +50,7 @@ quspin.basis.spin\_basis\_general
       ~spin_basis_general.blocks
       ~spin_basis_general.description
       ~spin_basis_general.dtype
+      ~spin_basis_general.noncommuting_bits
       ~spin_basis_general.operators
       ~spin_basis_general.sps
       ~spin_basis_general.states
