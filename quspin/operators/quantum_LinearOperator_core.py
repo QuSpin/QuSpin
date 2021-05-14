@@ -338,7 +338,7 @@ class quantum_LinearOperator(LinearOperator):
 
 		Examples
 		---------
-		>>> H_fluct = H.quant_fluct(V,time=0,diagonal=False,check=True)
+		>>> H_fluct = H.quant_fluct(V,time=0,check=True)
 
 		corresponds to :math:`\\left(\\Delta H\\right)^2 = \\langle V|H^2(t=\\texttt{time})|V\\rangle - \\langle V|H(t=\\texttt{time})|V\\rangle^2`. 
 			 
