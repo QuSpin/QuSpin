@@ -3,7 +3,8 @@
 
 <html>
   <head>
-    <meta charset="utf-8" /><script type="text/javascript">
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><script type="text/javascript">
 
       var _gaq = _gaq || [];
       _gaq.push(['_setAccount', 'UA-110543543-1']);
@@ -16,15 +17,13 @@
       })();
     </script>
     <title>quspin.tools.Floquet.Floquet_t_vec &#8212; QuSpin 0.3.6 documentation</title>
-    <link rel="stylesheet" href="../static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../static/classic.css" type="text/css" />
     
     <script id="documentation_options" data-url_root="../" src="../static/documentation_options.js"></script>
     <script src="../static/jquery.js"></script>
     <script src="../static/underscore.js"></script>
     <script src="../static/doctools.js"></script>
-    <script src="../static/language_data.js"></script>
-    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -47,7 +46,8 @@
           <a href="quspin.tools.Floquet.Floquet.html" title="quspin.tools.Floquet.Floquet"
              accesskey="P">previous</a> |</li>
         <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.6 documentation</a> &#187;</li>
-          <li class="nav-item nav-item-1"><a href="../tools.html" accesskey="U">Tools module (<code class="xref py py-mod docutils literal notranslate"><span class="pre">quspin.tools</span></code>)</a> &#187;</li> 
+          <li class="nav-item nav-item-1"><a href="../tools.html" accesskey="U">Tools module (<code class="xref py py-mod docutils literal notranslate"><span class="pre">quspin.tools</span></code>)</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">quspin.tools.Floquet.Floquet_t_vec</a></li> 
       </ul>
     </div>  
 
@@ -61,7 +61,7 @@
 <h1>quspin.tools.Floquet.Floquet_t_vec<a class="headerlink" href="#quspin-tools-floquet-floquet-t-vec" title="Permalink to this headline">¶</a></h1>
 <dl class="py class">
 <dt id="quspin.tools.Floquet.Floquet_t_vec">
-<em class="property">class </em><code class="sig-prename descclassname">quspin.tools.Floquet.</code><code class="sig-name descname">Floquet_t_vec</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">Omega</span></em>, <em class="sig-param"><span class="n">N_const</span></em>, <em class="sig-param"><span class="n">len_T</span><span class="o">=</span><span class="default_value">100</span></em>, <em class="sig-param"><span class="n">N_up</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">N_down</span><span class="o">=</span><span class="default_value">0</span></em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/tools/Floquet.html#Floquet_t_vec"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#quspin.tools.Floquet.Floquet_t_vec" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">quspin.tools.Floquet.</span></code><code class="sig-name descname"><span class="pre">Floquet_t_vec</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Omega</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">N_const</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">len_T</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">N_up</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">N_down</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/tools/Floquet.html#Floquet_t_vec"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quspin.tools.Floquet.Floquet_t_vec" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Creates a Floquet time vector with fixed number of points per period.</p>
 <p>This time vector hits all stroboscopic times, and has many useful attributes. The time vector
@@ -70,36 +70,36 @@ ramp-up, constant and ramp-down.</p>
 <p>Particularly useful for studying periodically-driven systems.</p>
 <p class="rubric">Examples</p>
 <p>The following code shows how to use the <cite>Floquet_t_vec</cite> class.</p>
-<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
- 2
- 3
- 4
- 5
- 6
- 7
- 8
- 9
-10
-11
-12
-13
-14
-15
-16
-17
-18
-19
-20
-21
-22
-23
-24
-25
-26
-27
-28
-29
-30</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">quspin.tools.Floquet</span> <span class="kn">import</span> <span class="n">Floquet_t_vec</span> <span class="c1"># Floquet time vector</span>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span>
+<span class="normal">20</span>
+<span class="normal">21</span>
+<span class="normal">22</span>
+<span class="normal">23</span>
+<span class="normal">24</span>
+<span class="normal">25</span>
+<span class="normal">26</span>
+<span class="normal">27</span>
+<span class="normal">28</span>
+<span class="normal">29</span>
+<span class="normal">30</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">quspin.tools.Floquet</span> <span class="kn">import</span> <span class="n">Floquet_t_vec</span> <span class="c1"># Floquet time vector</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span> <span class="c1"># generic math functions</span>
 <span class="c1">#</span>
 <span class="n">Omega</span><span class="o">=</span><span class="mf">4.5</span> <span class="c1"># drive frequency</span>
@@ -133,7 +133,7 @@ ramp-up, constant and ramp-down.</p>
 </td></tr></table></div>
 <dl class="py method">
 <dt id="quspin.tools.Floquet.Floquet_t_vec.__init__">
-<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">Omega</span></em>, <em class="sig-param"><span class="n">N_const</span></em>, <em class="sig-param"><span class="n">len_T</span><span class="o">=</span><span class="default_value">100</span></em>, <em class="sig-param"><span class="n">N_up</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">N_down</span><span class="o">=</span><span class="default_value">0</span></em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/tools/Floquet.html#Floquet_t_vec.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#quspin.tools.Floquet.Floquet_t_vec.__init__" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">__init__</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Omega</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">N_const</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">len_T</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">N_up</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">N_down</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/tools/Floquet.html#Floquet_t_vec.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quspin.tools.Floquet.Floquet_t_vec.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><dl class="simple">
@@ -225,7 +225,7 @@ open on the right, i.e. [0,T) and the point T is NOT counted towards ‘len_T’
 </table>
 <dl class="py method">
 <dt id="quspin.tools.Floquet.Floquet_t_vec.N">
-<em class="property">property </em><code class="sig-name descname">N</code><a class="headerlink" href="#quspin.tools.Floquet.Floquet_t_vec.N" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">N</span></code><a class="headerlink" href="#quspin.tools.Floquet.Floquet_t_vec.N" title="Permalink to this definition">¶</a></dt>
 <dd><p>total number of periods.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
@@ -236,7 +236,7 @@ open on the right, i.e. [0,T) and the point T is NOT counted towards ‘len_T’
 
 <dl class="py method">
 <dt id="quspin.tools.Floquet.Floquet_t_vec.T">
-<em class="property">property </em><code class="sig-name descname">T</code><a class="headerlink" href="#quspin.tools.Floquet.Floquet_t_vec.T" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">T</span></code><a class="headerlink" href="#quspin.tools.Floquet.Floquet_t_vec.T" title="Permalink to this definition">¶</a></dt>
 <dd><p>drive period.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
@@ -247,7 +247,7 @@ open on the right, i.e. [0,T) and the point T is NOT counted towards ‘len_T’
 
 <dl class="py method">
 <dt id="quspin.tools.Floquet.Floquet_t_vec.const">
-<em class="property">property </em><code class="sig-name descname">const</code><a class="headerlink" href="#quspin.tools.Floquet.Floquet_t_vec.const" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">const</span></code><a class="headerlink" href="#quspin.tools.Floquet.Floquet_t_vec.const" title="Permalink to this definition">¶</a></dt>
 <dd><p>refers to time vector of const-part (regime).</p>
 <p>Inherits all attributes (e.g. <cite>_.const.strobo.inds</cite>) except <cite>_.T</cite>, <cite>_.dt</cite>, and <cite>_.lenT</cite>.</p>
 <dl class="field-list simple">
@@ -259,7 +259,7 @@ open on the right, i.e. [0,T) and the point T is NOT counted towards ‘len_T’
 
 <dl class="py method">
 <dt id="quspin.tools.Floquet.Floquet_t_vec.down">
-<em class="property">property </em><code class="sig-name descname">down</code><a class="headerlink" href="#quspin.tools.Floquet.Floquet_t_vec.down" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">down</span></code><a class="headerlink" href="#quspin.tools.Floquet.Floquet_t_vec.down" title="Permalink to this definition">¶</a></dt>
 <dd><p>refers to time vector of down-part (regime).</p>
 <p>Inherits all attributes (e.g. <cite>_.down.strobo.inds</cite>) except <cite>_.T</cite>, <cite>_.dt</cite>, and <cite>_.lenT</cite>.</p>
 <p>Requires optional __init___ parameter N_down to be specified.</p>
@@ -272,7 +272,7 @@ open on the right, i.e. [0,T) and the point T is NOT counted towards ‘len_T’
 
 <dl class="py method">
 <dt id="quspin.tools.Floquet.Floquet_t_vec.dt">
-<em class="property">property </em><code class="sig-name descname">dt</code><a class="headerlink" href="#quspin.tools.Floquet.Floquet_t_vec.dt" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">dt</span></code><a class="headerlink" href="#quspin.tools.Floquet.Floquet_t_vec.dt" title="Permalink to this definition">¶</a></dt>
 <dd><p>time vector step size.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
@@ -283,7 +283,7 @@ open on the right, i.e. [0,T) and the point T is NOT counted towards ‘len_T’
 
 <dl class="py method">
 <dt id="quspin.tools.Floquet.Floquet_t_vec.f">
-<em class="property">property </em><code class="sig-name descname">f</code><a class="headerlink" href="#quspin.tools.Floquet.Floquet_t_vec.f" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">f</span></code><a class="headerlink" href="#quspin.tools.Floquet.Floquet_t_vec.f" title="Permalink to this definition">¶</a></dt>
 <dd><p>final time value.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
@@ -294,7 +294,7 @@ open on the right, i.e. [0,T) and the point T is NOT counted towards ‘len_T’
 
 <dl class="py method">
 <dt id="quspin.tools.Floquet.Floquet_t_vec.get_coordinates">
-<code class="sig-name descname">get_coordinates</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">index</span></em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/tools/Floquet.html#Floquet_t_vec.get_coordinates"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#quspin.tools.Floquet.Floquet_t_vec.get_coordinates" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">get_coordinates</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">index</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/tools/Floquet.html#Floquet_t_vec.get_coordinates"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quspin.tools.Floquet.Floquet_t_vec.get_coordinates" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns (period number, index within period) of the <cite>Floquet_t_vec</cite> value stored at <cite>index</cite>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -327,7 +327,7 @@ open on the right, i.e. [0,T) and the point T is NOT counted towards ‘len_T’
 
 <dl class="py method">
 <dt id="quspin.tools.Floquet.Floquet_t_vec.i">
-<em class="property">property </em><code class="sig-name descname">i</code><a class="headerlink" href="#quspin.tools.Floquet.Floquet_t_vec.i" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">i</span></code><a class="headerlink" href="#quspin.tools.Floquet.Floquet_t_vec.i" title="Permalink to this definition">¶</a></dt>
 <dd><p>initial time value.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
@@ -338,7 +338,7 @@ open on the right, i.e. [0,T) and the point T is NOT counted towards ‘len_T’
 
 <dl class="py method">
 <dt id="quspin.tools.Floquet.Floquet_t_vec.len">
-<em class="property">property </em><code class="sig-name descname">len</code><a class="headerlink" href="#quspin.tools.Floquet.Floquet_t_vec.len" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">len</span></code><a class="headerlink" href="#quspin.tools.Floquet.Floquet_t_vec.len" title="Permalink to this definition">¶</a></dt>
 <dd><p>length of time vector.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
@@ -349,7 +349,7 @@ open on the right, i.e. [0,T) and the point T is NOT counted towards ‘len_T’
 
 <dl class="py method">
 <dt id="quspin.tools.Floquet.Floquet_t_vec.len_T">
-<em class="property">property </em><code class="sig-name descname">len_T</code><a class="headerlink" href="#quspin.tools.Floquet.Floquet_t_vec.len_T" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">len_T</span></code><a class="headerlink" href="#quspin.tools.Floquet.Floquet_t_vec.len_T" title="Permalink to this definition">¶</a></dt>
 <dd><p>number of time points within one period, assumed half-open; [0,T).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
@@ -360,7 +360,7 @@ open on the right, i.e. [0,T) and the point T is NOT counted towards ‘len_T’
 
 <dl class="py method">
 <dt id="quspin.tools.Floquet.Floquet_t_vec.shape">
-<em class="property">property </em><code class="sig-name descname">shape</code><a class="headerlink" href="#quspin.tools.Floquet.Floquet_t_vec.shape" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">shape</span></code><a class="headerlink" href="#quspin.tools.Floquet.Floquet_t_vec.shape" title="Permalink to this definition">¶</a></dt>
 <dd><p>shape of array.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
@@ -371,7 +371,7 @@ open on the right, i.e. [0,T) and the point T is NOT counted towards ‘len_T’
 
 <dl class="py method">
 <dt id="quspin.tools.Floquet.Floquet_t_vec.strobo">
-<em class="property">property </em><code class="sig-name descname">strobo</code><a class="headerlink" href="#quspin.tools.Floquet.Floquet_t_vec.strobo" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">strobo</span></code><a class="headerlink" href="#quspin.tools.Floquet.Floquet_t_vec.strobo" title="Permalink to this definition">¶</a></dt>
 <dd><p>calculates stroboscopic times in time vector with period length <cite>len_T</cite> and assigns them as
 attributes:</p>
 <dl class="simple">
@@ -389,7 +389,7 @@ attributes:</p>
 
 <dl class="py method">
 <dt id="quspin.tools.Floquet.Floquet_t_vec.tot">
-<em class="property">property </em><code class="sig-name descname">tot</code><a class="headerlink" href="#quspin.tools.Floquet.Floquet_t_vec.tot" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">tot</span></code><a class="headerlink" href="#quspin.tools.Floquet.Floquet_t_vec.tot" title="Permalink to this definition">¶</a></dt>
 <dd><p>total time duration; <cite>_.f - _.i</cite> .</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
@@ -400,7 +400,7 @@ attributes:</p>
 
 <dl class="py method">
 <dt id="quspin.tools.Floquet.Floquet_t_vec.up">
-<em class="property">property </em><code class="sig-name descname">up</code><a class="headerlink" href="#quspin.tools.Floquet.Floquet_t_vec.up" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">up</span></code><a class="headerlink" href="#quspin.tools.Floquet.Floquet_t_vec.up" title="Permalink to this definition">¶</a></dt>
 <dd><p>refers to time vector of up-part (regime).</p>
 <p>Inherits all attributes (e.g. <cite>_.up.strobo.inds</cite>) except <cite>_.T</cite>, <cite>_.dt</cite>, and <cite>_.lenT</cite>.</p>
 <p>Requires optional <cite>__init___</cite> parameter <cite>N_up</cite> to be specified.</p>
@@ -413,7 +413,7 @@ attributes:</p>
 
 <dl class="py method">
 <dt id="quspin.tools.Floquet.Floquet_t_vec.vals">
-<em class="property">property </em><code class="sig-name descname">vals</code><a class="headerlink" href="#quspin.tools.Floquet.Floquet_t_vec.vals" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">vals</span></code><a class="headerlink" href="#quspin.tools.Floquet.Floquet_t_vec.vals" title="Permalink to this definition">¶</a></dt>
 <dd><p>time vector values.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
@@ -427,6 +427,7 @@ attributes:</p>
 </div>
 
 
+            <div class="clearer"></div>
           </div>
         </div>
       </div>
@@ -475,12 +476,13 @@ attributes:</p>
           <a href="quspin.tools.Floquet.Floquet.html" title="quspin.tools.Floquet.Floquet"
              >previous</a> |</li>
         <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.6 documentation</a> &#187;</li>
-          <li class="nav-item nav-item-1"><a href="../tools.html" >Tools module (<code class="xref py py-mod docutils literal notranslate"><span class="pre">quspin.tools</span></code>)</a> &#187;</li> 
+          <li class="nav-item nav-item-1"><a href="../tools.html" >Tools module (<code class="xref py py-mod docutils literal notranslate"><span class="pre">quspin.tools</span></code>)</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">quspin.tools.Floquet.Floquet_t_vec</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2016, Phillip Weinberg, Markus Schmitt and Marin Bukov.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 3.0.4.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.5.4.
     </div>
   </body>
 </html>
