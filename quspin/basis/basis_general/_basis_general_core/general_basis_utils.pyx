@@ -208,6 +208,76 @@ def _get_basis_index(_np.ndarray basis,object val):
 
     return i
 
+def _is_sorted_decending(_np.ndarray basis):
+    # checks if array is sorted in decending order
+    cdef npy_intp M = basis.size
+    cdef npy_intp i = 0
+    cdef void * ptr = _np.PyArray_GETPTR1(basis,0)
+    cdef bool is_sorted;
+
+    if basis.dtype == uint32:
+        is_sorted = is_decending_array[uint32_t](<uint32_t*>ptr,M)
+    elif basis.dtype == uint64:
+        is_sorted = is_decending_array[uint64_t](<uint64_t*>ptr,M)
+    elif basis.dtype == uint256:
+        is_sorted = is_decending_array[uint256_t](<uint256_t*>ptr,M)
+    elif basis.dtype == uint1024:
+        is_sorted = is_decending_array[uint1024_t](<uint1024_t*>ptr,M)
+    elif basis.dtype == uint4096:
+        is_sorted = is_decending_array[uint4096_t](<uint4096_t*>ptr,M)
+    elif basis.dtype == uint16384:
+        is_sorted = is_decending_array[uint16384_t](<uint16384_t*>ptr,M)
+    else:
+        raise ValueError("dtype {} is not recognized, must be python integer or QuSpin basis type".format(basis.dtype))
+
+    return is_sorted    
+
+def _basis_argsort(_np.ndarray basis):
+    """ returns indices to decending sorted array for basis array.
+
+    This function returns the indices to sort a basis array of integer types in decending order. 
+
+    Parameters
+    -----------
+    basis: ndarray, (M,)
+        array of basis integers to find decending order
+
+    Returns
+    -------
+    indices: ndarray, (M,)
+        the indices to sort the basis array in decending order, e.g. basis = basis[indices]
+
+    Examples
+    --------
+
+    >>> indices = basis_argsort(basis)
+    >>> basis_sorted = basis[indices]
+
+    """
+    cdef npy_intp M = basis.size
+    cdef npy_intp i = 0
+    cdef _np.ndarray indices = _np.arange(M)
+    cdef void * ptr = _np.PyArray_GETPTR1(basis,0)
+    cdef npy_intp * indptr = <npy_intp*> _np.PyArray_GETPTR1(indices,0)
+
+    if basis.dtype == uint32:
+        argsort_decending_array[uint32_t](indptr,<uint32_t*>ptr,M)
+    elif basis.dtype == uint64:
+        argsort_decending_array[uint64_t](indptr,<uint64_t*>ptr,M)
+    elif basis.dtype == uint256:
+        argsort_decending_array[uint256_t](indptr,<uint256_t*>ptr,M)
+    elif basis.dtype == uint1024:
+        argsort_decending_array[uint1024_t](indptr,<uint1024_t*>ptr,M)
+    elif basis.dtype == uint4096:
+        argsort_decending_array[uint4096_t](indptr,<uint4096_t*>ptr,M)
+    elif basis.dtype == uint16384:
+        argsort_decending_array[uint16384_t](indptr,<uint16384_t*>ptr,M)
+    else:
+        raise ValueError("dtype {} is not recognized, must be python integer or QuSpin basis type".format(basis.dtype))
+
+    return indices
+
+
 
 #################################
 

@@ -2,6 +2,7 @@ import numpy as _np
 import scipy.sparse as _sp
 import os,numexpr
 from ._basis_general_core.general_basis_utils import basis_int_to_python_int,_get_basis_index
+from ._basis_general_core.general_basis_utils import _basis_argsort,_is_sorted_decending
 from ._basis_general_core import basis_zeros
 from ..lattice import lattice_basis
 import warnings
@@ -757,28 +758,16 @@ class basis_general(lattice_basis):
 		if Ns < 0:
 				raise ValueError("estimate for size of reduced Hilbert-space is too low, please double check that transformation mappings are correct or use 'Ns_block_est' argument to give an upper bound of the block size.")
 
-		# sort basis
-		if type(self._Np) is int or type(self._Np) is tuple or self._Np is None:
-			if Ns > 0:
+		if Ns > 0:
+			if _is_sorted_decending(basis[:Ns]):
 				self._basis = basis[:Ns].copy()
 				self._n = n[:Ns].copy()
 				if Np_list is not None: self._Np_list = Np_list[:Ns].copy()
 			else:
-				self._basis = _np.array([],dtype=basis.dtype)
-				self._n = _np.array([],dtype=n.dtype)
-				if Np_list is not None: self._Np_list = _np.array([],dtype=Np_list.dtype)
-
-			sort_basis = False
-		else:
-			sort_basis = True
-
-		if Ns > 0:
-			# self._basis = basis[Ns-1::-1].copy()
-			# self._n = n[Ns-1::-1].copy()
-			# if Np_list is not None: self._Np_list = Np_list[Ns-1::-1].copy()
-			self._basis = basis[:Ns].copy()
-			self._n = n[:Ns].copy()
-			if Np_list is not None: self._Np_list = Np_list[:Ns].copy()
+				indices = _basis_argsort(basis[:Ns])
+				self._basis = basis[indices]
+				self._n = n[indices]
+				if Np_list is not None: self._Np_list = Np_list[indices]
 		else:
 			self._basis = _np.array([],dtype=basis.dtype)
 			self._n = _np.array([],dtype=n.dtype)
