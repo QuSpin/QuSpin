@@ -162,7 +162,7 @@ npy_intp make_basis_parallel(general_basis_core<I,P> *B,const npy_intp MAX,const
 				thread_block.push_back(std::make_pair(s,int_norm));
 			}
 			s += nthread;
-			chunk-=nthread;
+			chunk -= nthread;
 
 		}
 
@@ -231,7 +231,7 @@ npy_intp make_basis_pcon_parallel(general_basis_core<I,P> *B,const npy_intp MAX,
 			}
 
 			for(int i=0;i<nthread;i++){s=B->next_state_pcon(s,nns++);}
-			chunk-=nthread;
+			chunk -= nthread;
 		}
 
 		master_pos_data[threadn+1] = thread_block.size(); // get sizes for each thread block into shared memory
@@ -257,7 +257,7 @@ npy_intp make_basis_pcon_parallel(general_basis_core<I,P> *B,const npy_intp MAX,
 
 			for(npy_intp j=start;j<end;j++){
 				basis[j] = thread_block[i].first;
-				n[j] = thread_block[i].second;
+				n[j] = thread_block[i++].second;
 			}
 
 		}

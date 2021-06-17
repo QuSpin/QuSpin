@@ -17,9 +17,6 @@ class lattice_basis(basis):
 		self._Ns = 0
 		self._basis = _np.asarray([])
 		self._operators = "no operators for base."
-		self._unique_me = True
-		self._check_symm = None
-		self._check_pcon = None
 		self._noncommuting_bits = []
 
 		if self.__class__.__name__ == 'lattice_basis':
