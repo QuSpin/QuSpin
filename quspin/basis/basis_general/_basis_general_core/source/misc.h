@@ -4,6 +4,8 @@
 #include "numpy/ndarraytypes.h"
 #include <algorithm>
 #include "bits_info.h"
+#include "openmp.h"
+
 
 #if defined(_WIN64)
 
