@@ -25,8 +25,8 @@ def run_computation():
 	J1=1.0 # spin=spin interaction
 	J2=0.5 # magnetic field strength
 	Omega=8.0 # drive frequency
-	Lx, Ly = 4, 4 # linear dimension of spin 1/2 2d lattice
-	N_2d = Lx*Ly # number of sites for spin 1/2
+	Lx, Ly = 4, 4 # linear dimension of spin-1/2 2d lattice
+	N_2d = Lx*Ly # number of sites for spin-1/2
 	#
 	###### setting up user-defined symmetry transformations for 2d lattice ######
 	sites = np.arange(N_2d) # sites [0,1,2,....]
