@@ -55,7 +55,7 @@ def run_computation():
 	static =[ ["xx",J1_list],["yy",J1_list],["zz",J1_list] ]  
 	dynamic=[ ["xx",J2_list,drive,drive_args],["yy",J2_list,drive,drive_args],["zz",J2_list,drive,drive_args] ]
 	# build hamiltonian
-	H=hamiltonian(static,[],basis=basis_2d,dtype=np.float64,check_symm=False,check_herm=False)
+	H=hamiltonian(static,dynamic,basis=basis_2d,dtype=np.float64,check_symm=False,check_herm=False)
 	# diagonalise H
 	E,V=H.eigsh(time=0.0,k=50,which='LA') # H.eigsh sped up by MKL
 	print('finished computing energies')
