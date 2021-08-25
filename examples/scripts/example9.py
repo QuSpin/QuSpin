@@ -19,8 +19,8 @@ import matplotlib.pyplot as plt # plotting library
 #
 ###### define model parameters ######
 L_1d = 16 # length of chain for spin 1/2
-Lx, Ly = 4, 4 # linear dimension of spin 1 2d lattice
-N_2d = Lx*Ly # number of sites for spin 1
+Lx, Ly = 4, 4 # linear dimension of spin 1/2 2d lattice
+N_2d = Lx*Ly # number of sites for spin 1/2
 Omega = 2.0 # drive frequency
 A = 2.0 # drive amplitude
 #
