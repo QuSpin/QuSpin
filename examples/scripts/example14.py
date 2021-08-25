@@ -76,7 +76,7 @@ maps = dict() # no symmetries to apply.
 # define op_dict
 op_dict = dict(op=op,op_args=op_args)
 # define pre_check_state
-pre_check_state=(pre_check_state,pre_check_state_args) # None gives a null pinter to args
+pre_check_state=(pre_check_state,pre_check_state_args) # None gives a null pointer to args
 # create user basis
 basis = user_basis(np.uint32,N,op_dict,allowed_ops=set("xyz"),sps=2,
                     pre_check_state=pre_check_state,Ns_block_est=300000,**maps)
