@@ -387,7 +387,7 @@ class exp_op(object):
 			raise ValueError("iterate option must be true or false.")
 
 		if Value:
-			if (self._grid, self._step) is (None, None):
+			if (self._grid, self._step) == (None, None):
 				raise ValueError("grid must be set in order to set iterate to be True.")
 
 		self._iterate = Value
