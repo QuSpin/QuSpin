@@ -436,6 +436,7 @@ class lattice_basis(basis):
 		if pure:
 			p_A, p_B = p, p
 
+
 		Sent_A, Sent_B = None, None
 		if alpha == 1.0:
 			if p_A is not None:

@@ -354,7 +354,7 @@ class tensor_basis(basis):
 		return _sp.kron(proj1,proj2,format="csr")
 
 
-	def partial_trace(self,state,sub_sys_A="left",return_rdm=None,enforce_pure=False,sparse=False):
+	def partial_trace(self,state,sub_sys_A="left",return_rdm="A",enforce_pure=False,sparse=False):
 		"""Calculates reduced density matrix, through a partial trace of a quantum state in `tensor_basis`.
 
 		Parameters
@@ -446,6 +446,7 @@ class tensor_basis(basis):
 					raise ValueError("Expecting a dense array for mixed states.")
 
 		else:
+
 			if state.ndim==1:
 				rdm_A,rdm_B = _tensor_partial_trace_pure(state.T,sub_sys_A,Ns_left,Ns_right,return_rdm=return_rdm)
 
@@ -561,6 +562,7 @@ class tensor_basis(basis):
 
 		pure=True # set pure state parameter to True
 		if _sp.issparse(state) or sparse:
+			
 			if not _sp.issparse(state):
 				if state.ndim == 1:
 					state = _sp.csr_matrix(state).T
@@ -576,6 +578,7 @@ class tensor_basis(basis):
 					raise ValueError("Expecting a dense array for mixed states.")
 					
 		else:
+
 			if state.ndim==1:
 				state = state.reshape((-1,1))
 				p, rdm_A, rdm_B = self._p_pure(state,sub_sys_A,return_rdm=return_rdm)
