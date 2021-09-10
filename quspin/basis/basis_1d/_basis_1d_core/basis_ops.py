@@ -75,7 +75,7 @@ def get_basis_type(L, Np, sps, **blocks):
         # as possible. 
         l=Np//(sps-1)
         s_max = sum((sps-1)*sps**(L-1-i)  for i in range(l))
-        s_max += (Np%(sps-1))*sps**(L-l-1)
+        s_max += (Np%(sps-1))*sps**(int(L-l-1))
         dtype = _np.min_scalar_type(int(s_max))
         return _np.result_type(dtype,_np.uint32)
 

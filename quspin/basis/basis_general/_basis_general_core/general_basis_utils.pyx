@@ -373,7 +373,7 @@ def get_basis_type(N, Np, sps):
             # as possible. 
             l=Np//(sps-1)
             s_max = sum((sps-1)*sps**(N-1-i)  for i in range(l))
-            s_max += (Np%(sps-1))*sps**(N-l-1)
+            s_max += (Np%(sps-1))*sps**(int(N-l-1))
 
         s_max = int(s_max)
 
