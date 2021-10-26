@@ -4,6 +4,7 @@ import os,numexpr
 from ._basis_general_core.general_basis_utils import basis_int_to_python_int,_get_basis_index
 from ._basis_general_core import basis_zeros
 from ..lattice import lattice_basis
+from ..base import _get_index_type
 import warnings
 
 class GeneralBasisWarning(Warning):
@@ -787,7 +788,7 @@ class basis_general(lattice_basis):
 		self._Ns=Ns
 		self._Ns_block_est=Ns
 
-		self._index_type = _np.result_type(_np.min_scalar_type(self._Ns),_np.int32)
+		self._index_type = _get_index_type(self._Ns)
 		self._reduce_n_dtype()
 
 		self._made_basis = True
