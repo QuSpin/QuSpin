@@ -3,6 +3,12 @@ import numpy as _np
 import scipy.sparse as _sp
 import warnings,numba
 
+def _get_index_type(Ns):
+	if Ns < _np.iinfo(_np.int32).max:
+		return _np.int32
+	else:
+		return _np.int64
+
 @numba.njit
 def _coo_dot(v_in,v_out,row,col,ME):
 	n = row.shape[0]
@@ -221,12 +227,12 @@ class basis(object):
 		""" takes list of operator strings and couplings to create matrix."""
 		off_diag = None
 		diag = None
+		index_type = _get_index_type(self.Ns)
 
 		for opstr,indx,J in op_list:
 			ME,row,col = self.Op(opstr,indx,J,dtype)
 			if(len(ME)>0):
 				imax = max(row.max(),col.max())
-				index_type = _np.result_type(_np.int32,_np.min_scalar_type(imax))
 				row = row.astype(index_type)
 				col = col.astype(index_type)
 				if _is_diagonal(row,col):
