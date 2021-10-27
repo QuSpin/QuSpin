@@ -1415,6 +1415,8 @@ class quantum_operator(object):
 		if not isinstance(pars,dict):
 			raise ValueError("expecing dictionary for parameters.")
 
+		pars = dict(pars)
+
 		extra = set(pars.keys()) - set(self._quantum_operator.keys())
 		if extra:
 			raise ValueError("unexpected couplings: {}".format(extra))
@@ -1440,7 +1442,10 @@ class quantum_operator(object):
 		if not isinstance(pars,dict):
 			raise ValueError("expecing dictionary for parameters.")
 
+		pars = dict(pars)
+
 		extra = set(pars.keys()) - set(self._quantum_operator.keys())
+
 		if extra:
 			raise ValueError("unexpected couplings: {}".format(extra))
 
