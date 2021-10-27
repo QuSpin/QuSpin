@@ -128,10 +128,10 @@ class spinless_fermion_basis_general(basis_general):
 			Nf = list(Nf)
 			self._Ns = 0
 
-			for f in Nf:
-				if f > N or f < 0:
+			for _nf in Nf:
+				if _nf > N or _nf < 0:
 					raise ValueError("particle number Nf must satisfy: 0 <= Nf <= N")
-				self._Ns += comb(N,f,exact=True)
+				self._Ns += comb(N,_nf,exact=True)
 
 		self._pcon_args = dict(N=N,Nf=Nf)
 

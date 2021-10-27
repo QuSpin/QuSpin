@@ -197,9 +197,9 @@ class spin_basis_general(hcb_basis_general,higher_spin_basis_general):
 		if self._S == "1/2":
 
 			if self._pauli==1:
-				scale = lambda s:(1<<len(s.replace("I","")))
+				scale = lambda s:(1 << len(s.replace("I","")))
 			elif self._pauli==-1:
-				scale = lambda s:(1<<len(s.replace("I","").replace("+","").replace("-","")))
+				scale = lambda s:(1 << len(s.replace("I","").replace("+","").replace("-","")))
 			else:
 				scale = lambda s:1
 
