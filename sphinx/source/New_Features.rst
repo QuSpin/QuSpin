@@ -1,6 +1,6 @@
 
 
-:red:`QuSpin 0.3.6` (released on 2021.05.01)
+:red:`QuSpin 0.3.7` (released on 2021.11.16)
 ================================================
 
 
@@ -12,8 +12,29 @@ Check out :ref:`parallelization-label` and the example script :ref:`example12-la
 For a tutorial in QuSpin's `user_basis` which allows the user to define custom bases with constraints, check out: :ref:`user_basis-label`.
 
 
+
+
+
 Complete list of the most recent features 
 =========================================
+
+Added in v. 0.3.7 (2021.11.16)
+------------------------------
+
+Improved Functionality
+++++++++++++++++++++++
+* fixed bug with automatic symmetry checks for *_basis_1d.
+* fixed bug with data types in `quantum_operator` for systems of `N>=32` sites.
+* fixed bug with using `Nup` argument of *_spin_basis_*.
+* fixed bug with `return_rdm` optional argument of `tensor_basis`.
+* added warning to notify users that hermiticity/symmetry checks and not exhaustive.
+* 
+
+
+New Attributes, Functions, Methods, Classes, and Examples
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+* 
+
 
 
 Added in v. 0.3.6 (2021.05.01)
@@ -21,7 +42,7 @@ Added in v. 0.3.6 (2021.05.01)
 
 Improved Functionality
 ++++++++++++++++++++++
-* adding python 3.9 support
+* adding python 3.9 support.
 * fixed a bug with *non-contiguous* subsystems in `basis.partial_trace()` and `basis.ent_entropy()` for the fermionic basis clases `*_fermion_basis_*`.
 * fixed a bug with defining mixed particle sectors in `*_fermion_basis_general`.
 * fixed some typos in the documentation.
