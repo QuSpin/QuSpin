@@ -655,13 +655,13 @@ class spinful_fermion_basis_1d(spinless_fermion_basis_1d,basis_1d):
 	# functions called in base class:
 
 	def _sort_opstr(self,op):
-		return _sort_opstr_spinful(op)
+		return _sort_opstr_spinful(op,self.N//2)
 
 	def _hc_opstr(self,op):
-		return _hc_opstr_spinful(op)
+		return _hc_opstr_spinful(op,self.N//2)
 	
 	def _non_zero(self,op):
-		return _non_zero_spinful(op)
+		return _non_zero_spinful(op,self.N//2)
 
 	def _expand_opstr(self,op,num):
 		return _expand_opstr_spinful(op,num) 
@@ -743,6 +743,44 @@ class spinful_fermion_basis_1d(spinless_fermion_basis_1d,basis_1d):
 		return static_blocks,dynamic_blocks
 
 
+def _spinful_to_spinless(op,N_sites):
+	op = list(op)
+	opstr = op[0]
+	indx  = op[1]
+	J = op[2]
+
+	if opstr.count("|") == 0: 
+		raise ValueError("missing '|' charactor in: {0}, {1}".format(opstr,indx))
+
+	# if opstr.count("|") > 1: 
+	# 	raise ValueError("only one '|' charactor allowed in: {0}, {1}".format(opstr,indx))
+
+	if len(opstr)-opstr.count("|") != len(indx):
+		raise ValueError("number of indices doesn't match opstr in: {0}, {1}".format(opstr,indx))
+
+	i = opstr.index("|")
+	indx_left = indx[:i]
+	indx_right = indx[i:]
+
+
+	opstr_left,opstr_right=opstr.split("|",1)
+
+	spinless_opstr = opstr_left+opstr_right
+	spinless_indx = tuple(list(indx_left) + [N_sites + i for i in indx_right])
+	return (spinless_opstr,spinless_indx,J)
+
+
+def _spinless_to_spinful(op,N_sites):
+	op = list(op)
+	spinless_opstr = op[0]
+	indx  = op[1]
+	J = op[2]
+
+	i = _np.argmax([i>=N_sites for i in indx])
+	indx = tuple([(i if i < N_sites else i-N_sites) for i in indx])
+	opstr = spinless_opstr[:i] + "|" + spinless_opstr[i:]
+	return (opstr,indx,J)
+
 
 
 def _sort_opstr_spinless(op):
@@ -760,7 +798,7 @@ def _sort_opstr_spinless(op):
 		while swapped:
 			swapped = False
 			for i in range(n-1):
-				if zipstr[i][1] > zipstr[i+1][1]:
+				if zipstr[i][1] > zipstr[i+1][1] :
 					temp = zipstr[i]
 					zipstr[i] = zipstr[i+1]
 					zipstr[i+1] = temp
@@ -775,6 +813,11 @@ def _sort_opstr_spinless(op):
 		op[2] *= (1 if anticommutes%2 == 0 else -1)
 	return tuple(op)
 
+def _sort_opstr_spinful(op,N_sites):
+	spinless_op = _sort_opstr_spinless(_spinful_to_spinless(op,N_sites))
+	return _spinless_to_spinful(spinless_op,N_sites)
+
+"""
 def _sort_opstr_spinful(op):
 	op = list(op)
 	opstr = op[0]
@@ -792,6 +835,7 @@ def _sort_opstr_spinful(op):
 	i = opstr.index("|")
 	indx_left = indx[:i]
 	indx_right = indx[i:]
+
 
 	opstr_left,opstr_right=opstr.split("|",1)
 
@@ -813,7 +857,7 @@ def _sort_opstr_spinful(op):
 	op[2] *= op1[2] * op2[2]
 	
 	return tuple(op)
-
+"""
 
 def _non_zero_spinless(op):
 	opstr = _np.array(list(op[0]))
@@ -827,6 +871,10 @@ def _non_zero_spinless(op):
 	else:
 		return True
 
+def _non_zero_spinful(op,N_sites):
+	return _non_zero_spinless(_spinful_to_spinless(op,N_sites))
+
+"""
 def _non_zero_spinful(op):
 		op = list(op)
 		opstr = op[0]
@@ -853,7 +901,7 @@ def _non_zero_spinful(op):
 		op2[1] = indx_right
 
 		return (_non_zero_spinless(op1) and _non_zero_spinless(op2))
-
+"""
 
 def _hc_opstr_spinless(op):
 	op = list(op)
@@ -867,6 +915,14 @@ def _hc_opstr_spinless(op):
 	op[2] = op[2].conjugate()
 	return _sort_opstr_spinless(op) # return the sorted op.
 
+def _hc_opstr_spinful(op,N_sites):
+	spinless_op = _spinful_to_spinless(op,N_sites)
+	op_hc = _hc_opstr_spinless(spinless_op)
+	op = _spinless_to_spinful(op_hc,N_sites)
+	return op
+
+
+"""
 def _hc_opstr_spinful(op):
 		op = list(op)
 		opstr = op[0]
@@ -905,7 +961,7 @@ def _hc_opstr_spinful(op):
 		op[2] = ((-1)**(n_left*n_right))*op1[2]*op2[2]
 
 		return tuple(op)
-
+"""
 
 def _expand_opstr_spinless(op,num):
 	op = list(op)
