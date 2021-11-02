@@ -5,7 +5,7 @@
 
 
 :magenta:`Highlights:` Lanczos module now here; Constrained Hilbert spaces support available; OpenMP support available!
-=====================================================================================================================
+========================================================================================================================
 
 Check out :ref:`parallelization-label` and the example script :ref:`example12-label`.
 
@@ -23,9 +23,9 @@ Added in v. 0.3.7 (2021.11.16)
 
 Improved Functionality
 ++++++++++++++++++++++
-* fixed bug with automatic symmetry checks for *_basis_1d.
-* fixed bug with data types in `quantum_operator` for systems of `N>=32` sites.
-* fixed bug with using `Nup` argument of *_spin_basis_*.
+* fixed bug with automatic symmetry checks for `*_basis_1d`.
+* fixed bug with data types in `quantum_operator` for systems of `N>31` sites.
+* fixed bug with using `Nup` argument of `*_spin_basis_*`.
 * fixed bug with `return_rdm` optional argument of `tensor_basis`.
 * added warning to notify users that hermiticity/symmetry checks and not exhaustive.
 * 
