@@ -3,8 +3,7 @@
 
 <html>
   <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><script type="text/javascript">
+    <meta charset="utf-8" /><script type="text/javascript">
 
       var _gaq = _gaq || [];
       _gaq.push(['_setAccount', 'UA-110543543-1']);
@@ -16,14 +15,16 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-    <title>quspin.basis.basis_general.base_user &#8212; QuSpin 0.3.6 documentation</title>
-    <link rel="stylesheet" href="../../../../static/pygments.css" type="text/css" />
+    <title>quspin.basis.basis_general.base_user &#8212; QuSpin 0.3.7 documentation</title>
     <link rel="stylesheet" href="../../../../static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../../../../static/pygments.css" type="text/css" />
     
     <script id="documentation_options" data-url_root="../../../../" src="../../../../static/documentation_options.js"></script>
     <script src="../../../../static/jquery.js"></script>
     <script src="../../../../static/underscore.js"></script>
     <script src="../../../../static/doctools.js"></script>
+    <script src="../../../../static/language_data.js"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <link rel="index" title="Index" href="../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../search.html" /> 
@@ -37,9 +38,8 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">QuSpin 0.3.6 documentation</a> &#187;</li>
-          <li class="nav-item nav-item-1"><a href="../../../index.html" accesskey="U">Module code</a> &#187;</li>
-        <li class="nav-item nav-item-this"><a href="">quspin.basis.basis_general.base_user</a></li> 
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">QuSpin 0.3.7 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
 
@@ -94,13 +94,13 @@
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;map_sig_32&quot;</span><span class="p">,</span><span class="s2">&quot;map_sig_64&quot;</span><span class="p">,</span><span class="s2">&quot;next_state_sig_32&quot;</span><span class="p">,</span>
 	<span class="s2">&quot;next_state_sig_64&quot;</span><span class="p">,</span><span class="s2">&quot;op_func_sig_32&quot;</span><span class="p">,</span><span class="s2">&quot;op_func_sig_64&quot;</span><span class="p">,</span><span class="s2">&quot;user_basis&quot;</span><span class="p">]</span>
 
-<span class="nd">@njit</span>
-<span class="k">def</span> <span class="nf">_is_sorted_decending</span><span class="p">(</span><span class="n">a</span><span class="p">):</span>
-	<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">size</span><span class="o">-</span><span class="mi">1</span><span class="p">):</span>
-		<span class="k">if</span><span class="p">(</span><span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">&lt;</span><span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">]):</span>
-			<span class="k">return</span> <span class="kc">False</span>
+<span class="c1"># @njit</span>
+<span class="c1"># def _is_sorted_decending(a):</span>
+<span class="c1"># 	for i in range(a.size-1):</span>
+<span class="c1"># 		if(a[i]&lt;a[i+1]):</span>
+<span class="c1"># 			return False</span>
 
-	<span class="k">return</span> <span class="kc">True</span>
+<span class="c1"># 	return True</span>
 
 <span class="k">def</span> <span class="nf">_process_user_blocks</span><span class="p">(</span><span class="n">use_32bit</span><span class="p">,</span><span class="n">blocks_dict</span><span class="p">,</span><span class="n">block_order</span><span class="p">):</span>
 
@@ -572,18 +572,17 @@
 		<span class="bp">self</span><span class="o">.</span><span class="n">_n_dtype</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">min_scalar_type</span><span class="p">(</span><span class="n">nmax</span><span class="p">)</span>
 
 		<span class="k">if</span> <span class="n">_make_basis</span><span class="p">:</span>	
-			<span class="bp">self</span><span class="o">.</span><span class="n">make</span><span class="p">(</span><span class="n">N_p</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+			<span class="bp">self</span><span class="o">.</span><span class="n">make</span><span class="p">()</span>
 		<span class="k">else</span><span class="p">:</span>
 			<span class="bp">self</span><span class="o">.</span><span class="n">_Ns</span><span class="o">=</span><span class="mi">1</span>
 			<span class="bp">self</span><span class="o">.</span><span class="n">_basis</span><span class="o">=</span><span class="n">basis_zeros</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_Ns</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_basis_dtype</span><span class="p">)</span>
 			<span class="bp">self</span><span class="o">.</span><span class="n">_n</span><span class="o">=</span><span class="n">_np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_Ns</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_n_dtype</span><span class="p">)</span>
 
-		<span class="k">if</span> <span class="ow">not</span> <span class="n">_is_sorted_decending</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_basis</span><span class="p">):</span>
-			<span class="n">ind</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_basis</span><span class="p">,</span><span class="n">kind</span><span class="o">=</span><span class="s2">&quot;heapsort&quot;</span><span class="p">)[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-			<span class="bp">self</span><span class="o">.</span><span class="n">_basis</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_basis</span><span class="p">[</span><span class="n">ind</span><span class="p">],</span><span class="n">order</span><span class="o">=</span><span class="s2">&quot;C&quot;</span><span class="p">)</span>
-			<span class="bp">self</span><span class="o">.</span><span class="n">_n</span> <span class="o">=</span>  <span class="n">_np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_n</span><span class="p">[</span><span class="n">ind</span><span class="p">],</span><span class="n">order</span><span class="o">=</span><span class="s2">&quot;C&quot;</span><span class="p">)</span>
-
-		<span class="bp">self</span><span class="o">.</span><span class="n">make_basis_blocks</span><span class="p">()</span>
+		<span class="c1"># if not _is_sorted_decending(self._basis):</span>
+		<span class="c1"># 	ind = _np.argsort(self._basis,kind=&quot;heapsort&quot;)[::-1]</span>
+		<span class="c1"># 	self._basis = _np.asarray(self._basis[ind],order=&quot;C&quot;)</span>
+		<span class="c1"># 	self._n =  _np.asarray(self._n[ind],order=&quot;C&quot;)</span>
+		<span class="c1"># self.make_basis_blocks()</span>
 
 		<span class="k">if</span> <span class="n">allowed_ops</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
 			<span class="n">allowed_ops</span> <span class="o">=</span> <span class="nb">set</span><span class="p">([</span><span class="nb">chr</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">256</span><span class="p">)])</span> <span class="c1"># all characters allowed.</span></div>
@@ -604,7 +603,6 @@
 		<span class="bp">self</span><span class="o">.</span><span class="n">_core</span> <span class="o">=</span> <span class="n">user_core_wrap</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">_core_args</span><span class="p">)</span></div>
 </pre></div>
 
-            <div class="clearer"></div>
           </div>
         </div>
       </div>
@@ -633,14 +631,13 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">QuSpin 0.3.6 documentation</a> &#187;</li>
-          <li class="nav-item nav-item-1"><a href="../../../index.html" >Module code</a> &#187;</li>
-        <li class="nav-item nav-item-this"><a href="">quspin.basis.basis_general.base_user</a></li> 
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">QuSpin 0.3.7 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2016, Phillip Weinberg, Markus Schmitt and Marin Bukov.
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.5.4.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 3.0.4.
     </div>
   </body>
 </html>

@@ -15,7 +15,7 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-    <title>quspin.basis.base &#8212; QuSpin 0.3.6 documentation</title>
+    <title>quspin.basis.base &#8212; QuSpin 0.3.7 documentation</title>
     <link rel="stylesheet" href="../../../static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../static/pygments.css" type="text/css" />
     
@@ -38,7 +38,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">QuSpin 0.3.6 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">QuSpin 0.3.7 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -53,6 +53,12 @@
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">_np</span>
 <span class="kn">import</span> <span class="nn">scipy.sparse</span> <span class="k">as</span> <span class="nn">_sp</span>
 <span class="kn">import</span> <span class="nn">warnings</span><span class="o">,</span><span class="nn">numba</span>
+
+<span class="k">def</span> <span class="nf">_get_index_type</span><span class="p">(</span><span class="n">Ns</span><span class="p">):</span>
+	<span class="k">if</span> <span class="n">Ns</span> <span class="o">&lt;</span> <span class="n">_np</span><span class="o">.</span><span class="n">iinfo</span><span class="p">(</span><span class="n">_np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span><span class="o">.</span><span class="n">max</span><span class="p">:</span>
+		<span class="k">return</span> <span class="n">_np</span><span class="o">.</span><span class="n">int32</span>
+	<span class="k">else</span><span class="p">:</span>
+		<span class="k">return</span> <span class="n">_np</span><span class="o">.</span><span class="n">int64</span>
 
 <span class="nd">@numba</span><span class="o">.</span><span class="n">njit</span>
 <span class="k">def</span> <span class="nf">_coo_dot</span><span class="p">(</span><span class="n">v_in</span><span class="p">,</span><span class="n">v_out</span><span class="p">,</span><span class="n">row</span><span class="p">,</span><span class="n">col</span><span class="p">,</span><span class="n">ME</span><span class="p">):</span>
@@ -146,7 +152,7 @@
 
 	<span class="nd">@property</span>
 	<span class="k">def</span> <span class="nf">sps</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-		<span class="sd">&quot;&quot;&quot;int: number of states per site (i.e. the on-site Hilbert space dimension).&quot;&quot;&quot;</span>
+		<span class="sd">&quot;&quot;&quot;int: number of states per site (ie, the on-site Hilbert space dimension).&quot;&quot;&quot;</span>
 		<span class="k">try</span><span class="p">:</span>
 			<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sps</span>
 		<span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
@@ -272,12 +278,12 @@
 		<span class="sd">&quot;&quot;&quot; takes list of operator strings and couplings to create matrix.&quot;&quot;&quot;</span>
 		<span class="n">off_diag</span> <span class="o">=</span> <span class="kc">None</span>
 		<span class="n">diag</span> <span class="o">=</span> <span class="kc">None</span>
+		<span class="n">index_type</span> <span class="o">=</span> <span class="n">_get_index_type</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Ns</span><span class="p">)</span>
 
 		<span class="k">for</span> <span class="n">opstr</span><span class="p">,</span><span class="n">indx</span><span class="p">,</span><span class="n">J</span> <span class="ow">in</span> <span class="n">op_list</span><span class="p">:</span>
 			<span class="n">ME</span><span class="p">,</span><span class="n">row</span><span class="p">,</span><span class="n">col</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Op</span><span class="p">(</span><span class="n">opstr</span><span class="p">,</span><span class="n">indx</span><span class="p">,</span><span class="n">J</span><span class="p">,</span><span class="n">dtype</span><span class="p">)</span>
 			<span class="k">if</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">ME</span><span class="p">)</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">):</span>
 				<span class="n">imax</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">row</span><span class="o">.</span><span class="n">max</span><span class="p">(),</span><span class="n">col</span><span class="o">.</span><span class="n">max</span><span class="p">())</span>
-				<span class="n">index_type</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">result_type</span><span class="p">(</span><span class="n">_np</span><span class="o">.</span><span class="n">int32</span><span class="p">,</span><span class="n">_np</span><span class="o">.</span><span class="n">min_scalar_type</span><span class="p">(</span><span class="n">imax</span><span class="p">))</span>
 				<span class="n">row</span> <span class="o">=</span> <span class="n">row</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">index_type</span><span class="p">)</span>
 				<span class="n">col</span> <span class="o">=</span> <span class="n">col</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">index_type</span><span class="p">)</span>
 				<span class="k">if</span> <span class="n">_is_diagonal</span><span class="p">(</span><span class="n">row</span><span class="p">,</span><span class="n">col</span><span class="p">):</span>
@@ -945,7 +951,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">QuSpin 0.3.6 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">QuSpin 0.3.7 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>

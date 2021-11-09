@@ -109,7 +109,7 @@ print("  * |10> not invariant under parity! It represents the physical symmetric
 print('\n\nprint pblock=-1 basis:\n')
 #
 print(basis_singlet)
-print("  * |10> here represents the physical ANIT-symmetric superposition 1/sqrt(2)(|10> - |01>) [see bottom note when printing the symmetry-reduced basis]")
+print("  * |10> here represents the physical ANTI-symmetric superposition 1/sqrt(2)(|10> - |01>) [see bottom note when printing the symmetry-reduced basis]")
 print("  *  NOTE: same state |01> is used to label both the symmetric and antisymmetric superposition because in this cases quspin uses the smallest integer from the integer representations of the states comprising the superposition states.\n")
 #
 #--------------------------------------------------
@@ -129,7 +129,7 @@ print(psi_s)
 #
 # one can also project a full-basis state to a symmetry-reduced basis
 psi_s=np.zeros(basis.Ns)
-array_ind_s==basis.index( basis.state_to_int('01') )
+array_ind_s=basis.index( basis.state_to_int('01') )
 psi_s[array_ind_s]=1.0 # create the state |01> in the full basis
 # 
 psi_symm_s=basis_singlet.project_to(psi_s,sparse=False) # projects |01> to 1/sqrt(2) (|01> - |10>) in basis_singlet 

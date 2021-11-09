@@ -48,7 +48,7 @@ v_lanczos_iter  = v0.copy()
 print("\nchecking lanczos matrix exponential calculation:\n")
 for i in range(100):
 	# compute Lanczos decomposition
-	E_full,V_full,Q_full = lanczos_full(H,v_lanczos_full,m_evo) # all Lanczps vectors at once
+	E_full,V_full,Q_full = lanczos_full(H,v_lanczos_full,m_evo) # all Lanczos vectors at once
 	E_iter,V_iter,Q_iter = lanczos_iter(H,v_lanczos_iter,m_evo) # Lanczos vectors as an iterator
 	# evolve quantum state using different routines
 	v_expm_multiply = expm_multiply(-1j*dt*H.static,v_expm_multiply) # cf tools.expm_multiply_parallel with OMP speedup

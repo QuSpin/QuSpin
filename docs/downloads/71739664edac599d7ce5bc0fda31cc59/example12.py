@@ -25,8 +25,8 @@ def run_computation():
 	J1=1.0 # spin=spin interaction
 	J2=0.5 # magnetic field strength
 	Omega=8.0 # drive frequency
-	Lx, Ly = 4, 4 # linear dimension of spin 1 2d lattice
-	N_2d = Lx*Ly # number of sites for spin 1
+	Lx, Ly = 4, 4 # linear dimension of spin-1/2 2d lattice
+	N_2d = Lx*Ly # number of sites for spin-1/2
 	#
 	###### setting up user-defined symmetry transformations for 2d lattice ######
 	sites = np.arange(N_2d) # sites [0,1,2,....]
@@ -55,7 +55,7 @@ def run_computation():
 	static =[ ["xx",J1_list],["yy",J1_list],["zz",J1_list] ]  
 	dynamic=[ ["xx",J2_list,drive,drive_args],["yy",J2_list,drive,drive_args],["zz",J2_list,drive,drive_args] ]
 	# build hamiltonian
-	H=hamiltonian(static,[],basis=basis_2d,dtype=np.float64,check_symm=False,check_herm=False)
+	H=hamiltonian(static,dynamic,basis=basis_2d,dtype=np.float64,check_symm=False,check_herm=False)
 	# diagonalise H
 	E,V=H.eigsh(time=0.0,k=50,which='LA') # H.eigsh sped up by MKL
 	print('finished computing energies')

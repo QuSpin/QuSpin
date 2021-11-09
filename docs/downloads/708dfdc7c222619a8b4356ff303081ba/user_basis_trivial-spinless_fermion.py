@@ -20,7 +20,7 @@ from scipy.special import comb
 N=8	 # lattice sites
 Np=N//2 # total number of fermions
 #
-############   create soinless fermion user basis object   #############
+############   create spinless fermion user basis object   #############
 #
 @jit(uint32(uint32,uint32),locals=dict(f_count=uint32,),nopython=True,nogil=True)
 def _count_particles_32(state,site_ind):

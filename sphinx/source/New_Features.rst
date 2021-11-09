@@ -1,6 +1,6 @@
 
 
-:orange:`QuSpin 0.3.7` (released on 2021.11.16)
+:orange:`QuSpin 0.3.7` (released on 2021.12.01)
 ================================================
 
 
@@ -18,7 +18,7 @@ For a tutorial in QuSpin's `user_basis` which allows the user to define custom b
 Complete list of the most recent features 
 =========================================
 
-Added in v. 0.3.7 (2021.11.16)
+Added in v. 0.3.7 (2021.12.01)
 ------------------------------
 
 Improved Functionality
@@ -28,12 +28,6 @@ Improved Functionality
 * fixed bug with using `Nup` argument of `*_spin_basis_*`.
 * fixed bug with `return_rdm` optional argument of `tensor_basis`.
 * added warning to notify users that hermiticity/symmetry checks and not exhaustive.
-* 
-
-
-New Attributes, Functions, Methods, Classes, and Examples
-+++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-* 
 
 
 

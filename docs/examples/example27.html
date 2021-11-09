@@ -1,0 +1,455 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" /><script type="text/javascript">
+
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-110543543-1']);
+      _gaq.push(['_trackPageview']);
+
+      (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+    </script>
+    <title>Hilbert space fragmentation with lattice symmetries &#8212; QuSpin 0.3.7 documentation</title>
+    <link rel="stylesheet" href="../static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../static/pygments.css" type="text/css" />
+    
+    <script id="documentation_options" data-url_root="../" src="../static/documentation_options.js"></script>
+    <script src="../static/jquery.js"></script>
+    <script src="../static/underscore.js"></script>
+    <script src="../static/doctools.js"></script>
+    <script src="../static/language_data.js"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.7 documentation</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <style> .red {color:#ff0000; font-weight:bold; font-style:italic; } </style>
+<style> .green {color:#00b200; font-weight:bold; font-style:italic; } </style>
+<style> .magenta {color:#FF33F3; font-weight:bold; font-style:italic; } </style>
+<style> .orange {color:#FE8E02; font-weight:bold; font-style:italic; } </style><div class="section" id="hilbert-space-fragmentation-with-lattice-symmetries">
+<span id="example27-label"></span><h1>Hilbert space fragmentation with lattice symmetries<a class="headerlink" href="#hilbert-space-fragmentation-with-lattice-symmetries" title="Permalink to this headline">¶</a></h1>
+<p>This example demonstrates how to use the general basis function method <cite>Op_shift_sector()</cite> to compute spectral functions directly without Fourier -transforming auto-correlation functions. The idea here is to use SciPy’s iterative solvers for sparse linear systems to calculate the action of an inverted operator on a state.</p>
+<p>The spectral function in ground state <span class="math notranslate nohighlight">\(|0\rangle\)</span> can be written as:</p>
+<div class="math notranslate nohighlight">
+\[C(\omega) = -\frac{1}{\pi}\langle 0|A^\dagger\frac{1}{\omega+i\eta + E_0 - H} A|0\rangle,\]</div>
+<p>where <span class="math notranslate nohighlight">\(\eta\)</span> is the boradening factor for the spectral peaks. For an operator <span class="math notranslate nohighlight">\(A\)</span> that has quantum numbers that differ from the ground state <span class="math notranslate nohighlight">\(|0\rangle\)</span> we can use <cite>Op_shift_sector()</cite> to calculate the a new ket: <span class="math notranslate nohighlight">\(|A\rangle = A|0\rangle\)</span>. With this new ket, we can construct the Hamiltonian <span class="math notranslate nohighlight">\(H\)</span> in the new sector, and solve the following equation:</p>
+<div class="math notranslate nohighlight">
+\[(\omega+i\eta + E_0 - H)|x(\omega)\rangle = |A\rangle.\]</div>
+<p>This equation can be solved using the bi-conjugate gradient (cf. <cite>scipy.sparse.linalg.bicg</cite>) method that is implemented in SciPy. In order to solve that equation with SciPy we define a custom class (see code below) that produces the action <span class="math notranslate nohighlight">\((\omega \pm i\eta + E_0 - H)|u\rangle\)</span> for an arbitrary state <span class="math notranslate nohighlight">\(|u\rangle\)</span>. Now we can use <span class="math notranslate nohighlight">\(|x(\omega)\rangle\)</span> to calculate the spectral function a given value of <span class="math notranslate nohighlight">\(\omega\)</span> as follows:</p>
+<div class="math notranslate nohighlight">
+\[C(\omega) = -\frac{1}{\pi}\langle A|x(\omega)\rangle.\]</div>
+<p>Note that this method can also be used to calculate spectral functions for any state by replacing <span class="math notranslate nohighlight">\(|0\rangle\rightarrow|\psi\rangle\)</span>. This may be useful for calculating spectral functions away from equilibrium by using <span class="math notranslate nohighlight">\(|\psi(t)\rangle\)</span> that has undergone some kind of time evolution (in the Schrödinger picture).</p>
+<p>In the example below, we look at the Heisenberg chain (<span class="math notranslate nohighlight">\(J=1\)</span>) with periodic boundary conditions. The periodic boundary condition allows us to use translation symmetry to reduce the total Hilbert space into blocks labeled by the many-body momentum quantum number. We limit the chain lengths to <span class="math notranslate nohighlight">\(L=4n\)</span> for <span class="math notranslate nohighlight">\(n=1,2,3...\)</span>, since this is required to have the ground state in the zero-momentum sector (for other system sizes, the ground state of the isotropic Heisenberg chain has finite momentum).</p>
+<p>Below, we calculate two different spectral functions:</p>
+<div class="math notranslate nohighlight">
+\[G_{zz}(\omega,q) = \langle 0|S^{z}_{-q}\frac{1}{\omega+i\eta + E_0 - H}S^{z}_q|0\rangle\]</div>
+<div class="math notranslate nohighlight">
+\[G_{+-}(\omega,q) = \langle 0|S^{-}_{-q}\frac{1}{\omega+i\eta + E_0 - H}S^{+}_q|0\rangle\]</div>
+<p>where we have defined:</p>
+<div class="math notranslate nohighlight">
+\[S^{z}_q = \frac{1}{\sqrt{L}}\sum_{r=0}^{L-1} \exp\left(-i\frac{2\pi q r}{L}\right) S^z_r\]</div>
+<div class="math notranslate nohighlight">
+\[S^{\pm}_q = \frac{1}{\sqrt{2L}}\sum_{r=0}^{L-1} \exp\left(-i\frac{2\pi q r}{L}\right) S^{\pm}_r\]</div>
+<p>Because the model has full SU(2) symmetry, we expect that the two spectral functions should give the same result. We also exclude the spectral function for <span class="math notranslate nohighlight">\(q=L/2\)</span> (<span class="math notranslate nohighlight">\(\pi\)</span>-momentum) as the spectral peak is very large due to the quasi long-range antiferromagnetic order in the ground state. The variable <cite>on_the_fly</cite> can be used to switch between using a <cite>hamiltonian</cite> object to a <cite>quantum_LinearOperator</cite> object to calculate the matrix vector product. One can also change the total spin of the local spin operators by changing the variable <cite>S</cite> to compute the spectral function for higher-spin Heisenberg models.</p>
+</div>
+<div class="section" id="script">
+<h1>Script<a class="headerlink" href="#script" title="Permalink to this headline">¶</a></h1>
+<p><a class="reference download internal" download="" href="../downloads/80c23b4df81c84ae6effba99ecf9aedb/example27.py"><code class="xref download docutils literal notranslate"><span class="pre">download</span> <span class="pre">script</span></code></a></p>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>  1
+  2
+  3
+  4
+  5
+  6
+  7
+  8
+  9
+ 10
+ 11
+ 12
+ 13
+ 14
+ 15
+ 16
+ 17
+ 18
+ 19
+ 20
+ 21
+ 22
+ 23
+ 24
+ 25
+ 26
+ 27
+ 28
+ 29
+ 30
+ 31
+ 32
+ 33
+ 34
+ 35
+ 36
+ 37
+ 38
+ 39
+ 40
+ 41
+ 42
+ 43
+ 44
+ 45
+ 46
+ 47
+ 48
+ 49
+ 50
+ 51
+ 52
+ 53
+ 54
+ 55
+ 56
+ 57
+ 58
+ 59
+ 60
+ 61
+ 62
+ 63
+ 64
+ 65
+ 66
+ 67
+ 68
+ 69
+ 70
+ 71
+ 72
+ 73
+ 74
+ 75
+ 76
+ 77
+ 78
+ 79
+ 80
+ 81
+ 82
+ 83
+ 84
+ 85
+ 86
+ 87
+ 88
+ 89
+ 90
+ 91
+ 92
+ 93
+ 94
+ 95
+ 96
+ 97
+ 98
+ 99
+100
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110
+111
+112
+113
+114
+115
+116
+117
+118
+119
+120
+121
+122
+123
+124
+125
+126
+127
+128
+129
+130
+131
+132
+133
+134
+135
+136
+137
+138
+139
+140
+141
+142
+143
+144
+145
+146
+147
+148
+149
+150
+151
+152
+153
+154
+155
+156
+157
+158
+159
+160</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span><span class="p">,</span> <span class="n">division</span>
+<span class="kn">import</span> <span class="nn">sys</span><span class="o">,</span><span class="nn">os</span>
+<span class="c1"># line 4 and line 5 below are for development purposes and can be removed</span>
+<span class="n">qspin_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">(),</span><span class="s2">&quot;../../&quot;</span><span class="p">)</span>
+<span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">qspin_path</span><span class="p">)</span>
+<span class="c1">###########################################################################</span>
+<span class="c1">#                            example 27                                   #</span>
+<span class="c1">#  ...                                                                    #</span>
+<span class="c1">###########################################################################</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">quspin.operators</span> <span class="kn">import</span> <span class="n">hamiltonian</span>
+<span class="kn">from</span> <span class="nn">quspin.basis</span> <span class="kn">import</span> <span class="n">spin_basis_general</span>
+<span class="kn">import</span> <span class="nn">networkx</span> <span class="k">as</span> <span class="nn">nx</span>
+<span class="kn">from</span> <span class="nn">scipy.sparse</span> <span class="kn">import</span> <span class="n">csr_matrix</span>
+<span class="kn">from</span> <span class="nn">scipy.linalg</span> <span class="kn">import</span> <span class="n">eigh</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="c1">#</span>
+<span class="c1">###### define model parameters ######</span>
+<span class="n">Lx</span> <span class="o">=</span> <span class="mi">4</span>
+<span class="n">Ly</span> <span class="o">=</span> <span class="mi">4</span>
+<span class="n">N_2d</span> <span class="o">=</span> <span class="n">Lx</span><span class="o">*</span><span class="n">Ly</span> <span class="c1"># total # of sites</span>
+<span class="n">K</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="c1"># interaction strength</span>
+<span class="c1">#</span>
+<span class="c1">###### define translation operations ######</span>
+<span class="c1">#</span>
+<span class="n">sites</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">N_2d</span><span class="p">)</span> <span class="c1"># lattice sites</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">sites</span> <span class="o">%</span> <span class="n">Lx</span> <span class="c1"># x-coordinates</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">sites</span> <span class="o">//</span> <span class="n">Lx</span> <span class="c1"># y-coordinates</span>
+<span class="c1">#</span>
+<span class="n">T_x</span> <span class="o">=</span> <span class="p">(</span><span class="n">x</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span> <span class="o">%</span> <span class="n">Lx</span> <span class="o">+</span> <span class="n">Lx</span><span class="o">*</span><span class="n">y</span>  <span class="c1"># translation along x direction by 1 site</span>
+<span class="n">T_y</span> <span class="o">=</span> <span class="n">x</span> <span class="o">+</span> <span class="n">Lx</span><span class="o">*</span><span class="p">((</span><span class="n">y</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span> <span class="o">%</span> <span class="n">Ly</span><span class="p">)</span>  <span class="c1"># translation along y direction by 1 site</span>
+<span class="n">T_x_y</span> <span class="o">=</span> <span class="p">(</span><span class="n">x</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span> <span class="o">%</span> <span class="n">Lx</span> <span class="o">+</span> <span class="n">Lx</span><span class="o">*</span><span class="p">((</span><span class="n">y</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span> <span class="o">%</span> <span class="n">Ly</span><span class="p">)</span>  <span class="c1"># translation along x and y directions by 1 site each</span>
+<span class="c1">#</span>
+<span class="n">P_x</span> <span class="o">=</span> <span class="n">x</span> <span class="o">+</span> <span class="n">Lx</span><span class="o">*</span><span class="p">(</span><span class="n">Ly</span><span class="o">-</span><span class="n">y</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="c1"># reflection about x-axis</span>
+<span class="n">P_y</span> <span class="o">=</span> <span class="p">(</span><span class="n">Lx</span><span class="o">-</span><span class="n">x</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="n">Lx</span><span class="o">*</span><span class="n">y</span> <span class="c1"># reflection about y-axis</span>
+<span class="n">P_d</span> <span class="o">=</span> <span class="n">y</span> <span class="o">+</span> <span class="n">Lx</span><span class="o">*</span><span class="n">x</span> <span class="c1"># reflection about diagonal</span>
+<span class="c1">#</span>
+<span class="n">Z</span>   <span class="o">=</span> <span class="o">-</span><span class="p">(</span><span class="n">sites</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span> <span class="c1"># spin inversion</span>
+<span class="c1">#</span>
+<span class="c1">###### create basis ######</span>
+<span class="c1">#</span>
+<span class="n">basis</span> <span class="o">=</span> <span class="n">spin_basis_general</span><span class="p">(</span><span class="n">N_2d</span><span class="p">,</span> <span class="n">pauli</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                            <span class="c1">#     Nup=N_2d//2,</span>
+                                 <span class="n">kxblock</span><span class="o">=</span><span class="p">(</span><span class="n">T_x</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="n">kyblock</span><span class="o">=</span><span class="p">(</span><span class="n">T_y</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span>
+                            <span class="c1">#     pdblock=(P_d,0),</span>
+                            <span class="c1">#     zblock=(Z,0),</span>
+                        <span class="p">)</span>
+<span class="c1"># print(basis.Ns)</span>
+<span class="c1"># exit()</span>
+<span class="c1">#</span>
+<span class="c1">###### create hamiltonian ######</span>
+<span class="c1">#</span>
+<span class="c1"># site-coupling lists</span>
+<span class="n">K_list</span> <span class="o">=</span> <span class="p">[[</span><span class="n">K</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">T_x</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">T_y</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">T_x_y</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N_2d</span><span class="p">)]</span>
+<span class="n">static</span> <span class="o">=</span> <span class="p">[[</span><span class="s2">&quot;+--+&quot;</span><span class="p">,</span> <span class="n">K_list</span><span class="p">],</span> <span class="p">]</span> <span class="c1"># non-hermitian (!) (h.c. added below below)</span>
+<span class="n">dynamic</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="c1"># build (half of) Hamiltonian [non-hermitian (!), see below]</span>
+<span class="n">H</span> <span class="o">=</span> <span class="n">hamiltonian</span><span class="p">(</span><span class="n">static</span><span class="p">,</span> <span class="n">dynamic</span><span class="p">,</span> <span class="n">basis</span><span class="o">=</span><span class="n">basis</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">,</span> <span class="n">check_symm</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">check_herm</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">E</span> <span class="o">=</span> <span class="p">(</span><span class="n">H</span><span class="o">+</span><span class="n">H</span><span class="o">.</span><span class="n">T</span><span class="p">)</span><span class="o">.</span><span class="n">eigvalsh</span><span class="p">()</span>
+<span class="n">np</span><span class="o">.</span><span class="n">set_printoptions</span><span class="p">(</span><span class="n">suppress</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">precision</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">E</span><span class="p">)</span>
+<span class="c1">#exit()</span>
+<span class="c1">#print(H.toarray())</span>
+<span class="k">if</span> <span class="n">H</span><span class="o">.</span><span class="n">tocsr</span><span class="p">()</span><span class="o">.</span><span class="n">getnnz</span><span class="p">()</span><span class="o">==</span><span class="mi">0</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">Hamiltonian is identically zero.</span><span class="se">\n</span><span class="s1">Exiting...</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="n">exit</span><span class="p">()</span>
+<span class="c1"># extract sparse matrix info</span>
+<span class="n">mels</span> <span class="o">=</span> <span class="n">H</span><span class="o">.</span><span class="n">tocsr</span><span class="p">()</span><span class="o">.</span><span class="n">data</span>  <span class="c1"># matrix elements of H</span>
+<span class="n">rows</span><span class="p">,</span> <span class="n">cols</span> <span class="o">=</span> <span class="n">H</span><span class="o">.</span><span class="n">tocsr</span><span class="p">()</span><span class="o">.</span><span class="n">nonzero</span><span class="p">()</span>  <span class="c1"># row/column indices of nonzero elements in H</span>
+<span class="c1">#</span>
+<span class="c1">###### create an undirected graph connecting those basis states with nonzero matrix elements between them</span>
+<span class="c1">#</span>
+<span class="c1"># define graph properties</span>
+<span class="n">edges</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">((</span><span class="n">rows</span><span class="p">,</span> <span class="n">cols</span><span class="p">))</span><span class="o">.</span><span class="n">T</span>  <span class="c1"># edges of the graph (numpy array with two columns)</span>
+<span class="c1"># create graph from basis states</span>
+<span class="n">graph</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">Graph</span><span class="p">()</span> 
+<span class="n">graph</span><span class="o">.</span><span class="n">add_nodes_from</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">basis</span><span class="o">.</span><span class="n">Ns</span><span class="p">))</span>
+<span class="n">graph</span><span class="o">.</span><span class="n">add_edges_from</span><span class="p">(</span><span class="n">edges</span><span class="p">)</span>
+<span class="c1"># compute all connected subgraphs</span>
+<span class="n">connected_subgraphs</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">connected_components</span><span class="p">(</span><span class="n">graph</span><span class="p">)</span>  <span class="c1"># determine connected subgraphs</span>
+<span class="c1"># print(list(connected_subgraphs))</span>
+<span class="c1">#print(basis.states)</span>
+<span class="c1">#</span>
+<span class="c1">###### Lists where we will store energies of eigenstates and their von Neumann entanglement entropies ######</span>
+<span class="c1">#</span>
+<span class="n">enrgs</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">ents</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="c1">#</span>
+<span class="c1">###### iterate over connected subgraphs ######</span>
+<span class="k">for</span> <span class="n">j</span><span class="p">,</span> <span class="n">subgraph</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">connected_subgraphs</span><span class="p">):</span>
+    <span class="c1">#</span>
+    <span class="c1"># compute basis of block subspace (represented by integers)</span>
+    <span class="n">block_basis_states_inds</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">subgraph</span><span class="p">)</span>
+    <span class="n">block_basis_states</span> <span class="o">=</span> <span class="n">basis</span><span class="o">.</span><span class="n">states</span><span class="p">[</span><span class="n">block_basis_states_inds</span><span class="p">]</span>
+    <span class="c1">#print(block_basis_states)</span>
+    <span class="c1">#print(&#39;block {} contains {} state(s);&#39;.format(j, len(block_basis_states)))</span>
+    <span class="c1">#</span>
+    <span class="c1"># define boolean mask showing which entries of H are in the subgraph</span>
+    <span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">in1d</span><span class="p">(</span><span class="n">rows</span><span class="p">,</span> <span class="n">block_basis_states_inds</span><span class="p">)</span>  
+    <span class="c1">#</span>
+    <span class="c1"># check if there are nonzero entries of H in the subgraph</span>
+    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">mask</span><span class="p">):</span>
+        <span class="c1"># If yes, choose them and construct a sparse matrix out of them</span>
+        <span class="n">rows_block</span> <span class="o">=</span> <span class="n">rows</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span>
+        <span class="n">cols_block</span> <span class="o">=</span> <span class="n">cols</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span>
+        <span class="n">mels_block</span> <span class="o">=</span> <span class="n">mels</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span>
+        <span class="c1">#</span>
+        <span class="c1"># define block Hamiltonian (still non-hermitian!)</span>
+        <span class="n">H_block</span> <span class="o">=</span> <span class="n">csr_matrix</span><span class="p">((</span><span class="n">mels_block</span><span class="p">,</span> <span class="p">(</span><span class="n">rows_block</span><span class="p">,</span> <span class="n">cols_block</span><span class="p">)),</span> <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="n">basis</span><span class="o">.</span><span class="n">Ns</span><span class="p">,</span> <span class="n">basis</span><span class="o">.</span><span class="n">Ns</span><span class="p">))</span>
+        <span class="c1"># add hermitian conjugate part of Hamiltonian (cf. definition of static list above)</span>
+        <span class="n">H_block</span> <span class="o">+=</span> <span class="n">H_block</span><span class="o">.</span><span class="n">conj</span><span class="p">()</span><span class="o">.</span><span class="n">T</span>
+        <span class="c1"># shrink the csr matrix size by deleting all-zero rows and columns</span>
+        <span class="n">H_block</span> <span class="o">=</span> <span class="n">H_block</span><span class="p">[</span><span class="n">H_block</span><span class="o">.</span><span class="n">getnnz</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">][:,</span> <span class="n">H_block</span><span class="o">.</span><span class="n">getnnz</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">]</span> 
+        <span class="c1">#print(H_block.toarray())</span>
+        <span class="c1">#</span>
+        <span class="c1"># solve the eigenproblem of the block</span>
+        <span class="n">E</span><span class="p">,</span> <span class="n">V</span> <span class="o">=</span> <span class="n">eigh</span><span class="p">(</span><span class="n">H_block</span><span class="o">.</span><span class="n">toarray</span><span class="p">())</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;energies&#39;</span><span class="p">,</span> <span class="n">E</span><span class="p">)</span>
+        <span class="c1">#</span>
+        <span class="c1"># define eigenstates in the full basis defined by basis</span>
+        <span class="n">V_full</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">basis</span><span class="o">.</span><span class="n">Ns</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">block_basis_states_inds</span><span class="p">)</span> <span class="p">),</span><span class="n">dtype</span><span class="o">=</span><span class="n">V</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
+        <span class="n">V_full</span><span class="p">[</span><span class="n">block_basis_states_inds</span><span class="p">,:]</span> <span class="o">=</span> <span class="n">V</span>
+        <span class="c1">#</span>
+        <span class="c1"># compute entropy</span>
+        <span class="n">Sent</span> <span class="o">=</span>  <span class="n">basis</span><span class="o">.</span><span class="n">ent_entropy</span><span class="p">(</span><span class="n">V_full</span><span class="p">,</span> <span class="n">sub_sys_A</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">),</span> <span class="n">enforce_pure</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">density</span><span class="o">=</span><span class="kc">False</span><span class="p">)[</span><span class="s1">&#39;Sent_A&#39;</span><span class="p">]</span>
+        <span class="n">Sent</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">atleast_1d</span><span class="p">(</span><span class="n">Sent</span><span class="p">)</span>
+
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c1"># If no, then the matrix is just a 1x1 zero matrix</span>
+        <span class="n">E</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.0</span><span class="p">])</span>
+        <span class="n">Sent</span><span class="o">=</span><span class="p">[</span><span class="mf">0.0</span><span class="p">,]</span>
+    <span class="c1">#</span>
+    <span class="c1"># store data</span>
+    <span class="n">enrgs</span> <span class="o">+=</span> <span class="nb">list</span><span class="p">(</span><span class="n">E</span><span class="p">)</span>
+    <span class="n">ents</span> <span class="o">+=</span> <span class="nb">list</span><span class="p">(</span><span class="n">Sent</span><span class="p">)</span>
+
+
+<span class="n">np</span><span class="o">.</span><span class="n">set_printoptions</span><span class="p">(</span><span class="n">suppress</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">precision</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">enrgs</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">enrgs</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">ents</span><span class="p">))</span>
+
+
+<span class="n">exit</span><span class="p">()</span>
+
+<span class="c1">#</span>
+<span class="c1">###### plot population dynamics of down state</span>
+<span class="c1">#</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">tight_layout</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;entanglement entropy, $S_</span><span class="si">{AB}</span><span class="s1">$&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">18</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;eigenenergy, $E$&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">18</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">enrgs</span><span class="p">,</span> <span class="n">ents</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s1">&#39;red&#39;</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="s1">&#39;o&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">yticks</span><span class="p">(</span><span class="n">fontsize</span><span class="o">=</span><span class="mi">18</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xticks</span><span class="p">(</span><span class="n">fontsize</span><span class="o">=</span><span class="mi">18</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+<span class="c1"># plt.savefig(&#39;example27.pdf&#39;, bbox_inches=&#39;tight&#39;)</span>
+<span class="c1"># plt.close()</span>
+
+
+</pre></div>
+</td></tr></table></div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Hilbert space fragmentation with lattice symmetries</a></li>
+<li><a class="reference internal" href="#script">Script</a></li>
+</ul>
+
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../sources/examples/example27.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.7 documentation</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2016, Phillip Weinberg, Markus Schmitt and Marin Bukov.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 3.0.4.
+    </div>
+  </body>
+</html>

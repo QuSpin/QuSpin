@@ -15,7 +15,7 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-    <title>quspin.basis.basis_general.base_general &#8212; QuSpin 0.3.6 documentation</title>
+    <title>quspin.basis.basis_general.base_general &#8212; QuSpin 0.3.7 documentation</title>
     <link rel="stylesheet" href="../../../../static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../../static/pygments.css" type="text/css" />
     
@@ -38,7 +38,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">QuSpin 0.3.6 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">QuSpin 0.3.7 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -53,8 +53,10 @@
 <span class="kn">import</span> <span class="nn">scipy.sparse</span> <span class="k">as</span> <span class="nn">_sp</span>
 <span class="kn">import</span> <span class="nn">os</span><span class="o">,</span><span class="nn">numexpr</span>
 <span class="kn">from</span> <span class="nn">._basis_general_core.general_basis_utils</span> <span class="kn">import</span> <span class="n">basis_int_to_python_int</span><span class="p">,</span><span class="n">_get_basis_index</span>
+<span class="kn">from</span> <span class="nn">._basis_general_core.general_basis_utils</span> <span class="kn">import</span> <span class="n">_basis_argsort</span><span class="p">,</span><span class="n">_is_sorted_decending</span>
 <span class="kn">from</span> <span class="nn">._basis_general_core</span> <span class="kn">import</span> <span class="n">basis_zeros</span>
 <span class="kn">from</span> <span class="nn">..lattice</span> <span class="kn">import</span> <span class="n">lattice_basis</span>
+<span class="kn">from</span> <span class="nn">..base</span> <span class="kn">import</span> <span class="n">_get_index_type</span>
 <span class="kn">import</span> <span class="nn">warnings</span>
 
 <span class="k">class</span> <span class="nc">GeneralBasisWarning</span><span class="p">(</span><span class="ne">Warning</span><span class="p">):</span>
@@ -808,28 +810,16 @@
 		<span class="k">if</span> <span class="n">Ns</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
 				<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;estimate for size of reduced Hilbert-space is too low, please double check that transformation mappings are correct or use &#39;Ns_block_est&#39; argument to give an upper bound of the block size.&quot;</span><span class="p">)</span>
 
-		<span class="c1"># sort basis</span>
-		<span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_Np</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">int</span> <span class="ow">or</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_Np</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">tuple</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Np</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-			<span class="k">if</span> <span class="n">Ns</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+		<span class="k">if</span> <span class="n">Ns</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+			<span class="k">if</span> <span class="n">_is_sorted_decending</span><span class="p">(</span><span class="n">basis</span><span class="p">[:</span><span class="n">Ns</span><span class="p">]):</span>
 				<span class="bp">self</span><span class="o">.</span><span class="n">_basis</span> <span class="o">=</span> <span class="n">basis</span><span class="p">[:</span><span class="n">Ns</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
 				<span class="bp">self</span><span class="o">.</span><span class="n">_n</span> <span class="o">=</span> <span class="n">n</span><span class="p">[:</span><span class="n">Ns</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
 				<span class="k">if</span> <span class="n">Np_list</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Np_list</span> <span class="o">=</span> <span class="n">Np_list</span><span class="p">[:</span><span class="n">Ns</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
 			<span class="k">else</span><span class="p">:</span>
-				<span class="bp">self</span><span class="o">.</span><span class="n">_basis</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">array</span><span class="p">([],</span><span class="n">dtype</span><span class="o">=</span><span class="n">basis</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
-				<span class="bp">self</span><span class="o">.</span><span class="n">_n</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">array</span><span class="p">([],</span><span class="n">dtype</span><span class="o">=</span><span class="n">n</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
-				<span class="k">if</span> <span class="n">Np_list</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Np_list</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">array</span><span class="p">([],</span><span class="n">dtype</span><span class="o">=</span><span class="n">Np_list</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
-
-			<span class="n">sort_basis</span> <span class="o">=</span> <span class="kc">False</span>
-		<span class="k">else</span><span class="p">:</span>
-			<span class="n">sort_basis</span> <span class="o">=</span> <span class="kc">True</span>
-
-		<span class="k">if</span> <span class="n">Ns</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-			<span class="c1"># self._basis = basis[Ns-1::-1].copy()</span>
-			<span class="c1"># self._n = n[Ns-1::-1].copy()</span>
-			<span class="c1"># if Np_list is not None: self._Np_list = Np_list[Ns-1::-1].copy()</span>
-			<span class="bp">self</span><span class="o">.</span><span class="n">_basis</span> <span class="o">=</span> <span class="n">basis</span><span class="p">[:</span><span class="n">Ns</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-			<span class="bp">self</span><span class="o">.</span><span class="n">_n</span> <span class="o">=</span> <span class="n">n</span><span class="p">[:</span><span class="n">Ns</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-			<span class="k">if</span> <span class="n">Np_list</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Np_list</span> <span class="o">=</span> <span class="n">Np_list</span><span class="p">[:</span><span class="n">Ns</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+				<span class="n">indices</span> <span class="o">=</span> <span class="n">_basis_argsort</span><span class="p">(</span><span class="n">basis</span><span class="p">[:</span><span class="n">Ns</span><span class="p">])</span>
+				<span class="bp">self</span><span class="o">.</span><span class="n">_basis</span> <span class="o">=</span> <span class="n">basis</span><span class="p">[</span><span class="n">indices</span><span class="p">]</span>
+				<span class="bp">self</span><span class="o">.</span><span class="n">_n</span> <span class="o">=</span> <span class="n">n</span><span class="p">[</span><span class="n">indices</span><span class="p">]</span>
+				<span class="k">if</span> <span class="n">Np_list</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Np_list</span> <span class="o">=</span> <span class="n">Np_list</span><span class="p">[</span><span class="n">indices</span><span class="p">]</span>
 		<span class="k">else</span><span class="p">:</span>
 			<span class="bp">self</span><span class="o">.</span><span class="n">_basis</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">array</span><span class="p">([],</span><span class="n">dtype</span><span class="o">=</span><span class="n">basis</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
 			<span class="bp">self</span><span class="o">.</span><span class="n">_n</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">array</span><span class="p">([],</span><span class="n">dtype</span><span class="o">=</span><span class="n">n</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
@@ -838,7 +828,7 @@
 		<span class="bp">self</span><span class="o">.</span><span class="n">_Ns</span><span class="o">=</span><span class="n">Ns</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">_Ns_block_est</span><span class="o">=</span><span class="n">Ns</span>
 
-		<span class="bp">self</span><span class="o">.</span><span class="n">_index_type</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">result_type</span><span class="p">(</span><span class="n">_np</span><span class="o">.</span><span class="n">min_scalar_type</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_Ns</span><span class="p">),</span><span class="n">_np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">_index_type</span> <span class="o">=</span> <span class="n">_get_index_type</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_Ns</span><span class="p">)</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">_reduce_n_dtype</span><span class="p">()</span>
 
 		<span class="bp">self</span><span class="o">.</span><span class="n">_made_basis</span> <span class="o">=</span> <span class="kc">True</span>
@@ -1271,7 +1261,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">QuSpin 0.3.6 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">QuSpin 0.3.7 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>
