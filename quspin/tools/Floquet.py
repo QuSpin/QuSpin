@@ -12,7 +12,7 @@ import numpy as _np
 
 from scipy.integrate import complex_ode
 from joblib import delayed,Parallel
-from numpy import vstack 
+from numpy import vstack
 
 import warnings
 
@@ -114,20 +114,19 @@ def _evolve_step_2(i,H,t_list,dt_list):
 def _get_U_cont(H,T,n_jobs,atol=1E-9,rtol=1E-9): 
 	
 	sols=Parallel(n_jobs=n_jobs)(delayed(_evolve_cont)(i,H,T,atol,rtol) for i in _range_iter(0,H.Ns,1))
-
-	return vstack(sols)
+	return vstack(sols).T
 
 def _get_U_step_3(H_list,dt_list,n_jobs): 
 	
 	sols=Parallel(n_jobs=n_jobs)(delayed(_evolve_step_3)(i,H_list,dt_list) for i in _range_iter(0,H_list[0].Ns,1))
 
-	return vstack(sols)
+	return vstack(sols).T
 
 def _get_U_step_2(H,t_list,dt_list,n_jobs): 
 	
 	sols=Parallel(n_jobs=n_jobs)(delayed(_evolve_step_2)(i,H,t_list,dt_list) for i in _range_iter(0,H.Ns,1))
 
-	return vstack(sols)
+	return vstack(sols).T
 
 
 
