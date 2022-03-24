@@ -46,9 +46,6 @@ class basis(object):
 		self._basis = _np.asarray([])
 		self._operators = "no operators for base."
 		self._unique_me = True
-		self._check_symm = None
-		self._check_pcon = None
-		self._check_herm = None
 		if self.__class__.__name__ == 'basis':
 			raise ValueError("This class is not intended"
 							 " to be instantiated directly.")
