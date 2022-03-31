@@ -40,8 +40,8 @@ DM = np.einsum("ik,jk,k->ij",psis.conj(),psis,rho_d)
 DM_full = np.einsum("ik,jk,k->ij",psis_full.conj(),psis_full,rho_d)
 
 
-DMs = np.dstack((DM for i in range(5)))
-DMs_full = np.dstack((DM_full for i in range(5)))
+DMs = np.dstack([DM for i in range(5)])
+DMs_full = np.dstack([DM_full for i in range(5)])
 
 kwargs_list = [
 				dict(sub_sys_A="particles",return_rdm=None,return_rdm_EVs=False),

@@ -1,6 +1,6 @@
 
 
-:orange:`QuSpin 0.3.7` (released on 2021.12.01)
+:orange:`QuSpin 0.3.7` (released on 2022.04.15)
 ================================================
 
 
@@ -18,7 +18,7 @@ For a tutorial in QuSpin's `user_basis` which allows the user to define custom b
 Complete list of the most recent features 
 =========================================
 
-Added in v. 0.3.7 (2021.12.01)
+Added in v. 0.3.7 (2022.04.15)
 ------------------------------
 
 Improved Functionality

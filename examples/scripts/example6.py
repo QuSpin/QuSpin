@@ -97,7 +97,7 @@ def real(H_dict,I,psi_0,w,t,i):
 	# print reporting the computation time for realization
 	print("realization {}/{} completed in {:.2f} s".format(i+1,n_real,time()-ti))
 	# return observable values
-	return obs_t["I"]
+	return obs_t["I"].real
 #
 ###### looping over different disorder strengths
 for w in w_list:	
