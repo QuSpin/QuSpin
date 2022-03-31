@@ -46,9 +46,6 @@ class basis(object):
 		self._basis = _np.asarray([])
 		self._operators = "no operators for base."
 		self._unique_me = True
-		self._check_symm = None
-		self._check_pcon = None
-		self._check_herm = None
 		if self.__class__.__name__ == 'basis':
 			raise ValueError("This class is not intended"
 							 " to be instantiated directly.")
@@ -141,7 +138,7 @@ class basis(object):
 
 		return v_out.squeeze()		
 
-	def inplace_Op(self,v_in,op_list,dtype,transposed=False,conjugated=False,v_out=None):
+	def inplace_Op(self,v_in,op_list,dtype,transposed=False,conjugated=False,a=1.0,v_out=None):
 		"""Calculates the action of an operator on a state.
 
 		Notes
@@ -160,9 +157,11 @@ class basis(object):
 			if `True` this function will act with the trasposed operator.
 		conjugated : bool, optional
 			if `True` this function will act with the conjugated operator.
+		a : scalar, optional
+			value to rescale resulting vector after performing the action of the operators. Same as rescaling all couplings by value a.
 		v_out : array_like
 			output array, must be the same shape as `v_in` and must match the type of the output.
-
+		
 		Returns
 		--------
 		numpy.ndarray
@@ -181,7 +180,7 @@ class basis(object):
 
 		"""
 
-		return self._inplace_Op(v_in,op_list,dtype,transposed=transposed,conjugated=conjugated,v_out=v_out)
+		return self._inplace_Op(v_in,op_list,dtype,transposed=transposed,conjugated=conjugated,v_out=v_out,a=a)
 
 	def Op(self,opstr,indx,J,dtype):
 		"""Constructs operator from a site-coupling list and an operator string in a lattice basis.
