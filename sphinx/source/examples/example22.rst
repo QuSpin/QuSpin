@@ -4,7 +4,7 @@
 
 
 Efficient time evolution using the omp-parallelized expm_multiply_parallel
-------------------------------------------------
+--------------------------------------------------------------------------
 
 In this example, we demonstrate the usage of the function `tools.evolution.expm_multiply_parallel()`, designed to compute
 matrix exponentials for **static** Hamiltonians. 

@@ -27,8 +27,8 @@ Improved Functionality
 * fixed bug with data types in `quantum_operator` for systems of `N>31` sites.
 * fixed bug with using `Nup` argument of `*_spin_basis_*`.
 * fixed bug with `return_rdm` optional argument of `tensor_basis`.
-* added warning to notify users that hermiticity/symmetry checks and not exhaustive.
-
+* fixed bug with Flloquet tool returning the transposed Floquet evolution operator for complex-valued Floquet Hamiltonians
+* added note to warning to notify users that hermiticity/symmetry checks are not exhaustive.
 
 
 Added in v. 0.3.6 (2021.05.01)
