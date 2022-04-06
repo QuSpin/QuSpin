@@ -1,160 +1,122 @@
 from __future__ import print_function, division
+#
 import sys,os
-# line 4 and line 5 below are for development purposes and can be removed
-qspin_path = os.path.join(os.getcwd(),"../../")
-sys.path.insert(0,qspin_path)
+os.environ['KMP_DUPLICATE_LIB_OK']='True' # uncomment this line if omp error occurs on OSX for python 3
+os.environ['OMP_NUM_THREADS']='4' # set number of OpenMP threads to run in parallel
+os.environ['MKL_NUM_THREADS']='4' # set number of MKL threads to run in parallel
+#
+quspin_path = os.path.join(os.getcwd(),"../../")
+sys.path.insert(0,quspin_path)
 ###########################################################################
-#                            example 27                                   #
-#  ...                                                                    #
+#                             example 27                                  #
+#  In this script we demonstrate how to use QuSpin to generate            #
+#  a Hamiltonian and solve the Louiville-von Neumann equation starting	  #
+#  from a mixed initial state in the Fermi Hubbard model. We also         #
+#  show how to write a simple fixed time-step Runge-Kutta solver          #
+#  that makes use of an MKL-parllelized dot function for sparse matrices. #
 ###########################################################################
-import numpy as np
+# import sparse_dot library, see https://github.com/flatironinstitute/sparse_dot.git
+from sparse_dot_mkl import dot_product_mkl 
+from quspin.tools.misc import get_matvec_function
 from quspin.operators import hamiltonian
-from quspin.basis import spin_basis_general
-import networkx as nx
 from scipy.sparse import csr_matrix
-from scipy.linalg import eigh
-import matplotlib.pyplot as plt
+from quspin.basis import spinful_fermion_basis_general
+import numpy as np
+import time
 #
-###### define model parameters ######
-Lx = 4
-Ly = 4
-N_2d = Lx*Ly # total # of sites
-K = 1.0 # interaction strength
+##### define model parameters #####
 #
-###### define translation operations ######
+Lx, Ly = 2, 2 # expect to see an MKL speedup from Lx,Ly = 2,3 onward
+N_2d=Lx*Ly # total number of lattice sites
+# model params
+J=1.0 # hopping amplitude
+U=np.sqrt(2.0) # interaction strength
+# time parameters
+t_max=40.0 # total time
+dt=0.1 # time step size
+N_T=int(t_max//dt)
+time_vec=np.linspace(0.0,t_max,int(2*t_max+1))
 #
-sites = np.arange(N_2d) # lattice sites
-x = sites % Lx # x-coordinates
-y = sites // Lx # y-coordinates
+##### create Hamiltonian to evolve unitarily
 #
-T_x = (x+1) % Lx + Lx*y  # translation along x direction by 1 site
-T_y = x + Lx*((y+1) % Ly)  # translation along y direction by 1 site
-T_x_y = (x+1) % Lx + Lx*((y+1) % Ly)  # translation along x and y directions by 1 site each
-#
-P_x = x + Lx*(Ly-y-1) # reflection about x-axis
-P_y = (Lx-x-1) + Lx*y # reflection about y-axis
-P_d = y + Lx*x # reflection about diagonal
-#
-Z   = -(sites+1) # spin inversion
-#
-###### create basis ######
-#
-basis = spin_basis_general(N_2d, pauli=False,
-                            #     Nup=N_2d//2,
-                                 kxblock=(T_x,0), kyblock=(T_y,0),
-                            #     pdblock=(P_d,0),
-                            #     zblock=(Z,0),
-                        )
-# print(basis.Ns)
-# exit()
-#
-###### create hamiltonian ######
-#
+# basis
+basis=spinful_fermion_basis_general(N_2d)
+# define translation operators for 2D lattice
+s = np.arange(N_2d) # sites [0,1,2,...,N_2d-1] in simple notation
+x = s%Lx # x positions for sites
+y = s//Lx # y positions for sites
+T_x = (x+1)%Lx + Lx*y # translation along x-direction
+T_y = x + Lx*((y+1)%Ly) # translation along y-direction
 # site-coupling lists
-K_list = [[K, i, T_x[i], T_y[i], T_x_y[i]] for i in range(N_2d)]
-static = [["+--+", K_list], ] # non-hermitian (!) (h.c. added below below)
-dynamic = []
-# build (half of) Hamiltonian [non-hermitian (!), see below]
-H = hamiltonian(static, dynamic, basis=basis, dtype=np.float64, check_symm=False, check_herm=False)
-E = (H+H.T).eigvalsh()
-np.set_printoptions(suppress=True, precision=2)
-print(E)
-#exit()
-#print(H.toarray())
-if H.tocsr().getnnz()==0:
-    print('\nHamiltonian is identically zero.\nExiting...\n')
-    exit()
-# extract sparse matrix info
-mels = H.tocsr().data  # matrix elements of H
-rows, cols = H.tocsr().nonzero()  # row/column indices of nonzero elements in H
+hop_left =[[-J,i,T_x[i]] for i in range(N_2d)] + [[-J,i,T_y[i]] for i in range(N_2d)]
+hop_right=[[+J,i,T_x[i]] for i in range(N_2d)] + [[+J,i,T_y[i]] for i in range(N_2d)]
+int_list=[[U,i,i] for i in range(N_2d)]
+# static opstr list 
+static= [	
+		["+-|", hop_left], # up hop left
+		["-+|", hop_right], # up hop right
+		["|+-", hop_left], # down hop left
+		["|-+", hop_right], # down hop right
+		["n|n", int_list]
+		]
+# construct Hamiltonian
+Hcsc=hamiltonian(static,[],dtype=np.complex128,basis=basis,check_symm=False).tocsr()
 #
-###### create an undirected graph connecting those basis states with nonzero matrix elements between them
+##### create the mean-field groundstate we start from
 #
-# define graph properties
-edges = np.array((rows, cols)).T  # edges of the graph (numpy array with two columns)
-# create graph from basis states
-graph = nx.Graph() 
-graph.add_nodes_from(np.arange(basis.Ns))
-graph.add_edges_from(edges)
-# compute all connected subgraphs
-connected_subgraphs = nx.connected_components(graph)  # determine connected subgraphs
-# print(list(connected_subgraphs))
-#print(basis.states)
+# compute basis with single occupancies only
+basis_reduced = spinful_fermion_basis_general(N_2d, Nf=([(j,N_2d-j) for j in range(N_2d+1)]), double_occupancy=False)
+# create empty list to store indices of nonzero elements for initial DM
+rho_inds=[] 
+for s in basis_reduced.states: # loop over singly-occupied states
+	rho_inds.append(np.argwhere(basis.states == s)[0][0] )
+# create initial state in csr format
+rho_0=csr_matrix((np.ones(basis_reduced.Ns)/basis_reduced.Ns, (rho_inds, rho_inds)),shape=(basis.Ns,basis.Ns),dtype=np.complex128)
 #
-###### Lists where we will store energies of eigenstates and their von Neumann entanglement entropies ######
+##### define Runge-Kutta solver for sparse matrix
 #
-enrgs = []
-ents = []
+# MKL-parallel function using the sparse_dot library
+def LvN_mkl(rho):
+	# define right-hand side of Liouville-von Neumann equation 
+	# see https://github.com/flatironinstitute/sparse_dot.git, needs v0.8 or higher
+	return -1j*( dot_product_mkl(Hcsc,rho,cast=False) - dot_product_mkl(rho,Hcsc,cast=False) )
 #
-###### iterate over connected subgraphs ######
-for j, subgraph in enumerate(connected_subgraphs):
-    #
-    # compute basis of block subspace (represented by integers)
-    block_basis_states_inds = list(subgraph)
-    block_basis_states = basis.states[block_basis_states_inds]
-    #print(block_basis_states)
-    #print('block {} contains {} state(s);'.format(j, len(block_basis_states)))
-    #
-    # define boolean mask showing which entries of H are in the subgraph
-    mask = np.in1d(rows, block_basis_states_inds)  
-    #
-    # check if there are nonzero entries of H in the subgraph
-    if np.any(mask):
-        # If yes, choose them and construct a sparse matrix out of them
-        rows_block = rows[mask]
-        cols_block = cols[mask]
-        mels_block = mels[mask]
-        #
-        # define block Hamiltonian (still non-hermitian!)
-        H_block = csr_matrix((mels_block, (rows_block, cols_block)), shape=(basis.Ns, basis.Ns))
-        # add hermitian conjugate part of Hamiltonian (cf. definition of static list above)
-        H_block += H_block.conj().T
-        # shrink the csr matrix size by deleting all-zero rows and columns
-        H_block = H_block[H_block.getnnz(1) > 0][:, H_block.getnnz(0) > 0] 
-        #print(H_block.toarray())
-        #
-        # solve the eigenproblem of the block
-        E, V = eigh(H_block.toarray())
-        print('energies', E)
-        #
-        # define eigenstates in the full basis defined by basis
-        V_full = np.zeros((basis.Ns,len(block_basis_states_inds) ),dtype=V.dtype)
-        V_full[block_basis_states_inds,:] = V
-        #
-        # compute entropy
-        Sent =  basis.ent_entropy(V_full, sub_sys_A=(0, 1, 3, 4, 6, 7), enforce_pure=True, density=False)['Sent_A']
-        Sent = np.atleast_1d(Sent)
-
-    else:
-        # If no, then the matrix is just a 1x1 zero matrix
-        E=np.array([0.0])
-        Sent=[0.0,]
-    #
-    # store data
-    enrgs += list(E)
-    ents += list(Sent)
-
-
-np.set_printoptions(suppress=True, precision=2)
-print(np.sort(enrgs))
-print()
-print(np.array(enrgs))
-print(np.array(ents))
-
-
-exit()
-
+# scipy function 
+def LvN_scipy(rho):
+	return -1j*(Hcsc@rho-rho@Hcsc)
 #
-###### plot population dynamics of down state
+# define fixed step-size Runge-Kutta 4th order method
+def RK_solver(rho,dt, LvN):
+	k1 = LvN(rho)
+	k2 = LvN(rho+(0.5*dt)*k1)
+	k3 = LvN(rho+(0.5*dt)*k2)
+	k4 = LvN(rho+dt*k3)
+	return rho + dt*(k1+2*k2+2*k3+k4)/6.0
 #
-fig, ax = plt.subplots(tight_layout=True)
-ax.set_ylabel('entanglement entropy, $S_{AB}$', fontsize=18)
-ax.set_xlabel('eigenenergy, $E$', fontsize=18)
-ax.scatter(enrgs, ents, c='red', s=20, marker='o')
-plt.yticks(fontsize=18)
-plt.xticks(fontsize=18)
-plt.show()
-# plt.savefig('example27.pdf', bbox_inches='tight')
-# plt.close()
-
-
+##### evolve DM by solving the LvN equation
+#
+# empty list to store the solution in
+rho_t=[] 
+# initial state
+rho_mkl	=rho_0.copy()
+# time evolution loop
+starttime=time.time()
+for i in range(N_T):
+		rho_mkl	 = RK_solver(rho_mkl, dt, LvN_mkl)
+		rho_t.append(rho_mkl)
+		#print("finished step {0:d}/{1:d}.".format(i+1,int(t_max/dt)-1),flush=True)
+#
+print("\nMKL time evo done in {0:0.4f} secs.".format(time.time()-starttime),flush=True)
+#
+# empty list to store the solution in
+rho_t=[] 
+# initial state
+rho_scipy =rho_0.copy()
+# time evolution loop
+starttime=time.time()
+for i in range(N_T):
+        rho_scipy  = RK_solver(rho_scipy, dt, LvN_scipy)
+        rho_t.append(rho_scipy)
+        #print("finished step {0:d}/{1:d}.".format(i+1,int(t_max/dt)-1),flush=True)
+#
+print("\nScipy time evo done in {0:0.4f} secs.".format(time.time()-starttime),flush=True)

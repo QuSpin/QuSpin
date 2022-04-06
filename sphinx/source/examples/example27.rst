@@ -3,49 +3,36 @@
 .. _example27-label:
 
 
-Hilbert space fragmentation with lattice symmetries
----------------------------------------------------
+Liouville-von Neumann Equation using the MKL-enhanced Sparse Matrix Product [courtesy of J. Verlage]
+----------------------------------------------------------------------------------------------------
 
-.. CHANGE DESCRIPTION BELOW
+This example shows how one can combine QuSpin with the external library `sparse_dot <https://github.com/flatironinstitute/sparse_dot.git>`_ which supports an MKL-parallelized sparse matrix product.
 
-This example demonstrates how to use the general basis function method `Op_shift_sector()` to compute spectral functions directly without Fourier -transforming auto-correlation functions. The idea here is to use SciPy's iterative solvers for sparse linear systems to calculate the action of an inverted operator on a state. 
-
-The spectral function in ground state :math:`|0\rangle` can be written as:
+To this end, we consider the numerical solution of the Liouville-von Neumann (LvN) equation for the density matrix: 
 
 .. math::
-	C(\omega) = -\frac{1}{\pi}\langle 0|A^\dagger\frac{1}{\omega+i\eta + E_0 - H} A|0\rangle,
+	i\partial_t \rho(t) = [H,\rho(t)].
 
-where :math:`\eta` is the boradening factor for the spectral peaks. For an operator :math:`A` that has quantum numbers that differ from the ground state :math:`|0\rangle` we can use `Op_shift_sector()` to calculate the a new ket: :math:`|A\rangle = A|0\rangle`. With this new ket, we can construct the Hamiltonian :math:`H` in the new sector, and solve the following equation:
-
-.. math::
-	(\omega+i\eta + E_0 - H)|x(\omega)\rangle = |A\rangle.
-
-This equation can be solved using the bi-conjugate gradient (cf. `scipy.sparse.linalg.bicg`) method that is implemented in SciPy. In order to solve that equation with SciPy we define a custom class (see code below) that produces the action :math:`(\omega \pm i\eta + E_0 - H)|u\rangle` for an arbitrary state :math:`|u\rangle`. Now we can use :math:`|x(\omega)\rangle` to calculate the spectral function a given value of :math:`\omega` as follows:
+The system is the Fermi-Hubbard modelon a square lattice: 
 
 .. math::
-	C(\omega) = -\frac{1}{\pi}\langle A|x(\omega)\rangle.
+	H = -J\sum_{j,\sigma} \left( c^\dagger_{j+1\sigma}c_{j\sigma} + \mathrm{h.c.} \right) + U\sum_j n_{j\uparrow}n_{j\downarrow},
 
-Note that this method can also be used to calculate spectral functions for any state by replacing :math:`|0\rangle\rightarrow|\psi\rangle`. This may be useful for calculating spectral functions away from equilibrium by using :math:`|\psi(t)\rangle` that has undergone some kind of time evolution (in the Schrödinger picture). 
-
-In the example below, we look at the Heisenberg chain (:math:`J=1`) with periodic boundary conditions. The periodic boundary condition allows us to use translation symmetry to reduce the total Hilbert space into blocks labeled by the many-body momentum quantum number. We limit the chain lengths to :math:`L=4n` for :math:`n=1,2,3...`, since this is required to have the ground state in the zero-momentum sector (for other system sizes, the ground state of the isotropic Heisenberg chain has finite momentum). 
-
-Below, we calculate two different spectral functions:
+where :math:`j=(x,y)` denotes the lattice site. We choolse a mean-field initial state, 
 
 .. math::
-	G_{zz}(\omega,q) = \langle 0|S^{z}_{-q}\frac{1}{\omega+i\eta + E_0 - H}S^{z}_q|0\rangle
+	\rho(0)=\bigotimes_j \rho_j, \qquad \mathrm{where} \qquad  \rho_j = \frac{1}{2}\left( |\uparrow_j\rangle\langle \uparrow_j|+ |\downarrow_j\rangle\langle \downarrow_j| \right),
 
-.. math::
-	G_{+-}(\omega,q) = \langle 0|S^{-}_{-q}\frac{1}{\omega+i\eta + E_0 - H}S^{+}_q|0\rangle
+that cannot be written as a pure state [hence the necessity to solve the LvN equation rather than Schroedinger's equation].
 
-where we have defined:
+Note that the initial state :math:`\rho(0)` is diagonal in the particle number basis; therefore, since the Hamiltonian :math:`H` is also sparse, we expect that the time-evolved density operator will remain sparse at least for small times [compared to :math:`U^{-1}, J^{-1}`]. 
+Since we are limited to small system sizes by the exponentially growing Hilbert space dimension, we need a memory-efficient way to store the quantum state, e.g., using a sparse matrix. In turn, this requires:
 
-.. math::
-	S^{z}_q = \frac{1}{\sqrt{L}}\sum_{r=0}^{L-1} \exp\left(-i\frac{2\pi q r}{L}\right) S^z_r
+	* an efficient, ideally parallelized, sparse-spase matrix product;
+	* a solver for differential equations that allows us to keep the variable [here :math:`\rho`] in sparse format at all times. 
 
-.. math::
-	S^{\pm}_q = \frac{1}{\sqrt{2L}}\sum_{r=0}^{L-1} \exp\left(-i\frac{2\pi q r}{L}\right) S^{\pm}_r
+To this end, we can use the open-source python library `sparse_dot <https://github.com/flatironinstitute/sparse_dot.git>`_, which provides the MKL-paralellized function `dot_product_mkl`. We use it to write our own fourth-order Runge-Kutta (RK) solver for the LvN equation. Note that, unlike the RK solver provided in Scipy where the step size is chosen adaptively, our RK implementation has a fixed step size; however, scipy's solver does not allow us to keep the state as a sparse matrix at all times.
 
-Because the model has full SU(2) symmetry, we expect that the two spectral functions should give the same result. We also exclude the spectral function for :math:`q=L/2` (:math:`\pi`-momentum) as the spectral peak is very large due to the quasi long-range antiferromagnetic order in the ground state. The variable `on_the_fly` can be used to switch between using a `hamiltonian` object to a `quantum_LinearOperator` object to calculate the matrix vector product. One can also change the total spin of the local spin operators by changing the variable `S` to compute the spectral function for higher-spin Heisenberg models.
 
 
 Script
