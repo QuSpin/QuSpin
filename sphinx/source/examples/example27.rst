@@ -18,7 +18,7 @@ The system is the Fermi-Hubbard modelon a square lattice:
 .. math::
 	H = -J\sum_{j,\sigma} \left( c^\dagger_{j+1\sigma}c_{j\sigma} + \mathrm{h.c.} \right) + U\sum_j n_{j\uparrow}n_{j\downarrow},
 
-where :math:`j=(x,y)` denotes the lattice site. We choolse a mean-field initial state, 
+where :math:`j=(x,y)` denotes the lattice site. We choose a mean-field initial state, 
 
 .. math::
 	\rho(0)=\bigotimes_j \rho_j, \qquad \mathrm{where} \qquad  \rho_j = \frac{1}{2}\left( |\uparrow_j\rangle\langle \uparrow_j|+ |\downarrow_j\rangle\langle \downarrow_j| \right),
