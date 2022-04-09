@@ -7,7 +7,7 @@ Tools module (:mod:`quspin.tools`)
 Classes and functions to manipulate quantum states and do calculations.
 
 evolution
-----------
+---------
 
 .. currentmodule:: quspin.tools.evolution
 
@@ -17,6 +17,7 @@ evolution
    ED_state_vs_time
    evolve
    expm_multiply_parallel
+
 
 Lanczos
 -------
@@ -34,7 +35,7 @@ Lanczos
    FTLM_static_iteration      
 
 Floquet
---------
+-------
 
 .. currentmodule:: quspin.tools.Floquet
 
@@ -45,7 +46,7 @@ Floquet
    Floquet_t_vec
 
 measurements
--------------
+------------
 
 .. currentmodule:: quspin.tools.measurements
 
@@ -57,7 +58,7 @@ measurements
    obs_vs_time
 
 block_tools
-------------
+-----------
 
 .. currentmodule:: quspin.tools.block_tools
 
