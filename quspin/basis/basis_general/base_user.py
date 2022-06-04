@@ -191,7 +191,7 @@ class user_basis(basis_general):
 			of the symmetry sector (:math:`Q^{m_Q} = 1`), and :math:`q` is the quantum number for the given sector. Optional arguments can be passed using the`args` argument which is a `np.ndarray[basis_dtype]`. Note that if the periodicity is wrong
 			the basis will give undefined behavior. 
 		"""
-
+		basis_general.__init__(self)
 		# photon basis not supported hence this flag is always False.
 		self._count_particles = False
 		if _Np is not None:
