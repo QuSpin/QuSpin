@@ -26,6 +26,7 @@ quspin.operators.quantum\_operator
       ~quantum_operator.eigvalsh
       ~quantum_operator.expt_value
       ~quantum_operator.getH
+      ~quantum_operator.get_operators
       ~quantum_operator.matmat
       ~quantum_operator.matrix_ele
       ~quantum_operator.matvec
@@ -54,7 +55,6 @@ quspin.operators.quantum\_operator
       ~quantum_operator.T
       ~quantum_operator.basis
       ~quantum_operator.dtype
-      ~quantum_operator.get_operators
       ~quantum_operator.get_shape
       ~quantum_operator.is_dense
       ~quantum_operator.ndim

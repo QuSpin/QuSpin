@@ -1,11 +1,10 @@
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><script type="text/javascript">
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><script type="text/javascript">
 
       var _gaq = _gaq || [];
       _gaq.push(['_setAccount', 'UA-110543543-1']);
@@ -17,16 +16,15 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-    <title>Monte Carlo Sampling Expectation Values of Obsevables &#8212; QuSpin 0.3.3 documentation</title>
-    <link rel="stylesheet" href="../static/classic.css" type="text/css" />
+    <title>Monte Carlo Sampling Expectation Values of Obsevables &#8212; QuSpin 0.3.6 documentation</title>
     <link rel="stylesheet" href="../static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../static/classic.css" type="text/css" />
     
-    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../static/documentation_options.js"></script>
-    <script type="text/javascript" src="../static/jquery.js"></script>
-    <script type="text/javascript" src="../static/underscore.js"></script>
-    <script type="text/javascript" src="../static/doctools.js"></script>
-    <script type="text/javascript" src="../static/language_data.js"></script>
-    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script id="documentation_options" data-url_root="../" src="../static/documentation_options.js"></script>
+    <script src="../static/jquery.js"></script>
+    <script src="../static/underscore.js"></script>
+    <script src="../static/doctools.js"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" /> 
@@ -40,7 +38,8 @@
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.3 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.6 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Monte Carlo Sampling Expectation Values of Obsevables</a></li> 
       </ul>
     </div>  
 
@@ -49,9 +48,10 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="section" id="monte-carlo-sampling-expectation-values-of-obsevables">
+  <style> .red {color:#ff0000; font-weight:bold; font-style:italic; } </style>
+<style> .green {color:#00b200; font-weight:bold; font-style:italic; } </style><div class="section" id="monte-carlo-sampling-expectation-values-of-obsevables">
 <span id="example11-label"></span><h1>Monte Carlo Sampling Expectation Values of Obsevables<a class="headerlink" href="#monte-carlo-sampling-expectation-values-of-obsevables" title="Permalink to this headline">¶</a></h1>
-<p><a class="reference download internal" download="" href="../downloads/2e2fafe991a67f684ee29954808dde28/example11.py"><code class="xref download docutils literal notranslate"><span class="pre">download</span> <span class="pre">script</span></code></a></p>
+<p><a class="reference download internal" download="" href="../downloads/fb758a48aa50b0ba15ddc07c526fc7fc/example11.py"><code class="xref download docutils literal notranslate"><span class="pre">download</span> <span class="pre">script</span></code></a></p>
 <p>The example below demonstrates how to use the <cite>*_basis_general</cite> methods <cite>Op_bra_ket()</cite>, <cite>representative()</cite> and <cite>get_amp()</cite>, which do not require computing all basis states, to do Monte-Carlo sampling in a symmetry-reduced subspace.</p>
 <p>Depending on the problem of interest, sampling in the symmetry-reduced Hilbert space, as opposed to sampling in the full Hilbert space, may or may not be advantages
 (in terms of speed and efficiency).</p>
@@ -62,250 +62,250 @@
 <div class="math notranslate nohighlight">
 \[\langle\psi|H|\psi\rangle = \sum_{s,s'} \psi_s^\ast H_{ss'}\psi_{s'} = \sum_s |\psi_s|^2 E_{s},\qquad E_s = \frac{1}{\psi_s}\sum_{s'}H_{ss'}\psi_{s'},\]</div>
 <p>where <span class="math notranslate nohighlight">\(\{|s\rangle\}_s\)</span> can be any basis, in particular the Fock (<span class="math notranslate nohighlight">\(z\)</span>-) basis used in QuSpin.</p>
-<p>The above expression suggests that one can use sampling methods, such as Monte Carlo, to estimate the expectation value of <span class="math notranslate nohighlight">\(\langle\psi|H|\psi\rangle\)</span> using the quantity <span class="math notranslate nohighlight">\(E_s\)</span> (sometimes referred to as the local energy) evaluated in samples drawn from the probability distribution <span class="math notranslate nohighlight">\(p_s=|\psi_s|^2\)</span>. If we have: (i) a function <span class="math notranslate nohighlight">\(s\mapsto\psi_s\)</span> which compues the amplitudes for every spin configuration <span class="math notranslate nohighlight">\(s\)</span>, and (ii) the matrix elements <span class="math notranslate nohighlight">\(H_{ss'}\)</span>, then</p>
+<p>The above expression suggests that one can use sampling methods, such as Monte Carlo, to estimate the expectation value of <span class="math notranslate nohighlight">\(\langle\psi|H|\psi\rangle\)</span> using the quantity <span class="math notranslate nohighlight">\(E_s\)</span> (sometimes referred to as the local energy) evaluated in samples drawn from the probability distribution <span class="math notranslate nohighlight">\(p_s=|\psi_s|^2\)</span>. If we have: (i) a function <span class="math notranslate nohighlight">\(s\mapsto\psi_s\)</span> which computes the amplitudes for every spin configuration <span class="math notranslate nohighlight">\(s\)</span>, and (ii) the matrix elements <span class="math notranslate nohighlight">\(H_{ss'}\)</span>, then</p>
 <div class="math notranslate nohighlight">
 \[\langle\psi|H|\psi\rangle \approx \frac{1}{N_\mathrm{MC}}\sum_{s\in\mathcal{S}} E_s,\]</div>
 <p>where <span class="math notranslate nohighlight">\(\mathcal{S}\)</span> contains <span class="math notranslate nohighlight">\(N_\mathrm{MC}\)</span> spin configurations sampled from <span class="math notranslate nohighlight">\(p_s=|\psi_s|^2\)</span>.</p>
 <p>Since this procedure does not require the the state <span class="math notranslate nohighlight">\(|\psi\rangle\)</span> to be normalized, ideas along these lines allow to look for variational approximations to the wavefunction <span class="math notranslate nohighlight">\(\psi_s\)</span> in large system sizes, for instance with the help of restricted Boltzmann machines [<a class="reference external" href="https://arxiv.org/abs/1606.02318">arXiv:1606.02318</a>].</p>
-<p>The code below performs Monte-Carlo (MC) sampling in the symmetry-reduced Hilbert space. New states are proposed by swapping the spin values on random lattice sites; this update can take a representative state outsite the symmetry-reduced basis, and we apply the <cite>basis.representative()</cite> function to project it back. To satisfy Detailed Balance in the MC acceptance/rejection condition, we use the function <cite>basis.get_amp()</cite> to compute the probability ratio in the full (symmetry-free) basis without actually constructing it.</p>
-<p>In the example below, we assume that we already have a quantum state <span class="math notranslate nohighlight">\(\psi_s\)</span> in the Fock basis, and we sample the expectation value of an operator <cite>H</cite> using the <cite>*_basis_general</cite> methods <cite>Op_bra_ket()</cite>, <cite>representative()</cite>, and <cite>get_amp()</cite> [cf. code lines 120, 139, 167 below]. These methods do not require to compute the full basis, and thus allow to develop techniques for reaching system sizes beyond exact diagonalization.</p>
+<p>The code below performs Monte-Carlo (MC) sampling in the symmetry-reduced Hilbert space. New states are proposed by swapping the spin values on random lattice sites; this update can take a representative state outside the symmetry-reduced basis, and we apply the <cite>basis.representative()</cite> function to project it back. To satisfy Detailed Balance in the MC acceptance/rejection condition, we use the function <cite>basis.get_amp()</cite> to compute the probability ratio in the full (symmetry-free) basis without actually constructing it.</p>
+<p>In the example below, we assume that we already have a quantum state <span class="math notranslate nohighlight">\(\psi_s\)</span> in the Fock basis, and we sample the expectation value of an operator <cite>H</cite> using the <cite>*_basis_general</cite> methods <cite>Op_bra_ket()</cite>, <cite>representative()</cite>, and <cite>get_amp()</cite>. These methods do not require to compute the full basis, and thus allow to develop techniques for reaching system sizes beyond exact diagonalization (cf. the <cite>basis</cite> optional argument <cite>make_basis</cite>, as well as <cite>block_order</cite> which can deliver extra speed).</p>
 </div>
 <div class="section" id="script">
 <h1>Script<a class="headerlink" href="#script" title="Permalink to this headline">¶</a></h1>
-<p><a class="reference download internal" download="" href="../downloads/2e2fafe991a67f684ee29954808dde28/example11.py"><code class="xref download docutils literal notranslate"><span class="pre">download</span> <span class="pre">script</span></code></a></p>
-<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>  1
-  2
-  3
-  4
-  5
-  6
-  7
-  8
-  9
- 10
- 11
- 12
- 13
- 14
- 15
- 16
- 17
- 18
- 19
- 20
- 21
- 22
- 23
- 24
- 25
- 26
- 27
- 28
- 29
- 30
- 31
- 32
- 33
- 34
- 35
- 36
- 37
- 38
- 39
- 40
- 41
- 42
- 43
- 44
- 45
- 46
- 47
- 48
- 49
- 50
- 51
- 52
- 53
- 54
- 55
- 56
- 57
- 58
- 59
- 60
- 61
- 62
- 63
- 64
- 65
- 66
- 67
- 68
- 69
- 70
- 71
- 72
- 73
- 74
- 75
- 76
- 77
- 78
- 79
- 80
- 81
- 82
- 83
- 84
- 85
- 86
- 87
- 88
- 89
- 90
- 91
- 92
- 93
- 94
- 95
- 96
- 97
- 98
- 99
-100
-101
-102
-103
-104
-105
-106
-107
-108
-109
-110
-111
-112
-113
-114
-115
-116
-117
-118
-119
-120
-121
-122
-123
-124
-125
-126
-127
-128
-129
-130
-131
-132
-133
-134
-135
-136
-137
-138
-139
-140
-141
-142
-143
-144
-145
-146
-147
-148
-149
-150
-151
-152
-153
-154
-155
-156
-157
-158
-159
-160
-161
-162
-163
-164
-165
-166
-167
-168
-169
-170
-171
-172
-173
-174
-175
-176
-177
-178
-179
-180
-181
-182
-183
-184
-185
-186
-187
-188
-189
-190
-191
-192
-193
-194
-195
-196
-197
-198
-199
-200
-201
-202
-203
-204
-205
-206
-207
-208
-209
-210
-211
-212
-213
-214
-215
-216
-217
-218
-219
-220
-221
-222
-223
-224
-225
-226
-227
-228
-229
-230
-231
-232
-233</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span><span class="p">,</span> <span class="n">division</span>
+<p><a class="reference download internal" download="" href="../downloads/fb758a48aa50b0ba15ddc07c526fc7fc/example11.py"><code class="xref download docutils literal notranslate"><span class="pre">download</span> <span class="pre">script</span></code></a></p>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">  1</span>
+<span class="normal">  2</span>
+<span class="normal">  3</span>
+<span class="normal">  4</span>
+<span class="normal">  5</span>
+<span class="normal">  6</span>
+<span class="normal">  7</span>
+<span class="normal">  8</span>
+<span class="normal">  9</span>
+<span class="normal"> 10</span>
+<span class="normal"> 11</span>
+<span class="normal"> 12</span>
+<span class="normal"> 13</span>
+<span class="normal"> 14</span>
+<span class="normal"> 15</span>
+<span class="normal"> 16</span>
+<span class="normal"> 17</span>
+<span class="normal"> 18</span>
+<span class="normal"> 19</span>
+<span class="normal"> 20</span>
+<span class="normal"> 21</span>
+<span class="normal"> 22</span>
+<span class="normal"> 23</span>
+<span class="normal"> 24</span>
+<span class="normal"> 25</span>
+<span class="normal"> 26</span>
+<span class="normal"> 27</span>
+<span class="normal"> 28</span>
+<span class="normal"> 29</span>
+<span class="normal"> 30</span>
+<span class="normal"> 31</span>
+<span class="normal"> 32</span>
+<span class="normal"> 33</span>
+<span class="normal"> 34</span>
+<span class="normal"> 35</span>
+<span class="normal"> 36</span>
+<span class="normal"> 37</span>
+<span class="normal"> 38</span>
+<span class="normal"> 39</span>
+<span class="normal"> 40</span>
+<span class="normal"> 41</span>
+<span class="normal"> 42</span>
+<span class="normal"> 43</span>
+<span class="normal"> 44</span>
+<span class="normal"> 45</span>
+<span class="normal"> 46</span>
+<span class="normal"> 47</span>
+<span class="normal"> 48</span>
+<span class="normal"> 49</span>
+<span class="normal"> 50</span>
+<span class="normal"> 51</span>
+<span class="normal"> 52</span>
+<span class="normal"> 53</span>
+<span class="normal"> 54</span>
+<span class="normal"> 55</span>
+<span class="normal"> 56</span>
+<span class="normal"> 57</span>
+<span class="normal"> 58</span>
+<span class="normal"> 59</span>
+<span class="normal"> 60</span>
+<span class="normal"> 61</span>
+<span class="normal"> 62</span>
+<span class="normal"> 63</span>
+<span class="normal"> 64</span>
+<span class="normal"> 65</span>
+<span class="normal"> 66</span>
+<span class="normal"> 67</span>
+<span class="normal"> 68</span>
+<span class="normal"> 69</span>
+<span class="normal"> 70</span>
+<span class="normal"> 71</span>
+<span class="normal"> 72</span>
+<span class="normal"> 73</span>
+<span class="normal"> 74</span>
+<span class="normal"> 75</span>
+<span class="normal"> 76</span>
+<span class="normal"> 77</span>
+<span class="normal"> 78</span>
+<span class="normal"> 79</span>
+<span class="normal"> 80</span>
+<span class="normal"> 81</span>
+<span class="normal"> 82</span>
+<span class="normal"> 83</span>
+<span class="normal"> 84</span>
+<span class="normal"> 85</span>
+<span class="normal"> 86</span>
+<span class="normal"> 87</span>
+<span class="normal"> 88</span>
+<span class="normal"> 89</span>
+<span class="normal"> 90</span>
+<span class="normal"> 91</span>
+<span class="normal"> 92</span>
+<span class="normal"> 93</span>
+<span class="normal"> 94</span>
+<span class="normal"> 95</span>
+<span class="normal"> 96</span>
+<span class="normal"> 97</span>
+<span class="normal"> 98</span>
+<span class="normal"> 99</span>
+<span class="normal">100</span>
+<span class="normal">101</span>
+<span class="normal">102</span>
+<span class="normal">103</span>
+<span class="normal">104</span>
+<span class="normal">105</span>
+<span class="normal">106</span>
+<span class="normal">107</span>
+<span class="normal">108</span>
+<span class="normal">109</span>
+<span class="normal">110</span>
+<span class="normal">111</span>
+<span class="normal">112</span>
+<span class="normal">113</span>
+<span class="normal">114</span>
+<span class="normal">115</span>
+<span class="normal">116</span>
+<span class="normal">117</span>
+<span class="normal">118</span>
+<span class="normal">119</span>
+<span class="normal">120</span>
+<span class="normal">121</span>
+<span class="normal">122</span>
+<span class="normal">123</span>
+<span class="normal">124</span>
+<span class="normal">125</span>
+<span class="normal">126</span>
+<span class="normal">127</span>
+<span class="normal">128</span>
+<span class="normal">129</span>
+<span class="normal">130</span>
+<span class="normal">131</span>
+<span class="normal">132</span>
+<span class="normal">133</span>
+<span class="normal">134</span>
+<span class="normal">135</span>
+<span class="normal">136</span>
+<span class="normal">137</span>
+<span class="normal">138</span>
+<span class="normal">139</span>
+<span class="normal">140</span>
+<span class="normal">141</span>
+<span class="normal">142</span>
+<span class="normal">143</span>
+<span class="normal">144</span>
+<span class="normal">145</span>
+<span class="normal">146</span>
+<span class="normal">147</span>
+<span class="normal">148</span>
+<span class="normal">149</span>
+<span class="normal">150</span>
+<span class="normal">151</span>
+<span class="normal">152</span>
+<span class="normal">153</span>
+<span class="normal">154</span>
+<span class="normal">155</span>
+<span class="normal">156</span>
+<span class="normal">157</span>
+<span class="normal">158</span>
+<span class="normal">159</span>
+<span class="normal">160</span>
+<span class="normal">161</span>
+<span class="normal">162</span>
+<span class="normal">163</span>
+<span class="normal">164</span>
+<span class="normal">165</span>
+<span class="normal">166</span>
+<span class="normal">167</span>
+<span class="normal">168</span>
+<span class="normal">169</span>
+<span class="normal">170</span>
+<span class="normal">171</span>
+<span class="normal">172</span>
+<span class="normal">173</span>
+<span class="normal">174</span>
+<span class="normal">175</span>
+<span class="normal">176</span>
+<span class="normal">177</span>
+<span class="normal">178</span>
+<span class="normal">179</span>
+<span class="normal">180</span>
+<span class="normal">181</span>
+<span class="normal">182</span>
+<span class="normal">183</span>
+<span class="normal">184</span>
+<span class="normal">185</span>
+<span class="normal">186</span>
+<span class="normal">187</span>
+<span class="normal">188</span>
+<span class="normal">189</span>
+<span class="normal">190</span>
+<span class="normal">191</span>
+<span class="normal">192</span>
+<span class="normal">193</span>
+<span class="normal">194</span>
+<span class="normal">195</span>
+<span class="normal">196</span>
+<span class="normal">197</span>
+<span class="normal">198</span>
+<span class="normal">199</span>
+<span class="normal">200</span>
+<span class="normal">201</span>
+<span class="normal">202</span>
+<span class="normal">203</span>
+<span class="normal">204</span>
+<span class="normal">205</span>
+<span class="normal">206</span>
+<span class="normal">207</span>
+<span class="normal">208</span>
+<span class="normal">209</span>
+<span class="normal">210</span>
+<span class="normal">211</span>
+<span class="normal">212</span>
+<span class="normal">213</span>
+<span class="normal">214</span>
+<span class="normal">215</span>
+<span class="normal">216</span>
+<span class="normal">217</span>
+<span class="normal">218</span>
+<span class="normal">219</span>
+<span class="normal">220</span>
+<span class="normal">221</span>
+<span class="normal">222</span>
+<span class="normal">223</span>
+<span class="normal">224</span>
+<span class="normal">225</span>
+<span class="normal">226</span>
+<span class="normal">227</span>
+<span class="normal">228</span>
+<span class="normal">229</span>
+<span class="normal">230</span>
+<span class="normal">231</span>
+<span class="normal">232</span>
+<span class="normal">233</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span><span class="p">,</span> <span class="n">division</span>
 <span class="kn">import</span> <span class="nn">sys</span><span class="o">,</span><span class="nn">os</span>
 <span class="c1"># line 4 and line 5 below are for development purposes and can be removed</span>
 <span class="n">qspin_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">(),</span><span class="s2">&quot;../../&quot;</span><span class="p">)</span>
@@ -320,7 +320,7 @@
 <span class="kn">from</span> <span class="nn">quspin.operators</span> <span class="kn">import</span> <span class="n">hamiltonian</span>
 <span class="kn">from</span> <span class="nn">quspin.basis</span> <span class="kn">import</span> <span class="n">spin_basis_general</span>
 <span class="kn">from</span> <span class="nn">quspin.operators._make_hamiltonian</span> <span class="kn">import</span> <span class="n">_consolidate_static</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">scipy.special</span> <span class="kn">import</span> <span class="n">comb</span>
 <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="c1">#fixes seed of rng</span>
 <span class="kn">from</span> <span class="nn">time</span> <span class="kn">import</span> <span class="n">time</span> <span class="c1"># timing package</span>
@@ -359,20 +359,20 @@
 <span class="n">static_formatted</span> <span class="o">=</span> <span class="n">_consolidate_static</span><span class="p">(</span><span class="n">static</span><span class="p">)</span>
 <span class="c1">#</span>
 <span class="c1">###### setting up basis object without computing the basis (make=False) ######</span>
-<span class="n">basis</span> <span class="o">=</span> <span class="n">spin_basis_general</span><span class="p">(</span><span class="n">N_2d</span><span class="p">,</span> <span class="n">pauli</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">make_basis</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> 
+<span class="n">basis</span> <span class="o">=</span> <span class="n">spin_basis_general</span><span class="p">(</span><span class="n">N_2d</span><span class="p">,</span> <span class="n">pauli</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">make_basis</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> 
 			<span class="n">Nup</span><span class="o">=</span><span class="n">N_2d</span><span class="o">//</span><span class="mi">2</span><span class="p">,</span> 
 			<span class="n">kxblock</span><span class="o">=</span><span class="p">(</span><span class="n">T_x</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="n">kyblock</span><span class="o">=</span><span class="p">(</span><span class="n">T_y</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span>
 			<span class="n">pxblock</span><span class="o">=</span><span class="p">(</span><span class="n">P_x</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="n">pyblock</span><span class="o">=</span><span class="p">(</span><span class="n">P_y</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="n">pdblock</span><span class="o">=</span><span class="p">(</span><span class="n">P_d</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span>
 			<span class="n">zblock</span><span class="o">=</span><span class="p">(</span><span class="n">Z</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span>
 			<span class="n">block_order</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;zblock&#39;</span><span class="p">,</span><span class="s1">&#39;pdblock&#39;</span><span class="p">,</span><span class="s1">&#39;pyblock&#39;</span><span class="p">,</span><span class="s1">&#39;pxblock&#39;</span><span class="p">,</span><span class="s1">&#39;kyblock&#39;</span><span class="p">,</span><span class="s1">&#39;kxblock&#39;</span><span class="p">]</span> <span class="c1"># momentum symmetry comes last for speed</span>
 		<span class="p">)</span>
-<span class="k">print</span><span class="p">(</span><span class="n">basis</span><span class="p">)</span> <span class="c1"># examine basis: contains a single element because it is not calculated due to make_basis=False argument above.</span>
-<span class="k">print</span><span class="p">(</span><span class="s1">&#39;basis is empty [note argument make_basis=False]&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">basis</span><span class="p">)</span> <span class="c1"># examine basis: contains a single element because it is not calculated due to make_basis=False argument above.</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;basis is empty [note argument make_basis=False]&#39;</span><span class="p">)</span>
 <span class="c1">#</span>
 <span class="c1">###### define quantum state to compute the energy of using Monte-Carlo sampling ######</span>
 <span class="c1">#</span>
 <span class="c1"># auxiliary basis, only needed for probability_amplitude(); not needed in a proper variational ansatz.</span>
-<span class="n">aux_basis</span> <span class="o">=</span> <span class="n">spin_basis_general</span><span class="p">(</span><span class="n">N_2d</span><span class="p">,</span> <span class="n">pauli</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">make_basis</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> 
+<span class="n">aux_basis</span> <span class="o">=</span> <span class="n">spin_basis_general</span><span class="p">(</span><span class="n">N_2d</span><span class="p">,</span> <span class="n">pauli</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">make_basis</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> 
 			<span class="n">Nup</span><span class="o">=</span><span class="n">N_2d</span><span class="o">//</span><span class="mi">2</span><span class="p">,</span> 
 			<span class="n">kxblock</span><span class="o">=</span><span class="p">(</span><span class="n">T_x</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="n">kyblock</span><span class="o">=</span><span class="p">(</span><span class="n">T_y</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span>
 			<span class="n">pxblock</span><span class="o">=</span><span class="p">(</span><span class="n">P_x</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="n">pyblock</span><span class="o">=</span><span class="p">(</span><span class="n">P_y</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="n">pdblock</span><span class="o">=</span><span class="p">(</span><span class="n">P_d</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span>
@@ -441,7 +441,7 @@
 	<span class="c1"># These can be computed by looping overthe static list without constructing the operator matrix. </span>
 	<span class="k">for</span> <span class="n">opstr</span><span class="p">,</span><span class="n">indx</span><span class="p">,</span><span class="n">J</span> <span class="ow">in</span> <span class="n">static_formatted</span><span class="p">:</span>
 		<span class="c1"># for every state `s`, compute the state it connects to `s&#39;`, and the corresponding matrix element `ME`</span>
-		<span class="n">ME</span><span class="p">,</span><span class="n">bras</span><span class="p">,</span><span class="n">kets</span> <span class="o">=</span> <span class="n">basis</span><span class="o">.</span><span class="n">Op_bra_ket</span><span class="p">(</span><span class="n">opstr</span><span class="p">,</span><span class="n">indx</span><span class="p">,</span><span class="n">J</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">,</span><span class="n">s</span><span class="p">,</span><span class="n">reduce_output</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+		<span class="n">ME</span><span class="p">,</span><span class="n">bras</span><span class="p">,</span><span class="n">kets</span> <span class="o">=</span> <span class="n">basis</span><span class="o">.</span><span class="n">Op_bra_ket</span><span class="p">(</span><span class="n">opstr</span><span class="p">,</span><span class="n">indx</span><span class="p">,</span><span class="n">J</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">,</span><span class="n">s</span><span class="p">,</span><span class="n">reduce_output</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 		<span class="c1"># performs sum over `s&#39;`</span>
 		<span class="n">E_s</span><span class="o">+=</span><span class="n">ME</span> <span class="o">*</span> <span class="n">probability_amplitude</span><span class="p">(</span><span class="n">bras</span><span class="p">,</span><span class="n">psi</span><span class="p">)</span>
 	<span class="c1"># normalize by `psi_s`</span>
@@ -455,13 +455,13 @@
 <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">shuffle</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
 <span class="n">s</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
 <span class="n">s</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="nb">str</span><span class="p">(</span><span class="n">j</span><span class="p">)</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">s</span><span class="p">])</span>
-<span class="k">print</span><span class="p">(</span><span class="s1">&#39;random initial state in bit representation:&#39;</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;random initial state in bit representation:&#39;</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span>
 <span class="c1"># transform state in bit representation</span>
 <span class="n">s</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>
-<span class="k">print</span><span class="p">(</span><span class="s1">&#39;same random initial state in integer representation:&#39;</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;same random initial state in integer representation:&#39;</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span>
 <span class="c1"># compute representative of state `s` under basis symmetries (here only Z-symmetry)</span>
 <span class="n">s</span><span class="o">=</span><span class="n">basis</span><span class="o">.</span><span class="n">representative</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
-<span class="k">print</span><span class="p">(</span><span class="s1">&#39;representative of random initial state in integer representation:&#39;</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;representative of random initial state in integer representation:&#39;</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span>
 <span class="c1"># compute amplitude in state s</span>
 <span class="n">psi_s</span><span class="o">=</span><span class="n">probability_amplitude</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">psi</span><span class="p">)</span>
 <span class="c1">#</span>
@@ -515,7 +515,7 @@
 	<span class="c1"># wait for MC chain to quilibrate and collect uncorrelated samples</span>
 	<span class="k">if</span> <span class="p">(</span><span class="n">j</span><span class="o">&gt;</span><span class="n">equilibration_time</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">j</span><span class="o">%</span><span class="n">autocorrelation_time</span><span class="o">==</span><span class="mi">0</span><span class="p">):</span>
 		<span class="c1"># compute local energy</span>
-		<span class="k">print</span><span class="p">(</span><span class="s1">&#39;computing local energy E_s for MC sample {0:d}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">k</span><span class="p">))</span>
+		<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;computing local energy E_s for MC sample </span><span class="si">{0:d}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">k</span><span class="p">))</span>
 		<span class="n">E_s</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">compute_local_energy</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">psi_s</span><span class="p">,</span><span class="n">psi</span><span class="p">)</span>
 		<span class="c1"># update sample</span>
 		<span class="n">MC_sample</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">=</span><span class="n">s</span>
@@ -534,15 +534,16 @@
 <span class="c1">#####   compute full basis   #####</span>
 <span class="c1"># so far the functions representative(), get_amp(), and Op_bra_ket() did not require to compute the full basis</span>
 <span class="n">basis</span><span class="o">.</span><span class="n">make</span><span class="p">(</span><span class="n">Ns_block_est</span><span class="o">=</span><span class="mi">16000</span><span class="p">)</span>
-<span class="k">print</span><span class="p">(</span><span class="n">basis</span><span class="p">)</span> <span class="c1"># after the basis is made, printing the basis returns the states</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">basis</span><span class="p">)</span> <span class="c1"># after the basis is made, printing the basis returns the states</span>
 <span class="c1"># compare results</span>
-<span class="k">print</span><span class="p">(</span><span class="s1">&#39;mean energy: {0:.4f}, MC variance: {1:.4f}, exact energy {2:.4f}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">E_mean</span><span class="p">,</span> <span class="n">E_var_MC</span><span class="p">,</span> <span class="n">E_exact</span><span class="p">)</span> <span class="p">)</span>
-<span class="k">print</span><span class="p">(</span><span class="s2">&quot;simulation took {0:.4f} sec&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">time</span><span class="p">()</span><span class="o">-</span><span class="n">ti</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;mean energy: </span><span class="si">{0:.4f}</span><span class="s1">, MC variance: </span><span class="si">{1:.4f}</span><span class="s1">, exact energy </span><span class="si">{2:.4f}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">E_mean</span><span class="p">,</span> <span class="n">E_var_MC</span><span class="p">,</span> <span class="n">E_exact</span><span class="p">)</span> <span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;simulation took </span><span class="si">{0:.4f}</span><span class="s2"> sec&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">time</span><span class="p">()</span><span class="o">-</span><span class="n">ti</span><span class="p">))</span>
 </pre></div>
 </td></tr></table></div>
 </div>
 
 
+            <div class="clearer"></div>
           </div>
         </div>
       </div>
@@ -563,17 +564,15 @@
     </ul>
    </div>
 <div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
+  <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" />
+      <input type="text" name="q" aria-labelledby="searchlabel" />
       <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
     </form>
     </div>
 </div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
+<script>$('#searchbox').show(0);</script>
         </div>
       </div>
       <div class="clearer"></div>
@@ -587,12 +586,13 @@
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.3 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.6 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Monte Carlo Sampling Expectation Values of Obsevables</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &#169; Copyright 2016, Phillip Weinberg and Marin Bukov.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.4.
+        &#169; Copyright 2016, Phillip Weinberg, Markus Schmitt and Marin Bukov.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.5.4.
     </div>
   </body>
 </html>

@@ -1,11 +1,10 @@
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><script type="text/javascript">
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><script type="text/javascript">
 
       var _gaq = _gaq || [];
       _gaq.push(['_setAccount', 'UA-110543543-1']);
@@ -17,16 +16,14 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-    <title>quspin.operators.exp_op_core &#8212; QuSpin 0.3.3 documentation</title>
-    <link rel="stylesheet" href="../../../static/classic.css" type="text/css" />
+    <title>quspin.operators.exp_op_core &#8212; QuSpin 0.3.6 documentation</title>
     <link rel="stylesheet" href="../../../static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../../static/classic.css" type="text/css" />
     
-    <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../static/documentation_options.js"></script>
-    <script type="text/javascript" src="../../../static/jquery.js"></script>
-    <script type="text/javascript" src="../../../static/underscore.js"></script>
-    <script type="text/javascript" src="../../../static/doctools.js"></script>
-    <script type="text/javascript" src="../../../static/language_data.js"></script>
-    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script id="documentation_options" data-url_root="../../../" src="../../../static/documentation_options.js"></script>
+    <script src="../../../static/jquery.js"></script>
+    <script src="../../../static/underscore.js"></script>
+    <script src="../../../static/doctools.js"></script>
     
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" /> 
@@ -40,8 +37,9 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">QuSpin 0.3.3 documentation</a> &#187;</li>
-          <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="../../../index.html">QuSpin 0.3.6 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">quspin.operators.exp_op_core</a></li> 
       </ul>
     </div>  
 
@@ -51,9 +49,9 @@
           <div class="body" role="main">
             
   <h1>Source code for quspin.operators.exp_op_core</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">print_function</span><span class="p">,</span> <span class="n">division</span><span class="p">,</span> <span class="n">absolute_import</span>
+<span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span><span class="p">,</span> <span class="n">division</span><span class="p">,</span> <span class="n">absolute_import</span>
 
-<span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">hamiltonian_core</span><span class="p">,</span><span class="n">quantum_operator_core</span> 
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">hamiltonian_core</span><span class="p">,</span><span class="n">quantum_operator_core</span> 
 
 <span class="c1"># need linear algebra packages</span>
 <span class="kn">import</span> <span class="nn">scipy</span>
@@ -61,12 +59,12 @@
 <span class="kn">import</span> <span class="nn">scipy.sparse</span> <span class="k">as</span> <span class="nn">_sp</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">_np</span>
 
-<span class="kn">from</span> <span class="nn">scipy.sparse.linalg</span> <span class="k">import</span> <span class="n">expm_multiply</span> <span class="k">as</span> <span class="n">_expm_multiply</span>
+<span class="kn">from</span> <span class="nn">scipy.sparse.linalg</span> <span class="kn">import</span> <span class="n">expm_multiply</span> <span class="k">as</span> <span class="n">_expm_multiply</span>
 
-<span class="kn">from</span> <span class="nn">copy</span> <span class="k">import</span> <span class="n">deepcopy</span> <span class="k">as</span> <span class="n">_deepcopy</span> <span class="c1"># recursively copies all data into new object</span>
-<span class="kn">from</span> <span class="nn">copy</span> <span class="k">import</span> <span class="n">copy</span> <span class="k">as</span> <span class="n">_shallowcopy</span>
+<span class="kn">from</span> <span class="nn">copy</span> <span class="kn">import</span> <span class="n">deepcopy</span> <span class="k">as</span> <span class="n">_deepcopy</span> <span class="c1"># recursively copies all data into new object</span>
+<span class="kn">from</span> <span class="nn">copy</span> <span class="kn">import</span> <span class="n">copy</span> <span class="k">as</span> <span class="n">_shallowcopy</span>
 
-<span class="kn">from</span> <span class="nn">six</span> <span class="k">import</span> <span class="n">iteritems</span>
+<span class="kn">from</span> <span class="nn">six</span> <span class="kn">import</span> <span class="n">iteritems</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;exp_op&quot;</span><span class="p">,</span><span class="s2">&quot;isexp_op&quot;</span><span class="p">]</span>
 
@@ -100,7 +98,7 @@
 <span class="sd">		:lines: 7-</span>
 
 <span class="sd">	&quot;&quot;&quot;</span>
-<div class="viewcode-block" id="exp_op.__init__"><a class="viewcode-back" href="../../../generated/quspin.operators.exp_op.html#quspin.operators.exp_op.__init__">[docs]</a>	<span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">O</span><span class="p">,</span><span class="n">a</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span><span class="n">start</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">stop</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">num</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">endpoint</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">iterate</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="exp_op.__init__"><a class="viewcode-back" href="../../../generated/quspin.operators.exp_op.html#quspin.operators.exp_op.__init__">[docs]</a>	<span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">O</span><span class="p">,</span><span class="n">a</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span><span class="n">start</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">stop</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">num</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">endpoint</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">iterate</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 		<span class="sd">&quot;&quot;&quot;Initialises the `exp_op` object (matrix exponential of the operator `O`).</span>
 
 <span class="sd">		Parameters</span>
@@ -228,7 +226,7 @@
 
 	<span class="nd">@property</span>
 	<span class="k">def</span> <span class="nf">a</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-		<span class="sd">&quot;&quot;&quot;`numpy.dtype`: constant (c-number) multiplying the operator to be exponentiated: `exp(a*O)`.&quot;&quot;&quot;</span>
+		<span class="sd">&quot;&quot;&quot;`numpy.dtype`: constant (c-number) multiplying the operator to be exponentiated, `exp(a*O)`.&quot;&quot;&quot;</span>
 		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_a</span>
 
 	<span class="nd">@property</span>
@@ -293,7 +291,7 @@
 <span class="sd">		Returns</span>
 <span class="sd">		--------</span>
 <span class="sd">		:obj:`exo_op`</span>
-<span class="sd">			:math:`\\exp(a\\mathcal{O})_{ij}\\mapsto \\exp(a\\mathcal{O})_{ij}^*`</span>
+<span class="sd">			:math:`\\left[\\exp(a\\mathcal{O})_{ij}\\right]\\mapsto \\left[\\exp(a\\mathcal{O})_{ij}\\right]^*`</span>
 
 <span class="sd">		Examples</span>
 <span class="sd">		---------</span>
@@ -474,7 +472,7 @@
 
 <span class="sd">		&quot;&quot;&quot;</span>
 		<span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">O</span><span class="o">.</span><span class="n">is_dense</span> <span class="ow">or</span> <span class="n">dense</span><span class="p">:</span>
-			<span class="k">return</span> <span class="n">_la</span><span class="o">.</span><span class="n">expm</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_a</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">O</span><span class="o">.</span><span class="n">todense</span><span class="p">(</span><span class="o">**</span><span class="n">call_kwargs</span><span class="p">))</span>
+			<span class="k">return</span> <span class="n">_la</span><span class="o">.</span><span class="n">expm</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_a</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">O</span><span class="o">.</span><span class="n">toarray</span><span class="p">(</span><span class="o">**</span><span class="n">call_kwargs</span><span class="p">))</span>
 		<span class="k">else</span><span class="p">:</span>
 			<span class="k">return</span> <span class="n">_la</span><span class="o">.</span><span class="n">expm</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_a</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">O</span><span class="o">.</span><span class="n">tocsc</span><span class="p">(</span><span class="o">**</span><span class="n">call_kwargs</span><span class="p">))</span></div>
 
@@ -874,23 +872,22 @@
 	
 </pre></div>
 
+            <div class="clearer"></div>
           </div>
         </div>
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
 <div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
+  <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../../../search.html" method="get">
-      <input type="text" name="q" />
+      <input type="text" name="q" aria-labelledby="searchlabel" />
       <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
     </form>
     </div>
 </div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
+<script>$('#searchbox').show(0);</script>
         </div>
       </div>
       <div class="clearer"></div>
@@ -904,13 +901,14 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">QuSpin 0.3.3 documentation</a> &#187;</li>
-          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="../../../index.html">QuSpin 0.3.6 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">quspin.operators.exp_op_core</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &#169; Copyright 2016, Phillip Weinberg and Marin Bukov.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.4.
+        &#169; Copyright 2016, Phillip Weinberg, Markus Schmitt and Marin Bukov.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.5.4.
     </div>
   </body>
 </html>

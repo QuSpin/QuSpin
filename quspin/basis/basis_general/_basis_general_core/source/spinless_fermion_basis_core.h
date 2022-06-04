@@ -5,9 +5,11 @@
 #include "hcb_basis_core.h"
 #include "numpy/ndarraytypes.h"
 #include "openmp.h"
+#include "misc.h"
 
 namespace basis_general {
 
+/*
 template<class I>
 void mergeSort(I nums[],I work[],const I left,const I mid,const I right, bool  &f_count){
     I leftLength = mid - left + 1;
@@ -33,7 +35,7 @@ void mergeSort(I nums[],I work[],const I left,const I mid,const I right, bool  &
       }
       k++;
     }
-    //remaining iversions
+    //remaining isertions
     if((j&1) && ((leftLength-i)&1)){f_count ^= 1;}
     if (i >= leftLength) {
       //copy remaining elements from right
@@ -58,7 +60,7 @@ void getf_count(I nums[],I work[], I left, I right, bool &f_count){
       mergeSort(nums, work, left, mid, right, f_count);
     }
   }
-
+*/
 
 
 
@@ -68,25 +70,25 @@ I inline spinless_fermion_map_bits(I s,const int map[],const int N,P &sign){
 	I ss = 0;
 	int np = 0;
 	int pos_list[bit_info<I>::bits];
-	int work[bit_info<I>::bits];
-	bool f_count = 0;
+	
 
 	for(int i=N-1;i>=0;--i){
-		int j = map[i];
-		I n = (s&1);
-		bool neg = j<0;
+		const int j = map[i];
+		const I n = (s&1);
+		const bool neg = j<0;
 
 		if(n){
 			pos_list[np++] = ( neg ? -(j+1) : j);
-			f_count ^= (neg&&(i&1));
+			// f_count ^= (neg&&(i&1)); do not change sign based on PH transformation
 		}
 		ss ^= ( neg ? (n^1)<<(N+j) : n<<(N-j-1) );
 
 		s >>= 1;
 	}
 
-	getf_count(pos_list,work,0,np-1,f_count);
-	if(f_count){sign *= -1;}
+	// getf_count(pos_list,work,0,np-1,f_count);
+	int Nswap = countSwaps<I>(pos_list,np);
+	if(Nswap&1){sign *= -1;}
 
 	return ss;
 }
@@ -109,12 +111,12 @@ class spinless_fermion_basis_core : public hcb_basis_core<I,P>
 {
 
 	public:
-		spinless_fermion_basis_core(const int _N) : \
-		hcb_basis_core<I>::hcb_basis_core(_N,true) { }
+		spinless_fermion_basis_core(const int _N,const bool _pre_check=false) : \
+		hcb_basis_core<I>::hcb_basis_core(_N,true,_pre_check) { }
 
 		spinless_fermion_basis_core(const int _N,const int _nt,const int _maps[], \
-						   const int _pers[], const int _qs[]) : \
-		hcb_basis_core<I>::hcb_basis_core(_N,_nt,_maps,_pers,_qs,true) {}
+						   const int _pers[], const int _qs[],const bool _pre_check=false) : \
+		hcb_basis_core<I>::hcb_basis_core(_N,_nt,_maps,_pers,_qs,true,_pre_check) {}
 
 		~spinless_fermion_basis_core(){}
 
@@ -180,6 +182,14 @@ class spinless_fermion_basis_core : public hcb_basis_core<I,P>
 					case 'z':
 						m *= (a?0.5:-0.5);
 						break;
+					case 'x':
+						m *= sign;
+						r ^= b;
+						break;
+					case 'y': // corresponds to -\sigma^y
+						m *= (a?std::complex<double>(0,-1.0*sign):std::complex<double>(0,+1.0*sign));
+						r ^= b;
+						break;
 					case 'n':
 						m *= (a?1:0);
 						break;
@@ -197,7 +207,7 @@ class spinless_fermion_basis_core : public hcb_basis_core<I,P>
 						return -1;
 				}
 
-				if(std::abs(m)==0){
+				if(m.real()==0 && m.imag()==0){
 					r = s;
 					break;
 				}

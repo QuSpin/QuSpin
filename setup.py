@@ -32,22 +32,30 @@ def setup_package():
 			else:
 				os.environ["CFLAGS"]="-fopenmp"
 
+	if "--default-compiler-flags" in sys.argv:
+		sys.argv.remove("--default-compiler-flags")
+		if sys.platform == "win32":
+			pass
+		else:
+			os.environ["CFLAGS"]=os.environ["CFLAGS"]+" -O3 -march=native"
 
-	io = open("meta.yaml","r")
+
+	io = open("./conda.recipe/quspin/meta.yaml","r")
 	meta_file = io.read()
 	io.close()
 
 	meta_file = meta_file.split()
-
-	ind = meta_file.index("version:")
-	version = meta_file[ind+1].replace('"','')
+	ind = meta_file.index("version")
+	version = meta_file[ind+2].replace('"','')
 
 
 	metadata = dict(
 		name='quspin',
 		version=version,
-		maintainer="Phillip Weinberg, Marin Bukov",
-		maintainer_email="weinbe58@bu.edu,mgbukov@berkeley.edu",
+		author="Phillip Weinberg, Marin Bukov",
+		author_email="weinbe58@gmail.com",
+		maintainer="Phillip Weinberg, Marin Bukov, Markus Schmitt",
+		maintainer_email="weinbe58@gmail.com",
 		download_url="https://github.com/weinbe58/QuSpin.git",
 		license='BSD',
 		platforms=["Unix","Windows"]

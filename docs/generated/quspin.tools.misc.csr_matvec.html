@@ -1,11 +1,10 @@
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><script type="text/javascript">
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><script type="text/javascript">
 
       var _gaq = _gaq || [];
       _gaq.push(['_setAccount', 'UA-110543543-1']);
@@ -17,16 +16,15 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-    <title>quspin.tools.misc.csr_matvec &#8212; QuSpin 0.3.3 documentation</title>
-    <link rel="stylesheet" href="../static/classic.css" type="text/css" />
+    <title>quspin.tools.misc.csr_matvec &#8212; QuSpin 0.3.6 documentation</title>
     <link rel="stylesheet" href="../static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../static/classic.css" type="text/css" />
     
-    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../static/documentation_options.js"></script>
-    <script type="text/javascript" src="../static/jquery.js"></script>
-    <script type="text/javascript" src="../static/underscore.js"></script>
-    <script type="text/javascript" src="../static/doctools.js"></script>
-    <script type="text/javascript" src="../static/language_data.js"></script>
-    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script id="documentation_options" data-url_root="../" src="../static/documentation_options.js"></script>
+    <script src="../static/jquery.js"></script>
+    <script src="../static/underscore.js"></script>
+    <script src="../static/doctools.js"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -48,8 +46,9 @@
         <li class="right" >
           <a href="quspin.tools.misc.KL_div.html" title="quspin.tools.misc.KL_div"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.3 documentation</a> &#187;</li>
-          <li class="nav-item nav-item-1"><a href="../tools.html" accesskey="U">Tools module (<code class="docutils literal notranslate"><span class="pre">quspin.tools</span></code>)</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.6 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../tools.html" accesskey="U">Tools module (<code class="xref py py-mod docutils literal notranslate"><span class="pre">quspin.tools</span></code>)</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">quspin.tools.misc.csr_matvec</a></li> 
       </ul>
     </div>  
 
@@ -58,60 +57,20 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="section" id="quspin-tools-misc-csr-matvec">
+  <style> .red {color:#ff0000; font-weight:bold; font-style:italic; } </style>
+<style> .green {color:#00b200; font-weight:bold; font-style:italic; } </style><div class="section" id="quspin-tools-misc-csr-matvec">
 <h1>quspin.tools.misc.csr_matvec<a class="headerlink" href="#quspin-tools-misc-csr-matvec" title="Permalink to this headline">¶</a></h1>
-<dl class="function">
+<dl class="py function">
 <dt id="quspin.tools.misc.csr_matvec">
-<code class="descclassname">quspin.tools.misc.</code><code class="descname">csr_matvec</code><span class="sig-paren">(</span><em>A</em>, <em>v</em>, <em>a=None</em>, <em>out=None</em>, <em>overwrite_out=True</em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/tools/expm_multiply_parallel_core/csr_matvec_core.html#csr_matvec"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#quspin.tools.misc.csr_matvec" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calculates matrix vector products <span class="math notranslate nohighlight">\(x += a A y\)</span> or <span class="math notranslate nohighlight">\(x = a A y\)</span> with csr matrix.</p>
-<p><strong>This function is DEPRICATED</strong> starting from QuSpin 0.3.1.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
-<dt><strong>A</strong> <span class="classifier-delimiter">:</span> <span class="classifier">scipy.spmatrix</span></dt>
-<dd><p class="first last">Sparse matrix to take the dot product.</p>
-</dd>
-<dt><strong>v</strong> <span class="classifier-delimiter">:</span> <span class="classifier">array_like</span></dt>
-<dd><p class="first last">array which contains the vector to take the product with.</p>
-</dd>
-<dt><strong>a</strong> <span class="classifier-delimiter">:</span> <span class="classifier">scalar, optional</span></dt>
-<dd><p class="first last">value to scale the vector with after the product with <cite>A</cite> is taken.</p>
-</dd>
-<dt><strong>out</strong> <span class="classifier-delimiter">:</span> <span class="classifier">array_like</span></dt>
-<dd><p class="first last">output array to put the results of the calculation.</p>
-</dd>
-<dt><strong>overwrite_out</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool, optional</span></dt>
-<dd><p class="first last">If set to <cite>True</cite>, the function overwrites the values in <cite>out</cite> with the result. otherwise the result is
-added to the values in <cite>out</cite>.</p>
-</dd>
-</dl>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
-<dt><strong>numpy.ndarray</strong></dt>
-<dd><p class="first">result of <span class="math notranslate nohighlight">\(a A v\)</span>.</p>
-<p>If <cite>out</cite> is not None and <cite>overwrite_out = True</cite> the dunction returns <cite>out</cite> with the data overwritten, 
-otherwise if <cite>overwrite_out = False</cite> the result is added to <cite>out</cite>.</p>
-<p class="last">If <cite>out</cite> is None the result is stored in a new array which is returned by the function.</p>
-</dd>
-</dl>
-</td>
-</tr>
-</tbody>
-</table>
-<p class="rubric">Notes</p>
-<ul class="simple">
-<li>For QuSpin builds which support OpenMP this function will be multithreaded.</li>
-<li>Using <cite>out=v</cite> will result in incorrect results.</li>
-<li>If format of A is not ‘csr’ the matrix will be converted to <cite>csr</cite> format.</li>
-</ul>
+<code class="sig-prename descclassname"><span class="pre">quspin.tools.misc.</span></code><code class="sig-name descname"><span class="pre">csr_matvec</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">A</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">v</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">a</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite_out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/tools/expm_multiply_parallel_core/csr_matvec_core.html#csr_matvec"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quspin.tools.misc.csr_matvec" title="Permalink to this definition">¶</a></dt>
+<dd><p>DEPRICATED (cf <cite>matvec</cite>). Calculates matrix vector products <span class="math notranslate nohighlight">\(x += a A y\)</span> or <span class="math notranslate nohighlight">\(x = a A y\)</span> with csr matrix.</p>
+<p><span class="red">Note: we recommend the use of “tools.misc.matvec()” instead of this function. This function is now deprecated!</span></p>
 </dd></dl>
 
 </div>
 
 
+            <div class="clearer"></div>
           </div>
         </div>
       </div>
@@ -131,17 +90,15 @@ otherwise if <cite>overwrite_out = False</cite> the result is added to <cite>out
     </ul>
    </div>
 <div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
+  <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" />
+      <input type="text" name="q" aria-labelledby="searchlabel" />
       <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
     </form>
     </div>
 </div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
+<script>$('#searchbox').show(0);</script>
         </div>
       </div>
       <div class="clearer"></div>
@@ -161,13 +118,14 @@ otherwise if <cite>overwrite_out = False</cite> the result is added to <cite>out
         <li class="right" >
           <a href="quspin.tools.misc.KL_div.html" title="quspin.tools.misc.KL_div"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.3 documentation</a> &#187;</li>
-          <li class="nav-item nav-item-1"><a href="../tools.html" >Tools module (<code class="docutils literal notranslate"><span class="pre">quspin.tools</span></code>)</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.6 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../tools.html" >Tools module (<code class="xref py py-mod docutils literal notranslate"><span class="pre">quspin.tools</span></code>)</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">quspin.tools.misc.csr_matvec</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &#169; Copyright 2016, Phillip Weinberg and Marin Bukov.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.4.
+        &#169; Copyright 2016, Phillip Weinberg, Markus Schmitt and Marin Bukov.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.5.4.
     </div>
   </body>
 </html>

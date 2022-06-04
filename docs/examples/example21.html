@@ -1,0 +1,559 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><script type="text/javascript">
+
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-110543543-1']);
+      _gaq.push(['_trackPageview']);
+
+      (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+    </script>
+    <title>Lanczos module: finite-temperature calculations &#8212; QuSpin 0.3.6 documentation</title>
+    <link rel="stylesheet" href="../static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../static/classic.css" type="text/css" />
+    
+    <script id="documentation_options" data-url_root="../" src="../static/documentation_options.js"></script>
+    <script src="../static/jquery.js"></script>
+    <script src="../static/underscore.js"></script>
+    <script src="../static/doctools.js"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.6 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Lanczos module: finite-temperature calculations</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <style> .red {color:#ff0000; font-weight:bold; font-style:italic; } </style>
+<style> .green {color:#00b200; font-weight:bold; font-style:italic; } </style><div class="section" id="lanczos-module-finite-temperature-calculations">
+<span id="example21-label"></span><h1>Lanczos module: finite-temperature calculations<a class="headerlink" href="#lanczos-module-finite-temperature-calculations" title="Permalink to this headline">¶</a></h1>
+<p>Here we use the transverse-field Ising chain with periodic boundary conditions as an example of how to use QuSpin’s Lanczos module to perform finite-temperature calculations.</p>
+<p>We consider the transverse-field Ising model, governed by the Hamiltonian:</p>
+<div class="math notranslate nohighlight">
+\[H(s) = -s\sum_{i=0}^{L-1} \sigma_i^z\sigma_{i+1}^z - (1-s)\sum_{i=0}^{L-1} \sigma_i^x\]</div>
+<p>with periodic boundary conditions. This system is not ordered at finite temperature and, therefore, we expect to see a paramagnetic phase for any finite temperature. We are interested in computing the finite-temperature expectation value of the squared magnetization:</p>
+<div class="math notranslate nohighlight">
+\[\langle M^2 \rangle_\beta = \frac{Tr\left(e^{-\beta H/2} M^2 e^{-\beta H/2}\right)}{Tr\left(e^{-\beta H} \right)},\qquad M = \frac{1}{L}\sum_{i=0}^{L-1}\sigma^z_j,\]</div>
+<p>where <span class="math notranslate nohighlight">\(\beta\)</span> is the inverse temperature.</p>
+<p>The example script below demonstrates the use of both the finite-temperature (<cite>FTLM_static_iteration</cite>) and low-temperature (<cite>LTLM_static_iteration</cite>) Lanczos methods, which gives the user the opportunity to compare the approximate methods at high and low temperatures. Following the discussion under <cite>quspin.tools.lanczos.LTLM_static_iteration</cite> and <cite>quspin.tools.lanczos.FTLM_static_iteration</cite>, we make use of the approximation:</p>
+<div class="math notranslate nohighlight">
+\[\langle O\rangle_\beta \approx \frac{\overline{\langle O\rangle_r}}{\overline{\langle I\rangle_r}},\]</div>
+<p>where the notation <span class="math notranslate nohighlight">\(\overline{\;\cdot\;}\)</span> denotes the average over randomly drawn states <span class="math notranslate nohighlight">\(|r\rangle\)</span>, <span class="math notranslate nohighlight">\(\langle O\rangle_r=\langle r| e^{-\beta H/2} O e^{-\beta H/2}|r\rangle\)</span>, and <span class="math notranslate nohighlight">\(I\)</span> is the identity operator.</p>
+<p>The first part of the script below define various helper functions and classes that are useful for the calculation. The class <cite>lanczos_wrapper</cite> is a simple class that has all the necessary attributes to calculate the Lanczos basis. The idea here is that we would like to calculate the Lanczos basis for a particular value of the parameter <span class="math notranslate nohighlight">\(s\)</span> without having to calculate the Hamiltonian at that fixed value every time. This calculation is accomplished by using quspin’s <cite>quantum_operator</cite> class combined with the wrapper class: the quantum operator stores both the Ising and the transverse-field Hamiltonians as two separate terms. Then, the wrapper class provides an interface that calls the <cite>dot</cite> method of the quantum operator with the parameters specified, which is required by quspin’s Lanczos methods.</p>
+<p>To apply finite-temperature Lanczos methods, we need to average over random states. The loop in the code below is where this calculation for random state vectors occurs. First. a random vector is generated. Then, using that vector, the Lanczos basis is created. With that Lanczos basis, the calculation of the FTLM and LTLM is performed, and we store the results in a list. Finally, the results are averaged, using the bootstrap helper function to calculate the error bars. The results are plotted and compared against exact resultsobtained using exact diagonalization.</p>
+</div>
+<div class="section" id="script">
+<h1>Script<a class="headerlink" href="#script" title="Permalink to this headline">¶</a></h1>
+<p><a class="reference download internal" download="" href="../downloads/a87bfae50b414d833905d1869f69df0b/example21.py"><code class="xref download docutils literal notranslate"><span class="pre">download</span> <span class="pre">script</span></code></a></p>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">  1</span>
+<span class="normal">  2</span>
+<span class="normal">  3</span>
+<span class="normal">  4</span>
+<span class="normal">  5</span>
+<span class="normal">  6</span>
+<span class="normal">  7</span>
+<span class="normal">  8</span>
+<span class="normal">  9</span>
+<span class="normal"> 10</span>
+<span class="normal"> 11</span>
+<span class="normal"> 12</span>
+<span class="normal"> 13</span>
+<span class="normal"> 14</span>
+<span class="normal"> 15</span>
+<span class="normal"> 16</span>
+<span class="normal"> 17</span>
+<span class="normal"> 18</span>
+<span class="normal"> 19</span>
+<span class="normal"> 20</span>
+<span class="normal"> 21</span>
+<span class="normal"> 22</span>
+<span class="normal"> 23</span>
+<span class="normal"> 24</span>
+<span class="normal"> 25</span>
+<span class="normal"> 26</span>
+<span class="normal"> 27</span>
+<span class="normal"> 28</span>
+<span class="normal"> 29</span>
+<span class="normal"> 30</span>
+<span class="normal"> 31</span>
+<span class="normal"> 32</span>
+<span class="normal"> 33</span>
+<span class="normal"> 34</span>
+<span class="normal"> 35</span>
+<span class="normal"> 36</span>
+<span class="normal"> 37</span>
+<span class="normal"> 38</span>
+<span class="normal"> 39</span>
+<span class="normal"> 40</span>
+<span class="normal"> 41</span>
+<span class="normal"> 42</span>
+<span class="normal"> 43</span>
+<span class="normal"> 44</span>
+<span class="normal"> 45</span>
+<span class="normal"> 46</span>
+<span class="normal"> 47</span>
+<span class="normal"> 48</span>
+<span class="normal"> 49</span>
+<span class="normal"> 50</span>
+<span class="normal"> 51</span>
+<span class="normal"> 52</span>
+<span class="normal"> 53</span>
+<span class="normal"> 54</span>
+<span class="normal"> 55</span>
+<span class="normal"> 56</span>
+<span class="normal"> 57</span>
+<span class="normal"> 58</span>
+<span class="normal"> 59</span>
+<span class="normal"> 60</span>
+<span class="normal"> 61</span>
+<span class="normal"> 62</span>
+<span class="normal"> 63</span>
+<span class="normal"> 64</span>
+<span class="normal"> 65</span>
+<span class="normal"> 66</span>
+<span class="normal"> 67</span>
+<span class="normal"> 68</span>
+<span class="normal"> 69</span>
+<span class="normal"> 70</span>
+<span class="normal"> 71</span>
+<span class="normal"> 72</span>
+<span class="normal"> 73</span>
+<span class="normal"> 74</span>
+<span class="normal"> 75</span>
+<span class="normal"> 76</span>
+<span class="normal"> 77</span>
+<span class="normal"> 78</span>
+<span class="normal"> 79</span>
+<span class="normal"> 80</span>
+<span class="normal"> 81</span>
+<span class="normal"> 82</span>
+<span class="normal"> 83</span>
+<span class="normal"> 84</span>
+<span class="normal"> 85</span>
+<span class="normal"> 86</span>
+<span class="normal"> 87</span>
+<span class="normal"> 88</span>
+<span class="normal"> 89</span>
+<span class="normal"> 90</span>
+<span class="normal"> 91</span>
+<span class="normal"> 92</span>
+<span class="normal"> 93</span>
+<span class="normal"> 94</span>
+<span class="normal"> 95</span>
+<span class="normal"> 96</span>
+<span class="normal"> 97</span>
+<span class="normal"> 98</span>
+<span class="normal"> 99</span>
+<span class="normal">100</span>
+<span class="normal">101</span>
+<span class="normal">102</span>
+<span class="normal">103</span>
+<span class="normal">104</span>
+<span class="normal">105</span>
+<span class="normal">106</span>
+<span class="normal">107</span>
+<span class="normal">108</span>
+<span class="normal">109</span>
+<span class="normal">110</span>
+<span class="normal">111</span>
+<span class="normal">112</span>
+<span class="normal">113</span>
+<span class="normal">114</span>
+<span class="normal">115</span>
+<span class="normal">116</span>
+<span class="normal">117</span>
+<span class="normal">118</span>
+<span class="normal">119</span>
+<span class="normal">120</span>
+<span class="normal">121</span>
+<span class="normal">122</span>
+<span class="normal">123</span>
+<span class="normal">124</span>
+<span class="normal">125</span>
+<span class="normal">126</span>
+<span class="normal">127</span>
+<span class="normal">128</span>
+<span class="normal">129</span>
+<span class="normal">130</span>
+<span class="normal">131</span>
+<span class="normal">132</span>
+<span class="normal">133</span>
+<span class="normal">134</span>
+<span class="normal">135</span>
+<span class="normal">136</span>
+<span class="normal">137</span>
+<span class="normal">138</span>
+<span class="normal">139</span>
+<span class="normal">140</span>
+<span class="normal">141</span>
+<span class="normal">142</span>
+<span class="normal">143</span>
+<span class="normal">144</span>
+<span class="normal">145</span>
+<span class="normal">146</span>
+<span class="normal">147</span>
+<span class="normal">148</span>
+<span class="normal">149</span>
+<span class="normal">150</span>
+<span class="normal">151</span>
+<span class="normal">152</span>
+<span class="normal">153</span>
+<span class="normal">154</span>
+<span class="normal">155</span>
+<span class="normal">156</span>
+<span class="normal">157</span>
+<span class="normal">158</span>
+<span class="normal">159</span>
+<span class="normal">160</span>
+<span class="normal">161</span>
+<span class="normal">162</span>
+<span class="normal">163</span>
+<span class="normal">164</span>
+<span class="normal">165</span>
+<span class="normal">166</span>
+<span class="normal">167</span>
+<span class="normal">168</span>
+<span class="normal">169</span>
+<span class="normal">170</span>
+<span class="normal">171</span>
+<span class="normal">172</span>
+<span class="normal">173</span>
+<span class="normal">174</span>
+<span class="normal">175</span>
+<span class="normal">176</span>
+<span class="normal">177</span>
+<span class="normal">178</span>
+<span class="normal">179</span>
+<span class="normal">180</span>
+<span class="normal">181</span>
+<span class="normal">182</span>
+<span class="normal">183</span>
+<span class="normal">184</span>
+<span class="normal">185</span>
+<span class="normal">186</span>
+<span class="normal">187</span>
+<span class="normal">188</span>
+<span class="normal">189</span>
+<span class="normal">190</span>
+<span class="normal">191</span>
+<span class="normal">192</span>
+<span class="normal">193</span>
+<span class="normal">194</span>
+<span class="normal">195</span>
+<span class="normal">196</span>
+<span class="normal">197</span>
+<span class="normal">198</span>
+<span class="normal">199</span>
+<span class="normal">200</span>
+<span class="normal">201</span>
+<span class="normal">202</span>
+<span class="normal">203</span>
+<span class="normal">204</span>
+<span class="normal">205</span>
+<span class="normal">206</span>
+<span class="normal">207</span>
+<span class="normal">208</span>
+<span class="normal">209</span>
+<span class="normal">210</span>
+<span class="normal">211</span>
+<span class="normal">212</span>
+<span class="normal">213</span>
+<span class="normal">214</span>
+<span class="normal">215</span>
+<span class="normal">216</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span><span class="p">,</span> <span class="n">division</span>
+<span class="c1">#</span>
+<span class="kn">import</span> <span class="nn">sys</span><span class="o">,</span><span class="nn">os</span>
+<span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s1">&#39;KMP_DUPLICATE_LIB_OK&#39;</span><span class="p">]</span><span class="o">=</span><span class="s1">&#39;True&#39;</span> <span class="c1"># uncomment this line if omp error occurs on OSX for python 3</span>
+<span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s1">&#39;OMP_NUM_THREADS&#39;</span><span class="p">]</span><span class="o">=</span><span class="s1">&#39;1&#39;</span> <span class="c1"># set number of OpenMP threads to run in parallel</span>
+<span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s1">&#39;MKL_NUM_THREADS&#39;</span><span class="p">]</span><span class="o">=</span><span class="s1">&#39;1&#39;</span> <span class="c1"># set number of MKL threads to run in parallel</span>
+<span class="c1">#</span>
+<span class="n">quspin_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">(),</span><span class="s2">&quot;../../&quot;</span><span class="p">)</span>
+<span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">quspin_path</span><span class="p">)</span>
+<span class="c1">#######################################################################</span>
+<span class="c1">#                            example 21                               #	</span>
+<span class="c1"># This example shows how to use the `Lanczos` submodule of the        #</span>
+<span class="c1"># `tools` module to compute finite temperature expectation values     #</span>
+<span class="c1"># using `FTLM_statc_iteration` and `LTLM_statiic_iteration`.          #</span>
+<span class="c1">#######################################################################</span>
+<span class="kn">from</span> <span class="nn">quspin.basis</span> <span class="kn">import</span> <span class="n">spin_basis_1d</span>
+<span class="kn">from</span> <span class="nn">quspin.operators</span> <span class="kn">import</span> <span class="n">hamiltonian</span><span class="p">,</span><span class="n">quantum_operator</span>
+<span class="kn">from</span> <span class="nn">quspin.tools.lanczos</span> <span class="kn">import</span> <span class="n">lanczos_full</span><span class="p">,</span><span class="n">lanczos_iter</span><span class="p">,</span><span class="n">FTLM_static_iteration</span><span class="p">,</span><span class="n">LTLM_static_iteration</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">from</span> <span class="nn">mpl_toolkits.axes_grid1.inset_locator</span> <span class="kn">import</span> <span class="n">inset_axes</span>
+<span class="c1">#</span>
+<span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">1203901</span><span class="p">)</span> <span class="c1"># fix seed</span>
+<span class="c1">#</span>
+<span class="c1">#</span>
+<span class="k">def</span> <span class="nf">bootstrap_mean</span><span class="p">(</span><span class="n">O_r</span><span class="p">,</span><span class="n">Id_r</span><span class="p">,</span><span class="n">n_bootstrap</span><span class="o">=</span><span class="mi">100</span><span class="p">):</span>
+	<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	Uses boostraping to esimate the error due to sampling.</span>
+
+<span class="sd">	O_r: numerator</span>
+<span class="sd">	Id_r: denominator</span>
+<span class="sd">	n_bootstrap: bootstrap sample size</span>
+
+<span class="sd">	&quot;&quot;&quot;</span>
+	<span class="n">O_r</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">O_r</span><span class="p">)</span>
+	<span class="n">Id_r</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">Id_r</span><span class="p">)</span>
+	<span class="c1">#</span>
+	<span class="n">avg</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nanmean</span><span class="p">(</span><span class="n">O_r</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">nanmean</span><span class="p">(</span><span class="n">Id_r</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+	<span class="n">n_Id</span> <span class="o">=</span> <span class="n">Id_r</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+	<span class="c1">#n_N = O_r.shape[0]</span>
+	<span class="c1">#</span>
+	<span class="n">i_iter</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="n">n_Id</span><span class="p">,</span><span class="n">size</span><span class="o">=</span><span class="n">n_Id</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_bootstrap</span><span class="p">))</span>
+	<span class="c1">#</span>
+	<span class="n">bootstrap_iter</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">nanmean</span><span class="p">(</span><span class="n">O_r</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="o">...</span><span class="p">],</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">nanmean</span><span class="p">(</span><span class="n">Id_r</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="o">...</span><span class="p">],</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">i_iter</span><span class="p">)</span>
+	<span class="n">diff_iter</span> <span class="o">=</span> <span class="p">((</span><span class="n">bootstrap</span><span class="o">-</span><span class="n">avg</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span> <span class="k">for</span> <span class="n">bootstrap</span> <span class="ow">in</span> <span class="n">bootstrap_iter</span><span class="p">)</span>
+	<span class="n">err</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="nb">sum</span><span class="p">(</span><span class="n">diff_iter</span><span class="p">)</span><span class="o">/</span><span class="n">n_bootstrap</span><span class="p">)</span>
+	<span class="c1">#</span>
+	<span class="k">return</span> <span class="n">avg</span><span class="p">,</span><span class="n">err</span>
+<span class="c1">#</span>
+<span class="k">def</span> <span class="nf">get_operators</span><span class="p">(</span><span class="n">L</span><span class="p">):</span>
+	<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	Generates hamiltonian for TFIM, see quspin tutorial papers to learn more aabout this</span>
+
+<span class="sd">	&quot;&quot;&quot;</span>
+	<span class="c1"># create basis</span>
+	<span class="n">basis</span> <span class="o">=</span> <span class="n">spin_basis_1d</span><span class="p">(</span><span class="n">L</span><span class="p">,</span><span class="n">pauli</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+	<span class="c1"># site-coupling lists</span>
+	<span class="n">J_list</span> <span class="o">=</span> <span class="p">[[</span><span class="o">-</span><span class="mf">1.0</span><span class="p">,</span><span class="n">i</span><span class="p">,(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">%</span><span class="n">L</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">L</span><span class="p">)]</span>
+	<span class="n">h_list</span> <span class="o">=</span> <span class="p">[[</span><span class="o">-</span><span class="mf">1.0</span><span class="p">,</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">L</span><span class="p">)]</span>
+	<span class="n">M_list</span> <span class="o">=</span> <span class="p">[[</span><span class="mf">1.0</span><span class="o">/</span><span class="n">L</span><span class="p">,</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">L</span><span class="p">)]</span>
+	<span class="c1"># create magnetization-squared operator</span>
+	<span class="n">M</span> <span class="o">=</span> <span class="n">hamiltonian</span><span class="p">([[</span><span class="s2">&quot;z&quot;</span><span class="p">,</span><span class="n">M_list</span><span class="p">]],[],</span><span class="n">basis</span><span class="o">=</span><span class="n">basis</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+	<span class="n">M2</span> <span class="o">=</span> <span class="n">M</span><span class="o">**</span><span class="mi">2</span>
+	<span class="c1"># create parameter-dependent Hamiltonian using quantum_oprator</span>
+	<span class="n">ops_dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">J</span><span class="o">=</span><span class="p">[[</span><span class="s2">&quot;zz&quot;</span><span class="p">,</span><span class="n">J_list</span><span class="p">]],</span><span class="n">h</span><span class="o">=</span><span class="p">[[</span><span class="s2">&quot;x&quot;</span><span class="p">,</span><span class="n">h_list</span><span class="p">]])</span>
+	<span class="n">H</span> <span class="o">=</span> <span class="n">quantum_operator</span><span class="p">(</span><span class="n">ops_dict</span><span class="p">,</span><span class="n">basis</span><span class="o">=</span><span class="n">basis</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+	<span class="c1">#</span>
+	<span class="k">return</span> <span class="n">M2</span><span class="p">,</span><span class="n">H</span>
+<span class="c1">#</span>
+<span class="k">class</span> <span class="nc">lanczos_wrapper</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+	<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	Class that contains minimum requirments to use Lanczos. </span>
+<span class="sd">	</span>
+<span class="sd">	Using it is equired, since the dot and dtype methods of quantum_operator objects take more parameters </span>
+<span class="sd">	</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+	<span class="c1">#</span>
+	<span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">A</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		A: array-like object to assign/overwrite the dot and dtype objects of</span>
+<span class="sd">		kwargs: any optional arguments used when overwriting the methods</span>
+
+<span class="sd">		&quot;&quot;&quot;</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">_A</span> <span class="o">=</span> <span class="n">A</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">_kwargs</span> <span class="o">=</span> <span class="n">kwargs</span>
+	<span class="c1">#</span>
+	<span class="k">def</span> <span class="nf">dot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">v</span><span class="p">,</span><span class="n">out</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Calls the `dot` method of quantum_operator with the parameters fixed to a given value.</span>
+
+<span class="sd">		&quot;&quot;&quot;</span>
+		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_A</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">v</span><span class="p">,</span><span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">,</span><span class="n">pars</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_kwargs</span><span class="p">)</span>
+	<span class="c1">#</span>
+	<span class="nd">@property</span>
+	<span class="k">def</span> <span class="nf">dtype</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		The dtype attribute is required to figure out result types in lanczos calculations.</span>
+
+<span class="sd">		&quot;&quot;&quot;</span>
+		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_A</span><span class="o">.</span><span class="n">dtype</span>
+<span class="c1">#</span>
+<span class="c1">#</span>
+<span class="c1">##### define system parameters #####</span>
+<span class="c1">#</span>
+<span class="n">L</span> <span class="o">=</span> <span class="mi">10</span> <span class="c1"># system size</span>
+<span class="n">m</span> <span class="o">=</span> <span class="mi">50</span> <span class="c1"># dimensio of Krylov space</span>
+<span class="n">s</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="c1"># transverse-field Ising model parameter: H = sZZ + (1-s)X </span>
+<span class="c1"># </span>
+<span class="n">N_samples</span> <span class="o">=</span> <span class="mi">100</span> <span class="c1"># of samples to approximate thermal expectation value with</span>
+<span class="c1">#</span>
+<span class="n">T</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logspace</span><span class="p">(</span><span class="o">-</span><span class="mi">3</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">51</span><span class="p">,</span><span class="n">base</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span> <span class="c1"># temperature vector</span>
+<span class="n">beta</span> <span class="o">=</span> <span class="mf">1.0</span><span class="o">/</span><span class="p">(</span><span class="n">T</span><span class="o">+</span><span class="mf">1e-15</span><span class="p">)</span> <span class="c1"># inverse temperature vector</span>
+<span class="c1">#</span>
+<span class="c1">##### get operators #####</span>
+<span class="c1">#</span>
+<span class="n">M2</span><span class="p">,</span><span class="n">H</span> <span class="o">=</span> <span class="n">get_operators</span><span class="p">(</span><span class="n">L</span><span class="p">)</span>
+<span class="c1"># crate wrapper for quantum_operator</span>
+<span class="n">H_wrapped</span> <span class="o">=</span> <span class="n">lanczos_wrapper</span><span class="p">(</span><span class="n">H</span><span class="p">,</span><span class="n">J</span><span class="o">=</span><span class="n">s</span><span class="p">,</span><span class="n">h</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">s</span><span class="p">))</span>
+<span class="c1"># calculate ground state energy to use as shift that will prevent overflows (i.e. numerical instabilities)</span>
+<span class="p">[</span><span class="n">E0</span><span class="p">]</span> <span class="o">=</span> <span class="n">H</span><span class="o">.</span><span class="n">eigsh</span><span class="p">(</span><span class="n">k</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">which</span><span class="o">=</span><span class="s2">&quot;SA&quot;</span><span class="p">,</span><span class="n">pars</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">J</span><span class="o">=</span><span class="n">s</span><span class="p">,</span><span class="n">h</span><span class="o">=</span><span class="mi">1</span><span class="o">-</span><span class="n">s</span><span class="p">),</span><span class="n">return_eigenvectors</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="c1">#</span>
+<span class="c1">##### finite temperature methods #####</span>
+<span class="c1"># </span>
+<span class="c1"># preallocate lists to store results from iterations</span>
+<span class="n">M2_FT_list</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">M2_LT_list</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">Z_FT_list</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">Z_LT_list</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="c1">#</span>
+<span class="c1"># allocate memory for lanczos vectors</span>
+<span class="n">out</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">m</span><span class="p">,</span><span class="n">H</span><span class="o">.</span><span class="n">Ns</span><span class="p">),</span><span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+<span class="c1">#</span>
+<span class="c1"># calculate iterations</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N_samples</span><span class="p">):</span>
+	<span class="c1"># generate normalized random vector</span>
+	<span class="n">r</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="n">size</span><span class="o">=</span><span class="n">H</span><span class="o">.</span><span class="n">Ns</span><span class="p">)</span>
+	<span class="n">r</span> <span class="o">/=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
+	<span class="c1"># get lanczos basis</span>
+	<span class="n">E</span><span class="p">,</span><span class="n">V</span><span class="p">,</span><span class="n">lv</span> <span class="o">=</span> <span class="n">lanczos_full</span><span class="p">(</span><span class="n">H_wrapped</span><span class="p">,</span><span class="n">r</span><span class="p">,</span><span class="n">m</span><span class="p">,</span><span class="n">eps</span><span class="o">=</span><span class="mf">1e-8</span><span class="p">,</span><span class="n">full_ortho</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+	<span class="c1"># E,V,lv = lanczos_full(H_wrapped,r,m,eps=1e-8,full_ortho=False)</span>
+	<span class="c1"># E,V,lv = lanczos_iter(H_wrapped,r,m,eps=1e-8)</span>
+	<span class="c1"># shift energy to avoid overflows</span>
+	<span class="n">E</span> <span class="o">-=</span> <span class="n">E0</span>
+	<span class="c1"># calculate iteration</span>
+	<span class="n">results_FT</span><span class="p">,</span><span class="n">Id_FT</span> <span class="o">=</span> <span class="n">FTLM_static_iteration</span><span class="p">({</span><span class="s2">&quot;M2&quot;</span><span class="p">:</span><span class="n">M2</span><span class="p">},</span><span class="n">E</span><span class="p">,</span><span class="n">V</span><span class="p">,</span><span class="n">lv</span><span class="p">,</span><span class="n">beta</span><span class="o">=</span><span class="n">beta</span><span class="p">)</span>
+	<span class="n">results_LT</span><span class="p">,</span><span class="n">Id_LT</span> <span class="o">=</span> <span class="n">LTLM_static_iteration</span><span class="p">({</span><span class="s2">&quot;M2&quot;</span><span class="p">:</span><span class="n">M2</span><span class="p">},</span><span class="n">E</span><span class="p">,</span><span class="n">V</span><span class="p">,</span><span class="n">lv</span><span class="p">,</span><span class="n">beta</span><span class="o">=</span><span class="n">beta</span><span class="p">)</span>
+	<span class="c1"># save results to a list</span>
+	<span class="n">M2_FT_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">results_FT</span><span class="p">[</span><span class="s2">&quot;M2&quot;</span><span class="p">])</span>
+	<span class="n">Z_FT_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Id_FT</span><span class="p">)</span>
+	<span class="n">M2_LT_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">results_LT</span><span class="p">[</span><span class="s2">&quot;M2&quot;</span><span class="p">])</span>
+	<span class="n">Z_LT_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Id_LT</span><span class="p">)</span>
+<span class="c1">#</span>
+<span class="c1"># calculating error bars on the expectation values</span>
+<span class="n">m2_FT</span><span class="p">,</span><span class="n">dm2_FT</span> <span class="o">=</span> <span class="n">bootstrap_mean</span><span class="p">(</span><span class="n">M2_FT_list</span><span class="p">,</span><span class="n">Z_FT_list</span><span class="p">)</span>
+<span class="n">m2_LT</span><span class="p">,</span><span class="n">dm2_LT</span> <span class="o">=</span> <span class="n">bootstrap_mean</span><span class="p">(</span><span class="n">M2_LT_list</span><span class="p">,</span><span class="n">Z_LT_list</span><span class="p">)</span>
+<span class="c1">#</span>
+<span class="c1">##### calculating exact results from full diagonalization #####</span>
+<span class="c1">#</span>
+<span class="n">dim_cutoff</span><span class="o">=</span><span class="mi">2000</span> <span class="c1"># Hilbert space dimension cutoff  </span>
+<span class="k">if</span> <span class="n">H</span><span class="o">.</span><span class="n">Ns</span> <span class="o">&lt;</span> <span class="n">dim_cutoff</span><span class="p">:</span> <span class="c1"># Hilbert space is not too big to diagonalize on a laptop</span>
+	<span class="c1">#</span>
+	<span class="c1"># adding more points for smooth line</span>
+	<span class="n">T_new</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logspace</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">T</span><span class="o">.</span><span class="n">min</span><span class="p">()),</span><span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">T</span><span class="o">.</span><span class="n">max</span><span class="p">()),</span><span class="mi">10</span><span class="o">*</span><span class="nb">len</span><span class="p">(</span><span class="n">T</span><span class="p">))</span>
+	<span class="n">beta_new</span> <span class="o">=</span> <span class="mf">1.0</span><span class="o">/</span><span class="p">(</span><span class="n">T_new</span><span class="o">+</span><span class="mf">1e-15</span><span class="p">)</span>
+	<span class="c1">#</span>
+	<span class="c1"># full diagonaization of H</span>
+	<span class="n">E</span><span class="p">,</span><span class="n">V</span> <span class="o">=</span> <span class="n">H</span><span class="o">.</span><span class="n">eigh</span><span class="p">(</span><span class="n">pars</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">J</span><span class="o">=</span><span class="n">s</span><span class="p">,</span><span class="n">h</span><span class="o">=</span><span class="mi">1</span><span class="o">-</span><span class="n">s</span><span class="p">))</span>
+	<span class="c1"># shift energy to avoid overflows</span>
+	<span class="n">E</span> <span class="o">-=</span> <span class="n">E</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+	<span class="c1"># get boltzmann weights for each temperature</span>
+	<span class="n">W</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">outer</span><span class="p">(</span><span class="n">E</span><span class="p">,</span><span class="n">beta_new</span><span class="p">))</span>
+	<span class="c1"># get diagonal matrix elements for trace</span>
+	<span class="n">O</span> <span class="o">=</span> <span class="n">M2</span><span class="o">.</span><span class="n">matrix_ele</span><span class="p">(</span><span class="n">V</span><span class="p">,</span><span class="n">V</span><span class="p">,</span><span class="n">diagonal</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> 
+	<span class="c1"># calculate trace</span>
+	<span class="n">O</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s2">&quot;j...,j-&gt;...&quot;</span><span class="p">,</span><span class="n">W</span><span class="p">,</span><span class="n">O</span><span class="p">)</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s2">&quot;j...-&gt;...&quot;</span><span class="p">,</span><span class="n">W</span><span class="p">)</span>
+<span class="c1">#</span>
+<span class="c1">#</span>
+<span class="c1">##### plot results #####</span>
+<span class="c1">#</span>
+<span class="c1"># setting up plot and inset</span>
+<span class="n">h</span><span class="o">=</span><span class="mf">4.2</span> <span class="c1"># figure aspect ratio parameter</span>
+<span class="n">f</span><span class="p">,</span><span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mf">1.5</span><span class="o">*</span><span class="n">h</span><span class="p">,</span><span class="n">h</span><span class="p">))</span>
+<span class="n">axinset</span> <span class="o">=</span> <span class="n">inset_axes</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="s2">&quot;45%&quot;</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="s2">&quot;65%&quot;</span><span class="p">,</span> <span class="n">loc</span><span class="o">=</span><span class="s2">&quot;upper right&quot;</span><span class="p">)</span>
+<span class="n">axs</span> <span class="o">=</span> <span class="p">[</span><span class="n">ax</span><span class="p">,</span><span class="n">axinset</span><span class="p">]</span>
+<span class="c1">#</span>
+<span class="c1"># plot results for FTLM and LTLM.</span>
+<span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">axs</span><span class="p">:</span>
+	<span class="n">a</span><span class="o">.</span><span class="n">errorbar</span><span class="p">(</span><span class="n">T</span><span class="p">,</span><span class="n">m2_LT</span><span class="p">,</span><span class="n">dm2_LT</span><span class="p">,</span><span class="n">marker</span><span class="o">=</span><span class="s2">&quot;.&quot;</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="s2">&quot;LTLM&quot;</span><span class="p">,</span><span class="n">zorder</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+	<span class="n">a</span><span class="o">.</span><span class="n">errorbar</span><span class="p">(</span><span class="n">T</span><span class="p">,</span><span class="n">m2_FT</span><span class="p">,</span><span class="n">dm2_FT</span><span class="p">,</span><span class="n">marker</span><span class="o">=</span><span class="s2">&quot;.&quot;</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="s2">&quot;FTLM&quot;</span><span class="p">,</span><span class="n">zorder</span><span class="o">=-</span><span class="mi">2</span><span class="p">)</span>
+	<span class="c1">#</span>
+	<span class="k">if</span> <span class="n">H</span><span class="o">.</span><span class="n">Ns</span> <span class="o">&lt;</span> <span class="n">dim_cutoff</span><span class="p">:</span> <span class="c1"># hilbert space is not too big to diagonalize on a laptop</span>
+		<span class="n">a</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">T_new</span><span class="p">,</span><span class="n">O</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="s2">&quot;exact&quot;</span><span class="p">,</span><span class="n">zorder</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+	<span class="c1">#</span>
+	<span class="n">a</span><span class="o">.</span><span class="n">set_xscale</span><span class="p">(</span><span class="s2">&quot;log&quot;</span><span class="p">)</span>
+<span class="c1">#</span>
+<span class="c1"># adding space for inset by expanding x limits.</span>
+<span class="n">xmin</span><span class="p">,</span><span class="n">xmax</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">get_xlim</span><span class="p">()</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">((</span><span class="n">xmin</span><span class="p">,</span><span class="mi">10</span><span class="o">*</span><span class="n">xmax</span><span class="p">))</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="s2">&quot;lower left&quot;</span><span class="p">)</span>
+<span class="c1">#</span>
+<span class="c1"># inset adjustment to zoom in low-temp limit.</span>
+<span class="n">xmin</span><span class="p">,</span><span class="n">xmax</span> <span class="o">=</span> <span class="n">axinset</span><span class="o">.</span><span class="n">get_xlim</span><span class="p">()</span>
+<span class="c1">#</span>
+<span class="n">a</span> <span class="o">=</span> <span class="o">-</span><span class="mf">0.6</span>
+<span class="n">m</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logical_and</span><span class="p">(</span><span class="n">T</span><span class="o">&gt;=</span><span class="n">xmin</span><span class="p">,</span><span class="n">T</span><span class="o">&lt;=</span><span class="mi">10</span><span class="o">**</span><span class="p">(</span><span class="n">a</span><span class="p">))</span>
+<span class="n">axinset</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">((</span><span class="n">xmin</span><span class="p">,</span><span class="mi">10</span><span class="o">**</span><span class="p">(</span><span class="n">a</span><span class="o">+</span><span class="mf">0.1</span><span class="p">)))</span>
+<span class="n">ymin</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">m2_LT</span><span class="p">[</span><span class="n">m</span><span class="p">]</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span><span class="n">m2_FT</span><span class="p">[</span><span class="n">m</span><span class="p">]</span><span class="o">.</span><span class="n">min</span><span class="p">())</span>
+<span class="n">ymax</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">m2_LT</span><span class="p">[</span><span class="n">m</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">(),</span><span class="n">m2_FT</span><span class="p">[</span><span class="n">m</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">())</span>
+<span class="n">ywin</span> <span class="o">=</span> <span class="n">ymax</span><span class="o">-</span><span class="n">ymin</span>
+<span class="n">boundy</span> <span class="o">=</span> <span class="mf">0.1</span><span class="o">*</span><span class="n">ywin</span>
+<span class="n">axinset</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">((</span><span class="n">ymin</span><span class="o">-</span><span class="n">boundy</span><span class="p">,</span><span class="n">ymax</span><span class="o">+</span><span class="n">boundy</span><span class="p">))</span>
+<span class="c1">#</span>
+<span class="c1"># display plot</span>
+<span class="n">f</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="c1">#plt.show()</span>
+<span class="c1">#</span>
+</pre></div>
+</td></tr></table></div>
+</div>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Lanczos module: finite-temperature calculations</a></li>
+<li><a class="reference internal" href="#script">Script</a></li>
+</ul>
+
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../sources/examples/example21.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.6 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Lanczos module: finite-temperature calculations</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2016, Phillip Weinberg, Markus Schmitt and Marin Bukov.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.5.4.
+    </div>
+  </body>
+</html>

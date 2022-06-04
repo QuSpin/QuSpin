@@ -2,7 +2,10 @@ from .base_general import basis_general
 from ._basis_general_core import user_core_wrap
 import numpy as _np
 from numba import cfunc, types, njit
-from numba.ccallback import CFunc
+try:
+	from numba.ccallback import CFunc # numba < 0.49.0
+except ModuleNotFoundError:
+	from numba.core.ccallback import CFunc # numba >= 0.49.0
 
 map_sig_32 = types.uint32(types.uint32,types.intc,types.CPointer(types.int8),types.CPointer(types.uint32))
 map_sig_64 = types.uint64(types.uint64,types.intc,types.CPointer(types.int8),types.CPointer(types.uint64))
@@ -12,7 +15,6 @@ next_state_sig_64 = types.uint64(types.uint64,types.uint64,types.uint64,types.CP
 
 pre_check_state_sig_32 = types.uint32(types.uint32,types.uint32,types.CPointer(types.uint32))
 pre_check_state_sig_64 = types.uint64(types.uint64,types.uint64,types.CPointer(types.uint64))
-
 
 op_results_32 = types.Record.make_c_struct([
    ('matrix_ele', types.complex128),('state', types.uint32),
@@ -42,7 +44,7 @@ __all__ = ["map_sig_32","map_sig_64","next_state_sig_32",
 	"next_state_sig_64","op_func_sig_32","op_func_sig_64","user_basis"]
 
 @njit
-def is_sorted_decending(a):
+def _is_sorted_decending(a):
 	for i in range(a.size-1):
 		if(a[i]<a[i+1]):
 			return False
@@ -97,6 +99,38 @@ def _process_user_blocks(use_32bit,blocks_dict,block_order):
 		return {},[],[],[],[]
 
 
+def _noncommuting_bits(N,noncommuting_bits):
+	
+	completed_noncommuting_bits = []
+
+	for bits,swap_phase in noncommuting_bits:
+		bits = _np.asarray(bits)
+		swap_phase = _np.asarray(swap_phase)
+
+		if not _np.issubdtype(bits.dtype,_np.int):
+			raise TypeError("site list most contain only integers.")
+
+		if _np.array(swap_phase).ndim != 0:
+			raise ValueError("swap_phase must be scalar.")
+
+		if _np.any(_np.logical_and(bits < 0,bits >= N)):
+			raise ValueError("bit number outside of range of system.")
+
+		if swap_phase == -1:
+			swap_phase = swap_phase.astype(_np.int8)
+		elif np.abs(swap_phase)!=1:
+			raise ValueError("must have |swap_phase|==1")
+		else:
+			if swap_phase == 1:
+				continue # skip 
+			else:
+				# swap_phase = swap_phase.astype(_np.complex128)
+				raise NotImplementedError("Abealian anyons are not supported for user_basis.")
+
+		completed_noncommuting_bits.append((bits,swap_phase))
+
+	return completed_noncommuting_bits
+
 
 class user_basis(basis_general):
 	"""Constructs basis for USER-DEFINED functionality of a basis object.
@@ -130,7 +164,7 @@ class user_basis(basis_general):
 
 	"""
 	def __init__(self,basis_dtype,N,op_dict,sps=2,pcon_dict=None,pre_check_state=None,allowed_ops=None,
-		Ns_block_est=None,_make_basis=True,block_order=None,_Np=None,**blocks):
+		parallel=False,Ns_block_est=None,_make_basis=True,block_order=None,noncommuting_bits=[],_Np=None,**blocks):
 		"""Intializes the `user_basis_general` object (basis for user defined ED calculations).
 
 		Parameters
@@ -174,12 +208,18 @@ class user_basis(basis_general):
 			(e.g. for a spinful fermion basis to never have a doubly occupied site). One can pass additional arguments `args` using a `np.ndarray[basis_dtype]`.
 		allowed_ops: list/set, optional
 			A list of allowed characters, each of which is to be passed in to the `op` in the form of `op_str` (see above).
+		parallel: bool, optional
+			turns on parallel code when constructing the basis even when no symmetries are implemented. Useful when constructing highly constrained Hilbert spaces with pre_check_state. 
 		sps: int, optional
 			The number of states per site (i.e. the local on-site Hilbert space dimension).
+		Ns_full: int, optional
+			Total number of states in the Hilbert space without any symmetries. For a single species this value is `sps**N`
 		Ns_block_est: int, optional
 			An estimate for the size of the symmetry reduced block, QuSpin does a simple estimate which is not always correct. 
 		block_order: tuple/list, optional
 			A list of strings containing the names of the symmetry blocks which specifies the order in which the symmetries will be applied to the state when calculating the basis. The first element in the list is applied to the state first followed by the second element, etc. If the list is not specificed the ordering is such that the symmetry with the largest cycle is the first, followed by the second largest, etc. 
+		noncommuting_bits: list, optional
+			A list of tuples specifying if bits belong to a group of sites that do not commute. The first element in each tuple represents the group of sites, and the second element represents the phase-factor that is given during the exchange.
 		**blocks: optional
 			keyword arguments which pass the symmetry generator arrays. For instance:
 
@@ -209,8 +249,9 @@ class user_basis(basis_general):
 		self._basis_pcon = None
 		self._get_proj_pcon = False
 		self._made_basis = False # keeps track of whether the basis has been made
-
-		Ns_full=sps**N
+		
+		self._noncommuting_bits = _noncommuting_bits(N,noncommuting_bits)
+		Ns_full = sps**N
 		self._N = N
 		if basis_dtype not in [_np.uint32,_np.uint64]:
 			raise ValueError("basis_dtype must be either uint32 or uint64 for the given basis representation.")
@@ -224,7 +265,6 @@ class user_basis(basis_general):
 
 			raise ValueError("map_args must be a C-contiguous numpy array with dtype {}".format(basis_dtype))
 		
-
 
 		if type(op_dict) is dict:
 			if len(op_dict) != 2:
@@ -463,38 +503,41 @@ class user_basis(basis_general):
 				raise TypeError("Ns_block_est must be integer value.")
 				
 			Ns = Ns_block_est
+
 		self._basis_dtype = basis_dtype
-		self._core_args = (Ns_full, basis_dtype, N, map_funcs, pers, qs, map_args,
+		self._core_args = (Ns_full, basis_dtype, N, sps, map_funcs, pers, qs, map_args,
 								n_sectors, get_Ns_pcon, get_s0_pcon, next_state,
-								next_state_args,pre_check_state,check_state_nosymm_args,
+								next_state_args,pre_check_state,check_state_nosymm_args,parallel,
 								count_particles, count_particles_args, op_func, op_args)
 		self._core = user_core_wrap(*self._core_args)
-
 		self._N = N
 		self._Ns = Ns
+		self._Ns_block_est = self._Ns
 		self._Np = Np
+		self._sps=sps
+		self._allowed_ops=set(allowed_ops)
 
 		nmax = _np.prod(self._pers)
 		self._n_dtype = _np.min_scalar_type(nmax)
 
 		if _make_basis:	
-			self.make()
+			self.make(N_p=0)
 		else:
 			self._Ns=1
 			self._basis=basis_zeros(self._Ns,dtype=self._basis_dtype)
 			self._n=_np.zeros(self._Ns,dtype=self._n_dtype)
 
-		if not is_sorted_decending(self._basis):
+		if not _is_sorted_decending(self._basis):
 			ind = _np.argsort(self._basis,kind="heapsort")[::-1]
-			self._basis = self._basis[ind]
-			self._n = self._n[ind]
+			self._basis = _np.asarray(self._basis[ind],order="C")
+			self._n =  _np.asarray(self._n[ind],order="C")
 
+		self.make_basis_blocks()
 
 		if allowed_ops is None:
 			allowed_ops = set([chr(i) for i in range(256)]) # all characters allowed.
 
-		self._sps=sps
-		self._allowed_ops=set(allowed_ops)
+
 
 	def __type__(self):
 		return "<type 'qspin.basis.user.user_basis'>"

@@ -27,12 +27,12 @@ def get_matvec_function(array):
 			:lines: 11-
 
 	Parameters
-	-----------
+	----------
 	array : array_like object (e.g. numpy.ndarray, scipy.sparse.csr_matrix,  scipy.sparse.csc_matrix,  scipy.sparse.dia_matrix)
 		Array-like object to determine the most appropriate omp-parallelized `matvec` function for. 
 
 	Returns
-	--------
+	-------
 	python function object
 		A python function to perform the matrix-vector product. For appropriate use, see `tools.misc.matvec()`.
 
@@ -52,7 +52,7 @@ def matvec(array,other,overwrite_out=False,out=None,a=1.0):
 	
 	.. math::
 
-		x += aAv \\qquad \mathrm{or} \\qquad x = aAv.
+		x += aAv \\qquad \\mathrm{or} \\qquad x = aAv.
 
 	Notes
 	-----
@@ -90,11 +90,10 @@ def matvec(array,other,overwrite_out=False,out=None,a=1.0):
 	numpy.ndarray
 		result of the matrix-vector product :math:`a A v`. 
 
-		* if `out` is not `None` and `overwrite_out = True`, the function returns `out` with the original data overwritten, 
-		otherwise if `overwrite_out = False` the result is added to `out`.
-
+		* if `out` is not `None` and `overwrite_out = True`, the function returns `out` with the original data overwritten, otherwise if `overwrite_out = False` the result is added to `out`.
 		* if `out` is `None`, the result is stored in a new array which is returned by the function. 
 	
+
 	"""
 
 

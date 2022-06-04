@@ -175,7 +175,7 @@ class exp_op(object):
 
 	@property
 	def a(self):
-		"""`numpy.dtype`: constant (c-number) multiplying the operator to be exponentiated: `exp(a*O)`."""
+		"""`numpy.dtype`: constant (c-number) multiplying the operator to be exponentiated, `exp(a*O)`."""
 		return self._a
 
 	@property
@@ -240,7 +240,7 @@ class exp_op(object):
 		Returns
 		--------
 		:obj:`exo_op`
-			:math:`\\exp(a\\mathcal{O})_{ij}\\mapsto \\exp(a\\mathcal{O})_{ij}^*`
+			:math:`\\left[\\exp(a\\mathcal{O})_{ij}\\right]\\mapsto \\left[\\exp(a\\mathcal{O})_{ij}\\right]^*`
 
 		Examples
 		---------
@@ -421,7 +421,7 @@ class exp_op(object):
 
 		"""
 		if self.O.is_dense or dense:
-			return _la.expm(self._a * self.O.todense(**call_kwargs))
+			return _la.expm(self._a * self.O.toarray(**call_kwargs))
 		else:
 			return _la.expm(self._a * self.O.tocsc(**call_kwargs))
 

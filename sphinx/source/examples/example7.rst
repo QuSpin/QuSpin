@@ -1,3 +1,5 @@
+:orphan:
+
 .. _example7-label:
 
 The Bose-Hubbard Model on Translationally Invariant Ladder

@@ -15,6 +15,7 @@ quspin.basis.spin\_basis\_general
    
       ~spin_basis_general.Op
       ~spin_basis_general.Op_bra_ket
+      ~spin_basis_general.Op_shift_sector
       ~spin_basis_general.__init__
       ~spin_basis_general.check_hermitian
       ~spin_basis_general.check_pcon
@@ -28,8 +29,11 @@ quspin.basis.spin\_basis\_general
       ~spin_basis_general.inplace_Op
       ~spin_basis_general.int_to_state
       ~spin_basis_general.make
+      ~spin_basis_general.make_basis_blocks
       ~spin_basis_general.normalization
       ~spin_basis_general.partial_trace
+      ~spin_basis_general.project_from
+      ~spin_basis_general.project_to
       ~spin_basis_general.representative
       ~spin_basis_general.state_to_int
    
@@ -46,6 +50,7 @@ quspin.basis.spin\_basis\_general
       ~spin_basis_general.blocks
       ~spin_basis_general.description
       ~spin_basis_general.dtype
+      ~spin_basis_general.noncommuting_bits
       ~spin_basis_general.operators
       ~spin_basis_general.sps
       ~spin_basis_general.states

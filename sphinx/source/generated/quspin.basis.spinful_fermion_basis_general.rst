@@ -15,6 +15,7 @@ quspin.basis.spinful\_fermion\_basis\_general
    
       ~spinful_fermion_basis_general.Op
       ~spinful_fermion_basis_general.Op_bra_ket
+      ~spinful_fermion_basis_general.Op_shift_sector
       ~spinful_fermion_basis_general.__init__
       ~spinful_fermion_basis_general.check_hermitian
       ~spinful_fermion_basis_general.check_pcon
@@ -28,8 +29,11 @@ quspin.basis.spinful\_fermion\_basis\_general
       ~spinful_fermion_basis_general.inplace_Op
       ~spinful_fermion_basis_general.int_to_state
       ~spinful_fermion_basis_general.make
+      ~spinful_fermion_basis_general.make_basis_blocks
       ~spinful_fermion_basis_general.normalization
       ~spinful_fermion_basis_general.partial_trace
+      ~spinful_fermion_basis_general.project_from
+      ~spinful_fermion_basis_general.project_to
       ~spinful_fermion_basis_general.representative
       ~spinful_fermion_basis_general.state_to_int
    
@@ -46,6 +50,7 @@ quspin.basis.spinful\_fermion\_basis\_general
       ~spinful_fermion_basis_general.blocks
       ~spinful_fermion_basis_general.description
       ~spinful_fermion_basis_general.dtype
+      ~spinful_fermion_basis_general.noncommuting_bits
       ~spinful_fermion_basis_general.operators
       ~spinful_fermion_basis_general.sps
       ~spinful_fermion_basis_general.states

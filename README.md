@@ -1,6 +1,6 @@
 # **QuSpin**
 
-QuSpin is an open-source Python package for exact diagonalization and quantum dynamics of arbitrary boson, fermion and spin many-body systems, supporting the use of various (user-defined) symmetries in one and higher dimensional lattice systems and (imaginary) time evolution following a user-specified driving protocol. 
+QuSpin is an open-source Python package for Exact Diagonalization and quantum dynamics of arbitrary boson, fermion and spin many-body systems, supporting the use of various (user-defined) symmetries in one and higher dimensional lattice systems and (imaginary) time evolution following a user-specified driving protocol. 
 
 The complete ***Documentation*** for QuSpin (including a number of recent tutorials) can be found at 
 
@@ -47,23 +47,37 @@ To install QuSpin manually, download the source code either from the [master](ht
 
 Unix:
 ```
-python setup.py install 
+python setup.py install --default-compiler-flags
 ```
 or Windows command line:
 ```
-setup.py install
+setup.py install --default-compiler-flags
 ```
-For the manual installation you must have all the prerequisite python packages: [numpy](http://www.numpy.org/), [scipy](https://www.scipy.org>), [joblib](https://pythonhosted.org/joblib/), [six](https://pythonhosted.org/six), [dill](https://pypi.python.org/pypi/dill), [gmpy2](https://gmpy2.readthedocs.io/en/latest/), [numba](http://numba.pydata.org/), llvm-openmp (osx omp version only) installed. For Windows machines one needs the correct verion of the Microsoft Visual Stuios compiler for the given python version you are building the package for. A good resource which can help you with this is [here](https://github.com/cython/cython/wiki/CythonExtensionsOnWindows). For OS-X and Linux the standard compilers should be fine for building the package. Note that some of the compiled extensions require Openmp 2.0 or above. For most setups We recommend [Anaconda](https://www.continuum.io/downloads) or [Miniconda](http://conda.pydata.org/miniconda.html) to manage your python packages and we have pre-built code which should be compatible with most 64-bit systems. When installing the package manually, if you add the flag ```--record install.txt```, the location of all the installed files will be output to install.txt which stores information about all installed files. This can prove useful when updating the code.
+<!--- begin packages --->
+For the **manual installation** you must have all the prerequisite python packages installed:
+ * [scipy](https://www.scipy.org)>=0.19.1
+ * [numpy](http://www.numpy.org)>=1.19.2
+ * [cython](https://www.cython.org)>=0.29
+ * [joblib](https://pythonhosted.org/joblib/)
+ * [six](https://pythonhosted.org/six/)
+ * [dill](https://pypi.python.org/pypi/dill)
+ * [gmpy2](https://gmpy2.readthedocs.io/en/latest/)
+ * [numba](http://numba.pydata.org/)
+ * [numexpr](https://numexpr.readthedocs.io/en/latest/user_guide.html)
+ * [boost](https://www.boost.org/doc/libs/1_70_0/libs/python/doc/html/index.html), installation must include header files for boost.
+ * [llvm-openmp](http://openmp.llvm.org/), osx openmp version only.
+<!--- end packages --->
+For Windows machines one needs the correct verion of the Microsoft Visual Stuios compiler for the given python version you are building the package for. A good resource which can help you with this is [here](https://github.com/cython/cython/wiki/CythonExtensionsOnWindows). For OS-X and Linux the standard compilers should be fine for building the package. Note that some of the compiled extensions require Openmp 2.0 or above. For most setups We recommend [Anaconda](https://www.continuum.io/downloads) or [Miniconda](http://conda.pydata.org/miniconda.html) to manage your python packages and we have pre-built code which should be compatible with most 64-bit systems. When installing the package manually, if you add the flag ```--record install.txt```, the location of all the installed files will be output to install.txt which stores information about all installed files. This can prove useful when updating the code.
 
 For manual installation with OpenMP, use:
 
 Unix:
 ```
-python setup.py install --omp
+python setup.py install --omp --default-compiler-flags
 ```
 or Windows command line:
 ```
-setup.py install --omp
+setup.py install --omp --default-compiler-flags
 ```
 
 ### **updating the package**

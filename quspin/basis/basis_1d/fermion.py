@@ -28,7 +28,7 @@ class spinless_fermion_basis_1d(basis_1d):
 	The code snippet below shows how to use the `spinless_fermion_basis_1d` class to construct the basis in the zero momentum sector of positive parity for the fermion Hamiltonian 
 
 	.. math::
-		H(t)=-J\\sum_j c^\\dagger_{j+1}c_j + \\mathrm{h.c.} - \\mu\\sum_j n_j + U\\cos\\Omega t\\sum_j n_{j+1} n_j
+		H(t)=-J\\sum_j c_jc^\\dagger_{j+1} + \\mathrm{h.c.} - \\mu\\sum_j n_j + U\\cos\\Omega t\\sum_j n_j n_{j+1} 
 
 	.. literalinclude:: ../../doc_examples/spinless_fermion_basis_1d-example.py
 		:linenos:
@@ -52,9 +52,9 @@ class spinless_fermion_basis_1d(basis_1d):
 
 				**a** (*int*) - specifies unit cell size for translation.
 
-				**kblock** (*int*) - specifies momentum block.
+				**kblock** (*int*) - specifies momentum block. The physical manifestation of this symmetry transformation is translation by `a` lattice sites.
 
-				**pblock** (*int*) - specifies parity block.
+				**pblock** (*int*) - specifies parity block. The physical manifestation of this symmetry transformation is reflection about the middle of the chain.
 
 		"""
 
@@ -111,8 +111,8 @@ class spinless_fermion_basis_1d(basis_1d):
 		else:
 			self._Np = sum(Nf_list)
 
-		self._blocks = blocks			
 
+		self._blocks = blocks			
 		self._sps = 2
 		Imax = (1<<L)-1
 		stag_A = sum(1<<i for i in range(0,L,2))
@@ -127,11 +127,8 @@ class spinless_fermion_basis_1d(basis_1d):
 
 		self._allowed_ops = set(["I","+","-","n","z"])
 		basis_1d.__init__(self,hcp_basis,hcp_ops,L,Np=Nf_list,pars=pars,count_particles=count_particles,**blocks)
-		# self._check_symm=None
+		self._noncommuting_bits = [(_np.arange(self.N),_np.array(-1,dtype=_np.int8))]
 
-	@property
-	def _fermion_basis(self):
-		return True 
 
 
 	def __type__(self):
@@ -173,7 +170,8 @@ class spinful_fermion_basis_1d(spinless_fermion_basis_1d,basis_1d):
 	Notes
 	-----
 
-	* The `spinful_fermion_basis` operator strings are separated by a pipe symbol, |, to distinguish the spin-up from spin-down species. However, the index array has NO pipe symbol.
+	* The `spinful_fermion_basis` operator strings are separated by a pipe symbol, "|", to distinguish the spin-up from spin-down species. However, the index array has NO pipe symbol.
+	
 	* Particle-hole like symmetries for fermions can be programmed using the `spinful_fermion_basis_general` class.
 
 
@@ -215,13 +213,13 @@ class spinful_fermion_basis_1d(spinless_fermion_basis_1d,basis_1d):
 
 				**a** (*int*) - specifies unit cell size for translation.
 
-				**kblock** (*int*) - specifies momentum block.
+				**kblock** (*int*) - specifies momentum block. The physical manifestation of this symmetry transformation is translation by `a` lattice sites.
 
-				**pblock** (*int*) - specifies parity block.
+				**pblock** (*int*) - specifies parity block. The physical manifestation of this symmetry transformation is reflection about the middle of the chain.
 
-				**sblock** (*int*) - specifies fermion spin inversion block.
+				**sblock** (*int*) - specifies fermion spin inversion block. The physical manifestation of this symmetry transformation is the exchange of a spin-up and a spin-down fermion on a fixed lattice site.
 
-				**psblock** (*int*) - specifies parity followed by fermion spin inversion symmetry block.
+				**psblock** (*int*) - specifies parity followed by fermion spin inversion symmetry block. The physical manifestation of this symmetry transformation is reflection about the middle of the chain, and a simultaneous exchange of a spin-up and a spin-down fermion on a fixed lattice site.
 
 		"""
 
@@ -371,7 +369,12 @@ class spinful_fermion_basis_1d(spinless_fermion_basis_1d,basis_1d):
 
 		self._allowed_ops = set(["I","+","-","n","z"])
 		basis_1d.__init__(self,spf_basis,spf_ops,L,Np=Nf_list,pars=pars,count_particles=count_particles,**blocks)
-		
+		self._noncommuting_bits = [(_np.arange(self.N),_np.array(-1,dtype=_np.int8))]
+
+	@property
+	def N(self):
+		"""int: Total number of sites (spin-up + spin-down) the basis is constructed with; `N=2L`."""
+		return 2*self._L
 
 	def _Op(self,opstr,indx,J,dtype):
 		
@@ -434,11 +437,52 @@ class spinful_fermion_basis_1d(spinless_fermion_basis_1d,basis_1d):
 		else:
 			raise ValueError("state must be representive state in basis.")
 
-	def int_to_state(self,*args):
-		""" Not Implemented."""
+	def int_to_state(self,state,bracket_notation=True):
 
-	def state_to_int(self,*args):
-		""" Not Implemented."""
+		if int(state)!=state:
+			raise ValueError("state must be integer")
+
+		n_space = len(str(self.sps))
+
+		if self.N <= 64:
+			bits_up   = ((state>>(self.N-i-1))&1 for i in range(self.N//2))
+			s_str_up   = (" ".join(("{:1d}").format(bit) for bit in bits_up))
+			
+			bits_down = ((state>>(self.N//2-i-1))&1 for i in range(self.N//2))
+			s_str_down = (" ".join(("{:1d}").format(bit) for bit in bits_down))
+
+		else:
+			left_bits_up = (state//int(self.sps**(self.N-i-1))%self.sps for i in range(16))
+			right_bits_up = (state//int(self.sps**(self.N-i-1))%self.sps for i in range(self.N//2-16,self.N//2,1))
+
+			str_list_up = [("{:"+str(n_space)+"d}").format(bit) for bit in left_bits_up]
+			str_list_up.append("...")
+			str_list_up.extend(("{:"+str(n_space)+"d}").format(bit) for bit in right_bits_up)
+			s_str_up = (" ".join(str_list_up))
+
+
+			left_bits_down = (state//int(self.sps**(self.N//2-i-1))%self.sps for i in range(16))
+			right_bits_down = (state//int(self.sps**(self.N//2-i-1))%self.sps for i in range(self.N//2-16,self.N//2,1))
+
+			str_list_down = [("{:"+str(n_space)+"d}").format(bit) for bit in left_bits_down]
+			str_list_down.append("...")
+			str_list_down.extend(("{:"+str(n_space)+"d}").format(bit) for bit in right_bits_down)
+			s_str_down = (" ".join(str_list_down))
+
+		if bracket_notation:
+			return "|"+s_str_up+">"  + "|"+s_str_down+">"
+		else:
+			return (s_str_up+s_str_down).replace(' ', '')
+
+	int_to_state.__doc__ = spinless_fermion_basis_1d.int_to_state.__doc__
+
+
+	def state_to_int(self,state):
+		state = state.replace('|','').replace('>','').replace('<','')
+		up_state, down_state = state[:self.N//2], state[self.N//2:]
+		return int(self._basis[self.index(up_state, down_state)])
+
+	state_to_int.__doc__ = spinless_fermion_basis_1d.state_to_int.__doc__
 
 	def partial_trace(self,state,sub_sys_A=None,density=True,subsys_ordering=True,return_rdm=None,enforce_pure=False,return_rdm_EVs=False,sparse=False,alpha=1.0,sparse_diag=True,maxiter=None):
 		"""Calculates reduced density matrix, through a partial trace of a quantum state in a lattice `basis`.
@@ -501,7 +545,7 @@ class spinful_fermion_basis_1d(spinless_fermion_basis_1d,basis_1d):
 					subsys_ordering=subsys_ordering,return_rdm=return_rdm,
 					enforce_pure=enforce_pure,sparse=sparse)
 
-	def ent_entropy(self,state,sub_sys_A=None,density=True,subsys_ordering=True,return_rdm=None,enforce_pure=False,return_rdm_EVs=False,sparse=False,alpha=1.0,sparse_diag=True,maxiter=None):
+	def ent_entropy(self,state,sub_sys_A=None,density=True,subsys_ordering=True,return_rdm=None,enforce_pure=False,return_rdm_EVs=False,sparse=False,alpha=1.0,sparse_diag=True,maxiter=None,svd_solver=None, svd_kwargs=None,):
 		"""Calculates entanglement entropy of subsystem A and the corresponding reduced density matrix
 
 		Notes
@@ -551,6 +595,11 @@ class spinful_fermion_basis_1d(spinless_fermion_basis_1d,basis_1d):
 		maxiter : int, optional
 			Specifies the number of iterations for Lanczos diagonalisation. Look up documentation for 
 			`scipy.sparse.linalg.eigsh() <https://docs.scipy.org/doc/scipy/reference/generated/generated/scipy.sparse.linalg.eigsh.html>`_.
+		svd_solver : object, optional
+			Specifies the svd solver to be used, e.g. `numpy.linalg.svd` or `scipy.linalg.svd`, or a custom solver. Effective when `enforce_pure=True` or `sparse=False`.
+		svd_kwargs : dict, optional
+			Specifies additional arguments for `svd_solver`. 
+
 
 		Returns
 		--------
@@ -589,7 +638,8 @@ class spinful_fermion_basis_1d(spinless_fermion_basis_1d,basis_1d):
 		return basis_1d._ent_entropy(self,state,sub_sys_A,density=density,
 						subsys_ordering=subsys_ordering,return_rdm=return_rdm,
 						enforce_pure=enforce_pure,return_rdm_EVs=return_rdm_EVs,
-						sparse=sparse,alpha=alpha,sparse_diag=sparse_diag,maxiter=maxiter)
+						sparse=sparse,alpha=alpha,sparse_diag=sparse_diag,maxiter=maxiter,
+						svd_solver=svd_solver, svd_kwargs=svd_kwargs, )
 
 	def __type__(self):
 		return "<type 'qspin.basis.fermion_basis_1d'>"
@@ -600,14 +650,7 @@ class spinful_fermion_basis_1d(spinless_fermion_basis_1d,basis_1d):
 	def __name__(self):
 		return "<type 'qspin.basis.fermion_basis_1d'>"
 
-	@property
-	def N(self):
-		"""int: Total number of sites (spin-up + spin-down) the basis is constructed with. NOTE: :math:`N=2L`."""
-		return 2*self._L
-
-	@property
-	def _fermion_basis(self):
-		return True 
+	
 
 	# functions called in base class:
 
@@ -623,6 +666,7 @@ class spinful_fermion_basis_1d(spinless_fermion_basis_1d,basis_1d):
 	def _expand_opstr(self,op,num):
 		return _expand_opstr_spinful(op,num) 
 
+	"""
 	def _get_state(self,b):
 		b = int(b)
 		bits_left = ((b>>(self.N-i-1))&1 for i in range(self.N//2))
@@ -641,7 +685,7 @@ class spinful_fermion_basis_1d(spinless_fermion_basis_1d,basis_1d):
 			str_list = [(temp1.format(i))+self._get_state(b) for i,b in enumerate(self._basis)]
 
 		return tuple(str_list)
-
+	"""
 
 	def _check_symm(self,static,dynamic,photon_basis=None):
 		kblock = self._blocks_1d.get("kblock")

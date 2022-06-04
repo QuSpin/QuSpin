@@ -1,11 +1,10 @@
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><script type="text/javascript">
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><script type="text/javascript">
 
       var _gaq = _gaq || [];
       _gaq.push(['_setAccount', 'UA-110543543-1']);
@@ -17,16 +16,15 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-    <title>quspin.tools.misc.mean_level_spacing &#8212; QuSpin 0.3.3 documentation</title>
-    <link rel="stylesheet" href="../static/classic.css" type="text/css" />
+    <title>quspin.tools.misc.mean_level_spacing &#8212; QuSpin 0.3.6 documentation</title>
     <link rel="stylesheet" href="../static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../static/classic.css" type="text/css" />
     
-    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../static/documentation_options.js"></script>
-    <script type="text/javascript" src="../static/jquery.js"></script>
-    <script type="text/javascript" src="../static/underscore.js"></script>
-    <script type="text/javascript" src="../static/doctools.js"></script>
-    <script type="text/javascript" src="../static/language_data.js"></script>
-    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script id="documentation_options" data-url_root="../" src="../static/documentation_options.js"></script>
+    <script src="../static/jquery.js"></script>
+    <script src="../static/underscore.js"></script>
+    <script src="../static/doctools.js"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -48,8 +46,9 @@
         <li class="right" >
           <a href="quspin.tools.misc.get_matvec_function.html" title="quspin.tools.misc.get_matvec_function"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.3 documentation</a> &#187;</li>
-          <li class="nav-item nav-item-1"><a href="../tools.html" accesskey="U">Tools module (<code class="docutils literal notranslate"><span class="pre">quspin.tools</span></code>)</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.6 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../tools.html" accesskey="U">Tools module (<code class="xref py py-mod docutils literal notranslate"><span class="pre">quspin.tools</span></code>)</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">quspin.tools.misc.mean_level_spacing</a></li> 
       </ul>
     </div>  
 
@@ -58,74 +57,67 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="section" id="quspin-tools-misc-mean-level-spacing">
+  <style> .red {color:#ff0000; font-weight:bold; font-style:italic; } </style>
+<style> .green {color:#00b200; font-weight:bold; font-style:italic; } </style><div class="section" id="quspin-tools-misc-mean-level-spacing">
 <h1>quspin.tools.misc.mean_level_spacing<a class="headerlink" href="#quspin-tools-misc-mean-level-spacing" title="Permalink to this headline">¶</a></h1>
-<dl class="function">
+<dl class="py function">
 <dt id="quspin.tools.misc.mean_level_spacing">
-<code class="descclassname">quspin.tools.misc.</code><code class="descname">mean_level_spacing</code><span class="sig-paren">(</span><em>E</em>, <em>verbose=True</em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/tools/misc.html#mean_level_spacing"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#quspin.tools.misc.mean_level_spacing" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname"><span class="pre">quspin.tools.misc.</span></code><code class="sig-name descname"><span class="pre">mean_level_spacing</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">E</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/tools/misc.html#mean_level_spacing"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quspin.tools.misc.mean_level_spacing" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculates the mean-level spacing of an energy spectrum.</p>
-<p>See mean level spacing, <span class="math notranslate nohighlight">\(\langle\tilde r_\mathrm{W}\rangle\)</span>, in 
+<p>See mean level spacing, <span class="math notranslate nohighlight">\(\langle\tilde r_\mathrm{W}\rangle\)</span>, in
 <a class="reference external" href="https://arxiv.org/pdf/1212.5611.pdf">arXiv:1212.5611</a> for more details.</p>
 <p>For Wigner-Dyson statistics, we have <span class="math notranslate nohighlight">\(\langle\tilde r_\mathrm{W}\rangle\approx 0.53\)</span>, while
 for Poisson statistics: <span class="math notranslate nohighlight">\(\langle\tilde r_\mathrm{W}\rangle\approx 0.38\)</span>.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
-<dt><strong>E</strong> <span class="classifier-delimiter">:</span> <span class="classifier">numpy.ndarray</span></dt>
-<dd><p class="first last">Ordered list of ascending, NONdegenerate energies. If <cite>E</cite> contains a repeating value, the function returns <cite>nan</cite>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>E</strong><span class="classifier">numpy.ndarray</span></dt><dd><p>Ordered list of ascending, NONdegenerate energies. If <cite>E</cite> contains a repeating value, the function returns <cite>nan</cite>.</p>
 </dd>
-<dt><strong>verbose</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool, optional</span></dt>
-<dd><p class="first last">Toggles warning message about degeneracies of the spectrum <cite>E</cite>.</p>
+<dt><strong>verbose</strong><span class="classifier">bool, optional</span></dt><dd><p>Toggles warning message about degeneracies of the spectrum <cite>E</cite>.</p>
 </dd>
 </dl>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
-<dt><strong>float</strong></dt>
-<dd><p class="first last">mean-level spacing.</p>
 </dd>
-<dt><strong>nan</strong></dt>
-<dd><p class="first last">if spectrum <cite>E</cite> has degeneracies.</p>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>float</dt><dd><p>mean-level spacing.</p>
+</dd>
+<dt>nan</dt><dd><p>if spectrum <cite>E</cite> has degeneracies.</p>
 </dd>
 </dl>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 <p class="rubric">Examples</p>
 <p>The following example shows how to calculate the mean level spacing <span class="math notranslate nohighlight">\(\langle\tilde r_\mathrm{W}\rangle\)</span> for the
 spectrum of the ergodic Hamiltonian <span class="math notranslate nohighlight">\(H_1=\sum_jJ S^z_{j+1}S^z + hS^x_j + g S^z_j\)</span>.</p>
-<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
- 2
- 3
- 4
- 5
- 6
- 7
- 8
- 9
-10
-11
-12
-13
-14
-15
-16
-17
-18
-19
-20
-21
-22
-23
-24
-25
-26</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">quspin.operators</span> <span class="kn">import</span> <span class="n">hamiltonian</span> <span class="c1"># Hamiltonians and operators</span>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span>
+<span class="normal">20</span>
+<span class="normal">21</span>
+<span class="normal">22</span>
+<span class="normal">23</span>
+<span class="normal">24</span>
+<span class="normal">25</span>
+<span class="normal">26</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">quspin.operators</span> <span class="kn">import</span> <span class="n">hamiltonian</span> <span class="c1"># Hamiltonians and operators</span>
 <span class="kn">from</span> <span class="nn">quspin.basis</span> <span class="kn">import</span> <span class="n">spin_basis_1d</span> <span class="c1"># Hilbert space spin basis</span>
 <span class="kn">from</span> <span class="nn">quspin.tools.measurements</span> <span class="kn">import</span> <span class="n">mean_level_spacing</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span> <span class="c1"># generic math functions</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span> <span class="c1"># generic math functions</span>
 <span class="c1">#</span>
 <span class="n">L</span><span class="o">=</span><span class="mi">12</span> <span class="c1"># syste size</span>
 <span class="c1"># coupling strenghts</span>
@@ -147,7 +139,7 @@ spectrum of the ergodic Hamiltonian <span class="math notranslate nohighlight">\
 <span class="n">E2</span><span class="o">=</span><span class="n">H2</span><span class="o">.</span><span class="n">eigvalsh</span><span class="p">()</span>
 <span class="c1"># calculate mean level spacing of spectrum E2</span>
 <span class="n">r</span><span class="o">=</span><span class="n">mean_level_spacing</span><span class="p">(</span><span class="n">E2</span><span class="p">)</span>
-<span class="k">print</span><span class="p">(</span><span class="s2">&quot;mean level spacing is&quot;</span><span class="p">,</span> <span class="n">r</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;mean level spacing is&quot;</span><span class="p">,</span> <span class="n">r</span><span class="p">)</span>
 </pre></div>
 </td></tr></table></div>
 </dd></dl>
@@ -155,6 +147,7 @@ spectrum of the ergodic Hamiltonian <span class="math notranslate nohighlight">\
 </div>
 
 
+            <div class="clearer"></div>
           </div>
         </div>
       </div>
@@ -174,17 +167,15 @@ spectrum of the ergodic Hamiltonian <span class="math notranslate nohighlight">\
     </ul>
    </div>
 <div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
+  <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" />
+      <input type="text" name="q" aria-labelledby="searchlabel" />
       <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
     </form>
     </div>
 </div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
+<script>$('#searchbox').show(0);</script>
         </div>
       </div>
       <div class="clearer"></div>
@@ -204,13 +195,14 @@ spectrum of the ergodic Hamiltonian <span class="math notranslate nohighlight">\
         <li class="right" >
           <a href="quspin.tools.misc.get_matvec_function.html" title="quspin.tools.misc.get_matvec_function"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.3 documentation</a> &#187;</li>
-          <li class="nav-item nav-item-1"><a href="../tools.html" >Tools module (<code class="docutils literal notranslate"><span class="pre">quspin.tools</span></code>)</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.6 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../tools.html" >Tools module (<code class="xref py py-mod docutils literal notranslate"><span class="pre">quspin.tools</span></code>)</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">quspin.tools.misc.mean_level_spacing</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &#169; Copyright 2016, Phillip Weinberg and Marin Bukov.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.4.
+        &#169; Copyright 2016, Phillip Weinberg, Markus Schmitt and Marin Bukov.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.5.4.
     </div>
   </body>
 </html>

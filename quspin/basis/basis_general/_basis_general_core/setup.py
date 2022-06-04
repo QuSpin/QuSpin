@@ -28,6 +28,7 @@ def cython_files():
     package_dir = os.path.expandvars(package_dir)
 
     cython_src = glob.glob(os.path.join(package_dir,"*.pyx"))
+    # cython_src = [os.path.join(package_dir,"spinless_fermion_core.pyx")]
     # cython_src = [os.path.join(package_dir,"hcb_core.pyx")]
     # cython_src = [os.path.join(package_dir,"general_basis_utils.pyx")]
 
@@ -45,7 +46,7 @@ def configuration(parent_package='', top_path=None):
     if sys.platform == "win32":
         extra_compile_args=[]
     else:
-        extra_compile_args=["-fno-strict-aliasing","-Wno-unused-variable","-Wno-unknown-pragmas"]
+        extra_compile_args=["-fno-strict-aliasing","-Wno-unused-variable","-Wno-unknown-pragmas","-std=c++11"]
         
     extra_link_args=[]  
       
@@ -56,7 +57,6 @@ def configuration(parent_package='', top_path=None):
     package_dir = os.path.expandvars(package_dir)
 
     depends = glob.glob(os.path.join(package_dir,"source","*.h"))
-    user_header = os.path.join(package_dir,"source","user_basis_core.h")
 
     all_headers = set(glob.glob(os.path.join(package_dir,"source","*.h")))
 
@@ -67,19 +67,13 @@ def configuration(parent_package='', top_path=None):
     src_spec_headers.remove(os.path.join(package_dir,"source","general_basis_core.h"))
 
     # remove specific headers from all the headers to get the shared headers.
+    
     global_headers = list(all_headers - src_spec_headers)
-
 
     extension_kwargs = dict(include_dirs=get_include_dirs(),
                             extra_compile_args=extra_compile_args,
                             extra_link_args=extra_link_args,
                             language="c++")
-
-    utils_src = os.path.join(package_dir,"general_basis_utils.cpp")
-    utils_src_header = os.path.join(package_dir,"source","general_basis_bitops.h")
-    depends = global_headers+[utils_src_header]
-    config.add_extension('general_basis_utils',sources=utils_src,
-        depends=depends,**extension_kwargs)
 
     hcp_src = os.path.join(package_dir,"hcb_core.cpp")
     hcp_src_header = os.path.join(package_dir,"source","hcb_basis_core.h")
@@ -87,16 +81,16 @@ def configuration(parent_package='', top_path=None):
     config.add_extension('hcb_core',sources=hcp_src,
         depends=depends,**extension_kwargs)
 
-    boson_src = os.path.join(package_dir,"boson_core.cpp")
-    boson_src_header = os.path.join(package_dir,"source","boson_basis_core.h")
-    depends = global_headers+[boson_src_header]
-    config.add_extension('boson_core',sources=boson_src,
-        depends=depends,**extension_kwargs)
-
     higher_spin_src = os.path.join(package_dir,"higher_spin_core.cpp") 
     higher_spin_src_header = os.path.join(package_dir,"source","higher_spin_basis_core.h")
     depends = global_headers+[higher_spin_src_header]
     config.add_extension('higher_spin_core',sources=higher_spin_src,
+        depends=depends,**extension_kwargs)
+
+    boson_src = os.path.join(package_dir,"boson_core.cpp")
+    boson_src_header = os.path.join(package_dir,"source","boson_basis_core.h")
+    depends = global_headers+[boson_src_header]
+    config.add_extension('boson_core',sources=boson_src,
         depends=depends,**extension_kwargs)
 
     spinless_fermion_src = os.path.join(package_dir,"spinless_fermion_core.cpp") 
@@ -112,7 +106,16 @@ def configuration(parent_package='', top_path=None):
         depends=depends,**extension_kwargs)
 
     user_src = os.path.join(package_dir,"user_core.cpp") 
-    config.add_extension('user_core',sources=user_src,depends=[user_header],**extension_kwargs)
+    user_src_header = os.path.join(package_dir,"source","user_basis_core.h")
+    depends = global_headers+[user_src_header]
+    config.add_extension('user_core',sources=user_src,depends=depends,**extension_kwargs)
+
+    utils_src = os.path.join(package_dir,"general_basis_utils.cpp")
+    utils_src_header = os.path.join(package_dir,"source","general_basis_bitops.h")
+    depends = global_headers+[utils_src_header]
+    config.add_extension('general_basis_utils',sources=utils_src,
+        depends=depends,**extension_kwargs)
+
 
     return config
 

@@ -3,6 +3,7 @@
 
 #include "numpy/ndarraytypes.h"
 #include "boost/multiprecision/cpp_int.hpp"
+#include "boost/numeric/conversion/cast.hpp"
 
 namespace basis_general {
 
@@ -15,6 +16,17 @@ typedef boost::multiprecision::number<boost::multiprecision::cpp_int_backend<204
 typedef boost::multiprecision::number<boost::multiprecision::cpp_int_backend<4096, 4096, boost::multiprecision::unsigned_magnitude, boost::multiprecision::unchecked, void> > uint4096_t;
 typedef boost::multiprecision::number<boost::multiprecision::cpp_int_backend<8192, 8192, boost::multiprecision::unsigned_magnitude, boost::multiprecision::unchecked, void> > uint8192_t;
 typedef boost::multiprecision::number<boost::multiprecision::cpp_int_backend<16384, 16384, boost::multiprecision::unsigned_magnitude, boost::multiprecision::unchecked, void> > uint16384_t;
+
+template<class J,class I>
+inline J integer_cast(I s){
+  try 
+  {
+    return boost::numeric_cast<J>(s);; // This conversion succeeds (is in range)
+  }
+  catch(boost::numeric::positive_overflow& e) {
+    return -1;
+  }
+}
 
 template<typename I>
 struct bit_info{};

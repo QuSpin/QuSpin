@@ -1,11 +1,10 @@
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><script type="text/javascript">
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><script type="text/javascript">
 
       var _gaq = _gaq || [];
       _gaq.push(['_setAccount', 'UA-110543543-1']);
@@ -17,16 +16,14 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-    <title>quspin.basis.tensor &#8212; QuSpin 0.3.3 documentation</title>
-    <link rel="stylesheet" href="../../../static/classic.css" type="text/css" />
+    <title>quspin.basis.tensor &#8212; QuSpin 0.3.6 documentation</title>
     <link rel="stylesheet" href="../../../static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../../static/classic.css" type="text/css" />
     
-    <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../static/documentation_options.js"></script>
-    <script type="text/javascript" src="../../../static/jquery.js"></script>
-    <script type="text/javascript" src="../../../static/underscore.js"></script>
-    <script type="text/javascript" src="../../../static/doctools.js"></script>
-    <script type="text/javascript" src="../../../static/language_data.js"></script>
-    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script id="documentation_options" data-url_root="../../../" src="../../../static/documentation_options.js"></script>
+    <script src="../../../static/jquery.js"></script>
+    <script src="../../../static/underscore.js"></script>
+    <script src="../../../static/doctools.js"></script>
     
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" /> 
@@ -40,8 +37,9 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">QuSpin 0.3.3 documentation</a> &#187;</li>
-          <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="../../../index.html">QuSpin 0.3.6 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">quspin.basis.tensor</a></li> 
       </ul>
     </div>  
 
@@ -51,17 +49,17 @@
           <div class="body" role="main">
             
   <h1>Source code for quspin.basis.tensor</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">print_function</span>
-<span class="kn">from</span> <span class="nn">.base</span> <span class="k">import</span> <span class="n">basis</span><span class="p">,</span><span class="n">MAXPRINT</span>
+<span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span>
+<span class="kn">from</span> <span class="nn">.base</span> <span class="kn">import</span> <span class="n">basis</span><span class="p">,</span><span class="n">MAXPRINT</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">_np</span>
-<span class="kn">from</span> <span class="nn">scipy</span> <span class="k">import</span> <span class="n">sparse</span> <span class="k">as</span> <span class="n">_sp</span>
-<span class="kn">from</span> <span class="nn">scipy.sparse</span> <span class="k">import</span> <span class="n">linalg</span> <span class="k">as</span> <span class="n">_sla</span>
-<span class="kn">from</span> <span class="nn">scipy</span> <span class="k">import</span> <span class="n">linalg</span> <span class="k">as</span> <span class="n">_la</span>
-<span class="kn">from</span> <span class="nn">scipy.sparse.linalg</span> <span class="k">import</span> <span class="n">eigsh</span>
-<span class="kn">from</span> <span class="nn">numpy.linalg</span> <span class="k">import</span> <span class="n">eigvalsh</span><span class="p">,</span><span class="n">svd</span>
-<span class="kn">from</span> <span class="nn">._reshape_subsys</span> <span class="k">import</span> <span class="n">_tensor_reshape_pure</span><span class="p">,</span><span class="n">_tensor_partial_trace_pure</span>
-<span class="kn">from</span> <span class="nn">._reshape_subsys</span> <span class="k">import</span> <span class="n">_tensor_partial_trace_mixed</span><span class="p">,</span><span class="n">_tensor_partial_trace_sparse_pure</span>
+<span class="kn">from</span> <span class="nn">scipy</span> <span class="kn">import</span> <span class="n">sparse</span> <span class="k">as</span> <span class="n">_sp</span>
+<span class="kn">from</span> <span class="nn">scipy.sparse</span> <span class="kn">import</span> <span class="n">linalg</span> <span class="k">as</span> <span class="n">_sla</span>
+<span class="kn">from</span> <span class="nn">scipy</span> <span class="kn">import</span> <span class="n">linalg</span> <span class="k">as</span> <span class="n">_la</span>
+<span class="kn">from</span> <span class="nn">scipy.sparse.linalg</span> <span class="kn">import</span> <span class="n">eigsh</span>
+<span class="kn">from</span> <span class="nn">numpy.linalg</span> <span class="kn">import</span> <span class="n">eigvalsh</span><span class="p">,</span><span class="n">svd</span>
+<span class="kn">from</span> <span class="nn">._reshape_subsys</span> <span class="kn">import</span> <span class="n">_tensor_reshape_pure</span><span class="p">,</span><span class="n">_tensor_partial_trace_pure</span>
+<span class="kn">from</span> <span class="nn">._reshape_subsys</span> <span class="kn">import</span> <span class="n">_tensor_partial_trace_mixed</span><span class="p">,</span><span class="n">_tensor_partial_trace_sparse_pure</span>
 <span class="kn">import</span> <span class="nn">warnings</span>
 
 <span class="n">_dtypes</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;f&quot;</span><span class="p">:</span><span class="n">_np</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span><span class="s2">&quot;d&quot;</span><span class="p">:</span><span class="n">_np</span><span class="o">.</span><span class="n">float64</span><span class="p">,</span><span class="s2">&quot;F&quot;</span><span class="p">:</span><span class="n">_np</span><span class="o">.</span><span class="n">complex64</span><span class="p">,</span><span class="s2">&quot;D&quot;</span><span class="p">:</span><span class="n">_np</span><span class="o">.</span><span class="n">complex128</span><span class="p">}</span>
@@ -72,8 +70,7 @@
 <div class="viewcode-block" id="tensor_basis"><a class="viewcode-back" href="../../../generated/quspin.basis.tensor_basis.html#quspin.basis.tensor_basis">[docs]</a><span class="k">class</span> <span class="nc">tensor_basis</span><span class="p">(</span><span class="n">basis</span><span class="p">):</span>
 	<span class="sd">&quot;&quot;&quot;Constructs basis in tensor product Hilbert space.</span>
 
-<span class="sd">		The `tensor_basis` class combines two basis objects `basis1` and `basis2` together into a new basis </span>
-<span class="sd">		object which can be then used, e.g., to create the Hamiltonian over the tensor product Hilbert space:</span>
+<span class="sd">		The `tensor_basis` class combines two basis objects `basis1` and `basis2` together into a new basis object which can be then used, e.g., to create the Hamiltonian over the tensor product Hilbert space:</span>
 
 <span class="sd">		.. math::</span>
 <span class="sd">			\\mathcal{H}=\\mathcal{H}_1\\otimes\\mathcal{H}_2</span>
@@ -81,10 +78,12 @@
 <span class="sd">		Notes</span>
 <span class="sd">		-----</span>
 
-<span class="sd">		The `tensor_basis` operator strings are separated by a pipe symbol, &#39;|&#39;. However, the index array has</span>
-<span class="sd">		NO pipe symbol.</span>
+<span class="sd">		* The `tensor_basis` operator strings are separated by a pipe symbol, &quot;|&quot;. However, the index array has NO pipe symbol.</span>
+
+<span class="sd">		* If two fermion basis constructors are used, `tensor_basis` will assume that the two fermion species are distinguishable, i.e. their operators will commute (instead of anti-commute). For anticommuting fermion species, use the `spinful_fermion_basis_*` constructors.</span>
 
 <span class="sd">		The `tensor_basis` class does not allow one to make use of symmetries, save for particle conservation.</span>
+
 
 <span class="sd">		Examples</span>
 <span class="sd">		---------</span>
@@ -103,7 +102,7 @@
 <span class="sd">			:lines: 7-</span>
 
 <span class="sd">	&quot;&quot;&quot;</span>
-<div class="viewcode-block" id="tensor_basis.__init__"><a class="viewcode-back" href="../../../generated/quspin.basis.tensor_basis.html#quspin.basis.tensor_basis.__init__">[docs]</a>	<span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="o">*</span><span class="n">basis_list</span><span class="p">):</span>
+<div class="viewcode-block" id="tensor_basis.__init__"><a class="viewcode-back" href="../../../generated/quspin.basis.tensor_basis.html#quspin.basis.tensor_basis.__init__">[docs]</a>	<span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="o">*</span><span class="n">basis_list</span><span class="p">):</span>
 		<span class="sd">&quot;&quot;&quot;Initialises the `tensor_basis` object (basis for tensor product Hilbert spaces).</span>
 
 <span class="sd">		Parameters</span>
@@ -160,6 +159,14 @@
 		<span class="sd">&quot;&quot;&quot;:obj:`basis`: all others basis constructors except for the first one of the `basis` objects list to be tensored.&quot;&quot;&quot;</span>
 		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_basis_right</span>
 
+	<span class="nd">@property</span>
+	<span class="k">def</span> <span class="nf">N</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot;tuple: the value of `N` attribute from all the basis objects tensored together in a tuple ordered according to the input basis list.&quot;&quot;&quot;</span>
+		<span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_basis_right</span><span class="p">,</span><span class="n">tensor_basis</span><span class="p">):</span>
+			<span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_basis_left</span><span class="o">.</span><span class="n">N</span><span class="p">,)</span><span class="o">+</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_basis_right</span><span class="o">.</span><span class="n">N</span><span class="p">,)</span>
+		<span class="k">else</span><span class="p">:</span>
+			<span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_basis_left</span><span class="o">.</span><span class="n">N</span><span class="p">,)</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">_basis_right</span><span class="o">.</span><span class="n">N</span>
+	
 
 
 <div class="viewcode-block" id="tensor_basis.Op"><a class="viewcode-back" href="../../../generated/quspin.basis.tensor_basis.html#quspin.basis.tensor_basis.Op">[docs]</a>	<span class="k">def</span> <span class="nf">Op</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">opstr</span><span class="p">,</span><span class="n">indx</span><span class="p">,</span><span class="n">J</span><span class="p">,</span><span class="n">dtype</span><span class="p">):</span>
@@ -222,16 +229,18 @@
 		<span class="n">n1</span> <span class="o">=</span> <span class="n">row_left</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 		<span class="n">n2</span> <span class="o">=</span> <span class="n">row_right</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 
-
 		<span class="k">if</span> <span class="n">n1</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">n2</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-			<span class="n">row_left</span> <span class="o">=</span> <span class="n">row_left</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dtype</span><span class="p">)</span>
+			<span class="n">row_left</span> <span class="o">=</span> <span class="n">row_left</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dtype</span><span class="p">,</span><span class="n">copy</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+			<span class="n">row_right</span> <span class="o">=</span> <span class="n">row_right</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dtype</span><span class="p">,</span><span class="n">copy</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 			<span class="n">row_left</span> <span class="o">*=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_basis_right</span><span class="o">.</span><span class="n">Ns</span>
+
 			<span class="n">row</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">kron</span><span class="p">(</span><span class="n">row_left</span><span class="p">,</span><span class="n">_np</span><span class="o">.</span><span class="n">ones_like</span><span class="p">(</span><span class="n">row_right</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="n">_np</span><span class="o">.</span><span class="n">int8</span><span class="p">))</span>
 			<span class="n">row</span> <span class="o">+=</span> <span class="n">_np</span><span class="o">.</span><span class="n">kron</span><span class="p">(</span><span class="n">_np</span><span class="o">.</span><span class="n">ones_like</span><span class="p">(</span><span class="n">row_left</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="n">_np</span><span class="o">.</span><span class="n">int8</span><span class="p">),</span><span class="n">row_right</span><span class="p">)</span>
 
 			<span class="k">del</span> <span class="n">row_left</span><span class="p">,</span><span class="n">row_right</span>
 
-			<span class="n">col_left</span> <span class="o">=</span> <span class="n">col_left</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dtype</span><span class="p">)</span>
+			<span class="n">col_left</span> <span class="o">=</span> <span class="n">col_left</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dtype</span><span class="p">,</span><span class="n">copy</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+			<span class="n">col_right</span> <span class="o">=</span> <span class="n">col_right</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dtype</span><span class="p">,</span><span class="n">copy</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 			<span class="n">col_left</span> <span class="o">*=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_basis_right</span><span class="o">.</span><span class="n">Ns</span>
 			<span class="n">col</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">kron</span><span class="p">(</span><span class="n">col_left</span><span class="p">,</span><span class="n">_np</span><span class="o">.</span><span class="n">ones_like</span><span class="p">(</span><span class="n">col_right</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="n">_np</span><span class="o">.</span><span class="n">int8</span><span class="p">))</span>
 			<span class="n">col</span> <span class="o">+=</span> <span class="n">_np</span><span class="o">.</span><span class="n">kron</span><span class="p">(</span><span class="n">_np</span><span class="o">.</span><span class="n">ones_like</span><span class="p">(</span><span class="n">col_left</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="n">_np</span><span class="o">.</span><span class="n">int8</span><span class="p">),</span><span class="n">col_right</span><span class="p">)</span>
@@ -284,6 +293,17 @@
 
 
 <div class="viewcode-block" id="tensor_basis.get_vec"><a class="viewcode-back" href="../../../generated/quspin.basis.tensor_basis.html#quspin.basis.tensor_basis.get_vec">[docs]</a>	<span class="k">def</span> <span class="nf">get_vec</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">v0</span><span class="p">,</span><span class="n">sparse</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">full_left</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">full_right</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+		<span class="sd">&quot;&quot;&quot; DEPRECATED (cf `project_from`). Transforms state from symmetry-reduced basis to full (symmetry-free) basis.</span>
+
+<span class="sd">		Notes</span>
+<span class="sd">		-----</span>
+<span class="sd">		This function is :red:`deprecated`. Use `project_from()` instead (the inverse function, `project_to()`, is currently available in the `basis_general` classes only). </span>
+
+<span class="sd">		&quot;&quot;&quot;</span>
+
+		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">project_from</span><span class="p">(</span><span class="n">v0</span><span class="p">,</span><span class="n">sparse</span><span class="o">=</span><span class="n">sparse</span><span class="p">,</span><span class="n">full_left</span><span class="o">=</span><span class="n">full_left</span><span class="p">,</span><span class="n">full_right</span><span class="o">=</span><span class="n">full_right</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="tensor_basis.project_from"><a class="viewcode-back" href="../../../generated/quspin.basis.tensor_basis.html#quspin.basis.tensor_basis.project_from">[docs]</a>	<span class="k">def</span> <span class="nf">project_from</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">v0</span><span class="p">,</span><span class="n">sparse</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">full_left</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">full_right</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 		<span class="sd">&quot;&quot;&quot;Transforms state from symmetry-reduced basis to full (symmetry-free) basis.</span>
 
 <span class="sd">		Notes</span>
@@ -312,7 +332,7 @@
 <span class="sd">		Examples</span>
 <span class="sd">		--------</span>
 
-<span class="sd">		&gt;&gt;&gt; v_full = get_vec(v0)</span>
+<span class="sd">		&gt;&gt;&gt; v_full = project_from(v0)</span>
 <span class="sd">		&gt;&gt;&gt; print(v_full.shape, v0.shape)</span>
 
 <span class="sd">		&quot;&quot;&quot;</span>
@@ -329,15 +349,15 @@
 		<span class="k">if</span> <span class="n">v0</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
 			<span class="n">v0</span> <span class="o">=</span> <span class="n">v0</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">))</span>
 			<span class="k">if</span> <span class="n">sparse</span><span class="p">:</span>
-				<span class="k">return</span> <span class="n">_combine_get_vecs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">v0</span><span class="p">,</span><span class="n">sparse</span><span class="p">,</span><span class="n">full_left</span><span class="p">,</span><span class="n">full_right</span><span class="p">)</span>
+				<span class="k">return</span> <span class="n">_combine_project_froms</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">v0</span><span class="p">,</span><span class="n">sparse</span><span class="p">,</span><span class="n">full_left</span><span class="p">,</span><span class="n">full_right</span><span class="p">)</span>
 			<span class="k">else</span><span class="p">:</span>
-				<span class="k">return</span> <span class="n">_combine_get_vecs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">v0</span><span class="p">,</span><span class="n">sparse</span><span class="p">,</span><span class="n">full_left</span><span class="p">,</span><span class="n">full_right</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="o">-</span><span class="mi">1</span><span class="p">,))</span>
+				<span class="k">return</span> <span class="n">_combine_project_froms</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">v0</span><span class="p">,</span><span class="n">sparse</span><span class="p">,</span><span class="n">full_left</span><span class="p">,</span><span class="n">full_right</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="o">-</span><span class="mi">1</span><span class="p">,))</span>
 		<span class="k">elif</span> <span class="n">v0</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
 
 			<span class="k">if</span> <span class="n">_sp</span><span class="o">.</span><span class="n">issparse</span><span class="p">(</span><span class="n">v0</span><span class="p">):</span>
 				<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_proj</span><span class="p">(</span><span class="n">v0</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span><span class="n">full_left</span><span class="o">=</span><span class="n">full_left</span><span class="p">,</span><span class="n">full_right</span><span class="o">=</span><span class="n">full_right</span><span class="p">)</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">v0</span><span class="p">)</span>
 
-			<span class="k">return</span> <span class="n">_combine_get_vecs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">v0</span><span class="p">,</span><span class="n">sparse</span><span class="p">,</span><span class="n">full_left</span><span class="p">,</span><span class="n">full_right</span><span class="p">)</span>
+			<span class="k">return</span> <span class="n">_combine_project_froms</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">v0</span><span class="p">,</span><span class="n">sparse</span><span class="p">,</span><span class="n">full_left</span><span class="p">,</span><span class="n">full_right</span><span class="p">)</span>
 		<span class="k">else</span><span class="p">:</span>
 			<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;excpecting v0 to have ndim at most 2&quot;</span><span class="p">)</span></div>
 
@@ -1018,7 +1038,7 @@
 		<span class="k">return</span> <span class="n">str_list</span>		</div>
 
 
-<span class="k">def</span> <span class="nf">_combine_get_vecs</span><span class="p">(</span><span class="n">basis</span><span class="p">,</span><span class="n">v0</span><span class="p">,</span><span class="n">sparse</span><span class="p">,</span><span class="n">full_left</span><span class="p">,</span><span class="n">full_right</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">_combine_project_froms</span><span class="p">(</span><span class="n">basis</span><span class="p">,</span><span class="n">v0</span><span class="p">,</span><span class="n">sparse</span><span class="p">,</span><span class="n">full_left</span><span class="p">,</span><span class="n">full_right</span><span class="p">):</span>
 	<span class="n">Ns1</span><span class="o">=</span><span class="n">basis</span><span class="o">.</span><span class="n">_basis_left</span><span class="o">.</span><span class="n">Ns</span>
 	<span class="n">Ns2</span><span class="o">=</span><span class="n">basis</span><span class="o">.</span><span class="n">_basis_right</span><span class="o">.</span><span class="n">Ns</span>
 
@@ -1043,13 +1063,13 @@
 		<span class="n">v2</span> <span class="o">=</span> <span class="n">V2</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
 
 		<span class="k">if</span> <span class="n">full_left</span><span class="p">:</span>
-			<span class="n">v1</span> <span class="o">=</span> <span class="n">basis</span><span class="o">.</span><span class="n">_basis_left</span><span class="o">.</span><span class="n">get_vec</span><span class="p">(</span><span class="n">v1</span><span class="p">,</span><span class="n">sparse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+			<span class="n">v1</span> <span class="o">=</span> <span class="n">basis</span><span class="o">.</span><span class="n">_basis_left</span><span class="o">.</span><span class="n">project_from</span><span class="p">(</span><span class="n">v1</span><span class="p">,</span><span class="n">sparse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 			
 		<span class="k">if</span> <span class="n">full_right</span><span class="p">:</span>
 			<span class="k">try</span><span class="p">:</span>
-				<span class="n">v2</span> <span class="o">=</span> <span class="n">basis</span><span class="o">.</span><span class="n">_basis_right</span><span class="o">.</span><span class="n">get_vec</span><span class="p">(</span><span class="n">v2</span><span class="p">,</span><span class="n">sparse</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">full_left</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">full_right</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+				<span class="n">v2</span> <span class="o">=</span> <span class="n">basis</span><span class="o">.</span><span class="n">_basis_right</span><span class="o">.</span><span class="n">project_from</span><span class="p">(</span><span class="n">v2</span><span class="p">,</span><span class="n">sparse</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">full_left</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">full_right</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 			<span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
-				<span class="n">v2</span> <span class="o">=</span> <span class="n">basis</span><span class="o">.</span><span class="n">_basis_right</span><span class="o">.</span><span class="n">get_vec</span><span class="p">(</span><span class="n">v2</span><span class="p">,</span><span class="n">sparse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+				<span class="n">v2</span> <span class="o">=</span> <span class="n">basis</span><span class="o">.</span><span class="n">_basis_right</span><span class="o">.</span><span class="n">project_from</span><span class="p">(</span><span class="n">v2</span><span class="p">,</span><span class="n">sparse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
 		<span class="n">temp1</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="n">v1</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="mi">1</span><span class="p">),</span><span class="n">dtype</span><span class="o">=</span><span class="n">_np</span><span class="o">.</span><span class="n">int8</span><span class="p">)</span>
 		<span class="n">temp2</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="n">v2</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="mi">1</span><span class="p">),</span><span class="n">dtype</span><span class="o">=</span><span class="n">_np</span><span class="o">.</span><span class="n">int8</span><span class="p">)</span>
@@ -1067,13 +1087,13 @@
 			<span class="n">v2</span> <span class="o">=</span> <span class="n">V2</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
 
 			<span class="k">if</span> <span class="n">full_left</span><span class="p">:</span>
-				<span class="n">v1</span> <span class="o">=</span> <span class="n">basis</span><span class="o">.</span><span class="n">_basis_left</span><span class="o">.</span><span class="n">get_vec</span><span class="p">(</span><span class="n">v1</span><span class="p">,</span><span class="n">sparse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+				<span class="n">v1</span> <span class="o">=</span> <span class="n">basis</span><span class="o">.</span><span class="n">_basis_left</span><span class="o">.</span><span class="n">project_from</span><span class="p">(</span><span class="n">v1</span><span class="p">,</span><span class="n">sparse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 				
 			<span class="k">if</span> <span class="n">full_right</span><span class="p">:</span>
 				<span class="k">try</span><span class="p">:</span>
-					<span class="n">v2</span> <span class="o">=</span> <span class="n">basis</span><span class="o">.</span><span class="n">_basis_right</span><span class="o">.</span><span class="n">get_vec</span><span class="p">(</span><span class="n">v2</span><span class="p">,</span><span class="n">sparse</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">full_left</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">full_right</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+					<span class="n">v2</span> <span class="o">=</span> <span class="n">basis</span><span class="o">.</span><span class="n">_basis_right</span><span class="o">.</span><span class="n">project_from</span><span class="p">(</span><span class="n">v2</span><span class="p">,</span><span class="n">sparse</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">full_left</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">full_right</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 				<span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
-					<span class="n">v2</span> <span class="o">=</span> <span class="n">basis</span><span class="o">.</span><span class="n">_basis_right</span><span class="o">.</span><span class="n">get_vec</span><span class="p">(</span><span class="n">v2</span><span class="p">,</span><span class="n">sparse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+					<span class="n">v2</span> <span class="o">=</span> <span class="n">basis</span><span class="o">.</span><span class="n">_basis_right</span><span class="o">.</span><span class="n">project_from</span><span class="p">(</span><span class="n">v2</span><span class="p">,</span><span class="n">sparse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
 
 			<span class="n">v1</span> <span class="o">=</span> <span class="n">_sp</span><span class="o">.</span><span class="n">kron</span><span class="p">(</span><span class="n">v1</span><span class="p">,</span><span class="n">temp2</span><span class="p">,</span><span class="nb">format</span><span class="o">=</span><span class="s2">&quot;csr&quot;</span><span class="p">)</span>  
@@ -1089,13 +1109,13 @@
 		<span class="n">v2</span> <span class="o">=</span> <span class="n">V2</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
 
 		<span class="k">if</span> <span class="n">full_left</span><span class="p">:</span>
-			<span class="n">v1</span> <span class="o">=</span> <span class="n">basis</span><span class="o">.</span><span class="n">_basis_left</span><span class="o">.</span><span class="n">get_vec</span><span class="p">(</span><span class="n">v1</span><span class="p">,</span><span class="n">sparse</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+			<span class="n">v1</span> <span class="o">=</span> <span class="n">basis</span><span class="o">.</span><span class="n">_basis_left</span><span class="o">.</span><span class="n">project_from</span><span class="p">(</span><span class="n">v1</span><span class="p">,</span><span class="n">sparse</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 			
 		<span class="k">if</span> <span class="n">full_right</span><span class="p">:</span>
 			<span class="k">try</span><span class="p">:</span>
-				<span class="n">v2</span> <span class="o">=</span> <span class="n">basis</span><span class="o">.</span><span class="n">_basis_right</span><span class="o">.</span><span class="n">get_vec</span><span class="p">(</span><span class="n">v2</span><span class="p">,</span><span class="n">sparse</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">full_left</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">full_right</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+				<span class="n">v2</span> <span class="o">=</span> <span class="n">basis</span><span class="o">.</span><span class="n">_basis_right</span><span class="o">.</span><span class="n">project_from</span><span class="p">(</span><span class="n">v2</span><span class="p">,</span><span class="n">sparse</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">full_left</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">full_right</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 			<span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
-				<span class="n">v2</span> <span class="o">=</span> <span class="n">basis</span><span class="o">.</span><span class="n">_basis_right</span><span class="o">.</span><span class="n">get_vec</span><span class="p">(</span><span class="n">v2</span><span class="p">,</span><span class="n">sparse</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+				<span class="n">v2</span> <span class="o">=</span> <span class="n">basis</span><span class="o">.</span><span class="n">_basis_right</span><span class="o">.</span><span class="n">project_from</span><span class="p">(</span><span class="n">v2</span><span class="p">,</span><span class="n">sparse</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
 
 		<span class="n">temp1</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="n">v1</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="mi">1</span><span class="p">),</span><span class="n">dtype</span><span class="o">=</span><span class="n">_np</span><span class="o">.</span><span class="n">int8</span><span class="p">)</span>
@@ -1111,13 +1131,13 @@
 			<span class="n">v2</span> <span class="o">=</span> <span class="n">V2</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
 
 			<span class="k">if</span> <span class="n">full_left</span><span class="p">:</span>
-				<span class="n">v1</span> <span class="o">=</span> <span class="n">basis</span><span class="o">.</span><span class="n">_basis_left</span><span class="o">.</span><span class="n">get_vec</span><span class="p">(</span><span class="n">v1</span><span class="p">,</span><span class="n">sparse</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+				<span class="n">v1</span> <span class="o">=</span> <span class="n">basis</span><span class="o">.</span><span class="n">_basis_left</span><span class="o">.</span><span class="n">project_from</span><span class="p">(</span><span class="n">v1</span><span class="p">,</span><span class="n">sparse</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 				
 			<span class="k">if</span> <span class="n">full_right</span><span class="p">:</span>
 				<span class="k">try</span><span class="p">:</span>
-					<span class="n">v2</span> <span class="o">=</span> <span class="n">basis</span><span class="o">.</span><span class="n">_basis_right</span><span class="o">.</span><span class="n">get_vec</span><span class="p">(</span><span class="n">v2</span><span class="p">,</span><span class="n">sparse</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">full_left</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">full_right</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+					<span class="n">v2</span> <span class="o">=</span> <span class="n">basis</span><span class="o">.</span><span class="n">_basis_right</span><span class="o">.</span><span class="n">project_from</span><span class="p">(</span><span class="n">v2</span><span class="p">,</span><span class="n">sparse</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">full_left</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">full_right</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 				<span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
-					<span class="n">v2</span> <span class="o">=</span> <span class="n">basis</span><span class="o">.</span><span class="n">_basis_right</span><span class="o">.</span><span class="n">get_vec</span><span class="p">(</span><span class="n">v2</span><span class="p">,</span><span class="n">sparse</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+					<span class="n">v2</span> <span class="o">=</span> <span class="n">basis</span><span class="o">.</span><span class="n">_basis_right</span><span class="o">.</span><span class="n">project_from</span><span class="p">(</span><span class="n">v2</span><span class="p">,</span><span class="n">sparse</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
 			<span class="n">v1</span> <span class="o">=</span>  <span class="n">_np</span><span class="o">.</span><span class="n">kron</span><span class="p">(</span><span class="n">v1</span><span class="p">,</span><span class="n">temp2</span><span class="p">)</span>
 			<span class="n">v2</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">kron</span><span class="p">(</span><span class="n">temp1</span><span class="p">,</span><span class="n">v2</span><span class="p">)</span>
@@ -1166,10 +1186,10 @@
 
 <span class="sd">	# Next thing to do is take those vectors and convert them to their full hilbert space</span>
 <span class="sd">	if full_left:</span>
-<span class="sd">		V1=basis._basis_left.get_vec(V1,sparse)</span>
+<span class="sd">		V1=basis._basis_left.project_from(V1,sparse)</span>
 
 <span class="sd">	if full_right:</span>
-<span class="sd">		V2=basis._basis_right.get_vec(V2,sparse)</span>
+<span class="sd">		V2=basis._basis_right.project_from(V2,sparse)</span>
 
 
 <span class="sd">	# calculate the dimension total hilbert space with no symmetries</span>
@@ -1202,7 +1222,7 @@
 <span class="sd">	return v0</span>
 
 
-<span class="sd">def _combine_get_vecs(basis,V0,sparse,full_left,full_right):</span>
+<span class="sd">def _combine_project_froms(basis,V0,sparse,full_left,full_right):</span>
 <span class="sd">	v0_list=[]</span>
 <span class="sd">	V0=V0.T</span>
 <span class="sd">	for v0 in V0:</span>
@@ -1217,23 +1237,22 @@
 <span class="sd">&quot;&quot;&quot;</span>
 </pre></div>
 
+            <div class="clearer"></div>
           </div>
         </div>
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
 <div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
+  <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../../../search.html" method="get">
-      <input type="text" name="q" />
+      <input type="text" name="q" aria-labelledby="searchlabel" />
       <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
     </form>
     </div>
 </div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
+<script>$('#searchbox').show(0);</script>
         </div>
       </div>
       <div class="clearer"></div>
@@ -1247,13 +1266,14 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">QuSpin 0.3.3 documentation</a> &#187;</li>
-          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="../../../index.html">QuSpin 0.3.6 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">quspin.basis.tensor</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &#169; Copyright 2016, Phillip Weinberg and Marin Bukov.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.4.
+        &#169; Copyright 2016, Phillip Weinberg, Markus Schmitt and Marin Bukov.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.5.4.
     </div>
   </body>
 </html>

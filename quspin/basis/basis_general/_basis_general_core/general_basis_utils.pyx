@@ -32,7 +32,7 @@ def basis_int_to_python_int(basis_int):
 
     Parameters
     -----------
-    basis_int : scalar
+    basis_int: scalar
         integer to be converted
 
     Returns
@@ -84,10 +84,10 @@ def python_int_to_basis_int(python_int,dtype=None):
 
     Parameters
     -----------
-    python_int : int
+    python_int: int
         integer to be converted
-    dtype : dtype, optional
-        data type used to represent the python integer:  `uint32`,`uint64`,`uint256`,`uint1024`,`uint4096`,`uint16384` or `numpy.object`
+    dtype: dtype, optional
+        data type used to represent the python integer:  `uint32`, `uint64`, `uint256`, `uint1024`, `uint4096`, `uint16384`. or `numpy.object`
 
     Returns
     -------
@@ -222,10 +222,10 @@ def basis_zeros(shape,dtype=uint32):
 
     Parameters
     -----------
-    shape : tuple
+    shape: tuple
         shape of the numpy array.
-    dtype : numpy.dtype, optional
-        numpy dtype used to create the array, one can use QuSpin defined dtypes here: `uint32`,`uint64`,`uint256`,`uint1024`,`uint4096`, or `uint16384`.
+    dtype: numpy.dtype, optional
+        numpy dtype used to create the array, one can use QuSpin defined dtypes here: `uint32`, `uint64`, `uint256`, `uint1024`, `uint4096`, or `uint16384`.
 
 
     Returns
@@ -278,10 +278,10 @@ def basis_ones(shape,dtype=uint32):
 
     Parameters
     -----------
-    shape : tuple
+    shape: tuple
         shape of the numpy array.
-    dtype : numpy.dtype, optional
-        numpy dtype used to create the array, one can use QuSpin defined dtypes here: `uint32`,`uint64`,`uint256`,`uint1024`,`uint4096`, or `uint16384`.
+    dtype: numpy.dtype, optional
+        numpy dtype used to create the array, one can use QuSpin defined dtypes here: `uint32`, `uint64`, `uint256`, `uint1024`, `uint4096`, or `uint16384`.
 
 
     Returns
@@ -343,7 +343,7 @@ def get_basis_type(N, Np, sps):
     Returns
     -------
     numpy.dtype object
-        the appropriate dtype size to represent the system. will be one of:  `uint32`,`uint64`,`uint256`,`uint1024`,`uint4096`, or `uint16384`.
+        the appropriate dtype size to represent the system. will be one of:  `uint32`, `uint64`, `uint256`, `uint1024`, `uint4096`, or `uint16384`.
 
     Examples
     --------

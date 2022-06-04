@@ -26,36 +26,67 @@ sys.path.insert(0, os.path.abspath('../../'))
 
 # If your documentation needs a minimal Sphinx version, state it here.
 #
-# needs_sphinx = '1.0'
+# needs_sphinx = '3.0'
 
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
-extensions = ['sphinx.ext.autodoc',
+extensions = [
+
               'sphinx.ext.mathjax',
+
+              'numpydoc',
+
+              'sphinx.ext.autodoc',
+              
               'sphinx.ext.intersphinx',
               'sphinx.ext.coverage',
               'sphinx.ext.autosummary',
               'sphinx.ext.viewcode',
+          #    'sphinx.ext.autosectionlabel', # doesn't seem to work
+      
               'sphinxtogithub',
-              'numpydoc',
+              'sphinx.ext.napoleon',
               'sphinxcontrib.googleanalytics',
+
             ]
 
 
 # -- General configuration ------------------------------------------------
 # autoclass_content = ""  
-autodoc_default_flags = [
-        # Make sure that any autodoc declarations show the right members
-        "members",
-        "inherited-members",
-        "show-inheritance"
-        "no-special-members",
-        "no-private-members",
-        "no-undoc-members"
-]
+# autodoc_default_flags = [
+#         # Make sure that any autodoc declarations show the right members
+#         "members",
+#         "inherited-members",
+#         "show-inheritance",
+#         "no-special-members",
+#         "no-private-members",
+#         "no-undoc-members"
+# ]
+
+autodoc_default_options = {
+        "members": True,
+        "inherited-members": True,
+        "show-inheritance": True,
+        "no-special-members": True,
+        "no-private-members": True,
+        "no-undoc-members": True,
+
+      #  'member-order': 'bysource',
+        'undoc-members': True,
+        'exclude-members': '__init__',
+}
 
 autosummary_generate = True  # Make _autosummary files and include them
+
+# Only the class' docstring is inserted.
+autoclass_content = 'class'
+
+# If true, `todo` and `todoList` produce output, else they produce nothing.
+todo_include_todos = False
+ 
+# remove duplicates 
+numpydoc_show_class_members = False
 
 # # NumPydoc settings
 # numpydoc_show_class_members = True
@@ -92,15 +123,22 @@ master_doc = 'index'
 
 # General information about the project.
 project = u'QuSpin'
-copyright = u'2016, Phillip Weinberg and Marin Bukov'
-author = u'Phillip Weinberg and Marin Bukov'
+copyright = u'2016, Phillip Weinberg, Markus Schmitt and Marin Bukov'
+author = u'Phillip Weinberg, Markus Schmitt and Marin Bukov'
+rst_prolog = open('global.rst', 'r').read()
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
 # built documents.
 #
 # The short X.Y version.
-version = u'0.3.3'
+io = open("../../conda.recipe/quspin/meta.yaml","r")
+meta_file = io.read()
+io.close()
+
+meta_file = meta_file.split()
+ind = meta_file.index("version")
+version = meta_file[ind+2].replace('"','')
 # The full version, including alpha/beta/rc tags.
 release = version
 
@@ -115,7 +153,8 @@ language = None
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
 # This patterns also effect to html_static_path and html_extra_path
-exclude_patterns = []
+#exclude_patterns =  [] #['_build', 'Thumbs.db', '.DS_Store', '.git']
+#exclude_patterns = ['links.rst', 'README.rst']
 
 # The name of the Pygments (syntax highlighting) style to use.
 pygments_style = 'sphinx'
@@ -145,7 +184,7 @@ html_theme_options = {
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
-html_static_path = ['_static']
+#html_static_path = ['_static']
 
 
 # -- Options for HTMLHelp output ------------------------------------------
@@ -179,7 +218,7 @@ latex_elements = {
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
     (master_doc, 'QuSpin.tex', u'QuSpin Documentation',
-     u'Phillip Weinberg and Marin Bukov', 'manual'),
+     u'Phillip Weinberg, Markus Schmitt and Marin Bukov', 'manual'),
 ]
 
 

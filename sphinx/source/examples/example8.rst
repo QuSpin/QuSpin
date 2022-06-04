@@ -1,10 +1,12 @@
+:orphan:
+
 .. _example8-label:
 
-The Gross-Pitaevskii Equation and Nonlinear Time Evolution
-----------------------------------------------------------
+User-defined ODEs: the Gross-Pitaevskii Equation and Nonlinear Time Evolution
+-----------------------------------------------------------------------------
 
 
-This example shows how to code up the Gross-Pitaevskii equation:
+This example shows how to code up the Gross-Pitaevskii equation for a system in a one-dimensional lattice subject to a harmonic trapping potential:
 
 .. math::
 	i\partial_t\psi_j(t) &=& -J\left( \psi_{j-1}(t) + \psi_{j+1}(t)\right) + \frac{1}{2}\kappa_\mathrm{trap}(t)(j-j_0)^2\psi_j(t) + U|\psi_j(t)|^2\psi_j(t), \nonumber \\

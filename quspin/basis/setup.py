@@ -11,6 +11,7 @@ def get_include_dirs():
 
 	include_dirs = [numpy.get_include()]
 	include_dirs.append(os.path.join(package_dir,"_basis_utils"))
+	include_dirs.append(os.path.join(package_dir,"basis_general/_basis_general_core/source"))
 
 	
 	if sys.platform == "win32":
@@ -57,7 +58,11 @@ def configuration(parent_package='',top_path=None):
 	if sys.platform == "darwin":
 		extra_compile_args.append("-std=c++11")
 
-	depends = [os.path.join(package_dir,"_basis_utils","shuffle_sites.h")]
+	depends = [
+				os.path.join(package_dir,"_basis_utils","shuffle_sites.h"),
+				os.path.join(package_dir,"_basis_utils","ptrace_ordering.h"),
+				os.path.join(package_dir,"basis_general/_basis_general_core/source","spinless_fermion_basis_core.h"),	   
+			   ]
 	basis_utils_src = os.path.join(package_dir,"_basis_utils.cpp")	
 	config.add_extension('_basis_utils',sources=basis_utils_src,include_dirs=get_include_dirs(),
 							language="c++",depends=depends,extra_compile_args=extra_compile_args,extra_link_args=extra_link_args)

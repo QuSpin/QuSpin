@@ -1,0 +1,196 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><script type="text/javascript">
+
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-110543543-1']);
+      _gaq.push(['_trackPageview']);
+
+      (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+    </script>
+    <title>quspin.tools.lanczos.FTLM_static_iteration &#8212; QuSpin 0.3.6 documentation</title>
+    <link rel="stylesheet" href="../static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../static/classic.css" type="text/css" />
+    
+    <script id="documentation_options" data-url_root="../" src="../static/documentation_options.js"></script>
+    <script src="../static/jquery.js"></script>
+    <script src="../static/underscore.js"></script>
+    <script src="../static/doctools.js"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="quspin.tools.Floquet.Floquet" href="quspin.tools.Floquet.Floquet.html" />
+    <link rel="prev" title="quspin.tools.lanczos.LTLM_static_iteration" href="quspin.tools.lanczos.LTLM_static_iteration.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="quspin.tools.Floquet.Floquet.html" title="quspin.tools.Floquet.Floquet"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="quspin.tools.lanczos.LTLM_static_iteration.html" title="quspin.tools.lanczos.LTLM_static_iteration"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.6 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../tools.html" accesskey="U">Tools module (<code class="xref py py-mod docutils literal notranslate"><span class="pre">quspin.tools</span></code>)</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">quspin.tools.lanczos.FTLM_static_iteration</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <style> .red {color:#ff0000; font-weight:bold; font-style:italic; } </style>
+<style> .green {color:#00b200; font-weight:bold; font-style:italic; } </style><div class="section" id="quspin-tools-lanczos-ftlm-static-iteration">
+<h1>quspin.tools.lanczos.FTLM_static_iteration<a class="headerlink" href="#quspin-tools-lanczos-ftlm-static-iteration" title="Permalink to this headline">¶</a></h1>
+<dl class="py function">
+<dt id="quspin.tools.lanczos.FTLM_static_iteration">
+<code class="sig-prename descclassname"><span class="pre">quspin.tools.lanczos.</span></code><code class="sig-name descname"><span class="pre">FTLM_static_iteration</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">O_dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">E</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">V</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Q_T</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">beta</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/tools/lanczos/_FTLM.html#FTLM_static_iteration"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quspin.tools.lanczos.FTLM_static_iteration" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate iteration for Finite-Temperature Lanczos method.</p>
+<p>Here we give a brief overview of this method based on <a class="reference external" href="https://arxiv.org/abs/1111.5931">arXiv:1111.5931</a>.</p>
+<p>One would naively think that it would require full diagonalization to calculate thermodynamic expectation values
+for a quantum system as one has to fully diagonalize the Hamiltonian to evaluate:</p>
+<div class="math notranslate nohighlight">
+\[\langle O\rangle_\beta = \frac{1}{Z}Tr\left(e^{-\beta H}O\right)\]</div>
+<p>with the partition function defined as: <span class="math notranslate nohighlight">\(Z=Tr\left(e^{-\beta H}\right)\)</span>. The idea behind the
+Finite-Temperature Lanczos Method (FTLM) is to use quantum typicality as well as Krylov subspaces to
+simplify this calculation. Typicality states that the trace of an operator can be approximated as an average
+of that same operator with random vectors in the Hilbert-space sampled with the Harr measure. As a corollary, it
+is known that the fluctuations of this average for any finite sample set will converge to 0 as the size of
+the Hilbert space increases. Mathematically this is expressed as:</p>
+<div class="math notranslate nohighlight">
+\[\frac{1}{\dim\mathcal{H}}Tr\left(e^{-\beta H}O\right)\approx \frac{1}{N_r}\sum_r\langle r| e^{-\beta H}O |r\rangle\]</div>
+<p>where <span class="math notranslate nohighlight">\(|r\rangle\)</span> is a random state from the Harr measure of hilbert space <span class="math notranslate nohighlight">\(\mathcal{H}\)</span> if the
+Hamiltonian. An issue can occur when the temperature goes to zero as the overlap <span class="math notranslate nohighlight">\(\langle r| e^{-\beta H}O |r\rangle\)</span> will
+be quite small for most states <span class="math notranslate nohighlight">\(|r\rangle\)</span>. Hence, this will require more random realizations to converge. Therefore,
+this method is really only useful at high temperatures. Next, the idea is to use Lanczos to approximate the matrix exponential.
+The eigenstates from the lanczos basis can effectively be inserted as an identity operator:</p>
+<div class="math notranslate nohighlight">
+\[\frac{1}{\dim\mathcal{H}}Tr\left(e^{-\beta H}O\right)\approx \frac{1}{N_r}\sum_r\langle r|e^{-\beta H}O|r\rangle\approx \frac{1}{N_r}\sum_r\sum_{i=1}^m e^{-\beta\epsilon^{(r)}_i}\langle r|\psi^{(r)}_i\rangle\langle\psi^{(r)}_i|O|r\rangle = \frac{1}{N_r}\sum_r \langle O\rangle_r \equiv \overline{\langle O\rangle_r}\]</div>
+<p>Now going back to the thermal expecation value, we can use the expression above to calculate <span class="math notranslate nohighlight">\(\frac{1}{Z}Tr\left(e^{-\beta H}O\right)\)</span>
+by noting that the partition function is simply the expecation value of the identity operator: <span class="math notranslate nohighlight">\(Z=Tr\left(e^{-\beta H}I\right)\)</span> and hence
+the thermal expecation value is approximated by:</p>
+<div class="math notranslate nohighlight">
+\[\langle O\rangle_\beta \approx \frac{\overline{\langle O\rangle_r}}{\overline{\langle I\rangle_r}}\]</div>
+<p>The idea behind this function is to generate the the expecation value <span class="math notranslate nohighlight">\(\langle O\rangle_r\)</span> and <span class="math notranslate nohighlight">\(\langle I\rangle_r\)</span>
+for a lanczos basis generated from an initial state <span class="math notranslate nohighlight">\(|r\rangle\)</span>. Therefore if the user would like to calculate the thermal expecation value all one
+has to do call this function for each lanczos basis generated from a random state <span class="math notranslate nohighlight">\(|r\rangle\)</span>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>O_dict</strong><span class="classifier">dictionary of Python Objects</span></dt><dd><p>These Objects must have a ‘dot’ method that calculates a matrix vector product on a numpy.ndarray[:], the effective shape of these objects should be (n,n).</p>
+</dd>
+<dt><strong>E</strong><span class="classifier">array_like, (m,)</span></dt><dd><p>Eigenvalues for the Krylov projection of some operator.</p>
+</dd>
+<dt><strong>V</strong><span class="classifier">array_like, (m,m)</span></dt><dd><p>Eigenvectors for the Krylov projection of some operator.</p>
+</dd>
+<dt><strong>Q_T</strong><span class="classifier">iterator over rows of Q_T</span></dt><dd><p>generator or ndarray that contains the lanczos basis associated with E, and V.</p>
+</dd>
+<dt><strong>beta</strong><span class="classifier">scalar/array_like, any shape</span></dt><dd><p>Inverse temperature values to evaluate.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>Result_dict: dictionary</dt><dd><p>A dictionary storying the results for a single iteration of the FTLM. The results are stored in numpy.ndarrays
+that have the same shape as <cite>beta</cite>. The keys of <cite>Result_dict</cite> are the same as the keys in <cite>O_dict</cite> and the values
+associated with the given key in <cite>Result_dict</cite> are the expectation values for the operator in <cite>O_dict</cite> with the same key.</p>
+</dd>
+<dt>I_expt: numpy.ndarray, same shape as <cite>beta</cite></dt><dd><p>The expecation value of the identity operator for each beta.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<ul class="simple">
+<li><p>The amount of memory used by this function scales like: <span class="math notranslate nohighlight">\(nN_{op}\)</span> with <span class="math notranslate nohighlight">\(n\)</span> being the size of the full Hilbert space and <span class="math notranslate nohighlight">\(N_{op}\)</span> is the number of input operators.</p></li>
+<li><p>FTLM does not converge very well at low temperatures, see function for low-temperature lanczos iterations.</p></li>
+<li><p>One has to be careful as typicality only applies to the trace operation over the entire Hilbert space. Using symmetries is possible, however it requires the user to keep track of the weights in the different sectors.</p></li>
+</ul>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">beta</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">10</span><span class="p">,</span><span class="mi">101</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">E</span><span class="p">,</span> <span class="n">V</span><span class="p">,</span> <span class="n">Q_T</span> <span class="o">=</span> <span class="n">lanczos_full</span><span class="p">(</span><span class="n">H</span><span class="p">,</span><span class="n">v0</span><span class="p">,</span><span class="mi">20</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Res</span><span class="p">,</span><span class="n">Id</span> <span class="o">=</span> <span class="n">FTLM_static_iteration</span><span class="p">(</span><span class="n">Obs_dict</span><span class="p">,</span><span class="n">E</span><span class="p">,</span><span class="n">V</span><span class="p">,</span><span class="n">Q_T</span><span class="p">,</span><span class="n">beta</span><span class="o">=</span><span class="n">beta</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</div>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="quspin.tools.lanczos.LTLM_static_iteration.html"
+                        title="previous chapter">quspin.tools.lanczos.LTLM_static_iteration</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="quspin.tools.Floquet.Floquet.html"
+                        title="next chapter">quspin.tools.Floquet.Floquet</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../sources/generated/quspin.tools.lanczos.FTLM_static_iteration.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="quspin.tools.Floquet.Floquet.html" title="quspin.tools.Floquet.Floquet"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="quspin.tools.lanczos.LTLM_static_iteration.html" title="quspin.tools.lanczos.LTLM_static_iteration"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.6 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../tools.html" >Tools module (<code class="xref py py-mod docutils literal notranslate"><span class="pre">quspin.tools</span></code>)</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">quspin.tools.lanczos.FTLM_static_iteration</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2016, Phillip Weinberg, Markus Schmitt and Marin Bukov.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.5.4.
+    </div>
+  </body>
+</html>

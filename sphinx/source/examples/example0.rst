@@ -1,4 +1,7 @@
+:orphan:
+
 .. _example0-label:
+
 
 Exact Diagonalisation of Spin Hamiltonians
 ------------------------------------------

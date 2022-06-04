@@ -1,11 +1,10 @@
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><script type="text/javascript">
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><script type="text/javascript">
 
       var _gaq = _gaq || [];
       _gaq.push(['_setAccount', 'UA-110543543-1']);
@@ -17,16 +16,15 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-    <title>Operators module (quspin.operators) &#8212; QuSpin 0.3.3 documentation</title>
-    <link rel="stylesheet" href="static/classic.css" type="text/css" />
+    <title>Operators module (quspin.operators) &#8212; QuSpin 0.3.6 documentation</title>
     <link rel="stylesheet" href="static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="static/classic.css" type="text/css" />
     
-    <script type="text/javascript" id="documentation_options" data-url_root="./" src="static/documentation_options.js"></script>
-    <script type="text/javascript" src="static/jquery.js"></script>
-    <script type="text/javascript" src="static/underscore.js"></script>
-    <script type="text/javascript" src="static/doctools.js"></script>
-    <script type="text/javascript" src="static/language_data.js"></script>
-    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script id="documentation_options" data-url_root="./" src="static/documentation_options.js"></script>
+    <script src="static/jquery.js"></script>
+    <script src="static/underscore.js"></script>
+    <script src="static/doctools.js"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -48,7 +46,8 @@
         <li class="right" >
           <a href="generated/quspin.basis.bitwise_rightshift.html" title="quspin.basis.bitwise_rightshift"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">QuSpin 0.3.3 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">QuSpin 0.3.6 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Operators module (<code class="xref py py-mod docutils literal notranslate"><span class="pre">quspin.operators</span></code>)</a></li> 
       </ul>
     </div>  
 
@@ -57,15 +56,16 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <span class="target" id="module-quspin.operators"></span><div class="section" id="operators-module-quspin-operators">
+  <style> .red {color:#ff0000; font-weight:bold; font-style:italic; } </style>
+<style> .green {color:#00b200; font-weight:bold; font-style:italic; } </style><span class="target" id="module-quspin.operators"></span><div class="section" id="operators-module-quspin-operators">
 <h1>Operators module (<a class="reference internal" href="#module-quspin.operators" title="quspin.operators"><code class="xref py py-mod docutils literal notranslate"><span class="pre">quspin.operators</span></code></a>)<a class="headerlink" href="#operators-module-quspin-operators" title="Permalink to this headline">¶</a></h1>
 <p>Classes and functions for constructing and manipulating quantum operators, and implementing Schroedinger time evolution.</p>
-<p>Many-body operators in QuSpin are defined by a string of letters representing the operator types, 
+<p>Many-body operators in QuSpin are defined by a string of letters representing the operator types,
 together with a list which holds the indices for the lattice sites that each operator acts on.</p>
 <p>For example, in a spin-1/2 system we can represent any multi-spin operator as:</p>
 <div class="math notranslate nohighlight">
 \[\begin{array}{cccc}
-   \text{operator string}  &amp;   \text{site-coupling list}  &amp;  &amp;   \text{spin operator}   \newline 
+   \text{operator string}  &amp;   \text{site-coupling list}  &amp;  &amp;   \text{spin operator}   \newline
    \mu_1,\dots,\mu_n     &amp;   [J,i_1,\dots,i_n]     &amp;  \Leftrightarrow  &amp;   J\sigma_{i_1}^{\mu_1}\cdots\sigma_{i_n}^{\mu_n}      \newline
 \end{array}\]</div>
 <p>where <span class="math notranslate nohighlight">\(\mu_i\)</span> can be “I”, z”, “+”, “-“, “x” or “y”.
@@ -74,52 +74,58 @@ This representation provides a way to conveniently define any multi-body spin-1/
 <p>To construct operators for different particle spieces, check out the <cite>basis</cite> constructor classes for the supported operator strings.</p>
 <div class="section" id="classes">
 <h2>classes<a class="headerlink" href="#classes" title="Permalink to this headline">¶</a></h2>
-<table border="1" class="longtable docutils">
+<table class="longtable docutils align-default">
 <colgroup>
-<col width="10%" />
-<col width="90%" />
+<col style="width: 10%" />
+<col style="width: 90%" />
 </colgroup>
-<tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="generated/quspin.operators.hamiltonian.html#quspin.operators.hamiltonian" title="quspin.operators.hamiltonian"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hamiltonian</span></code></a>(static_list,&nbsp;dynamic_list[,&nbsp;N,&nbsp;…])</td>
-<td>Constructs time-dependent (hermitian and nonhermitian) operators.</td>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/quspin.operators.hamiltonian.html#quspin.operators.hamiltonian" title="quspin.operators.hamiltonian"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hamiltonian</span></code></a>(static_list, dynamic_list[, N, …])</p></td>
+<td><p>Constructs time-dependent (hermitian and nonhermitian) operators.</p></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/quspin.operators.quantum_operator.html#quspin.operators.quantum_operator" title="quspin.operators.quantum_operator"><code class="xref py py-obj docutils literal notranslate"><span class="pre">quantum_operator</span></code></a>(input_dict[,&nbsp;N,&nbsp;basis,&nbsp;…])</td>
-<td>Constructs parameter-dependent (hermitian and nonhermitian) operators.</td>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/quspin.operators.quantum_operator.html#quspin.operators.quantum_operator" title="quspin.operators.quantum_operator"><code class="xref py py-obj docutils literal notranslate"><span class="pre">quantum_operator</span></code></a>(input_dict[, N, basis, …])</p></td>
+<td><p>Constructs parameter-dependent (hermitian and nonhermitian) operators.</p></td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="generated/quspin.operators.exp_op.html#quspin.operators.exp_op" title="quspin.operators.exp_op"><code class="xref py py-obj docutils literal notranslate"><span class="pre">exp_op</span></code></a>(O[,&nbsp;a,&nbsp;start,&nbsp;stop,&nbsp;num,&nbsp;endpoint,&nbsp;…])</td>
-<td>Constructs matrix exponentials of quantum operators.</td>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/quspin.operators.exp_op.html#quspin.operators.exp_op" title="quspin.operators.exp_op"><code class="xref py py-obj docutils literal notranslate"><span class="pre">exp_op</span></code></a>(O[, a, start, stop, num, endpoint, …])</p></td>
+<td><p>Constructs matrix exponentials of quantum operators.</p></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/quspin.operators.quantum_LinearOperator.html#quspin.operators.quantum_LinearOperator" title="quspin.operators.quantum_LinearOperator"><code class="xref py py-obj docutils literal notranslate"><span class="pre">quantum_LinearOperator</span></code></a>(static_list[,&nbsp;N,&nbsp;…])</td>
-<td>Applies a quantum operator directly onto a state, without constructing the operator matrix.</td>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/quspin.operators.quantum_LinearOperator.html#quspin.operators.quantum_LinearOperator" title="quspin.operators.quantum_LinearOperator"><code class="xref py py-obj docutils literal notranslate"><span class="pre">quantum_LinearOperator</span></code></a>(*args, **kwargs)</p></td>
+<td><p>Applies a quantum operator directly onto a state, without constructing the operator matrix.</p></td>
 </tr>
 </tbody>
 </table>
 </div>
 <div class="section" id="functions">
 <h2>functions<a class="headerlink" href="#functions" title="Permalink to this headline">¶</a></h2>
-<table border="1" class="longtable docutils">
+<table class="longtable docutils align-default">
 <colgroup>
-<col width="10%" />
-<col width="90%" />
+<col style="width: 10%" />
+<col style="width: 90%" />
 </colgroup>
-<tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="generated/quspin.operators.commutator.html#quspin.operators.commutator" title="quspin.operators.commutator"><code class="xref py py-obj docutils literal notranslate"><span class="pre">commutator</span></code></a>(H1,&nbsp;H2)</td>
-<td>Calculates the commutator of two Hamiltonians <span class="math notranslate nohighlight">\(H_1\)</span> and <span class="math notranslate nohighlight">\(H_2\)</span>.</td>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/quspin.operators.commutator.html#quspin.operators.commutator" title="quspin.operators.commutator"><code class="xref py py-obj docutils literal notranslate"><span class="pre">commutator</span></code></a>(H1, H2)</p></td>
+<td><p>Calculates the commutator of two Hamiltonians <span class="math notranslate nohighlight">\(H_1\)</span> and <span class="math notranslate nohighlight">\(H_2\)</span>.</p></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/quspin.operators.anti_commutator.html#quspin.operators.anti_commutator" title="quspin.operators.anti_commutator"><code class="xref py py-obj docutils literal notranslate"><span class="pre">anti_commutator</span></code></a>(H1,&nbsp;H2)</td>
-<td>Calculates the anticommutator of two Hamiltonians <span class="math notranslate nohighlight">\(H_1\)</span> and <span class="math notranslate nohighlight">\(H_2\)</span>.</td>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/quspin.operators.anti_commutator.html#quspin.operators.anti_commutator" title="quspin.operators.anti_commutator"><code class="xref py py-obj docutils literal notranslate"><span class="pre">anti_commutator</span></code></a>(H1, H2)</p></td>
+<td><p>Calculates the anticommutator of two Hamiltonians <span class="math notranslate nohighlight">\(H_1\)</span> and <span class="math notranslate nohighlight">\(H_2\)</span>.</p></td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="generated/quspin.operators.ishamiltonian.html#quspin.operators.ishamiltonian" title="quspin.operators.ishamiltonian"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ishamiltonian</span></code></a>(obj)</td>
-<td>Checks if instance is object of <cite>hamiltonian</cite> class.</td>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/quspin.operators.ishamiltonian.html#quspin.operators.ishamiltonian" title="quspin.operators.ishamiltonian"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ishamiltonian</span></code></a>(obj)</p></td>
+<td><p>Checks if instance is object of <cite>hamiltonian</cite> class.</p></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/quspin.operators.isquantum_operator.html#quspin.operators.isquantum_operator" title="quspin.operators.isquantum_operator"><code class="xref py py-obj docutils literal notranslate"><span class="pre">isquantum_operator</span></code></a>(obj)</td>
-<td>Checks if instance is object of <cite>quantum_operator</cite> class.</td>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/quspin.operators.isquantum_operator.html#quspin.operators.isquantum_operator" title="quspin.operators.isquantum_operator"><code class="xref py py-obj docutils literal notranslate"><span class="pre">isquantum_operator</span></code></a>(obj)</p></td>
+<td><p>Checks if instance is object of <cite>quantum_operator</cite> class.</p></td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="generated/quspin.operators.isexp_op.html#quspin.operators.isexp_op" title="quspin.operators.isexp_op"><code class="xref py py-obj docutils literal notranslate"><span class="pre">isexp_op</span></code></a>(obj)</td>
-<td>Checks if instance is object of <cite>exp_op</cite> class.</td>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/quspin.operators.isexp_op.html#quspin.operators.isexp_op" title="quspin.operators.isexp_op"><code class="xref py py-obj docutils literal notranslate"><span class="pre">isexp_op</span></code></a>(obj)</p></td>
+<td><p>Checks if instance is object of <cite>exp_op</cite> class.</p></td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/quspin.operators.isquantum_LinearOperator.html#quspin.operators.isquantum_LinearOperator" title="quspin.operators.isquantum_LinearOperator"><code class="xref py py-obj docutils literal notranslate"><span class="pre">isquantum_LinearOperator</span></code></a>(obj)</td>
-<td>Checks if instance is object of <cite>quantum_LinearOperator</cite> class.</td>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/quspin.operators.isquantum_LinearOperator.html#quspin.operators.isquantum_LinearOperator" title="quspin.operators.isquantum_LinearOperator"><code class="xref py py-obj docutils literal notranslate"><span class="pre">isquantum_LinearOperator</span></code></a>(obj)</p></td>
+<td><p>Checks if instance is object of <cite>quantum_LinearOperator</cite> class.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/quspin.operators.save_zip.html#quspin.operators.save_zip" title="quspin.operators.save_zip"><code class="xref py py-obj docutils literal notranslate"><span class="pre">save_zip</span></code></a>(archive, op[, save_basis])</p></td>
+<td><p>save a <cite>quantum_operator</cite> to a zip archive to be used later.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/quspin.operators.load_zip.html#quspin.operators.load_zip" title="quspin.operators.load_zip"><code class="xref py py-obj docutils literal notranslate"><span class="pre">load_zip</span></code></a>(archive)</p></td>
+<td><p>Load quantum_operator object from a zip archive.</p></td>
 </tr>
 </tbody>
 </table>
@@ -127,6 +133,7 @@ This representation provides a way to conveniently define any multi-body spin-1/
 </div>
 
 
+            <div class="clearer"></div>
           </div>
         </div>
       </div>
@@ -134,7 +141,7 @@ This representation provides a way to conveniently define any multi-body spin-1/
         <div class="sphinxsidebarwrapper">
   <h3><a href="index.html">Table of Contents</a></h3>
   <ul>
-<li><a class="reference internal" href="#">Operators module (<code class="docutils literal notranslate"><span class="pre">quspin.operators</span></code>)</a><ul>
+<li><a class="reference internal" href="#">Operators module (<code class="xref py py-mod docutils literal notranslate"><span class="pre">quspin.operators</span></code>)</a><ul>
 <li><a class="reference internal" href="#classes">classes</a></li>
 <li><a class="reference internal" href="#functions">functions</a></li>
 </ul>
@@ -155,17 +162,15 @@ This representation provides a way to conveniently define any multi-body spin-1/
     </ul>
    </div>
 <div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
+  <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="search.html" method="get">
-      <input type="text" name="q" />
+      <input type="text" name="q" aria-labelledby="searchlabel" />
       <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
     </form>
     </div>
 </div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
+<script>$('#searchbox').show(0);</script>
         </div>
       </div>
       <div class="clearer"></div>
@@ -185,12 +190,13 @@ This representation provides a way to conveniently define any multi-body spin-1/
         <li class="right" >
           <a href="generated/quspin.basis.bitwise_rightshift.html" title="quspin.basis.bitwise_rightshift"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">QuSpin 0.3.3 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">QuSpin 0.3.6 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Operators module (<code class="xref py py-mod docutils literal notranslate"><span class="pre">quspin.operators</span></code>)</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &#169; Copyright 2016, Phillip Weinberg and Marin Bukov.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.4.
+        &#169; Copyright 2016, Phillip Weinberg, Markus Schmitt and Marin Bukov.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.5.4.
     </div>
   </body>
 </html>

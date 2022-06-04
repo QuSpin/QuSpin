@@ -1,11 +1,10 @@
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><script type="text/javascript">
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><script type="text/javascript">
 
       var _gaq = _gaq || [];
       _gaq.push(['_setAccount', 'UA-110543543-1']);
@@ -17,16 +16,14 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-    <title>quspin.basis.basis_general.base_user &#8212; QuSpin 0.3.3 documentation</title>
-    <link rel="stylesheet" href="../../../../static/classic.css" type="text/css" />
+    <title>quspin.basis.basis_general.base_user &#8212; QuSpin 0.3.6 documentation</title>
     <link rel="stylesheet" href="../../../../static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../../../static/classic.css" type="text/css" />
     
-    <script type="text/javascript" id="documentation_options" data-url_root="../../../../" src="../../../../static/documentation_options.js"></script>
-    <script type="text/javascript" src="../../../../static/jquery.js"></script>
-    <script type="text/javascript" src="../../../../static/underscore.js"></script>
-    <script type="text/javascript" src="../../../../static/doctools.js"></script>
-    <script type="text/javascript" src="../../../../static/language_data.js"></script>
-    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script id="documentation_options" data-url_root="../../../../" src="../../../../static/documentation_options.js"></script>
+    <script src="../../../../static/jquery.js"></script>
+    <script src="../../../../static/underscore.js"></script>
+    <script src="../../../../static/doctools.js"></script>
     
     <link rel="index" title="Index" href="../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../search.html" /> 
@@ -40,8 +37,9 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">QuSpin 0.3.3 documentation</a> &#187;</li>
-          <li class="nav-item nav-item-1"><a href="../../../index.html" accesskey="U">Module code</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">QuSpin 0.3.6 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../../index.html" accesskey="U">Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">quspin.basis.basis_general.base_user</a></li> 
       </ul>
     </div>  
 
@@ -51,11 +49,14 @@
           <div class="body" role="main">
             
   <h1>Source code for quspin.basis.basis_general.base_user</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">.base_general</span> <span class="k">import</span> <span class="n">basis_general</span>
-<span class="kn">from</span> <span class="nn">._basis_general_core</span> <span class="k">import</span> <span class="n">user_core_wrap</span>
+<span></span><span class="kn">from</span> <span class="nn">.base_general</span> <span class="kn">import</span> <span class="n">basis_general</span>
+<span class="kn">from</span> <span class="nn">._basis_general_core</span> <span class="kn">import</span> <span class="n">user_core_wrap</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">_np</span>
-<span class="kn">from</span> <span class="nn">numba</span> <span class="k">import</span> <span class="n">cfunc</span><span class="p">,</span> <span class="n">types</span><span class="p">,</span> <span class="n">njit</span>
-<span class="kn">from</span> <span class="nn">numba.ccallback</span> <span class="k">import</span> <span class="n">CFunc</span>
+<span class="kn">from</span> <span class="nn">numba</span> <span class="kn">import</span> <span class="n">cfunc</span><span class="p">,</span> <span class="n">types</span><span class="p">,</span> <span class="n">njit</span>
+<span class="k">try</span><span class="p">:</span>
+	<span class="kn">from</span> <span class="nn">numba.ccallback</span> <span class="kn">import</span> <span class="n">CFunc</span> <span class="c1"># numba &lt; 0.49.0</span>
+<span class="k">except</span> <span class="ne">ModuleNotFoundError</span><span class="p">:</span>
+	<span class="kn">from</span> <span class="nn">numba.core.ccallback</span> <span class="kn">import</span> <span class="n">CFunc</span> <span class="c1"># numba &gt;= 0.49.0</span>
 
 <span class="n">map_sig_32</span> <span class="o">=</span> <span class="n">types</span><span class="o">.</span><span class="n">uint32</span><span class="p">(</span><span class="n">types</span><span class="o">.</span><span class="n">uint32</span><span class="p">,</span><span class="n">types</span><span class="o">.</span><span class="n">intc</span><span class="p">,</span><span class="n">types</span><span class="o">.</span><span class="n">CPointer</span><span class="p">(</span><span class="n">types</span><span class="o">.</span><span class="n">int8</span><span class="p">),</span><span class="n">types</span><span class="o">.</span><span class="n">CPointer</span><span class="p">(</span><span class="n">types</span><span class="o">.</span><span class="n">uint32</span><span class="p">))</span>
 <span class="n">map_sig_64</span> <span class="o">=</span> <span class="n">types</span><span class="o">.</span><span class="n">uint64</span><span class="p">(</span><span class="n">types</span><span class="o">.</span><span class="n">uint64</span><span class="p">,</span><span class="n">types</span><span class="o">.</span><span class="n">intc</span><span class="p">,</span><span class="n">types</span><span class="o">.</span><span class="n">CPointer</span><span class="p">(</span><span class="n">types</span><span class="o">.</span><span class="n">int8</span><span class="p">),</span><span class="n">types</span><span class="o">.</span><span class="n">CPointer</span><span class="p">(</span><span class="n">types</span><span class="o">.</span><span class="n">uint64</span><span class="p">))</span>
@@ -65,7 +66,6 @@
 
 <span class="n">pre_check_state_sig_32</span> <span class="o">=</span> <span class="n">types</span><span class="o">.</span><span class="n">uint32</span><span class="p">(</span><span class="n">types</span><span class="o">.</span><span class="n">uint32</span><span class="p">,</span><span class="n">types</span><span class="o">.</span><span class="n">uint32</span><span class="p">,</span><span class="n">types</span><span class="o">.</span><span class="n">CPointer</span><span class="p">(</span><span class="n">types</span><span class="o">.</span><span class="n">uint32</span><span class="p">))</span>
 <span class="n">pre_check_state_sig_64</span> <span class="o">=</span> <span class="n">types</span><span class="o">.</span><span class="n">uint64</span><span class="p">(</span><span class="n">types</span><span class="o">.</span><span class="n">uint64</span><span class="p">,</span><span class="n">types</span><span class="o">.</span><span class="n">uint64</span><span class="p">,</span><span class="n">types</span><span class="o">.</span><span class="n">CPointer</span><span class="p">(</span><span class="n">types</span><span class="o">.</span><span class="n">uint64</span><span class="p">))</span>
-
 
 <span class="n">op_results_32</span> <span class="o">=</span> <span class="n">types</span><span class="o">.</span><span class="n">Record</span><span class="o">.</span><span class="n">make_c_struct</span><span class="p">([</span>
    <span class="p">(</span><span class="s1">&#39;matrix_ele&#39;</span><span class="p">,</span> <span class="n">types</span><span class="o">.</span><span class="n">complex128</span><span class="p">),(</span><span class="s1">&#39;state&#39;</span><span class="p">,</span> <span class="n">types</span><span class="o">.</span><span class="n">uint32</span><span class="p">),</span>
@@ -95,7 +95,7 @@
 	<span class="s2">&quot;next_state_sig_64&quot;</span><span class="p">,</span><span class="s2">&quot;op_func_sig_32&quot;</span><span class="p">,</span><span class="s2">&quot;op_func_sig_64&quot;</span><span class="p">,</span><span class="s2">&quot;user_basis&quot;</span><span class="p">]</span>
 
 <span class="nd">@njit</span>
-<span class="k">def</span> <span class="nf">is_sorted_decending</span><span class="p">(</span><span class="n">a</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">_is_sorted_decending</span><span class="p">(</span><span class="n">a</span><span class="p">):</span>
 	<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">size</span><span class="o">-</span><span class="mi">1</span><span class="p">):</span>
 		<span class="k">if</span><span class="p">(</span><span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">&lt;</span><span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">]):</span>
 			<span class="k">return</span> <span class="kc">False</span>
@@ -150,6 +150,38 @@
 		<span class="k">return</span> <span class="p">{},[],[],[],[]</span>
 
 
+<span class="k">def</span> <span class="nf">_noncommuting_bits</span><span class="p">(</span><span class="n">N</span><span class="p">,</span><span class="n">noncommuting_bits</span><span class="p">):</span>
+	
+	<span class="n">completed_noncommuting_bits</span> <span class="o">=</span> <span class="p">[]</span>
+
+	<span class="k">for</span> <span class="n">bits</span><span class="p">,</span><span class="n">swap_phase</span> <span class="ow">in</span> <span class="n">noncommuting_bits</span><span class="p">:</span>
+		<span class="n">bits</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">bits</span><span class="p">)</span>
+		<span class="n">swap_phase</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">swap_phase</span><span class="p">)</span>
+
+		<span class="k">if</span> <span class="ow">not</span> <span class="n">_np</span><span class="o">.</span><span class="n">issubdtype</span><span class="p">(</span><span class="n">bits</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span><span class="n">_np</span><span class="o">.</span><span class="n">int</span><span class="p">):</span>
+			<span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;site list most contain only integers.&quot;</span><span class="p">)</span>
+
+		<span class="k">if</span> <span class="n">_np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">swap_phase</span><span class="p">)</span><span class="o">.</span><span class="n">ndim</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+			<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;swap_phase must be scalar.&quot;</span><span class="p">)</span>
+
+		<span class="k">if</span> <span class="n">_np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">_np</span><span class="o">.</span><span class="n">logical_and</span><span class="p">(</span><span class="n">bits</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">,</span><span class="n">bits</span> <span class="o">&gt;=</span> <span class="n">N</span><span class="p">)):</span>
+			<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;bit number outside of range of system.&quot;</span><span class="p">)</span>
+
+		<span class="k">if</span> <span class="n">swap_phase</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+			<span class="n">swap_phase</span> <span class="o">=</span> <span class="n">swap_phase</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">_np</span><span class="o">.</span><span class="n">int8</span><span class="p">)</span>
+		<span class="k">elif</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">swap_phase</span><span class="p">)</span><span class="o">!=</span><span class="mi">1</span><span class="p">:</span>
+			<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;must have |swap_phase|==1&quot;</span><span class="p">)</span>
+		<span class="k">else</span><span class="p">:</span>
+			<span class="k">if</span> <span class="n">swap_phase</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+				<span class="k">continue</span> <span class="c1"># skip </span>
+			<span class="k">else</span><span class="p">:</span>
+				<span class="c1"># swap_phase = swap_phase.astype(_np.complex128)</span>
+				<span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;Abealian anyons are not supported for user_basis.&quot;</span><span class="p">)</span>
+
+		<span class="n">completed_noncommuting_bits</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">bits</span><span class="p">,</span><span class="n">swap_phase</span><span class="p">))</span>
+
+	<span class="k">return</span> <span class="n">completed_noncommuting_bits</span>
+
 
 <div class="viewcode-block" id="user_basis"><a class="viewcode-back" href="../../../../generated/quspin.basis.user_basis.html#quspin.basis.user_basis">[docs]</a><span class="k">class</span> <span class="nc">user_basis</span><span class="p">(</span><span class="n">basis_general</span><span class="p">):</span>
 	<span class="sd">&quot;&quot;&quot;Constructs basis for USER-DEFINED functionality of a basis object.</span>
@@ -182,8 +214,8 @@
 <span class="sd">		:lines: 11-</span>
 
 <span class="sd">	&quot;&quot;&quot;</span>
-<div class="viewcode-block" id="user_basis.__init__"><a class="viewcode-back" href="../../../../generated/quspin.basis.user_basis.html#quspin.basis.user_basis.__init__">[docs]</a>	<span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">basis_dtype</span><span class="p">,</span><span class="n">N</span><span class="p">,</span><span class="n">op_dict</span><span class="p">,</span><span class="n">sps</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span><span class="n">pcon_dict</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">pre_check_state</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">allowed_ops</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-		<span class="n">Ns_block_est</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">_make_basis</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">block_order</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">_Np</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="o">**</span><span class="n">blocks</span><span class="p">):</span>
+<div class="viewcode-block" id="user_basis.__init__"><a class="viewcode-back" href="../../../../generated/quspin.basis.user_basis.html#quspin.basis.user_basis.__init__">[docs]</a>	<span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">basis_dtype</span><span class="p">,</span><span class="n">N</span><span class="p">,</span><span class="n">op_dict</span><span class="p">,</span><span class="n">sps</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span><span class="n">pcon_dict</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">pre_check_state</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">allowed_ops</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+		<span class="n">parallel</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">Ns_block_est</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">_make_basis</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">block_order</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">noncommuting_bits</span><span class="o">=</span><span class="p">[],</span><span class="n">_Np</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="o">**</span><span class="n">blocks</span><span class="p">):</span>
 		<span class="sd">&quot;&quot;&quot;Intializes the `user_basis_general` object (basis for user defined ED calculations).</span>
 
 <span class="sd">		Parameters</span>
@@ -227,12 +259,18 @@
 <span class="sd">			(e.g. for a spinful fermion basis to never have a doubly occupied site). One can pass additional arguments `args` using a `np.ndarray[basis_dtype]`.</span>
 <span class="sd">		allowed_ops: list/set, optional</span>
 <span class="sd">			A list of allowed characters, each of which is to be passed in to the `op` in the form of `op_str` (see above).</span>
+<span class="sd">		parallel: bool, optional</span>
+<span class="sd">			turns on parallel code when constructing the basis even when no symmetries are implemented. Useful when constructing highly constrained Hilbert spaces with pre_check_state. </span>
 <span class="sd">		sps: int, optional</span>
 <span class="sd">			The number of states per site (i.e. the local on-site Hilbert space dimension).</span>
+<span class="sd">		Ns_full: int, optional</span>
+<span class="sd">			Total number of states in the Hilbert space without any symmetries. For a single species this value is `sps**N`</span>
 <span class="sd">		Ns_block_est: int, optional</span>
 <span class="sd">			An estimate for the size of the symmetry reduced block, QuSpin does a simple estimate which is not always correct. </span>
 <span class="sd">		block_order: tuple/list, optional</span>
 <span class="sd">			A list of strings containing the names of the symmetry blocks which specifies the order in which the symmetries will be applied to the state when calculating the basis. The first element in the list is applied to the state first followed by the second element, etc. If the list is not specificed the ordering is such that the symmetry with the largest cycle is the first, followed by the second largest, etc. </span>
+<span class="sd">		noncommuting_bits: list, optional</span>
+<span class="sd">			A list of tuples specifying if bits belong to a group of sites that do not commute. The first element in each tuple represents the group of sites, and the second element represents the phase-factor that is given during the exchange.</span>
 <span class="sd">		**blocks: optional</span>
 <span class="sd">			keyword arguments which pass the symmetry generator arrays. For instance:</span>
 
@@ -262,8 +300,9 @@
 		<span class="bp">self</span><span class="o">.</span><span class="n">_basis_pcon</span> <span class="o">=</span> <span class="kc">None</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">_get_proj_pcon</span> <span class="o">=</span> <span class="kc">False</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">_made_basis</span> <span class="o">=</span> <span class="kc">False</span> <span class="c1"># keeps track of whether the basis has been made</span>
-
-		<span class="n">Ns_full</span><span class="o">=</span><span class="n">sps</span><span class="o">**</span><span class="n">N</span>
+		
+		<span class="bp">self</span><span class="o">.</span><span class="n">_noncommuting_bits</span> <span class="o">=</span> <span class="n">_noncommuting_bits</span><span class="p">(</span><span class="n">N</span><span class="p">,</span><span class="n">noncommuting_bits</span><span class="p">)</span>
+		<span class="n">Ns_full</span> <span class="o">=</span> <span class="n">sps</span><span class="o">**</span><span class="n">N</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">_N</span> <span class="o">=</span> <span class="n">N</span>
 		<span class="k">if</span> <span class="n">basis_dtype</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="n">_np</span><span class="o">.</span><span class="n">uint32</span><span class="p">,</span><span class="n">_np</span><span class="o">.</span><span class="n">uint64</span><span class="p">]:</span>
 			<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;basis_dtype must be either uint32 or uint64 for the given basis representation.&quot;</span><span class="p">)</span>
@@ -277,7 +316,6 @@
 
 			<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;map_args must be a C-contiguous numpy array with dtype </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">basis_dtype</span><span class="p">))</span>
 		
-
 
 		<span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">op_dict</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">dict</span><span class="p">:</span>
 			<span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">op_dict</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">:</span>
@@ -516,43 +554,46 @@
 				<span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Ns_block_est must be integer value.&quot;</span><span class="p">)</span>
 				
 			<span class="n">Ns</span> <span class="o">=</span> <span class="n">Ns_block_est</span>
+
 		<span class="bp">self</span><span class="o">.</span><span class="n">_basis_dtype</span> <span class="o">=</span> <span class="n">basis_dtype</span>
-		<span class="bp">self</span><span class="o">.</span><span class="n">_core_args</span> <span class="o">=</span> <span class="p">(</span><span class="n">Ns_full</span><span class="p">,</span> <span class="n">basis_dtype</span><span class="p">,</span> <span class="n">N</span><span class="p">,</span> <span class="n">map_funcs</span><span class="p">,</span> <span class="n">pers</span><span class="p">,</span> <span class="n">qs</span><span class="p">,</span> <span class="n">map_args</span><span class="p">,</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">_core_args</span> <span class="o">=</span> <span class="p">(</span><span class="n">Ns_full</span><span class="p">,</span> <span class="n">basis_dtype</span><span class="p">,</span> <span class="n">N</span><span class="p">,</span> <span class="n">sps</span><span class="p">,</span> <span class="n">map_funcs</span><span class="p">,</span> <span class="n">pers</span><span class="p">,</span> <span class="n">qs</span><span class="p">,</span> <span class="n">map_args</span><span class="p">,</span>
 								<span class="n">n_sectors</span><span class="p">,</span> <span class="n">get_Ns_pcon</span><span class="p">,</span> <span class="n">get_s0_pcon</span><span class="p">,</span> <span class="n">next_state</span><span class="p">,</span>
-								<span class="n">next_state_args</span><span class="p">,</span><span class="n">pre_check_state</span><span class="p">,</span><span class="n">check_state_nosymm_args</span><span class="p">,</span>
+								<span class="n">next_state_args</span><span class="p">,</span><span class="n">pre_check_state</span><span class="p">,</span><span class="n">check_state_nosymm_args</span><span class="p">,</span><span class="n">parallel</span><span class="p">,</span>
 								<span class="n">count_particles</span><span class="p">,</span> <span class="n">count_particles_args</span><span class="p">,</span> <span class="n">op_func</span><span class="p">,</span> <span class="n">op_args</span><span class="p">)</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">_core</span> <span class="o">=</span> <span class="n">user_core_wrap</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">_core_args</span><span class="p">)</span>
-
 		<span class="bp">self</span><span class="o">.</span><span class="n">_N</span> <span class="o">=</span> <span class="n">N</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">_Ns</span> <span class="o">=</span> <span class="n">Ns</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">_Ns_block_est</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Ns</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">_Np</span> <span class="o">=</span> <span class="n">Np</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">_sps</span><span class="o">=</span><span class="n">sps</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">_allowed_ops</span><span class="o">=</span><span class="nb">set</span><span class="p">(</span><span class="n">allowed_ops</span><span class="p">)</span>
 
 		<span class="n">nmax</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_pers</span><span class="p">)</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">_n_dtype</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">min_scalar_type</span><span class="p">(</span><span class="n">nmax</span><span class="p">)</span>
 
 		<span class="k">if</span> <span class="n">_make_basis</span><span class="p">:</span>	
-			<span class="bp">self</span><span class="o">.</span><span class="n">make</span><span class="p">()</span>
+			<span class="bp">self</span><span class="o">.</span><span class="n">make</span><span class="p">(</span><span class="n">N_p</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
 		<span class="k">else</span><span class="p">:</span>
 			<span class="bp">self</span><span class="o">.</span><span class="n">_Ns</span><span class="o">=</span><span class="mi">1</span>
 			<span class="bp">self</span><span class="o">.</span><span class="n">_basis</span><span class="o">=</span><span class="n">basis_zeros</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_Ns</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_basis_dtype</span><span class="p">)</span>
 			<span class="bp">self</span><span class="o">.</span><span class="n">_n</span><span class="o">=</span><span class="n">_np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_Ns</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_n_dtype</span><span class="p">)</span>
 
-		<span class="k">if</span> <span class="ow">not</span> <span class="n">is_sorted_decending</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_basis</span><span class="p">):</span>
+		<span class="k">if</span> <span class="ow">not</span> <span class="n">_is_sorted_decending</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_basis</span><span class="p">):</span>
 			<span class="n">ind</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_basis</span><span class="p">,</span><span class="n">kind</span><span class="o">=</span><span class="s2">&quot;heapsort&quot;</span><span class="p">)[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-			<span class="bp">self</span><span class="o">.</span><span class="n">_basis</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_basis</span><span class="p">[</span><span class="n">ind</span><span class="p">]</span>
-			<span class="bp">self</span><span class="o">.</span><span class="n">_n</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n</span><span class="p">[</span><span class="n">ind</span><span class="p">]</span>
+			<span class="bp">self</span><span class="o">.</span><span class="n">_basis</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_basis</span><span class="p">[</span><span class="n">ind</span><span class="p">],</span><span class="n">order</span><span class="o">=</span><span class="s2">&quot;C&quot;</span><span class="p">)</span>
+			<span class="bp">self</span><span class="o">.</span><span class="n">_n</span> <span class="o">=</span>  <span class="n">_np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_n</span><span class="p">[</span><span class="n">ind</span><span class="p">],</span><span class="n">order</span><span class="o">=</span><span class="s2">&quot;C&quot;</span><span class="p">)</span>
 
+		<span class="bp">self</span><span class="o">.</span><span class="n">make_basis_blocks</span><span class="p">()</span>
 
 		<span class="k">if</span> <span class="n">allowed_ops</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-			<span class="n">allowed_ops</span> <span class="o">=</span> <span class="nb">set</span><span class="p">([</span><span class="nb">chr</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">256</span><span class="p">)])</span> <span class="c1"># all characters allowed.</span>
+			<span class="n">allowed_ops</span> <span class="o">=</span> <span class="nb">set</span><span class="p">([</span><span class="nb">chr</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">256</span><span class="p">)])</span> <span class="c1"># all characters allowed.</span></div>
 
-		<span class="bp">self</span><span class="o">.</span><span class="n">_sps</span><span class="o">=</span><span class="n">sps</span>
-		<span class="bp">self</span><span class="o">.</span><span class="n">_allowed_ops</span><span class="o">=</span><span class="nb">set</span><span class="p">(</span><span class="n">allowed_ops</span><span class="p">)</span></div>
+
 
 	<span class="k">def</span> <span class="nf">__type__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 		<span class="k">return</span> <span class="s2">&quot;&lt;type &#39;qspin.basis.user.user_basis&#39;&gt;&quot;</span>
 
-	<span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+	<span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 		<span class="k">return</span> <span class="s2">&quot;&lt; instance of &#39;qspin.basis.user.user_basis&#39; with </span><span class="si">{0}</span><span class="s2"> states &gt;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_Ns</span><span class="p">)</span>
 
 	<span class="k">def</span> <span class="nf">__name__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -563,23 +604,22 @@
 		<span class="bp">self</span><span class="o">.</span><span class="n">_core</span> <span class="o">=</span> <span class="n">user_core_wrap</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">_core_args</span><span class="p">)</span></div>
 </pre></div>
 
+            <div class="clearer"></div>
           </div>
         </div>
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
 <div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
+  <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../../../../search.html" method="get">
-      <input type="text" name="q" />
+      <input type="text" name="q" aria-labelledby="searchlabel" />
       <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
     </form>
     </div>
 </div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
+<script>$('#searchbox').show(0);</script>
         </div>
       </div>
       <div class="clearer"></div>
@@ -593,13 +633,14 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">QuSpin 0.3.3 documentation</a> &#187;</li>
-          <li class="nav-item nav-item-1"><a href="../../../index.html" >Module code</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">QuSpin 0.3.6 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../../index.html" >Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">quspin.basis.basis_general.base_user</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &#169; Copyright 2016, Phillip Weinberg and Marin Bukov.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.4.
+        &#169; Copyright 2016, Phillip Weinberg, Markus Schmitt and Marin Bukov.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.5.4.
     </div>
   </body>
 </html>

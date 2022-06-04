@@ -11,20 +11,15 @@ except NameError:
 class spin_basis_general(hcb_basis_general,higher_spin_basis_general):
 	"""Constructs basis for spin operators for USER-DEFINED symmetries.
 
-	Any unitary symmetry transformation :math:`Q` of periodicity :math:`m_Q` (:math:`Q^{m_Q}=1`) has
-	eigenvalues :math:`\\exp(-2\\pi i q/m_Q)`, labelled by an ingeter :math:`q\\in\\{0,1,\\dots,m_Q-1\\}`.
-	These integers :math:`q` are used to define the symmetry blocks.
+	Any unitary symmetry transformation :math:`Q` of periodicity :math:`m_Q` (:math:`Q^{m_Q}=1`) has eigenvalues :math:`\\exp(-2\\pi i q/m_Q)`, labelled by an ingeter :math:`q\\in\\{0,1,\\dots,m_Q-1\\}`. These integers :math:`q` are used to define the symmetry blocks.
 
-	For instance, if :math:`Q=P` is parity (reflection), then :math:`q=0,1`. If :math:`Q=T` is translation by one lattice site,
-	then :math:`q` labels the mometum blocks in the same fashion as for the `..._basis_1d` classes. 
+	For instance, if :math:`Q=P` is parity (reflection), then :math:`q=0,1`. If :math:`Q=T` is translation by one lattice site, then :math:`q` labels the mometum blocks in the same fashion as for the `..._basis_1d` classes. 
 
-	User-defined symmetries with the `spin_basis_general` class can be programmed as follows. Suppose we have a system of
-	L sites, enumerated :math:`s=(s_0,s_1,\\dots,s_{L-1})`. There are two types of operations one can perform on the sites:
+	User-defined symmetries with the `spin_basis_general` class can be programmed as follows. Suppose we have a system of L sites, enumerated :math:`s=(s_0,s_1,\\dots,s_{L-1})`. There are two types of operations one can perform on the sites:
 		* exchange the labels of two sites: :math:`s_i \\leftrightarrow s_j` (e.g., translation, parity)
 		* invert the population on a given site: :math:`s_i\\leftrightarrow -(s_j+1)` (e.g., spin inversion)
 
-	These two operations already comprise a variety of symmetries, including translation, parity (reflection) and 
-	spin inversion. For a specific example, see below.
+	These two operations already comprise a variety of symmetries, including translation, parity (reflection) and spin inversion. For a specific example, see below.
 
 	The supported operator strings for `spin_basis_general` are:
 
@@ -69,7 +64,7 @@ class spin_basis_general(hcb_basis_general,higher_spin_basis_general):
 		N: int
 			number of sites.
 		Nup: {int,list}, optional
-			Total magnetisation, :math:`\\sum_j S^z_j`, projection. Can be integer or list to specify one or 
+			Total magnetisation, :math:`Nup = NS + \\sum_j S^z_j, Nup\\ge 0`, and :math:`Nup = -NS + \\sum_j S^z_j, Nup<0` projection. Can be integer or list to specify one or 
 			more particle sectors. Negative values are taken to be subtracted from the fully polarized up state as: Nup_max + Nup + 1.
 			e.g. to get the Nup_max state use Nup = -1, for Nup_max-1 state use Nup = -2, etc.
 		m: float, optional
@@ -77,7 +72,7 @@ class spin_basis_general(hcb_basis_general,higher_spin_basis_general):
 		S: str, optional
 			Size of local spin degrees of freedom. Can be any (half-)integer from:
 			"1/2","1","3/2",...,"9999/2","5000".
-		pauli: bool, optional (requires `S="1/2"`)
+		pauli: int, optional (requires `S="1/2"`)
 			* for `pauli=0` the code uses spin-1/2 operators: 
 	
 			.. math::
@@ -197,23 +192,46 @@ class spin_basis_general(hcb_basis_general,higher_spin_basis_general):
 			return higher_spin_basis_general._Op(self,opstr,indx,J,dtype)
 
 		
-
-	def _inplace_Op(self,v_in,opstr,indx,J,dtype,transposed=False,conjugated=False,v_out=None):
+	
+	def _inplace_Op(self,v_in,op_list,dtype,transposed=False,conjugated=False,v_out=None,a=1.0):
 		if self._S == "1/2":
 
 			if self._pauli==1:
-				n = len(opstr.replace("I",""))
-				J *= (1<<n)
+				scale = lambda s:(1<<len(s.replace("I","")))
 			elif self._pauli==-1:
-				n = len(opstr.replace("I","").replace("+","").replace("-",""))
-				J *= (1<<n)
+				scale = lambda s:(1<<len(s.replace("I","").replace("+","").replace("-","")))
+			else:
+				scale = lambda s:1
 
-			return hcb_basis_general._inplace_Op(self,v_in,opstr,indx,J,dtype,transposed=transposed,conjugated=conjugated,v_out=v_out)
+			op_list = [[op,indx,J*scale(op)] for op,indx,J in op_list]
+
+			return hcb_basis_general._inplace_Op(self,v_in,op_list,dtype,
+				transposed=transposed,conjugated=conjugated,v_out=v_out,a=a)
 
 		else:
-			return higher_spin_basis_general._inplace_Op(self,v_in,opstr,indx,J,dtype,transposed=transposed,conjugated=conjugated,v_out=v_out)
+			return higher_spin_basis_general._inplace_Op(self,v_in,op_list,dtype,
+				transposed=transposed,conjugated=conjugated,v_out=v_out,a=a)
 
-		return ME,row,col		
+
+	def Op_shift_sector(self,other_basis,op_list,v_in,v_out=None,dtype=None):
+		if self._S == "1/2":
+
+			if self._pauli==1:
+				scale = lambda s:(1<<len(s.replace("I","")))
+			elif self._pauli==-1:
+				scale = lambda s:(1<<len(s.replace("I","").replace("+","").replace("-","")))
+			else:
+				scale = lambda s:1
+
+			op_list = [[op,indx,J*scale(op)] for op,indx,J in op_list]
+
+			return hcb_basis_general.Op_shift_sector(self,other_basis,op_list,v_in,v_out=v_out,dtype=dtype)
+
+		else:
+			return higher_spin_basis_general.Op_shift_sector(self,other_basis,op_list,v_in,v_out=v_out,dtype=dtype)	
+
+	Op_shift_sector.__doc__ = hcb_basis_general.Op_shift_sector.__doc__
+
 
 	def __type__(self):
 		return "<type 'qspin.basis.general_hcb'>"
@@ -246,9 +264,9 @@ class spin_basis_general(hcb_basis_general,higher_spin_basis_general):
 		indx = _np.array(op[1])
 		if _np.any(indx):
 			indx_p = indx[opstr == "+"].tolist()
-			p = not any(indx_p.count(x) > 1 for x in indx_p)
+			p = not any(indx_p.count(x) > self.sps-1 for x in indx_p)
 			indx_p = indx[opstr == "-"].tolist()
-			m = not any(indx_p.count(x) > 1 for x in indx_p)
+			m = not any(indx_p.count(x) > self.sps-1 for x in indx_p)
 			return (p and m)
 		else:
 			return True
@@ -347,6 +365,6 @@ class spin_basis_general(hcb_basis_general,higher_spin_basis_general):
 				n = len(opstr.replace("I","").replace("+","").replace("-",""))
 				ME *= (1<<n)
 		else:
-			return higher_spin_basis_general.Op_bra_ket(self,opstr,indx,J,dtype,ket_states)
+			return higher_spin_basis_general.Op_bra_ket(self,opstr,indx,J,dtype,ket_states,reduce_output=reduce_output)
 
 		return ME,bra,ket
