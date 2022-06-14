@@ -87,7 +87,7 @@ class quantum_operator(object):
 			Enable/Disable particle conservation check on `static_list` and `dynamic_list`.
 		matrix_formats: dict, optional
 			Dictionary of key,value pairs which, given a key associated with an operator in `input_dict`, the value of this key
-			specifies the sparse matrix format {"csr","csc","dia","dense"}.
+			specifies the sparse matrix format {"csr","coo","csc","dia","dense"}.
 		kw_args : dict
 			Optional additional arguments to pass to the `basis` class, if not already using a `basis` object
 			to create the quantum_operator.		
@@ -911,6 +911,40 @@ class quantum_operator(object):
 
 		return H
 
+	def tocoo(self,pars={}):
+		"""Returns copy of a `quantum_operator` object for parameters `pars` as a `scipy.sparse.coo_matrix`.
+
+		Casts the `quantum_operator` object as a
+		`scipy.sparse.coo_matrix <https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.coo_matrix.html>`_
+		object.
+
+		Parameters
+		-----------
+		pars : dict, optional
+			Dictionary with same `keys` as `input_dict` and coupling strengths as `values`. Any missing `keys`
+			are assumed to be set to unity. 
+
+		Returns
+		--------
+		:obj:`scipy.sparse.coo_matrix`
+
+		Examples
+		---------
+		>>> H_coo=H.tocoo(pars=pars)
+
+		"""
+		pars = self._check_scalar_pars(pars)
+
+		H = _sp.coo_matrix(self.get_shape,dtype=self._dtype)
+
+		for key,J in pars.items():
+			try:
+				H += J*_sp.coo_matrix(self._quantum_operator[key])
+			except:
+				H = H + J*_sp.coo_matrix(self._quantum_operator[key])
+
+		return H
+	
 	def tocsc(self,pars={}):
 		"""Returns copy of a `quantum_operator` object for parameters `pars` as a `scipy.sparse.csc_matrix`.
 
@@ -1091,7 +1125,7 @@ class quantum_operator(object):
 		-----------
 		matrix_formats: dict, optional
 			Dictionary of key,value pairs which, given a key associated with an operator in `input_dict`, the value of this key
-			specifies the sparse matrix format {"csr","csc","dia","dense"}.
+			specifies the sparse matrix format {"csr","coo","csc","dia","dense"}.
 
 		Examples
 		---------
@@ -1112,7 +1146,7 @@ class quantum_operator(object):
 		for key in self._quantum_operator.keys():
 			if key in matrix_formats:
 				fmt = matrix_formats[key]
-				if fmt not in ["dia","csr","csc","dense"]:
+				if fmt not in ["dia","csr","coo","csc","dense"]:
 					raise TypeError("sparse formats must be either 'csr','csc', 'dia' or 'dense'.")
 
 				if fmt == "dense":
