@@ -1557,6 +1557,44 @@ class hamiltonian(object):
 
 		return H
 
+	def tocoo(self,time=0):
+		"""Returns copy of a `hamiltonian` object at time `time` as a `scipy.sparse.coo_matrix`.
+
+		Casts the `hamiltonian` object as a
+		`scipy.sparse.coo_matrix <https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.coo_matrix.html>`_
+		object.
+
+		Parameters
+		-----------
+		time : float, optional
+			Time to evalute the time-dependent part of the operator at (if existent). Default is `time = 0.0`.
+		
+		Returns
+		--------
+		:obj:`scipy.sparse.coo_matrix`
+
+		Examples
+		---------
+		>>> H_coo=H.tocoo(time=time)
+
+		"""
+
+		if _np.array(time).ndim > 0:
+			raise TypeError('expecting scalar argument for time')
+
+
+		H = _sp.coo_matrix(self._static)
+
+		for func,Hd in iteritems(self._dynamic):
+			Hd = _sp.coo_matrix(Hd)
+			try:
+				H += Hd * func(time)
+			except:
+				H = H + Hd * func(time)
+
+
+		return H
+	
 	def tocsc(self,time=0):
 		"""Returns copy of a `hamiltonian` object at time `time` as a `scipy.sparse.csc_matrix`.
 
