@@ -42,6 +42,7 @@ To run the example scripts, besides QuSpin, you have to also install `matplotlib
 		* :ref:`example26-label`, :download:`download script <../../examples/scripts/example26.py>`
 		* :ref:`example23-label`, :download:`download script <../../examples/scripts/example23.py>`
 		* :ref:`example24-label`, :download:`download script <../../examples/scripts/example24.py>`
+		* :red:`NEW:` :ref:`example28-label`, :download:`download script <../../examples/scripts/example28.py>`
 		
 	
 

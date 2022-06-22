@@ -310,9 +310,9 @@ class basis(object):
 		"""Calculates entanglement entropy of subsystem A and the corresponding reduced density matrix
 
 		.. math::
-			S_\\mathrm{ent}(\\alpha) = \\frac{1}{N}\\frac{1}{1-\\alpha}\\log \\mathrm{tr}_{A} \\left( \\mathrm{tr}_{A^c} \\vert\\psi\\rangle\\langle\\psi\\vert \\right)^\\alpha 
+			S_\\mathrm{ent}(\\alpha) = \\frac{1}{N_A}\\frac{1}{1-\\alpha}\\log \\mathrm{tr}_{A} \\left( \\mathrm{tr}_{A^c} \\vert\\psi\\rangle\\langle\\psi\\vert \\right)^\\alpha 
 
-		where the normalization :math:`N` can be switched on and off using the optional argument `density`.
+		where the normalization :math:`N_A` can be switched on and off using the optional argument `density`. This expression reduces to the familiar von Neumann entropy in the limit :math:`\\alpha=1`.
 			
 		**Note:** The logarithm used is the natural logarithm (base e).
 
