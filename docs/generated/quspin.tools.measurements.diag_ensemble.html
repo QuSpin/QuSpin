@@ -3,7 +3,8 @@
 
 <html>
   <head>
-    <meta charset="utf-8" /><script type="text/javascript">
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><script type="text/javascript">
 
       var _gaq = _gaq || [];
       _gaq.push(['_setAccount', 'UA-110543543-1']);
@@ -16,15 +17,14 @@
       })();
     </script>
     <title>quspin.tools.measurements.diag_ensemble &#8212; QuSpin 0.3.7 documentation</title>
-    <link rel="stylesheet" href="../static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../static/classic.css" type="text/css" />
     
     <script id="documentation_options" data-url_root="../" src="../static/documentation_options.js"></script>
     <script src="../static/jquery.js"></script>
     <script src="../static/underscore.js"></script>
     <script src="../static/doctools.js"></script>
-    <script src="../static/language_data.js"></script>
-    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -47,7 +47,8 @@
           <a href="quspin.tools.measurements.ent_entropy.html" title="quspin.tools.measurements.ent_entropy"
              accesskey="P">previous</a> |</li>
         <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.7 documentation</a> &#187;</li>
-          <li class="nav-item nav-item-1"><a href="../tools.html" accesskey="U">Tools module (<code class="xref py py-mod docutils literal notranslate"><span class="pre">quspin.tools</span></code>)</a> &#187;</li> 
+          <li class="nav-item nav-item-1"><a href="../tools.html" accesskey="U">Tools module (<code class="xref py py-mod docutils literal notranslate"><span class="pre">quspin.tools</span></code>)</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">quspin.tools.measurements.diag_ensemble</a></li> 
       </ul>
     </div>  
 
@@ -63,7 +64,7 @@
 <h1>quspin.tools.measurements.diag_ensemble<a class="headerlink" href="#quspin-tools-measurements-diag-ensemble" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
 <dt id="quspin.tools.measurements.diag_ensemble">
-<code class="sig-prename descclassname">quspin.tools.measurements.</code><code class="sig-name descname">diag_ensemble</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">N</span></em>, <em class="sig-param"><span class="n">system_state</span></em>, <em class="sig-param"><span class="n">E2</span></em>, <em class="sig-param"><span class="n">V2</span></em>, <em class="sig-param"><span class="n">density</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">alpha</span><span class="o">=</span><span class="default_value">1.0</span></em>, <em class="sig-param"><span class="n">rho_d</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">Obs</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">delta_t_Obs</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">delta_q_Obs</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">Sd_Renyi</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">Srdm_Renyi</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">Srdm_args</span><span class="o">=</span><span class="default_value">{}</span></em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/tools/measurements.html#diag_ensemble"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#quspin.tools.measurements.diag_ensemble" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname"><span class="pre">quspin.tools.measurements.</span></code><code class="sig-name descname"><span class="pre">diag_ensemble</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">N</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">system_state</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">E2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">V2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">density</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rho_d</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Obs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delta_t_Obs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delta_q_Obs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Sd_Renyi</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Srdm_Renyi</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Srdm_args</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/tools/measurements.html#diag_ensemble"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quspin.tools.measurements.diag_ensemble" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculates expectation values in the Diagonal ensemble of the initial state.</p>
 <p>Equivalently, these are also the infinite-time expectation values after a sudden quench from a
 Hamiltonian <span class="math notranslate nohighlight">\(H_1\)</span> to a Hamiltonian <span class="math notranslate nohighlight">\(H_2\)</span>. Let us label the two eigenbases by</p>
@@ -217,37 +218,37 @@ Default is ‘True’.</p>
 At time <span class="math notranslate nohighlight">\(t=0\)</span> we quench to the Hamiltonian <span class="math notranslate nohighlight">\(H_2=\sum_j JS^z_{j+1}S^z_j+ hS^x_j + g S^z_j\)</span>, and evolve
 the initial state <span class="math notranslate nohighlight">\(\psi_1\)</span> with it. We compute the infinite-time (i.e. Diagonal Ensemble) expectation value of the Hamiltonian <span class="math notranslate nohighlight">\(H_1\)</span>, and
 it’s infinite-time temporal fluctuations <span class="math notranslate nohighlight">\(\delta_t\mathcal{O}^\psi_d\)</span> (see above for the definition).</p>
-<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
- 2
- 3
- 4
- 5
- 6
- 7
- 8
- 9
-10
-11
-12
-13
-14
-15
-16
-17
-18
-19
-20
-21
-22
-23
-24
-25
-26
-27
-28
-29
-30
-31</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">quspin.operators</span> <span class="kn">import</span> <span class="n">hamiltonian</span> <span class="c1"># Hamiltonians and operators</span>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
+<span class="normal"> 2</span>
+<span class="normal"> 3</span>
+<span class="normal"> 4</span>
+<span class="normal"> 5</span>
+<span class="normal"> 6</span>
+<span class="normal"> 7</span>
+<span class="normal"> 8</span>
+<span class="normal"> 9</span>
+<span class="normal">10</span>
+<span class="normal">11</span>
+<span class="normal">12</span>
+<span class="normal">13</span>
+<span class="normal">14</span>
+<span class="normal">15</span>
+<span class="normal">16</span>
+<span class="normal">17</span>
+<span class="normal">18</span>
+<span class="normal">19</span>
+<span class="normal">20</span>
+<span class="normal">21</span>
+<span class="normal">22</span>
+<span class="normal">23</span>
+<span class="normal">24</span>
+<span class="normal">25</span>
+<span class="normal">26</span>
+<span class="normal">27</span>
+<span class="normal">28</span>
+<span class="normal">29</span>
+<span class="normal">30</span>
+<span class="normal">31</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">quspin.operators</span> <span class="kn">import</span> <span class="n">hamiltonian</span> <span class="c1"># Hamiltonians and operators</span>
 <span class="kn">from</span> <span class="nn">quspin.basis</span> <span class="kn">import</span> <span class="n">spin_basis_1d</span> <span class="c1"># Hilbert space spin basis</span>
 <span class="kn">from</span> <span class="nn">quspin.tools.measurements</span> <span class="kn">import</span> <span class="n">diag_ensemble</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span> <span class="c1"># generic math functions</span>
@@ -285,6 +286,7 @@ it’s infinite-time temporal fluctuations <span class="math notranslate nohighl
 </div>
 
 
+            <div class="clearer"></div>
           </div>
         </div>
       </div>
@@ -333,12 +335,13 @@ it’s infinite-time temporal fluctuations <span class="math notranslate nohighl
           <a href="quspin.tools.measurements.ent_entropy.html" title="quspin.tools.measurements.ent_entropy"
              >previous</a> |</li>
         <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.7 documentation</a> &#187;</li>
-          <li class="nav-item nav-item-1"><a href="../tools.html" >Tools module (<code class="xref py py-mod docutils literal notranslate"><span class="pre">quspin.tools</span></code>)</a> &#187;</li> 
+          <li class="nav-item nav-item-1"><a href="../tools.html" >Tools module (<code class="xref py py-mod docutils literal notranslate"><span class="pre">quspin.tools</span></code>)</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">quspin.tools.measurements.diag_ensemble</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2016, Phillip Weinberg, Markus Schmitt and Marin Bukov.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 3.0.4.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.5.4.
     </div>
   </body>
 </html>
