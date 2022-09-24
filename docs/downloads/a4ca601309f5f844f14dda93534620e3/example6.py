@@ -40,8 +40,8 @@ basis = spinful_fermion_basis_1d(L,Nf=(N_up,N_down))
 #
 ##### create model
 # define site-coupling lists
-hop_right = [[-J,i,i+1] for i in range(L-1)] # hopping to the right OBC
-hop_left = [[J,i,i+1] for i in range(L-1)] # hopping to the left OBC
+hop_right = [[J,i,i+1] for i in range(L-1)] # hopping to the right OBC
+hop_left = [[+J,i,i+1] for i in range(L-1)] # hopping to the left OBC
 int_list = [[U,i,i] for i in range(L)] # onsite interaction
 # site-coupling list to create the sublattice imbalance observable
 sublat_list = [[(-1.0)**i/N,i] for i in range(0,L)]
