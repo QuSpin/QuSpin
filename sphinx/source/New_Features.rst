@@ -23,14 +23,15 @@ Added in v. 0.3.7 (2022.10.15)
 
 Improved Functionality
 ++++++++++++++++++++++
+* added support for macbook ARM64 processors.
+* added python 3.10 support.
+* added note to warning to notify users that hermiticity/symmetry checks are not exhaustive.
+* added small fixes to :ref:`example17-label`.
 * fixed bug with automatic symmetry checks for `*_basis_1d`.
 * fixed bug with data types in `quantum_operator` for systems of `N>31` sites.
 * fixed bug with using `Nup` argument of `*_spin_basis_*`.
 * fixed bug with `return_rdm` optional argument of `tensor_basis`.
 * fixed bug with Floquet tool returning the transposed Floquet evolution operator for complex-valued Floquet Hamiltonians.
-* added note to warning to notify users that hermiticity/symmetry checks are not exhaustive.
-* added small fixes to :ref:`example17-label`.
-* added support for macbook ARM64 processors.
 * updated tests removing deprecation warnings and errors. 
 
 
