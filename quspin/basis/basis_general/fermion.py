@@ -688,12 +688,7 @@ class spinful_fermion_basis_general(spinless_fermion_basis_general):
 
 		s = down_state + (up_state << (self.N//2) ) # self.N here counts 2N sites 
 
-		indx = _np.argwhere(self._basis == s)
-
-		if len(indx) != 0:
-			return _np.squeeze(indx)
-		else:
-			raise ValueError("state must be representive state in basis.")
+		return spinless_fermion_basis_general._index(self,s)
 
 	def int_to_state(self,state,bracket_notation=True):
 
