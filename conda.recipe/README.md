@@ -35,3 +35,17 @@ Repository for conda-build recipes of QuSpin
 
 % automatic upload # do NOT use
 `conda config --set anaconda_upload yes`
+
+
+
+% to upload:
+anaconda upload \
+    ~/anaconda3/conda-bld/<arch>/quspin-0.3.7-py37h0dae790_0.tar.bz2 \
+    ~/anaconda3/conda-bld/<arch>/quspin-0.3.7-py39hdca4aa3_0.tar.bz2 \
+    ~/anaconda3/conda-bld/<arch>/quspin-0.3.7-py36h0994a5b_0.tar.bz2 \
+    ~/anaconda3/conda-bld/<arch>/quspin-0.3.7-py38h2749d98_0.tar.bz2 \
+    ~/anaconda3/conda-bld/<arch>/quspin-0.3.7-omp_py37hf6fb6aa_0.tar.bz2 \
+    ~/anaconda3/conda-bld/<arch>/quspin-0.3.7-omp_py39h9ae0b41_0.tar.bz2 \
+    ~/anaconda3/conda-bld/<arch>/quspin-0.3.7-omp_py310hdff685e_0.tar.bz2 \
+    ~/anaconda3/conda-bld/<arch>/quspin-0.3.7-omp_py36h56a5ab7_0.tar.bz2 \
+    ~/anaconda3/conda-bld/<arch>/quspin-0.3.7-omp_py38h713e524_0.tar.bz2
