@@ -175,11 +175,7 @@ cdef search_array(state_type * ptr,npy_intp n, object value):
 
     val = python_to_basis[state_type](value,val)
 
-    for i in range(n):
-        if(ptr[i]==val):
-            return i
-
-    return -1
+    return rep_position(n,ptr,val)
 
 def _get_basis_index(_np.ndarray basis,object val):
     cdef object value = basis_int_to_python_int(val)
