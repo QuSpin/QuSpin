@@ -5,6 +5,7 @@ py_version:
   - 3.9 # [linux,win,osx-64,osx-arm64]
   - 3.10 # [linux,win,osx-64,osx-arm64]
 
+
 numpy:
   - 1.19.2 # [linux,win,osx-64]
   - 1.19.2 # [linux,win,osx-64]

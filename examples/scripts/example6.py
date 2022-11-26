@@ -40,8 +40,8 @@ basis = spinful_fermion_basis_1d(L,Nf=(N_up,N_down))
 #
 ##### create model
 # define site-coupling lists
-hop_right = [[-J,i,i+1] for i in range(L-1)] # hopping to the right OBC
-hop_left = [[J,i,i+1] for i in range(L-1)] # hopping to the left OBC
+hop_right = [[J,i,i+1] for i in range(L-1)] # hopping to the right OBC
+hop_left = [[+J,i,i+1] for i in range(L-1)] # hopping to the left OBC
 int_list = [[U,i,i] for i in range(L)] # onsite interaction
 # site-coupling list to create the sublattice imbalance observable
 sublat_list = [[(-1.0)**i/N,i] for i in range(0,L)]
@@ -97,7 +97,7 @@ def real(H_dict,I,psi_0,w,t,i):
 	# print reporting the computation time for realization
 	print("realization {}/{} completed in {:.2f} s".format(i+1,n_real,time()-ti))
 	# return observable values
-	return obs_t["I"]
+	return obs_t["I"].real
 #
 ###### looping over different disorder strengths
 for w in w_list:	

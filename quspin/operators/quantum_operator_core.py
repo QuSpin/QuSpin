@@ -42,10 +42,10 @@ class quantum_operator(object):
 		Examples
 		---------
 
-		It is often required to be able to handle a parameter-dependent Hamiltonian :math:`H(\\lambda)=H_1 + \\lambda H_2`, e.g.
+		It is often required to be able to handle a parameter-dependent Hamiltonian :math:`H(\\lambda)=H_0 + \\lambda H_1`, e.g.
 
 		.. math::
-			H_1=\\sum_j J_{zz}S^z_jS^z_{j+1} + h_xS^x_j, \\qquad H_2=\\sum_j S^z_j
+			H_0=\\sum_j J_{zz}S^z_jS^z_{j+2} + h_xS^x_j, \\qquad H_1=\\sum_j S^z_j
 
 		The following code snippet shows how to use the `quantum_operator` class to vary the parameter :math:`\\lambda`
 		without having to re-build the Hamiltonian every time.

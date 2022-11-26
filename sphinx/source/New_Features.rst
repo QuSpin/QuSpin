@@ -1,6 +1,6 @@
 
 
-:orange:`QuSpin 0.3.7` (released on 2021.12.01)
+:orange:`QuSpin 0.3.7` (released on 2022.10.15)
 ================================================
 
 
@@ -18,18 +18,27 @@ For a tutorial in QuSpin's `user_basis` which allows the user to define custom b
 Complete list of the most recent features 
 =========================================
 
-Added in v. 0.3.7 (2021.12.01)
+Added in v. 0.3.7 (2022.10.15)
 ------------------------------
 
 Improved Functionality
 ++++++++++++++++++++++
+* added support for macbook ARM64 processors.
+* added python 3.10 support.
+* added note to warning to notify users that hermiticity/symmetry checks are not exhaustive.
+* added small fixes to :ref:`example17-label`.
 * fixed bug with automatic symmetry checks for `*_basis_1d`.
 * fixed bug with data types in `quantum_operator` for systems of `N>31` sites.
 * fixed bug with using `Nup` argument of `*_spin_basis_*`.
 * fixed bug with `return_rdm` optional argument of `tensor_basis`.
-* added warning to notify users that hermiticity/symmetry checks and not exhaustive.
+* fixed bug with Floquet tool returning the transposed Floquet evolution operator for complex-valued Floquet Hamiltonians.
+* updated tests removing deprecation warnings and errors. 
 
 
+New Attributes, Functions, Methods, Classes, and Examples
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+* new Example :ref:`example27-label` shows how to solve the Liouville-von Neumann equation using sparse matrices.
+* new Example :ref:`example28-label` shows how to define symmetries using the `user_basis` that cannot be defined using the `basis_general` classes. 
 
 Added in v. 0.3.6 (2021.05.01)
 ------------------------------

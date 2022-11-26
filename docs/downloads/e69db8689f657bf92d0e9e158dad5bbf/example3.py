@@ -85,10 +85,10 @@ sy_sc=hamiltonian([["y",[[1.0,0]] ]],[],dtype=np.complex128,**obs_args_sc)
 ##### calculate expectation values #####
 # in atom-photon Hilbert space
 Obs_t = obs_vs_time(psi_t,t.vals,{"n":n,"sz":sz,"sy":sy})
-O_n, O_sz, O_sy = Obs_t["n"], Obs_t["sz"], Obs_t["sy"]
+O_n, O_sz, O_sy = Obs_t["n"].real, Obs_t["sz"].real, Obs_t["sy"].real
 # in the semi-classical Hilbert space
 Obs_sc_t = obs_vs_time(psi_sc_t,t.vals,{"sz_sc":sz_sc,"sy_sc":sy_sc})
-O_sz_sc, O_sy_sc = Obs_sc_t["sz_sc"], Obs_sc_t["sy_sc"]
+O_sz_sc, O_sy_sc = Obs_sc_t["sz_sc"].real, Obs_sc_t["sy_sc"].real
 ##### plot results #####
 import matplotlib.pyplot as plt
 import pylab

@@ -205,4 +205,4 @@ if __name__ == '__main__':
 	# save figure
 	fig.savefig('example1_ETH.pdf', bbox_inches='tight')
 	#
-	plt.show() # show plots
+	#plt.show() # show plots
