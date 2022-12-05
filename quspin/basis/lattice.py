@@ -8,6 +8,7 @@ from numpy.linalg import norm,eigvalsh
 from scipy.sparse.linalg import eigsh
 import warnings
 from ._basis_utils import fermion_ptrace_sign,anyon_ptrace_phase
+from itertools import chain
 
 _dtypes={"f":_np.float32,"d":_np.float64,"F":_np.complex64,"D":_np.complex128}
 
@@ -664,16 +665,37 @@ class lattice_basis(basis):
 		return p_A, p_B, rdm_A, rdm_B
 
 	def _get__str__(self):
-		temp1 = "     {0:"+str(len(str(self.Ns)))+"d}.         "
-		temp2 = "           {0:"+str(len(str(self._basis[0])))+"d}  "
-		
-		if self._Ns > MAXPRINT:
-			half = MAXPRINT // 2
-			str_list = [(temp1.format(i))+self.int_to_state(b)+temp2.format(b) for i,b in zip(range(half),self._basis[:half])]
-			str_list.extend([(temp1.format(i))+self.int_to_state(b)+temp2.format(b) for i,b in zip(range(self._Ns-half,self._Ns,1),self._basis[-half:])])
-		else:
-			str_list = [(temp1.format(i))+self.int_to_state(b)+temp2.format(b) for i,b in enumerate(self._basis)]
+		from .basis_general import basis_int_to_python_int
 
+		Ns = self._Ns
+		if Ns > MAXPRINT:
+			half = MAXPRINT // 2
+			
+			basis_iter = chain(zip(range(half),self.states[:half]),zip(range(Ns-half,Ns,1),self.states[-half:]))
+
+			
+		else:
+			basis_iter = enumerate(self.states)
+
+
+		str_list = []
+
+		if self.states.dtype != int:
+			convert_int = lambda i:basis_int_to_python_int(i)
+		else:
+			convert_int = lambda i:I
+		
+		b_int = convert_int(self.states[0])
+		b_str = self.int_to_state(self.states[0])
+		len_Ns = len(str(self.Ns))
+		len_b_str = len(b_str)
+		len_b_int = len(str(b_int))
+		temp = " {{:{:d}d}}.  {{:{:d}s}}  {{:{:d}d}} ".format(len_Ns,len_b_str,len_b_int)
+
+		for i,b in basis_iter:
+			b_int = convert_int(b)
+			b_str = self.int_to_state(b)
+			str_list.append(temp.format(i,b_str,b_int))
 
 		return tuple(str_list)
 
