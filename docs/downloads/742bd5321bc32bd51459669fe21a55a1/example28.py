@@ -12,7 +12,7 @@ sys.path.insert(0,quspin_path)
 #  In this script we demonstrate how to use QuSpin's user_basis         #
 #  to define symmetries, which are not supported by the basis_general   #
 #  classes. We take an 8-site honeycomb lattice with PBC and define     #
-#  the Kitaev model in the spectral sectors given by the Wilson loop    #
+#  the Kitaev model in the spectral sectors given by the Wilson loop /  #
 #  plaquette operators W.                                               #
 #########################################################################
 from quspin.operators import hamiltonian # Hamiltonians and operators
