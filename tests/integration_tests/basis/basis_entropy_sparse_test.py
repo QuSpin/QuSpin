@@ -3,7 +3,7 @@ qspin_path = os.path.join(os.getcwd(),"../")
 sys.path.insert(0,qspin_path)
 
 from quspin.operators import hamiltonian
-from quspin.tools.measurements import _ent_entropy, _reshape_as_subsys
+#from quspin.tools.measurements import _ent_entropy, _reshape_as_subsys
 import numpy as np
 import scipy.sparse as sp
 
