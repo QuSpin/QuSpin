@@ -9,21 +9,21 @@ The following Python scripts demonstrate basic and advanced functionality of QuS
 
 To run the example scripts, besides QuSpin, you have to also install `matplotlib <https://matplotlib.org/users/installing.html>`_ (e.g. by using anaconda):
 	
-	* Getting started
-		* :green:`NEW:` :ref:`example_00-label`, :download:`download script <../../examples/scripts/example00.py>`
+	* **Getting started**
+		* :ref:`example_00-label`, :download:`download script <../../examples/scripts/example00.py>`
 		* :ref:`example0-label`, :download:`download script <../../examples/scripts/example0.py>`
 		* :ref:`example8-label`, :download:`download script <../../examples/scripts/example8.py>`
 	
-	* Parallel computing in QuSpin
+	* **Parallel computing in QuSpin**
 		* :ref:`example12-label`, :download:`download script <../../examples/scripts/example12.py>`
 	
-	* Basic usage
-		* non-interacting systems
+	* **Basic usage**
+		* **non-interacting systems**
 			* :ref:`example5-label`, :download:`download script <../../examples/scripts/example5.py>`
 			* :ref:`example3-label`, :download:`download script <../../examples/scripts/example3.py>`
 			* :ref:`example17-label`, :download:`download script <../../examples/scripts/example17.py>`
 			* :ref:`example4-label`, :download:`download script <../../examples/scripts/example4.py>`
-		* interacting systems
+		* **interacting systems**
 			* :ref:`example13-label`, :download:`download script <../../examples/scripts/example13.py>`
 			* :ref:`example18-label`, :download:`download script <../../examples/scripts/example18.py>`
 			* :ref:`example2-label`, :download:`download script <../../examples/scripts/example2.py>`	
@@ -32,24 +32,26 @@ To run the example scripts, besides QuSpin, you have to also install `matplotlib
 			* :ref:`example6-label`, :download:`download script <../../examples/scripts/example6.py>`
 			* :ref:`example1-label`, :download:`download script <../../examples/scripts/example1.py>`
 			* :ref:`example10-label`, :download:`download script <../../examples/scripts/example10.py>`
-			* :green:`NEW:` :ref:`example25-label`, :download:`download script <../../examples/scripts/example25.py>`
+			* :ref:`example25-label`, :download:`download script <../../examples/scripts/example25.py>`
 			
-	* Advanced usage
+	* **Advanced usage**
 		* :ref:`example14-label`, :download:`download script <../../examples/scripts/example14.py>`
 		* :ref:`example15-label`, :download:`download script <../../examples/scripts/example15.py>`
 		* :ref:`example16-label`, :download:`download script <../../examples/scripts/example16.py>`
 		* :ref:`example19-label`, :download:`download script <../../examples/scripts/example19.py>`
-		* :green:`NEW:` :ref:`example26-label`, :download:`download script <../../examples/scripts/example26.py>`
-		* :green:`NEW:` :ref:`example23-label`, :download:`download script <../../examples/scripts/example23.py>`
-		* :green:`NEW:` :ref:`example24-label`, :download:`download script <../../examples/scripts/example24.py>`
+		* :ref:`example26-label`, :download:`download script <../../examples/scripts/example26.py>`
+		* :ref:`example23-label`, :download:`download script <../../examples/scripts/example23.py>`
+		* :ref:`example24-label`, :download:`download script <../../examples/scripts/example24.py>`
+		* :red:`NEW:` :ref:`example28-label`, :download:`download script <../../examples/scripts/example28.py>`
 		
 	
 
-	* Algorithms and Routines
+	* **Algorithms and Routines**
 		* :ref:`example11-label`, :download:`download script <../../examples/scripts/example11.py>`
 		* :ref:`example22-label`, :download:`download script <../../examples/scripts/example22.py>`
 		* :ref:`example20-label`, :download:`download script <../../examples/scripts/example20.py>`
 		* :ref:`example21-label`, :download:`download script <../../examples/scripts/example21.py>`
+		* :red:`NEW:` :ref:`example27-label`, :download:`download script <../../examples/scripts/example27.py>`
 
 		
 

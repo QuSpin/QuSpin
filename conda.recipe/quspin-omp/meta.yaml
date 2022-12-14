@@ -1,4 +1,4 @@
-{%  set version = "0.3.6" %}
+{%  set version = "0.3.7" %}
 {%  set build_num = "0" %}
 
 package:
@@ -30,7 +30,7 @@ requirements:
  
   run:
     - python {{ py_version }}
-    - {{ pin_compatible('numpy',max_pin='x') }} 
+    - {{ pin_compatible('numpy',max_pin='x.x') }} 
     - scipy >=0.19.1
     - joblib 
     - six 

@@ -19,8 +19,8 @@ import matplotlib.pyplot as plt # plotting library
 #
 ###### define model parameters ######
 L_1d = 16 # length of chain for spin 1/2
-Lx, Ly = 4, 4 # linear dimension of spin 1 2d lattice
-N_2d = Lx*Ly # number of sites for spin 1
+Lx, Ly = 4, 4 # linear dimension of spin 1/2 2d lattice
+N_2d = Lx*Ly # number of sites for spin 1/2
 Omega = 2.0 # drive frequency
 A = 2.0 # drive amplitude
 #
@@ -62,7 +62,7 @@ Hx_2d =hamiltonian([["x",hx_2d]],[],basis=basis_2d,dtype=np.float64)
 [E_1d_min],psi_1d = Hzz_1d.eigsh(k=1,which="SA")
 [E_2d_min],psi_2d = Hzz_2d.eigsh(k=1,which="SA")
 # setting up initial states
-psi0_1d = psi_1d.ravel()
+psi0_1d = psi_1d.ravel()#.astype(np.complex128)
 psi0_2d = psi_2d.ravel()
 #
 ###### time evolution ######
@@ -97,8 +97,8 @@ s_p_1d = np.log(2)-2.0**(-L_1d//2)/L_1d
 s_p_2d = np.log(2)-2.0**(-N_2d//2)/N_2d
 #
 ###### plotting results ######
-plt.plot(t.strobo.inds,(Obs_1d_t["E"]-E_1d_min)/(-E_1d_min),marker='.',markersize=5,label="$S=1/2$")
-plt.plot(t.strobo.inds,(Obs_2d_t["E"]-E_2d_min)/(-E_2d_min),marker='.',markersize=5,label="$S=1$")
+plt.plot(t.strobo.inds,(Obs_1d_t["E"].real-E_1d_min)/(-E_1d_min),marker='.',markersize=5,label="$S=1/2$")
+plt.plot(t.strobo.inds,(Obs_2d_t["E"].real-E_2d_min)/(-E_2d_min),marker='.',markersize=5,label="$S=1$")
 plt.grid()
 plt.ylabel("$Q(t)$",fontsize=20)
 plt.xlabel("$t/T$",fontsize=20)
@@ -107,7 +107,7 @@ plt.figure()
 plt.plot(t.strobo.inds,Sent_time_1d/s_p_1d,marker='.',markersize=5,label="$1d$")
 plt.plot(t.strobo.inds,Sent_time_2d/s_p_2d,marker='.',markersize=5,label="$2d$")
 plt.grid()
-plt.ylabel("$s_{\mathrm{ent}}(t)/s_\mathrm{Page}$",fontsize=20)
+plt.ylabel("$s_{\\mathrm{ent}}(t)/s_\\mathrm{Page}$",fontsize=20)
 plt.xlabel("$t/T$",fontsize=20)
 plt.legend(loc=0,fontsize=16)
 plt.tight_layout()

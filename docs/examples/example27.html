@@ -1,0 +1,379 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><script type="text/javascript">
+
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-110543543-1']);
+      _gaq.push(['_trackPageview']);
+
+      (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+    </script>
+    <title>Liouville-von Neumann Equation using the MKL-enhanced Sparse Matrix Product [courtesy of J. Verlage] &#8212; QuSpin 0.3.7 documentation</title>
+    <link rel="stylesheet" href="../static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../static/classic.css" type="text/css" />
+    
+    <script id="documentation_options" data-url_root="../" src="../static/documentation_options.js"></script>
+    <script src="../static/jquery.js"></script>
+    <script src="../static/underscore.js"></script>
+    <script src="../static/doctools.js"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.7 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Liouville-von Neumann Equation using the MKL-enhanced Sparse Matrix Product [courtesy of J. Verlage]</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <style> .red {color:#ff0000; font-weight:bold; font-style:italic; } </style>
+<style> .green {color:#00b200; font-weight:bold; font-style:italic; } </style>
+<style> .magenta {color:#FF33F3; font-weight:bold; font-style:italic; } </style>
+<style> .orange {color:#FE8E02; font-weight:bold; font-style:italic; } </style><div class="section" id="liouville-von-neumann-equation-using-the-mkl-enhanced-sparse-matrix-product-courtesy-of-j-verlage">
+<span id="example27-label"></span><h1>Liouville-von Neumann Equation using the MKL-enhanced Sparse Matrix Product [courtesy of J. Verlage]<a class="headerlink" href="#liouville-von-neumann-equation-using-the-mkl-enhanced-sparse-matrix-product-courtesy-of-j-verlage" title="Permalink to this headline">¶</a></h1>
+<p>This example shows how one can combine QuSpin with the external library <a class="reference external" href="https://github.com/flatironinstitute/sparse_dot.git">sparse_dot</a> which supports an MKL-parallelized sparse matrix product.</p>
+<p>To this end, we consider the numerical solution of the Liouville-von Neumann (LvN) equation for the density matrix:</p>
+<div class="math notranslate nohighlight">
+\[i\partial_t \rho(t) = [H,\rho(t)].\]</div>
+<p>The system is the Fermi-Hubbard modelon a square lattice:</p>
+<div class="math notranslate nohighlight">
+\[H = -J\sum_{j,\sigma} \left( c^\dagger_{j+1\sigma}c_{j\sigma} + \mathrm{h.c.} \right) + U\sum_j n_{j\uparrow}n_{j\downarrow},\]</div>
+<p>where <span class="math notranslate nohighlight">\(j=(x,y)\)</span> denotes the lattice site. We choose a mean-field initial state,</p>
+<div class="math notranslate nohighlight">
+\[\rho(0)=\bigotimes_j \rho_j, \qquad \mathrm{where} \qquad  \rho_j = \frac{1}{2}\left( |\uparrow_j\rangle\langle \uparrow_j|+ |\downarrow_j\rangle\langle \downarrow_j| \right),\]</div>
+<p>that cannot be written as a pure state [hence the necessity to solve the LvN equation rather than Schroedinger’s equation].</p>
+<p>Note that the initial state <span class="math notranslate nohighlight">\(\rho(0)\)</span> is diagonal in the particle number basis; therefore, since the Hamiltonian <span class="math notranslate nohighlight">\(H\)</span> is also sparse, we expect that the time-evolved density operator will remain sparse at least for small times [compared to <span class="math notranslate nohighlight">\(U^{-1}, J^{-1}\)</span>].
+Since we are limited to small system sizes by the exponentially growing Hilbert space dimension, we need a memory-efficient way to store the quantum state, e.g., using a sparse matrix. In turn, this requires:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>an efficient, ideally parallelized, sparse-spase matrix product;</p></li>
+<li><p>a solver for differential equations that allows us to keep the variable [here <span class="math notranslate nohighlight">\(\rho\)</span>] in sparse format at all times.</p></li>
+</ul>
+</div></blockquote>
+<p>To this end, we can use the open-source python library <a class="reference external" href="https://github.com/flatironinstitute/sparse_dot.git">sparse_dot</a>, which provides the MKL-paralellized function <cite>dot_product_mkl</cite>. We use it to write our own fourth-order Runge-Kutta (RK) solver for the LvN equation. Note that, unlike the RK solver provided in Scipy where the step size is chosen adaptively, our RK implementation has a fixed step size; however, scipy’s solver does not allow us to keep the state as a sparse matrix at all times.</p>
+</div>
+<div class="section" id="script">
+<h1>Script<a class="headerlink" href="#script" title="Permalink to this headline">¶</a></h1>
+<p><a class="reference download internal" download="" href="../downloads/c11be7fb861667010dde48b25d9d66b4/example27.py"><code class="xref download docutils literal notranslate"><span class="pre">download</span> <span class="pre">script</span></code></a></p>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">  1</span>
+<span class="normal">  2</span>
+<span class="normal">  3</span>
+<span class="normal">  4</span>
+<span class="normal">  5</span>
+<span class="normal">  6</span>
+<span class="normal">  7</span>
+<span class="normal">  8</span>
+<span class="normal">  9</span>
+<span class="normal"> 10</span>
+<span class="normal"> 11</span>
+<span class="normal"> 12</span>
+<span class="normal"> 13</span>
+<span class="normal"> 14</span>
+<span class="normal"> 15</span>
+<span class="normal"> 16</span>
+<span class="normal"> 17</span>
+<span class="normal"> 18</span>
+<span class="normal"> 19</span>
+<span class="normal"> 20</span>
+<span class="normal"> 21</span>
+<span class="normal"> 22</span>
+<span class="normal"> 23</span>
+<span class="normal"> 24</span>
+<span class="normal"> 25</span>
+<span class="normal"> 26</span>
+<span class="normal"> 27</span>
+<span class="normal"> 28</span>
+<span class="normal"> 29</span>
+<span class="normal"> 30</span>
+<span class="normal"> 31</span>
+<span class="normal"> 32</span>
+<span class="normal"> 33</span>
+<span class="normal"> 34</span>
+<span class="normal"> 35</span>
+<span class="normal"> 36</span>
+<span class="normal"> 37</span>
+<span class="normal"> 38</span>
+<span class="normal"> 39</span>
+<span class="normal"> 40</span>
+<span class="normal"> 41</span>
+<span class="normal"> 42</span>
+<span class="normal"> 43</span>
+<span class="normal"> 44</span>
+<span class="normal"> 45</span>
+<span class="normal"> 46</span>
+<span class="normal"> 47</span>
+<span class="normal"> 48</span>
+<span class="normal"> 49</span>
+<span class="normal"> 50</span>
+<span class="normal"> 51</span>
+<span class="normal"> 52</span>
+<span class="normal"> 53</span>
+<span class="normal"> 54</span>
+<span class="normal"> 55</span>
+<span class="normal"> 56</span>
+<span class="normal"> 57</span>
+<span class="normal"> 58</span>
+<span class="normal"> 59</span>
+<span class="normal"> 60</span>
+<span class="normal"> 61</span>
+<span class="normal"> 62</span>
+<span class="normal"> 63</span>
+<span class="normal"> 64</span>
+<span class="normal"> 65</span>
+<span class="normal"> 66</span>
+<span class="normal"> 67</span>
+<span class="normal"> 68</span>
+<span class="normal"> 69</span>
+<span class="normal"> 70</span>
+<span class="normal"> 71</span>
+<span class="normal"> 72</span>
+<span class="normal"> 73</span>
+<span class="normal"> 74</span>
+<span class="normal"> 75</span>
+<span class="normal"> 76</span>
+<span class="normal"> 77</span>
+<span class="normal"> 78</span>
+<span class="normal"> 79</span>
+<span class="normal"> 80</span>
+<span class="normal"> 81</span>
+<span class="normal"> 82</span>
+<span class="normal"> 83</span>
+<span class="normal"> 84</span>
+<span class="normal"> 85</span>
+<span class="normal"> 86</span>
+<span class="normal"> 87</span>
+<span class="normal"> 88</span>
+<span class="normal"> 89</span>
+<span class="normal"> 90</span>
+<span class="normal"> 91</span>
+<span class="normal"> 92</span>
+<span class="normal"> 93</span>
+<span class="normal"> 94</span>
+<span class="normal"> 95</span>
+<span class="normal"> 96</span>
+<span class="normal"> 97</span>
+<span class="normal"> 98</span>
+<span class="normal"> 99</span>
+<span class="normal">100</span>
+<span class="normal">101</span>
+<span class="normal">102</span>
+<span class="normal">103</span>
+<span class="normal">104</span>
+<span class="normal">105</span>
+<span class="normal">106</span>
+<span class="normal">107</span>
+<span class="normal">108</span>
+<span class="normal">109</span>
+<span class="normal">110</span>
+<span class="normal">111</span>
+<span class="normal">112</span>
+<span class="normal">113</span>
+<span class="normal">114</span>
+<span class="normal">115</span>
+<span class="normal">116</span>
+<span class="normal">117</span>
+<span class="normal">118</span>
+<span class="normal">119</span>
+<span class="normal">120</span>
+<span class="normal">121</span>
+<span class="normal">122</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span><span class="p">,</span> <span class="n">division</span>
+<span class="c1">#</span>
+<span class="kn">import</span> <span class="nn">sys</span><span class="o">,</span><span class="nn">os</span>
+<span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s1">&#39;KMP_DUPLICATE_LIB_OK&#39;</span><span class="p">]</span><span class="o">=</span><span class="s1">&#39;True&#39;</span> <span class="c1"># uncomment this line if omp error occurs on OSX for python 3</span>
+<span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s1">&#39;OMP_NUM_THREADS&#39;</span><span class="p">]</span><span class="o">=</span><span class="s1">&#39;4&#39;</span> <span class="c1"># set number of OpenMP threads to run in parallel</span>
+<span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s1">&#39;MKL_NUM_THREADS&#39;</span><span class="p">]</span><span class="o">=</span><span class="s1">&#39;4&#39;</span> <span class="c1"># set number of MKL threads to run in parallel</span>
+<span class="c1">#</span>
+<span class="n">quspin_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">(),</span><span class="s2">&quot;../../&quot;</span><span class="p">)</span>
+<span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">quspin_path</span><span class="p">)</span>
+<span class="c1">###########################################################################</span>
+<span class="c1">#                             example 27                                  #</span>
+<span class="c1">#  In this script we demonstrate how to use QuSpin to generate            #</span>
+<span class="c1">#  a Hamiltonian and solve the Louiville-von Neumann equation starting	  #</span>
+<span class="c1">#  from a mixed initial state in the Fermi Hubbard model. We also         #</span>
+<span class="c1">#  show how to write a simple fixed time-step Runge-Kutta solver          #</span>
+<span class="c1">#  that makes use of an MKL-parllelized dot function for sparse matrices. #</span>
+<span class="c1">###########################################################################</span>
+<span class="c1"># import sparse_dot library, see https://github.com/flatironinstitute/sparse_dot.git</span>
+<span class="kn">from</span> <span class="nn">sparse_dot_mkl</span> <span class="kn">import</span> <span class="n">dot_product_mkl</span> 
+<span class="kn">from</span> <span class="nn">quspin.tools.misc</span> <span class="kn">import</span> <span class="n">get_matvec_function</span>
+<span class="kn">from</span> <span class="nn">quspin.operators</span> <span class="kn">import</span> <span class="n">hamiltonian</span>
+<span class="kn">from</span> <span class="nn">scipy.sparse</span> <span class="kn">import</span> <span class="n">csr_matrix</span>
+<span class="kn">from</span> <span class="nn">quspin.basis</span> <span class="kn">import</span> <span class="n">spinful_fermion_basis_general</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="c1">#</span>
+<span class="c1">##### define model parameters #####</span>
+<span class="c1">#</span>
+<span class="n">Lx</span><span class="p">,</span> <span class="n">Ly</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span> <span class="c1"># expect to see an MKL speedup from Lx,Ly = 2,3 onward</span>
+<span class="n">N_2d</span><span class="o">=</span><span class="n">Lx</span><span class="o">*</span><span class="n">Ly</span> <span class="c1"># total number of lattice sites</span>
+<span class="c1"># model params</span>
+<span class="n">J</span><span class="o">=</span><span class="mf">1.0</span> <span class="c1"># hopping amplitude</span>
+<span class="n">U</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mf">2.0</span><span class="p">)</span> <span class="c1"># interaction strength</span>
+<span class="c1"># time parameters</span>
+<span class="n">t_max</span><span class="o">=</span><span class="mf">40.0</span> <span class="c1"># total time</span>
+<span class="n">dt</span><span class="o">=</span><span class="mf">0.1</span> <span class="c1"># time step size</span>
+<span class="n">N_T</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">t_max</span><span class="o">//</span><span class="n">dt</span><span class="p">)</span>
+<span class="n">time_vec</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span><span class="n">t_max</span><span class="p">,</span><span class="nb">int</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">t_max</span><span class="o">+</span><span class="mi">1</span><span class="p">))</span>
+<span class="c1">#</span>
+<span class="c1">##### create Hamiltonian to evolve unitarily</span>
+<span class="c1">#</span>
+<span class="c1"># basis</span>
+<span class="n">basis</span><span class="o">=</span><span class="n">spinful_fermion_basis_general</span><span class="p">(</span><span class="n">N_2d</span><span class="p">)</span>
+<span class="c1"># define translation operators for 2D lattice</span>
+<span class="n">s</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">N_2d</span><span class="p">)</span> <span class="c1"># sites [0,1,2,...,N_2d-1] in simple notation</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">s</span><span class="o">%</span><span class="n">Lx</span> <span class="c1"># x positions for sites</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">s</span><span class="o">//</span><span class="n">Lx</span> <span class="c1"># y positions for sites</span>
+<span class="n">T_x</span> <span class="o">=</span> <span class="p">(</span><span class="n">x</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">%</span><span class="n">Lx</span> <span class="o">+</span> <span class="n">Lx</span><span class="o">*</span><span class="n">y</span> <span class="c1"># translation along x-direction</span>
+<span class="n">T_y</span> <span class="o">=</span> <span class="n">x</span> <span class="o">+</span> <span class="n">Lx</span><span class="o">*</span><span class="p">((</span><span class="n">y</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">%</span><span class="n">Ly</span><span class="p">)</span> <span class="c1"># translation along y-direction</span>
+<span class="c1"># site-coupling lists</span>
+<span class="n">hop_left</span> <span class="o">=</span><span class="p">[[</span><span class="o">-</span><span class="n">J</span><span class="p">,</span><span class="n">i</span><span class="p">,</span><span class="n">T_x</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N_2d</span><span class="p">)]</span> <span class="o">+</span> <span class="p">[[</span><span class="o">-</span><span class="n">J</span><span class="p">,</span><span class="n">i</span><span class="p">,</span><span class="n">T_y</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N_2d</span><span class="p">)]</span>
+<span class="n">hop_right</span><span class="o">=</span><span class="p">[[</span><span class="o">+</span><span class="n">J</span><span class="p">,</span><span class="n">i</span><span class="p">,</span><span class="n">T_x</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N_2d</span><span class="p">)]</span> <span class="o">+</span> <span class="p">[[</span><span class="o">+</span><span class="n">J</span><span class="p">,</span><span class="n">i</span><span class="p">,</span><span class="n">T_y</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N_2d</span><span class="p">)]</span>
+<span class="n">int_list</span><span class="o">=</span><span class="p">[[</span><span class="n">U</span><span class="p">,</span><span class="n">i</span><span class="p">,</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N_2d</span><span class="p">)]</span>
+<span class="c1"># static opstr list </span>
+<span class="n">static</span><span class="o">=</span> <span class="p">[</span>	
+		<span class="p">[</span><span class="s2">&quot;+-|&quot;</span><span class="p">,</span> <span class="n">hop_left</span><span class="p">],</span> <span class="c1"># up hop left</span>
+		<span class="p">[</span><span class="s2">&quot;-+|&quot;</span><span class="p">,</span> <span class="n">hop_right</span><span class="p">],</span> <span class="c1"># up hop right</span>
+		<span class="p">[</span><span class="s2">&quot;|+-&quot;</span><span class="p">,</span> <span class="n">hop_left</span><span class="p">],</span> <span class="c1"># down hop left</span>
+		<span class="p">[</span><span class="s2">&quot;|-+&quot;</span><span class="p">,</span> <span class="n">hop_right</span><span class="p">],</span> <span class="c1"># down hop right</span>
+		<span class="p">[</span><span class="s2">&quot;n|n&quot;</span><span class="p">,</span> <span class="n">int_list</span><span class="p">]</span>
+		<span class="p">]</span>
+<span class="c1"># construct Hamiltonian</span>
+<span class="n">Hcsc</span><span class="o">=</span><span class="n">hamiltonian</span><span class="p">(</span><span class="n">static</span><span class="p">,[],</span><span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">complex128</span><span class="p">,</span><span class="n">basis</span><span class="o">=</span><span class="n">basis</span><span class="p">,</span><span class="n">check_symm</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">tocsr</span><span class="p">()</span>
+<span class="c1">#</span>
+<span class="c1">##### create the mean-field groundstate we start from</span>
+<span class="c1">#</span>
+<span class="c1"># compute basis with single occupancies only</span>
+<span class="n">basis_reduced</span> <span class="o">=</span> <span class="n">spinful_fermion_basis_general</span><span class="p">(</span><span class="n">N_2d</span><span class="p">,</span> <span class="n">Nf</span><span class="o">=</span><span class="p">([(</span><span class="n">j</span><span class="p">,</span><span class="n">N_2d</span><span class="o">-</span><span class="n">j</span><span class="p">)</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N_2d</span><span class="o">+</span><span class="mi">1</span><span class="p">)]),</span> <span class="n">double_occupancy</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="c1"># create empty list to store indices of nonzero elements for initial DM</span>
+<span class="n">rho_inds</span><span class="o">=</span><span class="p">[]</span> 
+<span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">basis_reduced</span><span class="o">.</span><span class="n">states</span><span class="p">:</span> <span class="c1"># loop over singly-occupied states</span>
+	<span class="n">rho_inds</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">argwhere</span><span class="p">(</span><span class="n">basis</span><span class="o">.</span><span class="n">states</span> <span class="o">==</span> <span class="n">s</span><span class="p">)[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="p">)</span>
+<span class="c1"># create initial state in csr format</span>
+<span class="n">rho_0</span><span class="o">=</span><span class="n">csr_matrix</span><span class="p">((</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">basis_reduced</span><span class="o">.</span><span class="n">Ns</span><span class="p">)</span><span class="o">/</span><span class="n">basis_reduced</span><span class="o">.</span><span class="n">Ns</span><span class="p">,</span> <span class="p">(</span><span class="n">rho_inds</span><span class="p">,</span> <span class="n">rho_inds</span><span class="p">)),</span><span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="n">basis</span><span class="o">.</span><span class="n">Ns</span><span class="p">,</span><span class="n">basis</span><span class="o">.</span><span class="n">Ns</span><span class="p">),</span><span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">complex128</span><span class="p">)</span>
+<span class="c1">#</span>
+<span class="c1">##### define Runge-Kutta solver for sparse matrix</span>
+<span class="c1">#</span>
+<span class="c1"># MKL-parallel function using the sparse_dot library</span>
+<span class="k">def</span> <span class="nf">LvN_mkl</span><span class="p">(</span><span class="n">rho</span><span class="p">):</span>
+	<span class="c1"># define right-hand side of Liouville-von Neumann equation </span>
+	<span class="c1"># see https://github.com/flatironinstitute/sparse_dot.git, needs v0.8 or higher</span>
+	<span class="k">return</span> <span class="o">-</span><span class="mi">1</span><span class="n">j</span><span class="o">*</span><span class="p">(</span> <span class="n">dot_product_mkl</span><span class="p">(</span><span class="n">Hcsc</span><span class="p">,</span><span class="n">rho</span><span class="p">,</span><span class="n">cast</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="o">-</span> <span class="n">dot_product_mkl</span><span class="p">(</span><span class="n">rho</span><span class="p">,</span><span class="n">Hcsc</span><span class="p">,</span><span class="n">cast</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="p">)</span>
+<span class="c1">#</span>
+<span class="c1"># scipy function </span>
+<span class="k">def</span> <span class="nf">LvN_scipy</span><span class="p">(</span><span class="n">rho</span><span class="p">):</span>
+	<span class="k">return</span> <span class="o">-</span><span class="mi">1</span><span class="n">j</span><span class="o">*</span><span class="p">(</span><span class="n">Hcsc</span><span class="nd">@rho</span><span class="o">-</span><span class="n">rho</span><span class="nd">@Hcsc</span><span class="p">)</span>
+<span class="c1">#</span>
+<span class="c1"># define fixed step-size Runge-Kutta 4th order method</span>
+<span class="k">def</span> <span class="nf">RK_solver</span><span class="p">(</span><span class="n">rho</span><span class="p">,</span><span class="n">dt</span><span class="p">,</span> <span class="n">LvN</span><span class="p">):</span>
+	<span class="n">k1</span> <span class="o">=</span> <span class="n">LvN</span><span class="p">(</span><span class="n">rho</span><span class="p">)</span>
+	<span class="n">k2</span> <span class="o">=</span> <span class="n">LvN</span><span class="p">(</span><span class="n">rho</span><span class="o">+</span><span class="p">(</span><span class="mf">0.5</span><span class="o">*</span><span class="n">dt</span><span class="p">)</span><span class="o">*</span><span class="n">k1</span><span class="p">)</span>
+	<span class="n">k3</span> <span class="o">=</span> <span class="n">LvN</span><span class="p">(</span><span class="n">rho</span><span class="o">+</span><span class="p">(</span><span class="mf">0.5</span><span class="o">*</span><span class="n">dt</span><span class="p">)</span><span class="o">*</span><span class="n">k2</span><span class="p">)</span>
+	<span class="n">k4</span> <span class="o">=</span> <span class="n">LvN</span><span class="p">(</span><span class="n">rho</span><span class="o">+</span><span class="n">dt</span><span class="o">*</span><span class="n">k3</span><span class="p">)</span>
+	<span class="k">return</span> <span class="n">rho</span> <span class="o">+</span> <span class="n">dt</span><span class="o">*</span><span class="p">(</span><span class="n">k1</span><span class="o">+</span><span class="mi">2</span><span class="o">*</span><span class="n">k2</span><span class="o">+</span><span class="mi">2</span><span class="o">*</span><span class="n">k3</span><span class="o">+</span><span class="n">k4</span><span class="p">)</span><span class="o">/</span><span class="mf">6.0</span>
+<span class="c1">#</span>
+<span class="c1">##### evolve DM by solving the LvN equation</span>
+<span class="c1">#</span>
+<span class="c1"># empty list to store the solution in</span>
+<span class="n">rho_t</span><span class="o">=</span><span class="p">[]</span> 
+<span class="c1"># initial state</span>
+<span class="n">rho_mkl</span>	<span class="o">=</span><span class="n">rho_0</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+<span class="c1"># time evolution loop</span>
+<span class="n">starttime</span><span class="o">=</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N_T</span><span class="p">):</span>
+	<span class="n">rho_mkl</span>	 <span class="o">=</span> <span class="n">RK_solver</span><span class="p">(</span><span class="n">rho_mkl</span><span class="p">,</span> <span class="n">dt</span><span class="p">,</span> <span class="n">LvN_mkl</span><span class="p">)</span>
+	<span class="n">rho_t</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">rho_mkl</span><span class="p">)</span>
+	<span class="c1">#print(&quot;finished step {0:d}/{1:d}.&quot;.format(i+1,int(t_max/dt)-1),flush=True)</span>
+<span class="c1">#</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">MKL time evo done in </span><span class="si">{0:0.4f}</span><span class="s2"> secs.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span><span class="o">-</span><span class="n">starttime</span><span class="p">),</span><span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="c1">#</span>
+<span class="c1"># empty list to store the solution in</span>
+<span class="n">rho_t</span><span class="o">=</span><span class="p">[]</span> 
+<span class="c1"># initial state</span>
+<span class="n">rho_scipy</span> <span class="o">=</span><span class="n">rho_0</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+<span class="c1"># time evolution loop</span>
+<span class="n">starttime</span><span class="o">=</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N_T</span><span class="p">):</span>
+        <span class="n">rho_scipy</span>  <span class="o">=</span> <span class="n">RK_solver</span><span class="p">(</span><span class="n">rho_scipy</span><span class="p">,</span> <span class="n">dt</span><span class="p">,</span> <span class="n">LvN_scipy</span><span class="p">)</span>
+        <span class="n">rho_t</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">rho_scipy</span><span class="p">)</span>
+        <span class="c1">#print(&quot;finished step {0:d}/{1:d}.&quot;.format(i+1,int(t_max/dt)-1),flush=True)</span>
+<span class="c1">#</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Scipy time evo done in </span><span class="si">{0:0.4f}</span><span class="s2"> secs.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span><span class="o">-</span><span class="n">starttime</span><span class="p">),</span><span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</td></tr></table></div>
+</div>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Liouville-von Neumann Equation using the MKL-enhanced Sparse Matrix Product [courtesy of J. Verlage]</a></li>
+<li><a class="reference internal" href="#script">Script</a></li>
+</ul>
+
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../sources/examples/example27.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.7 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Liouville-von Neumann Equation using the MKL-enhanced Sparse Matrix Product [courtesy of J. Verlage]</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2016, Phillip Weinberg, Markus Schmitt and Marin Bukov.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.5.4.
+    </div>
+  </body>
+</html>

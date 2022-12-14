@@ -278,12 +278,11 @@ int general_inplace_op_core(general_basis_core<I,P> *B,
                     const K * v_in_col  = v_in  + i * nvecs;
                           K * v_out_row = v_out + j * nvecs;
 
-
                     local_err = type_checks<K>(m);
 
                     if(local_err){
                         #pragma omp atomic write
-                        err = local_err;                        
+                        err = local_err;
                     }
 
                     for(int k=0;k<nvecs;k++){
@@ -565,12 +564,6 @@ general_op_core(general_basis_core<I,P> *B,
 
                     T me = 0;
                     int local_warn = type_checks(m,&me);
-                    
-                    if(local_err){
-                        #pragma omp atomic write
-                        err = local_err;
-
-                    }
 
                     if(warn == 0 && local_warn != 0){
                         #pragma omp atomic write

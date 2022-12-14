@@ -16,7 +16,7 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-    <title>quspin.tools.misc.matvec &#8212; QuSpin 0.3.6 documentation</title>
+    <title>quspin.tools.misc.matvec &#8212; QuSpin 0.3.7 documentation</title>
     <link rel="stylesheet" href="../static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../static/classic.css" type="text/css" />
     
@@ -46,7 +46,7 @@
         <li class="right" >
           <a href="quspin.tools.block_tools.block_diag_hamiltonian.html" title="quspin.tools.block_tools.block_diag_hamiltonian"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.6 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.7 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../tools.html" accesskey="U">Tools module (<code class="xref py py-mod docutils literal notranslate"><span class="pre">quspin.tools</span></code>)</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">quspin.tools.misc.matvec</a></li> 
       </ul>
@@ -58,7 +58,9 @@
           <div class="body" role="main">
             
   <style> .red {color:#ff0000; font-weight:bold; font-style:italic; } </style>
-<style> .green {color:#00b200; font-weight:bold; font-style:italic; } </style><div class="section" id="quspin-tools-misc-matvec">
+<style> .green {color:#00b200; font-weight:bold; font-style:italic; } </style>
+<style> .magenta {color:#FF33F3; font-weight:bold; font-style:italic; } </style>
+<style> .orange {color:#FE8E02; font-weight:bold; font-style:italic; } </style><div class="section" id="quspin-tools-misc-matvec">
 <h1>quspin.tools.misc.matvec<a class="headerlink" href="#quspin-tools-misc-matvec" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
 <dt id="quspin.tools.misc.matvec">
@@ -204,7 +206,9 @@ the result is added to the values in <cite>out</cite> (in-pace addition, cf. <sp
 <span class="normal"> 99</span>
 <span class="normal">100</span>
 <span class="normal">101</span>
-<span class="normal">102</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">quspin.operators</span> <span class="kn">import</span> <span class="n">hamiltonian</span><span class="p">,</span> <span class="n">commutator</span><span class="p">,</span> <span class="n">anti_commutator</span>
+<span class="normal">102</span>
+<span class="normal">103</span>
+<span class="normal">104</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">quspin.operators</span> <span class="kn">import</span> <span class="n">hamiltonian</span><span class="p">,</span> <span class="n">commutator</span><span class="p">,</span> <span class="n">anti_commutator</span>
 <span class="kn">from</span> <span class="nn">quspin.basis</span> <span class="kn">import</span> <span class="n">spin_basis_1d</span> <span class="c1"># Hilbert space spin basis_1d</span>
 <span class="kn">from</span> <span class="nn">quspin.tools.evolution</span> <span class="kn">import</span> <span class="n">evolve</span>
 <span class="kn">from</span> <span class="nn">quspin.tools.misc</span> <span class="kn">import</span> <span class="n">get_matvec_function</span>
@@ -246,11 +250,12 @@ the result is added to the values in <cite>out</cite> (in-pace addition, cf. <sp
 <span class="c1">#</span>
 <span class="c1">#### determine the corresponding matvec routines ####</span>
 <span class="c1">#</span>
-<span class="n">matvec</span><span class="o">=</span><span class="n">get_matvec_function</span><span class="p">(</span><span class="n">H</span><span class="o">.</span><span class="n">static</span><span class="p">)</span>
-<span class="c1">#</span>
+<span class="c1"># different matvec functions are required since we use both matrices and their transposed, cf. Lindblad_EOM_v3</span>
+<span class="n">matvec_csr</span><span class="o">=</span><span class="n">get_matvec_function</span><span class="p">(</span><span class="n">H</span><span class="o">.</span><span class="n">static</span><span class="p">)</span> <span class="c1"># csr matvec function</span>
+<span class="n">matvec_csc</span><span class="o">=</span><span class="n">get_matvec_function</span><span class="p">(</span><span class="n">H</span><span class="o">.</span><span class="n">static</span><span class="o">.</span><span class="n">T</span><span class="p">)</span> <span class="c1"># csc matvec function</span>
 <span class="c1">#</span>
 <span class="c1"># fast function (not as memory efficient)</span>
-<span class="k">def</span> <span class="nf">Lindblad_EOM_v2</span><span class="p">(</span><span class="n">time</span><span class="p">,</span><span class="n">rho</span><span class="p">,</span><span class="n">rho_out</span><span class="p">,</span><span class="n">rho_aux</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">Lindblad_EOM</span><span class="p">(</span><span class="n">time</span><span class="p">,</span><span class="n">rho</span><span class="p">,</span><span class="n">rho_out</span><span class="p">,</span><span class="n">rho_aux</span><span class="p">):</span>
 	<span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">	This function solves the complex-valued time-dependent GPE:</span>
 <span class="sd">	$$ \dot\rho(t) = -i[H,\rho(t)] + 2\gamma\left( L\rho L^\dagger - \frac{1}{2}\{L^\dagger L, \rho \} \right) $$</span>
@@ -258,31 +263,32 @@ the result is added to the values in <cite>out</cite> (in-pace addition, cf. <sp
 	<span class="n">rho</span> <span class="o">=</span> <span class="n">rho</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="n">H</span><span class="o">.</span><span class="n">Ns</span><span class="p">,</span><span class="n">H</span><span class="o">.</span><span class="n">Ns</span><span class="p">))</span> <span class="c1"># reshape vector from ODE solver input</span>
 	<span class="c1">### Hamiltonian part</span>
 	<span class="c1"># commutator term (unitary</span>
-	<span class="c1"># rho_out = H._static.dot(rho))</span>
-	<span class="n">matvec</span><span class="p">(</span><span class="n">H</span><span class="o">.</span><span class="n">static</span>  <span class="p">,</span><span class="n">rho</span>  <span class="p">,</span><span class="n">out</span><span class="o">=</span><span class="n">rho_out</span>  <span class="p">,</span><span class="n">a</span><span class="o">=+</span><span class="mf">1.0</span><span class="p">,</span><span class="n">overwrite_out</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-	<span class="c1"># rho_out -= (H._static.T.dot(rho.T)).T // RHS~rho.dot(H) </span>
-	<span class="n">matvec</span><span class="p">(</span><span class="n">H</span><span class="o">.</span><span class="n">static</span><span class="o">.</span><span class="n">T</span><span class="p">,</span><span class="n">rho</span><span class="o">.</span><span class="n">T</span><span class="p">,</span><span class="n">out</span><span class="o">=</span><span class="n">rho_out</span><span class="o">.</span><span class="n">T</span><span class="p">,</span><span class="n">a</span><span class="o">=-</span><span class="mf">1.0</span><span class="p">,</span><span class="n">overwrite_out</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+	<span class="c1"># rho_out = H.static.dot(rho))</span>
+	<span class="n">matvec_csr</span><span class="p">(</span><span class="n">H</span><span class="o">.</span><span class="n">static</span>  <span class="p">,</span><span class="n">rho</span>  <span class="p">,</span><span class="n">out</span><span class="o">=</span><span class="n">rho_out</span>  <span class="p">,</span><span class="n">a</span><span class="o">=+</span><span class="mf">1.0</span><span class="p">,</span><span class="n">overwrite_out</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+	<span class="c1"># rho_out -= (H.static.T.dot(rho.T)).T // RHS~rho.dot(H) </span>
+	<span class="n">matvec_csc</span><span class="p">(</span><span class="n">H</span><span class="o">.</span><span class="n">static</span><span class="o">.</span><span class="n">T</span><span class="p">,</span><span class="n">rho</span><span class="o">.</span><span class="n">T</span><span class="p">,</span><span class="n">out</span><span class="o">=</span><span class="n">rho_out</span><span class="o">.</span><span class="n">T</span><span class="p">,</span><span class="n">a</span><span class="o">=-</span><span class="mf">1.0</span><span class="p">,</span><span class="n">overwrite_out</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 	<span class="c1"># </span>
 	<span class="k">for</span> <span class="n">func</span><span class="p">,</span><span class="n">Hd</span> <span class="ow">in</span> <span class="n">iteritems</span><span class="p">(</span><span class="n">H</span><span class="o">.</span><span class="n">_dynamic</span><span class="p">):</span>
 		<span class="n">ft</span> <span class="o">=</span> <span class="n">func</span><span class="p">(</span><span class="n">time</span><span class="p">)</span>
 		<span class="c1"># rho_out += ft*Hd.dot(rho)</span>
-		<span class="n">matvec</span><span class="p">(</span><span class="n">Hd</span>  <span class="p">,</span><span class="n">rho</span>  <span class="p">,</span><span class="n">out</span><span class="o">=</span><span class="n">rho_out</span>  <span class="p">,</span><span class="n">a</span><span class="o">=+</span><span class="n">ft</span><span class="p">,</span><span class="n">overwrite_out</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+		<span class="n">matvec_csr</span><span class="p">(</span><span class="n">Hd</span>  <span class="p">,</span><span class="n">rho</span>  <span class="p">,</span><span class="n">out</span><span class="o">=</span><span class="n">rho_out</span>  <span class="p">,</span><span class="n">a</span><span class="o">=+</span><span class="n">ft</span><span class="p">,</span><span class="n">overwrite_out</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 		<span class="c1"># rho_out -= ft*(Hd.T.dot(rho.T)).T </span>
-		<span class="n">matvec</span><span class="p">(</span><span class="n">Hd</span><span class="o">.</span><span class="n">T</span><span class="p">,</span><span class="n">rho</span><span class="o">.</span><span class="n">T</span><span class="p">,</span><span class="n">out</span><span class="o">=</span><span class="n">rho_out</span><span class="o">.</span><span class="n">T</span><span class="p">,</span><span class="n">a</span><span class="o">=-</span><span class="n">ft</span><span class="p">,</span><span class="n">overwrite_out</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+		<span class="n">matvec_csc</span><span class="p">(</span><span class="n">Hd</span><span class="o">.</span><span class="n">T</span><span class="p">,</span><span class="n">rho</span><span class="o">.</span><span class="n">T</span><span class="p">,</span><span class="n">out</span><span class="o">=</span><span class="n">rho_out</span><span class="o">.</span><span class="n">T</span><span class="p">,</span><span class="n">a</span><span class="o">=-</span><span class="n">ft</span><span class="p">,</span><span class="n">overwrite_out</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 	<span class="c1"># multiply by -i</span>
 	<span class="n">rho_out</span> <span class="o">*=</span> <span class="o">-</span><span class="mf">1.0</span><span class="n">j</span>
 	<span class="c1">#</span>
 	<span class="c1">### Lindbladian part (static only)</span>
-	<span class="c1"># 1st Lindblad term (nonunitary)</span>
+	<span class="c1">## 1st Lindblad term (nonunitary): 2\gamma * L*rho*L^\dagger</span>
 	<span class="c1"># rho_aux = 2\gamma*L.dot(rho)</span>
-	<span class="n">matvec</span><span class="p">(</span><span class="n">L</span><span class="o">.</span><span class="n">static</span>  <span class="p">,</span><span class="n">rho</span>             <span class="p">,</span><span class="n">out</span><span class="o">=</span><span class="n">rho_aux</span>  <span class="p">,</span><span class="n">a</span><span class="o">=+</span><span class="mf">2.0</span><span class="o">*</span><span class="n">gamma</span><span class="p">,</span><span class="n">overwrite_out</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-	<span class="c1"># rho_out += (L.static.T.conj().dot(rho_aux.T)).T // RHS~rho_aux.dot(L_dagger) </span>
-	<span class="n">matvec</span><span class="p">(</span><span class="n">L</span><span class="o">.</span><span class="n">static</span><span class="o">.</span><span class="n">T</span><span class="o">.</span><span class="n">conj</span><span class="p">(),</span><span class="n">rho_aux</span><span class="o">.</span><span class="n">T</span><span class="p">,</span><span class="n">out</span><span class="o">=</span><span class="n">rho_out</span><span class="o">.</span><span class="n">T</span><span class="p">,</span><span class="n">a</span><span class="o">=+</span><span class="mf">1.0</span><span class="p">,</span><span class="n">overwrite_out</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> 
-	<span class="c1"># anticommutator (2nd Lindblad) term (nonunitary)</span>
-	<span class="c1"># rho_out += gamma*L_daggerL._static.dot(rho)</span>
-	<span class="n">matvec</span><span class="p">(</span><span class="n">L_daggerL</span><span class="o">.</span><span class="n">static</span>  <span class="p">,</span><span class="n">rho</span>  <span class="p">,</span><span class="n">out</span><span class="o">=</span><span class="n">rho_out</span>  <span class="p">,</span><span class="n">a</span><span class="o">=-</span><span class="n">gamma</span><span class="p">,</span><span class="n">overwrite_out</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-	<span class="c1"># rho_out += gamma*(L_daggerL._static.T.dot(rho.T)).T // RHS~rho.dot(L_daggerL) </span>
-	<span class="n">matvec</span><span class="p">(</span><span class="n">L_daggerL</span><span class="o">.</span><span class="n">static</span><span class="o">.</span><span class="n">T</span><span class="p">,</span><span class="n">rho</span><span class="o">.</span><span class="n">T</span><span class="p">,</span><span class="n">out</span><span class="o">=</span><span class="n">rho_out</span><span class="o">.</span><span class="n">T</span><span class="p">,</span><span class="n">a</span><span class="o">=-</span><span class="n">gamma</span><span class="p">,</span><span class="n">overwrite_out</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> 
+	<span class="n">matvec_csr</span><span class="p">(</span><span class="n">L</span><span class="o">.</span><span class="n">static</span>  <span class="p">,</span><span class="n">rho</span>             <span class="p">,</span><span class="n">out</span><span class="o">=</span><span class="n">rho_aux</span>  <span class="p">,</span><span class="n">a</span><span class="o">=+</span><span class="mf">2.0</span><span class="o">*</span><span class="n">gamma</span><span class="p">,</span><span class="n">overwrite_out</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+	<span class="c1"># rho_out += (L.static.conj().dot(rho_aux.T)).T // RHS ~ rho_aux.dot(L_dagger)</span>
+	<span class="n">matvec_csr</span><span class="p">(</span><span class="n">L</span><span class="o">.</span><span class="n">static</span><span class="o">.</span><span class="n">conj</span><span class="p">(),</span><span class="n">rho_aux</span><span class="o">.</span><span class="n">T</span><span class="p">,</span><span class="n">out</span><span class="o">=</span><span class="n">rho_out</span><span class="o">.</span><span class="n">T</span><span class="p">,</span><span class="n">a</span><span class="o">=+</span><span class="mf">1.0</span><span class="p">,</span><span class="n">overwrite_out</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+	<span class="c1"># </span>
+	<span class="c1">## anticommutator (2nd Lindblad) term (nonunitary): -\gamma \{L^\dagger * L, \eho}</span>
+	<span class="c1"># rho_out += gamma*L_daggerL.static.dot(rho)</span>
+	<span class="n">matvec_csr</span><span class="p">(</span><span class="n">L_daggerL</span><span class="o">.</span><span class="n">static</span><span class="p">,</span><span class="n">rho</span>  <span class="p">,</span><span class="n">out</span><span class="o">=</span><span class="n">rho_out</span>  <span class="p">,</span><span class="n">a</span><span class="o">=-</span><span class="n">gamma</span><span class="p">,</span><span class="n">overwrite_out</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+	<span class="c1"># rho_out += gamma*(L_daggerL.static.T.dot(rho.T)).T // RHS~rho.dot(L_daggerL) </span>
+	<span class="n">matvec_csc</span><span class="p">(</span><span class="n">L_daggerL</span><span class="o">.</span><span class="n">static</span><span class="o">.</span><span class="n">T</span><span class="p">,</span><span class="n">rho</span><span class="o">.</span><span class="n">T</span><span class="p">,</span><span class="n">out</span><span class="o">=</span><span class="n">rho_out</span><span class="o">.</span><span class="n">T</span><span class="p">,</span><span class="n">a</span><span class="o">=-</span><span class="n">gamma</span><span class="p">,</span><span class="n">overwrite_out</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> 
 	<span class="c1">#</span>
 	<span class="k">return</span> <span class="n">rho_out</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span> <span class="c1"># ODE solver accepts vectors only</span>
 <span class="c1">#</span>
@@ -298,7 +304,7 @@ the result is added to the values in <cite>out</cite> (in-pace addition, cf. <sp
 <span class="n">rho0</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">0.5</span><span class="p">,</span><span class="mf">0.5</span><span class="n">j</span><span class="p">],[</span><span class="o">-</span><span class="mf">0.5</span><span class="n">j</span><span class="p">,</span><span class="mf">0.5</span><span class="p">]],</span><span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">complex128</span><span class="p">)</span>
 <span class="c1">#</span>
 <span class="c1"># evolution </span>
-<span class="n">rho_t</span> <span class="o">=</span> <span class="n">evolve</span><span class="p">(</span><span class="n">rho0</span><span class="p">,</span><span class="n">time</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">time</span><span class="p">,</span><span class="n">Lindblad_EOM_v2</span><span class="p">,</span><span class="n">f_params</span><span class="o">=</span><span class="n">EOM_args</span><span class="p">,</span><span class="n">iterate</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">atol</span><span class="o">=</span><span class="mf">1E-12</span><span class="p">,</span><span class="n">rtol</span><span class="o">=</span><span class="mf">1E-12</span><span class="p">)</span> 
+<span class="n">rho_t</span> <span class="o">=</span> <span class="n">evolve</span><span class="p">(</span><span class="n">rho0</span><span class="p">,</span><span class="n">time</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">time</span><span class="p">,</span><span class="n">Lindblad_EOM</span><span class="p">,</span><span class="n">f_params</span><span class="o">=</span><span class="n">EOM_args</span><span class="p">,</span><span class="n">iterate</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">atol</span><span class="o">=</span><span class="mf">1E-12</span><span class="p">,</span><span class="n">rtol</span><span class="o">=</span><span class="mf">1E-12</span><span class="p">)</span> 
 <span class="c1">#</span>
 <span class="c1"># compute state evolution</span>
 <span class="n">population_down</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
@@ -361,7 +367,7 @@ the result is added to the values in <cite>out</cite> (in-pace addition, cf. <sp
         <li class="right" >
           <a href="quspin.tools.block_tools.block_diag_hamiltonian.html" title="quspin.tools.block_tools.block_diag_hamiltonian"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.6 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.7 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../tools.html" >Tools module (<code class="xref py py-mod docutils literal notranslate"><span class="pre">quspin.tools</span></code>)</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">quspin.tools.misc.matvec</a></li> 
       </ul>

@@ -14,6 +14,7 @@ from quspin.basis import spin_basis_1d,photon_basis # Hilbert space bases
 from quspin.operators import hamiltonian # Hamiltonian and observables
 from quspin.tools.Floquet import  Floquet, Floquet_t_vec
 import numpy as np
+from scipy.linalg import expm
 from numpy.random import uniform,seed,shuffle,randint # pseudo random numbers
 seed()
 
@@ -31,8 +32,13 @@ def drive(t,Omega,np):
 def test():
 	for _r in range(10): # 10 random realisations
 
-		##### define model parameters #####
+		# compute basis in the 0-total momentum and +1-parity sector
 		L=4 # system size
+		basis=spin_basis_1d(L=L,a=1,kblock=0,pblock=1)
+		basis2 = spin_basis_1d(L, pauli=False, kblock=1, )
+
+
+		##### define model parameters #####
 		J=1.0 # spin interaction
 		g=uniform(0.2,1.5) # transverse field
 		h=uniform(0.2,1.5) # parallel field
@@ -42,8 +48,7 @@ def test():
 		# define time-reversal symmetric periodic step drive
 
 		drive_args=[Omega,np]
-		# compute basis in the 0-total momentum and +1-parity sector
-		basis=spin_basis_1d(L=L,a=1,kblock=0,pblock=1)
+		
 		# define PBC site-coupling lists for operators
 		x_field_pos=[[+g,i]	for i in range(L)]
 		x_field_neg=[[-g,i]	for i in range(L)]
@@ -57,6 +62,14 @@ def test():
 		static1=[["zz",J_nn],["z",z_field]]
 		static2=[["x",x_field_pos]]
 
+		##### define time vector of stroboscopic times with 100 cycles #####
+		t=Floquet_t_vec(Omega,20,len_T=1) # t.vals=times, t.i=init. time, t.T=drive period
+		#
+		##### calculate exact Floquet eigensystem #####
+		t_list=np.array([0.0,t.T/4.0,3.0*t.T/4.0])+np.finfo(float).eps # times to evaluate H
+		dt_list=np.array([t.T/4.0,t.T/2.0,t.T/4.0]) # time step durations to apply H for
+
+
 		# loop over dtypes
 		for _i in dtypes.keys():
 			
@@ -68,13 +81,6 @@ def test():
 			H1=hamiltonian(static1,[],dtype=dtype,basis=basis)
 			H2=hamiltonian(static2,[],dtype=dtype,basis=basis)
 			#
-			##### define time vector of stroboscopic times with 100 cycles #####
-			t=Floquet_t_vec(Omega,20,len_T=1) # t.vals=times, t.i=init. time, t.T=drive period
-			#
-			##### calculate exact Floquet eigensystem #####
-			t_list=np.array([0.0,t.T/4.0,3.0*t.T/4.0])+np.finfo(float).eps # times to evaluate H
-			dt_list=np.array([t.T/4.0,t.T/2.0,t.T/4.0]) # time step durations to apply H for
-
 
 			###
 			# call Floquet class for evodict a coutinous H from a Hamiltonian object
@@ -223,6 +229,27 @@ def test():
 				print('dtype, (g,h,Omega) =', dtype, (g,h,Omega))
 				print('exiting in line', lineno()+1)
 				exit()
+
+
+			# test complex-valued Hamiltonians
+			if dtype in [np.complex64, np.complex128]:
+
+				Hcpx = hamiltonian(static1+static2,[],basis=basis2,dtype=dtype, check_symm=False, check_herm=False, check_pcon=False)
+				UF_exact = expm(-1j*Hcpx.toarray()*t.T) #Exact floquet operator			
+
+				Floq1 = Floquet({'H': Hcpx, 'T': t.T, 'atol':1E-16,'rtol':1E-16}, UF=True)
+				Floq2 = Floquet({'H': Hcpx, 't_list': [t.T,], 'dt_list': [t.T,]}, UF=True)
+				Floq3 = Floquet({'H_list': [Hcpx,], 'dt_list': [t.T,]}, UF=True)
+
+				UF_1 = Floq1.UF #Floquet operator with H as input
+				UF_2 = Floq2.UF #Floquet operator with transpose(H) as input
+				UF_3 = Floq3.UF #Floquet operator with transpose(H) as input
+
+				np.testing.assert_allclose(UF_exact,UF_1,atol=atol,err_msg='Failed cont. Floquet object comparison!')
+				np.testing.assert_allclose(UF_exact,UF_2,atol=atol,err_msg='Failed step-driven Floquet object comparison!')
+				np.testing.assert_allclose(UF_exact,UF_3,atol=atol,err_msg='Failed piecewise Floquet object comparison!')
+
+		
 
 		print("Floquet class random check {} finished successfully".format(_r))
 

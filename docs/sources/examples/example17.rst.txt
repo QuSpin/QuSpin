@@ -3,10 +3,10 @@
 .. _example17-label:
 
 
-Optical Bloch equations: Lindblad dynamics using the fast (omp-parallelized) `matvec` function
+Optical Bloch equations: Lindblad dynamics using the `matvec` function
 ----------------------------------------------------------------------------------------------
 
-This example uses the omp-parallelized `tools.misc.matvec()` function to define a Lindblad equation and solve the ODE using the `tools.evolution.evolve()` function. 
+This example uses the `tools.misc.matvec()` function to define a Lindblad equation and solve the ODE using the `tools.evolution.evolve()` function. 
 
 Consider the the two-level system: 
 
@@ -21,7 +21,10 @@ where :math:`H` is the Hamiltonian of the two-level system, and :math:`L` is the
 
 where :math:`[\cdot,\cdot]` is the commutator, and :math:`\{\cdot,\cdot\}` is the anti-commutator. The system of equations for this specific problem is also known as the optical Bloch equations.
 
-Below, we provide three ways to define the function for the Lindblad ODE. The first version is very intuitive, but rather slow. The second version uses the `hamiltonian.dot()` and `hamiltonian.rdot()` functions and is a bit more sophisticated and a bit faster. The third version uses the `matvec()` function and is faster than the previous two (but may not be memory efficient for large systems).
+Below, we provide three ways to define the function for the Lindblad ODE:
+	* the first version is very intuitive as it follows the definition of the Lindblad equation above; but it is rather slow; 
+	* the second version uses the `hamiltonian.dot()` and `hamiltonian.rdot()` functions and is a bit more sophisticated and a bit faster; 
+	* the third version uses the `matvec()` function and is faster than the previous two (but may not be memory efficient for large systems). Notice that there are different kinds of `matvec` functions for sparse matrices, depending on the format (csc, csr, etc.). In using them, one should keep in mind the format of the matrix, which can be determined using the `get_matvec_function`. 
 
 Note that this way of simulating the Lindblad equation has severe limitations for many-body systems. An alternative, parallelizable way to effectively simulate a subset of Lindblad dynamics using unitary evolution is described in 
 `arXiv:1608.01317 <https://arxiv.org/pdf/1608.01317.pdf>`_.

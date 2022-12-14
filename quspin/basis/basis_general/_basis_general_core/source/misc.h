@@ -4,6 +4,17 @@
 #include "numpy/ndarraytypes.h"
 #include <algorithm>
 #include "bits_info.h"
+#include "openmp.h"
+
+
+#if defined(_WIN64)
+
+#elif defined(_WIN32)
+	
+#else
+	#include <boost/sort/sort.hpp>
+#endif
+
 
 namespace basis_general {
 
@@ -262,12 +273,73 @@ int inline type_checks(std::complex<double> m,const T v,T *M){
 
 }
 
+template<class I>
+struct compare_arr : std::binary_function<npy_intp,npy_intp,bool>
+{
+	const I * array;
+	compare_arr(const I * ptr) : array(ptr) {}
+
+	bool operator()(const npy_intp &i, const npy_intp &j) const {return array[i] > array[j];}
+};
+
+template<class I>
+void argsort_decending_array(npy_intp indptr[],const I A[],const npy_intp M){
+
+	#if defined(_WIN64)
+		// x64 version
+		std::sort(indptr, indptr+M, compare_arr<I>(A));
+	#elif defined(_WIN32)
+		std::sort(indptr, indptr+M, compare_arr<I>(A));
+	#else
+		#if defined(_OPENMP)
+			#pragma omp parallel
+			{
+				const int nthread = omp_get_num_threads();
+				#pragma omp master
+				{
+					boost::sort::block_indirect_sort(indptr, indptr+M, compare_arr<I>(A),nthread);			
+				}
+			}
+		#else
+			std::sort(indptr, indptr+M,compare_arr<I>(A));
+		#endif
+	#endif
+
+}
+
+template<class I>
+bool is_decending_array(const I A[],const npy_intp M){
+	// checks if array is sorted in decending order by checking if A[i] > A[i+1] for 0 <= i < M-1
+	int is_sorted = 1;
+
+	#pragma omp parallel
+	{
+		const int nthread = omp_get_num_threads();
+		const int threadn = omp_get_thread_num();
+		const npy_intp chunk = (M+nthread-2)/nthread;
+		const npy_intp begin = threadn * chunk;
+		const npy_intp end = std::min(chunk*(threadn+1),M-1);
+
+		int is_sorted_thread = 1;
+
+		for(int i=begin;i<end;i++){
+			if(A[i] < A[i+1]){
+				#pragma omp atomic write
+				is_sorted = 0;
+			}
+
+			if(is_sorted==0){
+				break;
+			}
+
+		}
 
 
+	}
 
+	return is_sorted == 1;
 
-
-
+}
 
 
 

@@ -37,7 +37,7 @@ p_DM/=p_DM.sum()
 
 DM = reduce(np.dot,[psis,np.diag(p_DM/sum(p_DM)),psis.T.conj()])
 
-DMs = np.dstack((DM for i in range(10)))
+DMs = np.dstack([DM for i in range(10)])
 
 up_spins = (range(L),[])
 down_spins = ([],range(L))

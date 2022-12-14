@@ -16,7 +16,7 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-    <title>Basics of QuSpin basis objects &#8212; QuSpin 0.3.6 documentation</title>
+    <title>Basics of QuSpin basis objects &#8212; QuSpin 0.3.7 documentation</title>
     <link rel="stylesheet" href="../static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../static/classic.css" type="text/css" />
     
@@ -37,7 +37,7 @@
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.6 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.7 documentation</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">Basics of QuSpin <cite>basis</cite> objects</a></li> 
       </ul>
     </div>  
@@ -48,7 +48,9 @@
           <div class="body" role="main">
             
   <style> .red {color:#ff0000; font-weight:bold; font-style:italic; } </style>
-<style> .green {color:#00b200; font-weight:bold; font-style:italic; } </style><div class="section" id="basics-of-quspin-basis-objects">
+<style> .green {color:#00b200; font-weight:bold; font-style:italic; } </style>
+<style> .magenta {color:#FF33F3; font-weight:bold; font-style:italic; } </style>
+<style> .orange {color:#FE8E02; font-weight:bold; font-style:italic; } </style><div class="section" id="basics-of-quspin-basis-objects">
 <span id="example-00-label"></span><h1>Basics of QuSpin <cite>basis</cite> objects<a class="headerlink" href="#basics-of-quspin-basis-objects" title="Permalink to this headline">¶</a></h1>
 <p>This tutorial shows how to define and interpret <cite>basis</cite> objects.</p>
 <p>In particular, we discuss how to define and read off physical states from the basis in the presence and absence of symmetries.</p>
@@ -318,7 +320,7 @@
 <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n\n</span><span class="s1">print pblock=-1 basis:</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
 <span class="c1">#</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">basis_singlet</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;  * |10&gt; here represents the physical ANIT-symmetric superposition 1/sqrt(2)(|10&gt; - |01&gt;) [see bottom note when printing the symmetry-reduced basis]&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;  * |10&gt; here represents the physical ANTI-symmetric superposition 1/sqrt(2)(|10&gt; - |01&gt;) [see bottom note when printing the symmetry-reduced basis]&quot;</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;  *  NOTE: same state |01&gt; is used to label both the symmetric and antisymmetric superposition because in this cases quspin uses the smallest integer from the integer representations of the states comprising the superposition states.</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
 <span class="c1">#</span>
 <span class="c1">#--------------------------------------------------</span>
@@ -338,7 +340,7 @@
 <span class="c1">#</span>
 <span class="c1"># one can also project a full-basis state to a symmetry-reduced basis</span>
 <span class="n">psi_s</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">basis</span><span class="o">.</span><span class="n">Ns</span><span class="p">)</span>
-<span class="n">array_ind_s</span><span class="o">==</span><span class="n">basis</span><span class="o">.</span><span class="n">index</span><span class="p">(</span> <span class="n">basis</span><span class="o">.</span><span class="n">state_to_int</span><span class="p">(</span><span class="s1">&#39;01&#39;</span><span class="p">)</span> <span class="p">)</span>
+<span class="n">array_ind_s</span><span class="o">=</span><span class="n">basis</span><span class="o">.</span><span class="n">index</span><span class="p">(</span> <span class="n">basis</span><span class="o">.</span><span class="n">state_to_int</span><span class="p">(</span><span class="s1">&#39;01&#39;</span><span class="p">)</span> <span class="p">)</span>
 <span class="n">psi_s</span><span class="p">[</span><span class="n">array_ind_s</span><span class="p">]</span><span class="o">=</span><span class="mf">1.0</span> <span class="c1"># create the state |01&gt; in the full basis</span>
 <span class="c1"># </span>
 <span class="n">psi_symm_s</span><span class="o">=</span><span class="n">basis_singlet</span><span class="o">.</span><span class="n">project_to</span><span class="p">(</span><span class="n">psi_s</span><span class="p">,</span><span class="n">sparse</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="c1"># projects |01&gt; to 1/sqrt(2) (|01&gt; - |10&gt;) in basis_singlet </span>
@@ -399,7 +401,7 @@
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.6 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.7 documentation</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">Basics of QuSpin <cite>basis</cite> objects</a></li> 
       </ul>
     </div>

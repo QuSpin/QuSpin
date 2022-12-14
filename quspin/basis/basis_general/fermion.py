@@ -128,10 +128,10 @@ class spinless_fermion_basis_general(basis_general):
 			Nf = list(Nf)
 			self._Ns = 0
 
-			for f in Nf:
-				if f > N or f < 0:
+			for _nf in Nf:
+				if _nf > N or _nf < 0:
 					raise ValueError("particle number Nf must satisfy: 0 <= Nf <= N")
-				self._Ns += comb(N,f,exact=True)
+				self._Ns += comb(N,_nf,exact=True)
 
 		self._pcon_args = dict(N=N,Nf=Nf)
 
@@ -688,12 +688,7 @@ class spinful_fermion_basis_general(spinless_fermion_basis_general):
 
 		s = down_state + (up_state << (self.N//2) ) # self.N here counts 2N sites 
 
-		indx = _np.argwhere(self._basis == s)
-
-		if len(indx) != 0:
-			return _np.squeeze(indx)
-		else:
-			raise ValueError("state must be representive state in basis.")
+		return spinless_fermion_basis_general._index(self,s)
 
 	def int_to_state(self,state,bracket_notation=True):
 

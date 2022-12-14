@@ -16,7 +16,7 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-    <title>Integrability Breaking and Thermalising Dynamics in the 2D Transverse-Field Ising Model &#8212; QuSpin 0.3.6 documentation</title>
+    <title>Integrability Breaking and Thermalising Dynamics in the 2D Transverse-Field Ising Model &#8212; QuSpin 0.3.7 documentation</title>
     <link rel="stylesheet" href="../static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../static/classic.css" type="text/css" />
     
@@ -38,7 +38,7 @@
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.6 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.7 documentation</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">Integrability Breaking and Thermalising Dynamics in the 2D Transverse-Field Ising Model</a></li> 
       </ul>
     </div>  
@@ -49,7 +49,9 @@
           <div class="body" role="main">
             
   <style> .red {color:#ff0000; font-weight:bold; font-style:italic; } </style>
-<style> .green {color:#00b200; font-weight:bold; font-style:italic; } </style><div class="section" id="integrability-breaking-and-thermalising-dynamics-in-the-2d-transverse-field-ising-model">
+<style> .green {color:#00b200; font-weight:bold; font-style:italic; } </style>
+<style> .magenta {color:#FF33F3; font-weight:bold; font-style:italic; } </style>
+<style> .orange {color:#FE8E02; font-weight:bold; font-style:italic; } </style><div class="section" id="integrability-breaking-and-thermalising-dynamics-in-the-2d-transverse-field-ising-model">
 <span id="example9-label"></span><h1>Integrability Breaking and Thermalising Dynamics in the 2D Transverse-Field Ising Model<a class="headerlink" href="#integrability-breaking-and-thermalising-dynamics-in-the-2d-transverse-field-ising-model" title="Permalink to this headline">¶</a></h1>
 <p>This example shows how to code up the time-periodic 2D transverse-field Ising Hamiltonian:</p>
 <div class="math notranslate nohighlight">
@@ -202,8 +204,8 @@ H_{zz} +AH_x,&amp; \qquad t\in[3T/4,T)
 <span class="c1">#</span>
 <span class="c1">###### define model parameters ######</span>
 <span class="n">L_1d</span> <span class="o">=</span> <span class="mi">16</span> <span class="c1"># length of chain for spin 1/2</span>
-<span class="n">Lx</span><span class="p">,</span> <span class="n">Ly</span> <span class="o">=</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">4</span> <span class="c1"># linear dimension of spin 1 2d lattice</span>
-<span class="n">N_2d</span> <span class="o">=</span> <span class="n">Lx</span><span class="o">*</span><span class="n">Ly</span> <span class="c1"># number of sites for spin 1</span>
+<span class="n">Lx</span><span class="p">,</span> <span class="n">Ly</span> <span class="o">=</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">4</span> <span class="c1"># linear dimension of spin 1/2 2d lattice</span>
+<span class="n">N_2d</span> <span class="o">=</span> <span class="n">Lx</span><span class="o">*</span><span class="n">Ly</span> <span class="c1"># number of sites for spin 1/2</span>
 <span class="n">Omega</span> <span class="o">=</span> <span class="mf">2.0</span> <span class="c1"># drive frequency</span>
 <span class="n">A</span> <span class="o">=</span> <span class="mf">2.0</span> <span class="c1"># drive amplitude</span>
 <span class="c1">#</span>
@@ -245,7 +247,7 @@ H_{zz} +AH_x,&amp; \qquad t\in[3T/4,T)
 <span class="p">[</span><span class="n">E_1d_min</span><span class="p">],</span><span class="n">psi_1d</span> <span class="o">=</span> <span class="n">Hzz_1d</span><span class="o">.</span><span class="n">eigsh</span><span class="p">(</span><span class="n">k</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">which</span><span class="o">=</span><span class="s2">&quot;SA&quot;</span><span class="p">)</span>
 <span class="p">[</span><span class="n">E_2d_min</span><span class="p">],</span><span class="n">psi_2d</span> <span class="o">=</span> <span class="n">Hzz_2d</span><span class="o">.</span><span class="n">eigsh</span><span class="p">(</span><span class="n">k</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">which</span><span class="o">=</span><span class="s2">&quot;SA&quot;</span><span class="p">)</span>
 <span class="c1"># setting up initial states</span>
-<span class="n">psi0_1d</span> <span class="o">=</span> <span class="n">psi_1d</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
+<span class="n">psi0_1d</span> <span class="o">=</span> <span class="n">psi_1d</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span><span class="c1">#.astype(np.complex128)</span>
 <span class="n">psi0_2d</span> <span class="o">=</span> <span class="n">psi_2d</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
 <span class="c1">#</span>
 <span class="c1">###### time evolution ######</span>
@@ -280,8 +282,8 @@ H_{zz} +AH_x,&amp; \qquad t\in[3T/4,T)
 <span class="n">s_p_2d</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="o">-</span><span class="mf">2.0</span><span class="o">**</span><span class="p">(</span><span class="o">-</span><span class="n">N_2d</span><span class="o">//</span><span class="mi">2</span><span class="p">)</span><span class="o">/</span><span class="n">N_2d</span>
 <span class="c1">#</span>
 <span class="c1">###### plotting results ######</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">strobo</span><span class="o">.</span><span class="n">inds</span><span class="p">,(</span><span class="n">Obs_1d_t</span><span class="p">[</span><span class="s2">&quot;E&quot;</span><span class="p">]</span><span class="o">-</span><span class="n">E_1d_min</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="o">-</span><span class="n">E_1d_min</span><span class="p">),</span><span class="n">marker</span><span class="o">=</span><span class="s1">&#39;.&#39;</span><span class="p">,</span><span class="n">markersize</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="s2">&quot;$S=1/2$&quot;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">strobo</span><span class="o">.</span><span class="n">inds</span><span class="p">,(</span><span class="n">Obs_2d_t</span><span class="p">[</span><span class="s2">&quot;E&quot;</span><span class="p">]</span><span class="o">-</span><span class="n">E_2d_min</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="o">-</span><span class="n">E_2d_min</span><span class="p">),</span><span class="n">marker</span><span class="o">=</span><span class="s1">&#39;.&#39;</span><span class="p">,</span><span class="n">markersize</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="s2">&quot;$S=1$&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">strobo</span><span class="o">.</span><span class="n">inds</span><span class="p">,(</span><span class="n">Obs_1d_t</span><span class="p">[</span><span class="s2">&quot;E&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">real</span><span class="o">-</span><span class="n">E_1d_min</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="o">-</span><span class="n">E_1d_min</span><span class="p">),</span><span class="n">marker</span><span class="o">=</span><span class="s1">&#39;.&#39;</span><span class="p">,</span><span class="n">markersize</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="s2">&quot;$S=1/2$&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">strobo</span><span class="o">.</span><span class="n">inds</span><span class="p">,(</span><span class="n">Obs_2d_t</span><span class="p">[</span><span class="s2">&quot;E&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">real</span><span class="o">-</span><span class="n">E_2d_min</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="o">-</span><span class="n">E_2d_min</span><span class="p">),</span><span class="n">marker</span><span class="o">=</span><span class="s1">&#39;.&#39;</span><span class="p">,</span><span class="n">markersize</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="s2">&quot;$S=1$&quot;</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">()</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;$Q(t)$&quot;</span><span class="p">,</span><span class="n">fontsize</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;$t/T$&quot;</span><span class="p">,</span><span class="n">fontsize</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
@@ -290,7 +292,7 @@ H_{zz} +AH_x,&amp; \qquad t\in[3T/4,T)
 <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">strobo</span><span class="o">.</span><span class="n">inds</span><span class="p">,</span><span class="n">Sent_time_1d</span><span class="o">/</span><span class="n">s_p_1d</span><span class="p">,</span><span class="n">marker</span><span class="o">=</span><span class="s1">&#39;.&#39;</span><span class="p">,</span><span class="n">markersize</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="s2">&quot;$1d$&quot;</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">strobo</span><span class="o">.</span><span class="n">inds</span><span class="p">,</span><span class="n">Sent_time_2d</span><span class="o">/</span><span class="n">s_p_2d</span><span class="p">,</span><span class="n">marker</span><span class="o">=</span><span class="s1">&#39;.&#39;</span><span class="p">,</span><span class="n">markersize</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="s2">&quot;$2d$&quot;</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">()</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;$s_{\mathrm</span><span class="si">{ent}</span><span class="s2">}(t)/s_\mathrm</span><span class="si">{Page}</span><span class="s2">$&quot;</span><span class="p">,</span><span class="n">fontsize</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;$s_{</span><span class="se">\\</span><span class="s2">mathrm</span><span class="si">{ent}</span><span class="s2">}(t)/s_</span><span class="se">\\</span><span class="s2">mathrm</span><span class="si">{Page}</span><span class="s2">$&quot;</span><span class="p">,</span><span class="n">fontsize</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;$t/T$&quot;</span><span class="p">,</span><span class="n">fontsize</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">fontsize</span><span class="o">=</span><span class="mi">16</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
@@ -344,7 +346,7 @@ H_{zz} +AH_x,&amp; \qquad t\in[3T/4,T)
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.6 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.7 documentation</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">Integrability Breaking and Thermalising Dynamics in the 2D Transverse-Field Ising Model</a></li> 
       </ul>
     </div>

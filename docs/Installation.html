@@ -16,7 +16,7 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-    <title>Installation &#8212; QuSpin 0.3.6 documentation</title>
+    <title>Installation &#8212; QuSpin 0.3.7 documentation</title>
     <link rel="stylesheet" href="static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="static/classic.css" type="text/css" />
     
@@ -45,7 +45,7 @@
         <li class="right" >
           <a href="generated/quspin.tools.misc.csr_matvec.html" title="quspin.tools.misc.csr_matvec"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">QuSpin 0.3.6 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">QuSpin 0.3.7 documentation</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">Installation</a></li> 
       </ul>
     </div>  
@@ -56,7 +56,9 @@
           <div class="body" role="main">
             
   <style> .red {color:#ff0000; font-weight:bold; font-style:italic; } </style>
-<style> .green {color:#00b200; font-weight:bold; font-style:italic; } </style><div class="section" id="installation">
+<style> .green {color:#00b200; font-weight:bold; font-style:italic; } </style>
+<style> .magenta {color:#FF33F3; font-weight:bold; font-style:italic; } </style>
+<style> .orange {color:#FE8E02; font-weight:bold; font-style:italic; } </style><div class="section" id="installation">
 <h1>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h1>
 <p>QuSpin is currently being supported for Python 3 which are a prerequisite. We recommend the use of the free package manager <a class="reference external" href="https://www.continuum.io/downloads">Anaconda</a> which installs Python and manages its packages. For a lighter installation (preferred for computing clusters), one can use <a class="reference external" href="http://conda.pydata.org/miniconda.html">miniconda</a>.</p>
 <dl class="simple">
@@ -76,8 +78,8 @@
 </dd>
 </dl>
 <p>On Windows machines one needs the correct version of the Microsoft Visual Studios compiler for the given python version one is building the package for. A good resource which can help with this can be found <a class="reference external" href="https://github.com/cython/cython/wiki/CythonExtensionsOnWindows">here</a>. For OS-X and Linux the standard compilers should be fine for building the package. Note that some of the compiled extensions require Openmp 2.0 or above. When installing the package manually, if you add the flag <cite>–record install.txt</cite>, the location of all the installed files will be output to the file <cite>install.txt</cite>. This is useful as most package managers will not be able to remove manually installed packages and so in order to delete this package completely one needs to manually remove all the files.</p>
-<div class="section" id="mac-os-x-linux">
-<h2>Mac OS X/Linux<a class="headerlink" href="#mac-os-x-linux" title="Permalink to this headline">¶</a></h2>
+<p>Mac OS X/Linux</p>
+<hr class="docutils" />
 <p>To install Anaconda/miniconda all one has to do is execute the installation script with administrative privilege. To do this, open up the terminal and go to the folder containing the downloaded installation file and execute the following command:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ sudo bash &lt;installation_file&gt;
 </pre></div>
@@ -115,9 +117,8 @@
 </div>
 <p><strong>Installing without sudo Privileges</strong></p>
 <p>Sometimes, when one does not have sudo privileges (i.e. access to the root directory is denied), one may not be able to install QuSpin directly. This is often the case on computing clusters, where one can only install programs in one’s home directory. To circumvent such problems, we advise the users to (i) download and install <a class="reference external" href="http://conda.pydata.org/miniconda.html">miniconda</a> in their home directory, (ii) create a <a class="reference external" href="https://conda.io/docs/user-guide/tasks/manage-environments.html#creating-an-environment-with-commands">conda environment</a> and activate it, and (iii) install QuSpin inside the environment. To use QuSpin, one always has to activate the environment first.</p>
-</div>
-<div class="section" id="windows">
-<h2>Windows<a class="headerlink" href="#windows" title="Permalink to this headline">¶</a></h2>
+<p>Windows</p>
+<hr class="docutils" />
 <p>To install Anaconda/miniconda on Windows, download the installer and execute it to install the program. Once Anaconda/miniconda is installed open the conda terminal and do one of the following to install the package:</p>
 <p><strong>Installing via Anaconda</strong></p>
 <p>Once you have Anaconda/miniconda installed all you have to do to install QuSpin is to execute the following command into the terminal:</p>
@@ -139,135 +140,130 @@
 </pre></div>
 </div>
 <p>This will compile the source code and copy it to the installation directory of Python and record the installation location to <cite>install_file.txt</cite>. To update the code you must first completely remove the current version installed and then install the new code.</p>
-</div>
-</div>
-<div class="section" id="basic-use-of-command-line-to-run-python">
-<h1>Basic Use of Command Line to Run Python<a class="headerlink" href="#basic-use-of-command-line-to-run-python" title="Permalink to this headline">¶</a></h1>
+<p>Basic Use of Command Line to Run Python</p>
+<hr class="docutils" />
 <p>Let us review how to use the command line for Windows and OS X/Linux to navigate your computer’s folders/directories and run the Python scripts.</p>
-<div class="section" id="id3">
-<h2>Mac OS X/Linux<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h2>
-<dl>
-<dt>Some basic commands:</dt><dd><ul>
-<li><dl>
-<dt>change directory:</dt><dd><div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ cd &lt; path_to_directory &gt;
+<p>Mac OS X/Linux</p>
+<hr class="docutils" />
+<p>Some basic commands:</p>
+<blockquote>
+<div><ul>
+<li><p>change directory:</p>
+<blockquote>
+<div><div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ cd &lt; path_to_directory &gt;
 </pre></div>
 </div>
-</dd>
-</dl>
+</div></blockquote>
 </li>
-<li><dl>
-<dt>list files in current directory:</dt><dd><div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ ls
+<li><p>list files in current directory:</p>
+<blockquote>
+<div><div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ ls
 </pre></div>
 </div>
-</dd>
-</dl>
+</div></blockquote>
 </li>
-<li><dl>
-<dt>list files in another directory:</dt><dd><div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ ls &lt; path_to_directory &gt;
+<li><p>list files in another directory:</p>
+<blockquote>
+<div><div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ ls &lt; path_to_directory &gt;
 </pre></div>
 </div>
-</dd>
-</dl>
+</div></blockquote>
 </li>
-<li><dl>
-<dt>make new directory:</dt><dd><div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ mkdir &lt;path&gt;/&lt; directory_name &gt;
+<li><p>make new directory:</p>
+<blockquote>
+<div><div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ mkdir &lt;path&gt;/&lt; directory_name &gt;
 </pre></div>
 </div>
-</dd>
-</dl>
+</div></blockquote>
 </li>
-<li><dl>
-<dt>copy file:</dt><dd><div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ cp &lt; path &gt;/&lt; file_name &gt; &lt; new_path &gt;/&lt; new_file_name &gt;
+<li><p>copy file:</p>
+<blockquote>
+<div><div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ cp &lt; path &gt;/&lt; file_name &gt; &lt; new_path &gt;/&lt; new_file_name &gt;
 </pre></div>
 </div>
-</dd>
-</dl>
+</div></blockquote>
 </li>
-<li><dl>
-<dt>move file or change file name:</dt><dd><div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ mv &lt; path &gt;/&lt; file_name &gt; &lt; new_path &gt;/&lt; new_file_name &gt;
+<li><p>move file or change file name:</p>
+<blockquote>
+<div><div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ mv &lt; path &gt;/&lt; file_name &gt; &lt; new_path &gt;/&lt; new_file_name &gt;
 </pre></div>
 </div>
-</dd>
-</dl>
+</div></blockquote>
 </li>
-<li><dl>
-<dt>remove file:</dt><dd><div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ rm &lt; path_to_file &gt;/&lt; file_name &gt;
+<li><p>remove file:</p>
+<blockquote>
+<div><div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ rm &lt; path_to_file &gt;/&lt; file_name &gt;
 </pre></div>
 </div>
-</dd>
-</dl>
+</div></blockquote>
 </li>
 </ul>
-</dd>
-</dl>
+</div></blockquote>
 <p>Unix also has an auto complete feature if one hits the TAB key. It will complete a word or stop when it matches more than one file/folder name. The current directory is denoted by “.” and the directory above is “..”.</p>
-</div>
-<div class="section" id="id4">
-<h2>Windows<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h2>
-<dl>
-<dt>Some basic commands:</dt><dd><ul>
-<li><dl>
-<dt>change directory:</dt><dd><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">cd</span> <span class="o">&lt;</span> <span class="n">path_to_directory</span> <span class="o">&gt;</span>
+<p>Windows</p>
+<hr class="docutils" />
+<p>Some basic commands:</p>
+<blockquote>
+<div><ul>
+<li><p>change directory:</p>
+<blockquote>
+<div><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">cd</span> <span class="o">&lt;</span> <span class="n">path_to_directory</span> <span class="o">&gt;</span>
 </pre></div>
 </div>
-</dd>
-</dl>
+</div></blockquote>
 </li>
-<li><dl>
-<dt>list files in current directory:</dt><dd><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="nb">dir</span>
+<li><p>list files in current directory:</p>
+<blockquote>
+<div><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="nb">dir</span>
 </pre></div>
 </div>
-</dd>
-</dl>
+</div></blockquote>
 </li>
-<li><dl>
-<dt>list files in another directory:</dt><dd><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="nb">dir</span> <span class="o">&lt;</span> <span class="n">path_to_directory</span> <span class="o">&gt;</span>
+<li><p>list files in another directory:</p>
+<blockquote>
+<div><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="nb">dir</span> <span class="o">&lt;</span> <span class="n">path_to_directory</span> <span class="o">&gt;</span>
 </pre></div>
 </div>
-</dd>
-</dl>
+</div></blockquote>
 </li>
-<li><dl>
-<dt>make new directory:</dt><dd><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">mkdir</span> <span class="o">&lt;</span><span class="n">path</span><span class="o">&gt;</span>\<span class="o">&lt;</span> <span class="n">directory_name</span> <span class="o">&gt;</span>
+<li><p>make new directory:</p>
+<blockquote>
+<div><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">mkdir</span> <span class="o">&lt;</span><span class="n">path</span><span class="o">&gt;</span>\<span class="o">&lt;</span> <span class="n">directory_name</span> <span class="o">&gt;</span>
 </pre></div>
 </div>
-</dd>
-</dl>
+</div></blockquote>
 </li>
-<li><dl>
-<dt>copy file:</dt><dd><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">copy</span> <span class="o">&lt;</span> <span class="n">path</span> <span class="o">&gt;</span>\<span class="o">&lt;</span> <span class="n">file_name</span> <span class="o">&gt;</span> <span class="o">&lt;</span> <span class="n">new_path</span> <span class="o">&gt;</span>\<span class="o">&lt;</span> <span class="n">new_file_name</span> <span class="o">&gt;</span>
+<li><p>copy file:</p>
+<blockquote>
+<div><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">copy</span> <span class="o">&lt;</span> <span class="n">path</span> <span class="o">&gt;</span>\<span class="o">&lt;</span> <span class="n">file_name</span> <span class="o">&gt;</span> <span class="o">&lt;</span> <span class="n">new_path</span> <span class="o">&gt;</span>\<span class="o">&lt;</span> <span class="n">new_file_name</span> <span class="o">&gt;</span>
 </pre></div>
 </div>
-</dd>
-</dl>
+</div></blockquote>
 </li>
-<li><dl>
-<dt>move file or change file name:</dt><dd><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">move</span> <span class="o">&lt;</span> <span class="n">path</span> <span class="o">&gt;</span>\<span class="o">&lt;</span> <span class="n">file_name</span> <span class="o">&gt;</span> <span class="o">&lt;</span> <span class="n">new_path</span> <span class="o">&gt;</span>\<span class="o">&lt;</span> <span class="n">new_file_name</span> <span class="o">&gt;</span>
+<li><p>move file or change file name:</p>
+<blockquote>
+<div><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">move</span> <span class="o">&lt;</span> <span class="n">path</span> <span class="o">&gt;</span>\<span class="o">&lt;</span> <span class="n">file_name</span> <span class="o">&gt;</span> <span class="o">&lt;</span> <span class="n">new_path</span> <span class="o">&gt;</span>\<span class="o">&lt;</span> <span class="n">new_file_name</span> <span class="o">&gt;</span>
 </pre></div>
 </div>
-</dd>
-</dl>
+</div></blockquote>
 </li>
-<li><dl>
-<dt>remove file:</dt><dd><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">erase</span> <span class="o">&lt;</span> <span class="n">path</span> <span class="o">&gt;</span>\<span class="o">&lt;</span> <span class="n">file_name</span> <span class="o">&gt;</span>
+<li><p>remove file:</p>
+<blockquote>
+<div><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">erase</span> <span class="o">&lt;</span> <span class="n">path</span> <span class="o">&gt;</span>\<span class="o">&lt;</span> <span class="n">file_name</span> <span class="o">&gt;</span>
 </pre></div>
 </div>
-</dd>
-</dl>
+</div></blockquote>
 </li>
 </ul>
-</dd>
-</dl>
+</div></blockquote>
 <p>Windows also has a auto complete feature using the TAB key but instead of stopping when there multiple files/folders with the same name, it will complete it with the first file alphabetically. The current directory is denoted by “.” and the directory above is “..”.</p>
-</div>
-<div class="section" id="execute-python-script-any-operating-system">
-<h2>Execute Python Script (any operating system)<a class="headerlink" href="#execute-python-script-any-operating-system" title="Permalink to this headline">¶</a></h2>
+<p>Execute Python Script (any operating system)</p>
+<hr class="docutils" />
 <p>To execute a Python script all one has to do is open up a terminal and navigate to the directory which contains the Python script. Python can be recognised by the extension <cite>.py</cite>. To execute the script just use the following command:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="n">script</span><span class="o">.</span><span class="n">py</span>
 </pre></div>
 </div>
 <p>It’s that simple!</p>
-</div>
 </div>
 
 
@@ -277,21 +273,6 @@
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
-  <h3><a href="index.html">Table of Contents</a></h3>
-  <ul>
-<li><a class="reference internal" href="#">Installation</a><ul>
-<li><a class="reference internal" href="#mac-os-x-linux">Mac OS X/Linux</a></li>
-<li><a class="reference internal" href="#windows">Windows</a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#basic-use-of-command-line-to-run-python">Basic Use of Command Line to Run Python</a><ul>
-<li><a class="reference internal" href="#id3">Mac OS X/Linux</a></li>
-<li><a class="reference internal" href="#id4">Windows</a></li>
-<li><a class="reference internal" href="#execute-python-script-any-operating-system">Execute Python Script (any operating system)</a></li>
-</ul>
-</li>
-</ul>
-
   <h4>Previous topic</h4>
   <p class="topless"><a href="generated/quspin.tools.misc.csr_matvec.html"
                         title="previous chapter">quspin.tools.misc.csr_matvec</a></p>
@@ -334,7 +315,7 @@
         <li class="right" >
           <a href="generated/quspin.tools.misc.csr_matvec.html" title="quspin.tools.misc.csr_matvec"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">QuSpin 0.3.6 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">QuSpin 0.3.7 documentation</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">Installation</a></li> 
       </ul>
     </div>

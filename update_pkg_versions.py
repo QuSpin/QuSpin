@@ -7,7 +7,7 @@ import sys
 
 
 
-quspin_ver = '"0.3.6"'
+quspin_ver = '"0.3.7"'
 build_num = '"0"'
 
 
@@ -210,6 +210,9 @@ for pkg,url in pkg_urls.items():
 	else:
 		md_text += [" * "+md_url.format(text=pkg,url=url[0])+pkg_vers[pkg]]
 		rst_text += ["    * "+rst_url.format(text=pkg,url=url[0])+pkg_vers[pkg]]
+#rst_text = ['\n']+rst_text+['\n']
+rst_text[0]='\n'+rst_text[0]
+rst_text[-1]=rst_text[-1]+'\n'
 
 with open("sphinx/source/Installation.rst","r") as IO:
 	Installation_rst = IO.read()

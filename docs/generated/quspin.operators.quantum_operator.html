@@ -16,7 +16,7 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-    <title>quspin.operators.quantum_operator &#8212; QuSpin 0.3.6 documentation</title>
+    <title>quspin.operators.quantum_operator &#8212; QuSpin 0.3.7 documentation</title>
     <link rel="stylesheet" href="../static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../static/classic.css" type="text/css" />
     
@@ -46,7 +46,7 @@
         <li class="right" >
           <a href="quspin.operators.hamiltonian.html" title="quspin.operators.hamiltonian"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.6 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.7 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../operators.html" accesskey="U">Operators module (<code class="xref py py-mod docutils literal notranslate"><span class="pre">quspin.operators</span></code>)</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">quspin.operators.quantum_operator</a></li> 
       </ul>
@@ -58,7 +58,9 @@
           <div class="body" role="main">
             
   <style> .red {color:#ff0000; font-weight:bold; font-style:italic; } </style>
-<style> .green {color:#00b200; font-weight:bold; font-style:italic; } </style><div class="section" id="quspin-operators-quantum-operator">
+<style> .green {color:#00b200; font-weight:bold; font-style:italic; } </style>
+<style> .magenta {color:#FF33F3; font-weight:bold; font-style:italic; } </style>
+<style> .orange {color:#FE8E02; font-weight:bold; font-style:italic; } </style><div class="section" id="quspin-operators-quantum-operator">
 <h1>quspin.operators.quantum_operator<a class="headerlink" href="#quspin-operators-quantum-operator" title="Permalink to this headline">¶</a></h1>
 <dl class="py class">
 <dt id="quspin.operators.quantum_operator">
@@ -68,9 +70,9 @@
 <p>The <cite>quantum_operator</cite> class maps quantum operators to keys of a dictionary. When calling various methods
 of <cite>quantum_operator</cite>, it allows one to ‘dynamically’ specify the pre-factors of these operators.</p>
 <p class="rubric">Examples</p>
-<p>It is often required to be able to handle a parameter-dependent Hamiltonian <span class="math notranslate nohighlight">\(H(\lambda)=H_1 + \lambda H_2\)</span>, e.g.</p>
+<p>It is often required to be able to handle a parameter-dependent Hamiltonian <span class="math notranslate nohighlight">\(H(\lambda)=H_0 + \lambda H_1\)</span>, e.g.</p>
 <div class="math notranslate nohighlight">
-\[H_1=\sum_j J_{zz}S^z_jS^z_{j+1} + h_xS^x_j, \qquad H_2=\sum_j S^z_j\]</div>
+\[H_0=\sum_j J_{zz}S^z_jS^z_{j+2} + h_xS^x_j, \qquad H_1=\sum_j S^z_j\]</div>
 <p>The following code snippet shows how to use the <cite>quantum_operator</cite> class to vary the parameter <span class="math notranslate nohighlight">\(\lambda\)</span>
 without having to re-build the Hamiltonian every time.</p>
 <div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
@@ -268,7 +270,7 @@ to create the quantum_operator.</p>
 <tr class="row-even"><td><p><a class="reference internal" href="#quspin.operators.quantum_operator.todense" title="quspin.operators.quantum_operator.todense"><code class="xref py py-obj docutils literal notranslate"><span class="pre">todense</span></code></a>([pars, out])</p></td>
 <td><p>Returns copy of a <cite>quantum_operator</cite> object for parameters <cite>pars</cite> as a dense array.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#quspin.operators.quantum_operator.tohamiltonian" title="quspin.operators.quantum_operator.tohamiltonian"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tohamiltonian</span></code></a>([pars])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#quspin.operators.quantum_operator.tohamiltonian" title="quspin.operators.quantum_operator.tohamiltonian"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tohamiltonian</span></code></a>([pars, copy])</p></td>
 <td><p>Returns copy of a <cite>quantum_operator</cite> object for parameters <cite>pars</cite> as a <cite>hamiltonian</cite> object.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#quspin.operators.quantum_operator.trace" title="quspin.operators.quantum_operator.trace"><code class="xref py py-obj docutils literal notranslate"><span class="pre">trace</span></code></a>([pars])</p></td>
@@ -1039,13 +1041,15 @@ method.</p>
 
 <dl class="py method">
 <dt id="quspin.operators.quantum_operator.tohamiltonian">
-<code class="sig-name descname"><span class="pre">tohamiltonian</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pars</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/operators/quantum_operator_core.html#quantum_operator.tohamiltonian"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quspin.operators.quantum_operator.tohamiltonian" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">tohamiltonian</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pars</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">copy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/operators/quantum_operator_core.html#quantum_operator.tohamiltonian"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quspin.operators.quantum_operator.tohamiltonian" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns copy of a <cite>quantum_operator</cite> object for parameters <cite>pars</cite> as a <cite>hamiltonian</cite> object.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><dl class="simple">
 <dt><strong>pars</strong><span class="classifier">dict, optional</span></dt><dd><p>Dictionary with same <cite>keys</cite> as <cite>input_dict</cite> and coupling strengths as <cite>values</cite>. Any missing <cite>keys</cite>
 are assumed to be set to unity.</p>
+</dd>
+<dt><strong>copy</strong><span class="classifier">bool, optional</span></dt><dd><p>Explicitly copy matrices when constructing the <cite>hamiltonian</cite> object, default is <cite>True</cite>.</p>
 </dd>
 </dl>
 </dd>
@@ -1056,7 +1060,7 @@ are assumed to be set to unity.</p>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">H_aslinop</span><span class="o">=</span><span class="n">H</span><span class="o">.</span><span class="n">tohamiltonian</span><span class="p">(</span><span class="n">pars</span><span class="o">=</span><span class="n">pars</span><span class="p">)</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">H_ham</span><span class="o">=</span><span class="n">H</span><span class="o">.</span><span class="n">tohamiltonian</span><span class="p">(</span><span class="n">pars</span><span class="o">=</span><span class="n">pars</span><span class="p">)</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -1181,7 +1185,7 @@ This can be accomplished by the following:</p>
         <li class="right" >
           <a href="quspin.operators.hamiltonian.html" title="quspin.operators.hamiltonian"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.6 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.7 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../operators.html" >Operators module (<code class="xref py py-mod docutils literal notranslate"><span class="pre">quspin.operators</span></code>)</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">quspin.operators.quantum_operator</a></li> 
       </ul>

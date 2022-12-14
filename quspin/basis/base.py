@@ -3,6 +3,12 @@ import numpy as _np
 import scipy.sparse as _sp
 import warnings,numba
 
+def _get_index_type(Ns):
+	if Ns < _np.iinfo(_np.int32).max:
+		return _np.int32
+	else:
+		return _np.int64
+
 @numba.njit
 def _coo_dot(v_in,v_out,row,col,ME):
 	n = row.shape[0]
@@ -40,9 +46,6 @@ class basis(object):
 		self._basis = _np.asarray([])
 		self._operators = "no operators for base."
 		self._unique_me = True
-		self._check_symm = None
-		self._check_pcon = None
-		self._check_herm = None
 		if self.__class__.__name__ == 'basis':
 			raise ValueError("This class is not intended"
 							 " to be instantiated directly.")
@@ -95,7 +98,7 @@ class basis(object):
 
 	@property
 	def sps(self):
-		"""int: number of states per site (i.e. the on-site Hilbert space dimension)."""
+		"""int: number of states per site (ie, the on-site Hilbert space dimension)."""
 		try:
 			return self._sps
 		except AttributeError:
@@ -135,7 +138,7 @@ class basis(object):
 
 		return v_out.squeeze()		
 
-	def inplace_Op(self,v_in,op_list,dtype,transposed=False,conjugated=False,v_out=None):
+	def inplace_Op(self,v_in,op_list,dtype,transposed=False,conjugated=False,a=1.0,v_out=None):
 		"""Calculates the action of an operator on a state.
 
 		Notes
@@ -154,9 +157,11 @@ class basis(object):
 			if `True` this function will act with the trasposed operator.
 		conjugated : bool, optional
 			if `True` this function will act with the conjugated operator.
+		a : scalar, optional
+			value to rescale resulting vector after performing the action of the operators. Same as rescaling all couplings by value a.
 		v_out : array_like
 			output array, must be the same shape as `v_in` and must match the type of the output.
-
+		
 		Returns
 		--------
 		numpy.ndarray
@@ -175,7 +180,7 @@ class basis(object):
 
 		"""
 
-		return self._inplace_Op(v_in,op_list,dtype,transposed=transposed,conjugated=conjugated,v_out=v_out)
+		return self._inplace_Op(v_in,op_list,dtype,transposed=transposed,conjugated=conjugated,v_out=v_out,a=a)
 
 	def Op(self,opstr,indx,J,dtype):
 		"""Constructs operator from a site-coupling list and an operator string in a lattice basis.
@@ -221,12 +226,12 @@ class basis(object):
 		""" takes list of operator strings and couplings to create matrix."""
 		off_diag = None
 		diag = None
+		index_type = _get_index_type(self.Ns)
 
 		for opstr,indx,J in op_list:
 			ME,row,col = self.Op(opstr,indx,J,dtype)
 			if(len(ME)>0):
 				imax = max(row.max(),col.max())
-				index_type = _np.result_type(_np.int32,_np.min_scalar_type(imax))
 				row = row.astype(index_type)
 				col = col.astype(index_type)
 				if _is_diagonal(row,col):
@@ -305,9 +310,9 @@ class basis(object):
 		"""Calculates entanglement entropy of subsystem A and the corresponding reduced density matrix
 
 		.. math::
-			S_\\mathrm{ent}(\\alpha) = \\frac{1}{N}\\frac{1}{1-\\alpha}\\log \\mathrm{tr}_{A} \\left( \\mathrm{tr}_{A^c} \\vert\\psi\\rangle\\langle\\psi\\vert \\right)^\\alpha 
+			S_\\mathrm{ent}(\\alpha) = \\frac{1}{N_A}\\frac{1}{1-\\alpha}\\log \\mathrm{tr}_{A} \\left( \\mathrm{tr}_{A^c} \\vert\\psi\\rangle\\langle\\psi\\vert \\right)^\\alpha 
 
-		where the normalization :math:`N` can be switched on and off using the optional argument `density`.
+		where the normalization :math:`N_A` can be switched on and off using the optional argument `density`. This expression reduces to the familiar von Neumann entropy in the limit :math:`\\alpha=1`.
 			
 		**Note:** The logarithm used is the natural logarithm (base e).
 

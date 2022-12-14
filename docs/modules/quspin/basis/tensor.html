@@ -16,7 +16,7 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-    <title>quspin.basis.tensor &#8212; QuSpin 0.3.6 documentation</title>
+    <title>quspin.basis.tensor &#8212; QuSpin 0.3.7 documentation</title>
     <link rel="stylesheet" href="../../../static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../../../static/classic.css" type="text/css" />
     
@@ -37,7 +37,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">QuSpin 0.3.6 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">QuSpin 0.3.7 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">quspin.basis.tensor</a></li> 
       </ul>
@@ -405,7 +405,7 @@
 		<span class="k">return</span> <span class="n">_sp</span><span class="o">.</span><span class="n">kron</span><span class="p">(</span><span class="n">proj1</span><span class="p">,</span><span class="n">proj2</span><span class="p">,</span><span class="nb">format</span><span class="o">=</span><span class="s2">&quot;csr&quot;</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="tensor_basis.partial_trace"><a class="viewcode-back" href="../../../generated/quspin.basis.tensor_basis.html#quspin.basis.tensor_basis.partial_trace">[docs]</a>	<span class="k">def</span> <span class="nf">partial_trace</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">state</span><span class="p">,</span><span class="n">sub_sys_A</span><span class="o">=</span><span class="s2">&quot;left&quot;</span><span class="p">,</span><span class="n">return_rdm</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">enforce_pure</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">sparse</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="tensor_basis.partial_trace"><a class="viewcode-back" href="../../../generated/quspin.basis.tensor_basis.html#quspin.basis.tensor_basis.partial_trace">[docs]</a>	<span class="k">def</span> <span class="nf">partial_trace</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">state</span><span class="p">,</span><span class="n">sub_sys_A</span><span class="o">=</span><span class="s2">&quot;left&quot;</span><span class="p">,</span><span class="n">return_rdm</span><span class="o">=</span><span class="s2">&quot;A&quot;</span><span class="p">,</span><span class="n">enforce_pure</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">sparse</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 		<span class="sd">&quot;&quot;&quot;Calculates reduced density matrix, through a partial trace of a quantum state in `tensor_basis`.</span>
 
 <span class="sd">		Parameters</span>
@@ -497,6 +497,7 @@
 					<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Expecting a dense array for mixed states.&quot;</span><span class="p">)</span>
 
 		<span class="k">else</span><span class="p">:</span>
+
 			<span class="k">if</span> <span class="n">state</span><span class="o">.</span><span class="n">ndim</span><span class="o">==</span><span class="mi">1</span><span class="p">:</span>
 				<span class="n">rdm_A</span><span class="p">,</span><span class="n">rdm_B</span> <span class="o">=</span> <span class="n">_tensor_partial_trace_pure</span><span class="p">(</span><span class="n">state</span><span class="o">.</span><span class="n">T</span><span class="p">,</span><span class="n">sub_sys_A</span><span class="p">,</span><span class="n">Ns_left</span><span class="p">,</span><span class="n">Ns_right</span><span class="p">,</span><span class="n">return_rdm</span><span class="o">=</span><span class="n">return_rdm</span><span class="p">)</span>
 
@@ -612,6 +613,7 @@
 
 		<span class="n">pure</span><span class="o">=</span><span class="kc">True</span> <span class="c1"># set pure state parameter to True</span>
 		<span class="k">if</span> <span class="n">_sp</span><span class="o">.</span><span class="n">issparse</span><span class="p">(</span><span class="n">state</span><span class="p">)</span> <span class="ow">or</span> <span class="n">sparse</span><span class="p">:</span>
+			
 			<span class="k">if</span> <span class="ow">not</span> <span class="n">_sp</span><span class="o">.</span><span class="n">issparse</span><span class="p">(</span><span class="n">state</span><span class="p">):</span>
 				<span class="k">if</span> <span class="n">state</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
 					<span class="n">state</span> <span class="o">=</span> <span class="n">_sp</span><span class="o">.</span><span class="n">csr_matrix</span><span class="p">(</span><span class="n">state</span><span class="p">)</span><span class="o">.</span><span class="n">T</span>
@@ -627,6 +629,7 @@
 					<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Expecting a dense array for mixed states.&quot;</span><span class="p">)</span>
 					
 		<span class="k">else</span><span class="p">:</span>
+
 			<span class="k">if</span> <span class="n">state</span><span class="o">.</span><span class="n">ndim</span><span class="o">==</span><span class="mi">1</span><span class="p">:</span>
 				<span class="n">state</span> <span class="o">=</span> <span class="n">state</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">))</span>
 				<span class="n">p</span><span class="p">,</span> <span class="n">rdm_A</span><span class="p">,</span> <span class="n">rdm_B</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_p_pure</span><span class="p">(</span><span class="n">state</span><span class="p">,</span><span class="n">sub_sys_A</span><span class="p">,</span><span class="n">return_rdm</span><span class="o">=</span><span class="n">return_rdm</span><span class="p">)</span>
@@ -1266,7 +1269,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">QuSpin 0.3.6 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">QuSpin 0.3.7 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">quspin.basis.tensor</a></li> 
       </ul>

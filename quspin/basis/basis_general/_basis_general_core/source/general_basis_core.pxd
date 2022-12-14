@@ -55,7 +55,8 @@ cdef extern from "general_basis_get_amp.h" namespace "basis_general":
 
 cdef extern from "misc.h" namespace "basis_general":
     K rep_position[K,I](const K,const I[],const I) nogil
-
+    void argsort_decending_array[I](npy_intp[],const I[],const npy_intp)
+    bool is_decending_array[I](const I[],const npy_intp)
 
 cdef extern from "general_basis_rep.h" namespace "basis_general":
     void general_representative[I](general_basis_core[I] *B, const I[], I[], int[], int8_t[], const npy_intp) nogil

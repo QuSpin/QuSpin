@@ -42,10 +42,10 @@ class quantum_operator(object):
 		Examples
 		---------
 
-		It is often required to be able to handle a parameter-dependent Hamiltonian :math:`H(\\lambda)=H_1 + \\lambda H_2`, e.g.
+		It is often required to be able to handle a parameter-dependent Hamiltonian :math:`H(\\lambda)=H_0 + \\lambda H_1`, e.g.
 
 		.. math::
-			H_1=\\sum_j J_{zz}S^z_jS^z_{j+1} + h_xS^x_j, \\qquad H_2=\\sum_j S^z_j
+			H_0=\\sum_j J_{zz}S^z_jS^z_{j+2} + h_xS^x_j, \\qquad H_1=\\sum_j S^z_j
 
 		The following code snippet shows how to use the `quantum_operator` class to vary the parameter :math:`\\lambda`
 		without having to re-build the Hamiltonian every time.
@@ -1050,7 +1050,7 @@ class quantum_operator(object):
 		rmatvec = functools.partial(_quantum_operator_dot,self.H,pars)
 		return _sla.LinearOperator(self.get_shape,matvec,rmatvec=rmatvec,matmat=matvec,dtype=self._dtype)		
 
-	def tohamiltonian(self,pars={}):
+	def tohamiltonian(self,pars={},copy=True):
 		"""Returns copy of a `quantum_operator` object for parameters `pars` as a `hamiltonian` object.
 
 		Parameters
@@ -1058,6 +1058,9 @@ class quantum_operator(object):
 		pars : dict, optional
 			Dictionary with same `keys` as `input_dict` and coupling strengths as `values`. Any missing `keys`
 			are assumed to be set to unity.
+		
+		copy : bool, optional
+			Explicitly copy matrices when constructing the `hamiltonian` object, default is `True`.
 
 		Returns
 		--------
@@ -1065,7 +1068,7 @@ class quantum_operator(object):
 
 		Examples
 		---------
-		>>> H_aslinop=H.tohamiltonian(pars=pars)
+		>>> H_ham=H.tohamiltonian(pars=pars)
 
 		"""
 		pars = self._check_hamiltonian_pars(pars)
@@ -1082,7 +1085,7 @@ class quantum_operator(object):
 				else:
 					static.append(J*self._quantum_operator[key])
 
-		return hamiltonian_core.hamiltonian(static,dynamic,dtype=self._dtype)
+		return hamiltonian_core.hamiltonian(static,dynamic,dtype=self._dtype,copy=copy)
 
 	def update_matrix_formats(self,matrix_formats):
 		"""Change the internal structure of the matrices in-place.
@@ -1415,6 +1418,8 @@ class quantum_operator(object):
 		if not isinstance(pars,dict):
 			raise ValueError("expecing dictionary for parameters.")
 
+		pars = dict(pars)
+
 		extra = set(pars.keys()) - set(self._quantum_operator.keys())
 		if extra:
 			raise ValueError("unexpected couplings: {}".format(extra))
@@ -1440,7 +1445,10 @@ class quantum_operator(object):
 		if not isinstance(pars,dict):
 			raise ValueError("expecing dictionary for parameters.")
 
+		pars = dict(pars)
+
 		extra = set(pars.keys()) - set(self._quantum_operator.keys())
+
 		if extra:
 			raise ValueError("unexpected couplings: {}".format(extra))
 

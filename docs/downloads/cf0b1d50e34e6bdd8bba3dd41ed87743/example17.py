@@ -55,8 +55,9 @@ L_daggerL=L_dagger*L
 #
 #### determine the corresponding matvec routines ####
 #
-matvec=get_matvec_function(H.static)
-#
+# different matvec functions are required since we use both matrices and their transposed, cf. Lindblad_EOM_v3
+matvec_csr=get_matvec_function(H.static) # csr matvec function
+matvec_csc=get_matvec_function(H.static.T) # csc matvec function
 #
 ##### define Lindblad equation in diagonal form
 #
@@ -93,16 +94,17 @@ def Lindblad_EOM_v2(time,rho,rho_out,rho_aux):
 	rho_out *= -1.0j
 	#
 	### Lindbladian part (static only)
-	# 1st Lindblad term (nonunitary)
+	## 1st Lindblad term (nonunitary)
 	# rho_aux = 2\gamma*L.dot(rho)
-	L.dot(rho             ,out=rho_aux  ,a=+2.0*gamma,overwrite_out=True)
-	# rho_out += (L.static.T.conj().dot(rho_aux.T)).T // RHS~rho_aux.dot(L_dagger) 
-	L.H.rdot(rho_aux,out=rho_out,a=+1.0,overwrite_out=False) # L.H = L^\dagger
-	# anticommutator (2nd Lindblad) term (nonunitary)
+	L.dot(rho       ,out=rho_aux, a=+2.0*gamma,overwrite_out=True)
+	# rho_out += (L.static.conj().dot(rho_aux.T)).T // RHS~rho_aux.dot(L_dagger) 
+	L.H.rdot(rho_aux,out=rho_out, a=+1.0,overwrite_out=False) # L.H = L^\dagger
+	#
+	## anticommutator (2nd Lindblad) term (nonunitary)
 	# rho_out += gamma*L_daggerL._static.dot(rho)
-	L_daggerL.dot(rho  ,out=rho_out  ,a=-gamma,overwrite_out=False)
+	L_daggerL.dot(rho ,out=rho_out, a=-gamma,overwrite_out=False)
 	# # rho_out += gamma*(L_daggerL._static.T.dot(rho.T)).T // RHS~rho.dot(L_daggerL) 
-	L_daggerL.rdot(rho,out=rho_out,a=-gamma,overwrite_out=False) 
+	L_daggerL.rdot(rho,out=rho_out, a=-gamma,overwrite_out=False) 
 	
 	return rho_out.ravel() # ODE solver accepts vectors only
 #
@@ -117,31 +119,32 @@ def Lindblad_EOM_v3(time,rho,rho_out,rho_aux):
 	### Hamiltonian part
 	# commutator term (unitary
 	# rho_out = H.static.dot(rho))
-	matvec(H.static  ,rho  ,out=rho_out  ,a=+1.0,overwrite_out=True)
+	matvec_csr(H.static  ,rho  ,out=rho_out  ,a=+1.0,overwrite_out=True)
 	# rho_out -= (H.static.T.dot(rho.T)).T // RHS~rho.dot(H) 
-	matvec(H.static.T,rho.T,out=rho_out.T,a=-1.0,overwrite_out=False)
+	matvec_csc(H.static.T,rho.T,out=rho_out.T,a=-1.0,overwrite_out=False)
 	# 
 	for func,Hd in iteritems(H._dynamic):
 		ft = func(time)
 		# rho_out += ft*Hd.dot(rho)
-		matvec(Hd  ,rho  ,out=rho_out  ,a=+ft,overwrite_out=False)
+		matvec_csr(Hd  ,rho  ,out=rho_out  ,a=+ft,overwrite_out=False)
 		# rho_out -= ft*(Hd.T.dot(rho.T)).T 
-		matvec(Hd.T,rho.T,out=rho_out.T,a=-ft,overwrite_out=False)
+		matvec_csc(Hd.T,rho.T,out=rho_out.T,a=-ft,overwrite_out=False)
 	# multiply by -i
 	rho_out *= -1.0j
 	#
 	### Lindbladian part (static only)
-	# 1st Lindblad term (nonunitary)
+	## 1st Lindblad term (nonunitary): 2\gamma * L*rho*L^\dagger
 	# rho_aux = 2\gamma*L.dot(rho)
-	matvec(L.static  ,rho             ,out=rho_aux  ,a=+2.0*gamma,overwrite_out=True)
-	# rho_out += (L.static.T.conj().dot(rho_aux.T)).T // RHS~rho_aux.dot(L_dagger) 
-	matvec(L.static.T.conj(),rho_aux.T,out=rho_out.T,a=+1.0,overwrite_out=False) 
-	# anticommutator (2nd Lindblad) term (nonunitary)
+	matvec_csr(L.static  ,rho             ,out=rho_aux  ,a=+2.0*gamma,overwrite_out=True)
+	# rho_out += (L.static.conj().dot(rho_aux.T)).T // RHS ~ rho_aux.dot(L_dagger)
+	matvec_csr(L.static.conj(),rho_aux.T,out=rho_out.T,a=+1.0,overwrite_out=False)
+	# 
+	## anticommutator (2nd Lindblad) term (nonunitary): -\gamma \{L^\dagger * L, \eho}
 	# rho_out += gamma*L_daggerL.static.dot(rho)
-	matvec(L_daggerL.static  ,rho  ,out=rho_out  ,a=-gamma,overwrite_out=False)
-	# # rho_out += gamma*(L_daggerL.static.T.dot(rho.T)).T // RHS~rho.dot(L_daggerL) 
-	matvec(L_daggerL.static.T,rho.T,out=rho_out.T,a=-gamma,overwrite_out=False) 
-	
+	matvec_csr(L_daggerL.static,rho  ,out=rho_out  ,a=-gamma,overwrite_out=False)
+	# rho_out += gamma*(L_daggerL.static.T.dot(rho.T)).T // RHS~rho.dot(L_daggerL) 
+	matvec_csc(L_daggerL.static.T,rho.T,out=rho_out.T,a=-gamma,overwrite_out=False) 
+	#
 	return rho_out.ravel() # ODE solver accepts vectors only
 #
 # define auxiliary arguments
@@ -157,9 +160,9 @@ rho0=np.array([[0.5,0.5j],[-0.5j,0.5]],dtype=np.complex128)
 # slow solution, uses Lindblad_EOM_v1
 #rho_t = evolve(rho0,time[0],time,Lindblad_EOM_v1,iterate=True,atol=1E-12,rtol=1E-12)
 # intermediate function, uses Lindblad_EOM_v2
-#rho_t = evolve(rho0,time[0],time,Lindblad_EOM_v2,f_params=EOM_args,iterate=True,atol=1E-12,rtol=1E-12) 
+rho_t = evolve(rho0,time[0],time,Lindblad_EOM_v2,f_params=EOM_args,iterate=True,atol=1E-12,rtol=1E-12) 
 # fast solution (but 3 times as memory intensive), uses Lindblad_EOM_v3
-rho_t = evolve(rho0,time[0],time,Lindblad_EOM_v3,f_params=EOM_args,iterate=True,atol=1E-12,rtol=1E-12) 
+#rho_t = evolve(rho0,time[0],time,Lindblad_EOM_v3,f_params=EOM_args,iterate=True,atol=1E-12,rtol=1E-12) 
 #
 # compute state evolution
 population_down=np.zeros(time.shape,dtype=np.float64)

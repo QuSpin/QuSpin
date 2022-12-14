@@ -16,7 +16,7 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-    <title>Lanczos module: time-evolution and ground state search &#8212; QuSpin 0.3.6 documentation</title>
+    <title>Lanczos module: time-evolution and ground state search &#8212; QuSpin 0.3.7 documentation</title>
     <link rel="stylesheet" href="../static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../static/classic.css" type="text/css" />
     
@@ -38,7 +38,7 @@
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.6 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.7 documentation</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">Lanczos module: time-evolution and ground state search</a></li> 
       </ul>
     </div>  
@@ -49,7 +49,9 @@
           <div class="body" role="main">
             
   <style> .red {color:#ff0000; font-weight:bold; font-style:italic; } </style>
-<style> .green {color:#00b200; font-weight:bold; font-style:italic; } </style><div class="section" id="lanczos-module-time-evolution-and-ground-state-search">
+<style> .green {color:#00b200; font-weight:bold; font-style:italic; } </style>
+<style> .magenta {color:#FF33F3; font-weight:bold; font-style:italic; } </style>
+<style> .orange {color:#FE8E02; font-weight:bold; font-style:italic; } </style><div class="section" id="lanczos-module-time-evolution-and-ground-state-search">
 <span id="example20-label"></span><h1>Lanczos module: time-evolution and ground state search<a class="headerlink" href="#lanczos-module-time-evolution-and-ground-state-search" title="Permalink to this headline">¶</a></h1>
 <p>This example demonstrates how to use the <cite>Lanczos</cite> submodule of the <cite>tools</cite> module to do time evolvution and ground state search in the Heisenberg model:</p>
 <div class="math notranslate nohighlight">
@@ -225,7 +227,7 @@
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">checking lanczos matrix exponential calculation:</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
 <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">100</span><span class="p">):</span>
 	<span class="c1"># compute Lanczos decomposition</span>
-	<span class="n">E_full</span><span class="p">,</span><span class="n">V_full</span><span class="p">,</span><span class="n">Q_full</span> <span class="o">=</span> <span class="n">lanczos_full</span><span class="p">(</span><span class="n">H</span><span class="p">,</span><span class="n">v_lanczos_full</span><span class="p">,</span><span class="n">m_evo</span><span class="p">)</span> <span class="c1"># all Lanczps vectors at once</span>
+	<span class="n">E_full</span><span class="p">,</span><span class="n">V_full</span><span class="p">,</span><span class="n">Q_full</span> <span class="o">=</span> <span class="n">lanczos_full</span><span class="p">(</span><span class="n">H</span><span class="p">,</span><span class="n">v_lanczos_full</span><span class="p">,</span><span class="n">m_evo</span><span class="p">)</span> <span class="c1"># all Lanczos vectors at once</span>
 	<span class="n">E_iter</span><span class="p">,</span><span class="n">V_iter</span><span class="p">,</span><span class="n">Q_iter</span> <span class="o">=</span> <span class="n">lanczos_iter</span><span class="p">(</span><span class="n">H</span><span class="p">,</span><span class="n">v_lanczos_iter</span><span class="p">,</span><span class="n">m_evo</span><span class="p">)</span> <span class="c1"># Lanczos vectors as an iterator</span>
 	<span class="c1"># evolve quantum state using different routines</span>
 	<span class="n">v_expm_multiply</span> <span class="o">=</span> <span class="n">expm_multiply</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="n">j</span><span class="o">*</span><span class="n">dt</span><span class="o">*</span><span class="n">H</span><span class="o">.</span><span class="n">static</span><span class="p">,</span><span class="n">v_expm_multiply</span><span class="p">)</span> <span class="c1"># cf tools.expm_multiply_parallel with OMP speedup</span>
@@ -325,7 +327,7 @@
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.6 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.7 documentation</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">Lanczos module: time-evolution and ground state search</a></li> 
       </ul>
     </div>

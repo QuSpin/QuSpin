@@ -37,8 +37,8 @@ N_steps=100 # number of driving cycles to evolve for
 basis = spin_basis_1d(L,S="1",m=0,kblock=0,pblock=1,) 
 print('total number of basis states {}.\n'.format(basis.Ns) )
 # define operators with OBC using site-coupling lists
-J_zz = [[Jzz_0,i,(i+1)%L] for i in range(L)] # OBC
-J_xy = [[0.5*Jxy,i,(i+1)%L] for i in range(L)] # OBC
+J_zz = [[Jzz_0,i,(i+1)%L] for i in range(L)] # PBC
+J_xy = [[0.5*Jxy,i,(i+1)%L] for i in range(L)] # PBC
 h_z=[[hz,i] for i in range(L)]
 # static and dynamic lists
 static_0 = [["+-",J_xy],["-+",J_xy],]
@@ -62,7 +62,7 @@ Sent_density=np.zeros(N_steps+1,dtype=dtype_real)
 E_density[0]=H_ave.expt_value(psi_i).real/L
 Sent_density[0]=basis.ent_entropy(psi_i,sub_sys_A=range(L//2),density=True)['Sent_A']
 #
-##### compute the time evolution using expm_multple_parallel
+##### compute the time evolution using expm_multiply_parallel
 #
 # construct piece-wise constant unitaries
 expH0 = expm_multiply_parallel(H0.tocsr(),a=-1j*0.5*T,dtype=dtype_cmplx)

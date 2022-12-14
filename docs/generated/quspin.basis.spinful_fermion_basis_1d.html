@@ -16,7 +16,7 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-    <title>quspin.basis.spinful_fermion_basis_1d &#8212; QuSpin 0.3.6 documentation</title>
+    <title>quspin.basis.spinful_fermion_basis_1d &#8212; QuSpin 0.3.7 documentation</title>
     <link rel="stylesheet" href="../static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="../static/classic.css" type="text/css" />
     
@@ -46,7 +46,7 @@
         <li class="right" >
           <a href="quspin.basis.spinless_fermion_basis_1d.html" title="quspin.basis.spinless_fermion_basis_1d"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.6 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.7 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../basis.html" accesskey="U">Basis module (<code class="xref py py-mod docutils literal notranslate"><span class="pre">quspin.basis</span></code>)</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">quspin.basis.spinful_fermion_basis_1d</a></li> 
       </ul>
@@ -58,7 +58,9 @@
           <div class="body" role="main">
             
   <style> .red {color:#ff0000; font-weight:bold; font-style:italic; } </style>
-<style> .green {color:#00b200; font-weight:bold; font-style:italic; } </style><div class="section" id="quspin-basis-spinful-fermion-basis-1d">
+<style> .green {color:#00b200; font-weight:bold; font-style:italic; } </style>
+<style> .magenta {color:#FF33F3; font-weight:bold; font-style:italic; } </style>
+<style> .orange {color:#FE8E02; font-weight:bold; font-style:italic; } </style><div class="section" id="quspin-basis-spinful-fermion-basis-1d">
 <h1>quspin.basis.spinful_fermion_basis_1d<a class="headerlink" href="#quspin-basis-spinful-fermion-basis-1d" title="Permalink to this headline">¶</a></h1>
 <dl class="py class">
 <dt id="quspin.basis.spinful_fermion_basis_1d">
@@ -258,7 +260,7 @@ entry refers to spin-down.</p>
 <td><p>set of available operator strings.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#quspin.basis.spinful_fermion_basis_1d.sps" title="quspin.basis.spinful_fermion_basis_1d.sps"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sps</span></code></a></p></td>
-<td><p>number of states per site (i.e.</p></td>
+<td><p>number of states per site (ie, the on-site Hilbert space dimension).</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#quspin.basis.spinful_fermion_basis_1d.states" title="quspin.basis.spinful_fermion_basis_1d.states"><code class="xref py py-obj docutils literal notranslate"><span class="pre">states</span></code></a></p></td>
 <td><p>basis states stored in their integer representation.</p></td>
@@ -640,7 +642,7 @@ by <cite>index()</cite>.</p>
 
 <dl class="py method">
 <dt id="quspin.basis.spinful_fermion_basis_1d.inplace_Op">
-<code class="sig-name descname"><span class="pre">inplace_Op</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">v_in</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">op_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transposed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">conjugated</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">v_out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quspin.basis.spinful_fermion_basis_1d.inplace_Op" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">inplace_Op</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">v_in</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">op_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transposed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">conjugated</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">a</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">v_out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quspin.basis.spinful_fermion_basis_1d.inplace_Op" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculates the action of an operator on a state.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -654,6 +656,8 @@ by <cite>index()</cite>.</p>
 <dt><strong>transposed</strong><span class="classifier">bool, optional</span></dt><dd><p>if <cite>True</cite> this function will act with the trasposed operator.</p>
 </dd>
 <dt><strong>conjugated</strong><span class="classifier">bool, optional</span></dt><dd><p>if <cite>True</cite> this function will act with the conjugated operator.</p>
+</dd>
+<dt><strong>a</strong><span class="classifier">scalar, optional</span></dt><dd><p>value to rescale resulting vector after performing the action of the operators. Same as rescaling all couplings by value a.</p>
 </dd>
 <dt><strong>v_out</strong><span class="classifier">array_like</span></dt><dd><p>output array, must be the same shape as <cite>v_in</cite> and must match the type of the output.</p>
 </dd>
@@ -825,7 +829,7 @@ in a straightforward manner.</p>
 <dl class="py method">
 <dt id="quspin.basis.spinful_fermion_basis_1d.sps">
 <em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">sps</span></code><a class="headerlink" href="#quspin.basis.spinful_fermion_basis_1d.sps" title="Permalink to this definition">¶</a></dt>
-<dd><p>number of states per site (i.e. the on-site Hilbert space dimension).</p>
+<dd><p>number of states per site (ie, the on-site Hilbert space dimension).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
 <dd class="field-odd"><p>int</p>
@@ -925,7 +929,7 @@ in a straightforward manner.</p>
         <li class="right" >
           <a href="quspin.basis.spinless_fermion_basis_1d.html" title="quspin.basis.spinless_fermion_basis_1d"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.6 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.7 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../basis.html" >Basis module (<code class="xref py py-mod docutils literal notranslate"><span class="pre">quspin.basis</span></code>)</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">quspin.basis.spinful_fermion_basis_1d</a></li> 
       </ul>

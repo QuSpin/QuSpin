@@ -46,7 +46,7 @@ p_DM/=p_DM.sum()
 
 DM = reduce(np.dot,[psis,np.diag(p_DM/sum(p_DM)),psis.T.conj()])
 
-DMs = np.dstack((DM for i in range(10)))
+DMs = np.dstack([DM for i in range(10)])
 
 kwargs_list = [
 				(dict(sub_sys_A="left",return_rdm=None,return_rdm_EVs=False),	dict(density=False,sub_sys_A=range(L1),return_rdm=None,return_rdm_EVs=False)),

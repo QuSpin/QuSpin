@@ -299,12 +299,14 @@ class quantum_LinearOperator(LinearOperator):
 	
 		"""
 		if out is not None:
+			other = _np.asanyarray(other)
 			out = _np.asanyarray(out)
+
 			result_dtype = _np.result_type(self._dtype,other.dtype)
 
-			if (not out.flags["CARRAY"] or (out.dtype,out.shape) != (result_dtype,shape)):
+			if (not out.flags["CARRAY"] or (out.dtype,out.shape) != (result_dtype,other.shape)):
 				raise ValueError("out must be C-congituous writable array \
-					with dtype {} and shape {}.".format(result_dtype,self._shape))
+					with dtype {} and shape {}.".format(result_dtype,shape))
 
 			if self.diagonal is not None:
 				_np.multiply(other.T,self.diagonal,out=out.T)
@@ -338,7 +340,7 @@ class quantum_LinearOperator(LinearOperator):
 
 		Examples
 		---------
-		>>> H_fluct = H.quant_fluct(V,time=0,diagonal=False,check=True)
+		>>> H_fluct = H.quant_fluct(V,time=0,check=True)
 
 		corresponds to :math:`\\left(\\Delta H\\right)^2 = \\langle V|H^2(t=\\texttt{time})|V\\rangle - \\langle V|H(t=\\texttt{time})|V\\rangle^2`. 
 			 
