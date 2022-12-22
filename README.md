@@ -4,11 +4,11 @@ QuSpin is an open-source Python package for Exact Diagonalization and quantum dy
 
 The complete ***Documentation*** for QuSpin (including a number of recent tutorials) can be found at 
 
-[http://weinbe58.github.io/QuSpin/](http://weinbe58.github.io/QuSpin/)
+[http://quspin.github.io/QuSpin/](http://quspin.github.io/QuSpin/)
 
 ***Examples*** with python scripts and Jupyter notebooks which show how to use QuSpin can be downloaded at 
 
-http://weinbe58.github.io/QuSpin/Examples.html
+http://quspin.github.io/QuSpin/Examples.html
 
 For an ***indepth introduction*** to the package, check out the following papers:
 * [SciPost Phys. __2__, 003 (2017)](https://scipost.org/10.21468/SciPostPhys.2.1.003)
@@ -90,4 +90,4 @@ To safely update a manually installed version of QuSpin, one must first manually
 
 The complete QuSpin documentation can be found under
 
-[http://weinbe58.github.io/QuSpin/](http://weinbe58.github.io/QuSpin/)
+[http://quspin.github.io/QuSpin/](http://quspin.github.io/QuSpin/)
