@@ -123,8 +123,8 @@ master_doc = 'index'
 
 # General information about the project.
 project = u'QuSpin'
-copyright = u'2016, Phillip Weinberg, Markus Schmitt and Marin Bukov'
-author = u'Phillip Weinberg, Markus Schmitt and Marin Bukov'
+copyright = u'2016, Phillip Weinberg, Markus Schmitt, and Marin Bukov'
+author = u'Phillip Weinberg, Markus Schmitt, and Marin Bukov'
 rst_prolog = open('global.rst', 'r').read()
 
 # The version info for the project you're documenting, acts as replacement for
@@ -244,5 +244,6 @@ texinfo_documents = [
 ]
 
 # google analytics
-googleanalytics_id = 'UA-110543543-1'
+#googleanalytics_id = 'UA-110543543-1' # old tag, deprecated since July 2023
+googleanalytics_id = 'G-6885KZ7NH6'
 
