@@ -14,9 +14,9 @@ Check out these papers and the example scripts (below) for a detailed tutorial:
     * `SciPost Phys. 2, 003 (2017) <https://scipost.org/SciPostPhys.2.1.003>`_.
     * `SciPost Phys. 7, 020 (2019) <https://scipost.org/SciPostPhys.7.2.020>`_.
 
-**Report** any **bugs** and **ask questions** `here <https://github.com/weinbe58/QuSpin/issues/new/choose>`_. 
+**Report** any **bugs** and **ask questions** `here <https://github.com/QuSpin/QuSpin/issues/new/choose>`_. 
 
-The source code is available on `Github <https://github.com/weinbe58/QuSpin/tree/master>`_; Suggestions for future improvements and user contributions are always welcome! 
+The source code is available on `Github <https://github.com/QuSpin/QuSpin>`_; Suggestions for future improvements and user contributions are always welcome! 
 
 
 New Features
@@ -75,7 +75,7 @@ User Basis Tutorial
 Report a Bug / Ask a Question
 =============================
 
-To report a bug in QuSpin, or ask a question about the package, please `open up a new issue <https://github.com/weinbe58/QuSpin/issues>`_ on GitHub.
+To report a bug in QuSpin, or ask a question about the package, please `open up a new issue <https://github.com/QuSpin/QuSpin/issues>`_ on GitHub.
 
 
 
