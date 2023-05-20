@@ -1198,7 +1198,7 @@ class hamiltonian(object):
 		"""Computes COMPLETE eigensystem of hermitian `hamiltonian` operator using DENSE hermitian methods.
 
 		This function method solves for all eigenvalues and eigenvectors. It calls 
-		`numpy.linalg.eigh <https://numpy.org/doc/stable/reference/generated/numpy.linalg.eigh.html>`_,
+		`numpy.linalg.eigh <https://numpy.org/doc/stable/reference/generated/numpy.linalg.eigh.html>`_, 
 		and uses wrapped LAPACK functions which are contained in the module py_lapack.
 
 		Notes
@@ -1236,7 +1236,7 @@ class hamiltonian(object):
 		"""Computes ALL eigenvalues of hermitian `hamiltonian` operator using DENSE hermitian methods.
 
 		This function method solves for all eigenvalues. It calls 
-		`numpy.linalg.eigvalsh <https://numpy.org/doc/stable/reference/generated/numpy.linalg.eigvalsh.html>`_,
+		`numpy.linalg.eigvalsh <https://numpy.org/doc/stable/reference/generated/numpy.linalg.eigvalsh.html>`_, 
 		and uses wrapped LAPACK functions which are contained in the module py_lapack.
 
 		Notes
