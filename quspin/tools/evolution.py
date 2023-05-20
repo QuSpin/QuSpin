@@ -242,9 +242,9 @@ def evolve(v0,t0,times,f,solver_name="dop853",real=False,stack_state=False,verbo
 	solver_name : str, optional
 		Scipy solver integrator name. Default is `dop853`. 
 
-		See `scipy integrator (solver) <https://docs.scipy.org/doc/scipy-0.14.0/reference/generated/scipy.integrate.ode.html>`_ for other options.
+		See `scipy integrator (solver) <https://docs.scipy.org/doc/scipy/reference/generated/scipy.integrate.ode.html>`_ for other options.
 	solver_args : dict, optional
-		Dictionary with additional `scipy integrator (solver) <https://docs.scipy.org/doc/scipy-0.14.0/reference/generated/scipy.integrate.ode.html>`_ arguments.	
+		Dictionary with additional `scipy integrator (solver) <https://docs.scipy.org/doc/scipy/reference/generated/scipy.integrate.ode.html>`_ arguments.
 	real : bool, optional 
 		Flag to determine if `f` is real or complex-valued. Default is `False`.
 	imag_time : bool, optional
