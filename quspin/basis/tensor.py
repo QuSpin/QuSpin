@@ -517,11 +517,11 @@ class tensor_basis(basis):
 			Renyi :math:`\\alpha` parameter for the entanglement entropy. Default is :math:`\\alpha=1`.
 		sparse_diag : bool, optional
 			When `sparse=True`, this flag enforces the use of
-			`scipy.sparse.linalg.eigsh() <https://docs.scipy.org/doc/scipy/reference/generated/generated/scipy.sparse.linalg.eigsh.html>`_
+			`scipy.sparse.linalg.eigsh() <https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.linalg.eigsh.html>`_
 			to calculate the eigenvaues of the reduced DM.
 		maxiter : int, optional
 			Specifies the number of iterations for Lanczos diagonalisation. Look up documentation for 
-			`scipy.sparse.linalg.eigsh() <https://docs.scipy.org/doc/scipy/reference/generated/generated/scipy.sparse.linalg.eigsh.html>`_.
+			`scipy.sparse.linalg.eigsh() <https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.linalg.eigsh.html>`_.
 
 		Returns
 		--------

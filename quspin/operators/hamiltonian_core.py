@@ -1157,7 +1157,7 @@ class hamiltonian(object):
 		"""Computes SOME eigenvalues and eigenvectors of hermitian `hamiltonian` operator using SPARSE hermitian methods.
 
 		This function method solves for eigenvalues and eigenvectors, but can only solve for a few of them accurately.
-		It calls `scipy.sparse.linalg.eigsh <https://docs.scipy.org/doc/scipy/reference/generated/generated/scipy.sparse.linalg.eigsh.html>`_, which is a wrapper for ARPACK.
+		It calls `scipy.sparse.linalg.eigsh <https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.linalg.eigsh.html>`_, which is a wrapper for ARPACK.
 
 		Notes
 		-----
@@ -1169,7 +1169,7 @@ class hamiltonian(object):
 		time : float
 			Time to evalute the `hamiltonian` operator at (if time dependent). Default is `time = 0.0`.
 		eigsh_args : 
-			For all additional arguments see documentation of `scipy.sparse.linalg.eigsh <https://docs.scipy.org/doc/scipy/reference/generated/generated/scipy.sparse.linalg.eigsh.html>`_.
+			For all additional arguments see documentation of `scipy.sparse.linalg.eigsh <https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.linalg.eigsh.html>`_.
 			
 		Returns
 		--------

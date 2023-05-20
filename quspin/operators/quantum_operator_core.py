@@ -763,7 +763,7 @@ class quantum_operator(object):
 		"""Computes SOME eigenvalues and eigenvectors of hermitian `quantum_operator` quantum_operator using SPARSE hermitian methods.
 
 		This function method solves for eigenvalues and eigenvectors, but can only solve for a few of them accurately.
-		It calls `scipy.sparse.linalg.eigsh <https://docs.scipy.org/doc/scipy/reference/generated/generated/scipy.sparse.linalg.eigsh.html>`_, which is a wrapper for ARPACK.
+		It calls `scipy.sparse.linalg.eigsh <https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.linalg.eigsh.html>`_, which is a wrapper for ARPACK.
 
 		Notes
 		-----
@@ -776,7 +776,7 @@ class quantum_operator(object):
 			Dictionary with same `keys` as `input_dict` and coupling strengths as `values`. Any missing `keys`
 			are assumed to be set to unity.
 		eigsh_args : 
-			For all additional arguments see documentation of `scipy.sparse.linalg.eigsh <https://docs.scipy.org/doc/scipy/reference/generated/generated/scipy.sparse.linalg.eigsh.html>`_.
+			For all additional arguments see documentation of `scipy.sparse.linalg.eigsh <https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.linalg.eigsh.html>`_.
 			
 		Returns
 		--------
