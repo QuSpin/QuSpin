@@ -107,7 +107,7 @@ def _noncommuting_bits(N,noncommuting_bits):
 		bits = _np.asarray(bits)
 		swap_phase = _np.asarray(swap_phase)
 
-		if not _np.issubdtype(bits.dtype,_np.int):
+		if not _np.issubdtype(bits.dtype,int):
 			raise TypeError("site list most contain only integers.")
 
 		if _np.array(swap_phase).ndim != 0:
@@ -490,8 +490,8 @@ class user_basis(basis_general):
 		self._blocks,map_funcs,pers,qs,map_args = _process_user_blocks(use_32bit,blocks,block_order)
 
 		self.map_funcs = map_funcs
-		self._pers = _np.array(pers,dtype=_np.int)
-		self._qs = _np.array(qs,dtype=_np.int)
+		self._pers = _np.array(pers,dtype=int)
+		self._qs = _np.array(qs,dtype=int)
 		self.map_args = map_args
 		
 
