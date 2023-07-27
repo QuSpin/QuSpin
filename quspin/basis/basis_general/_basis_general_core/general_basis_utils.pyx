@@ -56,9 +56,9 @@ def basis_int_to_python_int(basis_int):
         raise ValueError("input value must be scalar")
 
     if basis_int_wrapper.dtype in [_np.int32,_np.int64]:
-        basis_int_wrapper = basis_int_wrapper.astype(_np.object)
+        basis_int_wrapper = basis_int_wrapper.astype(object)
 
-    if basis_int_wrapper.dtype == _np.object:
+    if basis_int_wrapper.dtype == object:
         return basis_int
     elif basis_int_wrapper.dtype == uint32:
         return basis_to_python[uint32_t](<uint32_t*>ptr)
@@ -125,12 +125,12 @@ def python_int_to_basis_int(python_int,dtype=None):
         elif nbits <= 16384:
             dtype = uint16384
         else:
-            dtype = _np.object
+            dtype = object
 
     cdef _np.ndarray a_wrapper = _np.empty((),dtype=dtype)
     cdef void * ptr = _np.PyArray_GETPTR1(a_wrapper,0)
 
-    if dtype == _np.object:
+    if dtype == object:
         return python_int
     elif dtype == uint32:
         if nbits > 32:

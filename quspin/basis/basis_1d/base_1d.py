@@ -151,7 +151,7 @@ class basis_1d(lattice_basis):
 			basis=_np.empty((Ns,),dtype=self._basis_type)
 			self._op = ops_module.t_p_z_op
 
-			if self._basis_type == _np.object:
+			if self._basis_type == object:
 				# if object is basis type then most likely this is for single particle stuff in which case the 
 				# normalizations need to be large ~ 1000 or more which won't fit in int8/int16.
 				N=_np.empty(basis.shape,dtype=_np.int32) 
@@ -177,7 +177,7 @@ class basis_1d(lattice_basis):
 			basis=_np.empty((Ns,),dtype=self._basis_type)
 			self._op = ops_module.t_zA_zB_op
 
-			if self._basis_type == _np.object:
+			if self._basis_type == object:
 				N=_np.empty(basis.shape,dtype=_np.int32) 
 				M=_np.empty(basis.shape,dtype=_np.uint32)
 			else:
@@ -199,7 +199,7 @@ class basis_1d(lattice_basis):
 			basis=_np.empty((Ns,),dtype=self._basis_type)
 			self._op = ops_module.t_pz_op
 
-			if self._basis_type == _np.object:
+			if self._basis_type == object:
 				N=_np.empty(basis.shape,dtype=_np.int32) 
 				M=_np.empty(basis.shape,dtype=_np.uint32)
 			else:			
@@ -221,7 +221,7 @@ class basis_1d(lattice_basis):
 			basis=_np.empty((Ns,),dtype=self._basis_type)
 			self._op = ops_module.t_p_op
 
-			if self._basis_type == _np.object:
+			if self._basis_type == object:
 				N=_np.empty(basis.shape,dtype=_np.int32) 
 				M=_np.empty(basis.shape,dtype=_np.uint32)
 			else:			
@@ -241,7 +241,7 @@ class basis_1d(lattice_basis):
 			basis=_np.empty((Ns,),dtype=self._basis_type)
 			self._op = ops_module.t_z_op
 
-			if self._basis_type == _np.object:
+			if self._basis_type == object:
 				N=_np.empty(basis.shape,dtype=_np.int32) 
 				M=_np.empty(basis.shape,dtype=_np.uint32)
 			else:
@@ -261,7 +261,7 @@ class basis_1d(lattice_basis):
 			basis=_np.empty((Ns,),dtype=self._basis_type)
 			self._op = ops_module.t_zA_op
 
-			if self._basis_type == _np.object:
+			if self._basis_type == object:
 				N=_np.empty(basis.shape,dtype=_np.int32) 
 				M=_np.empty(basis.shape,dtype=_np.uint32)
 			else:			
@@ -281,7 +281,7 @@ class basis_1d(lattice_basis):
 			basis=_np.empty((Ns,),dtype=self._basis_type)
 			self._op = ops_module.t_zB_op
 
-			if self._basis_type == _np.object:
+			if self._basis_type == object:
 				N=_np.empty(basis.shape,dtype=_np.int32) 
 				M=_np.empty(basis.shape,dtype=_np.uint32)
 			else:			
@@ -400,7 +400,7 @@ class basis_1d(lattice_basis):
 			basis=_np.empty((Ns,),dtype=self._basis_type)
 			self._op = ops_module.t_op
 			
-			if self._basis_type == _np.object:
+			if self._basis_type == object:
 				N=_np.empty(basis.shape,dtype=_np.int32) 
 			else:			
 				N=_np.empty(basis.shape,dtype=_np.int8)
