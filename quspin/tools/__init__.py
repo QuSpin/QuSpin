@@ -82,6 +82,8 @@ misc
    project_op
    KL_div
    csr_matvec
+   ints_to_array
+   array_to_ints
 
 """
 from . import evolution

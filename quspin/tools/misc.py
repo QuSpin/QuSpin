@@ -11,6 +11,8 @@ from .expm_multiply_parallel_core import csr_matvec
 
 from .matvec.matvec_core import matvec, get_matvec_function
 
+from ..basis import get_basis_type
+
 import warnings
 
 __all__ =  ["project_op", 
@@ -18,6 +20,8 @@ __all__ =  ["project_op",
 			"mean_level_spacing",
 			"matvec",
 			"get_matvec_function",
+			"ints_to_array",
+			"array_to_ints",
 			]
 
 def project_op(Obs,proj,dtype=_np.complex128):
@@ -223,5 +227,97 @@ def mean_level_spacing(E,verbose=True):
 		return _np.mean(_np.divide( aux.min(1), aux.max(1) )[0:-1] )
 
 	
+def ints_to_array(basis_ints, N=None):
+    """Converts QuSpin basis type integers to a state array with binary elements.
+
+	This function takes an array of batched QuSpin basis type integers and converts it
+    to a batched state array with 0/1 elements representing spin-down/up or 0/1 occupation.
+    Conversion to higher spins or larger occupation numbers is not yet implemented.
+
+	Examples
+	--------
+
+	The following example shows ...
+	
+	.. literalinclude:: ../../doc_examples/array_ints_conversion-example.py
+		:linenos:
+		:language: python
+		:lines: 7-
+
+	Parameters
+	-----------
+	basis_ints: np.ndarray(int)
+        batched integers to be converted
+		
+	N: int, optional
+		number of sites (doubled for spinful fermions), default to be the biggest size
+        represented by `basis_ints.dtype`.
+
+	Returns
+	-------- 
+	state_array: np.ndarray(np.uint8)
+        batched state array with binary entries
+	"""
+
+    basis_ints = _np.asarray(basis_ints, order="C").reshape(-1, 1)
+    
+    if not basis_ints.dtype.isbuiltin:
+        basis_ints = basis_ints.view(_np.uint64)
+        valid = basis_ints[:, -2:-1]
+        basis_ints = _np.ascontiguousarray(basis_ints[:, :-2])
+        idx = _np.arange(basis_ints.shape[1], dtype=_np.uint8)
+        idx = _np.broadcast_to(idx, basis_ints.shape)
+        basis_ints[idx >= valid] = 0
+    basis_ints = basis_ints.view(_np.uint8)
+    state_array = _np.unpackbits(basis_ints, axis=1, count=N, bitorder="little")
+    return state_array[:, ::-1]
 
 
+def array_to_ints(state_array, dtype=None):
+    """Converts a state array with binary elements to QuSpin basis type integers.
+
+	This function takes a batched state array with 0/1 elements and converts it
+    to an array of batched QuSpin basis type integers.
+    Conversion of higher spins or larger occupation numbers is not yet implemented.
+
+	Examples
+	--------
+
+	The following example shows ...
+	
+	.. literalinclude:: ../../doc_examples/array_ints_conversion-example.py
+		:linenos:
+		:language: python
+		:lines: 7-
+
+	Parameters
+	-----------
+	state_array: np.ndarray(np.uint8)
+        batched state array to be converted
+		
+	dtype: dtype, optional
+		data type used for the basis integers, default to be the type expressing the 
+        state with smallest size
+
+	Returns
+	-------- 
+	basis_ints: np.ndarray(int)
+        batched basis integers
+	"""
+
+    state_array = _np.atleast_2d(state_array)
+    nbits = state_array.shape[1]
+    if dtype is None:
+        dtype = get_basis_type(nbits, None, 2)
+    dtype = _np.dtype(dtype)
+    nfull = dtype.itemsize * 8
+    
+    pads = _np.zeros((state_array.shape[0], nfull - nbits), state_array.dtype)
+    state_array = _np.concatenate([pads, state_array], axis=1)
+    state_array = _np.ascontiguousarray(state_array[:, ::-1], dtype=_np.uint8)
+    basis_ints = _np.packbits(state_array, axis=1, bitorder="little")
+    if not dtype.isbuiltin:
+        valid = _np.array([(nbits - 1) // 64 + 1], _np.uint64).view(_np.uint8)
+        basis_ints[:, -16:-8] = valid
+    basis_ints = basis_ints.view(dtype)
+    return basis_ints
