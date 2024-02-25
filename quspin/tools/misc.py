@@ -239,7 +239,7 @@ def ints_to_array(basis_ints, N=None):
 
 	The following example shows ...
 	
-	.. literalinclude:: ../../doc_examples/project_op-example.py
+	.. literalinclude:: ../../doc_examples/array_ints_conversion-example.py
 		:linenos:
 		:language: python
 		:lines: 7-
@@ -285,7 +285,7 @@ def array_to_ints(state_array, dtype=None):
 
 	The following example shows ...
 	
-	.. literalinclude:: ../../doc_examples/project_op-example.py
+	.. literalinclude:: ../../doc_examples/array_ints_conversion-example.py
 		:linenos:
 		:language: python
 		:lines: 7-
