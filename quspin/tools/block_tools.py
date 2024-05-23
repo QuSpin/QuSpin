@@ -93,7 +93,7 @@ def block_diag_hamiltonian(blocks,static,dynamic,basis_con,basis_args,dtype,basi
 		the symmetry sectors.
 
 	"""
-	from ..operators import hamiltonian
+	from quspin.operators import hamiltonian
 
 	H_list = []
 	P_list = []
@@ -457,7 +457,7 @@ class block_ops(object):
 			:lines: 57-58
 
 		"""
-		from ..operators import hamiltonian
+		from quspin.operators import hamiltonian
 
 		for key,b in _iteritems(self._basis_dict):
 			if self._P_dict.get(key) is None:
@@ -484,7 +484,7 @@ class block_ops(object):
 			return self._P_dict[key]
 
 	def _get_H(self,key):
-		from ..operators import hamiltonian
+		from quspin.operators import hamiltonian
 
 		if self._H_dict.get(key) is None:
 			if not self._checked:
@@ -678,7 +678,7 @@ class block_ops(object):
 			Terminates when initial state has no projection onto the specified symmetry blocks.
 
 		"""
-		from ..operators import hamiltonian
+		from quspin.operators import hamiltonian
 
 		if iterate:
 			if start is None and  stop is None:

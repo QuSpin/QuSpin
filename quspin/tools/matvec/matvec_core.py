@@ -1,7 +1,7 @@
 import os
 
-from ._oputils import _matvec
-from ._oputils import _get_matvec_function
+from quspin.tools.matvec._oputils import _matvec
+from quspin.tools.matvec._oputils import _get_matvec_function
 
 
 def get_matvec_function(array):

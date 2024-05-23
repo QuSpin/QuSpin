@@ -204,7 +204,7 @@ class Floquet(object):
 			Sets the number of processors which are used when looping over the basis states to compute the Floquet unitary. Default is `False`. 
 
 		"""
-		from ..operators import ishamiltonian
+		from quspin.operators import ishamiltonian
 		
 		variables = []
 		if HF: variables.append('HF')

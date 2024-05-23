@@ -1,5 +1,5 @@
 import numpy as _np
-from ._lanczos_utils import lin_comb_Q_T
+from quspin.tools.lanczos._lanczos_utils import lin_comb_Q_T
 
 __all__ = ["expm_lanczos"]
 

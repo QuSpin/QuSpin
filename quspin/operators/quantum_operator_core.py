@@ -612,7 +612,7 @@ class quantum_operator(object):
 			 
 		"""
 
-		from .exp_op_core import isexp_op
+		from quspin.operators.exp_op_core import isexp_op
 
 		if hamiltonian_core.ishamiltonian(V):
 			raise TypeError("Can't take expectation value of hamiltonian")
@@ -664,7 +664,7 @@ class quantum_operator(object):
 		corresponds to :math:`H_{expt} = \\langle V|H(t=0)|V\\rangle`. 
 			 
 		"""
-		from .exp_op_core import isexp_op
+		from quspin.operators.exp_op_core import isexp_op
 
 		if hamiltonian_core.ishamiltonian(V):
 			raise TypeError("Can't take expectation value of hamiltonian")

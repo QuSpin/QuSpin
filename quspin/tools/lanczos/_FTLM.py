@@ -1,7 +1,7 @@
 from scipy.linalg import eigh_tridiagonal
 from six import iteritems
 import numpy as _np
-from ._lanczos_utils import _get_first_lv
+from quspin.tools.lanczos._lanczos_utils import _get_first_lv
 
 
 __all__ = ["FTLM_static_iteration"]

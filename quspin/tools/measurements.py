@@ -11,10 +11,10 @@ import numpy as _np
 from inspect import isgenerator as _isgenerator 
 
 # needed for isinstance only
-from ..basis import isbasis as _isbasis
-from ..basis.photon import photon_Hspace_dim
-from .evolution import ED_state_vs_time
-from .misc import project_op,KL_div,mean_level_spacing
+from quspin.basis import isbasis as _isbasis
+from quspin.basis.photon import photon_Hspace_dim
+from quspin.tools.evolution import ED_state_vs_time
+from quspin.tools.misc import project_op,KL_div,mean_level_spacing
 
 import warnings
 
@@ -543,7 +543,7 @@ def obs_vs_time(psi_t,times,Obs_dict,return_state=False,Sent_args={},enforce_pur
 				DM was also requested (toggled through `Srdm_args`.)
 
 	"""
-	from ..operators import ishamiltonian,hamiltonian
+	from quspin.operators import ishamiltonian,hamiltonian
 	
 	variables = ['Expt_time']
 	

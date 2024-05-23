@@ -345,8 +345,8 @@ class quantum_LinearOperator(LinearOperator):
 		corresponds to :math:`\\left(\\Delta H\\right)^2 = \\langle V|H^2(t=\\texttt{time})|V\\rangle - \\langle V|H(t=\\texttt{time})|V\\rangle^2`. 
 			 
 		"""
-		from .exp_op_core import isexp_op
-		from .hamiltonian_core import ishamiltonian
+		from quspin.operators.exp_op_core import isexp_op
+		from quspin.operators.hamiltonian_core import ishamiltonian
 
 		if self.Ns <= 0:
 			return _np.asarray([])
@@ -397,8 +397,8 @@ class quantum_LinearOperator(LinearOperator):
 		corresponds to :math:`H_{expt} = \\langle V|H(t=0)|V\\rangle`. 
 			 
 		"""
-		from .exp_op_core import isexp_op
-		from .hamiltonian_core import ishamiltonian
+		from quspin.operators.exp_op_core import isexp_op
+		from quspin.operators.hamiltonian_core import ishamiltonian
 
 		if self.Ns <= 0:
 			return _np.asarray([])

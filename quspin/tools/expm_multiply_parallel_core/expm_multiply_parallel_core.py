@@ -1,5 +1,5 @@
 from scipy.sparse.linalg import LinearOperator,onenormest,aslinearoperator
-from .expm_multiply_parallel_wrapper import (_wrapper_expm_multiply,
+from quspin.tools.expm_multiply_parallel_core.expm_multiply_parallel_wrapper import (_wrapper_expm_multiply,
 	_wrapper_expm_multiply_batch,_wrapper_csr_trace,_wrapper_csr_1_norm)
 from scipy.sparse.construct import eye
 from scipy.sparse.linalg._expm_multiply import _fragment_3_1,_exact_1_norm
