@@ -1,15 +1,15 @@
 from __future__ import print_function, division, absolute_import
 
-from .hamiltonian_core import ishamiltonian
-from .hamiltonian_core import _check_static
-from .hamiltonian_core import supported_dtypes
-from .hamiltonian_core import hamiltonian
+from quspin.operators.hamiltonian_core import ishamiltonian
+from quspin.operators.hamiltonian_core import _check_static
+from quspin.operators.hamiltonian_core import supported_dtypes
+from quspin.operators.hamiltonian_core import hamiltonian
 
-from ._make_hamiltonian import _consolidate_static
+from quspin.operators._make_hamiltonian import _consolidate_static
 
-from ..basis import spin_basis_1d as _default_basis
-from ..basis.base import _is_diagonal,_update_diag
-from ..basis import isbasis as _isbasis
+from quspin.basis import spin_basis_1d as _default_basis
+from quspin.basis.base import _is_diagonal,_update_diag
+from quspin.basis import isbasis as _isbasis
 
 
 # need linear algebra packages

@@ -4,7 +4,7 @@ from __future__ import print_function, division
 import scipy.sparse as _sp
 import warnings
 import numpy as _np
-from ._functions import function
+from quspin.operators._functions import function
 from six import iteritems
 
 

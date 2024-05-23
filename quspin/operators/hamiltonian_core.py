@@ -1,17 +1,17 @@
 from __future__ import print_function, division, absolute_import
 
-from ..basis import spin_basis_1d as _default_basis
-from ..basis import isbasis as _isbasis
+from quspin.basis import spin_basis_1d as _default_basis
+from quspin.basis import isbasis as _isbasis
 
-from ..tools.evolution import evolve
+from quspin.tools.evolution import evolve
 
-from ..tools.matvec import _matvec
-from ..tools.matvec import _get_matvec_function
+from quspin.tools.matvec import _matvec
+from quspin.tools.matvec import _get_matvec_function
 
-# from ._oputils import matvec as _matvec
-# from ._oputils import _get_matvec_function
+# from quspin.operators_oputils import matvec as _matvec
+# from quspin.operators._oputils import _get_matvec_function
 
-# from .exp_op_core import isexp_op,exp_op
+# from quspin.operators.exp_op_core import isexp_op,exp_op
 
 from ._make_hamiltonian import make_static
 from ._make_hamiltonian import make_dynamic
