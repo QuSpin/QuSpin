@@ -1,7 +1,7 @@
-from ._basis_1d_core import hcp_basis,hcp_ops,spf_basis,spf_ops
-from . import _check_1d_symm_spf as _check
-from .base_1d import basis_1d
-from ..base import MAXPRINT
+from quspin.basis.basis_1d._basis_1d_core import hcp_basis,hcp_ops,spf_basis,spf_ops
+from quspin.basis.basis_1d import _check_1d_symm_spf as _check
+from quspin.basis.basis_1d.base_1d import basis_1d
+from quspin.basis.base import MAXPRINT
 import numpy as _np
 
 

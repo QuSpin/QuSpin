@@ -1,5 +1,5 @@
-from ..lattice import lattice_basis
-from . import _check_1d_symm as _check
+from quspin.basis.lattice import lattice_basis
+from quspin.basis.basis_1d import _check_1d_symm as _check
 import numpy as _np
 import scipy.sparse as _sp
 from numpy import array,cos,sin,exp,pi

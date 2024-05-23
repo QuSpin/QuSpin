@@ -1,5 +1,5 @@
-from .base_hcb import hcb_basis_general
-from .base_higher_spin import higher_spin_basis_general
+from quspin.basis.basis_general.base_hcb import hcb_basis_general
+from quspin.basis.basis_general.base_higher_spin import higher_spin_basis_general
 import numpy as _np
 
 try:

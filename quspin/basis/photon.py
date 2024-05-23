@@ -1,5 +1,5 @@
-from .base import basis,MAXPRINT
-from .tensor import tensor_basis
+from quspin.basis.base import basis,MAXPRINT
+from quspin.basis.tensor import tensor_basis
 
 import numpy as _np
 from scipy import sparse as _sp

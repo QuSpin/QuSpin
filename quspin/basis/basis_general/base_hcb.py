@@ -1,6 +1,6 @@
-from ._basis_general_core import hcb_basis_core_wrap
-from ._basis_general_core import get_basis_type,basis_zeros
-from .base_general import basis_general
+from quspin.basis.basis_general._basis_general_core import hcb_basis_core_wrap
+from quspin.basis.basis_general._basis_general_core import get_basis_type,basis_zeros
+from quspin.basis.basis_general.base_general import basis_general
 import numpy as _np
 from scipy.special import comb
 import cProfile

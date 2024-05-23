@@ -1,6 +1,6 @@
-from ._basis_general_core import higher_spin_basis_core_wrap,get_basis_type,basis_zeros
-from .base_general import basis_general
-from .boson import H_dim
+from quspin.basis.basis_general._basis_general_core import higher_spin_basis_core_wrap,get_basis_type,basis_zeros
+from quspin.basis.basis_general.base_general import basis_general
+from quspin.basis.basis_general.boson import H_dim
 import numpy as _np
 from scipy.special import comb
 

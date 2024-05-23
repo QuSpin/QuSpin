@@ -1,9 +1,9 @@
-from ._basis_general_core import spinful_fermion_basis_core_wrap
-from ._basis_general_core import spinless_fermion_basis_core_wrap
-from ._basis_general_core import get_basis_type,basis_zeros
-from ._basis_general_core import basis_int_to_python_int #,_get_basis_index
-from .base_general import basis_general,_check_symm_map
-from ..base import MAXPRINT
+from quspin.basis.basis_general._basis_general_core import spinful_fermion_basis_core_wrap
+from quspin.basis.basis_general._basis_general_core import spinless_fermion_basis_core_wrap
+from quspin.basis.basis_general._basis_general_core import get_basis_type,basis_zeros
+from quspin.basis.basis_general._basis_general_core import basis_int_to_python_int #,_get_basis_index
+from quspin.basis.basis_general.base_general import basis_general,_check_symm_map
+from quspin.basis.base import MAXPRINT
 import numpy as _np
 from scipy.special import comb
 

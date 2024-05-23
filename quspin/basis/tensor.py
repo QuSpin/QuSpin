@@ -1,5 +1,5 @@
 from __future__ import print_function
-from .base import basis,MAXPRINT
+from quspin.basis.base import basis,MAXPRINT
 
 import numpy as _np
 from scipy import sparse as _sp
@@ -7,8 +7,8 @@ from scipy.sparse import linalg as _sla
 from scipy import linalg as _la
 from scipy.sparse.linalg import eigsh
 from numpy.linalg import eigvalsh,svd
-from ._reshape_subsys import _tensor_reshape_pure,_tensor_partial_trace_pure
-from ._reshape_subsys import _tensor_partial_trace_mixed,_tensor_partial_trace_sparse_pure
+from quspin.basis._reshape_subsys import _tensor_reshape_pure,_tensor_partial_trace_pure
+from quspin.basis._reshape_subsys import _tensor_partial_trace_mixed,_tensor_partial_trace_sparse_pure
 import warnings
 
 _dtypes={"f":_np.float32,"d":_np.float64,"F":_np.complex64,"D":_np.complex128}
