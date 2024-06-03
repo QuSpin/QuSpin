@@ -423,7 +423,7 @@ class exp_op(object):
 		if self.O.is_dense or dense:
 			return _la.expm(self._a * self.O.toarray(**call_kwargs))
 		else:
-			return _la.expm(self._a * self.O.tocsc(**call_kwargs))
+			return _sp.linalg.expm(self._a * self.O.tocsc(**call_kwargs))
 
 	def dot(self, other,shift=None,**call_kwargs):
 		"""Left-multiply operator by matrix exponential.
