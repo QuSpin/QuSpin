@@ -338,7 +338,7 @@ class spinful_fermion_basis_general(spinless_fermion_basis_general):
 			Density of fermions in chain (fermions per site).
 		Ns_block_est: int, optional
 			Overwrites the internal estimate of the size of the reduced Hilbert space for the given symmetries. This can be used to help conserve memory if the exact size of the H-space is known ahead of time. 
-		simple_sym: bool, optional
+		simple_symm: bool, optional
 			Flags whidh toggles the setting for the types of mappings and operator strings the basis will use. See this tutorial for more details. 
 		make_basis: bool, optional
 			Boolean to control whether to make the basis. Allows the use to use some functionality of the basis constructor without constructing the entire basis.
@@ -381,7 +381,7 @@ class spinful_fermion_basis_general(spinless_fermion_basis_general):
 				raise ValueError("Simple symmetries must have mapping of length N.")
 		else:
 			if any(len(item[0]) != 2*N for item in blocks.values() if item is not None):
-				raise ValueError("Simple symmetries must have mapping of length N.")
+				raise ValueError("Advanced symmetries must have mapping of length 2*N.")
 
 
 		new_blocks = {key:process_spinful_map(N,*item) for key,item in blocks.items() if item is not None}
