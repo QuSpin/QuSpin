@@ -1,15 +1,18 @@
 from __future__ import print_function, division
+
 #
-import sys,os
-quspin_path = os.path.join(os.getcwd(),"../../")
-sys.path.insert(0,quspin_path)
+import sys, os
+
+quspin_path = os.path.join(os.getcwd(), "../../")
+sys.path.insert(0, quspin_path)
 #
-from quspin.tools.Floquet import Floquet_t_vec # Floquet time vector
-import numpy as np # generic math functions
+from quspin.tools.Floquet import Floquet_t_vec  # Floquet time vector
+import numpy as np  # generic math functions
+
 #
-Omega=4.5 # drive frequency
+Omega = 4.5  # drive frequency
 # define time vector with three stages of evolution, labelled by "up", "const" and "down"
-t=Floquet_t_vec(Omega,10,len_T=10,N_up=3,N_down=2)
+t = Floquet_t_vec(Omega, 10, len_T=10, N_up=3, N_down=2)
 print(t)
 ##### attibutes referring to total time vector
 # time points values
