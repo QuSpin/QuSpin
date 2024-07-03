@@ -1,5 +1,3 @@
-from __future__ import print_function, division
-
 # the final version the sparse matrices are stored as, good format for dot produces with vectors.
 import scipy.sparse as _sp
 import warnings

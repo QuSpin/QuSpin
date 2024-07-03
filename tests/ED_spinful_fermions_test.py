@@ -1,10 +1,3 @@
-from __future__ import print_function, division
-
-import sys, os
-
-quspin_path = os.path.join(os.getcwd(), "../")
-sys.path.insert(0, quspin_path)
-
 from quspin.operators import hamiltonian
 from quspin.basis import spinful_fermion_basis_1d  # Hilbert spaces
 import numpy as np  # general math functions

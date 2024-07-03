@@ -1,11 +1,3 @@
-from __future__ import print_function, division
-
-import sys, os
-
-quspin_path = os.path.join(os.getcwd(), "../")
-sys.path.insert(0, quspin_path)
-
-
 from quspin.operators import hamiltonian  # Hamiltonians and operators
 from quspin.basis import boson_basis_1d, spin_basis_1d  # Hilbert space spin basis
 import numpy as np  # generic math functions

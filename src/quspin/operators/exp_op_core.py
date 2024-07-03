@@ -1,5 +1,3 @@
-from __future__ import print_function, division, absolute_import
-
 from quspin.operators import hamiltonian_core, quantum_operator_core
 
 # need linear algebra packages

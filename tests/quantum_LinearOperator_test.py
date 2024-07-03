@@ -1,10 +1,3 @@
-from __future__ import print_function, division
-
-import sys, os
-
-quspin_path = os.path.join(os.getcwd(), "../")
-sys.path.insert(0, quspin_path)
-
 from scipy.sparse.linalg import eigsh
 from quspin.operators import hamiltonian  # Hamiltonians and operators
 from quspin.operators import quantum_LinearOperator

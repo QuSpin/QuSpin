@@ -1,11 +1,3 @@
-from __future__ import print_function, division
-
-import sys, os
-
-quspin_path = os.path.join(os.getcwd(), "../")
-sys.path.insert(0, quspin_path)
-
-
 from quspin.basis import spin_basis_1d
 from quspin.operators import hamiltonian
 from scipy.sparse.linalg import expm_multiply

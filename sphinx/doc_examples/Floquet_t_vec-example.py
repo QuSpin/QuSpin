@@ -1,10 +1,7 @@
-from __future__ import print_function, division
-
 #
 import sys, os
 
-quspin_path = os.path.join(os.getcwd(), "../../")
-sys.path.insert(0, quspin_path)
+
 #
 from quspin.tools.Floquet import Floquet_t_vec  # Floquet time vector
 import numpy as np  # generic math functions

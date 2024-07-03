@@ -1,5 +1,3 @@
-from __future__ import print_function, division
-
 #
 import sys, os
 
@@ -9,8 +7,7 @@ os.environ["KMP_DUPLICATE_LIB_OK"] = (
 os.environ["OMP_NUM_THREADS"] = "1"  # set number of OpenMP threads to run in parallel
 os.environ["MKL_NUM_THREADS"] = "1"  # set number of MKL threads to run in parallel
 #
-quspin_path = os.path.join(os.getcwd(), "../../")
-sys.path.insert(0, quspin_path)
+
 #
 # line 12 and line 13 below are for development purposes and can be removed
 qspin_path = os.path.join(os.getcwd(), "../../")

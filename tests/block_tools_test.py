@@ -1,4 +1,3 @@
-from __future__ import print_function, division
 import sys, os
 
 quspin_path = os.path.join(os.getcwd(), "../")

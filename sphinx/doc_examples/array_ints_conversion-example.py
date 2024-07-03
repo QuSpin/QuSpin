@@ -1,10 +1,7 @@
-from __future__ import print_function, division
-
 #
 import sys, os
 
-quspin_path = os.path.join(os.getcwd(), "../../")
-sys.path.insert(0, quspin_path)
+
 #
 import numpy as np
 from quspin.basis import spin_basis_general

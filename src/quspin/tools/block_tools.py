@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-from __future__ import print_function, division
 
 # QuSpin modules
 # numpy modules

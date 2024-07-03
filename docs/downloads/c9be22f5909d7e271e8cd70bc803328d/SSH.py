@@ -1,9 +1,3 @@
-from __future__ import print_function, division
-import sys, os
-
-# line 4 and line 5 below are for development purposes and can be removed
-qspin_path = os.path.join(os.getcwd(), "../../")
-sys.path.insert(0, qspin_path)
 #
 from quspin.operators import hamiltonian  # Hamiltonians and operators
 from quspin.basis import spinless_fermion_basis_1d  # Hilbert space fermion basis

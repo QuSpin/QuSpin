@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-from __future__ import print_function, division
 
 # need linear algebra packages
 import scipy.sparse as _sp

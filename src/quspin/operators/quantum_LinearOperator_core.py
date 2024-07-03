@@ -1,5 +1,3 @@
-from __future__ import print_function, division, absolute_import
-
 from quspin.operators.hamiltonian_core import ishamiltonian
 from quspin.operators.hamiltonian_core import _check_static
 from quspin.operators.hamiltonian_core import supported_dtypes
@@ -20,7 +18,6 @@ import numpy as _np
 from scipy.sparse.linalg import LinearOperator
 
 from six import iteritems
-from six.moves import zip
 
 __all__ = ["quantum_LinearOperator", "isquantum_LinearOperator"]
 
@@ -328,7 +325,7 @@ class quantum_LinearOperator(LinearOperator):
                 raise ValueError(
                     "out must be C-congituous writable array \
 					with dtype {} and shape {}.".format(
-                        result_dtype, shape
+                        result_dtype, out.shape
                     )
                 )
 
@@ -349,7 +346,7 @@ class quantum_LinearOperator(LinearOperator):
         else:
             return a * (self * other)
 
-    def quant_fluct(self, V, enforce_pure=False):
+    def quant_fluct(self, V, enforce_pure=False, check=True, time = 0):
         """Calculates the quantum fluctuations (variance) of `quantum_LinearOperator` object in state `V`.
 
         .. math::
@@ -502,7 +499,7 @@ class quantum_LinearOperator(LinearOperator):
         if shape[0] != self._shape[1]:
             raise ValueError(
                 "matrix dimension mismatch with shapes: {0} and {1}.".format(
-                    V.shape, self._shape
+                    Vl.shape, self._shape
                 )
             )
 

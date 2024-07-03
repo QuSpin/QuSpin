@@ -1,5 +1,3 @@
-from __future__ import print_function, division, absolute_import
-
 from quspin.basis import spin_basis_1d as _default_basis
 from quspin.basis import isbasis as _isbasis
 

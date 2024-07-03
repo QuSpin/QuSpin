@@ -1,4 +1,3 @@
-from __future__ import print_function, division
 from time import time  # timing package
 
 import sys, os
