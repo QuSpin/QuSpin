@@ -1,0 +1,27 @@
+[project]
+name = "quspin-python"
+version = "1.0.0"
+description = "A Python package for exact diagonalization calculations of quantum manybody systems."
+authors = [
+    {name = "Phillip Weinberg, Marin Bukov", email = "weinbe58@gmail.com"},
+]
+dependencies = [
+    "quspin-extensions>=0.1.1",
+    "parallel-sparse-tools>=0.1.3",
+    "numpy>=2.0.0",
+    "dill>=0.3.8",
+    "scipy>=1.13.1",
+    "matplotlib>=3.9.0",
+    "numexpr>=2.10.1",
+]
+requires-python = "<3.13,>=3.9"
+readme = "README.md"
+license = {text = "BDS-3"}
+
+[build-system]
+requires = ["pdm-backend"]
+build-backend = "pdm.backend"
+
+
+[tool.pdm]
+distribution = true
