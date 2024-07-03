@@ -1,7 +1,5 @@
 import sys, os
 
-qspin_path = os.path.join(os.getcwd(), "../")
-sys.path.insert(0, qspin_path)
 
 from quspin.basis import tensor_basis, spin_basis_1d
 from quspin.operators import hamiltonian

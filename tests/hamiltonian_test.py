@@ -1,8 +1,7 @@
 from __future__ import print_function
 import sys, os
 
-qspin_path = os.path.join(os.getcwd(), "../")
-sys.path.insert(0, qspin_path)
+
 import numpy as np
 import scipy.sparse as sp
 from scipy.integrate import complex_ode

@@ -691,15 +691,15 @@ def check_t_pz(L, dtype, Nf=None):
 
             if norm(Ek - Ek1) > eps(dtype):
                 raise Exception(
-                    "test failed t pz+ symmetry at L={0:3d} kblock={1:3d} with dtype {2} and Nup={3} {4}".format(
-                        L, kblock, np.dtype(dtype), Nup, norm(Ek - Ek1)
+                    "test failed t pz+ symmetry at L={0:3d} kblock={1:3d} with dtype {2} and Nf={3} {4}".format(
+                        L, kblock, np.dtype(dtype), Nf, norm(Ek - Ek1)
                     )
                 )
 
             if norm(Ek - Ek2) > eps(dtype):
                 raise Exception(
-                    "test failed t pz- symmetry at L={0:3d} kblock={1:3d} with dtype {2} and Nup={3} {4}".format(
-                        L, kblock, np.dtype(dtype), Nup, norm(Ek - Ek2)
+                    "test failed t pz- symmetry at L={0:3d} kblock={1:3d} with dtype {2} and Nf={3} {4}".format(
+                        L, kblock, np.dtype(dtype), Nf, norm(Ek - Ek2)
                     )
                 )
 
@@ -720,8 +720,8 @@ def check_t_pz(L, dtype, Nf=None):
 
         if norm(Ek - Ekp) > eps(dtype):
             raise Exception(
-                "test failed t pz symmetry at L={0:3d} kblock={1:3d} with dtype {2} and Nup={3} {4}".format(
-                    L, int(L / 2), np.dtype(dtype), Nup, norm(Ek - Ekp)
+                "test failed t pz symmetry at L={0:3d} kblock={1:3d} with dtype {2} and Nf={3} {4}".format(
+                    L, int(L / 2), np.dtype(dtype), Nf, norm(Ek - Ekp)
                 )
             )
     else:

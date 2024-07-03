@@ -17,9 +17,6 @@ import argparse
 import sys, os
 
 
-qspin_path = os.path.join(os.getcwd(), "../")
-sys.path.insert(0, qspin_path)
-
 from quspin.operators import hamiltonian
 from quspin.basis import spin_basis_general
 from quspin.tools.evolution import expm_multiply_parallel

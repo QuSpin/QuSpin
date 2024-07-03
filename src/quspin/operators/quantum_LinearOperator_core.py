@@ -346,7 +346,7 @@ class quantum_LinearOperator(LinearOperator):
         else:
             return a * (self * other)
 
-    def quant_fluct(self, V, enforce_pure=False, check=True, time = 0):
+    def quant_fluct(self, V, enforce_pure=False, check=True, time=0):
         """Calculates the quantum fluctuations (variance) of `quantum_LinearOperator` object in state `V`.
 
         .. math::

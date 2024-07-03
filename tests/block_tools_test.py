@@ -1,8 +1,3 @@
-import sys, os
-
-quspin_path = os.path.join(os.getcwd(), "../")
-sys.path.insert(0, quspin_path)
-
 from quspin.tools.block_tools import block_ops, block_diag_hamiltonian
 from quspin.operators import hamiltonian, exp_op
 from quspin.basis import spin_basis_1d

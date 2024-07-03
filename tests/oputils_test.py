@@ -1,7 +1,5 @@
 import sys, os
 
-qspin_path = os.path.join(os.getcwd(), "../")
-sys.path.insert(0, qspin_path)
 
 from quspin.operators import hamiltonian
 from scipy.sparse import random, dia_matrix

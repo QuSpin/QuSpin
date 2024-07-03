@@ -1,7 +1,5 @@
 import sys, os
 
-qspin_path = os.path.join(os.getcwd(), "../")
-sys.path.insert(0, qspin_path)
 
 from quspin.basis import spinless_fermion_basis_general
 from quspin.basis.transformations import square_lattice_trans

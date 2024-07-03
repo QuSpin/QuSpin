@@ -1,7 +1,5 @@
 import sys, os
 
-qspin_path = os.path.join(os.getcwd(), "../")
-sys.path.insert(0, qspin_path)
 
 # print(os.environ["OMP_NUM_THREADS"])
 from quspin.basis import spin_basis_1d
