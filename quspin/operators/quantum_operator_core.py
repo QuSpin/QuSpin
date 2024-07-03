@@ -1,17 +1,17 @@
 from __future__ import print_function, division, absolute_import
 
-from ..basis import spin_basis_1d as _default_basis
-from ..basis import isbasis as _isbasis
+from quspin.basis import spin_basis_1d as _default_basis
+from quspin.basis import isbasis as _isbasis
 
-#from ._oputils import _get_matvec_function, matvec as _matvec
+#from quspin.operators._oputils import _get_matvec_function, matvec as _matvec
 
-from ..tools.matvec import _matvec
-from ..tools.matvec import _get_matvec_function
+from quspin.tools.matvec import _matvec
+from quspin.tools.matvec import _get_matvec_function
 
-from ._make_hamiltonian import make_static
-from ._make_hamiltonian import _check_almost_zero
+from quspin.operators._make_hamiltonian import make_static
+from quspin.operators._make_hamiltonian import _check_almost_zero
 
-from . import hamiltonian_core
+from quspin.operators import hamiltonian_core
 
 # need linear algebra packages
 import scipy.sparse.linalg as _sla
@@ -612,7 +612,7 @@ class quantum_operator(object):
 			 
 		"""
 
-		from .exp_op_core import isexp_op
+		from quspin.operators.exp_op_core import isexp_op
 
 		if hamiltonian_core.ishamiltonian(V):
 			raise TypeError("Can't take expectation value of hamiltonian")
@@ -664,7 +664,7 @@ class quantum_operator(object):
 		corresponds to :math:`H_{expt} = \\langle V|H(t=0)|V\\rangle`. 
 			 
 		"""
-		from .exp_op_core import isexp_op
+		from quspin.operators.exp_op_core import isexp_op
 
 		if hamiltonian_core.ishamiltonian(V):
 			raise TypeError("Can't take expectation value of hamiltonian")

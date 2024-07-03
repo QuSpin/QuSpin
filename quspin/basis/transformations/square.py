@@ -1,5 +1,5 @@
 import numpy as _np
-from .site_info import site_info_2d
+from quspin.basis.transformations.site_info import site_info_2d
 from itertools import product
 
 class site_info_square(site_info_2d):

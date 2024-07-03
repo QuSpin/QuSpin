@@ -1,11 +1,11 @@
 import numpy as _np
 import scipy.sparse as _sp
 import os,numexpr
-from ._basis_general_core.general_basis_utils import basis_int_to_python_int,_get_basis_index
-from ._basis_general_core.general_basis_utils import _basis_argsort,_is_sorted_decending
-from ._basis_general_core import basis_zeros
-from ..lattice import lattice_basis
-from ..base import _get_index_type
+from quspin.basis.basis_general._basis_general_core.general_basis_utils import basis_int_to_python_int,_get_basis_index
+from quspin.basis.basis_general._basis_general_core.general_basis_utils import _basis_argsort,_is_sorted_decending
+from quspin.basis.basis_general._basis_general_core import basis_zeros
+from quspin.basis.lattice import lattice_basis
+from quspin.basis.base import _get_index_type
 import warnings
 
 class GeneralBasisWarning(Warning):

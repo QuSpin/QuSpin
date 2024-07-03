@@ -1,23 +1,23 @@
 from __future__ import print_function, division, absolute_import
 
-from ..basis import spin_basis_1d as _default_basis
-from ..basis import isbasis as _isbasis
+from quspin.basis import spin_basis_1d as _default_basis
+from quspin.basis import isbasis as _isbasis
 
-from ..tools.evolution import evolve
+from quspin.tools.evolution import evolve
 
-from ..tools.matvec import _matvec
-from ..tools.matvec import _get_matvec_function
+from quspin.tools.matvec import _matvec
+from quspin.tools.matvec import _get_matvec_function
 
-# from ._oputils import matvec as _matvec
-# from ._oputils import _get_matvec_function
+# from quspin.operators_oputils import matvec as _matvec
+# from quspin.operators._oputils import _get_matvec_function
 
-# from .exp_op_core import isexp_op,exp_op
+# from quspin.operators.exp_op_core import isexp_op,exp_op
 
-from ._make_hamiltonian import make_static
-from ._make_hamiltonian import make_dynamic
-from ._make_hamiltonian import test_function
-from ._make_hamiltonian import _check_almost_zero
-from ._functions import function
+from quspin.operators._make_hamiltonian import make_static
+from quspin.operators._make_hamiltonian import make_dynamic
+from quspin.operators._make_hamiltonian import test_function
+from quspin.operators._make_hamiltonian import _check_almost_zero
+from quspin.operators._functions import function
 
 # need linear algebra packages
 import scipy
@@ -623,7 +623,7 @@ class hamiltonian(object):
 	
 		"""
 
-		from .exp_op_core import isexp_op
+		from quspin.operators.exp_op_core import isexp_op
 
 		
 		if ishamiltonian(V):
@@ -830,7 +830,7 @@ class hamiltonian(object):
 			 
 		"""
 
-		from .exp_op_core import isexp_op
+		from quspin.operators.exp_op_core import isexp_op
 
 		if ishamiltonian(V):
 			raise TypeError("Can't take expectation value of hamiltonian")
@@ -887,7 +887,7 @@ class hamiltonian(object):
 		corresponds to :math:`H_{expt} = \\langle V|H(t=0)|V\\rangle`. 
 			 
 		"""
-		from .exp_op_core import isexp_op
+		from quspin.operators.exp_op_core import isexp_op
 
 		if ishamiltonian(V):
 			raise TypeError("Can't take expectation value of hamiltonian")
@@ -1038,7 +1038,7 @@ class hamiltonian(object):
 		correponds to :math:`V^\\dagger H V`.
 
 		"""
-		from .exp_op_core import isexp_op
+		from quspin.operators.exp_op_core import isexp_op
 
 
 		if ishamiltonian(proj):
@@ -1144,7 +1144,7 @@ class hamiltonian(object):
 		corresponds to :math:`\\exp(K^\\dagger) H \\exp(K)`.
 
 		"""
-		from .exp_op_core import exp_op 
+		from quspin.operators.exp_op_core import exp_op 
 
 		if generator:
 			return exp_op(other,**exp_op_kwargs).sandwich(self)

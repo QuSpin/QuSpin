@@ -1,15 +1,15 @@
 from __future__ import print_function, division, absolute_import
 
-from .hamiltonian_core import ishamiltonian
-from .hamiltonian_core import _check_static
-from .hamiltonian_core import supported_dtypes
-from .hamiltonian_core import hamiltonian
+from quspin.operators.hamiltonian_core import ishamiltonian
+from quspin.operators.hamiltonian_core import _check_static
+from quspin.operators.hamiltonian_core import supported_dtypes
+from quspin.operators.hamiltonian_core import hamiltonian
 
-from ._make_hamiltonian import _consolidate_static
+from quspin.operators._make_hamiltonian import _consolidate_static
 
-from ..basis import spin_basis_1d as _default_basis
-from ..basis.base import _is_diagonal,_update_diag
-from ..basis import isbasis as _isbasis
+from quspin.basis import spin_basis_1d as _default_basis
+from quspin.basis.base import _is_diagonal,_update_diag
+from quspin.basis import isbasis as _isbasis
 
 
 # need linear algebra packages
@@ -345,8 +345,8 @@ class quantum_LinearOperator(LinearOperator):
 		corresponds to :math:`\\left(\\Delta H\\right)^2 = \\langle V|H^2(t=\\texttt{time})|V\\rangle - \\langle V|H(t=\\texttt{time})|V\\rangle^2`. 
 			 
 		"""
-		from .exp_op_core import isexp_op
-		from .hamiltonian_core import ishamiltonian
+		from quspin.operators.exp_op_core import isexp_op
+		from quspin.operators.hamiltonian_core import ishamiltonian
 
 		if self.Ns <= 0:
 			return _np.asarray([])
@@ -397,8 +397,8 @@ class quantum_LinearOperator(LinearOperator):
 		corresponds to :math:`H_{expt} = \\langle V|H(t=0)|V\\rangle`. 
 			 
 		"""
-		from .exp_op_core import isexp_op
-		from .hamiltonian_core import ishamiltonian
+		from quspin.operators.exp_op_core import isexp_op
+		from quspin.operators.hamiltonian_core import ishamiltonian
 
 		if self.Ns <= 0:
 			return _np.asarray([])

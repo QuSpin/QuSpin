@@ -9,7 +9,7 @@ from scipy.integrate import ode
 from numpy.linalg import norm
 
 # needed for isinstance only
-from .expm_multiply_parallel_core import expm_multiply_parallel
+from quspin.tools.expm_multiply_parallel_core import expm_multiply_parallel
 
 __all__ =  ["ED_state_vs_time", 
 			"evolve",

@@ -1,4 +1,4 @@
-from .csr_matvec_wrapper import _csr_matvec
+from quspin.tools.expm_multiply_parallel_core.csr_matvec_wrapper import _csr_matvec
 from scipy.sparse import isspmatrix_csr,issparse
 import numpy as _np
 import os

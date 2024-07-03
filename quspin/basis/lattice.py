@@ -1,13 +1,13 @@
-from .base import basis,MAXPRINT
-from ._reshape_subsys import _lattice_partial_trace_pure,_lattice_reshape_pure
-from ._reshape_subsys import _lattice_partial_trace_mixed,_lattice_reshape_mixed
-from ._reshape_subsys import _lattice_partial_trace_sparse_pure,_lattice_reshape_sparse_pure
+from quspin.basis.base import basis,MAXPRINT
+from quspin.basis._reshape_subsys import _lattice_partial_trace_pure,_lattice_reshape_pure
+from quspin.basis._reshape_subsys import _lattice_partial_trace_mixed,_lattice_reshape_mixed
+from quspin.basis._reshape_subsys import _lattice_partial_trace_sparse_pure,_lattice_reshape_sparse_pure
 import numpy as _np
 import scipy.sparse as _sp
 from numpy.linalg import norm,eigvalsh
 from scipy.sparse.linalg import eigsh
 import warnings
-from ._basis_utils import fermion_ptrace_sign,anyon_ptrace_phase
+from quspin.basis._basis_utils import fermion_ptrace_sign,anyon_ptrace_phase
 from itertools import chain
 
 _dtypes={"f":_np.float32,"d":_np.float64,"F":_np.complex64,"D":_np.complex128}
@@ -665,7 +665,7 @@ class lattice_basis(basis):
 		return p_A, p_B, rdm_A, rdm_B
 
 	def _get__str__(self):
-		from .basis_general import basis_int_to_python_int
+		from quspin.basis.basis_general import basis_int_to_python_int
 
 		Ns = self._Ns
 		if Ns > MAXPRINT:

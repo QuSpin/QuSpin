@@ -1,13 +1,3 @@
-
-
-
-
-
-
-
-
-
-
 def cython_files():
 	import os,glob
 	from Cython.Build import cythonize
@@ -24,11 +14,6 @@ def cython_files():
 					os.path.join(package_dir,"boson_ops.pyx"),
 				]
 	cythonize(cython_src)
-
-
-
-		
-
 
 
 def configuration(parent_package='', top_path=None):

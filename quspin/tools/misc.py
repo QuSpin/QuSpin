@@ -7,11 +7,11 @@ import scipy.sparse as _sp
 import numpy as _np
 
 
-from .expm_multiply_parallel_core import csr_matvec
+from quspin.tools.expm_multiply_parallel_core import csr_matvec
 
-from .matvec.matvec_core import matvec, get_matvec_function
+from quspin.tools.matvec.matvec_core import matvec, get_matvec_function
 
-from ..basis import get_basis_type
+from quspin.basis import get_basis_type
 
 import warnings
 
@@ -65,8 +65,8 @@ def project_op(Obs,proj,dtype=_np.complex128):
 	"""
 	
 	# needed for isinstance only
-	from ..operators import ishamiltonian
-	from ..basis import isbasis
+	from quspin.operators import ishamiltonian
+	from quspin.basis import isbasis
 
 	variables = ["Proj_Obs"]
 
