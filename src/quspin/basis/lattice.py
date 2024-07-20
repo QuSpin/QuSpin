@@ -16,7 +16,7 @@ import scipy.sparse as _sp
 from numpy.linalg import norm, eigvalsh
 from scipy.sparse.linalg import eigsh
 import warnings
-from quspin.extensions.basis._basis_utils import fermion_ptrace_sign, anyon_ptrace_phase
+from quspin_extensions.basis._basis_utils import fermion_ptrace_sign, anyon_ptrace_phase
 from itertools import chain
 
 _dtypes = {"f": _np.float32, "d": _np.float64, "F": _np.complex64, "D": _np.complex128}

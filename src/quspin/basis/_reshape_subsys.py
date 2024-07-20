@@ -1,6 +1,6 @@
 import numpy as _np
 import scipy.sparse as _sp
-from quspin.extensions.basis._basis_utils import _shuffle_sites
+from quspin_extensions.basis._basis_utils import _shuffle_sites
 
 
 ####################################################

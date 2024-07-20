@@ -1,4 +1,4 @@
-from quspin.extensions.basis.basis_1d._basis_1d_core import (
+from quspin_extensions.basis.basis_1d._basis_1d_core import (
     hcp_basis,
     hcp_ops,
     spf_basis,

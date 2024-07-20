@@ -1,4 +1,4 @@
-from quspin.extensions.basis.basis_general._basis_general_core import (
+from quspin_extensions.basis.basis_general._basis_general_core import (
     boson_basis_core_wrap,
     get_basis_type,
     basis_zeros,

@@ -1,14 +1,14 @@
-from quspin.extensions.basis.basis_general._basis_general_core import (
+from quspin_extensions.basis.basis_general._basis_general_core import (
     spinful_fermion_basis_core_wrap,
 )
-from quspin.extensions.basis.basis_general._basis_general_core import (
+from quspin_extensions.basis.basis_general._basis_general_core import (
     spinless_fermion_basis_core_wrap,
 )
-from quspin.extensions.basis.basis_general._basis_general_core import (
+from quspin_extensions.basis.basis_general._basis_general_core import (
     get_basis_type,
     basis_zeros,
 )
-from quspin.extensions.basis.basis_general._basis_general_core import (
+from quspin_extensions.basis.basis_general._basis_general_core import (
     basis_int_to_python_int,
 )  # ,_get_basis_index
 from quspin.basis.basis_general.base_general import basis_general, _check_symm_map

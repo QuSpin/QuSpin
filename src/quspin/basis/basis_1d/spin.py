@@ -1,5 +1,5 @@
-from quspin.extensions.basis.basis_1d._basis_1d_core import hcp_basis, hcp_ops
-from quspin.extensions.basis.basis_1d._basis_1d_core import boson_basis, boson_ops
+from quspin_extensions.basis.basis_1d._basis_1d_core import hcp_basis, hcp_ops
+from quspin_extensions.basis.basis_1d._basis_1d_core import boson_basis, boson_ops
 from quspin.basis.basis_1d.base_1d import basis_1d
 import numpy as _np
 

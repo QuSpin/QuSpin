@@ -1,5 +1,5 @@
-from quspin.extensions.basis.basis_1d._basis_1d_core import hcp_basis, hcp_ops
-from quspin.extensions.basis.basis_1d._basis_1d_core import boson_basis, boson_ops
+from quspin_extensions.basis.basis_1d._basis_1d_core import hcp_basis, hcp_ops
+from quspin_extensions.basis.basis_1d._basis_1d_core import boson_basis, boson_ops
 from quspin.basis.basis_1d.base_1d import basis_1d
 import numpy as _np
 
@@ -209,7 +209,7 @@ class boson_basis_1d(basis_1d):
                     raise ValueError(
                         "spin inversion/particle-hole symmetry with particle/magnetization conservation must be used with chains with 0 magnetization sector or at half filling"
                     )
-                if Np != L * (self.sps - 1) // 2:
+                if Nb != L * (self.sps - 1) // 2:
                     raise ValueError(
                         "spin inversion/particle-hole symmetry only reduces the 0 magnetization or half filled particle sector"
                     )

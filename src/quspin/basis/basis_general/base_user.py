@@ -1,5 +1,5 @@
 from quspin.basis.basis_general.base_general import basis_general
-from quspin.extensions.basis.basis_general._basis_general_core import user_core_wrap
+from quspin_extensions.basis.basis_general._basis_general_core import user_core_wrap
 import numpy as _np
 from numba import cfunc, types, njit
 

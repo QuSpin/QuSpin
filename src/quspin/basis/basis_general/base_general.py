@@ -1,15 +1,15 @@
 import numpy as _np
 import scipy.sparse as _sp
 import os, numexpr
-from quspin.extensions.basis.basis_general._basis_general_core.general_basis_utils import (
+from quspin_extensions.basis.basis_general._basis_general_core.general_basis_utils import (
     basis_int_to_python_int,
     _get_basis_index,
 )
-from quspin.extensions.basis.basis_general._basis_general_core.general_basis_utils import (
+from quspin_extensions.basis.basis_general._basis_general_core.general_basis_utils import (
     _basis_argsort,
     _is_sorted_decending,
 )
-from quspin.extensions.basis.basis_general._basis_general_core import basis_zeros
+from quspin_extensions.basis.basis_general._basis_general_core import basis_zeros
 from quspin.basis.lattice import lattice_basis
 from quspin.basis.base import _get_index_type
 import warnings
