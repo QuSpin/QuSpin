@@ -1,7 +1,7 @@
-from .spin import spin_basis_general
-from .boson import boson_basis_general
-from .fermion import spinless_fermion_basis_general, spinful_fermion_basis_general
-from ._basis_general_core import (
+from quspin.basis.basis_general.spin import spin_basis_general
+from quspin.basis.basis_general.boson import boson_basis_general
+from quspin.basis.basis_general.fermion import spinless_fermion_basis_general, spinful_fermion_basis_general
+from quspin_extensions.basis.basis_general._basis_general_core import (
     bitwise_not,
     bitwise_and,
     bitwise_or,
