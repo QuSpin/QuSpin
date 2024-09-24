@@ -34,8 +34,8 @@ def test():
         return np.cosh(+1.1 * t) * np.cos(2.0 * t)
 
 
-    solver_atol = 1e-18
-    solver_rtol = 1e-18
+    solver_atol = 1e-10
+    solver_rtol = 1e-10
 
 
     L = 4
@@ -78,7 +78,7 @@ def test():
             static_yy, [], basis=basis, dtype=dtype, check_herm=False, check_symm=False
         )
 
-        _, psi0 = H.eigsh(time=0, k=1, sigma=-100.0)
+        _, psi0 = H.eigsh(time=0, k=1, which="SA")
         psi0 = psi0.squeeze()
 
         rho0 = np.outer(psi0.conj(), psi0)
@@ -88,10 +88,12 @@ def test():
 
         # check schrodinger evolution
 
+        kwargs = dict(rtol=solver_rtol, atol=solver_atol, verbose=True)
+
         psi_t = H.evolve(
-            psi0, 0.0, t, iterate=True, eom="SE", rtol=solver_rtol, atol=solver_atol
+            psi0, 0.0, t, eom="SE", iterate=True, **kwargs
         )
-        psi_t2 = H.evolve(psi0, 0.0, t, eom="SE", rtol=solver_rtol, atol=solver_atol)
+        psi_t2 = H.evolve(psi0, 0.0, t, eom="SE", iterate=False, **kwargs)
 
         Obs = obs_vs_time(psi_t, t, Obs_list, return_state=True, Sent_args=Sent_args)
         Obs2 = obs_vs_time(psi_t2, t, Obs_list, return_state=True, Sent_args=Sent_args)
@@ -115,9 +117,9 @@ def test():
         )
 
         rho_t = H.evolve(
-            rho0, 0.0, t, iterate=True, eom="LvNE", rtol=solver_rtol, atol=solver_atol
+            rho0, 0.0, t, eom="LvNE", iterate=True, **kwargs
         )
-        rho_t2 = H.evolve(rho0, 0.0, t, eom="LvNE", rtol=solver_rtol, atol=solver_atol)
+        rho_t2 = H.evolve(rho0, 0.0, t, eom="LvNE", iterate=False, **kwargs)
 
         Obs = obs_vs_time(rho_t, t, Obs_list, return_state=True, Sent_args=Sent_args)
         Obs2 = obs_vs_time(rho_t2, t, Obs_list, return_state=True, Sent_args=Sent_args)
@@ -271,3 +273,6 @@ def test():
         )
 
     print("obs_vs_time checks passed!")
+
+if __name__ == "__main__":
+    test()

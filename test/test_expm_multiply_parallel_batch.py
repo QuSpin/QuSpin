@@ -1,7 +1,3 @@
-import sys, os
-
-
-# print(os.environ["OMP_NUM_THREADS"])
 from quspin.basis import spin_basis_1d
 from quspin.operators import hamiltonian
 from quspin.tools.evolution import expm_multiply_parallel

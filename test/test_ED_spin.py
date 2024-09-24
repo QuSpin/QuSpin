@@ -947,7 +947,8 @@ def check_pbc(Lmax):
             check_t_p_z(L, dtype)
 
 
-check_m(4)
-check_opstr(4)
-check_obc(8)
-check_pbc(8)
+def test():
+    check_m(4)
+    check_opstr(4)
+    check_obc(8)
+    check_pbc(8)

@@ -11,7 +11,7 @@ def eps(dtype):
     return 2 * 10.0 ** (-5)
 
 
-def test_opstr(Lmax):
+def check_opstr(Lmax):
     for dtype in dtypes:
         for L in range(2, Lmax + 1):
             h = [[2.0 * random() - 1.0, i] for i in range(L)]
@@ -33,7 +33,7 @@ def test_opstr(Lmax):
                 )
 
 
-def test_m(Lmax):
+def check_m(Lmax):
     for dtype in dtypes:
         for L in range(2, Lmax + 1):
             h = [[2.0 * random() - 1.0, i] for i in range(L)]
@@ -285,7 +285,7 @@ def check_p_z(L, dtype, Nup=None):
         )
 
 
-def test_obc(Lmax):
+def check_obc(Lmax):
     for dtype in dtypes:
         for L in range(2, Lmax + 1, 2):
             check_z(L, dtype, Nup=int(L / 2))
@@ -866,7 +866,7 @@ def check_t_p_z(L, dtype, Nup=None):
                 )
 
 
-def test_pbc(Lmax):
+def check_pbc(Lmax):
 
     for dtype in (np.complex64, np.complex128):
         for L in range(2, Lmax + 1, 1):
@@ -908,8 +908,8 @@ def test_pbc(Lmax):
             check_t_p_z(L, dtype)
 
 
-if __name__ == "__main__":
-    test_m(4)
-    test_opstr(4)
-    test_obc(8)
-    test_pbc(8)
+def test():
+    check_m(4)
+    check_opstr(4)
+    check_obc(8)
+    check_pbc(8)

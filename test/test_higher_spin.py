@@ -1,7 +1,8 @@
 from quspin.operators import hamiltonian
 from quspin.basis import spin_basis_1d
 import numpy as np
-from itertools import product, reduce
+from itertools import product
+from functools import reduce
 
 
 def test():

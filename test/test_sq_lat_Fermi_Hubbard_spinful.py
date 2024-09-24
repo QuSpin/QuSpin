@@ -56,8 +56,6 @@ def run(Lx, Ly):
 def test():
     run(2, 2)
 
-    exit()
-
     run(3, 2)
     run(2, 3)
     run(3, 3)

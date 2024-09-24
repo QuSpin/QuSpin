@@ -40,7 +40,7 @@ def check_ME(b1, b2, opstr, indx, dtype, err_msg):
             raise e
 
 
-def test_gen_basis_spinless_fermion(l_max, N=4):
+def check_gen_basis_spinless_fermion(l_max, N=4):
     L = 6
     kblocks = [None]
     kblocks.extend(range(L))
@@ -105,10 +105,10 @@ def test_gen_basis_spinless_fermion(l_max, N=4):
                     check_ME(basis_1d, gen_basis, opstr, indx, np.complex128, err_msg)
 
 
-if __name__ == "__main__":
+def test():
     print("testing Nf=4")
-    test_gen_basis_spinless_fermion(3, N=4)
+    check_gen_basis_spinless_fermion(3, N=4)
     print("testing Nf=5")
-    test_gen_basis_spinless_fermion(3, N=5)
+    check_gen_basis_spinless_fermion(3, N=5)
     print("testing Nf=6")
-    test_gen_basis_spinless_fermion(3, N=6)
+    check_gen_basis_spinless_fermion(3, N=6)

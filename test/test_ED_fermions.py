@@ -11,7 +11,7 @@ def eps(dtype):
     return 2 * 10.0 ** (-5)
 
 
-def test_m(Lmax):
+def check_m(Lmax):
     for dtype in dtypes:
         for L in range(2, Lmax + 1):
             h = [[2.0 * random() - 1.0, i] for i in range(L)]
@@ -82,7 +82,7 @@ def check_p(L, dtype, Nf=None):
         )
 
 
-def test_obc(Lmax):
+def check_obc(Lmax):
 
     for dtype in dtypes:
         for L in range(2, Lmax + 1, 2):
@@ -287,7 +287,7 @@ def check_t_p(L, dtype, Nf=None):
                 )
 
 
-def test_pbc(Lmax):
+def check_pbc(Lmax):
 
     for dtype in (np.complex64, np.complex128):
         for L in range(2, Lmax + 1, 1):
@@ -302,6 +302,7 @@ def test_pbc(Lmax):
                 check_t_p(L, dtype, Nf=Nf)
 
 
-test_m(4)
-test_obc(8)
-test_pbc(8)
+def test():
+    check_m(4)
+    check_obc(8)
+    check_pbc(8)

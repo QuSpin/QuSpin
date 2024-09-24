@@ -57,7 +57,7 @@ def check_ME(basis_1d, basis_gen, opstr, indx, dtype, err_msg):
             raise e
 
 
-def test_gen_basis_spin(l_max, S="1/2"):
+def check_gen_basis_spin(l_max, S="1/2"):
     L = 6
     kblocks = [None]
     kblocks.extend(range(L))
@@ -153,7 +153,7 @@ def test_gen_basis_spin(l_max, S="1/2"):
                     check_ME(basis_1d, gen_basis, opstr, indx, np.complex128, err_msg)
 
 
-def test_gen_basis_spin_boost(L, Nups, l_max, S="1/2"):
+def check_gen_basis_spin_boost(L, Nups, l_max, S="1/2"):
     kblocks = [None]
     kblocks.extend(range(0, L, (L // 4)))
     pblocks = [None, 0, 1]
@@ -237,16 +237,16 @@ def test_gen_basis_spin_boost(L, Nups, l_max, S="1/2"):
                     check_ME(basis_1d, gen_basis, opstr, indx, np.complex128, err_msg)
 
 
-if __name__ == "__main__":
+def test():
     print("testing S=1/2")
-    test_gen_basis_spin(3, S="1/2")
-    test_gen_basis_spin_boost(66, [1, -2], 2, S="1/2")
+    check_gen_basis_spin(3, S="1/2")
+    check_gen_basis_spin_boost(66, [1, -2], 2, S="1/2")
     print("testing S=1")
-    test_gen_basis_spin(3, S="1")
-    test_gen_basis_spin_boost(40, [1, -2], 2, S="1")
+    check_gen_basis_spin(3, S="1")
+    check_gen_basis_spin_boost(40, [1, -2], 2, S="1")
     print("testing S=3/2")
-    test_gen_basis_spin(3, S="3/2")
-    test_gen_basis_spin_boost(34, [1, -2], 2, S="3/2")
+    check_gen_basis_spin(3, S="3/2")
+    check_gen_basis_spin_boost(34, [1, -2], 2, S="3/2")
     print("testing S=2")
-    test_gen_basis_spin(3, S="2")
-    test_gen_basis_spin_boost(30, [1, -2], 2, S="2")
+    check_gen_basis_spin(3, S="2")
+    check_gen_basis_spin_boost(30, [1, -2], 2, S="2")

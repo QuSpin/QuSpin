@@ -19,7 +19,7 @@ def eps(dtype):
     return 9e-3
 
 
-def test_m(Lmax):
+def check_m(Lmax):
     for dtype in dtypes:
         for L in range(2, Lmax + 1):
             h1 = [[2.0 * random() - 1.0, i] for i in range(L)]
@@ -67,7 +67,7 @@ def test_m(Lmax):
 # check_m(5)
 
 
-def test_z(L, dtype, Nf=None):
+def check_z(L, dtype, Nf=None):
 
     J1 = [[2.0 * random() - 1.0, i, i] for i in range(L)]
     J0 = random()
@@ -105,7 +105,7 @@ def test_z(L, dtype, Nf=None):
 # check_z(4,np.complex128)
 
 
-def test_p(L, dtype, Nf=None):
+def check_p(L, dtype, Nf=None):
 
     L_2 = int(L / 2)
     hr = [2.0 * random() - 1.0 for i in range(L_2)]
@@ -165,7 +165,7 @@ def test_p(L, dtype, Nf=None):
 # check_p(4,np.float64)
 
 
-def test_pz(L, dtype, Nf=None):
+def check_pz(L, dtype, Nf=None):
     L_2 = int(L / 2)
     hr = [2.0 * random() - 1.0 for i in range(L_2)]
     hi = [hr[i] for i in range(L_2)]
@@ -216,7 +216,7 @@ def test_pz(L, dtype, Nf=None):
 # check_pz(4,np.float64,Nf=(2,2))
 
 
-def test_p_z(L, dtype, Nf=None):
+def check_p_z(L, dtype, Nf=None):
     L_2 = int(L / 2)
     hr = [2.0 * random() - 1.0 for i in range(L_2)]
     hi = [hr[i] for i in range(L_2)]
@@ -278,33 +278,33 @@ def test_p_z(L, dtype, Nf=None):
 # check_p_z(4,np.complex128)
 
 
-def test_obc(Lmax):
+def check_obc(Lmax):
     for dtype in dtypes:
         for L in range(2, Lmax + 1, 2):
-            test_z(L, dtype, Nf=(L // 2, L // 2))
-            test_z(L, dtype)
+            check_z(L, dtype, Nf=(L // 2, L // 2))
+            check_z(L, dtype)
 
     for dtype in dtypes:
         for L in range(2, Lmax + 1, 2):
             for Nup in range(L + 1):
-                test_t_p(L, dtype, Nf=(Nup, L - Nup))
-                test_p(L, dtype)
+                check_t_p(L, dtype, Nf=(Nup, L - Nup))
+                check_p(L, dtype)
 
     for dtype in dtypes:
         for L in range(2, Lmax + 1, 2):
-            test_pz(L, dtype, Nf=(L // 2, L // 2))
-            test_pz(L, dtype)
+            check_pz(L, dtype, Nf=(L // 2, L // 2))
+            check_pz(L, dtype)
 
     for dtype in dtypes:
         for L in range(2, Lmax + 1, 2):
-            test_p_z(L, dtype, Nf=(L // 2, L // 2))
-            test_p_z(L, dtype)
+            check_p_z(L, dtype, Nf=(L // 2, L // 2))
+            check_p_z(L, dtype)
 
 
 ################################################
 
 
-def test_t(L, dtype, Nf=None):
+def check_t(L, dtype, Nf=None):
     hx = random()
     h = [[hx, i] for i in range(L)]
 
@@ -358,7 +358,7 @@ def test_t(L, dtype, Nf=None):
 # check_t(4,np.complex128)
 
 
-def test_t_z(L, dtype, Nf=None):
+def check_t_z(L, dtype, Nf=None):
 
     h0 = random()
     h = [[h0, i] for i in range(L)]
@@ -405,7 +405,7 @@ def test_t_z(L, dtype, Nf=None):
 # check_t_z(4,np.complex128)
 
 
-def test_t_p(L, dtype, Nf=None):
+def check_t_p(L, dtype, Nf=None):
 
     hx = random()
     h = [[hx, i] for i in range(L)]
@@ -575,7 +575,7 @@ def test_t_p(L, dtype, Nf=None):
 # check_t_p(4,np.complex128)
 
 
-def test_t_pz(L, dtype, Nf=None):
+def check_t_pz(L, dtype, Nf=None):
 
     h0 = random()
     h = [[h0, i] for i in range(L)]
@@ -745,7 +745,7 @@ def test_t_pz(L, dtype, Nf=None):
 # check_t_pz(6,np.float32)
 
 
-def test_t_p_z(L, dtype, Nf=None):
+def check_t_p_z(L, dtype, Nf=None):
     h0 = random()
     h = [[h0, i] for i in range(L)]
 
@@ -809,9 +809,9 @@ def test_t_p_z(L, dtype, Nf=None):
         Ekpz2 = np.concatenate((Ekpz21, Ekpz22))
         Ekpz2.sort()
 
-        # print(basisk1)
+        # basisk1)
         # print(basisk11)
-        # print(basisk12)
+        # basisk12)
         # exit()
 
         if norm(Ekp1 - Ekpz1) > eps(dtype):
@@ -848,39 +848,39 @@ def test_t_p_z(L, dtype, Nf=None):
 # check_t_p_z(6,np.complex128)
 
 
-def test_pbc(Lmax):
+def check_pbc(Lmax):
 
     for dtype in (np.complex64, np.complex128):
         for L in range(2, Lmax + 1, 1):
-            test_t(L, dtype)
+            check_t(L, dtype)
             for Nup in range(L + 1):
-                test_t(L, dtype, Nf=(Nup, L - Nup))
+                check_t(L, dtype, Nf=(Nup, L - Nup))
 
     for dtype in (np.complex64, np.complex128):
         for L in range(2, Lmax + 1, 2):
-            test_t_z(L, dtype, Nf=(L // 2, L // 2))
-            test_t_z(L, dtype)
+            check_t_z(L, dtype, Nf=(L // 2, L // 2))
+            check_t_z(L, dtype)
 
     for dtype in dtypes:
         for L in range(2, Lmax + 1, 1):
-            test_t_p(L, dtype)
+            check_t_p(L, dtype)
             for Nup in range(L + 1):
-                test_t_p(L, dtype, Nf=(Nup, L - Nup))
+                check_t_p(L, dtype, Nf=(Nup, L - Nup))
 
     for dtype in dtypes:
         for L in range(2, Lmax + 1, 2):
-            test_t_pz(L, dtype, Nf=(L // 2, L // 2))
-            test_t_pz(L, dtype)
+            check_t_pz(L, dtype, Nf=(L // 2, L // 2))
+            check_t_pz(L, dtype)
 
     for dtype in dtypes:
         for L in range(2, Lmax + 1, 2):
-            test_t_p_z(L, dtype, Nf=(L // 2, L // 2))
-            test_t_p_z(L, dtype)
+            check_t_p_z(L, dtype, Nf=(L // 2, L // 2))
+            check_t_p_z(L, dtype)
 
-if __name__ == "__main__":
-    test_m(4)
-    test_obc(4)
-    test_pbc(4)
+def test():
+    check_m(4)
+    check_obc(4)
+    check_pbc(4)
 
 # print('GET RID OF NO_CHECKS')
 # print('RELEASE SEED')
