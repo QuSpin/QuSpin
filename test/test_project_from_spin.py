@@ -1,29 +1,26 @@
 from quspin.operators import hamiltonian
-from quspin.basis import spin_basis_1d, photon_basis
+from quspin.basis import spin_basis_1d
 import numpy as np
 import scipy.sparse as sp
-from numpy.linalg import norm
-from numpy.random import random, seed
 
-seed()
 dtypes = [np.float32, np.float64, np.complex64, np.complex128]
 
 
-def J(L, jb, l):
+def J(L, jb, length):
     blist = []
     for i, j in jb:
         b = [j]
-        b.extend([(i + j) % L for j in range(l)])
+        b.extend([(i + j) % L for j in range(length)])
         blist.append(b)
 
     return blist
 
 
-def Jnn(L, jb, l):
+def Jnn(L, jb, length):
     blist = []
     for i, j in jb:
         b = [j]
-        b.extend([(i + j) % L for j in range(0, l + 1, 2)])
+        b.extend([(i + j) % L for j in range(0, length + 1, 2)])
         blist.append(b)
 
     return blist
@@ -42,7 +39,6 @@ def getvec_spin(
     a=1,
     sparse=True,
 ):
-    jb = [[i, 1.0] for i in range(L)]
     dtype = np.complex128
 
     b = spin_basis_1d(
@@ -65,7 +61,6 @@ def getvec_spin(
 
     E, v0 = H2.eigh()
     v = b.get_vec(v0, sparse=sparse)
-    P = b.get_proj(dtype=np.complex128)
 
     if sp.issparse(v):
         v = v.todense()
@@ -77,10 +72,9 @@ def getvec_spin(
     np.testing.assert_allclose(H1, H2, atol=1e-10, err_msg=err_msg)
 
 
-def getvec_spin(
+def getvec_spin_sublattice(
     L, H1, static, S="1/2", kblock=None, zAblock=None, zBblock=None, a=2, sparse=True
 ):
-    jb = [[i, 1.0] for i in range(L)]
     dtype = np.complex128
 
     b = spin_basis_1d(L, S=S, kblock=kblock, zAblock=zAblock, zBblock=zBblock, a=a)
@@ -233,7 +227,7 @@ def check_getvec_spin(L, S="1/2", a=1, sparse=True):
                 )
 
 
-def check_getvec_spin(L, S="1/2", a=2, sparse=True):
+def check_getvec_spin_sublattice(L, S="1/2", a=2, sparse=True):
     jb = [[i, 1.0] for i in range(L)]
     dtype = np.complex128
     static = [
@@ -258,23 +252,23 @@ def check_getvec_spin(L, S="1/2", a=2, sparse=True):
     H1 = hamiltonian(static, [], basis=b_full, dtype=dtype).todense()
 
     for k in range(-L // a, L // a):
-        getvec_spin(L, H1, static, S=S, kblock=k, a=a, sparse=sparse)
+        getvec_spin_sublattice(L, H1, static, S=S, kblock=k, a=a, sparse=sparse)
 
     for j in range(-1, 2, 2):
-        getvec_spin(L, H1, static, S=S, zAblock=j, a=a, sparse=sparse)
+        getvec_spin_sublattice(L, H1, static, S=S, zAblock=j, a=a, sparse=sparse)
         for k in range(-L // a, L // a):
-            getvec_spin(L, H1, static, S=S, kblock=k, zAblock=j, a=a, sparse=sparse)
+            getvec_spin_sublattice(L, H1, static, S=S, kblock=k, zAblock=j, a=a, sparse=sparse)
 
     for j in range(-1, 2, 2):
-        getvec_spin(L, H1, static, S=S, zBblock=j, a=a, sparse=sparse)
+        getvec_spin_sublattice(L, H1, static, S=S, zBblock=j, a=a, sparse=sparse)
         for k in range(-L // a, L // a):
-            getvec_spin(L, H1, static, S=S, kblock=k, zBblock=j, a=a, sparse=sparse)
+            getvec_spin_sublattice(L, H1, static, S=S, kblock=k, zBblock=j, a=a, sparse=sparse)
 
     for i in range(-1, 2, 2):
         for j in range(-1, 2, 2):
-            getvec_spin(L, H1, static, S=S, zAblock=i, zBblock=j, a=a, sparse=sparse)
+            getvec_spin_sublattice(L, H1, static, S=S, zAblock=i, zBblock=j, a=a, sparse=sparse)
             for k in range(-L // a, L // a):
-                getvec_spin(
+                getvec_spin_sublattice(
                     L,
                     H1,
                     static,
@@ -286,13 +280,26 @@ def check_getvec_spin(L, S="1/2", a=2, sparse=True):
                     sparse=sparse,
                 )
 
+def test():
 
-check_getvec_spin(6, S="1/2", sparse=True)
-check_getvec_spin(6, S="1/2", sparse=False)
-check_getvec_spin(6, S="1/2", sparse=True)
-check_getvec_spin(6, S="1/2", sparse=False)
+    check_getvec_spin(6, S="1/2", sparse=True)
+    check_getvec_spin(6, S="1/2", sparse=False)
+    check_getvec_spin(6, S="1/2", sparse=True)
+    check_getvec_spin(6, S="1/2", sparse=False)
 
-check_getvec_spin(6, S="1", sparse=True)
-check_getvec_spin(6, S="1", sparse=False)
-check_getvec_spin(6, S="1", sparse=True)
-check_getvec_spin(6, S="1", sparse=False)
+    check_getvec_spin(6, S="1", sparse=True)
+    check_getvec_spin(6, S="1", sparse=False)
+    check_getvec_spin(6, S="1", sparse=True)
+    check_getvec_spin(6, S="1", sparse=False)
+
+
+def test_sublattice():
+    check_getvec_spin_sublattice(6, S="1/2", sparse=True)
+    check_getvec_spin_sublattice(6, S="1/2", sparse=False)
+    check_getvec_spin_sublattice(6, S="1/2", sparse=True)
+    check_getvec_spin_sublattice(6, S="1/2", sparse=False)
+
+    check_getvec_spin_sublattice(6, S="1", sparse=True)
+    check_getvec_spin_sublattice(6, S="1", sparse=False)
+    check_getvec_spin_sublattice(6, S="1", sparse=True)
+    check_getvec_spin_sublattice(6, S="1", sparse=False)

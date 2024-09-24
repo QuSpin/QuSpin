@@ -1,13 +1,13 @@
-from quspin.operators import quantum_operator, hamiltonian
-from quspin.basis import spin_basis_1d
+from quspin.operators import quantum_operator
 import numpy as np
 import scipy.sparse as sp
+import pytest
 
 
 eps = 1e-13
 
 
-def dot_test():
+def test_dot():
     M = np.arange(9).reshape((3, 3)).astype(np.complex128)
     v = np.ones((3, 2))
     v_fail_1 = np.ones((4,))
@@ -26,24 +26,15 @@ def dot_test():
     v_op = op_dict.dot(v, pars={"J": 0.5}, check=False)
     assert np.linalg.norm(v_op - 0.5 * M.dot(v)) < eps
 
-    try:
+    with pytest.raises(ValueError):
         v_op = op_dict.dot(v_fail_1)
-        Pass = True
-    except:
-        Pass = False
 
-    assert not Pass
-
-    try:
+    with pytest.raises(ValueError):
         v_op = op_dict.dot(v_fail_2)
-        Pass = True
-    except:
-        Pass = False
-
-    assert not Pass
 
 
-def eigsh_test():
+
+def test_eigsh():
     M = np.arange(16).reshape((4, 4)).astype(np.complex128)
     M = M.T + M
     input_dict = {"J": [M]}
@@ -60,7 +51,7 @@ def eigsh_test():
     assert np.linalg.norm(E1 - E2) / 2.0 < eps
 
 
-def eigh_test():
+def test_eigh():
     M = np.arange(16).reshape((4, 4)).astype(np.complex128)
     M = M.T + M
     input_dict = {"J": [M]}
@@ -77,7 +68,7 @@ def eigh_test():
     assert np.linalg.norm(E1 - E2) / 4.0 < eps
 
 
-def eigvalsh_test():
+def test_eigvalsh():
     M = np.arange(16).reshape((4, 4)).astype(np.complex128)
     M = M.T + M
     input_dict = {"J": [M]}
@@ -94,7 +85,8 @@ def eigvalsh_test():
     assert np.linalg.norm(E1 - E2) / 4.0 < eps
 
 
-dot_test()
-eigsh_test()
-eigh_test()
-eigvalsh_test()
+if __name__ == "__main__":
+    test_dot()
+    test_eigsh()
+    test_eigh()
+    test_eigvalsh()

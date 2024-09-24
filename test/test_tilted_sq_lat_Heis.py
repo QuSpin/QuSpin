@@ -1,6 +1,3 @@
-import sys, os
-
-
 from quspin.basis import spin_basis_general
 from quspin.operators import hamiltonian
 import numpy as np
@@ -154,8 +151,7 @@ def get_blocks(T1, t1, T2, t2, Pr, pr):
                 yield blocks
 
 
-def test_Nup(n, m, S):
-    nmax = int(eval("2*" + S))
+def run_Nup(n, m, S):
     N = n**2 + m**2
     # Nups=range(nmax*N+1)
     Nups = [2]
@@ -166,10 +162,13 @@ def test_Nup(n, m, S):
 
     Jzz = [[-1.0, i, Tx[i]] for i in range(N)]
     Jzz.extend([-1.0, i, Ty[i]] for i in range(N))
-    hx = [[-1.0, i] for i in range(N)]
 
-    fzz = lambda x: 1 - x
-    fx = lambda x: x
+    def fzz(x):
+        return 1 - x
+    
+    def fx(x):
+        return x
+    
     dynamic = [["zz", Jzz, fzz, ()], ["+-", Jzz, fx, ()], ["-+", Jzz, fx, ()]]
     ss = np.linspace(0, 1, 11)
 
@@ -215,8 +214,9 @@ def test_Nup(n, m, S):
         np.testing.assert_allclose(E_symm, E_full, atol=1e-13)
 
 
-test_Nup(2, 1, "1/2")
-test_Nup(2, 2, "1/2")
-test_Nup(2, 3, "1/2")
-test_Nup(2, 1, "1")
-test_Nup(2, 2, "1")
+def test():
+    run_Nup(2, 1, "1/2")
+    run_Nup(2, 2, "1/2")
+    run_Nup(2, 3, "1/2")
+    run_Nup(2, 1, "1")
+    run_Nup(2, 2, "1")

@@ -1,7 +1,6 @@
 from quspin.operators import hamiltonian
-from quspin.basis import spin_basis_1d, photon_basis
+from quspin.basis import spin_basis_1d
 import numpy as np
-import scipy.sparse as sp
 from numpy.linalg import norm
 from numpy.random import random, seed
 
@@ -32,9 +31,8 @@ def check_opstr(Lmax):
             if norm(H1.todense() - H2.todense()) > eps(dtype):
                 raise Exception(
                     "test failed opstr at L={0:3d} with dtype {1} {2}".format(
-                        L, np.dtype(dtype)
-                    ),
-                    norm(H1.todense() - H2.todense()),
+                        L, np.dtype(dtype), norm(H1.todense() - H2.todense())
+                    )
                 )
 
 

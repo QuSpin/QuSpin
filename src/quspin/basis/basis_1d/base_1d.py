@@ -1077,7 +1077,7 @@ class basis_1d(lattice_basis):
             norm *= _np.sign(self._N)
             norm /= self._N
             try:
-                m = self._M.astype(_np.min_scalar_type(-1 * (self._M.max() + 1)))
+                m = self._M.astype(_np.min_scalar_type(-1 * int(self._M.max() + 1)))
             except ValueError:
                 m = self._M.astype(_np.int8)
             _np.mod(m, self._L + 1, out=m)

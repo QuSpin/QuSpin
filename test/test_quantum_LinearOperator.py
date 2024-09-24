@@ -1,4 +1,4 @@
-from scipy.sparse.linalg import eigsh
+from itertools import product
 from quspin.operators import hamiltonian  # Hamiltonians and operators
 from quspin.operators import quantum_LinearOperator
 from quspin.basis import spin_basis_general  # Hilbert space spin basis
@@ -37,10 +37,10 @@ def get_H(L, pblock=None, zblock=None):
     return H_LO, H
 
 
-np.random.seed(0)
 
-for pblock in [None, 0, 1]:
-    for zblock in [None, 0, 1]:
+def test():
+    np.random.seed(0)
+    for pblock, zblock in product([None, 0, 1], [None, 0, 1]):
         if pblock is not None:
             pb = (-1) ** pblock
         else:

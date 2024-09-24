@@ -1,31 +1,16 @@
-#
-import sys, os
-
-
 from quspin.operators import hamiltonian
 from quspin.basis import (
-    spin_basis_1d,
     spin_basis_general,
 )  # Hilbert space spin basis_1d
 from quspin.basis.user import user_basis  # Hilbert space user basis
 from quspin.basis.user import (
     next_state_sig_32,
     op_sig_32,
-    map_sig_32,
 )  # user basis data types
 from numba import carray, cfunc, jit  # numba helper functions
 from numba import uint32, int32  # numba data types
 import numpy as np
 from itertools import combinations
-
-#
-#####
-# this test creates a mixed basis with hardcore bosons and spinless fermions
-# The code traces out various subsystems of this mixed basis and calculates expectation values
-# to see if the partial trace gives consistent results with the pure state.
-
-N_half = 6  # number of sites for each leg of the ladder
-N = 2 * N_half  # total number of lattice sites
 
 
 #
@@ -44,15 +29,7 @@ def make_basis(N_half):
     return (states_b + shift_states_b.T).ravel()
 
 
-#
-external_basis = make_basis(N_half)
-#
-Np = ()  # dummy argument, could be any value (particle conservation should've been
 
-
-#
-############   create soinless fermion user basis object   #############
-#
 @jit(
     uint32(uint32, uint32),
     locals=dict(
@@ -112,8 +89,6 @@ def op(op_struct_ptr, op_str, site_ind, N, args):
     return err
 
 
-op_args = np.array([], dtype=np.uint32)
-
 
 #
 ######  function to read user-imported basis into QuSpin
@@ -126,13 +101,7 @@ def next_state(s, counter, N, args):
     return args[counter + 1]  # = basis
 
 
-#
-next_state_args = (
-    external_basis  # this has to be an array of same dtype as the user_basis
-)
 
-
-#
 class function_wrapper(object):
     """
     This class provides a wrapper for the user-imported basis,
@@ -161,70 +130,97 @@ class function_wrapper(object):
         return self.basis.size
 
 
-#
-######  construct user_basis
-# define maps dict
-maps = dict()
-# define particle conservation and op dicts
-FW = function_wrapper(external_basis)
-noncommuting_bits = [(np.arange(N_half), -1)]
-pcon_dict = dict(
-    Np=Np,
-    next_state=next_state,
-    next_state_args=next_state_args,
-    get_Ns_pcon=FW.get_Ns_pcon,
-    get_s0_pcon=FW.get_s0_pcon,
-)
-op_dict = dict(op=op, op_args=op_args)
-# create user basis
-basis = user_basis(
-    np.uint32,
-    N,
-    op_dict,
-    allowed_ops=set("n+-"),
-    sps=2,
-    pcon_dict=pcon_dict,
-    noncommuting_bits=noncommuting_bits,
-    **maps,
-)
-# create basis for subsystem
-noncommuting_bits = [(np.arange(3), -1)]
-subsys_basis = user_basis(
-    np.uint32,
-    6,
-    op_dict,
-    allowed_ops=set("n+-"),
-    sps=2,
-    noncommuting_bits=noncommuting_bits,
-)
+def test():
+    #
+    #####
+    # this test creates a mixed basis with hardcore bosons and spinless fermions
+    # The code traces out various subsystems of this mixed basis and calculates expectation values
+    # to see if the partial trace gives consistent results with the pure state.
 
-# pure state in full basis
-psi = np.random.normal(0, 1, size=(basis.Ns,))
-psi /= np.linalg.norm(psi)
+    N_half = 6  # number of sites for each leg of the ladder
+    N = 2 * N_half  # total number of lattice sites
 
-for spin_part in combinations(range(N_half), 3):
-    for fermion_part in combinations(range(N_half, 2 * N_half, 1), 3):
-        sub_sys_A = np.hstack((spin_part, fermion_part))
-        print("testing sub_sys_A: {}".format(sub_sys_A))
-        kwargs = dict(
-            sub_sys_A=sub_sys_A,
-            return_rdm="A",
-            subsys_ordering=False,
-            enforce_pure=False,
-        )
-        rho = basis.partial_trace(psi, **kwargs)
-        for i, j in combinations(range(sub_sys_A.size), 2):
 
-            J_sub_sys = [[1.0, i, j], [1.0, j, i]]
-            J_full = [
-                [1.0, sub_sys_A[i], sub_sys_A[j]],
-                [1.0, sub_sys_A[j], sub_sys_A[i]],
-            ]
+    #
+    external_basis = make_basis(N_half)
+    #
+    Np = ()  # dummy argument, could be any value (particle conservation should've been
 
-            static_ss = [["+-", J_sub_sys]]
-            static_full = [["+-", J_full]]
 
-            O_ss = hamiltonian(static_ss, [], basis=subsys_basis, dtype=np.float64)
-            O_full = hamiltonian(static_full, [], basis=basis, dtype=np.float64)
+    #
+    ############   create soinless fermion user basis object   #############
+    #
+    op_args = np.array([], dtype=np.uint32)
 
-            assert np.abs(O_ss.expt_value(rho) - O_full.expt_value(psi)) < 1e-14
+    #
+    next_state_args = (
+        external_basis  # this has to be an array of same dtype as the user_basis
+    )
+
+    #
+    ######  construct user_basis
+    # define maps dict
+    maps = dict()
+    # define particle conservation and op dicts
+    FW = function_wrapper(external_basis)
+    noncommuting_bits = [(np.arange(N_half), -1)]
+    pcon_dict = dict(
+        Np=Np,
+        next_state=next_state,
+        next_state_args=next_state_args,
+        get_Ns_pcon=FW.get_Ns_pcon,
+        get_s0_pcon=FW.get_s0_pcon,
+    )
+    op_dict = dict(op=op, op_args=op_args)
+    # create user basis
+    basis = user_basis(
+        np.uint32,
+        N,
+        op_dict,
+        allowed_ops=set("n+-"),
+        sps=2,
+        pcon_dict=pcon_dict,
+        noncommuting_bits=noncommuting_bits,
+        **maps,
+    )
+    # create basis for subsystem
+    noncommuting_bits = [(np.arange(3), -1)]
+    subsys_basis = user_basis(
+        np.uint32,
+        6,
+        op_dict,
+        allowed_ops=set("n+-"),
+        sps=2,
+        noncommuting_bits=noncommuting_bits,
+    )
+
+    # pure state in full basis
+    psi = np.random.normal(0, 1, size=(basis.Ns,))
+    psi /= np.linalg.norm(psi)
+
+    for spin_part in combinations(range(N_half), 3):
+        for fermion_part in combinations(range(N_half, 2 * N_half, 1), 3):
+            sub_sys_A = np.hstack((spin_part, fermion_part))
+            print("testing sub_sys_A: {}".format(sub_sys_A))
+            kwargs = dict(
+                sub_sys_A=sub_sys_A,
+                return_rdm="A",
+                subsys_ordering=False,
+                enforce_pure=False,
+            )
+            rho = basis.partial_trace(psi, **kwargs)
+            for i, j in combinations(range(sub_sys_A.size), 2):
+
+                J_sub_sys = [[1.0, i, j], [1.0, j, i]]
+                J_full = [
+                    [1.0, sub_sys_A[i], sub_sys_A[j]],
+                    [1.0, sub_sys_A[j], sub_sys_A[i]],
+                ]
+
+                static_ss = [["+-", J_sub_sys]]
+                static_full = [["+-", J_full]]
+
+                O_ss = hamiltonian(static_ss, [], basis=subsys_basis, dtype=np.float64)
+                O_full = hamiltonian(static_full, [], basis=basis, dtype=np.float64)
+
+                assert np.abs(O_ss.expt_value(rho) - O_full.expt_value(psi)) < 1e-14

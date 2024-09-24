@@ -1,19 +1,12 @@
-import sys, os
-
-
 from quspin.basis import spin_basis_general, spinful_fermion_basis_general
 from quspin.basis.transformations import square_lattice_trans
 from quspin.operators import hamiltonian
 import numpy as np
-from itertools import product
-import os
-
-"""
-Testing double occupancies with the Heisenberg model $H = J \\sum_{i,j} S_i\\dot S_j$ using spinful fermion and spin bases. 
-"""
 
 
-def test(Lx, Ly):
+
+
+def run(Lx, Ly):
 
     N = Lx * Ly
 
@@ -112,9 +105,6 @@ def test(Lx, Ly):
         ["+-|+-", J_cccc_ji],
     ]
 
-    E_symm = {}
-    E_symm_f = {}
-
     #'''
     for N, (
         pcon_basis,
@@ -162,4 +152,6 @@ def test(Lx, Ly):
         print("passed N={} sector".format(N))
 
 
-test(3, 3)
+def test():
+
+    run(3, 3)

@@ -1,6 +1,3 @@
-import sys, os
-
-
 from quspin.basis import (
     spin_basis_1d,
     boson_basis_1d,
@@ -16,42 +13,48 @@ from quspin.basis import (
 from itertools import product
 import numpy as np
 
-for L in [6, 7]:
+def test():
 
-    # symmetry-free
+    for L in [6, 7]:
 
-    basis_1 = spin_basis_1d(L=L, Nup=range(0, L, 2))
-    basis_1g = spin_basis_general(N=L, Nup=range(0, L, 2))
+        # symmetry-free
 
-    basis_2 = boson_basis_1d(L=L, Nb=range(0, L, 2))
-    basis_2g = boson_basis_general(N=L, Nb=range(0, L, 2))
+        spin_basis_1d(L=L, Nup=range(0, L, 2))
+        spin_basis_general(N=L, Nup=range(0, L, 2))
 
-    basis_3 = spinless_fermion_basis_1d(L=L, Nf=range(0, L, 2))
-    basis_3g = spinless_fermion_basis_general(N=L, Nf=range(0, L, 2))
+        boson_basis_1d(L=L, Nb=range(0, L, 2))
+        boson_basis_general(N=L, Nb=range(0, L, 2))
 
-    basis_4 = spinful_fermion_basis_1d(L=L, Nf=product(range(0, L, 2), range(0, L, 2)))
-    basis_4g = spinful_fermion_basis_general(
-        N=L, Nf=product(range(0, L, 2), range(0, L, 2))
-    )
+        spinless_fermion_basis_1d(L=L, Nf=range(0, L, 2))
+        spinless_fermion_basis_general(N=L, Nf=range(0, L, 2))
 
-    # symmetry-ful
+        spinful_fermion_basis_1d(L=L, Nf=product(range(0, L, 2), range(0, L, 2)))
+        spinful_fermion_basis_general(
+            N=L, Nf=product(range(0, L, 2), range(0, L, 2))
+        )
 
-    t = (np.arange(L) + 1) % L
+        # symmetry-ful
 
-    basis_1 = spin_basis_1d(L=L, Nup=range(0, L, 2), kblock=0)
-    basis_1g = spin_basis_general(N=L, Nup=range(0, L, 2), kblock=(t, 0))
+        t = (np.arange(L) + 1) % L
 
-    basis_2 = boson_basis_1d(L=L, Nb=range(0, L, 2), kblock=0)
-    basis_2g = boson_basis_general(N=L, Nb=range(0, L, 2), kblock=(t, 0))
+        spin_basis_1d(L=L, Nup=range(0, L, 2), kblock=0)
+        spin_basis_general(N=L, Nup=range(0, L, 2), kblock=(t, 0))
 
-    basis_3 = spinless_fermion_basis_1d(L=L, Nf=range(0, L, 2), kblock=0)
-    basis_3g = spinless_fermion_basis_general(N=L, Nf=range(0, L, 2), kblock=(t, 0))
+        boson_basis_1d(L=L, Nb=range(0, L, 2), kblock=0)
+        boson_basis_general(N=L, Nb=range(0, L, 2), kblock=(t, 0))
 
-    basis_4 = spinful_fermion_basis_1d(
-        L=L, Nf=product(range(0, L, 2), range(0, L, 2)), kblock=0
-    )
-    basis_4g = spinful_fermion_basis_general(
-        N=L, Nf=product(range(0, L, 2), range(0, L, 2)), kblock=(t, 0)
-    )
+        spinless_fermion_basis_1d(L=L, Nf=range(0, L, 2), kblock=0)
+        spinless_fermion_basis_general(N=L, Nf=range(0, L, 2), kblock=(t, 0))
 
-    print("passed particle number sectors test")
+        spinful_fermion_basis_1d(
+            L=L, Nf=product(range(0, L, 2), range(0, L, 2)), kblock=0
+        )
+        spinful_fermion_basis_general(
+            N=L, Nf=product(range(0, L, 2), range(0, L, 2)), kblock=(t, 0)
+        )
+
+        print("passed particle number sectors test")
+
+
+if __name__ == "__main__":
+    test()

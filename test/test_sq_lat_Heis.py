@@ -1,15 +1,11 @@
-import sys, os
-
-
 from quspin.basis import spin_basis_general
 from quspin.basis.transformations import square_lattice_trans
 from quspin.operators import hamiltonian
 import numpy as np
-from itertools import product
-import os
 
 
-def test(S, Lx, Ly):
+
+def run(S, Lx, Ly):
 
     N = Lx * Ly
 
@@ -42,8 +38,6 @@ def test(S, Lx, Ly):
 
     static = [["zz", J], ["+-", J], ["-+", J]]
 
-    E_symm = {}
-
     for Nb, (pcon_basis, basis_blocks) in basis_dict.items():
         H_pcon = hamiltonian(static, [], basis=pcon_basis, dtype=np.float64)
         if H_pcon.Ns > 0:
@@ -62,8 +56,8 @@ def test(S, Lx, Ly):
         np.testing.assert_allclose(E_pcon, E_block, atol=1e-13)
         print("passed Nb={} sector".format(Nb))
 
-
-test("1/2", 3, 3)
-test("1", 3, 3)
-test("1/2", 3, 2)
-test("1", 3, 2)
+def test():
+    run("1/2", 3, 3)
+    run("1", 3, 3)
+    run("1/2", 3, 2)
+    run("1", 3, 2)

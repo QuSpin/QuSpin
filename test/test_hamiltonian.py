@@ -1,16 +1,7 @@
-from __future__ import print_function
-import sys, os
-
-
 import numpy as np
 import scipy.sparse as sp
 from scipy.integrate import complex_ode
 from quspin.operators import hamiltonian
-
-try:
-    from itertools import izip as zip
-except ImportError:
-    pass
 
 
 def test_trace():
@@ -122,11 +113,3 @@ def test_evolve():
         np.testing.assert_allclose(ipsi - isolver.y, 0, atol=1e-10)
 
 
-test_shape()
-test_trace()
-test_hermitian_conj()
-test_transpose()
-test_conj()
-test_mul_sparse()
-test_mul_dense()
-test_evolve()

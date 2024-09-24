@@ -38,7 +38,7 @@ for k in range(L):
 
         v_in_full = P1.dot(v_in)
         v_out_full = b.inplace_Op(v_in_full, op_list, np.complex128)
-        v_out_proj = P2.H.dot(v_out_full)
+        v_out_proj = P2.T.conj().dot(v_out_full)
 
         # swap b1 with op_list in arguments.
         v_out = b2.Op_shift_sector(b1, op_list, v_in)

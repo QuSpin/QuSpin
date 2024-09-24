@@ -1,27 +1,19 @@
-import sys, os
-
-
 from quspin.basis import spin_basis_1d
 from quspin.basis import spin_basis_general
 import numpy as np
 from itertools import product
 
-try:
+def test_gen_basis_hcb(S="1/2"):
+
+
     S_dict = {
         (str(i) + "/2" if i % 2 == 1 else str(i // 2)): (i + 1, i / 2.0)
-        for i in xrange(1, 10001)
-    }
-except NameError:
-    S_dict = {
-        (str(i) + "/2" if i % 2 == 1 else str(i // 2)): (i + 1, i / 2.0)
-        for i in range(1, 10001)
+        for i in range(1, 1001)
     }
 
+    np.random.seed(0)
 
-np.random.seed(0)
 
-
-def check_gen_basis_hcb(S="1/2"):
     L = 4
     kblocks = [None]
     kblocks.extend(range(L))
@@ -121,7 +113,8 @@ def check_gen_basis_hcb(S="1/2"):
         )
 
 
-check_gen_basis_hcb(S="1/2")
-check_gen_basis_hcb(S="1")
-check_gen_basis_hcb(S="3/2")
-check_gen_basis_hcb(S="2")
+if __name__ == "__main__":
+    test_gen_basis_hcb(S="1/2")
+    test_gen_basis_hcb(S="1")
+    test_gen_basis_hcb(S="3/2")
+    test_gen_basis_hcb(S="2")

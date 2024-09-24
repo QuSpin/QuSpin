@@ -2,28 +2,26 @@ from quspin.operators import hamiltonian
 from quspin.basis import boson_basis_1d
 import numpy as np
 import scipy.sparse as sp
-from numpy.linalg import norm
-from numpy.random import random, seed
 
-seed()
+
 dtypes = [np.float32, np.float64, np.complex64, np.complex128]
 
 
-def J(L, jb, l):
+def J(L, jb, length):
     blist = []
     for i, j in jb:
         b = [j]
-        b.extend([(i + j) % L for j in range(l)])
+        b.extend([(i + j) % L for j in range(length)])
         blist.append(b)
 
     return blist
 
 
-def Jnn(L, jb, l):
+def Jnn(L, jb, length):
     blist = []
     for i, j in jb:
         b = [j]
-        b.extend([(i + j) % L for j in range(0, l + 1, 2)])
+        b.extend([(i + j) % L for j in range(0, length + 1, 2)])
         blist.append(b)
 
     return blist
@@ -32,7 +30,7 @@ def Jnn(L, jb, l):
 def getvec_boson(
     L, H1, static, sps=2, Nb=None, kblock=None, pblock=None, a=1, sparse=True
 ):
-    jb = [[i, 1.0] for i in range(L)]
+
     dtype = np.complex128
 
     b = boson_basis_1d(L, sps=sps, Nb=Nb, kblock=kblock, pblock=pblock, a=a)
@@ -45,7 +43,6 @@ def getvec_boson(
 
     E, v0 = H2.eigh()
     v = b.get_vec(v0, sparse=sparse)
-    P = b.get_proj(dtype=np.complex128)
 
     if sp.issparse(v):
         v = v.todense()
@@ -105,8 +102,8 @@ def check_getvec_boson(L, sps=2, a=1, sparse=True):
                     sparse=sparse,
                 )
 
-
-check_getvec_boson(6, sps=2, sparse=True)
-check_getvec_boson(6, sps=2, sparse=False)
-check_getvec_boson(6, sps=3, sparse=True)
-check_getvec_boson(6, sps=3, sparse=False)
+def test():
+    check_getvec_boson(6, sps=2, sparse=True)
+    check_getvec_boson(6, sps=2, sparse=False)
+    check_getvec_boson(6, sps=3, sparse=True)
+    check_getvec_boson(6, sps=3, sparse=False)

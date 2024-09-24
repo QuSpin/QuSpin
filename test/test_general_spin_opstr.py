@@ -1,22 +1,14 @@
-import sys, os
-
-
 from quspin.basis import spin_basis_1d
 from quspin.basis import spin_basis_general
 from quspin.basis import basis_int_to_python_int
 import numpy as np
 from itertools import product
 
-try:
-    S_dict = {
-        (str(i) + "/2" if i % 2 == 1 else str(i // 2)): (i + 1, i / 2.0)
-        for i in xrange(1, 10001)
-    }
-except NameError:
-    S_dict = {
-        (str(i) + "/2" if i % 2 == 1 else str(i // 2)): (i + 1, i / 2.0)
-        for i in range(1, 10001)
-    }
+
+S_dict = {
+    (str(i) + "/2" if i % 2 == 1 else str(i // 2)): (i + 1, i / 2.0)
+    for i in range(1, 1001)
+}
 
 
 def check_ME(basis_1d, basis_gen, opstr, indx, dtype, err_msg):
@@ -47,7 +39,7 @@ def check_ME(basis_1d, basis_gen, opstr, indx, dtype, err_msg):
             np.testing.assert_allclose(row1, row2, atol=1e-6, err_msg=err_msg)
             np.testing.assert_allclose(col1, col2, atol=1e-6, err_msg=err_msg)
             np.testing.assert_allclose(ME1, ME2, atol=1e-6, err_msg=err_msg)
-        except AssertionError:
+        except AssertionError as e:
             print(err_msg)
             print(basis_1d)
             print("difference:")
@@ -62,7 +54,7 @@ def check_ME(basis_1d, basis_gen, opstr, indx, dtype, err_msg):
             print(ME2)
             print(row2)
             print(col2)
-            raise Exception
+            raise e
 
 
 def test_gen_basis_spin(l_max, S="1/2"):
@@ -136,17 +128,17 @@ def test_gen_basis_spin(l_max, S="1/2"):
         try:
             np.testing.assert_allclose(basis_1d.states - gen_basis.states, 0, atol=1e-6)
             np.testing.assert_allclose(n, n_gen, atol=1e-6)
-        except:
+        except AssertionError as e:
             print(basis_1d.states)
             print(gen_basis.states)
             print(n)
             print(n_gen)
-            raise Exception
+            raise e
 
-        for l in range(1, l_max + 1):
-            for i0 in range(0, L - l + 1, 1):
-                indx = range(i0, i0 + l, 1)
-                for opstr in product(*[ops for i in range(l)]):
+        for length in range(1, l_max + 1):
+            for i0 in range(0, L - length + 1, 1):
+                indx = range(i0, i0 + length, 1)
+                for opstr in product(*[ops for i in range(length)]):
                     opstr = "".join(list(opstr))
                     printing = dict(basis_blocks)
                     printing["opstr"] = opstr
@@ -219,18 +211,18 @@ def test_gen_basis_spin_boost(L, Nups, l_max, S="1/2"):
             for s_general, s_1d in zip(gen_basis.states, basis_1d.states):
                 assert basis_int_to_python_int(s_general) == s_1d
             np.testing.assert_allclose(n - n_gen, 0, atol=1e-6)
-        except:
+        except AssertionError as e:
             print(basis_1d)
             print(n)
 
             print(gen_basis)
             print(n_gen)
-            raise Exception
+            raise e
 
-        for l in range(1, l_max + 1):
-            for i0 in range(0, L - l + 1, 1):
-                indx = list(range(i0, i0 + l, 1))
-                for opstr in product(*[ops for i in range(l)]):
+        for length in range(1, l_max + 1):
+            for i0 in range(0, L - length + 1, 1):
+                indx = list(range(i0, i0 + length, 1))
+                for opstr in product(*[ops for i in range(length)]):
                     opstr = "".join(list(opstr))
                     printing = dict(basis_blocks)
                     printing["opstr"] = opstr
@@ -245,15 +237,16 @@ def test_gen_basis_spin_boost(L, Nups, l_max, S="1/2"):
                     check_ME(basis_1d, gen_basis, opstr, indx, np.complex128, err_msg)
 
 
-print("testing S=1/2")
-test_gen_basis_spin(3, S="1/2")
-test_gen_basis_spin_boost(66, [1, -2], 2, S="1/2")
-print("testing S=1")
-test_gen_basis_spin(3, S="1")
-test_gen_basis_spin_boost(40, [1, -2], 2, S="1")
-print("testing S=3/2")
-test_gen_basis_spin(3, S="3/2")
-test_gen_basis_spin_boost(34, [1, -2], 2, S="3/2")
-print("testing S=2")
-test_gen_basis_spin(3, S="2")
-test_gen_basis_spin_boost(30, [1, -2], 2, S="2")
+if __name__ == "__main__":
+    print("testing S=1/2")
+    test_gen_basis_spin(3, S="1/2")
+    test_gen_basis_spin_boost(66, [1, -2], 2, S="1/2")
+    print("testing S=1")
+    test_gen_basis_spin(3, S="1")
+    test_gen_basis_spin_boost(40, [1, -2], 2, S="1")
+    print("testing S=3/2")
+    test_gen_basis_spin(3, S="3/2")
+    test_gen_basis_spin_boost(34, [1, -2], 2, S="3/2")
+    print("testing S=2")
+    test_gen_basis_spin(3, S="2")
+    test_gen_basis_spin_boost(30, [1, -2], 2, S="2")

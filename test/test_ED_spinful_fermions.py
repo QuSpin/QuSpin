@@ -2,9 +2,8 @@ from quspin.operators import hamiltonian
 from quspin.basis import spinful_fermion_basis_1d  # Hilbert spaces
 import numpy as np  # general math functions
 from itertools import product
-import scipy.sparse as sp
 from numpy.linalg import norm
-from numpy.random import random, seed
+from numpy.random import random
 
 
 # seed(0)
@@ -20,7 +19,7 @@ def eps(dtype):
     return 9e-3
 
 
-def check_m(Lmax):
+def test_m(Lmax):
     for dtype in dtypes:
         for L in range(2, Lmax + 1):
             h1 = [[2.0 * random() - 1.0, i] for i in range(L)]
@@ -45,7 +44,6 @@ def check_m(Lmax):
 
             basis = spinful_fermion_basis_1d(L=L)
             H = hamiltonian(static, [], dtype=dtype, basis=basis, **no_checks)
-            Ns = H.Ns
             E = H.eigvalsh()
 
             Em = []
@@ -69,7 +67,7 @@ def check_m(Lmax):
 # check_m(5)
 
 
-def check_z(L, dtype, Nf=None):
+def test_z(L, dtype, Nf=None):
 
     J1 = [[2.0 * random() - 1.0, i, i] for i in range(L)]
     J0 = random()
@@ -82,7 +80,6 @@ def check_z(L, dtype, Nf=None):
 
     basis = spinful_fermion_basis_1d(L=L, Nf=Nf)
     H = hamiltonian(static, [], dtype=dtype, basis=basis, **no_checks)
-    Ns = H.Ns
     E = H.eigvalsh()
 
     basis1 = spinful_fermion_basis_1d(L=L, Nf=Nf, sblock=1)
@@ -108,7 +105,7 @@ def check_z(L, dtype, Nf=None):
 # check_z(4,np.complex128)
 
 
-def check_p(L, dtype, Nf=None):
+def test_p(L, dtype, Nf=None):
 
     L_2 = int(L / 2)
     hr = [2.0 * random() - 1.0 for i in range(L_2)]
@@ -143,7 +140,6 @@ def check_p(L, dtype, Nf=None):
 
     basis = spinful_fermion_basis_1d(L=L, Nf=Nf)
     H = hamiltonian(static, [], dtype=dtype, basis=basis, **no_checks)
-    Ns = H.Ns
     E = H.eigvalsh()
 
     basis1 = spinful_fermion_basis_1d(L=L, Nf=Nf, pblock=1)
@@ -169,7 +165,7 @@ def check_p(L, dtype, Nf=None):
 # check_p(4,np.float64)
 
 
-def check_pz(L, dtype, Nf=None):
+def test_pz(L, dtype, Nf=None):
     L_2 = int(L / 2)
     hr = [2.0 * random() - 1.0 for i in range(L_2)]
     hi = [hr[i] for i in range(L_2)]
@@ -196,7 +192,6 @@ def check_pz(L, dtype, Nf=None):
 
     basis = spinful_fermion_basis_1d(L=L, Nf=Nf)
     H = hamiltonian(static, [], dtype=dtype, basis=basis, **no_checks)
-    Ns = H.Ns
     E = H.eigvalsh()
 
     basis1 = spinful_fermion_basis_1d(L=L, Nf=Nf, psblock=1)
@@ -221,7 +216,7 @@ def check_pz(L, dtype, Nf=None):
 # check_pz(4,np.float64,Nf=(2,2))
 
 
-def check_p_z(L, dtype, Nf=None):
+def test_p_z(L, dtype, Nf=None):
     L_2 = int(L / 2)
     hr = [2.0 * random() - 1.0 for i in range(L_2)]
     hi = [hr[i] for i in range(L_2)]
@@ -252,7 +247,6 @@ def check_p_z(L, dtype, Nf=None):
 
     basis = spinful_fermion_basis_1d(L=L, Nf=Nf)
     H = hamiltonian(static, [], dtype=dtype, basis=basis, **no_checks)
-    Ns = H.Ns
     E = H.eigvalsh()
 
     basis1 = spinful_fermion_basis_1d(L=L, Nf=Nf, pblock=1, sblock=1)
@@ -284,33 +278,33 @@ def check_p_z(L, dtype, Nf=None):
 # check_p_z(4,np.complex128)
 
 
-def check_obc(Lmax):
+def test_obc(Lmax):
     for dtype in dtypes:
         for L in range(2, Lmax + 1, 2):
-            check_z(L, dtype, Nf=(L // 2, L // 2))
-            check_z(L, dtype)
+            test_z(L, dtype, Nf=(L // 2, L // 2))
+            test_z(L, dtype)
 
     for dtype in dtypes:
         for L in range(2, Lmax + 1, 2):
             for Nup in range(L + 1):
-                check_t_p(L, dtype, Nf=(Nup, L - Nup))
-                check_p(L, dtype)
+                test_t_p(L, dtype, Nf=(Nup, L - Nup))
+                test_p(L, dtype)
 
     for dtype in dtypes:
         for L in range(2, Lmax + 1, 2):
-            check_pz(L, dtype, Nf=(L // 2, L // 2))
-            check_pz(L, dtype)
+            test_pz(L, dtype, Nf=(L // 2, L // 2))
+            test_pz(L, dtype)
 
     for dtype in dtypes:
         for L in range(2, Lmax + 1, 2):
-            check_p_z(L, dtype, Nf=(L // 2, L // 2))
-            check_p_z(L, dtype)
+            test_p_z(L, dtype, Nf=(L // 2, L // 2))
+            test_p_z(L, dtype)
 
 
 ################################################
 
 
-def check_t(L, dtype, Nf=None):
+def test_t(L, dtype, Nf=None):
     hx = random()
     h = [[hx, i] for i in range(L)]
 
@@ -339,7 +333,6 @@ def check_t(L, dtype, Nf=None):
 
     basis = spinful_fermion_basis_1d(L=L, Nf=Nf)
     H = hamiltonian(static, [], dtype=dtype, basis=basis, **no_checks)
-    Ns = H.Ns
 
     E, _ = H.eigh()
     # E=H.eigvalsh() # gives ValueError: On entry to CHBRDB parameter number 12 had an illegal value
@@ -365,7 +358,7 @@ def check_t(L, dtype, Nf=None):
 # check_t(4,np.complex128)
 
 
-def check_t_z(L, dtype, Nf=None):
+def test_t_z(L, dtype, Nf=None):
 
     h0 = random()
     h = [[h0, i] for i in range(L)]
@@ -389,7 +382,6 @@ def check_t_z(L, dtype, Nf=None):
 
         basisk = spinful_fermion_basis_1d(L=L, Nf=Nf, kblock=kblock)
         Hk = hamiltonian(static, [], dtype=dtype, basis=basisk, **no_checks)
-        Ns = Hk.Ns
         Ek = Hk.eigvalsh()
 
         basisk1 = spinful_fermion_basis_1d(L=L, Nf=Nf, kblock=kblock, sblock=+1)
@@ -413,7 +405,7 @@ def check_t_z(L, dtype, Nf=None):
 # check_t_z(4,np.complex128)
 
 
-def check_t_p(L, dtype, Nf=None):
+def test_t_p(L, dtype, Nf=None):
 
     hx = random()
     h = [[hx, i] for i in range(L)]
@@ -454,7 +446,6 @@ def check_t_p(L, dtype, Nf=None):
 
         basisk = spinful_fermion_basis_1d(L=L, kblock=kblock)
         Hk = hamiltonian(static, [], dtype=kdtype, basis=basisk, **no_checks)
-        Ns = Hk.Ns
         Ek = Hk.eigvalsh()
 
         basisk1 = spinful_fermion_basis_1d(L=L, kblock=kblock, pblock=+1)
@@ -481,7 +472,6 @@ def check_t_p(L, dtype, Nf=None):
 
     basisk = spinful_fermion_basis_1d(L=L, Nf=Nf, kblock=0)
     Hk = hamiltonian(static, [], dtype=kdtype, basis=basisk, **no_checks)
-    Ns = Hk.Ns
     Ek = Hk.eigvalsh()
 
     basisk1 = spinful_fermion_basis_1d(L=L, Nf=Nf, kblock=0, pblock=+1)
@@ -506,7 +496,6 @@ def check_t_p(L, dtype, Nf=None):
 
             basisk = spinful_fermion_basis_1d(L=L, Nf=Nf, kblock=kblock)
             Hk = hamiltonian(static, [], dtype=kdtype, basis=basisk, **no_checks)
-            Ns = Hk.Ns
             Ek = Hk.eigvalsh()
 
             basisk1 = spinful_fermion_basis_1d(L=L, Nf=Nf, kblock=kblock, pblock=+1)
@@ -533,7 +522,6 @@ def check_t_p(L, dtype, Nf=None):
 
         basisk = spinful_fermion_basis_1d(L=L, Nf=Nf, kblock=L_2)
         Hk = hamiltonian(static, [], dtype=kdtype, basis=basisk, **no_checks)
-        Ns = Hk.Ns
         Ek = Hk.eigvalsh()
 
         basisk1 = spinful_fermion_basis_1d(L=L, Nf=Nf, kblock=L_2, pblock=+1)
@@ -558,7 +546,6 @@ def check_t_p(L, dtype, Nf=None):
 
             basisk = spinful_fermion_basis_1d(L=L, Nf=Nf, kblock=kblock)
             Hk = hamiltonian(static, [], dtype=kdtype, basis=basisk, **no_checks)
-            Ns = Hk.Ns
             Ek = Hk.eigvalsh()
 
             basisk1 = spinful_fermion_basis_1d(L=L, Nf=Nf, kblock=kblock, pblock=+1)
@@ -588,7 +575,7 @@ def check_t_p(L, dtype, Nf=None):
 # check_t_p(4,np.complex128)
 
 
-def check_t_pz(L, dtype, Nf=None):
+def test_t_pz(L, dtype, Nf=None):
 
     h0 = random()
     h = [[h0, i] for i in range(L)]
@@ -622,7 +609,6 @@ def check_t_pz(L, dtype, Nf=None):
 
         basisk = spinful_fermion_basis_1d(L=L, Nf=Nf, kblock=kblock, a=a)
         Hk = hamiltonian(static, [], dtype=kdtype, basis=basisk, **no_checks)
-        Ns = Hk.Ns
         Ek = Hk.eigvalsh()
 
         basisk1 = spinful_fermion_basis_1d(L=L, Nf=Nf, kblock=kblock, a=a, psblock=+1)
@@ -648,7 +634,6 @@ def check_t_pz(L, dtype, Nf=None):
 
     basisk = spinful_fermion_basis_1d(L=L, Nf=Nf, kblock=0, a=a)
     Hk = hamiltonian(static, [], dtype=kdtype, basis=basisk, **no_checks)
-    Ns = Hk.Ns
     Ek = Hk.eigvalsh()
 
     basisk1 = spinful_fermion_basis_1d(L=L, Nf=Nf, kblock=0, a=a, psblock=+1)
@@ -673,7 +658,6 @@ def check_t_pz(L, dtype, Nf=None):
 
             basisk = spinful_fermion_basis_1d(L=L, Nf=Nf, kblock=kblock, a=a)
             Hk = hamiltonian(static, [], dtype=kdtype, basis=basisk, **no_checks)
-            Ns = Hk.Ns
             Ek = Hk.eigvalsh()
 
             basisk1 = spinful_fermion_basis_1d(
@@ -705,7 +689,6 @@ def check_t_pz(L, dtype, Nf=None):
 
         basisk = spinful_fermion_basis_1d(L=L, Nf=Nf, kblock=L_2, a=a)
         Hk = hamiltonian(static, [], dtype=kdtype, basis=basisk, **no_checks)
-        Ns = Hk.Ns
         Ek = Hk.eigvalsh()
 
         basisk1 = spinful_fermion_basis_1d(L=L, Nf=Nf, kblock=L_2, a=a, psblock=+1)
@@ -729,7 +712,6 @@ def check_t_pz(L, dtype, Nf=None):
 
             basisk = spinful_fermion_basis_1d(L=L, Nf=Nf, kblock=kblock, a=a)
             Hk = hamiltonian(static, [], dtype=kdtype, basis=basisk, **no_checks)
-            Ns = Hk.Ns
             Ek = Hk.eigvalsh()
 
             basisk1 = spinful_fermion_basis_1d(
@@ -763,7 +745,7 @@ def check_t_pz(L, dtype, Nf=None):
 # check_t_pz(6,np.float32)
 
 
-def check_t_p_z(L, dtype, Nf=None):
+def test_t_p_z(L, dtype, Nf=None):
     h0 = random()
     h = [[h0, i] for i in range(L)]
 
@@ -796,7 +778,6 @@ def check_t_p_z(L, dtype, Nf=None):
         Hkp1 = hamiltonian(static, [], dtype=dtype, basis=basisk1, **no_checks)
         basisk2 = spinful_fermion_basis_1d(L=L, Nf=Nf, kblock=kblock, pblock=-1)
         Hkp2 = hamiltonian(static, [], dtype=dtype, basis=basisk2, **no_checks)
-        Ns = Hkp1.Ns
         Ekp1 = Hkp1.eigvalsh()
         Ekp2 = Hkp2.eigvalsh()
 
@@ -867,39 +848,39 @@ def check_t_p_z(L, dtype, Nf=None):
 # check_t_p_z(6,np.complex128)
 
 
-def check_pbc(Lmax):
+def test_pbc(Lmax):
 
     for dtype in (np.complex64, np.complex128):
         for L in range(2, Lmax + 1, 1):
-            check_t(L, dtype)
+            test_t(L, dtype)
             for Nup in range(L + 1):
-                check_t(L, dtype, Nf=(Nup, L - Nup))
+                test_t(L, dtype, Nf=(Nup, L - Nup))
 
     for dtype in (np.complex64, np.complex128):
         for L in range(2, Lmax + 1, 2):
-            check_t_z(L, dtype, Nf=(L // 2, L // 2))
-            check_t_z(L, dtype)
+            test_t_z(L, dtype, Nf=(L // 2, L // 2))
+            test_t_z(L, dtype)
 
     for dtype in dtypes:
         for L in range(2, Lmax + 1, 1):
-            check_t_p(L, dtype)
+            test_t_p(L, dtype)
             for Nup in range(L + 1):
-                check_t_p(L, dtype, Nf=(Nup, L - Nup))
+                test_t_p(L, dtype, Nf=(Nup, L - Nup))
 
     for dtype in dtypes:
         for L in range(2, Lmax + 1, 2):
-            check_t_pz(L, dtype, Nf=(L // 2, L // 2))
-            check_t_pz(L, dtype)
+            test_t_pz(L, dtype, Nf=(L // 2, L // 2))
+            test_t_pz(L, dtype)
 
     for dtype in dtypes:
         for L in range(2, Lmax + 1, 2):
-            check_t_p_z(L, dtype, Nf=(L // 2, L // 2))
-            check_t_p_z(L, dtype)
+            test_t_p_z(L, dtype, Nf=(L // 2, L // 2))
+            test_t_p_z(L, dtype)
 
-
-check_m(4)
-check_obc(4)
-check_pbc(4)
+if __name__ == "__main__":
+    test_m(4)
+    test_obc(4)
+    test_pbc(4)
 
 # print('GET RID OF NO_CHECKS')
 # print('RELEASE SEED')

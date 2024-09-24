@@ -1,7 +1,5 @@
 from quspin.operators import hamiltonian
-from quspin.basis import spin_basis_1d, photon_basis
 import numpy as np
-import scipy.sparse as sp
 from numpy.linalg import norm
 from numpy.random import random, seed
 
@@ -13,7 +11,7 @@ def eps(dtype):
     return 2 * 10.0 ** (-5)
 
 
-def check_opstr(Lmax):
+def test_opstr(Lmax):
     for dtype in dtypes:
         for L in range(2, Lmax + 1):
             h = [[2.0 * random() - 1.0, i] for i in range(L)]
@@ -30,13 +28,12 @@ def check_opstr(Lmax):
             if norm(H1.todense() - H2.todense()) > eps(dtype):
                 raise Exception(
                     "test failed opstr at L={0:3d} with dtype {1} {2}".format(
-                        L, np.dtype(dtype)
-                    ),
-                    norm(H1.todense() - H2.todense()),
+                        L, np.dtype(dtype), norm(H1.todense() - H2.todense())
+                    )
                 )
 
 
-def check_m(Lmax):
+def test_m(Lmax):
     for dtype in dtypes:
         for L in range(2, Lmax + 1):
             h = [[2.0 * random() - 1.0, i] for i in range(L)]
@@ -288,7 +285,7 @@ def check_p_z(L, dtype, Nup=None):
         )
 
 
-def check_obc(Lmax):
+def test_obc(Lmax):
     for dtype in dtypes:
         for L in range(2, Lmax + 1, 2):
             check_z(L, dtype, Nup=int(L / 2))
@@ -869,7 +866,7 @@ def check_t_p_z(L, dtype, Nup=None):
                 )
 
 
-def check_pbc(Lmax):
+def test_pbc(Lmax):
 
     for dtype in (np.complex64, np.complex128):
         for L in range(2, Lmax + 1, 1):
@@ -911,7 +908,8 @@ def check_pbc(Lmax):
             check_t_p_z(L, dtype)
 
 
-check_m(4)
-check_opstr(4)
-check_obc(8)
-check_pbc(8)
+if __name__ == "__main__":
+    test_m(4)
+    test_opstr(4)
+    test_obc(8)
+    test_pbc(8)

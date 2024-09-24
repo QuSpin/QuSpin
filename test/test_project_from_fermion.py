@@ -2,28 +2,25 @@ from quspin.operators import hamiltonian
 from quspin.basis import spinless_fermion_basis_1d
 import numpy as np
 import scipy.sparse as sp
-from numpy.linalg import norm
-from numpy.random import random, seed
 
-seed()
 dtypes = [np.float32, np.float64, np.complex64, np.complex128]
 
 
-def J(L, jb, l):
+def J(L, jb, length):
     blist = []
     for i, j in jb:
         b = [j]
-        b.extend([(i + j) % L for j in range(l)])
+        b.extend([(i + j) % L for j in range(length)])
         blist.append(b)
 
     return blist
 
 
-def Jnn(L, jb, l):
+def Jnn(L, jb, length):
     blist = []
     for i, j in jb:
         b = [j]
-        b.extend([(i + j) % L for j in range(0, l + 1, 2)])
+        b.extend([(i + j) % L for j in range(0, length + 1, 2)])
         blist.append(b)
 
     return blist
@@ -32,8 +29,6 @@ def Jnn(L, jb, l):
 def getvec_spinless_fermion(
     L, H1, static, Nf=None, kblock=None, pblock=None, a=1, sparse=True
 ):
-    jb = [[i, 1.0] for i in range(L)]
-    jbhc = [[i, -1.0] for i in range(L)]
     dtype = np.complex128
 
     b = spinless_fermion_basis_1d(L, Nf=Nf, kblock=kblock, pblock=pblock, a=a)
@@ -48,8 +43,6 @@ def getvec_spinless_fermion(
     E, v0 = H2.eigh()
 
     v = b.get_vec(v0, sparse=sparse)
-
-    P = b.get_proj(dtype=np.complex128)
 
     if sp.issparse(v):
         v = v.todense()
@@ -106,5 +99,6 @@ def check_getvec_spinless_fermion(L, a=1, sparse=True):
                 )
 
 
-check_getvec_spinless_fermion(6, sparse=True)
-check_getvec_spinless_fermion(6, sparse=False)
+def test():
+    check_getvec_spinless_fermion(6, sparse=True)
+    check_getvec_spinless_fermion(6, sparse=False)

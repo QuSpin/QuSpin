@@ -1,9 +1,3 @@
-#
-import sys, os
-
-#
-
-#
 from quspin.operators import hamiltonian  # Hamiltonians and operators
 from quspin.basis import boson_basis_1d  # Hilbert space spin basis_1d
 from quspin.basis.user import user_basis  # Hilbert space user basis
@@ -17,12 +11,6 @@ from numba import carray, cfunc  # numba helper functions
 from numba import uint32, int32, float64  # numba data types
 import numpy as np
 from scipy.special import comb
-
-#
-N = 6  # lattice sites
-sps = 3  # states per site
-Np = N // 2  # total number of bosons
-
 
 #
 ############   create boson user basis object   #############
@@ -50,8 +38,6 @@ def op(op_struct_ptr, op_str, site_ind, N, args):
     #
     site_ind = N - site_ind - 1  # convention for QuSpin for mapping from bits to sites.
     occ = (op_struct.state // sps**site_ind) % sps  # occupation
-    n = (op_struct.state >> site_ind) & 1  # either 0 or 1
-    s = (((op_struct.state >> site_ind) & 1) << 1) - 1  # either -1 or 1
     b = sps**site_ind
     #
     if op_str == 43:  # "+" is integer value 43 = ord("+")
@@ -78,9 +64,6 @@ def op(op_struct_ptr, op_str, site_ind, N, args):
 
 
 #
-op_args = np.array([sps], dtype=np.uint32)
-
-
 ######  function to implement magnetization/particle conservation
 #
 @cfunc(
@@ -115,7 +98,7 @@ def next_state(s, counter, N, args):
                     # so far: moved one boson forward;
                     # now: take rest of bosons and fill first l sites with maximum occupation
                     # to keep lexigraphic order
-                    l = n // (
+                    l_full = n // (
                         sps - 1
                     )  # how many sites can be fully occupied with n bosons
                     n_left = n % (
@@ -123,23 +106,20 @@ def next_state(s, counter, N, args):
                     )  # leftover of particles on not maximally occupied sites
                     for j in range(i + 1):
                         t -= (t // args[j]) % sps * args[j]
-                        if j < l:  # fill in with maximal occupation
+                        if j < l_full:  # fill in with maximal occupation
                             t += (sps - 1) * args[j]
-                        elif j == l:  # fill with leftover
+                        elif j == l_full:  # fill with leftover
                             t += n_left * args[j]
                 break  # stop loop
     return t
 
 
-next_state_args = np.array([sps**i for i in range(N)], dtype=np.uint32)
-
-
 # python function to calculate the starting state to generate the particle conserving basis
 def get_s0_pcon(N, Np):
     sps = 3
-    l = Np // (sps - 1)
-    s = sum((sps - 1) * sps**i for i in range(l))
-    s += (Np % (sps - 1)) * sps**l
+    l_full = Np // (sps - 1)
+    s = sum((sps - 1) * sps**i for i in range(l_full))
+    s += (Np % (sps - 1)) * sps**l_full
     return s
 
 
@@ -156,7 +136,6 @@ def get_Ns_pcon(N, Np):
             Ns += -comb(N, r, exact=True) * comb(N + r_2 - 1, r_2, exact=True)
 
     return Ns
-
 
 #
 ######  define symmetry maps
@@ -183,10 +162,6 @@ def translation(x, N, sign_ptr, args):
     #
     return out
 
-
-T_args = np.array([1, sps], dtype=np.uint32)
-
-
 #
 @cfunc(map_sig_32, locals=dict(out=uint32, sps=uint32, i=int32, j=int32))
 def parity(x, N, sign_ptr, args):
@@ -201,7 +176,6 @@ def parity(x, N, sign_ptr, args):
     return out
 
 
-P_args = np.array([sps], dtype=np.uint32)
 
 
 #
@@ -222,61 +196,71 @@ def count_particles(x, p_count_ptr, args):
         s /= args[1]
 
 
-n_sectors = 1  # number of particle sectors
-count_particles_args = np.array([N, sps], dtype=np.int32)
-#
-######  construct user_basis
-# define maps dict
-maps = dict(
-    T_block=(translation, N, 0, T_args),
-    P_block=(parity, 2, 0, P_args),
-)
-# define particle conservation and op dicts
-pcon_dict = dict(
-    Np=Np,
-    next_state=next_state,
-    next_state_args=next_state_args,
-    get_Ns_pcon=get_Ns_pcon,
-    get_s0_pcon=get_s0_pcon,
-    count_particles=count_particles,
-    count_particles_args=count_particles_args,
-    n_sectors=n_sectors,
-)
-op_dict = dict(op=op, op_args=op_args)
-# create user basiss
-basis = user_basis(
-    np.uint32, N, op_dict, allowed_ops=set("+-nI"), sps=sps, pcon_dict=pcon_dict, **maps
-)
-#
-#
-#
-############   create same boson basis_1d object   #############
-basis_1d = boson_basis_1d(N, Nb=Np, sps=sps, kblock=0, pblock=1)
-#
-#
-print(basis)
-print(basis_1d)
-np.testing.assert_allclose(
-    basis.states - basis_1d.states, 0.0, atol=1e-5, err_msg="Failed bases comparison!"
-)
-#
-############   create Hamiltonians   #############
-#
-J = -1.0
-U = +1.0
-#
-hopping = [[+J, j, (j + 1) % N] for j in range(N)]
-int_bb = [[0.5 * U, j, j] for j in range(N)]
-int_b = [[-0.5 * U, j] for j in range(N)]
-#
-static = [["+-", hopping], ["-+", hopping], ["nn", int_bb], ["n", int_b]]
-dynamic = []
-#
-no_checks = dict(check_symm=False, check_herm=False, check_pcon=False)
-H = hamiltonian(static, [], basis=basis, dtype=np.float64, **no_checks)
-H_1d = hamiltonian(static, [], basis=basis_1d, dtype=np.float64, **no_checks)
-#
+def test():
+    N = 6  # lattice sites
+    sps = 3  # states per site
+    Np = N // 2  # total number of bosons
+    n_sectors = 1  # number of particle sectors
+    count_particles_args = np.array([N, sps], dtype=np.int32)
 
-np.testing.assert_allclose(
-    (H - H_1d).toarray(), 0.0, atol=1e-5, err_msg="Failed Hamiltonians comparison!"
-)
+    P_args = np.array([sps], dtype=np.uint32)
+    T_args = np.array([1, sps], dtype=np.uint32)
+    next_state_args = np.array([sps**i for i in range(N)], dtype=np.uint32)
+    op_args = np.array([sps], dtype=np.uint32)
+
+
+    #
+    ######  construct user_basis
+    # define maps dict
+    maps = dict(
+        T_block=(translation, N, 0, T_args),
+        P_block=(parity, 2, 0, P_args),
+    )
+    # define particle conservation and op dicts
+    pcon_dict = dict(
+        Np=Np,
+        next_state=next_state,
+        next_state_args=next_state_args,
+        get_Ns_pcon=get_Ns_pcon,
+        get_s0_pcon=get_s0_pcon,
+        count_particles=count_particles,
+        count_particles_args=count_particles_args,
+        n_sectors=n_sectors,
+    )
+    op_dict = dict(op=op, op_args=op_args)
+    # create user basiss
+    basis = user_basis(
+        np.uint32, N, op_dict, allowed_ops=set("+-nI"), sps=sps, pcon_dict=pcon_dict, **maps
+    )
+    #
+    #
+    #
+    ############   create same boson basis_1d object   #############
+    basis_1d = boson_basis_1d(N, Nb=Np, sps=sps, kblock=0, pblock=1)
+    #
+    #
+    print(basis)
+    print(basis_1d)
+    np.testing.assert_allclose(
+        basis.states - basis_1d.states, 0.0, atol=1e-5, err_msg="Failed bases comparison!"
+    )
+    #
+    ############   create Hamiltonians   #############
+    #
+    J = -1.0
+    U = +1.0
+    #
+    hopping = [[+J, j, (j + 1) % N] for j in range(N)]
+    int_bb = [[0.5 * U, j, j] for j in range(N)]
+    int_b = [[-0.5 * U, j] for j in range(N)]
+    #
+    static = [["+-", hopping], ["-+", hopping], ["nn", int_bb], ["n", int_b]]
+    #
+    no_checks = dict(check_symm=False, check_herm=False, check_pcon=False)
+    H = hamiltonian(static, [], basis=basis, dtype=np.float64, **no_checks)
+    H_1d = hamiltonian(static, [], basis=basis_1d, dtype=np.float64, **no_checks)
+    #
+
+    np.testing.assert_allclose(
+        (H - H_1d).toarray(), 0.0, atol=1e-5, err_msg="Failed Hamiltonians comparison!"
+    )

@@ -1,20 +1,17 @@
 from quspin.operators import hamiltonian
-from quspin.basis import spinless_fermion_basis_1d, photon_basis
+from quspin.basis import spinless_fermion_basis_1d
 import numpy as np
-import scipy.sparse as sp
 from numpy.linalg import norm
-from numpy.random import random, seed
+from numpy.random import random
 
-seed()
 dtypes = [np.float32, np.float64, np.complex64, np.complex128]
-# dtypes=[np.complex128]
 
 
 def eps(dtype):
     return 2 * 10.0 ** (-5)
 
 
-def check_m(Lmax):
+def test_m(Lmax):
     for dtype in dtypes:
         for L in range(2, Lmax + 1):
             h = [[2.0 * random() - 1.0, i] for i in range(L)]
@@ -59,9 +56,6 @@ def check_p(L, dtype, Nf=None):
     J_p = [[1.0, i, (i + 1) % L] for i in range(L - 1)]
     J_m = [[-1.0, i, (i + 1) % L] for i in range(L - 1)]
 
-    J_pp = [[np.sqrt(2), i, (i + 1) % L] for i in range(L - 1)]  # OBC
-    J_mm = [[-np.sqrt(2), i, (i + 1) % L] for i in range(L - 1)]  # OBC
-
     static = [["+-", J_p], ["-+", J_m], ["n", h], ["nn", J]]
 
     basis = spinless_fermion_basis_1d(L=L, Nf=Nf)
@@ -88,7 +82,7 @@ def check_p(L, dtype, Nf=None):
         )
 
 
-def check_obc(Lmax):
+def test_obc(Lmax):
 
     for dtype in dtypes:
         for L in range(2, Lmax + 1, 2):
@@ -144,9 +138,6 @@ def check_t_p(L, dtype, Nf=None):
     J1_p = [[Jnn, i, (i + 1) % L] for i in range(L)]
     J1_n = [[-Jnn, i, (i + 1) % L] for i in range(L)]
 
-    Delta = random()
-    J_pp = [[+Delta, i, (i + 1) % L] for i in range(L)]  # PBC
-    J_mm = [[-Delta, i, (i + 1) % L] for i in range(L)]  # PBC
 
     if type(Nf) is int:
         static = [["+-", J1_p], ["-+", J1_n], ["z", h], ["zz", J]]
@@ -296,7 +287,7 @@ def check_t_p(L, dtype, Nf=None):
                 )
 
 
-def check_pbc(Lmax):
+def test_pbc(Lmax):
 
     for dtype in (np.complex64, np.complex128):
         for L in range(2, Lmax + 1, 1):
@@ -311,6 +302,6 @@ def check_pbc(Lmax):
                 check_t_p(L, dtype, Nf=Nf)
 
 
-check_m(4)
-check_obc(8)
-check_pbc(8)
+test_m(4)
+test_obc(8)
+test_pbc(8)

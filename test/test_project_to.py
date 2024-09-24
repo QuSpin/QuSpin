@@ -1,14 +1,11 @@
-from quspin.operators import hamiltonian
 from quspin.basis import spin_basis_general
 import numpy as np
-import scipy.sparse as sp
-from numpy.linalg import norm
-from numpy.random import random, seed
-
-seed(0)
+from numpy.random import seed
 
 
-def test(basis, pcon=False):
+def check(basis, pcon=False):
+    seed(0)
+
 
     P = basis.get_proj(np.complex128, pcon=pcon)
 
@@ -33,39 +30,42 @@ def test(basis, pcon=False):
     )
 
 
-L = 12
-assert L >= 3
+def test():
+    seed(0)
 
-z = -(np.arange(L) + 1)
-p = np.arange(L)[::-1]
-t = (np.arange(L) + 1) % L
+    L = 12
+    assert L >= 3
 
-bases = [
-    spin_basis_general(L),
-    spin_basis_general(L, Nup=L // 2),
-    spin_basis_general(L, zb=(z, 0)),
-    spin_basis_general(L, zb=(z, 1)),
-    spin_basis_general(L, pb=(p, 0)),
-    spin_basis_general(L, pb=(p, 1)),
-    spin_basis_general(L, zb=(z, 0), pb=(p, 0)),
-    spin_basis_general(L, zb=(z, 0), pb=(p, 1)),
-    spin_basis_general(L, zb=(z, 1), pb=(p, 0)),
-    spin_basis_general(L, zb=(z, 1), pb=(p, 1)),
-    spin_basis_general(L, zb=(z, 0), pb=(t, 0)),
-    spin_basis_general(L, zb=(z, 0), pb=(t, 1)),
-    spin_basis_general(L, zb=(z, 1), pb=(t, 0)),
-    spin_basis_general(L, zb=(z, 1), pb=(t, 1)),
-    spin_basis_general(L, zb=(z, 0), pb=(p, 0), tb=(t, 0)),
-    spin_basis_general(L, zb=(z, 0), pb=(p, 0), tb=(t, L - 1)),
-    spin_basis_general(L, zb=(z, 0), pb=(p, 1), tb=(t, 0)),
-    spin_basis_general(L, zb=(z, 1), pb=(p, 0), tb=(t, L - 1)),
-    spin_basis_general(L, zb=(z, 1), pb=(p, 1), tb=(t, 0)),
-    spin_basis_general(L, Nup=L // 2, pb=(p, 0), tb=(t, 0)),
-    spin_basis_general(L, Nup=2, pb=(p, 0), tb=(t, L - 1)),
-    spin_basis_general(L, Nup=3, pb=(p, 1), tb=(t, 0)),
-    spin_basis_general(L, Nup=1, pb=(p, 0), tb=(t, L - 2)),
-    spin_basis_general(L, Nup=L // 2, pb=(p, 1), tb=(t, L - 1)),
-]
+    z = -(np.arange(L) + 1)
+    p = np.arange(L)[::-1]
+    t = (np.arange(L) + 1) % L
 
-for basis in bases:
-    test(basis)
+    bases = [
+        spin_basis_general(L),
+        spin_basis_general(L, Nup=L // 2),
+        spin_basis_general(L, zb=(z, 0)),
+        spin_basis_general(L, zb=(z, 1)),
+        spin_basis_general(L, pb=(p, 0)),
+        spin_basis_general(L, pb=(p, 1)),
+        spin_basis_general(L, zb=(z, 0), pb=(p, 0)),
+        spin_basis_general(L, zb=(z, 0), pb=(p, 1)),
+        spin_basis_general(L, zb=(z, 1), pb=(p, 0)),
+        spin_basis_general(L, zb=(z, 1), pb=(p, 1)),
+        spin_basis_general(L, zb=(z, 0), pb=(t, 0)),
+        spin_basis_general(L, zb=(z, 0), pb=(t, 1)),
+        spin_basis_general(L, zb=(z, 1), pb=(t, 0)),
+        spin_basis_general(L, zb=(z, 1), pb=(t, 1)),
+        spin_basis_general(L, zb=(z, 0), pb=(p, 0), tb=(t, 0)),
+        spin_basis_general(L, zb=(z, 0), pb=(p, 0), tb=(t, L - 1)),
+        spin_basis_general(L, zb=(z, 0), pb=(p, 1), tb=(t, 0)),
+        spin_basis_general(L, zb=(z, 1), pb=(p, 0), tb=(t, L - 1)),
+        spin_basis_general(L, zb=(z, 1), pb=(p, 1), tb=(t, 0)),
+        spin_basis_general(L, Nup=L // 2, pb=(p, 0), tb=(t, 0)),
+        spin_basis_general(L, Nup=2, pb=(p, 0), tb=(t, L - 1)),
+        spin_basis_general(L, Nup=3, pb=(p, 1), tb=(t, 0)),
+        spin_basis_general(L, Nup=1, pb=(p, 0), tb=(t, L - 2)),
+        spin_basis_general(L, Nup=L // 2, pb=(p, 1), tb=(t, L - 1)),
+    ]
+
+    for basis in bases:
+        check(basis)

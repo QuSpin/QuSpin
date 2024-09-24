@@ -1100,7 +1100,7 @@ class ho_basis(basis):
 
         if len(opstr) != len(indx):
             raise ValueError("length of opstr does not match length of indx")
-        if not _np.can_cast(J, _np.dtype(dtype)):
+        if not _np.can_cast(_np.min_scalar_type(J), _np.dtype(dtype)):
             raise TypeError("can't cast J to proper dtype")
 
         for o in opstr[::-1]:

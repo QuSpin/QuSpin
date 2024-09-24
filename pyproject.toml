@@ -15,6 +15,7 @@ dependencies = [
     "numexpr>=2.10.1",
     "numba>=0.60.0",
     "six>=1.16.0",
+    "joblib>=1.4.2",
 ]
 requires-python = "<3.13,>=3.9"
 readme = "README.md"

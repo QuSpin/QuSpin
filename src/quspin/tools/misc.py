@@ -6,9 +6,7 @@ import scipy.sparse as _sp
 import numpy as _np
 
 
-from quspin.tools.expm_multiply_parallel_core import csr_matvec
-
-from quspin.tools.matvec.matvec_core import matvec, get_matvec_function
+from parallel_sparse_tools.matvec.matvec_core import matvec, get_matvec_function
 
 from quspin.basis import get_basis_type
 

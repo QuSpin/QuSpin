@@ -1,6 +1,3 @@
-import sys, os
-
-
 from quspin.basis import spinless_fermion_basis_1d
 from quspin.basis import spinless_fermion_basis_general
 import numpy as np
@@ -32,7 +29,7 @@ def check_ME(b1, b2, opstr, indx, dtype, err_msg):
             np.testing.assert_allclose(row1 - row2, 0, atol=1e-6, err_msg=err_msg)
             np.testing.assert_allclose(col1 - col2, 0, atol=1e-6, err_msg=err_msg)
             np.testing.assert_allclose(ME1 - ME2, 0, atol=1e-6, err_msg=err_msg)
-        except:
+        except AssertionError as e:
             print(ME1)
             print(row1)
             print(col1)
@@ -40,7 +37,7 @@ def check_ME(b1, b2, opstr, indx, dtype, err_msg):
             print(ME2)
             print(row2)
             print(col2)
-            raise Exception
+            raise e
 
 
 def test_gen_basis_spinless_fermion(l_max, N=4):
@@ -91,10 +88,10 @@ def test_gen_basis_spinless_fermion(l_max, N=4):
         np.testing.assert_allclose(basis_1d._basis - gen_basis._basis, 0, atol=1e-6)
         np.testing.assert_allclose(n - n_gen, 0, atol=1e-6)
 
-        for l in range(1, l_max + 1):
-            for i0 in range(0, L - l + 1, 1):
-                indx = range(i0, i0 + l, 1)
-                for opstr in product(*[ops for i in range(l)]):
+        for length in range(1, l_max + 1):
+            for i0 in range(0, L - length + 1, 1):
+                indx = range(i0, i0 + length, 1)
+                for opstr in product(*[ops for i in range(length)]):
                     opstr = "".join(list(opstr))
                     printing = dict(basis_blocks)
                     printing["opstr"] = opstr
@@ -108,9 +105,10 @@ def test_gen_basis_spinless_fermion(l_max, N=4):
                     check_ME(basis_1d, gen_basis, opstr, indx, np.complex128, err_msg)
 
 
-print("testing Nf=4")
-test_gen_basis_spinless_fermion(3, N=4)
-print("testing Nf=5")
-test_gen_basis_spinless_fermion(3, N=5)
-print("testing Nf=6")
-test_gen_basis_spinless_fermion(3, N=6)
+if __name__ == "__main__":
+    print("testing Nf=4")
+    test_gen_basis_spinless_fermion(3, N=4)
+    print("testing Nf=5")
+    test_gen_basis_spinless_fermion(3, N=5)
+    print("testing Nf=6")
+    test_gen_basis_spinless_fermion(3, N=6)

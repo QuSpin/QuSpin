@@ -1,11 +1,7 @@
-import sys, os
-
-
 from quspin.basis import (
     spinless_fermion_basis_1d,
     spinful_fermion_basis_1d,
     spinless_fermion_basis_general,
-    spinful_fermion_basis_general,
 )
 from quspin.operators import hamiltonian
 from itertools import combinations
@@ -44,7 +40,7 @@ def test_pure_states(N=3, sparse=False, enforce_pure=False):
         err_msg="failed local operator comparison!",
     )
 
-    Sent = basis_full.ent_entropy(
+    basis_full.ent_entropy(
         psi_full,
         sub_sys_A=sub_sys_A,
         return_rdm="A",
@@ -120,7 +116,7 @@ def test_mixed_states(N=3, sparse=False, enforce_pure=False):
         err_msg="failed local operator comparison!",
     )
 
-    Sent = basis_full.ent_entropy(
+    basis_full.ent_entropy(
         rdm_full,
         sub_sys_A=sub_sys_A,
         return_rdm="A",

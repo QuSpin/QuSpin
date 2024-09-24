@@ -1,13 +1,10 @@
-import sys, os
-
-
 from quspin.basis import boson_basis_general
 from quspin.basis.transformations import square_lattice_trans
 from quspin.operators import hamiltonian
 import numpy as np
 
 
-def test(sps, Lx, Ly):
+def run(sps, Lx, Ly):
     N = Lx * Ly
     nmax = sps - 1
     tr = square_lattice_trans(Lx, Ly)
@@ -37,8 +34,6 @@ def test(sps, Lx, Ly):
 
     static = [["nn", J], ["+-", J], ["-+", J]]
 
-    E_symm = {}
-
     for Nb, (pcon_basis, basis_blocks) in basis_dict.items():
         H_pcon = hamiltonian(static, [], basis=pcon_basis, dtype=np.float64)
         if H_pcon.Ns > 0:
@@ -58,7 +53,8 @@ def test(sps, Lx, Ly):
         print("passed Nb={} sector".format(Nb))
 
 
-test(2, 3, 3)
-test(3, 3, 3)
-test(2, 3, 2)
-test(3, 3, 2)
+def test():
+    run(2, 3, 3)
+    run(3, 3, 3)
+    run(2, 3, 2)
+    run(3, 3, 2)

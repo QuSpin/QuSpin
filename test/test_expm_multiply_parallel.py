@@ -1,7 +1,3 @@
-import sys, os
-
-
-# print(os.environ["OMP_NUM_THREADS"])
 from quspin.basis import spin_basis_1d
 from quspin.operators import hamiltonian
 from quspin.tools.evolution import expm_multiply_parallel
@@ -84,7 +80,10 @@ def test_ramdom_int_matrix(N=3500, ntest=10, seed=0):
     i = 0
     while i < ntest:
         print("testing random integer matrix {}".format(i + 1))
-        data_rvs = lambda n: np.random.randint(-100, 100, size=n, dtype=np.int8)
+        
+        def data_rvs(n):
+            return np.random.randint(-100, 100, size=n, dtype=np.int8)
+        
         A = random(N, N, density=np.log(N) / N, data_rvs=data_rvs, dtype=np.int8)
         A = A.tocsr()
 
@@ -104,7 +103,8 @@ def test_ramdom_int_matrix(N=3500, ntest=10, seed=0):
         i += 1
 
 
-test_imag_time()
-test_ramdom_matrix()
-test_ramdom_int_matrix()
-print("expm_multiply_parallel tests passed!")
+if __name__ == "__main__":
+    test_imag_time()
+    test_ramdom_matrix()
+    test_ramdom_int_matrix()
+    print("expm_multiply_parallel tests passed!")

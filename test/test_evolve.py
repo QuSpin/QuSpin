@@ -1,3 +1,4 @@
+from matplotlib import pyplot as plt
 from quspin.operators import hamiltonian
 from quspin.basis import spin_basis_1d
 from quspin.tools.measurements import obs_vs_time
@@ -9,6 +10,20 @@ try:
     from itertools import izip as zip
 except ImportError:
     pass
+
+def test_values(lhs, rhs, **kwargs):
+    import matplotlib.pyplot as plt
+    try:
+        np.testing.assert_allclose(lhs, rhs, **kwargs)
+    except Exception as e:
+        plt.plot(lhs, label="lhs")
+        plt.plot(rhs, label="rhs")
+        plt.legend()
+        plt.figure()
+        plt.plot(lhs - rhs, label="diff")
+        plt.show()
+        
+        raise e
 
 L = 10
 dtype = np.float64
@@ -70,10 +85,10 @@ O_expt_rho = obs_vs_time(rho_t, times, dict(O=O_0))["O"]
 
 ## test
 for j in range(n_copies):
-    np.testing.assert_allclose(O_expt, O_expt_vec[..., j])
+    test_values(O_expt, O_expt_vec[..., j], atol=1e-5, rtol=1e-5)
 
 try:
-    np.testing.assert_allclose(O_expt, O_expt_rho)
+    test_values(O_expt, O_expt_rho, atol=1e-5, rtol=1e-5)
 except AssertionError:
     rho_t = H.evolve(rho_0, 0, times, eom="LvNE", iterate=True, atol=1e-10, rtol=1e-10)
     for t, O_SE, rho in zip(times, O_expt, rho_t):

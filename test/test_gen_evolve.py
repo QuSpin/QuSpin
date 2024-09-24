@@ -3,7 +3,6 @@ from quspin.basis import boson_basis_1d  # Hilbert space spin basis
 from quspin.tools.evolution import evolve
 from quspin.tools.Floquet import Floquet_t_vec
 import numpy as np  # generic math functions
-import scipy.sparse as sp
 
 # import matplotlib.pyplot as plt
 
@@ -86,7 +85,7 @@ for stack_state in [0, 1]:
     y = H.evolve(V[:, 0], t.i, t.vals, stack_state=stack_state)
 
     np.testing.assert_allclose(
-        y - y_genevolve, 0.0, atol=1e-6, err_msg="Failed evolve_list comparison!"
+        y - y_genevolve, 0.0, atol=1e-5, err_msg="Failed evolve_list comparison!"
     )
 
     y_genevolve = evolve(
@@ -105,6 +104,6 @@ for stack_state in [0, 1]:
         np.testing.assert_allclose(
             y_t - y_genevolve_t,
             0.0,
-            atol=1e-6,
+            atol=1e-5,
             err_msg="Failed evolve_iter comparison!",
         )

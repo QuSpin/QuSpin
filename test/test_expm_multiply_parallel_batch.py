@@ -86,7 +86,9 @@ def test_ramdom_int_matrix(N=3500, ntest=10, seed=0):
     i = 0
     while i < ntest:
         print("testing random integer matrix {}".format(i + 1))
-        data_rvs = lambda n: np.random.randint(-100, 100, size=n, dtype=np.int8)
+        def data_rvs(n):
+            return np.random.randint(-100, 100, size=n, dtype=np.int8)
+        
         A = random(N, N, density=np.log(N) / N, data_rvs=data_rvs, dtype=np.int8)
         A = A.tocsr()
 

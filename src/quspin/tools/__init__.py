@@ -57,17 +57,6 @@ measurements
    diag_ensemble
    obs_vs_time
 
-block_tools
------------
-
-.. currentmodule:: quspin.tools.block_tools
-
-.. autosummary::
-   :toctree: generated/
-
-   block_ops 
-   block_diag_hamiltonian
-
 misc
 ----
 
@@ -90,6 +79,5 @@ misc
 from . import evolution
 from . import Floquet
 from . import measurements
-from . import block_tools
 from . import misc
 from . import lanczos

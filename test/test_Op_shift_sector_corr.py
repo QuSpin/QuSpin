@@ -1,9 +1,5 @@
-import sys, os
-
-
 from quspin.basis import spin_basis_general
 from quspin.operators import hamiltonian
-from quspin.tools.evolution import expm_multiply_parallel
 import numpy as np
 
 
@@ -89,9 +85,10 @@ def corr_symm(L, times, S="1/2"):
     return sum(sqs)
 
 
-times = np.linspace(0, 5, 101)
-for L in [6, 8, 10, 12]:
-    print("testing Op_shift_sector for L={}".format(L))
-    c_full = corr_nosymm(L, times)
-    c_symm = corr_symm(L, times)
-    np.testing.assert_allclose(c_full, c_symm, atol=1e-10, rtol=0)
+def test():
+    times = np.linspace(0, 5, 101)
+    for L in [6, 8, 10, 12]:
+        print("testing Op_shift_sector for L={}".format(L))
+        c_full = corr_nosymm(L, times)
+        c_symm = corr_symm(L, times)
+        np.testing.assert_allclose(c_full, c_symm, atol=1e-10, rtol=0)
