@@ -120,7 +120,7 @@ def test():
             states = basis_2d_made.states.copy()
             inds = [np.where(basis_2d_full.states == r)[0][0] for r in states]
             psi_GS = V_GS[:, 0].copy()
-
+            out=basis_2d.get_amp(states,amps=psi_GS,mode='representative') # updates psi_GS in place!!!
             psi_tmp = basis_2d_made.get_vec(V_GS[:, 0], pcon=True, sparse=False)[inds]
             np.testing.assert_allclose(
                 psi_GS - psi_tmp,
