@@ -72,7 +72,7 @@ for q1 in [0, 1]:
 
         v_in_full = P1.dot(v_in)
         v_out_full = b.inplace_Op(v_in_full, op_list, np.complex128)
-        v_out_proj = P2.H.dot(v_out_full)
+        v_out_proj = P2.T.conj().dot(v_out_full)
 
         v_out = b2.Op_shift_sector(b1, op_list, v_in)
         np.testing.assert_allclose(v_out, v_out_proj, rtol=0, atol=1e-13)
@@ -94,7 +94,7 @@ for Nup in range(0, L):
 
     v_in_full = P1.dot(v_in)
     v_out_full = b.inplace_Op(v_in_full, op_list, np.complex128)
-    v_out_proj = P2.H.dot(v_out_full)
+    v_out_proj = P2.T.conj().dot(v_out_full)
 
     v_out = b2.Op_shift_sector(b1, op_list, v_in)
     np.testing.assert_allclose(v_out, v_out_proj, rtol=0, atol=1e-13)
@@ -115,7 +115,7 @@ for Nup in range(1, L + 1):
 
     v_in_full = P1.dot(v_in)
     v_out_full = b.inplace_Op(v_in_full, op_list, np.complex128)
-    v_out_proj = P2.H.dot(v_out_full)
+    v_out_proj = P2.T.conj().dot(v_out_full)
 
     v_out = b2.Op_shift_sector(b1, op_list, v_in)
     np.testing.assert_allclose(v_out, v_out_proj, rtol=0, atol=1e-13)

@@ -692,7 +692,7 @@ class exp_op(object):
         Examples
         ---------
         >>> expO = exp_op(O,a=1j)
-        >>> A = exp_op(O.H)
+        >>> A = exp_op(O.T.conj())
         >>> print(expO.sandwich(A))
 
         """
@@ -723,11 +723,11 @@ class exp_op(object):
 
         if shift is not None:
             M = self._a.conjugate() * (
-                self.O.H(**call_kwargs)
+                self.O.T.conj()(**call_kwargs)
                 + shift * _sp.identity(self.Ns, dtype=self.O.dtype)
             )
         else:
-            M = self._a.conjugate() * self.O.H(**call_kwargs)
+            M = self._a.conjugate() * self.O.T.conj()(**call_kwargs)
 
         if self._iterate:
 
@@ -741,7 +741,7 @@ class exp_op(object):
             if self._grid is None and self._step is None:
 
                 other = self.dot(other, **call_kwargs)
-                other = self.H.rdot(other, **call_kwargs)
+                other = self.T.conj().rdot(other, **call_kwargs)
                 return other
 
             else:

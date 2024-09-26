@@ -547,7 +547,7 @@ class photon_basis(tensor_basis):
 
                     else:
                         proj = self.get_proj(_dtypes[state.dtype.char], full_part=False)
-                        proj_state = proj * state * proj.H
+                        proj_state = proj * state * proj.T.conj()
 
                         shape0 = proj_state.shape
                         proj_state = proj_state.reshape(shape0 + (1,))
@@ -559,7 +559,7 @@ class photon_basis(tensor_basis):
                     Ns_full = proj.shape[0]
                     n_states = state.shape[0]
 
-                    gen = (proj * s * proj.H for s in state[:])
+                    gen = (proj * s * proj.T.conj() for s in state[:])
 
                     proj_state = _np.zeros(
                         (Ns_full, Ns_full, n_states), dtype=_dtypes[state.dtype.char]
@@ -676,7 +676,7 @@ class photon_basis(tensor_basis):
                         )
                     else:
                         proj = self.get_proj(_dtypes[state.dtype.char], full_part=False)
-                        proj_state = proj * state * proj.H
+                        proj_state = proj * state * proj.T.conj()
 
                 elif state.ndim == 3:  # 3D DM
                     proj = self.get_proj(_dtypes[state.dtype.char], full_part=False)
@@ -684,7 +684,7 @@ class photon_basis(tensor_basis):
                     Ns_full = proj.shape[0]
                     n_states = state.shape[-1]
 
-                    gen = (proj * state[:, :, i] * proj.H for i in range(n_states))
+                    gen = (proj * state[:, :, i] * proj.T.conj() for i in range(n_states))
                     proj_state = _np.zeros(
                         (Ns_full, Ns_full, n_states), dtype=_dtypes[state.dtype.char]
                     )

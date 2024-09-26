@@ -443,7 +443,7 @@ class quantum_LinearOperator(LinearOperator):
     def _expt_value_core(self, V_left, V_right, enforce_pure=False):
         if _sp.issparse(V_right):
             if V_left.shape[0] != V_left.shape[1] or enforce_pure:  # pure states
-                return _np.asscalar((V_left.H.dot(V_right)).toarray())
+                return _np.asscalar((V_left.T.conj().dot(V_right)).toarray())
             else:  # density matrix
                 return V_right.diagonal().sum()
         else:
@@ -508,9 +508,9 @@ class quantum_LinearOperator(LinearOperator):
 
         if _sp.issparse(Vl):
             if diagonal:
-                return Vl.H.dot(Vr).diagonal()
+                return Vl.T.conj().dot(Vr).diagonal()
             else:
-                return Vl.H.dot(Vr)
+                return Vl.T.conj().dot(Vr)
         else:
             if diagonal:
                 return _np.einsum("ij,ij->j", Vl.conj(), Vr)
@@ -540,7 +540,7 @@ class quantum_LinearOperator(LinearOperator):
         return new_other
 
     def _rmatvec(self, other):
-        return self.H._matvec(other)
+        return self.T.conj()._matvec(other)
 
     def _matmat(self, other):
         return self._matvec(other)

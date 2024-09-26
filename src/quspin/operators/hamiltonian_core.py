@@ -1080,7 +1080,7 @@ class hamiltonian(object):
             if diagonal:
                 return _np.asarray(Vl.conj().multiply(Vr).sum(axis=0)).squeeze()
             else:
-                return Vl.H.dot(Vr)
+                return Vl.T.conj().dot(Vr)
         elif _sp.issparse(Vr):
             if diagonal:
                 return _np.asarray(Vr.multiply(Vl.conj()).sum(axis=0)).squeeze()
@@ -1182,7 +1182,7 @@ class hamiltonian(object):
                     )
                 )
 
-            new = self._rmul_dense(proj.H)
+            new = self._rmul_dense(proj.T.conj())
             new._shape = (proj.shape[1], proj.shape[1])
             return new._imul_dense(proj)
 
@@ -1676,7 +1676,7 @@ class hamiltonian(object):
             raise TypeError("expecting scalar argument for time")
 
         matvec = functools.partial(_hamiltonian_dot, self, time)
-        rmatvec = functools.partial(_hamiltonian_dot, self.H, time)
+        rmatvec = functools.partial(_hamiltonian_dot, self.T.conj(), time)
         return _sla.LinearOperator(
             self.get_shape, matvec, rmatvec=rmatvec, matmat=matvec, dtype=self._dtype
         )

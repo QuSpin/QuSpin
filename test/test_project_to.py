@@ -23,7 +23,7 @@ def check(basis, pcon=False):
         P.dot(v), basis.project_from(v, sparse=False), atol=1e-10, err_msg=err_msg
     )
     np.testing.assert_allclose(
-        P.H.dot(v_full),
+        P.T.conj().dot(v_full),
         basis.project_to(v_full, sparse=False),
         atol=1e-10,
         err_msg=err_msg,
@@ -69,3 +69,5 @@ def test():
 
     for basis in bases:
         check(basis)
+
+

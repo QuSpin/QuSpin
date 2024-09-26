@@ -426,7 +426,7 @@ class quantum_operator(object):
                 A matrix or ndarray with shape (N,) or (N,1) depending on the type and shape of the x argument.
 
         """
-        return self.H.dot(x)
+        return self.T.conj().dot(x)
 
     def matmat(self, X):
         """Matrix-matrix multiplication.
@@ -803,7 +803,7 @@ class quantum_operator(object):
             if diagonal:
                 return _np.asarray(Vl.conj().multiply(Vr).sum(axis=0)).squeeze()
             else:
-                return Vl.H.dot(Vr)
+                return Vl.T.conj().dot(Vr)
         elif _sp.issparse(Vr):
             if diagonal:
                 return _np.asarray(Vr.multiply(Vl.conj()).sum(axis=0)).squeeze()
@@ -1104,7 +1104,7 @@ class quantum_operator(object):
         """
         pars = self._check_scalar_pars(pars)
         matvec = functools.partial(_quantum_operator_dot, self, pars)
-        rmatvec = functools.partial(_quantum_operator_dot, self.H, pars)
+        rmatvec = functools.partial(_quantum_operator_dot, self.T.conj(), pars)
         return _sla.LinearOperator(
             self.get_shape, matvec, rmatvec=rmatvec, matmat=matvec, dtype=self._dtype
         )

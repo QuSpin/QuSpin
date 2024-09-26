@@ -1255,7 +1255,7 @@ def _combine_get_vec(basis,v0,sparse,full_left,full_right):
 	else:
 		V1,S,V2=_la.svd(v0)
 		
-	# svd returns V2.H so take the hc to reverse that
+	# svd returns V2.T.conj() so take the hc to reverse that
 	V2=V2.T.conj()
 	eps = _np.finfo(S.dtype).eps
 	# for any values of s which are 0, remove those vectors because they do not contribute.

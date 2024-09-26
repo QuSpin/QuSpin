@@ -6,6 +6,13 @@ import scipy.sparse as sp
 dtypes = [np.float32, np.float64, np.complex64, np.complex128]
 
 
+
+S_dict = {
+    (str(i) + "/2" if i % 2 == 1 else str(i // 2)): (i + 1, i / 2.0)
+    for i in range(1, 10001)
+}
+
+
 def J(L, jb, length):
     blist = []
     for i, j in jb:
@@ -31,7 +38,7 @@ def getvec_spin(
     H1,
     static,
     S="1/2",
-    Nup=None,
+    m=None,
     kblock=None,
     pblock=None,
     zblock=None,
@@ -44,7 +51,7 @@ def getvec_spin(
     b = spin_basis_1d(
         L,
         S=S,
-        Nup=Nup,
+        m=m,
         kblock=kblock,
         pblock=pblock,
         zblock=zblock,
@@ -129,7 +136,7 @@ def check_getvec_spin(L, S="1/2", a=1, sparse=True):
         ["-+-+", J(L, jb, 4)],
     ]
 
-    b_full = spin_basis_1d(L)
+    b_full = spin_basis_1d(L,S=S)
 
     if S != "1/2":
         static, _ = b_full.expanded_form(static, [])
@@ -144,12 +151,13 @@ def check_getvec_spin(L, S="1/2", a=1, sparse=True):
         for k in range(-L // a, L // a):
             getvec_spin(L, H1, static, S=S, kblock=k, pblock=j, a=a, sparse=sparse)
 
-    Nup = None
+    m = None
+    sps, S_val = S_dict[S]
 
     for i in range(-1, 2, 2):
         for j in range(-1, 2, 2):
             getvec_spin(
-                L, H1, static, S=S, Nup=Nup, pblock=i, zblock=j, a=a, sparse=sparse
+                L, H1, static, S=S, m=m, pblock=i, zblock=j, a=a, sparse=sparse
             )
             for k in range(-L // a, L // a):
                 getvec_spin(
@@ -158,7 +166,7 @@ def check_getvec_spin(L, S="1/2", a=1, sparse=True):
                     static,
                     S=S,
                     kblock=k,
-                    Nup=Nup,
+                    m=m,
                     pblock=i,
                     zblock=j,
                     a=a,
@@ -166,37 +174,37 @@ def check_getvec_spin(L, S="1/2", a=1, sparse=True):
                 )
 
     for j in range(-1, 2, 2):
-        getvec_spin(L, H1, static, S=S, Nup=Nup, pzblock=j, a=a, sparse=sparse)
+        getvec_spin(L, H1, static, S=S, m=m, pzblock=j, a=a, sparse=sparse)
         for k in range(-L // a, L // a):
             getvec_spin(
-                L, H1, static, S=S, kblock=k, Nup=Nup, pzblock=j, a=a, sparse=sparse
+                L, H1, static, S=S, kblock=k, m=m, pzblock=j, a=a, sparse=sparse
             )
 
     for j in range(-1, 2, 2):
-        getvec_spin(L, H1, static, S=S, Nup=Nup, zblock=j, a=a)
+        getvec_spin(L, H1, static, S=S, m=m, zblock=j, a=a)
         for k in range(-L // a, L // a):
             getvec_spin(
-                L, H1, static, S=S, kblock=k, Nup=Nup, zblock=j, a=a, sparse=sparse
+                L, H1, static, S=S, kblock=k, m=m, zblock=j, a=a, sparse=sparse
             )
 
     for Nup in range(L + 1):
         for k in range(-L // a, L // a):
-            getvec_spin(L, H1, static, S=S, Nup=Nup, kblock=k, a=a, sparse=sparse)
+            getvec_spin(L, H1, static, S=S, m=Nup/L-S_val, kblock=k, a=a, sparse=sparse)
 
     for Nup in range(0, L + 1):
         for j in range(-1, 2, 2):
-            getvec_spin(L, H1, static, S=S, Nup=Nup, pblock=j, a=a, sparse=sparse)
+            getvec_spin(L, H1, static, S=S, m=Nup/L-S_val, pblock=j, a=a, sparse=sparse)
             for k in range(-L // a, L // a):
                 getvec_spin(
-                    L, H1, static, S=S, kblock=k, Nup=Nup, pblock=j, a=a, sparse=sparse
+                    L, H1, static, S=S, kblock=k, m=Nup/L-S_val, pblock=j, a=a, sparse=sparse
                 )
 
     if (L % 2) == 0:
-        Nup = L // 2
+        m=0
         for i in range(-1, 2, 2):
             for j in range(-1, 2, 2):
                 getvec_spin(
-                    L, H1, static, S=S, Nup=Nup, pblock=i, zblock=j, a=a, sparse=sparse
+                    L, H1, static, S=S, m=m, pblock=i, zblock=j, a=a, sparse=sparse
                 )
                 for k in range(-L // a, L // a):
                     getvec_spin(
@@ -205,7 +213,7 @@ def check_getvec_spin(L, S="1/2", a=1, sparse=True):
                         static,
                         S=S,
                         kblock=k,
-                        Nup=Nup,
+                        m=m,
                         pblock=i,
                         zblock=j,
                         a=a,
@@ -213,17 +221,17 @@ def check_getvec_spin(L, S="1/2", a=1, sparse=True):
                     )
 
         for j in range(-1, 2, 2):
-            getvec_spin(L, H1, static, S=S, Nup=Nup, pzblock=j, a=a, sparse=sparse)
+            getvec_spin(L, H1, static, S=S, m=m, pzblock=j, a=a, sparse=sparse)
             for k in range(-L // a, L // a):
                 getvec_spin(
-                    L, H1, static, S=S, kblock=k, Nup=Nup, pzblock=j, a=a, sparse=sparse
+                    L, H1, static, S=S, kblock=k, m=m, pzblock=j, a=a, sparse=sparse
                 )
 
         for j in range(-1, 2, 2):
-            getvec_spin(L, H1, static, S=S, Nup=Nup, zblock=j, a=a, sparse=sparse)
+            getvec_spin(L, H1, static, S=S, m=m, zblock=j, a=a, sparse=sparse)
             for k in range(-L // a, L // a):
                 getvec_spin(
-                    L, H1, static, S=S, kblock=k, Nup=Nup, zblock=j, a=a, sparse=sparse
+                    L, H1, static, S=S, kblock=k, m=m, zblock=j, a=a, sparse=sparse
                 )
 
 
@@ -303,3 +311,5 @@ def test_sublattice():
     check_getvec_spin_sublattice(6, S="1", sparse=False)
     check_getvec_spin_sublattice(6, S="1", sparse=True)
     check_getvec_spin_sublattice(6, S="1", sparse=False)
+
+

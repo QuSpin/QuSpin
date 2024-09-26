@@ -422,7 +422,7 @@ class basis_general(lattice_basis):
         >>> P2 = basis_sector_2.get_proj(np.complex128) # projector between full and target basis
         >>> v_in_full = P1.dot(v_in) # go from initial basis to to full basis
         >>> v_out_full = basis_full.inplace_Op(v_in_full,op_list,np.complex128) # apply Op
-        >>> v_out = P2.H.dot(v_out_full) # project to target basis
+        >>> v_out = P2.T.conj().dot(v_out_full) # project to target basis
 
         Notes
         -----

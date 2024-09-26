@@ -340,7 +340,7 @@ class lattice_basis(basis):
 
                 else:
                     proj = self.get_proj(_dtypes[state.dtype.char])
-                    proj_state = proj * state * proj.H
+                    proj_state = proj * state * proj.T.conj()
 
                     if compute_signs:  # imprint fermion signs
                         proj_state *= _np.outer(sign_array, sign_array)
@@ -362,10 +362,10 @@ class lattice_basis(basis):
                 if compute_signs:  # imprint fermion signs
                     signs_mask = _np.outer(sign_array, sign_array)
                     gen = (
-                        _np.multiply(proj * s * proj.H, signs_mask) for s in state[:]
+                        _np.multiply(proj * s * proj.T.conj(), signs_mask) for s in state[:]
                     )
                 else:
-                    gen = (proj * s * proj.H for s in state[:])
+                    gen = (proj * s * proj.T.conj() for s in state[:])
 
                 proj_state = _np.zeros(
                     (n_states, Ns_full, Ns_full), dtype=_dtypes[state.dtype.char]
@@ -775,9 +775,9 @@ class lattice_basis(basis):
         if compute_signs:  # imprint fermion signs
             sign_array = self._ptrace_signs(sub_sys_A)
             signs_mask = _np.outer(sign_array, sign_array)
-            gen = (_np.multiply(proj * s * proj.H, signs_mask) for s in state[:])
+            gen = (_np.multiply(proj * s * proj.T.conj(), signs_mask) for s in state[:])
         else:
-            gen = (proj * s * proj.H for s in state[:])
+            gen = (proj * s * proj.T.conj() for s in state[:])
 
         proj_state = _np.zeros(
             (n_states, Ns_full, Ns_full), dtype=_dtypes[state.dtype.char]

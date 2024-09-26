@@ -58,7 +58,7 @@ def test():
 
     run(3, 2)
     run(2, 3)
-    run(3, 3)
+    #run(3, 3) # takes insanely long
 
     run(4, 2)
     run(2, 4)

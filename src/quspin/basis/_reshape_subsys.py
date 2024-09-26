@@ -53,11 +53,11 @@ def _lattice_partial_trace_sparse_pure(psi, sub_sys_A, L, sps, return_rdm="A"):
     psi = _lattice_reshape_sparse_pure(psi, sub_sys_A, L, sps)
 
     if return_rdm == "A":
-        return psi.dot(psi.H), None
+        return psi.dot(psi.T.conj()), None
     elif return_rdm == "B":
-        return None, psi.H.dot(psi)
+        return None, psi.T.conj().dot(psi)
     elif return_rdm == "both":
-        return psi.dot(psi.H), psi.H.dot(psi)
+        return psi.dot(psi.T.conj()), psi.T.conj().dot(psi)
 
 
 def _lattice_reshape_pure(psi, sub_sys_A, L, sps):
@@ -281,11 +281,11 @@ def _tensor_partial_trace_sparse_pure(psi, sub_sys_A, Ns_l, Ns_r, return_rdm="A"
     psi = _tensor_reshape_sparse_pure(psi, sub_sys_A, Ns_l, Ns_r)
 
     if return_rdm == "A":
-        return psi.dot(psi.H), None
+        return psi.dot(psi.T.conj()), None
     elif return_rdm == "B":
-        return None, psi.H.dot(psi)
+        return None, psi.T.conj().dot(psi)
     elif return_rdm == "both":
-        return psi.dot(psi.H), psi.H.dot(psi)
+        return psi.dot(psi.T.conj()), psi.T.conj().dot(psi)
 
 
 def _tensor_partial_trace_mixed(rho, sub_sys_A, Ns_l, Ns_r, return_rdm="A"):
