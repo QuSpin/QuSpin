@@ -1482,12 +1482,14 @@ class hamiltonian(object):
         V = V.reshape(V_out.shape)
         self._static_matvec(self._static, V, out=V_out, overwrite_out=True)
         for func, Hd in iteritems(self._dynamic):
-            self._dynamic_matvec[func](
-                Hd, V, a=func(time), out=V_out, overwrite_out=False
-            )
+            self._dynamic_matvec[func](Hd,V,a=func(time),out=V_out,overwrite_out=False)
+            #V_out+=func(time)*Hd@V
 
         V_out *= -1j
         return V_out.ravel()
+
+    # def SO(self, time, V, V_out):
+    #     return self.__SO(time, V, V_out)
 
     def evolve(
         self,

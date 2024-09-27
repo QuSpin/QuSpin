@@ -69,8 +69,6 @@ def test_shape():
     assert H.get_shape == M1.shape
 
 
-#np.random.seed(0)
-
 def test_evolve():
     def ifunc(t, y):
         return -1j * np.cos(t) * M.dot(y)
@@ -106,21 +104,70 @@ def test_evolve():
     for i, (ipsi, psi) in enumerate(zip(ipsi_t, psi_t)):
         solver.integrate(times[i])
         solver._y /= np.linalg.norm(solver.y)
-        #print(psi)
-        #print(solver.y)
-        #print(psi-solver.y)
-        #exit()
         np.testing.assert_allclose(psi - solver.y, 0.0, atol=desired_tol, )
 
         isolver.integrate(times[i])
-        #print(ipsi- isolver.y)
         np.testing.assert_allclose(ipsi- isolver.y, 0.0, atol=desired_tol, )
 
-        #print(i)
-        #exit()
+
+# from quspin.tools.evolution import evolve
+
+# def test_evolve2():
+#     def ifunc(t,y):
+#         return -1j*np.cos(t)*M.dot(y)
+
+#     # def func(t,y):
+#     #     return -np.cos(t)*M.dot(y)
+
+#     M = np.arange(16).reshape(4,4).astype(np.float64) 
+#     M = (M.T.conj() + M)/2.0
+#     M = np.asarray(M)
+
+#     H = hamiltonian([],[[M,np.cos,()]])
+
+#     psi0 = (1.0+1j)*np.ones((4,),dtype=np.complex128)
+#     psi0 /= np.linalg.norm(psi0)
 
 
-#test_evolve()
+#     isolver = complex_ode(ifunc)
+#     isolver.set_integrator("dop853",atol=1e-9,rtol=1e-9,nsteps=np.iinfo(np.int32).max)
+#     isolver.set_initial_value(psi0, 0)
+
+#     # solver = complex_ode(func)
+#     # solver.set_integrator("dop853",atol=1e-9,rtol=1e-9,nsteps=np.iinfo(np.int32).max)
+#     # solver.set_initial_value(psi0, 0)
+
+#     times = np.arange(0,100.1,1)
+#     #print(times)
+
+#     #psi_t = H.evolve(psi0,0,times,iterate=True,imag_time=True,atol=1e-9,rtol=1e-9)
+#     #ipsi_t = H.evolve(psi0,0,times,iterate=True,atol=1e-9,rtol=1e-9,nsteps=np.iinfo(np.int32).max)
+
+
+#     f=H.SO 
+#     f_params=(psi0.copy(),)
+
+#     # print(f(1.234,psi0,*f_params))
+#     # exit()
+
+#     ipsi_t  = evolve(psi0,0,times,f, f_params=f_params, solver_name='dop853',iterate=True,atol=1e-9,rtol=1e-9,nsteps=np.iinfo(np.int32).max )
+#     ipsi_t2 = evolve(psi0,0,times,ifunc, solver_name='dop853',iterate=True,atol=1e-9,rtol=1e-9,nsteps=np.iinfo(np.int32).max )
+
+#     for i, (ipsi, ipsi2) in enumerate(zip(ipsi_t, ipsi_t2)):
+#         #print('time:', times[i])
+#         # solver.integrate(times[i])
+#         # solver._y/=np.linalg.norm(solver.y)
+#         # np.testing.assert_allclose(psi-solver.y,0,atol=1e-10)
+
+#         isolver.integrate(times[i])
+
+#     print(ipsi)
+#     print(ipsi2)
+#     print(isolver.y)
+#     np.testing.assert_allclose(ipsi-isolver.y,0,atol=1e-10)
+
+
+# test_evolve2()
 
 
 
