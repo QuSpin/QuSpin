@@ -42,4 +42,4 @@ _.env_file = "./.env"
 upload = "python -m twine upload -r bloqade dist/*"
 build = {cmd = "pdm build"}
 publish = {composite = ["build", "upload"]}
-test = {shell = "pytest tests"}
+test = {shell = "pytest -x"}
