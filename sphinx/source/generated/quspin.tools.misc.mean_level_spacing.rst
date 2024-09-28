@@ -1,4 +1,4 @@
-quspin.tools.misc.mean\_level\_spacing
+﻿quspin.tools.misc.mean\_level\_spacing
 ======================================
 
 .. currentmodule:: quspin.tools.misc

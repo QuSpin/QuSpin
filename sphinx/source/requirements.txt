@@ -1,0 +1,10 @@
+pip install -U sphinx
+
+pip install numpydoc 
+
+pip install sphinx-rtd-theme
+pip install sphinx-rtd-size
+
+
+
+

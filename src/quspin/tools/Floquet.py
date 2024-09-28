@@ -179,7 +179,7 @@ class Floquet(object):
         """Instantiates the `Floquet` class.
 
         Parameters
-        -----------
+        ----------
         evo_dict : dict
                 Dictionary which passes the different types of protocols to calculate the Floquet unitary.
                 Depending on the protocol type, it contains the following keys:
@@ -459,7 +459,7 @@ class Floquet_t_vec(object):
         """
 
         Parameters
-        -----------
+        ----------
         Omega : float
                 Drive frequency.
         N_const : int
@@ -673,17 +673,17 @@ class Floquet_t_vec(object):
                 * The function may return wrong results if the spacing between two consecutive (i.e. nonstroboscopic) `Floquet_t_vec` values is smaller than `1E-15`.
 
         Parameters
-        -----------
+        ----------
         index : int
                 Index, to compute the `Floquet_t_vec` coordinates of.
 
         Returns
-        --------
+        -------
         tuple
                 (i,j) such that `t_evolve[t_evolve.strobo.inds[i] + j] = t_evolve[index]`.
 
         Examples
-        ---------
+        --------
         >>> t = Floquet_t_vec(10.0,10) # define a Floquet vector
         >>> index = 145 # pick a random index
         >>> print(t[index]) # check element

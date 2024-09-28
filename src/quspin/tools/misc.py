@@ -41,7 +41,7 @@ def project_op(Obs, proj, dtype=_np.complex128):
             :lines: 7-
 
     Parameters
-    -----------
+    ----------
     Obs : :obj:
             Operator to be projected, either a `numpy.ndarray` or a `hamiltonian` object.
     proj : :obj:
@@ -55,7 +55,7 @@ def project_op(Obs, proj, dtype=_np.complex128):
             Data type of output. Default is `numpy.complex128`.
 
     Returns
-    --------
+    -------
     dict
             Dictionary with keys
 
@@ -135,14 +135,14 @@ def KL_div(p1, p2):
             \\mathrm{KL}(p_1||p_2) = \\sum_n p_1(n)\\log\\frac{p_1(n)}{p_2(n)}
 
     Parameters
-    -----------
+    ----------
     p1 : numpy.ndarray
             Dscrete probability distribution.
     p2 : numpy.ndarray
             Discrete probability distribution.
 
     Returns
-    --------
+    -------
     numpy.ndarray
             Kullback-Leibler divergence of `p1` and `p2`.
 
@@ -201,14 +201,14 @@ def mean_level_spacing(E, verbose=True):
             :lines: 7-
 
     Parameters
-    -----------
+    ----------
     E : numpy.ndarray
                     Ordered list of ascending, NONdegenerate energies. If `E` contains a repeating value, the function returns `nan`.
     verbose : bool, optional
             Toggles warning message about degeneracies of the spectrum `E`.
 
     Returns
-    --------
+    -------
     float
             mean-level spacing.
     nan
@@ -246,8 +246,11 @@ def ints_to_array(basis_ints, N=None):
     """Converts QuSpin basis type integers to a state array with binary elements.
 
         This function takes an array of batched QuSpin basis type integers and converts it
-    to a batched state array with 0/1 elements representing spin-down/up or 0/1 occupation.
-    Conversion to higher spins or larger occupation numbers is not yet implemented.
+        to a batched state array with 0/1 elements representing spin-down/up or 0/1 occupation.
+
+        Notes
+        -----
+        Conversion to higher spins or larger occupation numbers is not yet implemented.
 
         Examples
         --------
@@ -260,7 +263,7 @@ def ints_to_array(basis_ints, N=None):
                 :lines: 7-
 
         Parameters
-        -----------
+        ----------
         basis_ints: np.ndarray(int)
         batched integers to be converted
 
@@ -269,7 +272,7 @@ def ints_to_array(basis_ints, N=None):
         represented by `basis_ints.dtype`.
 
         Returns
-        --------
+        -------
         state_array: np.ndarray(np.uint8)
         batched state array with binary entries
     """
@@ -292,8 +295,11 @@ def array_to_ints(state_array, dtype=None):
     """Converts a state array with binary elements to QuSpin basis type integers.
 
         This function takes a batched state array with 0/1 elements and converts it
-    to an array of batched QuSpin basis type integers.
-    Conversion of higher spins or larger occupation numbers is not yet implemented.
+        to an array of batched QuSpin basis type integers.
+        
+        Notes
+        -----
+        Conversion of higher spins or larger occupation numbers is not yet implemented.
 
         Examples
         --------
@@ -306,7 +312,7 @@ def array_to_ints(state_array, dtype=None):
                 :lines: 7-
 
         Parameters
-        -----------
+        ----------
         state_array: np.ndarray(np.uint8)
         batched state array to be converted
 
@@ -315,7 +321,7 @@ def array_to_ints(state_array, dtype=None):
         state with smallest size
 
         Returns
-        --------
+        -------
         basis_ints: np.ndarray(int)
         batched basis integers
     """

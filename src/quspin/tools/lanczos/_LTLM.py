@@ -61,7 +61,7 @@ def LTLM_static_iteration(O_dict, E, V, Q_T, beta=0):
     * One has to be careful as typicality only applies to the trace operation over the entire Hilbert space. Using symmetries is possible, however it requires the user to keep track of the weights in the different sectors.
 
     Parameters
-    -----------
+    ----------
     O_dict : dictionary of Python Objects
             These Objects must have a 'dot' method that calculates a matrix vector product on a numpy.ndarray[:], the effective shape of these objects should be (n,n).
     E : array_like, (m,)
@@ -74,7 +74,7 @@ def LTLM_static_iteration(O_dict, E, V, Q_T, beta=0):
             Inverse temperature values to evaluate.
 
     Returns
-    --------
+    -------
     Result_dict: dictionary
             A dictionary storying the results for a single iteration of the LTLM. The results are stored in numpy.ndarrays
             that have the same shape as `beta`. The keys of `Result_dict` are the same as the keys in `O_dict` and the values

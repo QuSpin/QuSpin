@@ -27,7 +27,7 @@ def coherent_state(a, n, dtype=_np.float64):
             Data type (e.g. numpy.float64) to construct the coherent state with. Default is `np.float64`.
 
     Returns
-    --------
+    -------
     numpy.ndarray
             Harmonic oscilaltor coherent state.
 
@@ -123,7 +123,7 @@ class photon_basis(tensor_basis):
         """Initialises the `photon_basis` object.
 
         Parameters
-        -----------
+        ----------
         basis_constructor: :obj:`basis`
                 `basis` constructor for the lattice part of the `photon_basis`.
         constructor_args: obj
@@ -238,7 +238,7 @@ class photon_basis(tensor_basis):
         """Constructs operator from a site-coupling list and anoperator string in the photon basis.
 
         Parameters
-        -----------
+        ----------
         opstr: str
                 Operator string in the photon basis format. Photon operators stand on the right. For instance:
                 >>> opstr = "x|n"
@@ -253,7 +253,7 @@ class photon_basis(tensor_basis):
                 Data type (e.g. numpy.float64) to construct the operator with.
 
         Returns
-        --------
+        -------
         tuple
                 `(ME,row,col)`, where
                         * numpy.ndarray(scalar): `ME`: matrix elements of type `dtype`.
@@ -328,7 +328,7 @@ class photon_basis(tensor_basis):
             return ME, row, col
 
     def get_vec(self, v0, sparse=True, Nph=None, full_part=True):
-        """DEPRECATED (cf `project_from`). Transforms state from symmetry-reduced basis to full (symmetry-free) basis.
+        """DEPRECATED (see `project_from`). Transforms state from symmetry-reduced basis to full (symmetry-free) basis.
 
         Notes
         -----
@@ -348,7 +348,7 @@ class photon_basis(tensor_basis):
         Supports parallelisation to multiple states listed in the columns.
 
         Parameters
-        -----------
+        ----------
         v0: numpy.ndarray
                 Contains in its columns the states in the symmetry-reduced basis.
         sparse: bool, optional
@@ -360,7 +360,7 @@ class photon_basis(tensor_basis):
                 of a conserving `photon_basis`. Default is `True`.
 
         Returns
-        --------
+        -------
         numpy.ndarray
                 Array containing the state `v0` in the full basis.
 
@@ -421,7 +421,7 @@ class photon_basis(tensor_basis):
         in a straightforward manner.
 
         Parameters
-        -----------
+        ----------
         dtype: 'type'
                 Data type (e.g. numpy.float64) to construct the projector with.
         Nph: int, optional
@@ -431,7 +431,7 @@ class photon_basis(tensor_basis):
                 of a conserving `photon_basis`. Default is `True`.
 
         Returns
-        --------
+        -------
         numpy.ndarray
                 Transformation/projector between the symmetry-reduced and the full basis.
 
@@ -469,7 +469,7 @@ class photon_basis(tensor_basis):
         """Calculates reduced density matrix, through a partial trace of a quantum state in `photon_basis`.
 
         Parameters
-        -----------
+        ----------
         state: obj
                 State of the quantum system. Can be either one of:
 
@@ -493,7 +493,7 @@ class photon_basis(tensor_basis):
                 Whether or not to return a sparse DM. Default is `False`.
 
         Returns
-        --------
+        -------
         numpy.ndarray
                 Density matrix associated with `state`. Depends on optional arguments.
 
@@ -605,7 +605,7 @@ class photon_basis(tensor_basis):
         Algorithm is based on both partial tracing and sigular value decomposition (SVD), optimised for speed.
 
         Parameters
-        -----------
+        ----------
         state: obj
                 State of the quantum system. Can be either one of:
 
@@ -643,7 +643,7 @@ class photon_basis(tensor_basis):
 
 
         Returns
-        --------
+        -------
         dict
                 Dictionary with following keys, depending on input parameters:
                         * "Sent_A": entanglement entropy of subsystem A (default).

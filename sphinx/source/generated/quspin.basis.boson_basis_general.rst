@@ -1,4 +1,4 @@
-quspin.basis.boson\_basis\_general
+﻿quspin.basis.boson\_basis\_general
 ==================================
 
 .. currentmodule:: quspin.basis

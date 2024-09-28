@@ -60,14 +60,14 @@ def commutator(H1, H2):
             :lines: 7-
 
     Parameters
-    -----------
+    ----------
     H1 : obj
             `numpy.ndarray` or `hamiltonian` class object to define the Hamiltonian operator as a matrix.
     H2 : obj
             `numpy.ndarray` or `hamiltonian` class object to define the Hamiltonian operator as a matrix.
 
     Returns
-    --------
+    -------
     obj
             Commutator: :math:`[H_1,H_2] = H_1 H_2 - H_2 H_1`
     """
@@ -94,14 +94,14 @@ def anti_commutator(H1, H2):
             :lines: 7-
 
     Parameters
-    -----------
+    ----------
     H1 : obj
             `numpy.ndarray` or `hamiltonian` class object to define the Hamiltonian operator as a matrix.
     H2 : obj
             `numpy.ndarray` or `hamiltonian` class object to define the Hamiltonian operator as a matrix.
 
     Returns
-    --------
+    -------
     obj
             Anticommutator: :math:`\\{H_1,H_2\\}_+ = H_1 H_2 + H_2 H_1`
 
@@ -200,7 +200,7 @@ class hamiltonian(object):
     instantiation with a `basis` will automatically ignore all symmetry inputs.
 
     Examples
-    ---------
+    --------
 
     Here is an example how to employ a `basis` object to construct the periodically driven XXZ Hamiltonian
 
@@ -237,7 +237,7 @@ class hamiltonian(object):
         """Intializes the `hamtilonian` object (any quantum operator).
 
         Parameters
-        -----------
+        ----------
         static_list : list
                 Contains list of objects to calculate the static part of a `hamiltonian` operator. The format goes like:
 
@@ -624,7 +624,7 @@ class hamiltonian(object):
         * for right-multiplication of quantum operators, see function `rdot()`.
 
         Parameters
-        -----------
+        ----------
         V : {numpy.ndarray, scipy.spmatrix}
                 Array containing the quantums state to multiply the `hamiltonian` operator with.
         time : obj, optional
@@ -647,12 +647,12 @@ class hamiltonian(object):
                 scalar to multiply the final product with: :math:`B = aHV`.
 
         Returns
-        --------
+        -------
         numpy.ndarray
                 Vector corresponding to the `hamiltonian` operator applied on the state `V`.
 
         Examples
-        ---------
+        --------
         >>> B = H.dot(A,time=0,check=True)
 
         corresponds to :math:`B = HA`.
@@ -798,7 +798,7 @@ class hamiltonian(object):
         * this function does the matrix multiplication with the state(s) and Hamiltonian as is, see Example 17 (Lidblad dynamics / Optical Bloch Equations).
 
         Parameters
-        -----------
+        ----------
         V : numpy.ndarray
                 Vector (quantum state) to multiply the `hamiltonian` operator with on the left.
         time : obj, optional
@@ -820,12 +820,12 @@ class hamiltonian(object):
                 scalar to multiply the final product with: :math:`B = aVH`.
 
         Returns
-        --------
+        -------
         numpy.ndarray
                 Vector corresponding to the `hamiltonian` operator applied on the state `V`.
 
         Examples
-        ---------
+        --------
         >>> B = H.rdot(A,time=0,check=True)
 
         corresponds to :math:`B = AH`.
@@ -892,7 +892,7 @@ class hamiltonian(object):
                 \\langle V|H^2(t=\\texttt{time})|V\\rangle - \\langle V|H(t=\\texttt{time})|V\\rangle^2
 
         Parameters
-        -----------
+        ----------
         V : numpy.ndarray
                 Depending on the shape, can be a single state or a collection of pure or mixed states
                 [see `enforce_pure`].
@@ -911,12 +911,12 @@ class hamiltonian(object):
         check : bool, optional
 
         Returns
-        --------
+        -------
         float
                 Quantum fluctuations of `hamiltonian` operator in state `V`.
 
         Examples
-        ---------
+        --------
         >>> H_fluct = H.quant_fluct(V,time=0,diagonal=False,check=True)
 
         corresponds to :math:`\\left(\\Delta H\\right)^2 = \\langle V|H^2(t=\\texttt{time})|V\\rangle - \\langle V|H(t=\\texttt{time})|V\\rangle^2`.
@@ -951,7 +951,7 @@ class hamiltonian(object):
                 \\langle V|H(t=\\texttt{time})|V\\rangle,\\qquad \\mathrm{tr}(V H(t=\\texttt{time}))
 
         Parameters
-        -----------
+        ----------
         V : numpy.ndarray
                 Depending on the shape, can be a single state or a collection of pure or mixed states
                 [see `enforce_pure` argument of `basis.ent_entropy`].
@@ -969,12 +969,12 @@ class hamiltonian(object):
         check : bool, optional
 
         Returns
-        --------
+        -------
         float
                 Expectation value of `hamiltonian` operator in state `V`.
 
         Examples
-        ---------
+        --------
         >>> H_expt = H.expt_value(V,time=0,diagonal=False,check=True)
 
         corresponds to :math:`H_{expt} = \\langle V|H(t=0)|V\\rangle`.
@@ -1021,7 +1021,7 @@ class hamiltonian(object):
         Taking the conjugate or transpose of the state `Vl` is done automatically.
 
         Parameters
-        -----------
+        ----------
         Vl : {numpy.ndarray, scipy.spmatrix}
                 Vector(s)/state(s) to multiple with on left side.
         Vl : {numpy.ndarray, scipy.spmatrix}
@@ -1039,12 +1039,12 @@ class hamiltonian(object):
         check : bool,
 
         Returns
-        --------
+        -------
         float
                 Matrix element of `hamiltonian` operator between the states `Vl` and `Vr`.
 
         Examples
-        ---------
+        --------
         >>> H_lr = H.expt_value(Vl,Vr,time=0,diagonal=False,check=True)
 
         corresponds to :math:`H_{lr} = \\langle V_l|H(t=0)|V_r\\rangle`.
@@ -1112,7 +1112,7 @@ class hamiltonian(object):
         `basis.get_proj()` method of the basis constructor class.
 
         Parameters
-        -----------
+        ----------
         proj : obj
                 Can be either one of the following:
 
@@ -1125,13 +1125,13 @@ class hamiltonian(object):
                 in the definition above.
 
         Returns
-        --------
+        -------
         obj
                 Projected/Transformed `hamiltonian` operator. The output object type depends on the object
                 type of `proj`.
 
         Examples
-        ---------
+        --------
 
         >>> H_new = H.project_to(V)
 
@@ -1218,7 +1218,7 @@ class hamiltonian(object):
         If `generator = False`, this function calls `project_to`.
 
         Parameters
-        -----------
+        ----------
         other : obj
                 Can be either one of the following:
 
@@ -1242,12 +1242,12 @@ class hamiltonian(object):
         All other optional arguments are the same as for the `exp_op` class.
 
         Returns
-        --------
+        -------
         obj
                 Transformed `hamiltonian` operator. The output object type depends on the object type of `other`.
 
         Examples
-        ---------
+        --------
         >>> H_new = H.rotate_by(V,generator=False)
 
         corresponds to :math:`V^\\dagger H V`.
@@ -1278,19 +1278,19 @@ class hamiltonian(object):
         to reassure themselves of the hermiticity properties before use.
 
         Parameters
-        -----------
+        ----------
         time : float
                 Time to evalute the `hamiltonian` operator at (if time dependent). Default is `time = 0.0`.
         eigsh_args :
                 For all additional arguments see documentation of `scipy.sparse.linalg.eigsh <https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.linalg.eigsh.html>`_.
 
         Returns
-        --------
+        -------
         tuple
                 Tuple containing the `(eigenvalues, eigenvectors)` of the `hamiltonian` operator.
 
         Examples
-        ---------
+        --------
         >>> eigenvalues,eigenvectors = H.eigsh(time=time,**eigsh_args)
 
         """
@@ -1322,19 +1322,19 @@ class hamiltonian(object):
         to reassure themselves of the hermiticity properties before use.
 
         Parameters
-        -----------
+        ----------
         time : float
                 Time to evalute the `hamiltonian` operator at (if time dependent). Default is `time = 0.0`.
         eigh_args :
                 For all additional arguments see documentation of `numpy.linalg.eigh <https://numpy.org/doc/stable/reference/generated/numpy.linalg.eigh.html>`_.
 
         Returns
-        --------
+        -------
         tuple
                 Tuple containing the `(eigenvalues, eigenvectors)` of the `hamiltonian` operator.
 
         Examples
-        ---------
+        --------
         >>> eigenvalues,eigenvectors = H.eigh(time=time,**eigh_args)
 
         """
@@ -1362,19 +1362,19 @@ class hamiltonian(object):
         to reassure themselves of the hermiticity properties before use.
 
         Parameters
-        -----------
+        ----------
         time : float
                 Time to evalute the `hamiltonian` operator at (if time dependent). Default is `time = 0.0`.
         eigvalsh_args :
                 For all additional arguments see documentation of `numpy.linalg.eigvalsh <https://numpy.org/doc/stable/reference/generated/numpy.linalg.eigvalsh.html>`_.
 
         Returns
-        --------
+        -------
         numpy.ndarray
                 Eigenvalues of the `hamiltonian` operator.
 
         Examples
-        ---------
+        --------
         >>> eigenvalues = H.eigvalsh(time=time,**eigvalsh_args)
 
         """
@@ -1521,7 +1521,7 @@ class hamiltonian(object):
         over the differential equation to be solved.
 
         Parameters
-        -----------
+        ----------
         v0 : numpy.ndarray
                 Initial state :math:`|v(t)\\rangle` or density matrix (pure and mixed) :math:`\\rho(t)`.
         t0 : float
@@ -1552,7 +1552,7 @@ class hamiltonian(object):
                 If set to `True`, prints normalisation of state at teach time in `times`.
 
         Returns
-        --------
+        -------
         obj
                 Can be either one of the following:
 
@@ -1562,7 +1562,7 @@ class hamiltonian(object):
                 Note that for Liouvillian dynamics the output is a square complex `numpy.ndarray`.
 
         Examples
-        ---------
+        --------
         >>> v_t = H.evolve(v0,t0,times,eom="SE",solver_name="dop853",verbose=False,iterate=False,imag_time=False,**solver_args)
 
         """
@@ -1660,16 +1660,16 @@ class hamiltonian(object):
         object.
 
         Parameters
-        -----------
+        ----------
         time : float, optional
                 Time to evalute the time-dependent part of the operator at (if existent). Default is `time = 0.0`.
 
         Returns
-        --------
+        -------
         :obj:`scipy.sparse.linalg.LinearOperator`
 
         Examples
-        ---------
+        --------
         >>> H_aslinop=H.aslinearoperator(time=time)
 
         """
@@ -1691,16 +1691,16 @@ class hamiltonian(object):
         object.
 
         Parameters
-        -----------
+        ----------
         time : float, optional
                 Time to evalute the time-dependent part of the operator at (if existent). Default is `time = 0.0`.
 
         Returns
-        --------
+        -------
         :obj:`scipy.sparse.csr_matrix`
 
         Examples
-        ---------
+        --------
         >>> H_csr=H.tocsr(time=time)
 
         """
@@ -1727,16 +1727,16 @@ class hamiltonian(object):
         object.
 
         Parameters
-        -----------
+        ----------
         time : float, optional
                 Time to evalute the time-dependent part of the operator at (if existent). Default is `time = 0.0`.
 
         Returns
-        --------
+        -------
         :obj:`scipy.sparse.csc_matrix`
 
         Examples
-        ---------
+        --------
         >>> H_csc=H.tocsc(time=time)
 
         """
@@ -1765,7 +1765,7 @@ class hamiltonian(object):
         method.
 
         Parameters
-        -----------
+        ----------
         time : float, optional
                 Time to evalute the time-dependent part of the operator at (if existent). Default is `time = 0.0`.
         order : str, optional
@@ -1778,7 +1778,7 @@ class hamiltonian(object):
                 Array to fill in with the output.
 
         Returns
-        --------
+        -------
         obj
                 Depending of size of array, can be either one of
 
@@ -1786,7 +1786,7 @@ class hamiltonian(object):
                 * `numpy.matrix`.
 
         Examples
-        ---------
+        --------
         >>> H_dense=H.todense(time=time)
 
         """
@@ -1815,7 +1815,7 @@ class hamiltonian(object):
 
 
         Parameters
-        -----------
+        ----------
         time : float, optional
                 Time to evalute the time-dependent part of the operator at (if existent). Default is `time = 0.0`.
         order : str, optional
@@ -1828,12 +1828,12 @@ class hamiltonian(object):
                 Array to fill in with the output.
 
         Returns
-        --------
+        -------
         numpy.ndarray
                 Dense array.
 
         Examples
-        ---------
+        --------
         >>> H_dense=H.toarray(time=time)
 
         """
@@ -1858,7 +1858,7 @@ class hamiltonian(object):
         """Change the internal structure of the matrices in-place.
 
         Parameters
-        -----------
+        ----------
         static_fmt : str {"csr","csc","dia","dense"}
                 Specifies format of static part of Hamiltonian.
         dynamic_fmt: str {"csr","csc","dia","dense"} or  dict, keys: (func,func_args), values: str {"csr","csc","dia","dense"}
@@ -1868,7 +1868,7 @@ class hamiltonian(object):
                 Whether to return a deep copy of the original object. Default is `copy = False`.
 
         Examples
-        ---------
+        --------
         make the dynamic part of the `hamiltonian` object to be DIA matrix format and have the static part be CSR matrix format:
 
         >>> H.update_matrix_formats(static_fmt="csr",dynamic_fmt={(func,func_args):"dia"})
@@ -1961,12 +1961,12 @@ class hamiltonian(object):
         """Casts `hamiltonian` operator to DENSE format.
 
         Parameters
-        -----------
+        ----------
         copy : bool,optional
                 Whether to return a deep copy of the original object. Default is `copy = False`.
 
         Returns
-        --------
+        -------
         obj
                 Either one of the following:
 
@@ -1974,7 +1974,7 @@ class hamiltonian(object):
                 * Deep copy, if `copy = True`.
 
         Examples
-        ---------
+        --------
         >>> H_dense=H.as_dense_format()
 
         """
@@ -1996,7 +1996,7 @@ class hamiltonian(object):
         """Casts `hamiltonian` operator to SPARSE format(s).
 
         Parameters
-        -----------
+        ----------
         static_fmt : str {"csr","csc","dia","dense"}
                 Specifies format of static part of Hamiltonian.
         dynamic_fmt: str {"csr","csc","dia","dense"} or  dict, keys: (func,func_args), values: str {"csr","csc","dia","dense"}
@@ -2006,7 +2006,7 @@ class hamiltonian(object):
                 Whether to return a deep copy of the original object. Default is `copy = False`.
 
         Returns
-        --------
+        -------
         obj
                 Either one of the following:
 
@@ -2014,7 +2014,7 @@ class hamiltonian(object):
                 * explicitly copy all possible data, if `copy = True`.
 
         Examples
-        ---------
+        --------
         >>> H_dia=H.as_sparse_format(static_fmt="csr",dynamic_fmt={(func,func_args):"dia"})
 
 
@@ -2040,12 +2040,12 @@ class hamiltonian(object):
         This function does NOT conjugate the operator.
 
         Returns
-        --------
+        -------
         :obj:`hamiltonian`
                 :math:`H_{ij}\\mapsto H_{ji}`
 
         Examples
-        ---------
+        --------
 
         >>> H_tran = H.transpose()
 
@@ -2063,12 +2063,12 @@ class hamiltonian(object):
         This function does NOT transpose the operator.
 
         Returns
-        --------
+        -------
         :obj:`hamiltonian`
                 :math:`H_{ij}\\mapsto H_{ij}^*`
 
         Examples
-        ---------
+        --------
 
         >>> H_conj = H.conjugate()
 
@@ -2086,17 +2086,17 @@ class hamiltonian(object):
         """Calculates hermitian conjugate of `hamiltonian` operator.
 
         Parameters
-        -----------
+        ----------
         copy : bool, optional
                 Whether to return a deep copy of the original object. Default is `copy = False`.
 
         Returns
-        --------
+        -------
         :obj:`hamiltonian`
                 :math:`H_{ij}\\mapsto H_{ij}^*`
 
         Examples
-        ---------
+        --------
 
         >>> H_herm = H.getH()
 
@@ -2109,17 +2109,17 @@ class hamiltonian(object):
         """Calculates diagonal of `hamiltonian` operator at time `time`.
 
         Parameters
-        -----------
+        ----------
         time : float, optional
                 Time to evalute the time-dependent part of the operator at (if existent). Default is `time = 0.0`.
 
         Returns
-        --------
+        -------
         numpy.ndarray
                 Diagonal part of operator :math:`H(t=\\texttt{time})`.
 
         Examples
-        ---------
+        --------
 
         >>> H_diag = H.diagonal(time=0.0)
 
@@ -2139,17 +2139,17 @@ class hamiltonian(object):
         """Calculates trace of `hamiltonian` operator at time `time`.
 
         Parameters
-        -----------
+        ----------
         time : float, optional
                 Time to evalute the time-dependent part of the operator at (if existent). Default is `time = 0.0`.
 
         Returns
-        --------
+        -------
         float
                 Trace of operator :math:`\\sum_{j=1}^{Ns} H_{jj}(t=\\texttt{time})`.
 
         Examples
-        ---------
+        --------
 
         >>> H_tr = H.tr(time=0.0)
 
@@ -2169,17 +2169,17 @@ class hamiltonian(object):
         """Changes data type of `hamiltonian` object.
 
         Parameters
-        -----------
+        ----------
         dtype : 'type'
                 The data type (e.g. numpy.float64) to cast the Hamiltonian with.
 
         Returns
-        --------
+        -------
         `hamiltonian`
                 Operator with altered data type.
 
         Examples
-        ---------
+        --------
         `hamiltonian`
                 Operator with altered data type.
 
@@ -2271,19 +2271,19 @@ class hamiltonian(object):
         """Return hamiltonian as a sparse or dense matrix at specific time
 
         Parameters
-        -----------
+        ----------
         time: float
                 time to evaluate dynamic parts at.
 
         Returns
-        --------
+        -------
         if `is_dense` is True:
                 `numpy.ndarray`
         else
                 `scipy.csr_matrix`
 
         Examples
-        ---------
+        --------
         >>> H_t = H(time)
 
         """
@@ -3265,12 +3265,12 @@ def ishamiltonian(obj):
     """Checks if instance is object of `hamiltonian` class.
 
     Parameters
-    -----------
+    ----------
     obj :
             Arbitraty python object.
 
     Returns
-    --------
+    -------
     bool
             Can be either of the following:
 

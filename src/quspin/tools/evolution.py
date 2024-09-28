@@ -32,7 +32,7 @@ def ED_state_vs_time(psi, E, V, times, iterate=False):
             :lines: 7-
 
     Parameters
-    -----------
+    ----------
     psi : numpy.ndarray
             Initial state.
     V : numpy.ndarray
@@ -45,7 +45,7 @@ def ED_state_vs_time(psi, E, V, times, iterate=False):
             If set to `True`, the function returns the generator of the time evolved state.
 
     Returns
-    --------
+    -------
     obj
             Either of the following:
                     * `numpy.ndarray` with the time evolved states as rows.
@@ -234,7 +234,7 @@ def evolve(
     complex-valued example above.
 
     Parameters
-    -----------
+    ----------
     v0 : numpy.ndarray
             Initial state.
     t0 : float
@@ -269,7 +269,7 @@ def evolve(
             If set to `True`, prints normalisation of state at teach time in `times`.
 
     Returns
-    --------
+    -------
     obj
             Can be either one of the following:
                     * numpy.ndarray containing evolved state against time.

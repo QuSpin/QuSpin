@@ -1,4 +1,4 @@
-quspin.basis.bitwise\_not
+﻿quspin.basis.bitwise\_not
 =========================
 
 .. currentmodule:: quspin.basis

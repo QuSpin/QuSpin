@@ -49,7 +49,7 @@ class spin_basis_1d(basis_1d):
         """Intializes the `spin_basis_1d` object (basis for spin operators).
 
         Parameters
-        -----------
+        ----------
         L: int
                 Length of chain/number of sites.
         Nup: {int,list}, optional

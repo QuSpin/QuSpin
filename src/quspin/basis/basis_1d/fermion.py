@@ -45,7 +45,7 @@ class spinless_fermion_basis_1d(basis_1d):
         """Intializes the `fermion_basis_1d` object (basis for fermionic operators).
 
         Parameters
-        -----------
+        ----------
         L: int
                 Length of chain/number of sites.
         Nf: {int,list}, optional
@@ -214,7 +214,7 @@ class spinful_fermion_basis_1d(spinless_fermion_basis_1d, basis_1d):
         """Intializes the `fermion_basis_1d` object (basis for fermionic operators).
 
         Parameters
-        -----------
+        ----------
         L: int
                 Length of chain/number of sites.
         Nf: tuple(int,list), optional
@@ -459,7 +459,7 @@ class spinful_fermion_basis_1d(spinless_fermion_basis_1d, basis_1d):
         by `index()`.
 
         Parameters
-        -----------
+        ----------
         up_state : str
                 string which define the Fock state for the spin up fermions.
 
@@ -467,7 +467,7 @@ class spinful_fermion_basis_1d(spinless_fermion_basis_1d, basis_1d):
                 string which define the Fock state for the spin down fermions.
 
         Returns
-        --------
+        -------
         int
                 Position of the Fock state in the `spinful_fermion_basis_1d`.
 
@@ -585,7 +585,7 @@ class spinful_fermion_basis_1d(spinless_fermion_basis_1d, basis_1d):
         """Calculates reduced density matrix, through a partial trace of a quantum state in a lattice `basis`.
 
         Parameters
-        -----------
+        ----------
         state : obj
                 State of the quantum system. Can be either one of:
 
@@ -611,7 +611,7 @@ class spinful_fermion_basis_1d(spinless_fermion_basis_1d, basis_1d):
                 Whether or not to return a sparse DM. Default is `False`.
 
         Returns
-        --------
+        -------
         numpy.ndarray
                 Density matrix associated with `state`. Depends on optional arguments.
 
@@ -672,7 +672,7 @@ class spinful_fermion_basis_1d(spinless_fermion_basis_1d, basis_1d):
         Algorithm is based on both partial tracing and sigular value decomposition (SVD), optimised for speed.
 
         Parameters
-        -----------
+        ----------
         state : obj
                 State of the quantum system. Can be either one of:
 
@@ -721,7 +721,7 @@ class spinful_fermion_basis_1d(spinless_fermion_basis_1d, basis_1d):
 
 
         Returns
-        --------
+        -------
         dict
                 Dictionary with following keys, depending on input parameters:
                         * "Sent_A": entanglement entropy of subsystem A (default).

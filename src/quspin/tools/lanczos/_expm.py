@@ -24,7 +24,7 @@ def expm_lanczos(E, V, Q_T, a=1.0, out=None):
     * the initial state `v0` used in `lanczos_full` and `lanczos_iter` is the state the matrix exponential is evaluated on.
 
     Parameters
-    -----------
+    ----------
     E : (m,) np.ndarray
             eigenvalues of Krylov subspace tridiagonal matrix :math:`T`.
     V : (m,m) np.ndarray
@@ -37,7 +37,7 @@ def expm_lanczos(E, V, Q_T, a=1.0, out=None):
             Array to store the result in.
 
     Returns
-    --------
+    -------
     (n,) np.ndarray
             Matrix exponential applied to a state, evaluated using the Lanczos method.
 

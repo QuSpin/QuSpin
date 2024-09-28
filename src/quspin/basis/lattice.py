@@ -87,14 +87,14 @@ class lattice_basis(basis):
         This function is the inverse of `state_to_int`.
 
         Parameters
-        -----------
+        ----------
         state : int
                 Defines the Fock state in integer representation in underlying lattice `basis`.
         bracket_notation : bool, optional
                 Toggles whether to return the state in `|str>` notation.
 
         Returns
-        --------
+        -------
         str
                 String corresponding to the Fock `state` in the lattice basis.
 
@@ -116,12 +116,12 @@ class lattice_basis(basis):
         This function is the einverse of `int_to_state`.
 
         Parameters
-        -----------
+        ----------
         state : str
                 Defines the Fock state with number of particles (spins) per site in underlying lattice `basis`.
 
         Returns
-        --------
+        -------
         int
                 Integer corresponding to the Fock `state` in the lattice basis.
 
@@ -145,12 +145,12 @@ class lattice_basis(basis):
         by `index()`.
 
         Parameters
-        -----------
+        ----------
         s : {str, int}
                 Defines the Fock state with number of particles (spins) per site in underlying lattice `basis`.
 
         Returns
-        --------
+        -------
         int
                 Position of the Fock state in the lattice basis.
 

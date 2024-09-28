@@ -70,9 +70,9 @@ misc
    mean_level_spacing
    project_op
    KL_div
-   csr_matvec
    ints_to_array
    array_to_ints
+   ints_to_array
 
 """
 

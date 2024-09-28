@@ -19,65 +19,56 @@ Check out these papers and the example scripts (below) for a detailed tutorial:
 The source code is available on `Github <https://github.com/QuSpin/QuSpin>`_; Suggestions for future improvements and user contributions are always welcome! 
 
 
-New Features
-====================
 
 .. toctree::
+    :caption: New Features
     :maxdepth: 1
     
-    New_Features
+    new_features
 
-
-QuSpin API reference
-====================
 
 .. toctree::
+    :caption: QuSpin (public API)
     :maxdepth: 1
     
-    basis
+    ..
+        basis
     operators
     tools
     
-Installation and Usage
-=======================
+
 
 .. toctree::
+    :caption: Installation
     :maxdepth: 1
     
-    Installation
+    installation
 
-Example Scripts
-======================
 
 .. toctree::
+    :caption: Examples
     :maxdepth: 1
     
-    Examples
+    example_scripts
+    jupyter_notebooks
 
-Parallel Computing Capabilities
-===============================
+
 
 .. toctree::
+    :caption: Tutorials
     :maxdepth: 1
     
     parallelization
-
-
-User Basis Tutorial
-===============================
-
-.. toctree::
-    :maxdepth: 1
-    
     user_basis
 
 
-Report a Bug / Ask a Question
-=============================
 
-To report a bug in QuSpin, or ask a question about the package, please `open up a new issue <https://github.com/QuSpin/QuSpin/issues>`_ on GitHub.
+.. toctree::
+    :caption: Bugs & Questions
+    :maxdepth: 1
 
-
+    report_a_bug
+    ask_a_question
 
 
 

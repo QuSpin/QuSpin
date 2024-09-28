@@ -1,4 +1,4 @@
-quspin.basis.uint16384
+﻿quspin.basis.uint16384
 ======================
 
 .. currentmodule:: quspin.basis

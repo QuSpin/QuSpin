@@ -232,7 +232,7 @@ class user_basis(basis_general):
         """Intializes the `user_basis_general` object (basis for user defined ED calculations).
 
         Parameters
-        -----------
+        ----------
         basis_dtype: numpy.dtype object
                 the data type used to represent the states in the basis: must be either uint32 or uint64.
         N: int

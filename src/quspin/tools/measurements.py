@@ -125,7 +125,7 @@ def diag_ensemble(N,system_state,E2,V2,density=True,alpha=1.0,rho_d=False,Obs=Fa
 		:lines: 7-
 
 	Parameters
-	-----------
+	----------
 	N : int
 		System size/dimension (e.g. number of sites).
 	system_state : {array_like,dict}
@@ -248,7 +248,7 @@ def diag_ensemble(N,system_state,E2,V2,density=True,alpha=1.0,rho_d=False,Obs=Fa
 		Default is 'True'.
 
 	Returns
-	-------- 
+	------- 
 	dict
 		The following keys of the output are possible, depending on the choice of flags:
 
@@ -483,7 +483,7 @@ def obs_vs_time(psi_t,times,Obs_dict,return_state=False,Sent_args={},enforce_pur
 		:lines: 7-
 
 	Parameters
-	-----------
+	----------
 	psi_t : {tuple,aray_like,generator}
 		Time-dependent state data; can be either one of:
 
@@ -530,7 +530,7 @@ def obs_vs_time(psi_t,times,Obs_dict,return_state=False,Sent_args={},enforce_pur
 		Default is `False`.
 
 	Returns
-	--------
+	-------
 	dict
 		The following keys of the output are possible, depending on the choice of flags:
 		

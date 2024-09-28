@@ -753,7 +753,7 @@ class basis_1d(lattice_basis):
         Supports parallelisation to multiple states listed in the columns.
 
         Parameters
-        -----------
+        ----------
         v0 : numpy.ndarray
                 Contains in its columns the states in the symmetry-reduced basis.
         sparse : bool, optional
@@ -763,7 +763,7 @@ class basis_1d(lattice_basis):
                 (useful in bosonic/single particle systems). Default is `pcon=False`.
 
         Returns
-        --------
+        -------
         numpy.ndarray
                 Array containing the state `v0` in the full basis.
 
@@ -903,7 +903,7 @@ class basis_1d(lattice_basis):
         in a straightforward manner.
 
         Parameters
-        -----------
+        ----------
         dtype : 'type'
                 Data type (e.g. numpy.float64) to construct the projector with.
         sparse : bool, optional
@@ -913,7 +913,7 @@ class basis_1d(lattice_basis):
                 (useful in bosonic/single particle systems). Default is `pcon=False`.
 
         Returns
-        --------
+        -------
         scipy.sparse.csc_matrix
                 Transformation/projector between the symmetry-reduced and the full basis.
 
