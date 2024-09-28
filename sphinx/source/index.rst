@@ -31,8 +31,7 @@ The source code is available on `Github <https://github.com/QuSpin/QuSpin>`_; Su
     :caption: QuSpin (public API)
     :maxdepth: 1
     
-    ..
-        basis
+    basis
     operators
     tools
     

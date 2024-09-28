@@ -127,7 +127,7 @@ class photon_basis(tensor_basis):
         basis_constructor: :obj:`basis`
                 `basis` constructor for the lattice part of the `photon_basis`.
         constructor_args: obj
-                Required arguments required by the specific `basis_constructor`.
+                Required arguments required by the specific `basis` constructor.
         blocks: obj
                 Optional keyword arguments for `basis_constructor` which include (but are not limited to):
 
@@ -189,16 +189,18 @@ class photon_basis(tensor_basis):
 
         self._sps = self._basis_left.sps
 
+
+
     @property
-    def particle_basis(self):
+    def basis_particle(self):
         """:obj:`basis`: lattice basis."""
         return self._basis_left
-
+    
     @property
-    def photon_basis(self):
-        """:obj:`basis`: lattice basis."""
+    def basis_photon(self):
+        """:obj:`basis`: photon basis."""
         return self._basis_right
-
+    
     @property
     def particle_Ns(self):
         """int: number of states in the lattice Hilbert space only."""
@@ -223,16 +225,18 @@ class photon_basis(tensor_basis):
     def photon_sps(self):
         """int: number of photon states per site."""
         return self._basis_right.sps
-
+    
     @property
     def chain_Ns(self):
         """int: number of states in the photon Hilbert space only."""
         return self._basis_left.Ns
-
+    
     @property
     def chain_N(self):
         """int: number of sites on lattice."""
         return self._basis_left.N
+
+    
 
     def Op(self, opstr, indx, J, dtype):
         """Constructs operator from a site-coupling list and anoperator string in the photon basis.
@@ -721,7 +725,7 @@ class photon_basis(tensor_basis):
     ##### private methods of the photon class
 
     def __name__(self):
-        return "<type 'qspin.basis.photon_basis'>"
+        return "<type 'quspin.basis.photon_basis'>"
 
     def _get__str__(self):
         if not self._check_pcon:
@@ -890,6 +894,8 @@ class photon_basis(tensor_basis):
                 dynamic_list.append((opstr, tuple(indx), J, f, f_args))
 
         return self._sort_local_list(static_list), self._sort_local_list(dynamic_list)
+
+    
 
 
 def _conserved_project_from(p_basis, v0, sparse, Nph, full_part):
