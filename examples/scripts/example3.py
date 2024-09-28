@@ -107,8 +107,8 @@ plt.plot(t.vals / t.T, O_n / Nph, "k", linewidth=1, label=str_n)
 plt.plot(t.vals / t.T, O_sz, "c", linewidth=1, label=str_z)
 plt.plot(t.vals / t.T, O_sy, "tan", linewidth=1, label=str_x)
 # plot semi-classical data
-plt.plot(t.vals / t.T, O_sz_sc, "b.", marker=".", markersize=1.8, label=str_z_sc)
-plt.plot(t.vals / t.T, O_sy_sc, "r.", marker=".", markersize=2.0, label=str_x_sc)
+plt.plot(t.vals / t.T, O_sz_sc, "b", marker=".", markersize=1.8, label=str_z_sc)
+plt.plot(t.vals / t.T, O_sy_sc, "r", marker=".", markersize=2.0, label=str_x_sc)
 # label axes
 plt.xlabel("$t/T$", fontsize=18)
 # set y axis limits

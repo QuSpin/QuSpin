@@ -40,7 +40,7 @@ class quantum_operator(object):
     of `quantum_operator`, it allows one to 'dynamically' specify the pre-factors of these operators.
 
     Examples
-    ---------
+    --------
 
     It is often required to be able to handle a parameter-dependent Hamiltonian :math:`H(\\lambda)=H_0 + \\lambda H_1`, e.g.
 
@@ -74,7 +74,7 @@ class quantum_operator(object):
         """Intializes the `quantum_operator` object (parameter dependent quantum quantum_operators).
 
         Parameters
-        -----------
+        ----------
         input_dict : dict
                 The `values` of this dictionary contain quantum_operator lists, in the same format as the `static_list`
                 argument of the `hamiltonian` class.
@@ -460,7 +460,7 @@ class quantum_operator(object):
         -----
 
         Parameters
-        -----------
+        ----------
         V : numpy.ndarray
                 Vector (quantums tate) to multiply the `quantum_operator` quantum_operator with.
         pars : dict, optional
@@ -477,12 +477,12 @@ class quantum_operator(object):
                 scalar to multiply the final product with: :math:`B = aHV`.
 
         Returns
-        --------
+        -------
         numpy.ndarray
                 Vector corresponding to the `quantum_operator` quantum_operator applied on the state `V`.
 
         Examples
-        ---------
+        --------
         >>> B = H.dot(A,pars=pars,check=True)
 
         corresponds to :math:`B = HA`.
@@ -588,7 +588,7 @@ class quantum_operator(object):
 
 
         Parameters
-        -----------
+        ----------
         V : numpy.ndarray
                 Vector (quantums tate) to multiply the `quantum_operator` quantum_operator with.
         pars : dict, optional
@@ -606,12 +606,12 @@ class quantum_operator(object):
 
 
         Returns
-        --------
+        -------
         numpy.ndarray
                 Vector corresponding to the `quantum_operator` quantum_operator applied on the state `V`.
 
         Examples
-        ---------
+        --------
         >>> B = H.dot(A,pars=pars,check=True)
 
         corresponds to :math:`B = AH`.
@@ -637,7 +637,7 @@ class quantum_operator(object):
                 \\langle V|H(\\lambda)^2|V\\rangle - \\langle V|H(\\lambda)|V\\rangle^2
 
         Parameters
-        -----------
+        ----------
         V : numpy.ndarray
                 Depending on the shape, can be a single state or a collection of pure or mixed states
                 [see `enforce_pure`].
@@ -651,12 +651,12 @@ class quantum_operator(object):
         check : bool, optional
 
         Returns
-        --------
+        -------
         float
                 Quantum fluctuations of `hamiltonian` operator in state `V`.
 
         Examples
-        ---------
+        --------
         >>> H_fluct = H.quant_fluct(V,time=0,diagonal=False,check=True)
 
         corresponds to :math:`\\left(\\Delta H\\right)^2 = \\langle V|H^2(t=\\texttt{time})|V\\rangle - \\langle V|H(t=\\texttt{time})|V\\rangle^2`.
@@ -691,7 +691,7 @@ class quantum_operator(object):
                 \\langle V|H(\\lambda)|V\\rangle
 
         Parameters
-        -----------
+        ----------
         V : numpy.ndarray
                 Depending on the shape, can be a single state or a collection of pure or mixed states
                 [see `enforce_pure` argument of `basis.ent_entropy`].
@@ -704,12 +704,12 @@ class quantum_operator(object):
         check : bool, optional
 
         Returns
-        --------
+        -------
         float
                 Expectation value of `hamiltonian` operator in state `V`.
 
         Examples
-        ---------
+        --------
         >>> H_expt = H.expt_value(V,time=0,diagonal=False,check=True)
 
         corresponds to :math:`H_{expt} = \\langle V|H(t=0)|V\\rangle`.
@@ -756,7 +756,7 @@ class quantum_operator(object):
         Taking the conjugate or transpose of the state `Vl` is done automatically.
 
         Parameters
-        -----------
+        ----------
         Vl : numpy.ndarray
                 Vector(s)/state(s) to multiple with on left side.
         Vl : numpy.ndarray
@@ -769,12 +769,12 @@ class quantum_operator(object):
         check : bool,
 
         Returns
-        --------
+        -------
         float
                 Matrix element of `quantum_operator` quantum_operator between the states `Vl` and `Vr`.
 
         Examples
-        ---------
+        --------
         >>> H_lr = H.expt_value(Vl,Vr,pars=pars,diagonal=False,check=True)
 
         corresponds to :math:`H_{lr} = \\langle V_l|H(\\lambda=0)|V_r\\rangle`.
@@ -829,7 +829,7 @@ class quantum_operator(object):
         to reassure themselves of the hermiticity properties before use.
 
         Parameters
-        -----------
+        ----------
         pars : dict, optional
                 Dictionary with same `keys` as `input_dict` and coupling strengths as `values`. Any missing `keys`
                 are assumed to be set to unity.
@@ -837,12 +837,12 @@ class quantum_operator(object):
                 For all additional arguments see documentation of `scipy.sparse.linalg.eigsh <https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.linalg.eigsh.html>`_.
 
         Returns
-        --------
+        -------
         tuple
                 Tuple containing the `(eigenvalues, eigenvectors)` of the `quantum_operator` quantum_operator.
 
         Examples
-        ---------
+        --------
         >>> eigenvalues,eigenvectors = H.eigsh(pars=pars,**eigsh_args)
 
         """
@@ -864,7 +864,7 @@ class quantum_operator(object):
         to reassure themselves of the hermiticity properties before use.
 
         Parameters
-        -----------
+        ----------
         pars : dict, optional
                 Dictionary with same `keys` as `input_dict` and coupling strengths as `values`. Any missing `keys`
                 are assumed to be set to unity.
@@ -872,12 +872,12 @@ class quantum_operator(object):
                 For all additional arguments see documentation of `numpy.linalg.eigh <https://numpy.org/doc/stable/reference/generated/numpy.linalg.eigh.html>`_.
 
         Returns
-        --------
+        -------
         tuple
                 Tuple containing the `(eigenvalues, eigenvectors)` of the `quantum_operator` quantum_operator.
 
         Examples
-        ---------
+        --------
         >>> eigenvalues,eigenvectors = H.eigh(pars=pars,**eigh_args)
 
         """
@@ -905,7 +905,7 @@ class quantum_operator(object):
         to reassure themselves of the hermiticity properties before use.
 
         Parameters
-        -----------
+        ----------
         pars : dict, optional
                 Dictionary with same `keys` as `input_dict` and coupling strengths as `values`. Any missing `keys`
                 are assumed to be set to unity.
@@ -913,12 +913,12 @@ class quantum_operator(object):
                 For all additional arguments see documentation of `numpy.linalg.eigvalsh <https://numpy.org/doc/stable/reference/generated/numpy.linalg.eigvalsh.html>`_.
 
         Returns
-        --------
+        -------
         numpy.ndarray
                 Eigenvalues of the `quantum_operator` quantum_operator.
 
         Examples
-        ---------
+        --------
         >>> eigenvalues = H.eigvalsh(pars=pars,**eigvalsh_args)
 
         """
@@ -942,17 +942,17 @@ class quantum_operator(object):
         object.
 
         Parameters
-        -----------
+        ----------
         pars : dict, optional
                 Dictionary with same `keys` as `input_dict` and coupling strengths as `values`. Any missing `keys`
                 are assumed to be set to unity.
 
         Returns
-        --------
+        -------
         :obj:`scipy.sparse.csr_matrix`
 
         Examples
-        ---------
+        --------
         >>> H_csr=H.tocsr(pars=pars)
 
         """
@@ -976,17 +976,17 @@ class quantum_operator(object):
         object.
 
         Parameters
-        -----------
+        ----------
         pars : dict, optional
                 Dictionary with same `keys` as `input_dict` and coupling strengths as `values`. Any missing `keys`
                 are assumed to be set to unity.
 
         Returns
-        --------
+        -------
         :obj:`scipy.sparse.csc_matrix`
 
         Examples
-        ---------
+        --------
         >>> H_csc=H.tocsc(pars=pars)
 
         """
@@ -1014,7 +1014,7 @@ class quantum_operator(object):
         method.
 
         Parameters
-        -----------
+        ----------
         pars : dict, optional
                 Dictionary with same `keys` as `input_dict` and coupling strengths as `values`. Any missing `keys`
                 are assumed to be set to unity.
@@ -1022,7 +1022,7 @@ class quantum_operator(object):
                 Array to fill in with the output.
 
         Returns
-        --------
+        -------
         obj
                 Depending of size of array, can be either one of
 
@@ -1030,7 +1030,7 @@ class quantum_operator(object):
                 * `numpy.matrix`.
 
         Examples
-        ---------
+        --------
         >>> H_dense=H.todense(pars=pars)
 
         """
@@ -1052,7 +1052,7 @@ class quantum_operator(object):
 
 
         Parameters
-        -----------
+        ----------
         pars : dict, optional
                 Dictionary with same `keys` as `input_dict` and coupling strengths as `values`. Any missing `keys`
                 are assumed to be set to unity.
@@ -1060,12 +1060,12 @@ class quantum_operator(object):
                 Array to fill in with the output.
 
         Returns
-        --------
+        -------
         numpy.ndarray
                 Dense array.
 
         Examples
-        ---------
+        --------
         >>> H_dense=H.toarray(pars=pars)
 
         """
@@ -1088,17 +1088,17 @@ class quantum_operator(object):
         object.
 
         Parameters
-        -----------
+        ----------
         pars : dict, optional
                 Dictionary with same `keys` as `input_dict` and coupling strengths as `values`. Any missing `keys`
                 are assumed to be set to unity.
 
         Returns
-        --------
+        -------
         :obj:`scipy.sparse.linalg.Linearquantum_operator`
 
         Examples
-        ---------
+        --------
         >>> H_aslinop=H.aslinearquantum_operator(pars=pars)
 
         """
@@ -1113,7 +1113,7 @@ class quantum_operator(object):
         """Returns copy of a `quantum_operator` object for parameters `pars` as a `hamiltonian` object.
 
         Parameters
-        -----------
+        ----------
         pars : dict, optional
                 Dictionary with same `keys` as `input_dict` and coupling strengths as `values`. Any missing `keys`
                 are assumed to be set to unity.
@@ -1122,11 +1122,11 @@ class quantum_operator(object):
                 Explicitly copy matrices when constructing the `hamiltonian` object, default is `True`.
 
         Returns
-        --------
+        -------
         :obj:`hamiltonian`
 
         Examples
-        ---------
+        --------
         >>> H_ham=H.tohamiltonian(pars=pars)
 
         """
@@ -1152,13 +1152,13 @@ class quantum_operator(object):
         """Change the internal structure of the matrices in-place.
 
         Parameters
-        -----------
+        ----------
         matrix_formats: dict, optional
                 Dictionary of key,value pairs which, given a key associated with an operator in `input_dict`, the value of this key
                 specifies the sparse matrix format {"csr","csc","dia","dense"}.
 
         Examples
-        ---------
+        --------
         Given `O` which has two operators defined by strings: 'Hx' for transverse field, and 'Hising' is the Ising part. The Ising part must be diagonal
         therefore it is useful to cast it to a DIA matrix format, while the transverse field is not diagonal so it is most efficient to use CSR matrix format.
         This can be accomplished by the following:
@@ -1207,12 +1207,12 @@ class quantum_operator(object):
         This function does NOT conjugate the quantum_operator.
 
         Returns
-        --------
+        -------
         :obj:`quantum_operator`
                 :math:`H_{ij}\\mapsto H_{ji}`
 
         Examples
-        ---------
+        --------
 
         >>> H_tran = H.transpose()
 
@@ -1233,12 +1233,12 @@ class quantum_operator(object):
         This function does NOT transpose the quantum_operator.
 
         Returns
-        --------
+        -------
         :obj:`quantum_operator`
                 :math:`H_{ij}\\mapsto H_{ij}^*`
 
         Examples
-        ---------
+        --------
 
         >>> H_conj = H.conj()
 
@@ -1262,12 +1262,12 @@ class quantum_operator(object):
         This function does NOT transpose the quantum_operator.
 
         Returns
-        --------
+        -------
         :obj:`quantum_operator`
                 :math:`H_{ij}\\mapsto H_{ij}^*`
 
         Examples
-        ---------
+        --------
 
         >>> H_conj = H.conj()
 
@@ -1278,17 +1278,17 @@ class quantum_operator(object):
         """Calculates hermitian conjugate of `quantum_operator` quantum_operator.
 
         Parameters
-        -----------
+        ----------
         copy : bool, optional
                 Whether to return a deep copy of the original object. Default is `copy = False`.
 
         Returns
-        --------
+        -------
         :obj:`quantum_operator`
                 :math:`H_{ij}\\mapsto H_{ij}^*`
 
         Examples
-        ---------
+        --------
 
         >>> H_herm = H.getH()
 
@@ -1306,7 +1306,7 @@ class quantum_operator(object):
         """Changes data type of `quantum_operator` object.
 
         Parameters
-        -----------
+        ----------
         dtype : 'type'
                 The data type (e.g. numpy.float64) to cast the Hamiltonian with.
 
@@ -1315,7 +1315,7 @@ class quantum_operator(object):
                 quantum_operator with altered data type.
 
         Examples
-        ---------
+        --------
         >>> H_cpx=H.astype(np.complex128)
 
         """
@@ -1339,18 +1339,18 @@ class quantum_operator(object):
         """Returns diagonal of `quantum_operator` quantum_operator for parameters `pars`.
 
         Parameters
-        -----------
+        ----------
         pars : dict, optional
                 Dictionary with same `keys` as `input_dict` and coupling strengths as `values`. Any missing `keys`
                 are assumed to be set to unity.
 
         Returns
-        --------
+        -------
         numpy.ndarray
                 array containing the diagonal part of the operator :math:`diag_j = H_{jj}(\\lambda)`.
 
         Examples
-        ---------
+        --------
 
         >>> H_diagonal = H.diagonal(pars=pars)
 
@@ -1365,18 +1365,18 @@ class quantum_operator(object):
         """Calculates trace of `quantum_operator` quantum_operator for parameters `pars`.
 
         Parameters
-        -----------
+        ----------
         pars : dict, optional
                 Dictionary with same `keys` as `input_dict` and coupling strengths as `values`. Any missing `keys`
                 are assumed to be set to unity.
 
         Returns
-        --------
+        -------
         float
                 Trace of quantum_operator :math:`\\sum_{j=1}^{Ns} H_{jj}(\\lambda)`.
 
         Examples
-        ---------
+        --------
 
         >>> H_tr = H.trace(pars=pars)
 
@@ -1571,12 +1571,12 @@ def isquantum_operator(obj):
     """Checks if instance is object of `quantum_operator` class.
 
     Parameters
-    -----------
+    ----------
     obj :
             Arbitraty python object.
 
     Returns
-    --------
+    -------
     bool
             Can be either of the following:
 
@@ -1591,7 +1591,7 @@ def save_zip(archive, op, save_basis=True):
     """save a `quantum_operator` to a zip archive to be used later.
 
     Parameters
-    -----------
+    ----------
     archive : str
             name of archive, including path.
 
@@ -1645,12 +1645,12 @@ def load_zip(archive):
     """Load quantum_operator object from a zip archive.
 
     Parameters
-    -----------
+    ----------
     archive : str
             name of archive, including path.
 
     Returns
-    --------
+    -------
     operator:  `quantum_operator`
             an object with matrix data extracted from the archive.
 

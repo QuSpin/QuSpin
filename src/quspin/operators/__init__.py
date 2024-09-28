@@ -23,7 +23,7 @@ This representation provides a way to conveniently define any multi-body spin-1/
 To construct operators for different particle spieces, check out the `basis` constructor classes for the supported operator strings.
 
 classes
---------
+-------
 
 .. currentmodule:: quspin.operators
 
@@ -36,7 +36,7 @@ classes
    quantum_LinearOperator
 
 functions
-----------
+---------
 
 .. autosummary::
    :toctree: generated/

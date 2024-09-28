@@ -1,5 +1,7 @@
-Examples
---------
+.. _example_scripts-label:
+
+Example Scripts
+---------------
 
 For a detailed tutorial on how to use the package, check out these papers:
 	* `SciPost Phys. 2, 003 (2017) <https://scipost.org/10.21468/SciPostPhys.2.1.003>`_.
@@ -7,7 +9,7 @@ For a detailed tutorial on how to use the package, check out these papers:
 
 The following Python scripts demonstrate basic and advanced functionality of QuSpin. In many cases, we have chosen to exhibit QuSpin's functionality, and *there may exist a more efficient approach* to obtain the same result using QuSpin. 
 
-To run the example scripts, besides QuSpin, you have to also install `matplotlib <https://matplotlib.org/users/installing.html>`_ (e.g. by using anaconda):
+To run the example scripts, besides QuSpin, you have to also install `matplotlib <https://matplotlib.org/users/installing.html>`_ (e.g. by using pip or anaconda):
 	
 	* **Getting started**
 		* :ref:`example_00-label`, :download:`download script <../../examples/scripts/example00.py>`
@@ -42,7 +44,7 @@ To run the example scripts, besides QuSpin, you have to also install `matplotlib
 		* :ref:`example26-label`, :download:`download script <../../examples/scripts/example26.py>`
 		* :ref:`example23-label`, :download:`download script <../../examples/scripts/example23.py>`
 		* :ref:`example24-label`, :download:`download script <../../examples/scripts/example24.py>`
-		* :red:`NEW:` :ref:`example28-label`, :download:`download script <../../examples/scripts/example28.py>`
+		* :ref:`example28-label`, :download:`download script <../../examples/scripts/example28.py>`
 		
 	
 
@@ -51,17 +53,6 @@ To run the example scripts, besides QuSpin, you have to also install `matplotlib
 		* :ref:`example22-label`, :download:`download script <../../examples/scripts/example22.py>`
 		* :ref:`example20-label`, :download:`download script <../../examples/scripts/example20.py>`
 		* :ref:`example21-label`, :download:`download script <../../examples/scripts/example21.py>`
-		* :red:`NEW:` :ref:`example27-label`, :download:`download script <../../examples/scripts/example27.py>`
-
-		
-
-Tutorials
----------
-
-We also have a small number of tutorials in `Jupyter notebook <http://jupyter.org/>`_ format:
-	* `Bose Hubbard Model <https://github.com/weinbe58/QuSpin/blob/master/examples/notebooks/BHM.ipynb>`_, :download:`download ipynb <../../examples/notebooks/BHM.ipynb>`, :download:`download script <../../examples/notebooks/BHM.py>`
-	* `Fermi Hubbard Model <https://github.com/weinbe58/QuSpin/blob/master/examples/notebooks/FHM.ipynb>`_, :download:`download ipynb <../../examples/notebooks/FHM.ipynb>`, :download:`download script <../../examples/notebooks/FHM.py>`
-	* `Su Schrieffer Heeger Model <https://github.com/weinbe58/QuSpin/blob/master/examples/notebooks/SSH.ipynb>`_, :download:`download ipynb <../../examples/notebooks/SSH.ipynb>`, :download:`download script <../../examples/notebooks/SSH.py>`
-	* `Gross Pitaevskii Equation <https://github.com/weinbe58/QuSpin/blob/master/examples/notebooks/GPE.ipynb>`_, :download:`download ipynb <../../examples/notebooks/GPE.ipynb>`, :download:`download script <../../examples/notebooks/GPE.py>`
+		* :ref:`example27-label`, :download:`download script <../../examples/scripts/example27.py>`
 
 

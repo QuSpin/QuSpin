@@ -79,7 +79,7 @@ class spinless_fermion_basis_general(basis_general):
         """Intializes the `spinless_fermion_basis_general` object (basis for fermionic operators).
 
         Parameters
-        -----------
+        ----------
         L: int
                 Length of chain/number of sites.
         Nf: {int,list}, optional
@@ -368,7 +368,7 @@ class spinful_fermion_basis_general(spinless_fermion_basis_general):
         """Intializes the `spinful_fermion_basis_general` object (basis for fermionic operators).
 
         Parameters
-        -----------
+        ----------
         L: int
                 Length of chain/number of sites.
         Nf: tuple(int), optional
@@ -610,7 +610,7 @@ class spinful_fermion_basis_general(spinless_fermion_basis_general):
         Algorithm is based on both partial tracing and sigular value decomposition (SVD), optimised for speed.
 
         Parameters
-        -----------
+        ----------
         state : obj
                 State of the quantum system. Can be either one of:
 
@@ -660,7 +660,7 @@ class spinful_fermion_basis_general(spinless_fermion_basis_general):
 
 
         Returns
-        --------
+        -------
         dict
                 Dictionary with following keys, depending on input parameters:
                         * "Sent_A": entanglement entropy of subsystem A (default).
@@ -779,7 +779,7 @@ class spinful_fermion_basis_general(spinless_fermion_basis_general):
         by `index()`.
 
         Parameters
-        -----------
+        ----------
         up_state : str
                 string which define the Fock state for the spin up fermions.
 
@@ -787,7 +787,7 @@ class spinful_fermion_basis_general(spinless_fermion_basis_general):
                 string which define the Fock state for the spin down fermions.
 
         Returns
-        --------
+        -------
         int
                 Position of the Fock state in the `spinful_fermion_basis_1d`.
 

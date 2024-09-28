@@ -1,4 +1,4 @@
-quspin.basis.photon\_basis
+﻿quspin.basis.photon\_basis
 ==========================
 
 .. currentmodule:: quspin.basis
@@ -38,6 +38,8 @@ quspin.basis.photon\_basis
       ~photon_basis.N
       ~photon_basis.Ns
       ~photon_basis.basis_left
+      ~photon_basis.basis_particle
+      ~photon_basis.basis_photon
       ~photon_basis.basis_right
       ~photon_basis.blocks
       ~photon_basis.chain_N
@@ -45,10 +47,8 @@ quspin.basis.photon\_basis
       ~photon_basis.operators
       ~photon_basis.particle_N
       ~photon_basis.particle_Ns
-      ~photon_basis.particle_basis
       ~photon_basis.particle_sps
       ~photon_basis.photon_Ns
-      ~photon_basis.photon_basis
       ~photon_basis.photon_sps
       ~photon_basis.sps
    

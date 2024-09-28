@@ -34,7 +34,7 @@ class exp_op(object):
     For a faster computations, look up the `tools.expm_multiply_parallel` function.
 
     Examples
-    ---------
+    --------
 
     The Example below shows how to compute the time-evolvution of a state under a constant Hamiltonian.
     This is done using the matrix exponential to define the evolution operator and then applying it directly
@@ -53,7 +53,7 @@ class exp_op(object):
         """Initialises the `exp_op` object (matrix exponential of the operator `O`).
 
         Parameters
-        -----------
+        ----------
         O : obj
                 `numpy.ndarray`, `scipy.spmatrix`, `hamiltonian`, `quantum_operator` object: the operator to compute the matrix exponential of.
         a : `numpy.dtype`, optional
@@ -217,12 +217,12 @@ class exp_op(object):
         This function does NOT conjugate the exponentiated operator.
 
         Returns
-        --------
+        -------
         :obj:`exp_op`
                 :math:`\\exp(a\\mathcal{O})_{ij}\\mapsto \\exp(a\\mathcal{O})_{ji}`
 
         Examples
-        ---------
+        --------
 
         >>> expO_tran = expO.transpose()
 
@@ -241,12 +241,12 @@ class exp_op(object):
         This function does NOT transpose the exponentiated operator.
 
         Returns
-        --------
+        -------
         :obj:`exo_op`
                 :math:`\\left[\\exp(a\\mathcal{O})_{ij}\\right]\\mapsto \\left[\\exp(a\\mathcal{O})_{ij}\\right]^*`
 
         Examples
-        ---------
+        --------
 
         >>> expO_conj = expO.conj()
 
@@ -259,17 +259,17 @@ class exp_op(object):
         """Calculates hermitian conjugate of `exp_op` operator.
 
         Parameters
-        -----------
+        ----------
         copy : bool, optional
                 Whether to return a deep copy of the original object. Default is `copy = False`.
 
         Returns
-        --------
+        -------
         :obj:`exp_op`
                 :math:`\\exp(a\\mathcal{O})_{ij}\\mapsto \\exp(a\\mathcal{O})_{ij}^*`
 
         Examples
-        ---------
+        --------
 
         >>> expO_herm = expO.getH()
 
@@ -289,12 +289,12 @@ class exp_op(object):
         """Resets attribute `a` to multiply the operator in `exp(a*O)`.
 
         Parameters
-        -----------
+        ----------
         new_a : `numpy.dtype`
                 New value for `a`.
 
         Examples
-        ---------
+        --------
         >>> expO = exp_op(O,a=1.0)
         >>> print(expO.a)
         >>> expO.set_a(2.0)
@@ -309,7 +309,7 @@ class exp_op(object):
         """Resets attribute `grid` to evaluate the operator for every `i` in `exp(a*O*grid[i])`.
 
         Parameters
-        -----------
+        ----------
         start : scalar, optional
                 Specifies the new starting point for a grid of points to evaluate the matrix exponential at.
         stop : scalar, optional
@@ -321,7 +321,7 @@ class exp_op(object):
                 the grid step size.
 
         Examples
-        ---------
+        --------
         >>> expO = exp_op(O,start=0.0,stop=6.0,num=601,endpoint=True)
         >>> print(expO.grid)
         >>> expO.set_grid(start=2.0,stop=4.0,num=200,endpoint=False)
@@ -355,7 +355,7 @@ class exp_op(object):
         """Resets grid parameters to their default values.
 
         Examples
-        ---------
+        --------
         >>> expO = exp_op(O,start=0.0,stop=6.0,num=601,endpoint=True)
         >>> print(expO.grid)
         >>> expO.unset_grid()
@@ -373,12 +373,12 @@ class exp_op(object):
         """Resets `iterate` attribute.
 
         Parameters
-        -----------
+        ----------
         Value : bool
                 New value for `iterate` attribute.
 
         Examples
-        ---------
+        --------
         >>> expO = exp_op(O,iterate=True)
         >>> print(expO.iterate)
         >>> expO.set_a(False)
@@ -399,7 +399,7 @@ class exp_op(object):
         """Calculates matrix corresponding to matrix exponential object: `exp(a*O)`.
 
         Parameters
-        -----------
+        ----------
         dense : bool
                 Whether or not to return a dense or a sparse array. Detault is `dense = False`.
         call_kwargs : obj, optional
@@ -408,7 +408,7 @@ class exp_op(object):
                         **pars** (*dict*) - if the operator `O` to be exponentiated is a `quantum_operator` object.
 
         Returns
-        --------
+        -------
         obj
                 Can be either one of
 
@@ -416,7 +416,7 @@ class exp_op(object):
                 * `scipy.sparse.csc`: sparse array if `dense = False`.
 
         Examples
-        ---------
+        --------
         >>> expO = exp_op(O)
         >>> print(expO.get_mat(time=0.0))
         >>> print(expO.get_mat(time=0.0,dense=True))
@@ -437,7 +437,7 @@ class exp_op(object):
                 \\exp(\\mathcal{O}) A
 
         Parameters
-        -----------
+        ----------
         other : obj
                 The operator :math:`A` which multiplies from the right the matrix exponential :math:`\\exp(\\mathcal{O})`.
         shift : scalar
@@ -448,12 +448,12 @@ class exp_op(object):
                         **pars** (*dict*) - if the operator `O` to be exponentiated is a `quantum_operator` object.
 
         Returns
-        --------
+        -------
         obj
                 matrix exponential multiplied by `other` from the right.
 
         Examples
-        ---------
+        --------
         >>> expO = exp_op(O)
         >>> A = exp_op(O,a=2j).get_mat()
         >>> print(expO.dot(A))
@@ -545,7 +545,7 @@ class exp_op(object):
         For `hamiltonian` objects `A`, this function is the same as `A.dot(expO)`.
 
         Parameters
-        -----------
+        ----------
         other : obj
                 The operator :math:`A` which multiplies from the left the matrix exponential :math:`\\exp(\\mathcal{O})`.
         shift : scalar
@@ -556,12 +556,12 @@ class exp_op(object):
                         **pars** (*dict*) - if the operator `O` to be exponentiated is a `quantum_operator` object.
 
         Returns
-        --------
+        -------
         obj
                 matrix exponential multiplied by `other` from the left.
 
         Examples
-        ---------
+        --------
         >>> expO = exp_op(O)
         >>> A = exp_op(O,a=2j).get_mat()
         >>> print(expO.rdot(A))
@@ -673,7 +673,7 @@ class exp_op(object):
         The matrix exponential to multiply :math:`C` from the left is hermitian conjugated.
 
         Parameters
-        -----------
+        ----------
         other : obj
                 The operator :math:`C` to be sandwiched by the matrix exponentials :math:`\\exp(\\mathcal{O})^\\dagger`
                 and :math:`\\exp(\\mathcal{O})`.
@@ -685,12 +685,12 @@ class exp_op(object):
                         **pars** (*dict*) - if the operator `O` to be exponentiated is a `quantum_operator` object.
 
         Returns
-        --------
+        -------
         obj
                 operator `other` sandwiched between matrix exponential `exp_op` and its hermitian conjugate.
 
         Examples
-        ---------
+        --------
         >>> expO = exp_op(O,a=1j)
         >>> A = exp_op(O.T.conj())
         >>> print(expO.sandwich(A))
@@ -871,12 +871,12 @@ def isexp_op(obj):
     """Checks if instance is object of `exp_op` class.
 
     Parameters
-    -----------
+    ----------
     obj :
             Arbitraty python object.
 
     Returns
-    --------
+    -------
     bool
             Can be either of the following:
 

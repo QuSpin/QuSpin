@@ -195,7 +195,7 @@ class basis(object):
                 output array, must be the same shape as `v_in` and must match the type of the output.
 
         Returns
-        --------
+        -------
         numpy.ndarray
                 * if `v_out` is not `None`, this function modifies `v_out` inplace and returns it.
 
@@ -241,7 +241,7 @@ class basis(object):
                 Data type (e.g. numpy.float64) to construct the operator with.
 
         Returns
-        --------
+        -------
         tuple
                 `(ME,row,col)`, where
                         * numpy.ndarray(scalar): `ME`: matrix elements of type `dtype`.
@@ -322,7 +322,7 @@ class basis(object):
                 (3) repeat this procedure for all symmetry sectors, and sum up the resulting reduced operators [this is becauce one has to add in the information about how the operator acts on the full Hilbert space].
 
         Parameters
-        -----------
+        ----------
         state : obj
                 State of the quantum system. Can be either one of:
 
@@ -346,7 +346,7 @@ class basis(object):
                 Whether or not to return a sparse DM. Default is `False`.
 
         Returns
-        --------
+        -------
         numpy.ndarray
                 Density matrix associated with `state`. Depends on optional arguments.
 
@@ -398,7 +398,7 @@ class basis(object):
 
 
         Parameters
-        -----------
+        ----------
         state : obj
                 State of the quantum system. Can be either one of:
 
@@ -441,7 +441,7 @@ class basis(object):
                 Specifies additional arguments for `svd_solver`.
 
         Returns
-        --------
+        -------
         dict
                 Dictionary with following keys, depending on input parameters:
                         * "Sent_A": entanglement entropy of subsystem A (default).
@@ -483,14 +483,14 @@ class basis(object):
         This function works with the `tensor_basis` and other basis which use the "|" symbol in the opstr.
 
         Parameters
-        -----------
+        ----------
         static: list
                 Static operators formatted to be passed into the static argument of the `hamiltonian` class.
         dynamic: list
                 Dynamic operators formatted to be passed into the dynamic argument of the `hamiltonian` class.
 
         Returns
-        --------
+        -------
         tuple
                 `(static, dynamic)`, where
                         * list: `static`: operator strings with "x" and "y" expanded into "+" and "-", formatted to
@@ -499,7 +499,7 @@ class basis(object):
                                 be passed into the dynamic argument of the `hamiltonian` class.
 
         Examples
-        ---------
+        --------
 
         >>> static = [["xx",[[1.0,0,1]]],["yy",[[1.0,0,1]]]]
         >>> dynamic = [["y",[[1.0,0]],lambda t: t,[]]]
@@ -544,14 +544,14 @@ class basis(object):
         """Checks operator string lists for hermiticity of the combined operator.
 
         Parameters
-        -----------
+        ----------
         static: list
                 Static operators formatted to be passed into the static argument of the `hamiltonian` class.
         dynamic: list
                 Dynamic operators formatted to be passed into the dynamic argument of the `hamiltonian` class.
 
         Examples
-        ---------
+        --------
 
         """
         if self._check_herm is None:
@@ -642,14 +642,14 @@ class basis(object):
         """Checks operator string lists for the required symmetries of the combined operator.
 
         Parameters
-        -----------
+        ----------
         static: list
                 Static operators formatted to be passed into the static argument of the `hamiltonian` class.
         dynamic: list
                 Dynamic operators formatted to be passed into the dynamic argument of the `hamiltonian` class.
 
         Examples
-        ---------
+        --------
 
         """
         if self._check_symm is None:
@@ -868,14 +868,14 @@ class basis(object):
         """Checks operator string lists for particle number (magnetisation) conservartion of the combined operator.
 
         Parameters
-        -----------
+        ----------
         static: list
                 Static operators formatted to be passed into the static argument of the `hamiltonian` class.
         dynamic: list
                 Dynamic operators formatted to be passed into the dynamic argument of the `hamiltonian` class.
 
         Examples
-        ---------
+        --------
 
         """
         if self._check_pcon is None:
@@ -1153,12 +1153,12 @@ def isbasis(obj):
     """Checks if instance is object of `basis` class.
 
     Parameters
-    -----------
+    ----------
     obj :
             Arbitraty python object.
 
     Returns
-    --------
+    -------
     bool
             Can be either of the following:
 

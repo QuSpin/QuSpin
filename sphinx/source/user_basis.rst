@@ -1,8 +1,8 @@
 .. _user_basis-label:
 
 
-A tutorial on QuSpin's `user_basis`
-===================================
+QuSpin's `user_basis`
+=====================
 List of functionality features which `user_basis` allows the user to access, and which are **not** accessible in the `*_basis_1d` and `*_basis_general`:
 
 * Constrained Hilbert Spaces

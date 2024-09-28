@@ -42,7 +42,7 @@ class tensor_basis(basis):
 
 
     Examples
-    ---------
+    --------
     The following code shows how to construct the Fermi-Hubbard Hamiltonian by tensoring two
     `spinless_fermion_basis_1d` objects. This model can also be set up using the `spinful_fermion_basis_1d` class),
     which also allows the implementation of symmetries.
@@ -63,8 +63,8 @@ class tensor_basis(basis):
         """Initialises the `tensor_basis` object (basis for tensor product Hilbert spaces).
 
         Parameters
-        -----------
-        basis_list : list(:obj:`basis`)
+        ----------
+        basis_list : list[:obj:`basis`]
                 List of `basis` objects to tensor together. Required minimum number is two.
 
         """
@@ -132,7 +132,7 @@ class tensor_basis(basis):
         """Constructs operator from a site-coupling list and an operator string in the tensor basis.
 
         Parameters
-        -----------
+        ----------
         opstr : str
                 Operator string in the tensor basis format. For instance:
                 >>> opstr = "z|z"
@@ -145,7 +145,7 @@ class tensor_basis(basis):
                 Data type (e.g. numpy.float64) to construct the operator with.
 
         Returns
-        --------
+        -------
         tuple
                 `(ME,row,col)`, where
                         * numpy.ndarray(scalar): `ME`: matrix elements of type `dtype`.
@@ -234,13 +234,13 @@ class tensor_basis(basis):
         by `index()`.
 
         Parameters
-        -----------
+        ----------
         states : list(str)
                 List of strings which separately define the Fock state in each of the `basis` used to construct
                 the `tensor_basis` object.
 
         Returns
-        --------
+        -------
         int
                 Position of tensor Fock state in the `tensor_basis`.
 
@@ -282,7 +282,7 @@ class tensor_basis(basis):
         Supports parallelisation to multiple states listed in the columns.
 
         Parameters
-        -----------
+        ----------
         v0 : numpy.ndarray
                 Contains in its columns the states in the symmetry-reduced basis.
         sparse : bool, optional
@@ -293,7 +293,7 @@ class tensor_basis(basis):
                 Whether or not to transform the state to the full state in `basis_right`. Default is `True`.
 
         Returns
-        --------
+        -------
         numpy.ndarray
                 Array containing the state `v0` in the full basis.
 
@@ -342,7 +342,7 @@ class tensor_basis(basis):
         in a straightforward manner.
 
         Parameters
-        -----------
+        ----------
         dtype : 'type'
                 Data type (e.g. numpy.float64) to construct the projector with.
         full_left : bool, optional
@@ -351,7 +351,7 @@ class tensor_basis(basis):
                 Whether or not to transform the state to the full state in `basis_right`. Default is `True`.
 
         Returns
-        --------
+        -------
         numpy.ndarray
                 Transformation/projector between the symmetry-reduced and the full basis.
 
@@ -381,7 +381,7 @@ class tensor_basis(basis):
         """Calculates reduced density matrix, through a partial trace of a quantum state in `tensor_basis`.
 
         Parameters
-        -----------
+        ----------
         state : obj
                 State of the quantum system. Can be either one of:
 
@@ -408,7 +408,7 @@ class tensor_basis(basis):
                 Whether or not to return a sparse DM. Default is `False`.
 
         Returns
-        --------
+        -------
         numpy.ndarray
                 Density matrix associated with `state`. Depends on optional arguments.
 
@@ -551,7 +551,7 @@ class tensor_basis(basis):
         Algorithm is based on both partial tracing and sigular value decomposition (SVD), optimised for speed.
 
         Parameters
-        -----------
+        ----------
         state : obj
                 State of the quantum system. Can be either one of:
 
@@ -590,7 +590,7 @@ class tensor_basis(basis):
                 `scipy.sparse.linalg.eigsh() <https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.linalg.eigsh.html>`_.
 
         Returns
-        --------
+        -------
         dict
                 Dictionary with following keys, depending on input parameters:
                         * "Sent_A": entanglement entropy of subsystem A (default).

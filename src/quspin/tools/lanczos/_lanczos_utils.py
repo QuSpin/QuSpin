@@ -97,7 +97,7 @@ def lanczos_full(A, v0, m, full_ortho=False, out=None, eps=None):
     * The 'out' argument to pass back the results of the matrix-vector product will be used if the 'dot' function supports this argument.
 
     Parameters
-    -----------
+    ----------
     A : LinearOperator, hamiltonian, numpy.ndarray, or object with a 'dot' method and a 'dtype' method.
             Python object representing a linear map to compute the Lanczos approximation to the largest eigenvalues/vectors of. Must contain a dot-product method, used as `A.dot(v)` and a dtype method, used as `A.dtype`, e.g. `hamiltonian`, `quantum_operator`, `quantum_LinearOperator`, sparse or dense matrix.
     v0 : array_like, (n,)
@@ -112,7 +112,7 @@ def lanczos_full(A, v0, m, full_ortho=False, out=None, eps=None):
             Used to cutoff lanczos iteration when off diagonal matrix elements of `T` drops below this value.
 
     Returns
-    --------
+    -------
     tuple(E,V,Q_T)
             * E : (m,) numpy.ndarray: eigenvalues of Krylov subspace tridiagonal matrix :math:`T`.
             * V : (m,m) numpy.ndarray: eigenvectors of Krylov subspace tridiagonal matrix :math:`T`.
@@ -258,7 +258,7 @@ def lanczos_iter(A, v0, m, return_vec_iter=True, copy_v0=True, copy_A=False, eps
             Used to cutoff lanczos iteration when off diagonal matrix elements of `T` drops below this value.
 
     Returns
-    --------
+    -------
     tuple(E,V,Q_T)
             * E : (m,) numpy.ndarray: eigenvalues of Krylov subspace tridiagonal matrix :math:`T`.
             * V : (m,m) numpy.ndarray: eigenvectors of Krylov subspace tridiagonal matrix :math:`T`.
@@ -371,7 +371,7 @@ def lin_comb_Q_T(coeff, Q_T, out=None):
 
 
     Parameters
-    -----------
+    ----------
     coeff : (m,) array_like
             list of coefficients to compute the linear combination of Lanczos basis vectors with.
     Q_T : (m,n) numpy.ndarray, generator
@@ -380,7 +380,7 @@ def lin_comb_Q_T(coeff, Q_T, out=None):
             Array to store the result in.
 
     Returns
-    --------
+    -------
     (n,) numpy.ndarray
             Linear combination :math:`v` of Lanczos basis vectors.
 

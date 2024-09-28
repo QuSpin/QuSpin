@@ -35,7 +35,7 @@ class quantum_LinearOperator(LinearOperator):
     The class does NOT yet support time-dependent operators.
 
     Examples
-    ---------
+    --------
 
     The following example shows how to construct and use `quantum_LinearOperator` objects.
 
@@ -62,7 +62,7 @@ class quantum_LinearOperator(LinearOperator):
         """Intializes the `quantum_LinearOperator` object.
 
         Parameters
-        -----------
+        ----------
 
         static_list : list
                 Contains list of objects to calculate the static part of a `quantum_LinearOperator` operator. Same as
@@ -216,7 +216,7 @@ class quantum_LinearOperator(LinearOperator):
         """Sets the diagonal part of the quantum_LinearOperator.
 
         Parameters
-        -----------
+        ----------
         diagonal: array_like
                 array_like object containing the new diagonal.
 
@@ -242,17 +242,17 @@ class quantum_LinearOperator(LinearOperator):
     # 		H|V\\rangle
 
     # 	Parameters
-    # 	-----------
+    # 	----------
     # 	other : numpy.ndarray
     # 		Vector (quantums tate) to multiply the `quantum_LinearOperator` operator with.
 
     # 	Returns
-    # 	--------
+    # 	-------
     # 	numpy.ndarray
     # 		Vector corresponding to the `hamiltonian` operator applied on the state `V`.
 
     # 	Examples
-    # 	---------
+    # 	--------
     # 	>>> B = H.dot(A,check=True)
 
     # 	corresponds to :math:`B = HA`.
@@ -267,17 +267,17 @@ class quantum_LinearOperator(LinearOperator):
     # 		\\langle V|H
 
     # 	Parameters
-    # 	-----------
+    # 	----------
     # 	other : numpy.ndarray
     # 		Vector (quantums tate) to multiply the `quantum_LinearOperator` operator with.
 
     # 	Returns
-    # 	--------
+    # 	-------
     # 	numpy.ndarray
     # 		Vector corresponding to the `hamiltonian` operator applied on the state `V`.
 
     # 	Examples
-    # 	---------
+    # 	--------
     # 	>>> B = H.dot(A,check=True)
 
     # 	corresponds to :math:`B = AH`.
@@ -292,7 +292,7 @@ class quantum_LinearOperator(LinearOperator):
                 aH|V\\rangle
 
         Parameters
-        -----------
+        ----------
         other : numpy.ndarray
                 Vector (quantums tate) to multiply the `quantum_LinearOperator` operator with.
         out : array_like, optional
@@ -301,12 +301,12 @@ class quantum_LinearOperator(LinearOperator):
                 scalar to multiply the final product with: :math:`B = aHA`.
 
         Returns
-        --------
+        -------
         numpy.ndarray
                 Vector corresponding to the `hamiltonian` operator applied on the state `V`.
 
         Examples
-        ---------
+        --------
         >>> B = H.dot(A,check=True)
 
         corresponds to :math:`B = HA`.
@@ -353,7 +353,7 @@ class quantum_LinearOperator(LinearOperator):
                 \\langle V|H^2|V\\rangle - \\langle V|H|V\\rangle^2
 
         Parameters
-        -----------
+        ----------
         V : numpy.ndarray
                 Depending on the shape, can be a single state or a collection of pure or mixed states
                 [see `enforce_pure`].
@@ -362,12 +362,12 @@ class quantum_LinearOperator(LinearOperator):
                 in the columns.
 
         Returns
-        --------
+        -------
         float
                 Quantum fluctuations of `hamiltonian` operator in state `V`.
 
         Examples
-        ---------
+        --------
         >>> H_fluct = H.quant_fluct(V,time=0,check=True)
 
         corresponds to :math:`\\left(\\Delta H\\right)^2 = \\langle V|H^2(t=\\texttt{time})|V\\rangle - \\langle V|H(t=\\texttt{time})|V\\rangle^2`.
@@ -405,7 +405,7 @@ class quantum_LinearOperator(LinearOperator):
                 \\langle V|H|V\\rangle
 
         Parameters
-        -----------
+        ----------
         V : numpy.ndarray
                 Depending on the shape, can be a single state or a collection of pure or mixed states
                 [see `enforce_pure` argument of `basis.ent_entropy`].
@@ -414,12 +414,12 @@ class quantum_LinearOperator(LinearOperator):
                 in the columns.
 
         Returns
-        --------
+        -------
         float
                 Expectation value of `hamiltonian` operator in state `V`.
 
         Examples
-        ---------
+        --------
         >>> H_expt = H.expt_value(V,time=0,diagonal=False,check=True)
 
         corresponds to :math:`H_{expt} = \\langle V|H(t=0)|V\\rangle`.
@@ -468,7 +468,7 @@ class quantum_LinearOperator(LinearOperator):
         Taking the conjugate or transpose of the state `Vl` is done automatically.
 
         Parameters
-        -----------
+        ----------
         Vl : numpy.ndarray
                 Vector(s)/state(s) to multiple with on left side.
         Vl : numpy.ndarray
@@ -477,12 +477,12 @@ class quantum_LinearOperator(LinearOperator):
                 When set to `True`, returs only diagonal part of expectation value. Default is `diagonal = False`.
 
         Returns
-        --------
+        -------
         float
                 Matrix element of `quantum_operator` quantum_operator between the states `Vl` and `Vr`.
 
         Examples
-        ---------
+        --------
         >>> H_lr = H.expt_value(Vl,Vr,pars=pars,diagonal=False,check=True)
 
         corresponds to :math:`H_{lr} = \\langle V_l|H(\\lambda=0)|V_r\\rangle`.
@@ -559,17 +559,17 @@ class quantum_LinearOperator(LinearOperator):
         to reassure themselves of the hermiticity properties before use.
 
         Parameters
-        -----------
+        ----------
         eigsh_args :
                 For all additional arguments see documentation of `scipy.sparse.linalg.eigsh <https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.linalg.eigsh.html>`_.
 
         Returns
-        --------
+        -------
         tuple
                 Tuple containing the `(eigenvalues, eigenvectors)` of the `quantum_LinearOperator` operator.
 
         Examples
-        ---------
+        --------
         >>> eigenvalues,eigenvectors = H.eigsh(**eigsh_args)
 
         """
@@ -585,12 +585,12 @@ class quantum_LinearOperator(LinearOperator):
         This function does NOT conjugate the operator.
 
         Returns
-        --------
+        -------
         :obj:`quantum_LinearOperator`
                 :math:`H_{ij}\\mapsto H_{ji}`
 
         Examples
-        ---------
+        --------
 
         >>> H_tran = H.transpose()
 
@@ -609,12 +609,12 @@ class quantum_LinearOperator(LinearOperator):
         This function does NOT transpose the operator.
 
         Returns
-        --------
+        -------
         :obj:`quantum_LinearOperator`
                 :math:`H_{ij}\\mapsto H_{ij}^*`
 
         Examples
-        ---------
+        --------
 
         >>> H_conj = H.conj()
 
@@ -630,12 +630,12 @@ class quantum_LinearOperator(LinearOperator):
         This function does NOT transpose the operator.
 
         Returns
-        --------
+        -------
         :obj:`quantum_LinearOperator`
                 :math:`H_{ij}\\mapsto H_{ij}^*`
 
         Examples
-        ---------
+        --------
 
         >>> H_conj = H.conj()
 
@@ -646,17 +646,17 @@ class quantum_LinearOperator(LinearOperator):
         """Calculates hermitian conjugate of `quantum_LinearOperator` operator.
 
         Parameters
-        -----------
+        ----------
         copy : bool, optional
                 Whether to return a deep copy of the original object. Default is `copy = False`.
 
         Returns
-        --------
+        -------
         :obj:`quantum_LinearOperator`
                 :math:`H_{ij}\\mapsto H_{ji}^*`
 
         Examples
-        ---------
+        --------
 
         >>> H_herm = H.getH()
 
@@ -912,12 +912,12 @@ def isquantum_LinearOperator(obj):
     """Checks if instance is object of `quantum_LinearOperator` class.
 
     Parameters
-    -----------
+    ----------
     obj :
             Arbitraty python object.
 
     Returns
-    --------
+    -------
     bool
             Can be either of the following:
 

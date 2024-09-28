@@ -78,7 +78,7 @@ class spin_basis_general(hcb_basis_general, higher_spin_basis_general):
         """Intializes the `spin_basis_general` object (basis for spin operators).
 
         Parameters
-        -----------
+        ----------
         N: int
                 number of sites.
         Nup: {int,list}, optional

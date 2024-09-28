@@ -431,7 +431,7 @@ class basis_general(lattice_basis):
         * the user is strongly advised to use the code under "Formally equivalent" above to check the results of this function for small system sizes.
 
         Parameters
-        -----------
+        ----------
         other_basis : `basis` object
                 `basis_general` object for the initial symmetry sector. Must be the same `basis` class type as the basis whose instance is `Op_shift_sector()` (i.e. the basis in `basis.Op_shift_sector()`).
         op_list : list
@@ -444,7 +444,7 @@ class basis_general(lattice_basis):
                 Data type (e.g. `numpy.float64`) to construct the operator with.
 
         Returns
-        --------
+        -------
         (basis.Ns, ) numpy.ndarray
                 Array containing the state `v_out` in the current basis, i.e. the basis in `basis.Op_shift_sector()`.
 
@@ -528,7 +528,7 @@ class basis_general(lattice_basis):
         * see also `Op_shift_sector()`.
 
         Parameters
-        -----------
+        ----------
         dtype : 'type'
                 Data type (e.g. numpy.float64) to construct the projector with.
         pcon : bool, optional
@@ -536,7 +536,7 @@ class basis_general(lattice_basis):
                 (useful in bosonic/single particle systems). Default is `pcon=False`.
 
         Returns
-        --------
+        -------
         scipy.sparse.csc_matrix
                 Transformation/projector between the symmetry-reduced and the full basis.
 
@@ -592,7 +592,7 @@ class basis_general(lattice_basis):
 
 
         Parameters
-        -----------
+        ----------
         v0 : numpy.ndarray
                 Contains in its columns the states in the full (symmetry-free) basis.
         sparse : bool, optional
@@ -602,7 +602,7 @@ class basis_general(lattice_basis):
                 (useful in bosonic/single particle systems). Default is `pcon=False`.
 
         Returns
-        --------
+        -------
         numpy.ndarray
                 Array containing the state `v0` in the symmetry-reduced basis.
 
@@ -703,7 +703,7 @@ class basis_general(lattice_basis):
         * inverse function to `project_to`.
 
         Parameters
-        -----------
+        ----------
         v0 : numpy.ndarray
                 Contains in its columns the states in the symmetry-reduced basis.
         sparse : bool, optional
@@ -713,7 +713,7 @@ class basis_general(lattice_basis):
                 (useful in bosonic/single particle systems). Default is `pcon=False`.
 
         Returns
-        --------
+        -------
         numpy.ndarray
                 Array containing the state `v0` in the full basis.
 
@@ -818,14 +818,14 @@ class basis_general(lattice_basis):
         """Creates the entire basis by calling the basis constructor.
 
         Parameters
-        -----------
+        ----------
         Ns_block_est: int, optional
                 Overwrites the internal estimate of the size of the reduced Hilbert space for the given symmetries. This can be used to help conserve memory if the exact size of the H-space is known ahead of time.
         N_p: int, optional
                 number of bits to use in the prefix label used to generate blocks for searching positions of representatives.
 
         Returns
-        --------
+        -------
         int
                 Total number of states in the (symmetry-reduced) Hilbert space.
 
@@ -902,7 +902,7 @@ class basis_general(lattice_basis):
         """Creates/modifies the bounds for representatives based on prefix tages.
 
         Parameters
-        -----------
+        ----------
         N_p: int, optional
                 number of bits to use in the prefix label used to generate blocks for searching positions of representatives.
 
@@ -961,7 +961,7 @@ class basis_general(lattice_basis):
                 * If a state from `ket_states` does not have a non-zero matrix element, it is removed from the returned list. See otional argument `reduce_output`.
 
         Parameters
-        -----------
+        ----------
         opstr : str
                 Operator string in the lattice basis format. For instance:
 
@@ -980,7 +980,7 @@ class basis_general(lattice_basis):
                 If set to `False`, the returned arrays have the same size as `ket_states`; If set to `True` zeros are purged.
 
         Returns
-        --------
+        -------
         tuple
                 `(ME,bra,ket)`, where
                         * numpy.ndarray(scalar): `ME`: matrix elements of type `dtype`, which connects the ket and bra states.
@@ -1036,7 +1036,7 @@ class basis_general(lattice_basis):
         """Maps states to their representatives under the `basis` symmetries.
 
         Parameters
-        -----------
+        ----------
         states : array_like(int)
                 Fock-basis (z-basis) states to find the representatives of. States are stored in integer representations.
         out : numpy.ndarray(int), optional
@@ -1047,7 +1047,7 @@ class basis_general(lattice_basis):
                 if set to `True`, the function returns the `sign` of the representative relative to the original state (nontrivial only for fermionic bases).
 
         Returns
-        --------
+        -------
         tuple
                 ( representatives, g_array, sign_array )
                 * array_like(int): `representatives`: Representatives under `basis` symmetries, corresponding to `states`.
@@ -1120,19 +1120,19 @@ class basis_general(lattice_basis):
         """Computes normalization of `basis` states.
 
         Notes
-        ------
+        -----
                 * Returns zero, if the state is not part of the symmetry-reduced basis.
                 * The normalizations can be used to compute matrix elements in the symmetry-reduced basis.
 
         Parameters
-        -----------
+        ----------
         states : array_like(int)
                 Fock-basis (z-basis) states to find the normalizations of. States are stored in integer representations.
         out : numpy.ndarray(unsigned int), optional
                 variable to store the normalizations of the states in. Must be a `numpy.ndarray` of datatype `unsigned int` (e.g. `numpy.uint16`), and same shape as `states`.
 
         Returns
-        --------
+        -------
         array_like(int)
                 normalizations of `states` for the given (symmetry-reduced) `basis`.
 
@@ -1191,7 +1191,7 @@ class basis_general(lattice_basis):
 
 
         Notes
-        ------
+        -----
                 * Particularly useful when a given operation cannot be carried away in the symmetry-reduced basis in a straightforward manner.
                 * To transform an entire state from a symmetry-reduced basis to the full (symmetry-free) basis, use the `basis.get_vec()` function.
                 * Returns zero, if the state passed to the function is not part of the symmetry-reduced basis.
@@ -1199,7 +1199,7 @@ class basis_general(lattice_basis):
                 * The function assumes that `states` comply with the particle conservation symmetry the `basis` was constructed with.
 
         Parameters
-        -----------
+        ----------
         states : array_like(int)
                 Fock-basis (z-basis) states to find the amplitude rescale factor :math:`C` of. States are stored in integer representations.
         out : numpy.ndarray(float), optional
@@ -1216,7 +1216,7 @@ class basis_general(lattice_basis):
                                 **Note**: the function will also update the variable `states` in place with the corresponding representatives.
 
         Returns
-        --------
+        -------
         array_like(float)
                 amplitude rescale factor :math:`C` (see expression above).
 
