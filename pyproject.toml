@@ -6,7 +6,7 @@ authors = [
     {name = "Phillip Weinberg, Marin Bukov", email = "weinbe58@gmail.com"},
 ]
 dependencies = [
-    "quspin-extensions>=0.1.1",
+    "quspin-extensions>=0.1.3",
     "parallel-sparse-tools>=0.1.3",
     "numpy>=2.0.0",
     "dill>=0.3.8",
