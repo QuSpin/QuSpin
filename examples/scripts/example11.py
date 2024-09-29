@@ -184,10 +184,8 @@ def compute_local_energy(s, psi_s, psi):
         # performs sum over `s'`
         E_s += ME * probability_amplitude(bras, psi)
     # normalize by `psi_s`
-    E_s /= psi_s
+    E_s /= psi_s[0]
     return E_s
-
-
 #
 ##### perform Monte Carlo sampling from `|psi_s|^2` #####
 #
@@ -263,12 +261,12 @@ while k < N_MC_points:
     if (j > equilibration_time) and (j % autocorrelation_time == 0):
         # compute local energy
         print("computing local energy E_s for MC sample {0:d}".format(k))
-        E_s[k] = compute_local_energy(s, psi_s, psi)
+        E_s[k] = compute_local_energy(s, psi_s, psi)[0]
         # update sample
-        MC_sample[k] = s
+        MC_sample[k] = s[0]
         # update MC samples counter
         k += 1
-    #
+    #    
     j += 1  # update MC chain counter
 #
 ##### compute MC-sampled average energy #####
