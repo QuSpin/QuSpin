@@ -16,19 +16,21 @@ Added in v. 1.0.0 (2024.10.01)
 
 Improved Functionality
 ++++++++++++++++++++++
-* source code refactoring -- `quspin` is now divided into three independent modules:
+* new easier :ref:`installation-label` using `pip` allows seamless installation across different platforms (including arm64)
+* source code refactored -- `quspin` is now divided into three independent modules:
 	- `sparse parallel tools extension <https://github.com/QuSpin/parallel-sparse-tools>`_
 	- `QuSpin extension <https://github.com/QuSpin/QuSpin-Extensions>`_
 	- `QuSpin <https://github.com/QuSpin/QuSpin>`_
 * compatibility with `numpy>2.0` 
-* easier installation using `pip` allows seamles installation across different platforms (including arm64)
 * new documentation layout
 * fixed small bugs and deprecation warnings
 
 
 New Attributes, Functions, Methods, Classes, and Examples
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-* deprecated `tools.block_tools` class, together with :ref:`example5-label` and :ref:`example7-label`
+* deprecated `tools.block_tools` class, together with the examples:
+	- :ref:`example5-label`
+	- :ref:`example7-label`
 * renamed properties of `photon_basis` as follows:
 	- `photon_basis.photon_basis` -> `photon_basis.basis.photon`
 	- `photon_basis.particle_basis` -> `photon_basis.basis.particle`

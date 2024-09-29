@@ -59,7 +59,7 @@ Advanced usage
 	
 
 
-Algorithms and Routines
+Algorithms and routines
 +++++++++++++++++++++++
 	* :ref:`example11-label`, :download:`download script <../../examples/scripts/example11.py>`
 	* :ref:`example22-label`, :download:`download script <../../examples/scripts/example22.py>`
