@@ -1588,7 +1588,7 @@ def isquantum_operator(obj):
 
 
 def save_zip(archive, op, save_basis=True):
-    """save a `quantum_operator` to a zip archive to be used later.
+    """Save a `quantum_operator` to a zip archive to be used later.
 
     Parameters
     ----------
