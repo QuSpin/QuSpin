@@ -1,6 +1,6 @@
 .. _jypiter_notebooks-label:
 
-Jupyter Notebooks
+Jupyter notebooks
 -----------------
 
 We also have a small number of tutorials in `Jupyter notebook <http://jupyter.org/>`_ format:
