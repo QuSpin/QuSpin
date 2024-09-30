@@ -24,28 +24,30 @@ Parallel computing in QuSpin
 
 Basic usage
 +++++++++++
-	* **non-interacting systems**
-		.. 
-			* :ref:`example5-label`, :download:`download script <../../examples/scripts/example5.py>`
-		
-		* :ref:`example3-label`, :download:`download script <../../examples/scripts/example3.py>`
-		* :ref:`example17-label`, :download:`download script <../../examples/scripts/example17.py>`
-		* :ref:`example4-label`, :download:`download script <../../examples/scripts/example4.py>`
+
+Non-interacting systems
+#######################
+	.. 
+		* :ref:`example5-label`, :download:`download script <../../examples/scripts/example5.py>`
+
+	* :ref:`example3-label`, :download:`download script <../../examples/scripts/example3.py>`
+	* :ref:`example17-label`, :download:`download script <../../examples/scripts/example17.py>`
+	* :ref:`example4-label`, :download:`download script <../../examples/scripts/example4.py>`
 	
-	* **interacting systems**
-		* :ref:`example13-label`, :download:`download script <../../examples/scripts/example13.py>`
-		* :ref:`example18-label`, :download:`download script <../../examples/scripts/example18.py>`
-		* :ref:`example2-label`, :download:`download script <../../examples/scripts/example2.py>`	
-		
-		.. 
-			* :ref:`example7-label`, :download:`download script <../../examples/scripts/example7.py>`
-		
-		* :ref:`example9-label`, :download:`download script <../../examples/scripts/example9.py>`	
-		* :ref:`example6-label`, :download:`download script <../../examples/scripts/example6.py>`
-		* :ref:`example1-label`, :download:`download script <../../examples/scripts/example1.py>`
-		* :ref:`example10-label`, :download:`download script <../../examples/scripts/example10.py>`
-		* :ref:`example25-label`, :download:`download script <../../examples/scripts/example25.py>`
-		
+Interacting systems
+###################
+	* :ref:`example13-label`, :download:`download script <../../examples/scripts/example13.py>`
+	* :ref:`example18-label`, :download:`download script <../../examples/scripts/example18.py>`
+	* :ref:`example2-label`, :download:`download script <../../examples/scripts/example2.py>`	
+	* :ref:`example9-label`, :download:`download script <../../examples/scripts/example9.py>`	
+	* :ref:`example6-label`, :download:`download script <../../examples/scripts/example6.py>`
+	* :ref:`example1-label`, :download:`download script <../../examples/scripts/example1.py>`
+	* :ref:`example10-label`, :download:`download script <../../examples/scripts/example10.py>`
+	* :ref:`example25-label`, :download:`download script <../../examples/scripts/example25.py>`
+
+	.. 
+		* :ref:`example7-label`, :download:`download script <../../examples/scripts/example7.py>`
+			
 Advanced usage
 ++++++++++++++
 	* :ref:`example14-label`, :download:`download script <../../examples/scripts/example14.py>`
