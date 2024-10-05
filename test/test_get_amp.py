@@ -115,7 +115,7 @@ def test():
             )
 
             H = hamiltonian(static, [], basis=basis_2d_made, dtype=np.complex128)
-            E_GS, V_GS = H.eigsh(k=1, which="SA")  # ,sigma=1E-6
+            E_GS, V_GS = H.eigsh(k=1, which="SA", maxiter=10000)  # ,sigma=1E-6
 
             states = basis_2d_made.states.copy()
             inds = [np.where(basis_2d_full.states == r)[0][0] for r in states]
