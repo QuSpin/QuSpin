@@ -2867,9 +2867,9 @@
                 <span class="k">try</span><span class="p">:</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">_dynamic</span><span class="p">[</span><span class="n">func</span><span class="p">]</span> <span class="o">-=</span> <span class="n">Hd</span>
                 <span class="k">except</span> <span class="ne">NotImplementedError</span><span class="p">:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_dynamic</span><span class="p">[</span><span class="n">func</span><span class="p">]</span> <span class="o">=</span> <span class="n">new</span><span class="o">.</span><span class="n">_dynamic</span><span class="p">[</span><span class="n">func</span><span class="p">]</span> <span class="o">-</span> <span class="n">Hd</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_dynamic</span><span class="p">[</span><span class="n">func</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dynamic</span><span class="p">[</span><span class="n">func</span><span class="p">]</span> <span class="o">-</span> <span class="n">Hd</span>
 
-                <span class="k">if</span> <span class="n">_check_almost_zero</span><span class="p">(</span><span class="n">new</span><span class="o">.</span><span class="n">_dynamic</span><span class="p">[</span><span class="n">func</span><span class="p">]):</span>
+                <span class="k">if</span> <span class="n">_check_almost_zero</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dynamic</span><span class="p">[</span><span class="n">func</span><span class="p">]):</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">_dynamic</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
 
             <span class="k">else</span><span class="p">:</span>
@@ -3161,7 +3161,7 @@
         <span class="k">return</span> <span class="n">new</span>
 
     <span class="k">def</span> <span class="nf">_imul_scalar</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">_np</span><span class="o">.</span><span class="n">can_cast</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dtype</span><span class="p">,</span> <span class="n">casting</span><span class="o">=</span><span class="s2">&quot;same_kind&quot;</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">_np</span><span class="o">.</span><span class="n">can_cast</span><span class="p">(</span><span class="n">_np</span><span class="o">.</span><span class="n">min_scalar_type</span><span class="p">(</span><span class="n">other</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dtype</span><span class="p">,</span> <span class="n">casting</span><span class="o">=</span><span class="s2">&quot;same_kind&quot;</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;cannot cast types&quot;</span><span class="p">)</span>
 
         <span class="k">try</span><span class="p">:</span>
@@ -3231,8 +3231,8 @@
 
         <span class="k">try</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_static</span> <span class="o">+=</span> <span class="n">other</span>
-        <span class="k">except</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_static</span> <span class="o">=</span> <span class="n">new</span><span class="o">.</span><span class="n">_static</span> <span class="o">+</span> <span class="n">other</span>
+        <span class="k">except</span> <span class="ne">NotImplementedError</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_static</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_static</span> <span class="o">+</span> <span class="n">other</span>
 
         <span class="k">if</span> <span class="n">_check_almost_zero</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_static</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_static</span> <span class="o">=</span> <span class="n">_sp</span><span class="o">.</span><span class="n">dia_matrix</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_shape</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_dtype</span><span class="p">)</span>
@@ -3484,7 +3484,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2016, Phillip Weinberg, Markus Schmitt, and Marin Bukov.</p>
+    <p>&#169; Copyright 2024, Phillip Weinberg, Markus Schmitt, and Marin Bukov.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

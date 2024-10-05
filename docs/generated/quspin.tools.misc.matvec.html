@@ -25,7 +25,7 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="quspin.tools.misc.get_matvec_function" href="quspin.tools.misc.get_matvec_function.html" />
-    <link rel="prev" title="quspin.tools.measurements.obs_vs_time" href="quspin.tools.measurements.obs_vs_time.html" /> 
+    <link rel="prev" title="quspin.tools.block_tools.block_diag_hamiltonian" href="quspin.tools.block_tools.block_diag_hamiltonian.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -56,6 +56,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../tools.html#lanczos">Lanczos</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../tools.html#floquet">Floquet</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../tools.html#measurements">measurements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tools.html#block-tools">block_tools</a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="../tools.html#misc">misc</a><ul class="current">
 <li class="toctree-l3 current"><a class="current reference internal" href="#">quspin.tools.misc.matvec</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#quspin.tools.misc.matvec"><code class="docutils literal notranslate"><span class="pre">matvec()</span></code></a></li>
@@ -290,7 +291,7 @@ the result is added to the values in <cite>out</cite> (in-pace addition, cf. <sp
 <span class="linenos">121</span><span class="n">population_down</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
 <span class="linenos">122</span><span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">rho_flattened</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">rho_t</span><span class="p">):</span>
 <span class="linenos">123</span>    <span class="n">rho</span> <span class="o">=</span> <span class="n">rho_flattened</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">H</span><span class="o">.</span><span class="n">Ns</span><span class="p">,</span> <span class="n">H</span><span class="o">.</span><span class="n">Ns</span><span class="p">)</span>
-<span class="linenos">124</span>    <span class="n">population_down</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">rho_flattened</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+<span class="linenos">124</span>    <span class="n">population_down</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">rho_flattened</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">real</span>
 <span class="linenos">125</span>    <span class="nb">print</span><span class="p">(</span>
 <span class="linenos">126</span>        <span class="s2">&quot;time=</span><span class="si">{0:.2f}</span><span class="s2">, population of down state = </span><span class="si">{1:0.8f}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
 <span class="linenos">127</span>            <span class="n">time</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">population_down</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
@@ -306,14 +307,14 @@ the result is added to the values in <cite>out</cite> (in-pace addition, cf. <sp
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="quspin.tools.measurements.obs_vs_time.html" class="btn btn-neutral float-left" title="quspin.tools.measurements.obs_vs_time" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="quspin.tools.block_tools.block_diag_hamiltonian.html" class="btn btn-neutral float-left" title="quspin.tools.block_tools.block_diag_hamiltonian" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="quspin.tools.misc.get_matvec_function.html" class="btn btn-neutral float-right" title="quspin.tools.misc.get_matvec_function" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2016, Phillip Weinberg, Markus Schmitt, and Marin Bukov.</p>
+    <p>&#169; Copyright 2024, Phillip Weinberg, Markus Schmitt, and Marin Bukov.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

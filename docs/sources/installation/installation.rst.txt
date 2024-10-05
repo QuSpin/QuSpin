@@ -14,7 +14,7 @@ User Install (Automatic)
 The user install is meant for deploying `quspin` on your private machine or an HPC cluster:
 ::
 
-	> pip install ...
+	> pip install quspin
 
 
 Developer Install (Manual)

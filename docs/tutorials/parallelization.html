@@ -123,15 +123,10 @@
 <h2>1. Multi-threading via OpenMP in QuSpin:<a class="headerlink" href="#multi-threading-via-openmp-in-quspin" title="Link to this heading"></a></h2>
 <section id="install-quspin-with-openmp-support">
 <h3>1.1. Install QuSpin with OpenMP support:<a class="headerlink" href="#install-quspin-with-openmp-support" title="Link to this heading"></a></h3>
-<p>In order to make use of OpenMP features in QuSpin, one just needs to install the <cite>omp</cite> metapackage which will track the OpenMP compiled version of QuSpin for your platform. Starting from QuSpin 0.3.1, we have OpenMP support across the different operating systems. To install the OpenMP version of QuSpin simply run:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ conda install -c weinbe58 omp quspin
+<p>In order to make use of OpenMP features in QuSpin, one just needs to install the <cite>omp</cite> metapackage which will track the OpenMP compiled version of QuSpin for your platform. Starting from QuSpin 0.3.1, we have OpenMP support across the different operating systems. With QuSpin 1.0.0, the OpenMP installation is default; to install the OpenMP version of QuSpin simply run:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ pip install quspin
 </pre></div>
 </div>
-<p>If you would like to go back to the single-threaded (i.e. no-OpenMP) version of QuSpin run:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ conda remove --features omp -c weinbe58
-</pre></div>
-</div>
-<p>upon which you will be asked by anaconda if you want to downgrade you QuSpin version to a version which no longer tracks the <cite>omp</cite> feature.</p>
 </section>
 <section id="multi-threaded-support-for-quspin-functions">
 <h3>1.2. Multi-threaded support for QuSpin functions:<a class="headerlink" href="#multi-threaded-support-for-quspin-functions" title="Link to this heading"></a></h3>
@@ -231,7 +226,7 @@ $ echo $MKL_NUM_THREADS
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2016, Phillip Weinberg, Markus Schmitt, and Marin Bukov.</p>
+    <p>&#169; Copyright 2024, Phillip Weinberg, Markus Schmitt, and Marin Bukov.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
