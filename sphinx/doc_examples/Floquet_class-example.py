@@ -54,7 +54,7 @@ dt_list = np.array(
     [t.T / 4.0, t.T / 2.0, t.T / 4.0]
 )  # time step durations to apply H for
 Floq = Floquet(
-    {"H": H, "t_list": t_list, "dt_list": dt_list}, VF=True
+    {"H": H, "t_list": t_list, "dt_list": dt_list}, VF=True, force_ONB=True,
 )  # call Floquet class
 VF = Floq.VF  # read off Floquet states
 EF = Floq.EF  # read off quasienergies

@@ -175,7 +175,7 @@ class Floquet(object):
 
     """
 
-    def __init__(self, evo_dict, HF=False, UF=False, thetaF=False, VF=False, n_jobs=1):
+    def __init__(self, evo_dict, HF=False, UF=False, thetaF=False, VF=False, n_jobs=1, force_ONB=False):
         """Instantiates the `Floquet` class.
 
         Parameters
@@ -211,7 +211,9 @@ class Floquet(object):
                 Set to `True` to save Floquet states under attribute _.VF. Default is `False`.
         n_jobs : int, optional
                 Sets the number of processors which are used when looping over the basis states to compute the Floquet unitary. Default is `False`.
-
+        force_ONB : bool
+                Set to `True` to run an extra QR decomposition to orthogonalize the Floquet states; only effective for `VF=True`. 
+    
         """
         from quspin.operators import ishamiltonian
 
@@ -348,7 +350,7 @@ class Floquet(object):
         if "VF" in variables:
             thetaF, VF = _la.eig(UF, overwrite_a=True)
             # check and orthogonalise VF in degenerate subspaces
-            if _np.any(_np.diff(_np.sort(thetaF)) < 1e3 * _np.finfo(thetaF.dtype).eps):
+            if ( _np.any(_np.diff(_np.sort(thetaF)) < 1e3 * _np.finfo(thetaF.dtype).eps) ) or force_ONB:
                 VF, _ = _la.qr(VF, overwrite_a=True)
 
             # https://math.stackexchange.com/questions/269164/diagonalizable-unitarily-schur-factorization
