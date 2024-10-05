@@ -119,7 +119,7 @@ master_doc = "index"
 
 # General information about the project.
 project = "QuSpin"
-copyright = "2016, Phillip Weinberg, Markus Schmitt, and Marin Bukov"
+copyright = "2024, Phillip Weinberg, Markus Schmitt, and Marin Bukov"
 author = "Phillip Weinberg, Markus Schmitt, and Marin Bukov"
 rst_prolog = open("global.rst", "r").read()
 

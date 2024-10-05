@@ -2675,9 +2675,9 @@ class hamiltonian(object):
                 try:
                     self._dynamic[func] -= Hd
                 except NotImplementedError:
-                    self._dynamic[func] = new._dynamic[func] - Hd
+                    self._dynamic[func] = self._dynamic[func] - Hd
 
-                if _check_almost_zero(new._dynamic[func]):
+                if _check_almost_zero(self._dynamic[func]):
                     self._dynamic.pop(func)
 
             else:
@@ -2969,7 +2969,7 @@ class hamiltonian(object):
         return new
 
     def _imul_scalar(self, other):
-        if not _np.can_cast(other, self._dtype, casting="same_kind"):
+        if not _np.can_cast(_np.min_scalar_type(other), self._dtype, casting="same_kind"):
             raise TypeError("cannot cast types")
 
         try:
@@ -3039,8 +3039,8 @@ class hamiltonian(object):
 
         try:
             self._static += other
-        except:
-            self._static = new._static + other
+        except NotImplementedError:
+            self._static = self._static + other
 
         if _check_almost_zero(self._static):
             self._static = _sp.dia_matrix(self._shape, dtype=self._dtype)

@@ -17,6 +17,7 @@ evolution
    ED_state_vs_time
    evolve
    ExpmMultiplyParallel
+   expm_multiply_parallel
 
 
 Lanczos
@@ -56,6 +57,17 @@ measurements
    ent_entropy
    diag_ensemble
    obs_vs_time
+
+block_tools
+-----------
+
+.. currentmodule:: quspin.tools.block_tools
+
+.. autosummary::
+   :toctree: generated/
+
+   block_ops 
+   block_diag_hamiltonian
 
 misc
 ----
