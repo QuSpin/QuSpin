@@ -1,22 +1,43 @@
+.. _new_features-label:
+
+Highlights
+==========
+
+New easier and simpler :ref:`installation-label` for `quspin>=1.0.0` using `pip <https://pypi.org/project/pip/>`_; the old `conda` install is discontinued. 
+
+The new installation works across linux, windows, and osx platforms (including arm64, i.e., the Apple M chip processor series). 
 
 
-:orange:`QuSpin 0.3.7` (released on 2023.01.01)
-================================================
+Most recent changes & features 
+==============================
+
+Added in v. 1.0.0 (2024.10.01)
+------------------------------
+
+Improved Functionality
+++++++++++++++++++++++
+* new easier :ref:`installation-label` using `pip` allows seamless installation across different platforms (including arm64)
+* source code refactored -- `quspin` is now divided into three independent modules:
+	- `sparse parallel tools extension <https://github.com/QuSpin/parallel-sparse-tools>`_
+	- `QuSpin extension <https://github.com/QuSpin/QuSpin-Extensions>`_
+	- `QuSpin <https://github.com/QuSpin/QuSpin>`_
+* compatibility with `numpy>2.0` 
+* new documentation layout
+* fixed small bugs and deprecation warnings
 
 
-:magenta:`Highlights:` Lanczos module now here; Constrained Hilbert spaces support available; OpenMP support available!
-========================================================================================================================
+New Attributes, Functions, Methods, Classes, and Examples
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+* deprecated `tools.block_tools` class, together with the examples:
+	- :ref:`example5-label`
+	- :ref:`example7-label`
+* renamed properties of `photon_basis` as follows:
+	- `photon_basis.photon_basis` -> `photon_basis.basis.photon`
+	- `photon_basis.particle_basis` -> `photon_basis.basis.particle`
+* deprecated `tools.misc.csr_matvec` function
+* added functions `tools.misc.array_to_ints` and `tools.misc.ints_to_array`
 
-Check out :ref:`parallelization-label` and the example script :ref:`example12-label`.
 
-For a tutorial in QuSpin's `user_basis` which allows the user to define custom bases with constraints, check out: :ref:`user_basis-label`.
-
-
-
-
-
-Complete list of the most recent features 
-=========================================
 
 Added in v. 0.3.7 (2023.01.01)
 ------------------------------

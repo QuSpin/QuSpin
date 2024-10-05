@@ -1,7 +1,7 @@
 .. _user_basis-label:
 
 
-QuSpin's `user_basis`
+`user_basis` tutorial
 =====================
 List of functionality features which `user_basis` allows the user to access, and which are **not** accessible in the `*_basis_1d` and `*_basis_general`:
 
@@ -447,17 +447,17 @@ Scripts to construct spin, fermion, and boson bases
 ````````````````````````````````````````````````````
 The following three examples demonstrate how the `user_basis` recovers the functionality of the `basis_general` classes:
 
-* :ref:`user-basis_example0-label`, :download:`download script <../../examples/scripts/user_basis_trivial-spin.py>` 
-* :ref:`user-basis_example1-label`, :download:`download script <../../examples/scripts/user_basis_trivial-spinless_fermion.py>`
-* :ref:`user-basis_example2-label`, :download:`download script <../../examples/scripts/user_basis_trivial-boson.py>`
+* :ref:`user-basis_example0-label`, :download:`download script <../../../examples/scripts/user_basis_trivial-spin.py>` 
+* :ref:`user-basis_example1-label`, :download:`download script <../../../examples/scripts/user_basis_trivial-spinless_fermion.py>`
+* :ref:`user-basis_example2-label`, :download:`download script <../../../examples/scripts/user_basis_trivial-boson.py>`
 
 
 Scripts to demonstrate the additional functionality introduced by the `user_basis`
 ````````````````````````````````````````````````````````````````````````````````````
-* :ref:`example14-label`, :download:`download script <../../examples/scripts/example14.py>`
-* :ref:`example15-label`, :download:`download script <../../examples/scripts/example15.py>`
-* :ref:`example16-label`, :download:`download script <../../examples/scripts/example16.py>`
-* :ref:`example23-label`, :download:`download script <../../examples/scripts/example23.py>`
-* :ref:`example24-label`, :download:`download script <../../examples/scripts/example24.py>`
+* :ref:`example14-label`, :download:`download script <../../../examples/scripts/example14.py>`
+* :ref:`example15-label`, :download:`download script <../../../examples/scripts/example15.py>`
+* :ref:`example16-label`, :download:`download script <../../../examples/scripts/example16.py>`
+* :ref:`example23-label`, :download:`download script <../../../examples/scripts/example23.py>`
+* :ref:`example24-label`, :download:`download script <../../../examples/scripts/example24.py>`
 
 

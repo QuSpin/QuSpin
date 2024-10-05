@@ -1,6 +1,6 @@
 .. _parallelization-label:
 
-Parallel Computing Support
+Parallel computing support
 ==========================
 
 In the recent years we have witnessed the move for processors to have more and more individual cores on a single chip, both in the consumer markets as well as in the server markets for CPUs. This means that as these chips come out we will see less improvements in terms of the actual speed of individual processors and more improvements in terms of memory access speeds and large cache sizes which will boost the performance of parallel computing. 
