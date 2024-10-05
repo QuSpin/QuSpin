@@ -5,7 +5,7 @@
 groups = ["default", "dev"]
 strategy = ["inherit_metadata"]
 lock_version = "4.5.0"
-content_hash = "sha256:24d9f1c1db41a2954c6bce5680d3b6ba24293e18bf056792965fb5f294412be5"
+content_hash = "sha256:d0a28d7c62098a132feb3bd71120cdbdd1ec78d7ad3f1e45a35b11e04abcdb1d"
 
 [[metadata.targets]]
 requires_python = ">=3.9,<3.13"
@@ -263,13 +263,13 @@ files = [
 
 [[package]]
 name = "docutils"
-version = "0.21.2"
-requires_python = ">=3.9"
+version = "0.20.1"
+requires_python = ">=3.7"
 summary = "Docutils -- Python Documentation Utilities"
 groups = ["dev"]
 files = [
-    {file = "docutils-0.21.2-py3-none-any.whl", hash = "sha256:dafca5b9e384f0e419294eb4d2ff9fa826435bf15f15b7bd45723e8ad76811b2"},
-    {file = "docutils-0.21.2.tar.gz", hash = "sha256:3a6b18732edf182daa3cd12775bbb338cf5691468f91eeeb109deff6ebfa986f"},
+    {file = "docutils-0.20.1-py3-none-any.whl", hash = "sha256:96f387a2c5562db4476f09f13bbab2192e764cac08ebbf3a34a95d9b1e4a59d6"},
+    {file = "docutils-0.20.1.tar.gz", hash = "sha256:f08a4e276c3a1583a86dce3e34aba3fe04d02bba2dd51ed16106244e8a923e3b"},
 ]
 
 [[package]]
@@ -811,6 +811,22 @@ files = [
 ]
 
 [[package]]
+name = "numpydoc"
+version = "1.8.0"
+requires_python = ">=3.9"
+summary = "Sphinx extension to support docstrings in Numpy format"
+groups = ["dev"]
+dependencies = [
+    "sphinx>=6",
+    "tabulate>=0.8.10",
+    "tomli>=1.1.0; python_version < \"3.11\"",
+]
+files = [
+    {file = "numpydoc-1.8.0-py3-none-any.whl", hash = "sha256:72024c7fd5e17375dec3608a27c03303e8ad00c81292667955c6fea7a3ccf541"},
+    {file = "numpydoc-1.8.0.tar.gz", hash = "sha256:022390ab7464a44f8737f79f8b31ce1d3cfa4b4af79ccaa1aac5e8368db587fb"},
+]
+
+[[package]]
 name = "packaging"
 version = "24.1"
 requires_python = ">=3.8"
@@ -1180,6 +1196,36 @@ files = [
 ]
 
 [[package]]
+name = "sphinx-rtd-size"
+version = "0.2.0"
+requires_python = ">=3.6,<4.0"
+summary = "Sphinx extension for resizing your RTD theme."
+groups = ["dev"]
+dependencies = [
+    "Sphinx>=2",
+]
+files = [
+    {file = "sphinx-rtd-size-0.2.0.tar.gz", hash = "sha256:00168969c870923dca449c3264741a0b77607e3419b9af1faafcf008dab9a730"},
+    {file = "sphinx_rtd_size-0.2.0-py3-none-any.whl", hash = "sha256:fb1c78fbab1880ae6c2092359aa7401b61716dcb97c8694b7b990f69a98dac62"},
+]
+
+[[package]]
+name = "sphinx-rtd-theme"
+version = "2.0.0"
+requires_python = ">=3.6"
+summary = "Read the Docs theme for Sphinx"
+groups = ["dev"]
+dependencies = [
+    "docutils<0.21",
+    "sphinx<8,>=5",
+    "sphinxcontrib-jquery<5,>=4",
+]
+files = [
+    {file = "sphinx_rtd_theme-2.0.0-py2.py3-none-any.whl", hash = "sha256:ec93d0856dc280cf3aee9a4c9807c60e027c7f7b461b77aeffed682e68f0e586"},
+    {file = "sphinx_rtd_theme-2.0.0.tar.gz", hash = "sha256:bd5d7b80622406762073a04ef8fadc5f9151261563d47027de09910ce03afe6b"},
+]
+
+[[package]]
 name = "sphinxcontrib-applehelp"
 version = "2.0.0"
 requires_python = ">=3.9"
@@ -1213,6 +1259,20 @@ files = [
 ]
 
 [[package]]
+name = "sphinxcontrib-jquery"
+version = "4.1"
+requires_python = ">=2.7"
+summary = "Extension to include jQuery on newer Sphinx releases"
+groups = ["dev"]
+dependencies = [
+    "Sphinx>=1.8",
+]
+files = [
+    {file = "sphinxcontrib-jquery-4.1.tar.gz", hash = "sha256:1620739f04e36a2c779f1a131a2dfd49b2fd07351bf1968ced074365933abc7a"},
+    {file = "sphinxcontrib_jquery-4.1-py2.py3-none-any.whl", hash = "sha256:f936030d7d0147dd026a4f2b5a57343d233f1fc7b363f68b3d4f1cb0993878ae"},
+]
+
+[[package]]
 name = "sphinxcontrib-jsmath"
 version = "1.0.1"
 requires_python = ">=3.5"
@@ -1243,6 +1303,17 @@ groups = ["dev"]
 files = [
     {file = "sphinxcontrib_serializinghtml-2.0.0-py3-none-any.whl", hash = "sha256:6e2cb0eef194e10c27ec0023bfeb25badbbb5868244cf5bc5bdc04e4464bf331"},
     {file = "sphinxcontrib_serializinghtml-2.0.0.tar.gz", hash = "sha256:e9d912827f872c029017a53f0ef2180b327c3f7fd23c87229f7a8e8b70031d4d"},
+]
+
+[[package]]
+name = "tabulate"
+version = "0.9.0"
+requires_python = ">=3.7"
+summary = "Pretty-print tabular data"
+groups = ["dev"]
+files = [
+    {file = "tabulate-0.9.0-py3-none-any.whl", hash = "sha256:024ca478df22e9340661486f85298cff5f6dcdba14f3813e8830015b9ed1948f"},
+    {file = "tabulate-0.9.0.tar.gz", hash = "sha256:0095b12bf5966de529c0feb1fa08671671b3368eec77d7ef7ab114be2c068b3c"},
 ]
 
 [[package]]

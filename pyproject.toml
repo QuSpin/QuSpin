@@ -1,5 +1,5 @@
 [project]
-name = "quspin-python"
+name = "quspin"
 version = "1.0.0"
 description = "A Python package for exact diagonalization calculations of quantum manybody systems."
 authors = [
@@ -35,6 +35,9 @@ dev = [
     "black>=24.4.2",
     "pytest>=8.3.1",
     "sphinx>=7.4.7",
+    "numpydoc>=1.8.0",
+    "sphinx-rtd-size>=0.2.0",
+    "sphinx-rtd-theme>=2.0.0",
 ]
 
 
