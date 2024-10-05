@@ -17,19 +17,11 @@ Check out also our example script :ref:`example12-label`, which demonstrates how
 1.1. Install QuSpin with OpenMP support:
 ````````````````````````````````````````
 
-In order to make use of OpenMP features in QuSpin, one just needs to install the `omp` metapackage which will track the OpenMP compiled version of QuSpin for your platform. Starting from QuSpin 0.3.1, we have OpenMP support across the different operating systems. To install the OpenMP version of QuSpin simply run:
+In order to make use of OpenMP features in QuSpin, one just needs to install the `omp` metapackage which will track the OpenMP compiled version of QuSpin for your platform. Starting from QuSpin 0.3.1, we have OpenMP support across the different operating systems. With QuSpin 1.0.0, the OpenMP installation is default; to install the OpenMP version of QuSpin simply run:
 
 ::
 
-	$ conda install -c weinbe58 omp quspin
-
-If you would like to go back to the single-threaded (i.e. no-OpenMP) version of QuSpin run:
-
-::
-
-	$ conda remove --features omp -c weinbe58
-
-upon which you will be asked by anaconda if you want to downgrade you QuSpin version to a version which no longer tracks the `omp` feature. 
+	$ pip install quspin
 
 
 
