@@ -27,10 +27,9 @@ Basic usage
 
 Non-interacting systems
 #######################
-	.. 
-		* :ref:`example5-label`, :download:`download script <../../examples/scripts/example5.py>`
-
+	
 	* :ref:`example3-label`, :download:`download script <../../examples/scripts/example3.py>`
+	* :ref:`example5-label`, :download:`download script <../../examples/scripts/example5.py>`
 	* :ref:`example17-label`, :download:`download script <../../examples/scripts/example17.py>`
 	* :ref:`example4-label`, :download:`download script <../../examples/scripts/example4.py>`
 	
@@ -44,9 +43,7 @@ Interacting systems
 	* :ref:`example1-label`, :download:`download script <../../examples/scripts/example1.py>`
 	* :ref:`example10-label`, :download:`download script <../../examples/scripts/example10.py>`
 	* :ref:`example25-label`, :download:`download script <../../examples/scripts/example25.py>`
-
-	.. 
-		* :ref:`example7-label`, :download:`download script <../../examples/scripts/example7.py>`
+	* :ref:`example7-label`, :download:`download script <../../examples/scripts/example7.py>`
 			
 Advanced usage
 ++++++++++++++
