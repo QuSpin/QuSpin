@@ -1,4 +1,4 @@
-quspin.tools.measurements.ent\_entropy
+﻿quspin.tools.measurements.ent\_entropy
 ======================================
 
 .. currentmodule:: quspin.tools.measurements

@@ -142,7 +142,7 @@ for j, q in enumerate(qs):
     # solve (z-H)|x> = |A> solve for |x>  using iterative solver for each omega
     for i, omega in enumerate(omegas):
         lhs = LHS(Hq, omega, eta, E0)
-        x, *_ = sp.linalg.bicg(lhs, psiA)
+        x, *_ = sp.linalg.bicg(lhs, psiA, maxiter=1000)
         Gzz[i, j] = -np.vdot(psiA, x) / np.pi
     #
     #####################################################################

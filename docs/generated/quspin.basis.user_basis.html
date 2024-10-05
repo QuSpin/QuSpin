@@ -1,76 +1,132 @@
-
 <!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-<html>
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><script type="text/javascript">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>quspin.basis.user_basis &mdash; QuSpin 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../static/css/sphinx_rtd_size.css?v=f26ae176" />
+      <link rel="stylesheet" type="text/css" href="../static/css/py_class_property_fix.css?v=faf79ccd" />
 
-      var _gaq = _gaq || [];
-      _gaq.push(['_setAccount', 'UA-110543543-1']);
-      _gaq.push(['_trackPageview']);
-
-      (function() {
-        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-      })();
-    </script>
-    <title>quspin.basis.user_basis &#8212; QuSpin 0.3.7 documentation</title>
-    <link rel="stylesheet" href="../static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="../static/classic.css" type="text/css" />
-    
-    <script id="documentation_options" data-url_root="../" src="../static/documentation_options.js"></script>
-    <script src="../static/jquery.js"></script>
-    <script src="../static/underscore.js"></script>
-    <script src="../static/doctools.js"></script>
-    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    
+  
+  <!--[if lt IE 9]>
+    <script src="../static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../static/jquery.js?v=5d32c60e"></script>
+        <script src="../static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../static/documentation_options.js?v=8d563738"></script>
+        <script src="../static/doctools.js?v=9a2dae69"></script>
+        <script src="../static/sphinx_highlight.js?v=dc90522c"></script>
+        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="../static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="quspin.basis.tensor_basis" href="quspin.basis.tensor_basis.html" />
     <link rel="prev" title="quspin.basis.spinful_fermion_basis_general" href="quspin.basis.spinful_fermion_basis_general.html" /> 
-  </head><body>
-    <div class="related" role="navigation" aria-label="related navigation">
-      <h3>Navigation</h3>
-      <ul>
-        <li class="right" style="margin-right: 10px">
-          <a href="../genindex.html" title="General Index"
-             accesskey="I">index</a></li>
-        <li class="right" >
-          <a href="../py-modindex.html" title="Python Module Index"
-             >modules</a> |</li>
-        <li class="right" >
-          <a href="quspin.basis.tensor_basis.html" title="quspin.basis.tensor_basis"
-             accesskey="N">next</a> |</li>
-        <li class="right" >
-          <a href="quspin.basis.spinful_fermion_basis_general.html" title="quspin.basis.spinful_fermion_basis_general"
-             accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.7 documentation</a> &#187;</li>
-          <li class="nav-item nav-item-1"><a href="../basis.html" accesskey="U">Basis module (<code class="xref py py-mod docutils literal notranslate"><span class="pre">quspin.basis</span></code>)</a> &#187;</li>
-        <li class="nav-item nav-item-this"><a href="">quspin.basis.user_basis</a></li> 
-      </ul>
-    </div>  
+</head>
 
-    <div class="document">
-      <div class="documentwrapper">
-        <div class="bodywrapper">
-          <div class="body" role="main">
-            
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            QuSpin
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">QuSpin (public API)</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../basis.html">Basis module (<code class="xref py py-mod docutils literal notranslate"><span class="pre">quspin.basis</span></code>)</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../basis.html#one-dimensional-symmetries">one-dimensional symmetries</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../basis.html#general-lattice-symmetries">general lattice symmetries</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../basis.html#user-basis">user basis</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">quspin.basis.user_basis</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#quspin.basis.user_basis"><code class="docutils literal notranslate"><span class="pre">user_basis</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../basis.html#combining-basis-classes">combining basis classes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../basis.html#functions">functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../basis.html#large-integer-support-for-general-basis-classes">large integer support for general basis classes</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../operators.html">Operators module (<code class="xref py py-mod docutils literal notranslate"><span class="pre">quspin.operators</span></code>)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tools.html">Tools module (<code class="xref py py-mod docutils literal notranslate"><span class="pre">quspin.tools</span></code>)</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Installation &amp; Use</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../installation/installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../installation/installation.html#basics-of-command-line-use">Basics of command line use</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../example_scripts.html">Example scripts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../jupyter_notebooks.html">Jupyter notebooks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/parallelization.html">Parallel computing support</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/user_basis.html"><cite>user_basis</cite> tutorial</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Bugs &amp; Questions</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../contribute/report_a_bug.html">Report a bug</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contribute/ask_a_question.html">Ask a question</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">QuSpin</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content style-external-links">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../basis.html">Basis module (<code class="xref py py-mod docutils literal notranslate"><span class="pre">quspin.basis</span></code>)</a></li>
+      <li class="breadcrumb-item active">quspin.basis.user_basis</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../sources/generated/quspin.basis.user_basis.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
   <style> .red {color:#ff0000; font-weight:bold; font-style:italic; } </style>
 <style> .green {color:#00b200; font-weight:bold; font-style:italic; } </style>
 <style> .magenta {color:#FF33F3; font-weight:bold; font-style:italic; } </style>
-<style> .orange {color:#FE8E02; font-weight:bold; font-style:italic; } </style><div class="section" id="quspin-basis-user-basis">
-<h1>quspin.basis.user_basis<a class="headerlink" href="#quspin-basis-user-basis" title="Permalink to this headline">¶</a></h1>
+<style> .orange {color:#FE8E02; font-weight:bold; font-style:italic; } </style><section id="quspin-basis-user-basis">
+<h1>quspin.basis.user_basis<a class="headerlink" href="#quspin-basis-user-basis" title="Link to this heading"></a></h1>
 <dl class="py class">
-<dt id="quspin.basis.user_basis">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">quspin.basis.</span></code><code class="sig-name descname"><span class="pre">user_basis</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">basis_dtype</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">N</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">op_dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pcon_dict</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pre_check_state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">allowed_ops</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parallel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Ns_block_est</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_make_basis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">block_order</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">noncommuting_bits</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_Np</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">blocks</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/basis/basis_general/base_user.html#user_basis"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quspin.basis.user_basis" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">quspin.basis.basis_general.base_general.basis_general</span></code></p>
+<dt class="sig sig-object py" id="quspin.basis.user_basis">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">quspin.basis.</span></span><span class="sig-name descname"><span class="pre">user_basis</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">basis_dtype</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">N</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">op_dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pcon_dict</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pre_check_state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">allowed_ops</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parallel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Ns_block_est</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_make_basis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">block_order</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">noncommuting_bits</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_Np</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">blocks</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/basis/basis_general/base_user.html#user_basis"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quspin.basis.user_basis" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">basis_general</span></code></p>
 <p>Constructs basis for USER-DEFINED functionality of a basis object.</p>
 <p>The <cite>user_basis</cite> unveils the inner workings of QuSpin. This is the most advanced usage of the package, and requires some understanding of python,
 the <cite>numba</cite> package used to interface QuSpin’s underlying cpp code with python, and some experience with bitwise operations to manipulate integers.</p>
 <p>Since we believe that the users will benefit from a more detailed discussion on how the <cite>user_basis</cite> is intended to work, we also provide a detailed
-tutorial: <a class="reference internal" href="../user_basis.html#user-basis-label"><span class="std std-ref">A tutorial on QuSpin’s user_basis</span></a>, which covers the general concepts and provides six complete examples of various complexity.</p>
+tutorial: <a class="reference internal" href="../tutorials/user_basis.html#user-basis-label"><span class="std std-ref">user_basis tutorial</span></a>, which covers the general concepts and provides six complete examples of various complexity.</p>
 <p class="rubric">Examples</p>
 <p>The following example shows how to use the <cite>user_basis</cite> class to construct the Hamiltonian</p>
 <div class="math notranslate nohighlight">
@@ -78,240 +134,183 @@ tutorial: <a class="reference internal" href="../user_basis.html#user-basis-labe
 <p>using translation and reflection symmetry. The projector operator <span class="math notranslate nohighlight">\(P_j\)</span>, which only allows a spin-up state in the basis to be preceded and succeeded by a spin-down,
 is incorporated by constructing the corresponding <cite>user_basis</cite> object. One can then just build the Hamiltonian <span class="math notranslate nohighlight">\(H=\sum_j\sigma^x_j\)</span> in the
 constrained Hilbert space.</p>
-<p>More examples (including explanations of the class methods and attributes) can be found at: <a class="reference internal" href="../user_basis.html#user-basis-label"><span class="std std-ref">A tutorial on QuSpin’s user_basis</span></a>.</p>
-<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">  1</span>
-<span class="normal">  2</span>
-<span class="normal">  3</span>
-<span class="normal">  4</span>
-<span class="normal">  5</span>
-<span class="normal">  6</span>
-<span class="normal">  7</span>
-<span class="normal">  8</span>
-<span class="normal">  9</span>
-<span class="normal"> 10</span>
-<span class="normal"> 11</span>
-<span class="normal"> 12</span>
-<span class="normal"> 13</span>
-<span class="normal"> 14</span>
-<span class="normal"> 15</span>
-<span class="normal"> 16</span>
-<span class="normal"> 17</span>
-<span class="normal"> 18</span>
-<span class="normal"> 19</span>
-<span class="normal"> 20</span>
-<span class="normal"> 21</span>
-<span class="normal"> 22</span>
-<span class="normal"> 23</span>
-<span class="normal"> 24</span>
-<span class="normal"> 25</span>
-<span class="normal"> 26</span>
-<span class="normal"> 27</span>
-<span class="normal"> 28</span>
-<span class="normal"> 29</span>
-<span class="normal"> 30</span>
-<span class="normal"> 31</span>
-<span class="normal"> 32</span>
-<span class="normal"> 33</span>
-<span class="normal"> 34</span>
-<span class="normal"> 35</span>
-<span class="normal"> 36</span>
-<span class="normal"> 37</span>
-<span class="normal"> 38</span>
-<span class="normal"> 39</span>
-<span class="normal"> 40</span>
-<span class="normal"> 41</span>
-<span class="normal"> 42</span>
-<span class="normal"> 43</span>
-<span class="normal"> 44</span>
-<span class="normal"> 45</span>
-<span class="normal"> 46</span>
-<span class="normal"> 47</span>
-<span class="normal"> 48</span>
-<span class="normal"> 49</span>
-<span class="normal"> 50</span>
-<span class="normal"> 51</span>
-<span class="normal"> 52</span>
-<span class="normal"> 53</span>
-<span class="normal"> 54</span>
-<span class="normal"> 55</span>
-<span class="normal"> 56</span>
-<span class="normal"> 57</span>
-<span class="normal"> 58</span>
-<span class="normal"> 59</span>
-<span class="normal"> 60</span>
-<span class="normal"> 61</span>
-<span class="normal"> 62</span>
-<span class="normal"> 63</span>
-<span class="normal"> 64</span>
-<span class="normal"> 65</span>
-<span class="normal"> 66</span>
-<span class="normal"> 67</span>
-<span class="normal"> 68</span>
-<span class="normal"> 69</span>
-<span class="normal"> 70</span>
-<span class="normal"> 71</span>
-<span class="normal"> 72</span>
-<span class="normal"> 73</span>
-<span class="normal"> 74</span>
-<span class="normal"> 75</span>
-<span class="normal"> 76</span>
-<span class="normal"> 77</span>
-<span class="normal"> 78</span>
-<span class="normal"> 79</span>
-<span class="normal"> 80</span>
-<span class="normal"> 81</span>
-<span class="normal"> 82</span>
-<span class="normal"> 83</span>
-<span class="normal"> 84</span>
-<span class="normal"> 85</span>
-<span class="normal"> 86</span>
-<span class="normal"> 87</span>
-<span class="normal"> 88</span>
-<span class="normal"> 89</span>
-<span class="normal"> 90</span>
-<span class="normal"> 91</span>
-<span class="normal"> 92</span>
-<span class="normal"> 93</span>
-<span class="normal"> 94</span>
-<span class="normal"> 95</span>
-<span class="normal"> 96</span>
-<span class="normal"> 97</span>
-<span class="normal"> 98</span>
-<span class="normal"> 99</span>
-<span class="normal">100</span>
-<span class="normal">101</span>
-<span class="normal">102</span>
-<span class="normal">103</span>
-<span class="normal">104</span>
-<span class="normal">105</span>
-<span class="normal">106</span>
-<span class="normal">107</span>
-<span class="normal">108</span>
-<span class="normal">109</span>
-<span class="normal">110</span>
-<span class="normal">111</span>
-<span class="normal">112</span>
-<span class="normal">113</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">quspin.operators</span> <span class="kn">import</span> <span class="n">hamiltonian</span>
-<span class="kn">from</span> <span class="nn">quspin.basis.user</span> <span class="kn">import</span> <span class="n">user_basis</span> <span class="c1"># Hilbert space user basis</span>
-<span class="kn">from</span> <span class="nn">quspin.basis.user</span> <span class="kn">import</span> <span class="n">next_state_sig_32</span><span class="p">,</span><span class="n">pre_check_state_sig_32</span><span class="p">,</span><span class="n">op_sig_32</span><span class="p">,</span><span class="n">map_sig_32</span> <span class="c1"># user_basis dtypes</span>
-<span class="kn">from</span> <span class="nn">numba</span> <span class="kn">import</span> <span class="n">carray</span><span class="p">,</span><span class="n">cfunc</span> <span class="c1"># numba helper functions</span>
-<span class="kn">from</span> <span class="nn">numba</span> <span class="kn">import</span> <span class="n">uint32</span><span class="p">,</span><span class="n">int32</span> <span class="c1"># numba data types</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="c1">#</span>
-<span class="n">N</span><span class="o">=</span><span class="mi">14</span> <span class="c1"># lattice sites</span>
-<span class="c1">#</span>
-<span class="c1">######  function to call when applying operators</span>
-<span class="nd">@cfunc</span><span class="p">(</span><span class="n">op_sig_32</span><span class="p">,</span> <span class="nb">locals</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">s</span><span class="o">=</span><span class="n">int32</span><span class="p">,</span><span class="n">b</span><span class="o">=</span><span class="n">uint32</span><span class="p">))</span>
-<span class="k">def</span> <span class="nf">op</span><span class="p">(</span><span class="n">op_struct_ptr</span><span class="p">,</span><span class="n">op_str</span><span class="p">,</span><span class="n">ind</span><span class="p">,</span><span class="n">N</span><span class="p">,</span><span class="n">args</span><span class="p">):</span>
-    <span class="c1"># using struct pointer to pass op_struct_ptr back to C++ see numba Records</span>
-    <span class="n">op_struct</span> <span class="o">=</span> <span class="n">carray</span><span class="p">(</span><span class="n">op_struct_ptr</span><span class="p">,</span><span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
-    <span class="n">err</span> <span class="o">=</span> <span class="mi">0</span>
-    <span class="n">ind</span> <span class="o">=</span> <span class="n">N</span> <span class="o">-</span> <span class="n">ind</span> <span class="o">-</span> <span class="mi">1</span> <span class="c1"># convention for QuSpin for mapping from bits to sites.</span>
-    <span class="n">s</span> <span class="o">=</span> <span class="p">(((</span><span class="n">op_struct</span><span class="o">.</span><span class="n">state</span><span class="o">&gt;&gt;</span><span class="n">ind</span><span class="p">)</span><span class="o">&amp;</span><span class="mi">1</span><span class="p">)</span><span class="o">&lt;&lt;</span><span class="mi">1</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span>
-    <span class="n">b</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="o">&lt;&lt;</span><span class="n">ind</span><span class="p">)</span>
-    <span class="c1">#</span>
-    <span class="k">if</span> <span class="n">op_str</span><span class="o">==</span><span class="mi">120</span><span class="p">:</span> <span class="c1"># &quot;x&quot; is integer value 120 (check with ord(&quot;x&quot;))</span>
-        <span class="n">op_struct</span><span class="o">.</span><span class="n">state</span> <span class="o">^=</span> <span class="n">b</span>
-    <span class="k">elif</span> <span class="n">op_str</span><span class="o">==</span><span class="mi">121</span><span class="p">:</span> <span class="c1"># &quot;y&quot; is integer value 120 (check with ord(&quot;y&quot;))</span>
-        <span class="n">op_struct</span><span class="o">.</span><span class="n">state</span> <span class="o">^=</span> <span class="n">b</span>
-        <span class="n">op_struct</span><span class="o">.</span><span class="n">matrix_ele</span> <span class="o">*=</span> <span class="mf">1.0</span><span class="n">j</span><span class="o">*</span><span class="n">s</span>
-    <span class="k">elif</span> <span class="n">op_str</span><span class="o">==</span><span class="mi">122</span><span class="p">:</span> <span class="c1"># &quot;z&quot; is integer value 120 (check with ord(&quot;z&quot;))</span>
-        <span class="n">op_struct</span><span class="o">.</span><span class="n">matrix_ele</span> <span class="o">*=</span> <span class="n">s</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">op_struct</span><span class="o">.</span><span class="n">matrix_ele</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="n">err</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
-    <span class="c1">#</span>
-    <span class="k">return</span> <span class="n">err</span>
-<span class="c1">#</span>
-<span class="n">op_args</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([],</span><span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">uint32</span><span class="p">)</span>
-<span class="c1">#</span>
-<span class="c1">######  function to filter states/project states out of the basis</span>
-<span class="c1">#</span>
-<span class="nd">@cfunc</span><span class="p">(</span><span class="n">pre_check_state_sig_32</span><span class="p">,</span>
-    <span class="nb">locals</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">s_shift_left</span><span class="o">=</span><span class="n">uint32</span><span class="p">,</span><span class="n">s_shift_right</span><span class="o">=</span><span class="n">uint32</span><span class="p">),</span> <span class="p">)</span>
-<span class="k">def</span> <span class="nf">pre_check_state</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">N</span><span class="p">,</span><span class="n">args</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot; imposes that that a bit with 1 must be preceded and followed by 0,</span>
-<span class="sd">    i.e. a particle on a given site must have empty neighboring sites.</span>
-<span class="sd">    #</span>
-<span class="sd">    Works only for lattices of up to N=32 sites (otherwise, change mask)</span>
-<span class="sd">    #</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">mask</span> <span class="o">=</span> <span class="p">(</span><span class="mh">0xffffffff</span> <span class="o">&gt;&gt;</span> <span class="p">(</span><span class="mi">32</span> <span class="o">-</span> <span class="n">N</span><span class="p">))</span> <span class="c1"># works for lattices of up to 32 sites</span>
-    <span class="c1"># cycle bits left by 1 periodically</span>
-    <span class="n">s_shift_left</span> <span class="o">=</span> <span class="p">(((</span><span class="n">s</span> <span class="o">&lt;&lt;</span> <span class="mi">1</span><span class="p">)</span> <span class="o">&amp;</span> <span class="n">mask</span><span class="p">)</span> <span class="o">|</span> <span class="p">((</span><span class="n">s</span> <span class="o">&gt;&gt;</span> <span class="p">(</span><span class="n">N</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span> <span class="o">&amp;</span> <span class="n">mask</span><span class="p">))</span>
-    <span class="c1">#</span>
-    <span class="c1"># cycle bits right by 1 periodically</span>
-    <span class="n">s_shift_right</span> <span class="o">=</span> <span class="p">(((</span><span class="n">s</span> <span class="o">&gt;&gt;</span> <span class="mi">1</span><span class="p">)</span> <span class="o">&amp;</span> <span class="n">mask</span><span class="p">)</span> <span class="o">|</span> <span class="p">((</span><span class="n">s</span> <span class="o">&lt;&lt;</span> <span class="p">(</span><span class="n">N</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span> <span class="o">&amp;</span> <span class="n">mask</span><span class="p">))</span>
-    <span class="c1">#</span>
-    <span class="k">return</span> <span class="p">(((</span><span class="n">s_shift_right</span><span class="o">|</span><span class="n">s_shift_left</span><span class="p">)</span><span class="o">&amp;</span><span class="n">s</span><span class="p">))</span><span class="o">==</span><span class="mi">0</span>
-<span class="c1">#</span>
-<span class="n">pre_check_state_args</span><span class="o">=</span><span class="kc">None</span>
-<span class="c1">#</span>
-<span class="c1">######  define symmetry maps</span>
-<span class="c1">#</span>
-<span class="nd">@cfunc</span><span class="p">(</span><span class="n">map_sig_32</span><span class="p">,</span>
-    <span class="nb">locals</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">shift</span><span class="o">=</span><span class="n">uint32</span><span class="p">,</span><span class="n">xmax</span><span class="o">=</span><span class="n">uint32</span><span class="p">,</span><span class="n">x1</span><span class="o">=</span><span class="n">uint32</span><span class="p">,</span><span class="n">x2</span><span class="o">=</span><span class="n">uint32</span><span class="p">,</span><span class="n">period</span><span class="o">=</span><span class="n">int32</span><span class="p">,</span><span class="n">l</span><span class="o">=</span><span class="n">int32</span><span class="p">,)</span> <span class="p">)</span>
-<span class="k">def</span> <span class="nf">translation</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">N</span><span class="p">,</span><span class="n">sign_ptr</span><span class="p">,</span><span class="n">args</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot; works for all system sizes N. &quot;&quot;&quot;</span>
-    <span class="n">shift</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="c1"># translate state by shift sites</span>
-    <span class="n">period</span> <span class="o">=</span> <span class="n">N</span> <span class="c1"># periodicity/cyclicity of translation</span>
-    <span class="n">xmax</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
-    <span class="c1">#</span>
-    <span class="n">l</span> <span class="o">=</span> <span class="p">(</span><span class="n">shift</span><span class="o">+</span><span class="n">period</span><span class="p">)</span><span class="o">%</span><span class="n">period</span>
-    <span class="n">x1</span> <span class="o">=</span> <span class="p">(</span><span class="n">x</span> <span class="o">&gt;&gt;</span> <span class="p">(</span><span class="n">period</span> <span class="o">-</span> <span class="n">l</span><span class="p">))</span>
-    <span class="n">x2</span> <span class="o">=</span> <span class="p">((</span><span class="n">x</span> <span class="o">&lt;&lt;</span> <span class="n">l</span><span class="p">)</span> <span class="o">&amp;</span> <span class="n">xmax</span><span class="p">)</span>
-    <span class="c1">#</span>
-    <span class="k">return</span> <span class="p">(</span><span class="n">x2</span> <span class="o">|</span> <span class="n">x1</span><span class="p">)</span>
-<span class="n">T_args</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,(</span><span class="mi">1</span><span class="o">&lt;&lt;</span><span class="n">N</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span><span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">uint32</span><span class="p">)</span>
-<span class="c1">#</span>
-<span class="nd">@cfunc</span><span class="p">(</span><span class="n">map_sig_32</span><span class="p">,</span>
-    <span class="nb">locals</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">out</span><span class="o">=</span><span class="n">uint32</span><span class="p">,</span><span class="n">s</span><span class="o">=</span><span class="n">int32</span><span class="p">,)</span> <span class="p">)</span>
-<span class="k">def</span> <span class="nf">parity</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">N</span><span class="p">,</span><span class="n">sign_ptr</span><span class="p">,</span><span class="n">args</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot; works for all system sizes N. &quot;&quot;&quot;</span>
-    <span class="n">out</span> <span class="o">=</span> <span class="mi">0</span> 
-    <span class="n">s</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="c1"># N-1</span>
-    <span class="c1">#</span>
-    <span class="n">out</span> <span class="o">^=</span> <span class="p">(</span><span class="n">x</span><span class="o">&amp;</span><span class="mi">1</span><span class="p">)</span>
-    <span class="n">x</span> <span class="o">&gt;&gt;=</span> <span class="mi">1</span>
-    <span class="k">while</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
-        <span class="n">out</span> <span class="o">&lt;&lt;=</span> <span class="mi">1</span>
-        <span class="n">out</span> <span class="o">^=</span> <span class="p">(</span><span class="n">x</span><span class="o">&amp;</span><span class="mi">1</span><span class="p">)</span>
-        <span class="n">x</span> <span class="o">&gt;&gt;=</span> <span class="mi">1</span>
-        <span class="n">s</span> <span class="o">-=</span> <span class="mi">1</span>
-    <span class="c1">#</span>
-    <span class="n">out</span> <span class="o">&lt;&lt;=</span> <span class="n">s</span>
-    <span class="k">return</span> <span class="n">out</span>
-<span class="n">P_args</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">N</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span><span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">uint32</span><span class="p">)</span>
-<span class="c1">#</span>
-<span class="c1">######  construct user_basis </span>
-<span class="c1"># define maps dict</span>
-<span class="n">maps</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">T_block</span><span class="o">=</span><span class="p">(</span><span class="n">translation</span><span class="p">,</span><span class="n">N</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="n">T_args</span><span class="p">),</span> <span class="n">P_block</span><span class="o">=</span><span class="p">(</span><span class="n">parity</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="n">P_args</span><span class="p">),)</span>
-<span class="c1"># define particle conservation and op dicts</span>
-<span class="n">op_dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">op</span><span class="o">=</span><span class="n">op</span><span class="p">,</span><span class="n">op_args</span><span class="o">=</span><span class="n">op_args</span><span class="p">)</span>
-<span class="c1"># define pre_check_state</span>
-<span class="n">pre_check_state</span><span class="o">=</span><span class="p">(</span><span class="n">pre_check_state</span><span class="p">,</span><span class="n">pre_check_state_args</span><span class="p">)</span> <span class="c1"># None gives a null pinter to args</span>
-<span class="c1"># create user basis</span>
-<span class="n">basis</span> <span class="o">=</span> <span class="n">user_basis</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">uint32</span><span class="p">,</span><span class="n">N</span><span class="p">,</span><span class="n">op_dict</span><span class="p">,</span><span class="n">allowed_ops</span><span class="o">=</span><span class="nb">set</span><span class="p">(</span><span class="s2">&quot;xyz&quot;</span><span class="p">),</span><span class="n">sps</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
-                    <span class="n">pre_check_state</span><span class="o">=</span><span class="n">pre_check_state</span><span class="p">,</span><span class="n">Ns_block_est</span><span class="o">=</span><span class="mi">300000</span><span class="p">,</span><span class="o">**</span><span class="n">maps</span><span class="p">)</span>
-<span class="c1"># print basis</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">basis</span><span class="p">)</span>
-<span class="c1">#</span>
-<span class="c1">###### construct Hamiltonian</span>
-<span class="c1"># site-coupling lists</span>
-<span class="n">h_list</span>  <span class="o">=</span> <span class="p">[[</span><span class="mf">1.0</span><span class="p">,</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">)]</span>
-<span class="c1"># operator string lists</span>
-<span class="n">static</span> <span class="o">=</span> <span class="p">[[</span><span class="s2">&quot;x&quot;</span><span class="p">,</span><span class="n">h_list</span><span class="p">],]</span>
-<span class="c1"># compute Hamiltonian, no checks have been implemented</span>
-<span class="n">no_checks</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">check_symm</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">check_pcon</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">check_herm</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-<span class="n">H</span> <span class="o">=</span> <span class="n">hamiltonian</span><span class="p">(</span><span class="n">static</span><span class="p">,[],</span><span class="n">basis</span><span class="o">=</span><span class="n">basis</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">,</span><span class="o">**</span><span class="n">no_checks</span><span class="p">)</span>
+<p>More examples (including explanations of the class methods and attributes) can be found at: <a class="reference internal" href="../tutorials/user_basis.html#user-basis-label"><span class="std std-ref">user_basis tutorial</span></a>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos">  1</span><span class="c1">#</span>
+<span class="linenos">  2</span><span class="kn">from</span> <span class="nn">quspin.operators</span> <span class="kn">import</span> <span class="n">hamiltonian</span>
+<span class="linenos">  3</span><span class="kn">from</span> <span class="nn">quspin.basis.user</span> <span class="kn">import</span> <span class="n">user_basis</span>  <span class="c1"># Hilbert space user basis</span>
+<span class="linenos">  4</span><span class="kn">from</span> <span class="nn">quspin.basis.user</span> <span class="kn">import</span> <span class="p">(</span>
+<span class="linenos">  5</span>    <span class="n">next_state_sig_32</span><span class="p">,</span>
+<span class="linenos">  6</span>    <span class="n">pre_check_state_sig_32</span><span class="p">,</span>
+<span class="linenos">  7</span>    <span class="n">op_sig_32</span><span class="p">,</span>
+<span class="linenos">  8</span>    <span class="n">map_sig_32</span><span class="p">,</span>
+<span class="linenos">  9</span><span class="p">)</span>  <span class="c1"># user_basis dtypes</span>
+<span class="linenos"> 10</span><span class="kn">from</span> <span class="nn">numba</span> <span class="kn">import</span> <span class="n">carray</span><span class="p">,</span> <span class="n">cfunc</span>  <span class="c1"># numba helper functions</span>
+<span class="linenos"> 11</span><span class="kn">from</span> <span class="nn">numba</span> <span class="kn">import</span> <span class="n">uint32</span><span class="p">,</span> <span class="n">int32</span>  <span class="c1"># numba data types</span>
+<span class="linenos"> 12</span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="linenos"> 13</span>
+<span class="linenos"> 14</span><span class="c1">#</span>
+<span class="linenos"> 15</span><span class="n">N</span> <span class="o">=</span> <span class="mi">14</span>  <span class="c1"># lattice sites</span>
+<span class="linenos"> 16</span>
+<span class="linenos"> 17</span>
+<span class="linenos"> 18</span><span class="c1">#</span>
+<span class="linenos"> 19</span><span class="c1">######  function to call when applying operators</span>
+<span class="linenos"> 20</span><span class="nd">@cfunc</span><span class="p">(</span><span class="n">op_sig_32</span><span class="p">,</span> <span class="nb">locals</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">s</span><span class="o">=</span><span class="n">int32</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="n">uint32</span><span class="p">))</span>
+<span class="linenos"> 21</span><span class="k">def</span> <span class="nf">op</span><span class="p">(</span><span class="n">op_struct_ptr</span><span class="p">,</span> <span class="n">op_str</span><span class="p">,</span> <span class="n">ind</span><span class="p">,</span> <span class="n">N</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
+<span class="linenos"> 22</span>    <span class="c1"># using struct pointer to pass op_struct_ptr back to C++ see numba Records</span>
+<span class="linenos"> 23</span>    <span class="n">op_struct</span> <span class="o">=</span> <span class="n">carray</span><span class="p">(</span><span class="n">op_struct_ptr</span><span class="p">,</span> <span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+<span class="linenos"> 24</span>    <span class="n">err</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="linenos"> 25</span>    <span class="n">ind</span> <span class="o">=</span> <span class="n">N</span> <span class="o">-</span> <span class="n">ind</span> <span class="o">-</span> <span class="mi">1</span>  <span class="c1"># convention for QuSpin for mapping from bits to sites.</span>
+<span class="linenos"> 26</span>    <span class="n">s</span> <span class="o">=</span> <span class="p">(((</span><span class="n">op_struct</span><span class="o">.</span><span class="n">state</span> <span class="o">&gt;&gt;</span> <span class="n">ind</span><span class="p">)</span> <span class="o">&amp;</span> <span class="mi">1</span><span class="p">)</span> <span class="o">&lt;&lt;</span> <span class="mi">1</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
+<span class="linenos"> 27</span>    <span class="n">b</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="n">ind</span>
+<span class="linenos"> 28</span>    <span class="c1">#</span>
+<span class="linenos"> 29</span>    <span class="k">if</span> <span class="n">op_str</span> <span class="o">==</span> <span class="mi">120</span><span class="p">:</span>  <span class="c1"># &quot;x&quot; is integer value 120 (check with ord(&quot;x&quot;))</span>
+<span class="linenos"> 30</span>        <span class="n">op_struct</span><span class="o">.</span><span class="n">state</span> <span class="o">^=</span> <span class="n">b</span>
+<span class="linenos"> 31</span>    <span class="k">elif</span> <span class="n">op_str</span> <span class="o">==</span> <span class="mi">121</span><span class="p">:</span>  <span class="c1"># &quot;y&quot; is integer value 120 (check with ord(&quot;y&quot;))</span>
+<span class="linenos"> 32</span>        <span class="n">op_struct</span><span class="o">.</span><span class="n">state</span> <span class="o">^=</span> <span class="n">b</span>
+<span class="linenos"> 33</span>        <span class="n">op_struct</span><span class="o">.</span><span class="n">matrix_ele</span> <span class="o">*=</span> <span class="mf">1.0</span><span class="n">j</span> <span class="o">*</span> <span class="n">s</span>
+<span class="linenos"> 34</span>    <span class="k">elif</span> <span class="n">op_str</span> <span class="o">==</span> <span class="mi">122</span><span class="p">:</span>  <span class="c1"># &quot;z&quot; is integer value 120 (check with ord(&quot;z&quot;))</span>
+<span class="linenos"> 35</span>        <span class="n">op_struct</span><span class="o">.</span><span class="n">matrix_ele</span> <span class="o">*=</span> <span class="n">s</span>
+<span class="linenos"> 36</span>    <span class="k">else</span><span class="p">:</span>
+<span class="linenos"> 37</span>        <span class="n">op_struct</span><span class="o">.</span><span class="n">matrix_ele</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="linenos"> 38</span>        <span class="n">err</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+<span class="linenos"> 39</span>    <span class="c1">#</span>
+<span class="linenos"> 40</span>    <span class="k">return</span> <span class="n">err</span>
+<span class="linenos"> 41</span>
+<span class="linenos"> 42</span>
+<span class="linenos"> 43</span><span class="c1">#</span>
+<span class="linenos"> 44</span><span class="n">op_args</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">uint32</span><span class="p">)</span>
+<span class="linenos"> 45</span>
+<span class="linenos"> 46</span>
+<span class="linenos"> 47</span><span class="c1">#</span>
+<span class="linenos"> 48</span><span class="c1">######  function to filter states/project states out of the basis</span>
+<span class="linenos"> 49</span><span class="c1">#</span>
+<span class="linenos"> 50</span><span class="nd">@cfunc</span><span class="p">(</span>
+<span class="linenos"> 51</span>    <span class="n">pre_check_state_sig_32</span><span class="p">,</span>
+<span class="linenos"> 52</span>    <span class="nb">locals</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">s_shift_left</span><span class="o">=</span><span class="n">uint32</span><span class="p">,</span> <span class="n">s_shift_right</span><span class="o">=</span><span class="n">uint32</span><span class="p">),</span>
+<span class="linenos"> 53</span><span class="p">)</span>
+<span class="linenos"> 54</span><span class="k">def</span> <span class="nf">pre_check_state</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">N</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
+<span class="linenos"> 55</span><span class="w">    </span><span class="sd">&quot;&quot;&quot;imposes that that a bit with 1 must be preceded and followed by 0,</span>
+<span class="linenos"> 56</span><span class="sd">    i.e. a particle on a given site must have empty neighboring sites.</span>
+<span class="linenos"> 57</span><span class="sd">    #</span>
+<span class="linenos"> 58</span><span class="sd">    Works only for lattices of up to N=32 sites (otherwise, change mask)</span>
+<span class="linenos"> 59</span><span class="sd">    #</span>
+<span class="linenos"> 60</span><span class="sd">    &quot;&quot;&quot;</span>
+<span class="linenos"> 61</span>    <span class="n">mask</span> <span class="o">=</span> <span class="mh">0xFFFFFFFF</span> <span class="o">&gt;&gt;</span> <span class="p">(</span><span class="mi">32</span> <span class="o">-</span> <span class="n">N</span><span class="p">)</span>  <span class="c1"># works for lattices of up to 32 sites</span>
+<span class="linenos"> 62</span>    <span class="c1"># cycle bits left by 1 periodically</span>
+<span class="linenos"> 63</span>    <span class="n">s_shift_left</span> <span class="o">=</span> <span class="p">((</span><span class="n">s</span> <span class="o">&lt;&lt;</span> <span class="mi">1</span><span class="p">)</span> <span class="o">&amp;</span> <span class="n">mask</span><span class="p">)</span> <span class="o">|</span> <span class="p">((</span><span class="n">s</span> <span class="o">&gt;&gt;</span> <span class="p">(</span><span class="n">N</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span> <span class="o">&amp;</span> <span class="n">mask</span><span class="p">)</span>
+<span class="linenos"> 64</span>    <span class="c1">#</span>
+<span class="linenos"> 65</span>    <span class="c1"># cycle bits right by 1 periodically</span>
+<span class="linenos"> 66</span>    <span class="n">s_shift_right</span> <span class="o">=</span> <span class="p">((</span><span class="n">s</span> <span class="o">&gt;&gt;</span> <span class="mi">1</span><span class="p">)</span> <span class="o">&amp;</span> <span class="n">mask</span><span class="p">)</span> <span class="o">|</span> <span class="p">((</span><span class="n">s</span> <span class="o">&lt;&lt;</span> <span class="p">(</span><span class="n">N</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span> <span class="o">&amp;</span> <span class="n">mask</span><span class="p">)</span>
+<span class="linenos"> 67</span>    <span class="c1">#</span>
+<span class="linenos"> 68</span>    <span class="k">return</span> <span class="p">(((</span><span class="n">s_shift_right</span> <span class="o">|</span> <span class="n">s_shift_left</span><span class="p">)</span> <span class="o">&amp;</span> <span class="n">s</span><span class="p">))</span> <span class="o">==</span> <span class="mi">0</span>
+<span class="linenos"> 69</span>
+<span class="linenos"> 70</span>
+<span class="linenos"> 71</span><span class="c1">#</span>
+<span class="linenos"> 72</span><span class="n">pre_check_state_args</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="linenos"> 73</span>
+<span class="linenos"> 74</span>
+<span class="linenos"> 75</span><span class="c1">#</span>
+<span class="linenos"> 76</span><span class="c1">######  define symmetry maps</span>
+<span class="linenos"> 77</span><span class="c1">#</span>
+<span class="linenos"> 78</span><span class="nd">@cfunc</span><span class="p">(</span>
+<span class="linenos"> 79</span>    <span class="n">map_sig_32</span><span class="p">,</span>
+<span class="linenos"> 80</span>    <span class="nb">locals</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span>
+<span class="linenos"> 81</span>        <span class="n">shift</span><span class="o">=</span><span class="n">uint32</span><span class="p">,</span>
+<span class="linenos"> 82</span>        <span class="n">xmax</span><span class="o">=</span><span class="n">uint32</span><span class="p">,</span>
+<span class="linenos"> 83</span>        <span class="n">x1</span><span class="o">=</span><span class="n">uint32</span><span class="p">,</span>
+<span class="linenos"> 84</span>        <span class="n">x2</span><span class="o">=</span><span class="n">uint32</span><span class="p">,</span>
+<span class="linenos"> 85</span>        <span class="n">period</span><span class="o">=</span><span class="n">int32</span><span class="p">,</span>
+<span class="linenos"> 86</span>        <span class="n">l</span><span class="o">=</span><span class="n">int32</span><span class="p">,</span>
+<span class="linenos"> 87</span>    <span class="p">),</span>
+<span class="linenos"> 88</span><span class="p">)</span>
+<span class="linenos"> 89</span><span class="k">def</span> <span class="nf">translation</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">N</span><span class="p">,</span> <span class="n">sign_ptr</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
+<span class="linenos"> 90</span><span class="w">    </span><span class="sd">&quot;&quot;&quot;works for all system sizes N.&quot;&quot;&quot;</span>
+<span class="linenos"> 91</span>    <span class="n">shift</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>  <span class="c1"># translate state by shift sites</span>
+<span class="linenos"> 92</span>    <span class="n">period</span> <span class="o">=</span> <span class="n">N</span>  <span class="c1"># periodicity/cyclicity of translation</span>
+<span class="linenos"> 93</span>    <span class="n">xmax</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+<span class="linenos"> 94</span>    <span class="c1">#</span>
+<span class="linenos"> 95</span>    <span class="n">l</span> <span class="o">=</span> <span class="p">(</span><span class="n">shift</span> <span class="o">+</span> <span class="n">period</span><span class="p">)</span> <span class="o">%</span> <span class="n">period</span>
+<span class="linenos"> 96</span>    <span class="n">x1</span> <span class="o">=</span> <span class="n">x</span> <span class="o">&gt;&gt;</span> <span class="p">(</span><span class="n">period</span> <span class="o">-</span> <span class="n">l</span><span class="p">)</span>
+<span class="linenos"> 97</span>    <span class="n">x2</span> <span class="o">=</span> <span class="p">(</span><span class="n">x</span> <span class="o">&lt;&lt;</span> <span class="n">l</span><span class="p">)</span> <span class="o">&amp;</span> <span class="n">xmax</span>
+<span class="linenos"> 98</span>    <span class="c1">#</span>
+<span class="linenos"> 99</span>    <span class="k">return</span> <span class="n">x2</span> <span class="o">|</span> <span class="n">x1</span>
+<span class="linenos">100</span>
+<span class="linenos">101</span>
+<span class="linenos">102</span><span class="n">T_args</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="n">N</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">uint32</span><span class="p">)</span>
+<span class="linenos">103</span>
+<span class="linenos">104</span>
+<span class="linenos">105</span><span class="c1">#</span>
+<span class="linenos">106</span><span class="nd">@cfunc</span><span class="p">(</span>
+<span class="linenos">107</span>    <span class="n">map_sig_32</span><span class="p">,</span>
+<span class="linenos">108</span>    <span class="nb">locals</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span>
+<span class="linenos">109</span>        <span class="n">out</span><span class="o">=</span><span class="n">uint32</span><span class="p">,</span>
+<span class="linenos">110</span>        <span class="n">s</span><span class="o">=</span><span class="n">int32</span><span class="p">,</span>
+<span class="linenos">111</span>    <span class="p">),</span>
+<span class="linenos">112</span><span class="p">)</span>
+<span class="linenos">113</span><span class="k">def</span> <span class="nf">parity</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">N</span><span class="p">,</span> <span class="n">sign_ptr</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
+<span class="linenos">114</span><span class="w">    </span><span class="sd">&quot;&quot;&quot;works for all system sizes N.&quot;&quot;&quot;</span>
+<span class="linenos">115</span>    <span class="n">out</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="linenos">116</span>    <span class="n">s</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>  <span class="c1"># N-1</span>
+<span class="linenos">117</span>    <span class="c1">#</span>
+<span class="linenos">118</span>    <span class="n">out</span> <span class="o">^=</span> <span class="n">x</span> <span class="o">&amp;</span> <span class="mi">1</span>
+<span class="linenos">119</span>    <span class="n">x</span> <span class="o">&gt;&gt;=</span> <span class="mi">1</span>
+<span class="linenos">120</span>    <span class="k">while</span> <span class="n">x</span><span class="p">:</span>
+<span class="linenos">121</span>        <span class="n">out</span> <span class="o">&lt;&lt;=</span> <span class="mi">1</span>
+<span class="linenos">122</span>        <span class="n">out</span> <span class="o">^=</span> <span class="n">x</span> <span class="o">&amp;</span> <span class="mi">1</span>
+<span class="linenos">123</span>        <span class="n">x</span> <span class="o">&gt;&gt;=</span> <span class="mi">1</span>
+<span class="linenos">124</span>        <span class="n">s</span> <span class="o">-=</span> <span class="mi">1</span>
+<span class="linenos">125</span>    <span class="c1">#</span>
+<span class="linenos">126</span>    <span class="n">out</span> <span class="o">&lt;&lt;=</span> <span class="n">s</span>
+<span class="linenos">127</span>    <span class="k">return</span> <span class="n">out</span>
+<span class="linenos">128</span>
+<span class="linenos">129</span>
+<span class="linenos">130</span><span class="n">P_args</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">N</span> <span class="o">-</span> <span class="mi">1</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">uint32</span><span class="p">)</span>
+<span class="linenos">131</span><span class="c1">#</span>
+<span class="linenos">132</span><span class="c1">######  construct user_basis</span>
+<span class="linenos">133</span><span class="c1"># define maps dict</span>
+<span class="linenos">134</span><span class="n">maps</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+<span class="linenos">135</span>    <span class="n">T_block</span><span class="o">=</span><span class="p">(</span><span class="n">translation</span><span class="p">,</span> <span class="n">N</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">T_args</span><span class="p">),</span>
+<span class="linenos">136</span>    <span class="n">P_block</span><span class="o">=</span><span class="p">(</span><span class="n">parity</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">P_args</span><span class="p">),</span>
+<span class="linenos">137</span><span class="p">)</span>
+<span class="linenos">138</span><span class="c1"># define particle conservation and op dicts</span>
+<span class="linenos">139</span><span class="n">op_dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">op</span><span class="o">=</span><span class="n">op</span><span class="p">,</span> <span class="n">op_args</span><span class="o">=</span><span class="n">op_args</span><span class="p">)</span>
+<span class="linenos">140</span><span class="c1"># define pre_check_state</span>
+<span class="linenos">141</span><span class="n">pre_check_state</span> <span class="o">=</span> <span class="p">(</span>
+<span class="linenos">142</span>    <span class="n">pre_check_state</span><span class="p">,</span>
+<span class="linenos">143</span>    <span class="n">pre_check_state_args</span><span class="p">,</span>
+<span class="linenos">144</span><span class="p">)</span>  <span class="c1"># None gives a null pinter to args</span>
+<span class="linenos">145</span><span class="c1"># create user basis</span>
+<span class="linenos">146</span><span class="n">basis</span> <span class="o">=</span> <span class="n">user_basis</span><span class="p">(</span>
+<span class="linenos">147</span>    <span class="n">np</span><span class="o">.</span><span class="n">uint32</span><span class="p">,</span>
+<span class="linenos">148</span>    <span class="n">N</span><span class="p">,</span>
+<span class="linenos">149</span>    <span class="n">op_dict</span><span class="p">,</span>
+<span class="linenos">150</span>    <span class="n">allowed_ops</span><span class="o">=</span><span class="nb">set</span><span class="p">(</span><span class="s2">&quot;xyz&quot;</span><span class="p">),</span>
+<span class="linenos">151</span>    <span class="n">sps</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+<span class="linenos">152</span>    <span class="n">pre_check_state</span><span class="o">=</span><span class="n">pre_check_state</span><span class="p">,</span>
+<span class="linenos">153</span>    <span class="n">Ns_block_est</span><span class="o">=</span><span class="mi">300000</span><span class="p">,</span>
+<span class="linenos">154</span>    <span class="o">**</span><span class="n">maps</span><span class="p">,</span>
+<span class="linenos">155</span><span class="p">)</span>
+<span class="linenos">156</span><span class="c1"># print basis</span>
+<span class="linenos">157</span><span class="nb">print</span><span class="p">(</span><span class="n">basis</span><span class="p">)</span>
+<span class="linenos">158</span><span class="c1">#</span>
+<span class="linenos">159</span><span class="c1">###### construct Hamiltonian</span>
+<span class="linenos">160</span><span class="c1"># site-coupling lists</span>
+<span class="linenos">161</span><span class="n">h_list</span> <span class="o">=</span> <span class="p">[[</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">)]</span>
+<span class="linenos">162</span><span class="c1"># operator string lists</span>
+<span class="linenos">163</span><span class="n">static</span> <span class="o">=</span> <span class="p">[</span>
+<span class="linenos">164</span>    <span class="p">[</span><span class="s2">&quot;x&quot;</span><span class="p">,</span> <span class="n">h_list</span><span class="p">],</span>
+<span class="linenos">165</span><span class="p">]</span>
+<span class="linenos">166</span><span class="c1"># compute Hamiltonian, no checks have been implemented</span>
+<span class="linenos">167</span><span class="n">no_checks</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">check_symm</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">check_pcon</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">check_herm</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="linenos">168</span><span class="n">H</span> <span class="o">=</span> <span class="n">hamiltonian</span><span class="p">(</span><span class="n">static</span><span class="p">,</span> <span class="p">[],</span> <span class="n">basis</span><span class="o">=</span><span class="n">basis</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">,</span> <span class="o">**</span><span class="n">no_checks</span><span class="p">)</span>
 </pre></div>
-</td></tr></table></div>
+</div>
 <dl class="py method">
-<dt id="quspin.basis.user_basis.__init__">
-<code class="sig-name descname"><span class="pre">__init__</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">basis_dtype</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">N</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">op_dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pcon_dict</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pre_check_state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">allowed_ops</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parallel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Ns_block_est</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_make_basis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">block_order</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">noncommuting_bits</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_Np</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">blocks</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/basis/basis_general/base_user.html#user_basis.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quspin.basis.user_basis.__init__" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="quspin.basis.user_basis.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">basis_dtype</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">N</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">op_dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pcon_dict</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pre_check_state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">allowed_ops</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parallel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Ns_block_est</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_make_basis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">block_order</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">noncommuting_bits</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_Np</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">blocks</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/basis/basis_general/base_user.html#user_basis.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quspin.basis.user_basis.__init__" title="Link to this definition"></a></dt>
 <dd><p>Intializes the <cite>user_basis_general</cite> object (basis for user defined ED calculations).</p>
 <dl class="field-list">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl>
 <dt><strong>basis_dtype: numpy.dtype object</strong></dt><dd><p>the data type used to represent the states in the basis: must be either uint32 or uint64.</p>
 </dd>
@@ -422,11 +421,7 @@ the basis will give undefined behavior.</p>
 </dd></dl>
 
 <p class="rubric">Methods</p>
-<table class="longtable docutils align-default">
-<colgroup>
-<col style="width: 10%" />
-<col style="width: 90%" />
-</colgroup>
+<table class="autosummary longtable docutils align-default">
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#quspin.basis.user_basis.Op" title="quspin.basis.user_basis.Op"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Op</span></code></a>(opstr, indx, J, dtype)</p></td>
 <td><p>Constructs operator from a site-coupling list and an operator string in a lattice basis.</p></td>
@@ -437,7 +432,7 @@ the basis will give undefined behavior.</p>
 <tr class="row-odd"><td><p><a class="reference internal" href="#quspin.basis.user_basis.Op_shift_sector" title="quspin.basis.user_basis.Op_shift_sector"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Op_shift_sector</span></code></a>(other_basis, op_list, v_in)</p></td>
 <td><p>Applies symmetry non-conserving operator to state in symmetry-reduced basis.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#quspin.basis.user_basis.__init__" title="quspin.basis.user_basis.__init__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__init__</span></code></a>(basis_dtype, N, op_dict[, sps, …])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#quspin.basis.user_basis.__init__" title="quspin.basis.user_basis.__init__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__init__</span></code></a>(basis_dtype, N, op_dict[, sps, ...])</p></td>
 <td><p>Intializes the <cite>user_basis_general</cite> object (basis for user defined ED calculations).</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#quspin.basis.user_basis.check_hermitian" title="quspin.basis.user_basis.check_hermitian"><code class="xref py py-obj docutils literal notranslate"><span class="pre">check_hermitian</span></code></a>(static, dynamic)</p></td>
@@ -449,11 +444,11 @@ the basis will give undefined behavior.</p>
 <tr class="row-odd"><td><p><a class="reference internal" href="#quspin.basis.user_basis.check_symm" title="quspin.basis.user_basis.check_symm"><code class="xref py py-obj docutils literal notranslate"><span class="pre">check_symm</span></code></a>(static, dynamic)</p></td>
 <td><p>Checks operator string lists for the required symmetries of the combined operator.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#quspin.basis.user_basis.ent_entropy" title="quspin.basis.user_basis.ent_entropy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ent_entropy</span></code></a>(state[, sub_sys_A, density, …])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#quspin.basis.user_basis.ent_entropy" title="quspin.basis.user_basis.ent_entropy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ent_entropy</span></code></a>(state[, sub_sys_A, density, ...])</p></td>
 <td><p>Calculates entanglement entropy of subsystem A and the corresponding reduced density matrix</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#quspin.basis.user_basis.expanded_form" title="quspin.basis.user_basis.expanded_form"><code class="xref py py-obj docutils literal notranslate"><span class="pre">expanded_form</span></code></a>([static, dynamic])</p></td>
-<td><p>Splits up operator strings containing “x” and “y” into operator combinations of “+” and “-“.</p></td>
+<td><p>Splits up operator strings containing &quot;x&quot; and &quot;y&quot; into operator combinations of &quot;+&quot; and &quot;-&quot;.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#quspin.basis.user_basis.get_amp" title="quspin.basis.user_basis.get_amp"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_amp</span></code></a>(states[, out, amps, mode])</p></td>
 <td><p>Computes the rescale factor of state amplitudes between the symmetry-reduced and full basis.</p></td>
@@ -467,7 +462,7 @@ the basis will give undefined behavior.</p>
 <tr class="row-odd"><td><p><a class="reference internal" href="#quspin.basis.user_basis.index" title="quspin.basis.user_basis.index"><code class="xref py py-obj docutils literal notranslate"><span class="pre">index</span></code></a>(s)</p></td>
 <td><p>Finds the index of user-defined Fock state in any lattice basis.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#quspin.basis.user_basis.inplace_Op" title="quspin.basis.user_basis.inplace_Op"><code class="xref py py-obj docutils literal notranslate"><span class="pre">inplace_Op</span></code></a>(v_in, op_list, dtype[, …])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#quspin.basis.user_basis.inplace_Op" title="quspin.basis.user_basis.inplace_Op"><code class="xref py py-obj docutils literal notranslate"><span class="pre">inplace_Op</span></code></a>(v_in, op_list, dtype[, ...])</p></td>
 <td><p>Calculates the action of an operator on a state.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#quspin.basis.user_basis.int_to_state" title="quspin.basis.user_basis.int_to_state"><code class="xref py py-obj docutils literal notranslate"><span class="pre">int_to_state</span></code></a>(state[, bracket_notation])</p></td>
@@ -482,7 +477,7 @@ the basis will give undefined behavior.</p>
 <tr class="row-even"><td><p><a class="reference internal" href="#quspin.basis.user_basis.normalization" title="quspin.basis.user_basis.normalization"><code class="xref py py-obj docutils literal notranslate"><span class="pre">normalization</span></code></a>(states[, out])</p></td>
 <td><p>Computes normalization of <cite>basis</cite> states.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#quspin.basis.user_basis.partial_trace" title="quspin.basis.user_basis.partial_trace"><code class="xref py py-obj docutils literal notranslate"><span class="pre">partial_trace</span></code></a>(state[, sub_sys_A, …])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#quspin.basis.user_basis.partial_trace" title="quspin.basis.user_basis.partial_trace"><code class="xref py py-obj docutils literal notranslate"><span class="pre">partial_trace</span></code></a>(state[, sub_sys_A, ...])</p></td>
 <td><p>Calculates reduced density matrix, through a partial trace of a quantum state in a lattice <cite>basis</cite>.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#quspin.basis.user_basis.project_from" title="quspin.basis.user_basis.project_from"><code class="xref py py-obj docutils literal notranslate"><span class="pre">project_from</span></code></a>(v0[, sparse, pcon])</p></td>
@@ -491,7 +486,7 @@ the basis will give undefined behavior.</p>
 <tr class="row-odd"><td><p><a class="reference internal" href="#quspin.basis.user_basis.project_to" title="quspin.basis.user_basis.project_to"><code class="xref py py-obj docutils literal notranslate"><span class="pre">project_to</span></code></a>(v0[, sparse, pcon])</p></td>
 <td><p>Transforms state from full (symmetry-free) basis to symmetry-reduced basis.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#quspin.basis.user_basis.representative" title="quspin.basis.user_basis.representative"><code class="xref py py-obj docutils literal notranslate"><span class="pre">representative</span></code></a>(states[, out, return_g, …])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#quspin.basis.user_basis.representative" title="quspin.basis.user_basis.representative"><code class="xref py py-obj docutils literal notranslate"><span class="pre">representative</span></code></a>(states[, out, return_g, ...])</p></td>
 <td><p>Maps states to their representatives under the <cite>basis</cite> symmetries.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#quspin.basis.user_basis.state_to_int" title="quspin.basis.user_basis.state_to_int"><code class="xref py py-obj docutils literal notranslate"><span class="pre">state_to_int</span></code></a>(state)</p></td>
@@ -500,11 +495,7 @@ the basis will give undefined behavior.</p>
 </tbody>
 </table>
 <p class="rubric">Attributes</p>
-<table class="longtable docutils align-default">
-<colgroup>
-<col style="width: 10%" />
-<col style="width: 90%" />
-</colgroup>
+<table class="autosummary longtable docutils align-default">
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#quspin.basis.user_basis.N" title="quspin.basis.user_basis.N"><code class="xref py py-obj docutils literal notranslate"><span class="pre">N</span></code></a></p></td>
 <td><p>number of sites the basis is constructed with.</p></td>
@@ -535,34 +526,34 @@ the basis will give undefined behavior.</p>
 </tr>
 </tbody>
 </table>
-<dl class="py method">
-<dt id="quspin.basis.user_basis.N">
-<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">N</span></code><a class="headerlink" href="#quspin.basis.user_basis.N" title="Permalink to this definition">¶</a></dt>
+<dl class="py property">
+<dt class="sig sig-object py" id="quspin.basis.user_basis.N">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">N</span></span><a class="headerlink" href="#quspin.basis.user_basis.N" title="Link to this definition"></a></dt>
 <dd><p>number of sites the basis is constructed with.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Type</dt>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>int</p>
 </dd>
 </dl>
 </dd></dl>
 
-<dl class="py method">
-<dt id="quspin.basis.user_basis.Ns">
-<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">Ns</span></code><a class="headerlink" href="#quspin.basis.user_basis.Ns" title="Permalink to this definition">¶</a></dt>
+<dl class="py property">
+<dt class="sig sig-object py" id="quspin.basis.user_basis.Ns">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Ns</span></span><a class="headerlink" href="#quspin.basis.user_basis.Ns" title="Link to this definition"></a></dt>
 <dd><p>number of states in the Hilbert space.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Type</dt>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>int</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
-<dt id="quspin.basis.user_basis.Op">
-<code class="sig-name descname"><span class="pre">Op</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">opstr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">indx</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">J</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quspin.basis.user_basis.Op" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="quspin.basis.user_basis.Op">
+<span class="sig-name descname"><span class="pre">Op</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">opstr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">indx</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">J</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quspin.basis.user_basis.Op" title="Link to this definition"></a></dt>
 <dd><p>Constructs operator from a site-coupling list and an operator string in a lattice basis.</p>
 <dl class="field-list">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl>
 <dt><strong>opstr</strong><span class="classifier">str</span></dt><dd><p>Operator string in the lattice basis format. For instance:</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">opstr</span> <span class="o">=</span> <span class="s2">&quot;zz&quot;</span>
@@ -580,7 +571,7 @@ the basis will give undefined behavior.</p>
 </dd>
 </dl>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><dl class="simple">
 <dt>tuple</dt><dd><dl class="simple">
 <dt><cite>(ME,row,col)</cite>, where</dt><dd><ul class="simple">
@@ -613,12 +604,12 @@ the basis will give undefined behavior.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="quspin.basis.user_basis.Op_bra_ket">
-<code class="sig-name descname"><span class="pre">Op_bra_ket</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">opstr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">indx</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">J</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ket_states</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reduce_output</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quspin.basis.user_basis.Op_bra_ket" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="quspin.basis.user_basis.Op_bra_ket">
+<span class="sig-name descname"><span class="pre">Op_bra_ket</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">opstr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">indx</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">J</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ket_states</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reduce_output</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quspin.basis.user_basis.Op_bra_ket" title="Link to this definition"></a></dt>
 <dd><p>Finds bra states which connect given ket states by operator from a site-coupling list and an operator string.</p>
 <p>Given a set of ket states <span class="math notranslate nohighlight">\(|s\rangle\)</span>, the function returns the bra states <span class="math notranslate nohighlight">\(\langle s'|\)</span> which connect to them through an operator, together with the corresponding matrix elements.</p>
 <dl class="field-list">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl>
 <dt><strong>opstr</strong><span class="classifier">str</span></dt><dd><p>Operator string in the lattice basis format. For instance:</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">opstr</span> <span class="o">=</span> <span class="s2">&quot;zz&quot;</span>
@@ -640,7 +631,7 @@ the basis will give undefined behavior.</p>
 </dd>
 </dl>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><dl class="simple">
 <dt>tuple</dt><dd><dl class="simple">
 <dt><cite>(ME,bra,ket)</cite>, where</dt><dd><ul class="simple">
@@ -675,8 +666,8 @@ the basis will give undefined behavior.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="quspin.basis.user_basis.Op_shift_sector">
-<code class="sig-name descname"><span class="pre">Op_shift_sector</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other_basis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">op_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">v_in</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">v_out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quspin.basis.user_basis.Op_shift_sector" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="quspin.basis.user_basis.Op_shift_sector">
+<span class="sig-name descname"><span class="pre">Op_shift_sector</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other_basis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">op_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">v_in</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">v_out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quspin.basis.user_basis.Op_shift_sector" title="Link to this definition"></a></dt>
 <dd><p>Applies symmetry non-conserving operator to state in symmetry-reduced basis.</p>
 <p>An operator, which does not conserve a symmetry, induces a change in the quantum number of a state defined in the corresponding symmetry sector. Hence, when the operator is applied on a quantum state, the state shifts the symmetry sector. <cite>Op_shift_sector()</cite> handles this automatically.</p>
 <p><span class="red">NOTE: One has to make sure that (i) the operator moves the state between the two sectors, and (ii) the two bases objects have the same symmetries. This function will not give the correct results otherwise.</span></p>
@@ -685,11 +676,11 @@ the basis will give undefined behavior.</p>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">P2</span> <span class="o">=</span> <span class="n">basis_sector_2</span><span class="o">.</span><span class="n">get_proj</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">complex128</span><span class="p">)</span> <span class="c1"># projector between full and target basis</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">v_in_full</span> <span class="o">=</span> <span class="n">P1</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">v_in</span><span class="p">)</span> <span class="c1"># go from initial basis to to full basis</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">v_out_full</span> <span class="o">=</span> <span class="n">basis_full</span><span class="o">.</span><span class="n">inplace_Op</span><span class="p">(</span><span class="n">v_in_full</span><span class="p">,</span><span class="n">op_list</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">complex128</span><span class="p">)</span> <span class="c1"># apply Op</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">v_out</span> <span class="o">=</span> <span class="n">P2</span><span class="o">.</span><span class="n">H</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">v_out_full</span><span class="p">)</span> <span class="c1"># project to target basis</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">v_out</span> <span class="o">=</span> <span class="n">P2</span><span class="o">.</span><span class="n">T</span><span class="o">.</span><span class="n">conj</span><span class="p">()</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">v_out_full</span><span class="p">)</span> <span class="c1"># project to target basis</span>
 </pre></div>
 </div>
 <dl class="field-list">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl>
 <dt><strong>other_basis</strong><span class="classifier"><cite>basis</cite> object</span></dt><dd><p><cite>basis_general</cite> object for the initial symmetry sector. Must be the same <cite>basis</cite> class type as the basis whose instance is <cite>Op_shift_sector()</cite> (i.e. the basis in <cite>basis.Op_shift_sector()</cite>).</p>
 </dd>
@@ -703,7 +694,7 @@ the basis will give undefined behavior.</p>
 </dd>
 </dl>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><dl class="simple">
 <dt>(basis.Ns, ) numpy.ndarray</dt><dd><p>Array containing the state <cite>v_out</cite> in the current basis, i.e. the basis in <cite>basis.Op_shift_sector()</cite>.</p>
 </dd>
@@ -723,23 +714,23 @@ the basis will give undefined behavior.</p>
 </div>
 </dd></dl>
 
-<dl class="py method">
-<dt id="quspin.basis.user_basis.blocks">
-<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">blocks</span></code><a class="headerlink" href="#quspin.basis.user_basis.blocks" title="Permalink to this definition">¶</a></dt>
+<dl class="py property">
+<dt class="sig sig-object py" id="quspin.basis.user_basis.blocks">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">blocks</span></span><a class="headerlink" href="#quspin.basis.user_basis.blocks" title="Link to this definition"></a></dt>
 <dd><p>contains the quantum numbers (blocks) for the symmetry sectors.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Type</dt>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>dict</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
-<dt id="quspin.basis.user_basis.check_hermitian">
-<code class="sig-name descname"><span class="pre">check_hermitian</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">static</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dynamic</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quspin.basis.user_basis.check_hermitian" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="quspin.basis.user_basis.check_hermitian">
+<span class="sig-name descname"><span class="pre">check_hermitian</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">static</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dynamic</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quspin.basis.user_basis.check_hermitian" title="Link to this definition"></a></dt>
 <dd><p>Checks operator string lists for hermiticity of the combined operator.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
 <dt><strong>static: list</strong></dt><dd><p>Static operators formatted to be passed into the static argument of the <cite>hamiltonian</cite> class.</p>
 </dd>
@@ -751,11 +742,11 @@ the basis will give undefined behavior.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="quspin.basis.user_basis.check_pcon">
-<code class="sig-name descname"><span class="pre">check_pcon</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">static</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dynamic</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quspin.basis.user_basis.check_pcon" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="quspin.basis.user_basis.check_pcon">
+<span class="sig-name descname"><span class="pre">check_pcon</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">static</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dynamic</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quspin.basis.user_basis.check_pcon" title="Link to this definition"></a></dt>
 <dd><p>Checks operator string lists for particle number (magnetisation) conservartion of the combined operator.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
 <dt><strong>static: list</strong></dt><dd><p>Static operators formatted to be passed into the static argument of the <cite>hamiltonian</cite> class.</p>
 </dd>
@@ -767,11 +758,11 @@ the basis will give undefined behavior.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="quspin.basis.user_basis.check_symm">
-<code class="sig-name descname"><span class="pre">check_symm</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">static</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dynamic</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quspin.basis.user_basis.check_symm" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="quspin.basis.user_basis.check_symm">
+<span class="sig-name descname"><span class="pre">check_symm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">static</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dynamic</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quspin.basis.user_basis.check_symm" title="Link to this definition"></a></dt>
 <dd><p>Checks operator string lists for the required symmetries of the combined operator.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
 <dt><strong>static: list</strong></dt><dd><p>Static operators formatted to be passed into the static argument of the <cite>hamiltonian</cite> class.</p>
 </dd>
@@ -782,38 +773,38 @@ the basis will give undefined behavior.</p>
 </dl>
 </dd></dl>
 
-<dl class="py method">
-<dt id="quspin.basis.user_basis.description">
-<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">description</span></code><a class="headerlink" href="#quspin.basis.user_basis.description" title="Permalink to this definition">¶</a></dt>
+<dl class="py property">
+<dt class="sig sig-object py" id="quspin.basis.user_basis.description">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">description</span></span><a class="headerlink" href="#quspin.basis.user_basis.description" title="Link to this definition"></a></dt>
 <dd><p>information about <cite>basis</cite> object.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Type</dt>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>str</p>
 </dd>
 </dl>
 </dd></dl>
 
-<dl class="py method">
-<dt id="quspin.basis.user_basis.dtype">
-<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">dtype</span></code><a class="headerlink" href="#quspin.basis.user_basis.dtype" title="Permalink to this definition">¶</a></dt>
+<dl class="py property">
+<dt class="sig sig-object py" id="quspin.basis.user_basis.dtype">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">dtype</span></span><a class="headerlink" href="#quspin.basis.user_basis.dtype" title="Link to this definition"></a></dt>
 <dd><p>data type of basis state integers.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Type</dt>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>numpy.dtype</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
-<dt id="quspin.basis.user_basis.ent_entropy">
-<code class="sig-name descname"><span class="pre">ent_entropy</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sub_sys_A</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">density</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">subsys_ordering</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_rdm</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">enforce_pure</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_rdm_EVs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sparse</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sparse_diag</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maxiter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">svd_solver</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">svd_kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quspin.basis.user_basis.ent_entropy" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="quspin.basis.user_basis.ent_entropy">
+<span class="sig-name descname"><span class="pre">ent_entropy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sub_sys_A</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">density</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">subsys_ordering</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_rdm</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">enforce_pure</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_rdm_EVs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sparse</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sparse_diag</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maxiter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">svd_solver</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">svd_kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quspin.basis.user_basis.ent_entropy" title="Link to this definition"></a></dt>
 <dd><p>Calculates entanglement entropy of subsystem A and the corresponding reduced density matrix</p>
 <div class="math notranslate nohighlight">
 \[S_\mathrm{ent}(\alpha) = \frac{1}{N_A}\frac{1}{1-\alpha}\log \mathrm{tr}_{A} \left( \mathrm{tr}_{A^c} \vert\psi\rangle\langle\psi\vert \right)^\alpha\]</div>
 <p>where the normalization <span class="math notranslate nohighlight">\(N_A\)</span> can be switched on and off using the optional argument <cite>density</cite>. This expression reduces to the familiar von Neumann entropy in the limit <span class="math notranslate nohighlight">\(\alpha=1\)</span>.</p>
 <p><strong>Note:</strong> The logarithm used is the natural logarithm (base e).</p>
 <dl class="field-list">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl>
 <dt><strong>state</strong><span class="classifier">obj</span></dt><dd><p>State of the quantum system. Can be either one of:</p>
 <blockquote>
@@ -851,11 +842,11 @@ the spectrum of <cite>rdm_A</cite> is returned by default. Default is <cite>Fals
 <dt><strong>alpha</strong><span class="classifier">float, optional</span></dt><dd><p>Renyi <span class="math notranslate nohighlight">\(\alpha\)</span> parameter for the entanglement entropy. Default is <span class="math notranslate nohighlight">\(\alpha=1\)</span>.</p>
 </dd>
 <dt><strong>sparse_diag</strong><span class="classifier">bool, optional</span></dt><dd><p>When <cite>sparse=True</cite>, this flag enforces the use of
-<a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/generated/scipy.sparse.linalg.eigsh.html">scipy.sparse.linalg.eigsh()</a>
+<a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.linalg.eigsh.html">scipy.sparse.linalg.eigsh()</a>
 to calculate the eigenvaues of the reduced DM.</p>
 </dd>
 <dt><strong>maxiter</strong><span class="classifier">int, optional</span></dt><dd><p>Specifies the number of iterations for Lanczos diagonalisation. Look up documentation for
-<a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/generated/scipy.sparse.linalg.eigsh.html">scipy.sparse.linalg.eigsh()</a>.</p>
+<a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.linalg.eigsh.html">scipy.sparse.linalg.eigsh()</a>.</p>
 </dd>
 <dt><strong>svd_solver</strong><span class="classifier">object, optional</span></dt><dd><p>Specifies the svd solver to be used, e.g. <cite>numpy.linalg.svd</cite> or <cite>scipy.linalg.svd</cite>, or a custom solver. Effective when <cite>enforce_pure=True</cite> or <cite>sparse=False</cite>.</p>
 </dd>
@@ -863,7 +854,7 @@ to calculate the eigenvaues of the reduced DM.</p>
 </dd>
 </dl>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><dl class="simple">
 <dt>dict</dt><dd><dl class="simple">
 <dt>Dictionary with following keys, depending on input parameters:</dt><dd><ul class="simple">
@@ -890,11 +881,11 @@ to calculate the eigenvaues of the reduced DM.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="quspin.basis.user_basis.expanded_form">
-<code class="sig-name descname"><span class="pre">expanded_form</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">static</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dynamic</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quspin.basis.user_basis.expanded_form" title="Permalink to this definition">¶</a></dt>
-<dd><p>Splits up operator strings containing “x” and “y” into operator combinations of “+” and “-“. This function is useful for higher spin hamiltonians where “x” and “y” operators are not appropriate operators.</p>
+<dt class="sig sig-object py" id="quspin.basis.user_basis.expanded_form">
+<span class="sig-name descname"><span class="pre">expanded_form</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">static</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dynamic</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quspin.basis.user_basis.expanded_form" title="Link to this definition"></a></dt>
+<dd><p>Splits up operator strings containing “x” and “y” into operator combinations of “+” and “-”. This function is useful for higher spin hamiltonians where “x” and “y” operators are not appropriate operators.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
 <dt><strong>static: list</strong></dt><dd><p>Static operators formatted to be passed into the static argument of the <cite>hamiltonian</cite> class.</p>
 </dd>
@@ -902,17 +893,17 @@ to calculate the eigenvaues of the reduced DM.</p>
 </dd>
 </dl>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><dl class="simple">
 <dt>tuple</dt><dd><dl class="simple">
 <dt><cite>(static, dynamic)</cite>, where</dt><dd><ul class="simple">
 <li><dl class="simple">
-<dt>list: <cite>static</cite>: operator strings with “x” and “y” expanded into “+” and “-“, formatted to</dt><dd><p>be passed into the static argument of the <cite>hamiltonian</cite> class.</p>
+<dt>list: <cite>static</cite>: operator strings with “x” and “y” expanded into “+” and “-”, formatted to</dt><dd><p>be passed into the static argument of the <cite>hamiltonian</cite> class.</p>
 </dd>
 </dl>
 </li>
 <li><dl class="simple">
-<dt>list: <cite>dynamic</cite>: operator strings with “x” and “y” expanded into “+” and “-“, formatted to</dt><dd><p>be passed into the dynamic argument of the <cite>hamiltonian</cite> class.</p>
+<dt>list: <cite>dynamic</cite>: operator strings with “x” and “y” expanded into “+” and “-”, formatted to</dt><dd><p>be passed into the dynamic argument of the <cite>hamiltonian</cite> class.</p>
 </dd>
 </dl>
 </li>
@@ -934,15 +925,15 @@ to calculate the eigenvaues of the reduced DM.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="quspin.basis.user_basis.get_amp">
-<code class="sig-name descname"><span class="pre">get_amp</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">states</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">amps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'representative'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quspin.basis.user_basis.get_amp" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="quspin.basis.user_basis.get_amp">
+<span class="sig-name descname"><span class="pre">get_amp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">states</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">amps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'representative'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quspin.basis.user_basis.get_amp" title="Link to this definition"></a></dt>
 <dd><p>Computes the rescale factor of state amplitudes between the symmetry-reduced and full basis.</p>
 <p>Given a quantum state <span class="math notranslate nohighlight">\(s\)</span> and a state amplitude in the full basis <span class="math notranslate nohighlight">\(\psi_s\)</span>, its representative (under the symemtries)
 <span class="math notranslate nohighlight">\(r(s)\)</span> with a corresponding amplitude <span class="math notranslate nohighlight">\(\psi^\text{sym}_r\)</span>, the function computes the ratio <span class="math notranslate nohighlight">\(C\)</span>, defined as</p>
 <div class="math notranslate nohighlight">
 \[\psi_s = C\psi_r^\text{sym}\]</div>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
 <dt><strong>states</strong><span class="classifier">array_like(int)</span></dt><dd><p>Fock-basis (z-basis) states to find the amplitude rescale factor <span class="math notranslate nohighlight">\(C\)</span> of. States are stored in integer representations.</p>
 </dd>
@@ -975,7 +966,7 @@ to calculate the eigenvaues of the reduced DM.</p>
 </dd>
 </dl>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><dl class="simple">
 <dt>array_like(float)</dt><dd><p>amplitude rescale factor <span class="math notranslate nohighlight">\(C\)</span> (see expression above).</p>
 </dd>
@@ -997,11 +988,11 @@ to calculate the eigenvaues of the reduced DM.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="quspin.basis.user_basis.get_proj">
-<code class="sig-name descname"><span class="pre">get_proj</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dtype</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pcon</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quspin.basis.user_basis.get_proj" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="quspin.basis.user_basis.get_proj">
+<span class="sig-name descname"><span class="pre">get_proj</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dtype</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pcon</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quspin.basis.user_basis.get_proj" title="Link to this definition"></a></dt>
 <dd><p>Calculates transformation/projector from symmetry-reduced basis to full (symmetry-free) basis.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
 <dt><strong>dtype</strong><span class="classifier">‘type’</span></dt><dd><p>Data type (e.g. numpy.float64) to construct the projector with.</p>
 </dd>
@@ -1010,7 +1001,7 @@ to calculate the eigenvaues of the reduced DM.</p>
 </dd>
 </dl>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><dl class="simple">
 <dt>scipy.sparse.csc_matrix</dt><dd><p>Transformation/projector between the symmetry-reduced and the full basis.</p>
 </dd>
@@ -1030,25 +1021,25 @@ to calculate the eigenvaues of the reduced DM.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="quspin.basis.user_basis.get_vec">
-<code class="sig-name descname"><span class="pre">get_vec</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">v0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sparse</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pcon</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quspin.basis.user_basis.get_vec" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="quspin.basis.user_basis.get_vec">
+<span class="sig-name descname"><span class="pre">get_vec</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">v0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sparse</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pcon</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quspin.basis.user_basis.get_vec" title="Link to this definition"></a></dt>
 <dd><p>DEPRECATED (cf <cite>project_from</cite>). Transforms state from symmetry-reduced basis to full (symmetry-free) basis.</p>
 <p class="rubric">Notes</p>
 <p>This function is <span class="red">deprecated</span>. Use <cite>project_from()</cite> instead; see also the inverse function <cite>project_to()</cite>.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="quspin.basis.user_basis.index">
-<code class="sig-name descname"><span class="pre">index</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">s</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quspin.basis.user_basis.index" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="quspin.basis.user_basis.index">
+<span class="sig-name descname"><span class="pre">index</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">s</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quspin.basis.user_basis.index" title="Link to this definition"></a></dt>
 <dd><p>Finds the index of user-defined Fock state in any lattice basis.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
 <dt><strong>s</strong><span class="classifier">{str, int}</span></dt><dd><p>Defines the Fock state with number of particles (spins) per site in underlying lattice <cite>basis</cite>.</p>
 </dd>
 </dl>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><dl class="simple">
 <dt>int</dt><dd><p>Position of the Fock state in the lattice basis.</p>
 </dd>
@@ -1069,11 +1060,11 @@ by <cite>index()</cite>.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="quspin.basis.user_basis.inplace_Op">
-<code class="sig-name descname"><span class="pre">inplace_Op</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">v_in</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">op_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transposed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">conjugated</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">a</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">v_out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quspin.basis.user_basis.inplace_Op" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="quspin.basis.user_basis.inplace_Op">
+<span class="sig-name descname"><span class="pre">inplace_Op</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">v_in</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">op_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transposed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">conjugated</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">a</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">v_out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quspin.basis.user_basis.inplace_Op" title="Link to this definition"></a></dt>
 <dd><p>Calculates the action of an operator on a state.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
 <dt><strong>v_in</strong><span class="classifier">array_like</span></dt><dd><p>state (or states stored in columns) to act on with the operator.</p>
 </dd>
@@ -1091,7 +1082,7 @@ by <cite>index()</cite>.</p>
 </dd>
 </dl>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><dl class="simple">
 <dt>numpy.ndarray</dt><dd><ul class="simple">
 <li><p>if <cite>v_out</cite> is not <cite>None</cite>, this function modifies <cite>v_out</cite> inplace and returns it.</p></li>
@@ -1114,11 +1105,11 @@ by <cite>index()</cite>.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="quspin.basis.user_basis.int_to_state">
-<code class="sig-name descname"><span class="pre">int_to_state</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bracket_notation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quspin.basis.user_basis.int_to_state" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="quspin.basis.user_basis.int_to_state">
+<span class="sig-name descname"><span class="pre">int_to_state</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bracket_notation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quspin.basis.user_basis.int_to_state" title="Link to this definition"></a></dt>
 <dd><p>Finds string representation of a state defined in integer representation.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
 <dt><strong>state</strong><span class="classifier">int</span></dt><dd><p>Defines the Fock state in integer representation in underlying lattice <cite>basis</cite>.</p>
 </dd>
@@ -1126,7 +1117,7 @@ by <cite>index()</cite>.</p>
 </dd>
 </dl>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><dl class="simple">
 <dt>str</dt><dd><p>String corresponding to the Fock <cite>state</cite> in the lattice basis.</p>
 </dd>
@@ -1144,11 +1135,11 @@ by <cite>index()</cite>.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="quspin.basis.user_basis.make">
-<code class="sig-name descname"><span class="pre">make</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Ns_block_est</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">N_p</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quspin.basis.user_basis.make" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="quspin.basis.user_basis.make">
+<span class="sig-name descname"><span class="pre">make</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Ns_block_est</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">N_p</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quspin.basis.user_basis.make" title="Link to this definition"></a></dt>
 <dd><p>Creates the entire basis by calling the basis constructor.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
 <dt><strong>Ns_block_est: int, optional</strong></dt><dd><p>Overwrites the internal estimate of the size of the reduced Hilbert space for the given symmetries. This can be used to help conserve memory if the exact size of the H-space is known ahead of time.</p>
 </dd>
@@ -1156,7 +1147,7 @@ by <cite>index()</cite>.</p>
 </dd>
 </dl>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><dl class="simple">
 <dt>int</dt><dd><p>Total number of states in the (symmetry-reduced) Hilbert space.</p>
 </dd>
@@ -1178,11 +1169,11 @@ for basis which small particle numbers as the blocks have very uneven sizes. To 
 </dd></dl>
 
 <dl class="py method">
-<dt id="quspin.basis.user_basis.make_basis_blocks">
-<code class="sig-name descname"><span class="pre">make_basis_blocks</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">N_p</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quspin.basis.user_basis.make_basis_blocks" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="quspin.basis.user_basis.make_basis_blocks">
+<span class="sig-name descname"><span class="pre">make_basis_blocks</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">N_p</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quspin.basis.user_basis.make_basis_blocks" title="Link to this definition"></a></dt>
 <dd><p>Creates/modifies the bounds for representatives based on prefix tages.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
 <dt><strong>N_p: int, optional</strong></dt><dd><p>number of bits to use in the prefix label used to generate blocks for searching positions of representatives.</p>
 </dd>
@@ -1203,23 +1194,23 @@ for basis which small particle numbers as the blocks have very uneven sizes. To 
 </div>
 </dd></dl>
 
-<dl class="py method">
-<dt id="quspin.basis.user_basis.noncommuting_bits">
-<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">noncommuting_bits</span></code><a class="headerlink" href="#quspin.basis.user_basis.noncommuting_bits" title="Permalink to this definition">¶</a></dt>
+<dl class="py property">
+<dt class="sig sig-object py" id="quspin.basis.user_basis.noncommuting_bits">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">noncommuting_bits</span></span><a class="headerlink" href="#quspin.basis.user_basis.noncommuting_bits" title="Link to this definition"></a></dt>
 <dd><p>list of bits that represent sites that do not commute along with the phase required from commuting sites</p>
 <dl class="field-list simple">
-<dt class="field-odd">Type</dt>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>list</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
-<dt id="quspin.basis.user_basis.normalization">
-<code class="sig-name descname"><span class="pre">normalization</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">states</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quspin.basis.user_basis.normalization" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="quspin.basis.user_basis.normalization">
+<span class="sig-name descname"><span class="pre">normalization</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">states</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quspin.basis.user_basis.normalization" title="Link to this definition"></a></dt>
 <dd><p>Computes normalization of <cite>basis</cite> states.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
 <dt><strong>states</strong><span class="classifier">array_like(int)</span></dt><dd><p>Fock-basis (z-basis) states to find the normalizations of. States are stored in integer representations.</p>
 </dd>
@@ -1227,7 +1218,7 @@ for basis which small particle numbers as the blocks have very uneven sizes. To 
 </dd>
 </dl>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><dl class="simple">
 <dt>array_like(int)</dt><dd><p>normalizations of <cite>states</cite> for the given (symmetry-reduced) <cite>basis</cite>.</p>
 </dd>
@@ -1248,23 +1239,23 @@ for basis which small particle numbers as the blocks have very uneven sizes. To 
 </div>
 </dd></dl>
 
-<dl class="py method">
-<dt id="quspin.basis.user_basis.operators">
-<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">operators</span></code><a class="headerlink" href="#quspin.basis.user_basis.operators" title="Permalink to this definition">¶</a></dt>
+<dl class="py property">
+<dt class="sig sig-object py" id="quspin.basis.user_basis.operators">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">operators</span></span><a class="headerlink" href="#quspin.basis.user_basis.operators" title="Link to this definition"></a></dt>
 <dd><p>set of available operator strings.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Type</dt>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>set</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
-<dt id="quspin.basis.user_basis.partial_trace">
-<code class="sig-name descname"><span class="pre">partial_trace</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sub_sys_A</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">subsys_ordering</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_rdm</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'A'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">enforce_pure</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sparse</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quspin.basis.user_basis.partial_trace" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="quspin.basis.user_basis.partial_trace">
+<span class="sig-name descname"><span class="pre">partial_trace</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sub_sys_A</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">subsys_ordering</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_rdm</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'A'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">enforce_pure</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sparse</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quspin.basis.user_basis.partial_trace" title="Link to this definition"></a></dt>
 <dd><p>Calculates reduced density matrix, through a partial trace of a quantum state in a lattice <cite>basis</cite>.</p>
 <dl class="field-list">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl>
 <dt><strong>state</strong><span class="classifier">obj</span></dt><dd><p>State of the quantum system. Can be either one of:</p>
 <blockquote>
@@ -1295,7 +1286,7 @@ it is a square array. Default is <cite>False</cite>.</p>
 </dd>
 </dl>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><dl class="simple">
 <dt>numpy.ndarray</dt><dd><p>Density matrix associated with <cite>state</cite>. Depends on optional arguments.</p>
 </dd>
@@ -1318,11 +1309,11 @@ it is a square array. Default is <cite>False</cite>.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="quspin.basis.user_basis.project_from">
-<code class="sig-name descname"><span class="pre">project_from</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">v0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sparse</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pcon</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quspin.basis.user_basis.project_from" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="quspin.basis.user_basis.project_from">
+<span class="sig-name descname"><span class="pre">project_from</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">v0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sparse</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pcon</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quspin.basis.user_basis.project_from" title="Link to this definition"></a></dt>
 <dd><p>Transforms state from symmetry-reduced basis to full (symmetry-free) basis.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
 <dt><strong>v0</strong><span class="classifier">numpy.ndarray</span></dt><dd><p>Contains in its columns the states in the symmetry-reduced basis.</p>
 </dd>
@@ -1333,7 +1324,7 @@ it is a square array. Default is <cite>False</cite>.</p>
 </dd>
 </dl>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><dl class="simple">
 <dt>numpy.ndarray</dt><dd><p>Array containing the state <cite>v0</cite> in the full basis.</p>
 </dd>
@@ -1354,11 +1345,11 @@ it is a square array. Default is <cite>False</cite>.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="quspin.basis.user_basis.project_to">
-<code class="sig-name descname"><span class="pre">project_to</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">v0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sparse</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pcon</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quspin.basis.user_basis.project_to" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="quspin.basis.user_basis.project_to">
+<span class="sig-name descname"><span class="pre">project_to</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">v0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sparse</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pcon</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quspin.basis.user_basis.project_to" title="Link to this definition"></a></dt>
 <dd><p>Transforms state from full (symmetry-free) basis to symmetry-reduced basis.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
 <dt><strong>v0</strong><span class="classifier">numpy.ndarray</span></dt><dd><p>Contains in its columns the states in the full (symmetry-free) basis.</p>
 </dd>
@@ -1369,7 +1360,7 @@ it is a square array. Default is <cite>False</cite>.</p>
 </dd>
 </dl>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><dl class="simple">
 <dt>numpy.ndarray</dt><dd><p>Array containing the state <cite>v0</cite> in the symmetry-reduced basis.</p>
 </dd>
@@ -1390,11 +1381,11 @@ it is a square array. Default is <cite>False</cite>.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="quspin.basis.user_basis.representative">
-<code class="sig-name descname"><span class="pre">representative</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">states</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_g</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_sign</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quspin.basis.user_basis.representative" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="quspin.basis.user_basis.representative">
+<span class="sig-name descname"><span class="pre">representative</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">states</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_g</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_sign</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quspin.basis.user_basis.representative" title="Link to this definition"></a></dt>
 <dd><p>Maps states to their representatives under the <cite>basis</cite> symmetries.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
 <dt><strong>states</strong><span class="classifier">array_like(int)</span></dt><dd><p>Fock-basis (z-basis) states to find the representatives of. States are stored in integer representations.</p>
 </dd>
@@ -1406,7 +1397,7 @@ it is a square array. Default is <cite>False</cite>.</p>
 </dd>
 </dl>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><dl class="simple">
 <dt>tuple</dt><dd><p>( representatives, g_array, sign_array )
 * array_like(int): <cite>representatives</cite>: Representatives under <cite>basis</cite> symmetries, corresponding to <cite>states</cite>.
@@ -1425,29 +1416,29 @@ it is a square array. Default is <cite>False</cite>.</p>
 </div>
 </dd></dl>
 
-<dl class="py method">
-<dt id="quspin.basis.user_basis.sps">
-<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">sps</span></code><a class="headerlink" href="#quspin.basis.user_basis.sps" title="Permalink to this definition">¶</a></dt>
+<dl class="py property">
+<dt class="sig sig-object py" id="quspin.basis.user_basis.sps">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">sps</span></span><a class="headerlink" href="#quspin.basis.user_basis.sps" title="Link to this definition"></a></dt>
 <dd><p>number of states per site (ie, the on-site Hilbert space dimension).</p>
 <dl class="field-list simple">
-<dt class="field-odd">Type</dt>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>int</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
-<dt id="quspin.basis.user_basis.state_to_int">
-<code class="sig-name descname"><span class="pre">state_to_int</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quspin.basis.user_basis.state_to_int" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="quspin.basis.user_basis.state_to_int">
+<span class="sig-name descname"><span class="pre">state_to_int</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quspin.basis.user_basis.state_to_int" title="Link to this definition"></a></dt>
 <dd><p>Finds integer representation of a state defined in string format.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
 <dt><strong>state</strong><span class="classifier">str</span></dt><dd><p>Defines the Fock state with number of particles (spins) per site in underlying lattice <cite>basis</cite>.</p>
 </dd>
 </dl>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><dl class="simple">
 <dt>int</dt><dd><p>Integer corresponding to the Fock <cite>state</cite> in the lattice basis.</p>
 </dd>
@@ -1464,12 +1455,12 @@ it is a square array. Default is <cite>False</cite>.</p>
 </div>
 </dd></dl>
 
-<dl class="py method">
-<dt id="quspin.basis.user_basis.states">
-<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">states</span></code><a class="headerlink" href="#quspin.basis.user_basis.states" title="Permalink to this definition">¶</a></dt>
+<dl class="py property">
+<dt class="sig sig-object py" id="quspin.basis.user_basis.states">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">states</span></span><a class="headerlink" href="#quspin.basis.user_basis.states" title="Link to this definition"></a></dt>
 <dd><p>basis states stored in their integer representation.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Type</dt>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>numpy.ndarray(int)</p>
 </dd>
 </dl>
@@ -1477,65 +1468,48 @@ it is a square array. Default is <cite>False</cite>.</p>
 
 </dd></dl>
 
-</div>
+</section>
 
 
-            <div class="clearer"></div>
+           </div>
           </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="quspin.basis.spinful_fermion_basis_general.html" class="btn btn-neutral float-left" title="quspin.basis.spinful_fermion_basis_general" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="quspin.basis.tensor_basis.html" class="btn btn-neutral float-right" title="quspin.basis.tensor_basis" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2016, Phillip Weinberg, Markus Schmitt, and Marin Bukov.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
         </div>
       </div>
-      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
-        <div class="sphinxsidebarwrapper">
-  <h4>Previous topic</h4>
-  <p class="topless"><a href="quspin.basis.spinful_fermion_basis_general.html"
-                        title="previous chapter">quspin.basis.spinful_fermion_basis_general</a></p>
-  <h4>Next topic</h4>
-  <p class="topless"><a href="quspin.basis.tensor_basis.html"
-                        title="next chapter">quspin.basis.tensor_basis</a></p>
-  <div role="note" aria-label="source link">
-    <h3>This Page</h3>
-    <ul class="this-page-menu">
-      <li><a href="../sources/generated/quspin.basis.user_basis.rst.txt"
-            rel="nofollow">Show Source</a></li>
-    </ul>
-   </div>
-<div id="searchbox" style="display: none" role="search">
-  <h3 id="searchlabel">Quick search</h3>
-    <div class="searchformwrapper">
-    <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" />
-      <input type="submit" value="Go" />
-    </form>
-    </div>
-</div>
-<script>$('#searchbox').show(0);</script>
-        </div>
-      </div>
-      <div class="clearer"></div>
-    </div>
-    <div class="related" role="navigation" aria-label="related navigation">
-      <h3>Navigation</h3>
-      <ul>
-        <li class="right" style="margin-right: 10px">
-          <a href="../genindex.html" title="General Index"
-             >index</a></li>
-        <li class="right" >
-          <a href="../py-modindex.html" title="Python Module Index"
-             >modules</a> |</li>
-        <li class="right" >
-          <a href="quspin.basis.tensor_basis.html" title="quspin.basis.tensor_basis"
-             >next</a> |</li>
-        <li class="right" >
-          <a href="quspin.basis.spinful_fermion_basis_general.html" title="quspin.basis.spinful_fermion_basis_general"
-             >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.7 documentation</a> &#187;</li>
-          <li class="nav-item nav-item-1"><a href="../basis.html" >Basis module (<code class="xref py py-mod docutils literal notranslate"><span class="pre">quspin.basis</span></code>)</a> &#187;</li>
-        <li class="nav-item nav-item-this"><a href="">quspin.basis.user_basis</a></li> 
-      </ul>
-    </div>
-    <div class="footer" role="contentinfo">
-        &#169; Copyright 2016, Phillip Weinberg, Markus Schmitt and Marin Bukov.
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.5.4.
-    </div>
-  </body>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+    <!-- Theme Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-6885KZ7NH6"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-6885KZ7NH6', {
+          'anonymize_ip': false,
+      });
+    </script> 
+
+</body>
 </html>

@@ -232,6 +232,6 @@ boundy = 0.1 * ywin
 axinset.set_ylim((ymin - boundy, ymax + boundy))
 #
 # display plot
-f.tight_layout()
-# plt.show()
+#plt.tight_layout()
+plt.show()
 #

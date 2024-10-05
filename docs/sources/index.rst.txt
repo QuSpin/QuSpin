@@ -3,81 +3,71 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to the Official QuSpin Documentation!
-=============================================
+QuSpin: Quantum Many-Body Dynamics 
+==================================
 
-QuSpin is an open-source Python package for exact diagonalization and quantum dynamics of arbitrary boson, fermion and spin many-body systems. QuSpin supports the use of various (user-defined) symmetries for one and higher-dimensional lattice systems, (imaginary) time evolution following arbitrary user-specified driving protocols, and constrained Hilbert spaces.
+QuSpin is an open-source Python package for exact diagonalization and quantum dynamics of arbitrary boson, fermion and spin many-body systems. QuSpin supports the use of various (user-defined) symmetries for one and higher-dimensional lattice systems, (imaginary) time evolution following arbitrary user-specified driving protocols, constrained Hilbert spaces, and parallel sparse linear algebra tools.
 
-This page contains the documentation for the use of all public functions and classes contained in QuSpin. 
+This page contains the Documentation for the use of all public functions and classes contained in QuSpin. 
 
-Check out these papers and the example scripts (below) for a detailed tutorial:
-    * `SciPost Phys. 2, 003 (2017) <https://scipost.org/SciPostPhys.2.1.003>`_.
-    * `SciPost Phys. 7, 020 (2019) <https://scipost.org/SciPostPhys.7.2.020>`_.
+Check out these tutorial papers, the :ref:`example_scripts-label`, and :ref:`jypiter_notebooks-label` for a detailed introduction:
+    * `SciPost Phys. 2, 003 (2017) <https://scipost.org/SciPostPhys.2.1.003>`_
+    * `SciPost Phys. 7, 020 (2019) <https://scipost.org/SciPostPhys.7.2.020>`_
 
-**Report** any **bugs** and **ask questions** `here <https://github.com/weinbe58/QuSpin/issues/new/choose>`_. 
+**Report** any **bugs** `on github <https://github.com/QuSpin/QuSpin/issues/new/choose>`_ and **ask questions** in the `quspin discussion forum <https://github.com/QuSpin/QuSpin/discussions>`_. Help us create an actively contributing QuSpin community!
 
-The source code is available on `Github <https://github.com/weinbe58/QuSpin/tree/master>`_; Suggestions for future improvements and user contributions are always welcome! 
+The source code is available on `Github <https://github.com/QuSpin/QuSpin>`_. Suggestions for future improvements and user contributions are always welcome: just check out the Developer :ref:`installation-label`, and make a pull request! 
 
 
-New Features
-====================
 
 .. toctree::
+    :caption: New Features
     :maxdepth: 1
     
-    New_Features
+    new_features
 
-
-QuSpin API reference
-====================
 
 .. toctree::
+    :caption: QuSpin (public API)
     :maxdepth: 1
     
     basis
     operators
     tools
     
-Installation and Usage
-=======================
+
 
 .. toctree::
+    :caption: Installation & Use
     :maxdepth: 1
     
-    Installation
+    ./installation/installation
 
-Example Scripts
-======================
 
 .. toctree::
+    :caption: Examples
     :maxdepth: 1
     
-    Examples
+    example_scripts
+    jupyter_notebooks
 
-Parallel Computing Capabilities
-===============================
+
 
 .. toctree::
+    :caption: Tutorials
     :maxdepth: 1
     
-    parallelization
+    ./tutorials/parallelization
+    ./tutorials/user_basis
 
 
-User Basis Tutorial
-===============================
 
 .. toctree::
+    :caption: Bugs & Questions
     :maxdepth: 1
-    
-    user_basis
 
-
-Report a Bug / Ask a Question
-=============================
-
-To report a bug in QuSpin, or ask a question about the package, please `open up a new issue <https://github.com/weinbe58/QuSpin/issues>`_ on GitHub.
-
-
+    ./contribute/report_a_bug
+    ./contribute/ask_a_question
 
 
 

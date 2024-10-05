@@ -1,77 +1,134 @@
-
 <!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-<html>
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><script type="text/javascript">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>quspin.tools.measurements.obs_vs_time &mdash; QuSpin 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../static/css/sphinx_rtd_size.css?v=f26ae176" />
+      <link rel="stylesheet" type="text/css" href="../static/css/py_class_property_fix.css?v=faf79ccd" />
 
-      var _gaq = _gaq || [];
-      _gaq.push(['_setAccount', 'UA-110543543-1']);
-      _gaq.push(['_trackPageview']);
-
-      (function() {
-        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-      })();
-    </script>
-    <title>quspin.tools.measurements.obs_vs_time &#8212; QuSpin 0.3.7 documentation</title>
-    <link rel="stylesheet" href="../static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="../static/classic.css" type="text/css" />
-    
-    <script id="documentation_options" data-url_root="../" src="../static/documentation_options.js"></script>
-    <script src="../static/jquery.js"></script>
-    <script src="../static/underscore.js"></script>
-    <script src="../static/doctools.js"></script>
-    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    
+  
+  <!--[if lt IE 9]>
+    <script src="../static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../static/jquery.js?v=5d32c60e"></script>
+        <script src="../static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../static/documentation_options.js?v=8d563738"></script>
+        <script src="../static/doctools.js?v=9a2dae69"></script>
+        <script src="../static/sphinx_highlight.js?v=dc90522c"></script>
+        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="../static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="quspin.tools.block_tools.block_ops" href="quspin.tools.block_tools.block_ops.html" />
+    <link rel="next" title="quspin.tools.misc.matvec" href="quspin.tools.misc.matvec.html" />
     <link rel="prev" title="quspin.tools.measurements.diag_ensemble" href="quspin.tools.measurements.diag_ensemble.html" /> 
-  </head><body>
-    <div class="related" role="navigation" aria-label="related navigation">
-      <h3>Navigation</h3>
-      <ul>
-        <li class="right" style="margin-right: 10px">
-          <a href="../genindex.html" title="General Index"
-             accesskey="I">index</a></li>
-        <li class="right" >
-          <a href="../py-modindex.html" title="Python Module Index"
-             >modules</a> |</li>
-        <li class="right" >
-          <a href="quspin.tools.block_tools.block_ops.html" title="quspin.tools.block_tools.block_ops"
-             accesskey="N">next</a> |</li>
-        <li class="right" >
-          <a href="quspin.tools.measurements.diag_ensemble.html" title="quspin.tools.measurements.diag_ensemble"
-             accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.7 documentation</a> &#187;</li>
-          <li class="nav-item nav-item-1"><a href="../tools.html" accesskey="U">Tools module (<code class="xref py py-mod docutils literal notranslate"><span class="pre">quspin.tools</span></code>)</a> &#187;</li>
-        <li class="nav-item nav-item-this"><a href="">quspin.tools.measurements.obs_vs_time</a></li> 
-      </ul>
-    </div>  
+</head>
 
-    <div class="document">
-      <div class="documentwrapper">
-        <div class="bodywrapper">
-          <div class="body" role="main">
-            
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            QuSpin
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">QuSpin (public API)</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../basis.html">Basis module (<code class="xref py py-mod docutils literal notranslate"><span class="pre">quspin.basis</span></code>)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../operators.html">Operators module (<code class="xref py py-mod docutils literal notranslate"><span class="pre">quspin.operators</span></code>)</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../tools.html">Tools module (<code class="xref py py-mod docutils literal notranslate"><span class="pre">quspin.tools</span></code>)</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../tools.html#evolution">evolution</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tools.html#lanczos">Lanczos</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tools.html#floquet">Floquet</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../tools.html#measurements">measurements</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="quspin.tools.measurements.ent_entropy.html">quspin.tools.measurements.ent_entropy</a></li>
+<li class="toctree-l3"><a class="reference internal" href="quspin.tools.measurements.diag_ensemble.html">quspin.tools.measurements.diag_ensemble</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">quspin.tools.measurements.obs_vs_time</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#quspin.tools.measurements.obs_vs_time"><code class="docutils literal notranslate"><span class="pre">obs_vs_time()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../tools.html#misc">misc</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Installation &amp; Use</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../installation/installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../installation/installation.html#basics-of-command-line-use">Basics of command line use</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../example_scripts.html">Example scripts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../jupyter_notebooks.html">Jupyter notebooks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/parallelization.html">Parallel computing support</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/user_basis.html"><cite>user_basis</cite> tutorial</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Bugs &amp; Questions</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../contribute/report_a_bug.html">Report a bug</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contribute/ask_a_question.html">Ask a question</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">QuSpin</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content style-external-links">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../tools.html">Tools module (<code class="xref py py-mod docutils literal notranslate"><span class="pre">quspin.tools</span></code>)</a></li>
+      <li class="breadcrumb-item active">quspin.tools.measurements.obs_vs_time</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../sources/generated/quspin.tools.measurements.obs_vs_time.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
   <style> .red {color:#ff0000; font-weight:bold; font-style:italic; } </style>
 <style> .green {color:#00b200; font-weight:bold; font-style:italic; } </style>
 <style> .magenta {color:#FF33F3; font-weight:bold; font-style:italic; } </style>
-<style> .orange {color:#FE8E02; font-weight:bold; font-style:italic; } </style><div class="section" id="quspin-tools-measurements-obs-vs-time">
-<h1>quspin.tools.measurements.obs_vs_time<a class="headerlink" href="#quspin-tools-measurements-obs-vs-time" title="Permalink to this headline">¶</a></h1>
+<style> .orange {color:#FE8E02; font-weight:bold; font-style:italic; } </style><section id="quspin-tools-measurements-obs-vs-time">
+<h1>quspin.tools.measurements.obs_vs_time<a class="headerlink" href="#quspin-tools-measurements-obs-vs-time" title="Link to this heading"></a></h1>
 <dl class="py function">
-<dt id="quspin.tools.measurements.obs_vs_time">
-<code class="sig-prename descclassname"><span class="pre">quspin.tools.measurements.</span></code><code class="sig-name descname"><span class="pre">obs_vs_time</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">psi_t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">times</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Obs_dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Sent_args</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">enforce_pure</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/tools/measurements.html#obs_vs_time"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quspin.tools.measurements.obs_vs_time" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="quspin.tools.measurements.obs_vs_time">
+<span class="sig-prename descclassname"><span class="pre">quspin.tools.measurements.</span></span><span class="sig-name descname"><span class="pre">obs_vs_time</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">psi_t</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">times</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Obs_dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Sent_args</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">enforce_pure</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/tools/measurements.html#obs_vs_time"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quspin.tools.measurements.obs_vs_time" title="Link to this definition"></a></dt>
 <dd><p>Calculates expectation value of observable(s) as a function of time in a time-dependent state.</p>
 <p>This function computes the expectation of a time-dependent state <span class="math notranslate nohighlight">\(|\psi(t)\rangle\)</span> in a time-dependent observable <span class="math notranslate nohighlight">\(\mathcal{O}(t)\)</span>.
 It automatically handles the cases where only the state or only the observable is time-dependent.</p>
 <div class="math notranslate nohighlight">
 \[\langle\psi(t)|\mathcal{O}(t)|\psi(t)\rangle\]</div>
 <dl class="field-list">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl>
 <dt><strong>psi_t</strong><span class="classifier">{tuple,aray_like,generator}</span></dt><dd><p>Time-dependent state data; can be either one of:</p>
 <ul>
@@ -124,7 +181,7 @@ Default is <cite>False</cite>.</p>
 </dd>
 </dl>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><dl>
 <dt>dict</dt><dd><p>The following keys of the output are possible, depending on the choice of flags:</p>
 <blockquote>
@@ -153,140 +210,88 @@ DM was also requested (toggled through <cite>Srdm_args</cite>.)</p>
 and <span class="math notranslate nohighlight">\(\langle\psi_1(t)|H_2|\psi_1(t)\rangle\)</span>.</p>
 <p>The initial state is an eigenstate of <span class="math notranslate nohighlight">\(H_1=\sum_j hS^x_j + g S^z_j\)</span>. The time evolution is done
 under <span class="math notranslate nohighlight">\(H_2=\sum_j JS^z_{j+1}S^z_j+ hS^x_j + g S^z_j\)</span>.</p>
-<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
-<span class="normal"> 2</span>
-<span class="normal"> 3</span>
-<span class="normal"> 4</span>
-<span class="normal"> 5</span>
-<span class="normal"> 6</span>
-<span class="normal"> 7</span>
-<span class="normal"> 8</span>
-<span class="normal"> 9</span>
-<span class="normal">10</span>
-<span class="normal">11</span>
-<span class="normal">12</span>
-<span class="normal">13</span>
-<span class="normal">14</span>
-<span class="normal">15</span>
-<span class="normal">16</span>
-<span class="normal">17</span>
-<span class="normal">18</span>
-<span class="normal">19</span>
-<span class="normal">20</span>
-<span class="normal">21</span>
-<span class="normal">22</span>
-<span class="normal">23</span>
-<span class="normal">24</span>
-<span class="normal">25</span>
-<span class="normal">26</span>
-<span class="normal">27</span>
-<span class="normal">28</span>
-<span class="normal">29</span>
-<span class="normal">30</span>
-<span class="normal">31</span>
-<span class="normal">32</span>
-<span class="normal">33</span>
-<span class="normal">34</span>
-<span class="normal">35</span>
-<span class="normal">36</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">quspin.operators</span> <span class="kn">import</span> <span class="n">hamiltonian</span> <span class="c1"># Hamiltonians and operators</span>
-<span class="kn">from</span> <span class="nn">quspin.basis</span> <span class="kn">import</span> <span class="n">spin_basis_1d</span> <span class="c1"># Hilbert space spin basis</span>
-<span class="kn">from</span> <span class="nn">quspin.tools.measurements</span> <span class="kn">import</span> <span class="n">obs_vs_time</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span> <span class="c1"># generic math functions</span>
-<span class="c1">#</span>
-<span class="n">L</span><span class="o">=</span><span class="mi">12</span> <span class="c1"># syste size</span>
-<span class="c1"># coupling strenghts</span>
-<span class="n">J</span><span class="o">=</span><span class="mf">1.0</span> <span class="c1"># spin-spin coupling</span>
-<span class="n">h</span><span class="o">=</span><span class="mf">0.8945</span> <span class="c1"># x-field strength</span>
-<span class="n">g</span><span class="o">=</span><span class="mf">0.945</span> <span class="c1"># z-field strength</span>
-<span class="c1"># create site-coupling lists</span>
-<span class="n">J_zz</span><span class="o">=</span><span class="p">[[</span><span class="n">J</span><span class="p">,</span><span class="n">i</span><span class="p">,(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">%</span><span class="n">L</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">L</span><span class="p">)]</span> <span class="c1"># PBC</span>
-<span class="n">x_field</span><span class="o">=</span><span class="p">[[</span><span class="n">h</span><span class="p">,</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">L</span><span class="p">)]</span>
-<span class="n">z_field</span><span class="o">=</span><span class="p">[[</span><span class="n">g</span><span class="p">,</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">L</span><span class="p">)]</span>
-<span class="c1"># create static and dynamic lists</span>
-<span class="n">static_1</span><span class="o">=</span><span class="p">[[</span><span class="s2">&quot;x&quot;</span><span class="p">,</span><span class="n">x_field</span><span class="p">],[</span><span class="s2">&quot;z&quot;</span><span class="p">,</span><span class="n">z_field</span><span class="p">]]</span>
-<span class="n">static_2</span><span class="o">=</span><span class="p">[[</span><span class="s2">&quot;zz&quot;</span><span class="p">,</span><span class="n">J_zz</span><span class="p">],[</span><span class="s2">&quot;x&quot;</span><span class="p">,</span><span class="n">x_field</span><span class="p">],[</span><span class="s2">&quot;z&quot;</span><span class="p">,</span><span class="n">z_field</span><span class="p">]]</span>
-<span class="n">dynamic</span><span class="o">=</span><span class="p">[]</span>
-<span class="c1"># create spin-1/2 basis</span>
-<span class="n">basis</span><span class="o">=</span><span class="n">spin_basis_1d</span><span class="p">(</span><span class="n">L</span><span class="p">,</span><span class="n">kblock</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">pblock</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-<span class="c1"># set up Hamiltonian</span>
-<span class="n">H1</span><span class="o">=</span><span class="n">hamiltonian</span><span class="p">(</span><span class="n">static_1</span><span class="p">,</span><span class="n">dynamic</span><span class="p">,</span><span class="n">basis</span><span class="o">=</span><span class="n">basis</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
-<span class="n">H2</span><span class="o">=</span><span class="n">hamiltonian</span><span class="p">(</span><span class="n">static_2</span><span class="p">,</span><span class="n">dynamic</span><span class="p">,</span><span class="n">basis</span><span class="o">=</span><span class="n">basis</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
-<span class="c1"># compute eigensystems of H1 and H2</span>
-<span class="n">E1</span><span class="p">,</span><span class="n">V1</span><span class="o">=</span><span class="n">H1</span><span class="o">.</span><span class="n">eigh</span><span class="p">()</span>
-<span class="n">psi1</span><span class="o">=</span><span class="n">V1</span><span class="p">[:,</span><span class="mi">14</span><span class="p">]</span> <span class="c1"># pick any state as initial state</span>
-<span class="n">E2</span><span class="p">,</span><span class="n">V2</span><span class="o">=</span><span class="n">H2</span><span class="o">.</span><span class="n">eigh</span><span class="p">()</span>
-<span class="c1">#</span>
-<span class="c1"># time-evolve state under H2</span>
-<span class="n">times</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span><span class="mf">5.0</span><span class="p">,</span><span class="mi">10</span><span class="p">)</span>
-<span class="n">psi1_t</span><span class="o">=</span><span class="n">H2</span><span class="o">.</span><span class="n">evolve</span><span class="p">(</span><span class="n">psi1</span><span class="p">,</span><span class="mf">0.0</span><span class="p">,</span><span class="n">times</span><span class="p">,</span><span class="n">iterate</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="c1"># calculate expectation values of observables</span>
-<span class="n">Obs_time</span><span class="o">=</span><span class="n">obs_vs_time</span><span class="p">(</span><span class="n">psi1_t</span><span class="p">,</span><span class="n">times</span><span class="p">,</span><span class="nb">dict</span><span class="p">(</span><span class="n">E1</span><span class="o">=</span><span class="n">H1</span><span class="p">,</span><span class="n">Energy2</span><span class="o">=</span><span class="n">H2</span><span class="p">),</span><span class="n">return_state</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Output keys are same as input keys:&quot;</span><span class="p">,</span> <span class="n">Obs_time</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
-<span class="n">E1_time</span><span class="o">=</span><span class="n">Obs_time</span><span class="p">[</span><span class="s1">&#39;E1&#39;</span><span class="p">]</span>
-<span class="n">psi_time</span><span class="o">=</span><span class="n">Obs_time</span><span class="p">[</span><span class="s1">&#39;psi_t&#39;</span><span class="p">]</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="kn">from</span> <span class="nn">quspin.basis</span> <span class="kn">import</span> <span class="n">spin_basis_1d</span>  <span class="c1"># Hilbert space spin basis</span>
+<span class="linenos"> 2</span><span class="kn">from</span> <span class="nn">quspin.tools.measurements</span> <span class="kn">import</span> <span class="n">obs_vs_time</span>
+<span class="linenos"> 3</span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>  <span class="c1"># generic math functions</span>
+<span class="linenos"> 4</span>
+<span class="linenos"> 5</span><span class="c1">#</span>
+<span class="linenos"> 6</span><span class="n">L</span> <span class="o">=</span> <span class="mi">12</span>  <span class="c1"># syste size</span>
+<span class="linenos"> 7</span><span class="c1"># coupling strenghts</span>
+<span class="linenos"> 8</span><span class="n">J</span> <span class="o">=</span> <span class="mf">1.0</span>  <span class="c1"># spin-spin coupling</span>
+<span class="linenos"> 9</span><span class="n">h</span> <span class="o">=</span> <span class="mf">0.8945</span>  <span class="c1"># x-field strength</span>
+<span class="linenos">10</span><span class="n">g</span> <span class="o">=</span> <span class="mf">0.945</span>  <span class="c1"># z-field strength</span>
+<span class="linenos">11</span><span class="c1"># create site-coupling lists</span>
+<span class="linenos">12</span><span class="n">J_zz</span> <span class="o">=</span> <span class="p">[[</span><span class="n">J</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">%</span> <span class="n">L</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">L</span><span class="p">)]</span>  <span class="c1"># PBC</span>
+<span class="linenos">13</span><span class="n">x_field</span> <span class="o">=</span> <span class="p">[[</span><span class="n">h</span><span class="p">,</span> <span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">L</span><span class="p">)]</span>
+<span class="linenos">14</span><span class="n">z_field</span> <span class="o">=</span> <span class="p">[[</span><span class="n">g</span><span class="p">,</span> <span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">L</span><span class="p">)]</span>
+<span class="linenos">15</span><span class="c1"># create static and dynamic lists</span>
+<span class="linenos">16</span><span class="n">static_1</span> <span class="o">=</span> <span class="p">[[</span><span class="s2">&quot;x&quot;</span><span class="p">,</span> <span class="n">x_field</span><span class="p">],</span> <span class="p">[</span><span class="s2">&quot;z&quot;</span><span class="p">,</span> <span class="n">z_field</span><span class="p">]]</span>
+<span class="linenos">17</span><span class="n">static_2</span> <span class="o">=</span> <span class="p">[[</span><span class="s2">&quot;zz&quot;</span><span class="p">,</span> <span class="n">J_zz</span><span class="p">],</span> <span class="p">[</span><span class="s2">&quot;x&quot;</span><span class="p">,</span> <span class="n">x_field</span><span class="p">],</span> <span class="p">[</span><span class="s2">&quot;z&quot;</span><span class="p">,</span> <span class="n">z_field</span><span class="p">]]</span>
+<span class="linenos">18</span><span class="n">dynamic</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="linenos">19</span><span class="c1"># create spin-1/2 basis</span>
+<span class="linenos">20</span><span class="n">basis</span> <span class="o">=</span> <span class="n">spin_basis_1d</span><span class="p">(</span><span class="n">L</span><span class="p">,</span> <span class="n">kblock</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">pblock</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="linenos">21</span><span class="c1"># set up Hamiltonian</span>
+<span class="linenos">22</span><span class="n">H1</span> <span class="o">=</span> <span class="n">hamiltonian</span><span class="p">(</span><span class="n">static_1</span><span class="p">,</span> <span class="n">dynamic</span><span class="p">,</span> <span class="n">basis</span><span class="o">=</span><span class="n">basis</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+<span class="linenos">23</span><span class="n">H2</span> <span class="o">=</span> <span class="n">hamiltonian</span><span class="p">(</span><span class="n">static_2</span><span class="p">,</span> <span class="n">dynamic</span><span class="p">,</span> <span class="n">basis</span><span class="o">=</span><span class="n">basis</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+<span class="linenos">24</span><span class="c1"># compute eigensystems of H1 and H2</span>
+<span class="linenos">25</span><span class="n">E1</span><span class="p">,</span> <span class="n">V1</span> <span class="o">=</span> <span class="n">H1</span><span class="o">.</span><span class="n">eigh</span><span class="p">()</span>
+<span class="linenos">26</span><span class="n">psi1</span> <span class="o">=</span> <span class="n">V1</span><span class="p">[:,</span> <span class="mi">14</span><span class="p">]</span>  <span class="c1"># pick any state as initial state</span>
+<span class="linenos">27</span><span class="n">E2</span><span class="p">,</span> <span class="n">V2</span> <span class="o">=</span> <span class="n">H2</span><span class="o">.</span><span class="n">eigh</span><span class="p">()</span>
+<span class="linenos">28</span><span class="c1">#</span>
+<span class="linenos">29</span><span class="c1"># time-evolve state under H2</span>
+<span class="linenos">30</span><span class="n">times</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">5.0</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+<span class="linenos">31</span><span class="n">psi1_t</span> <span class="o">=</span> <span class="n">H2</span><span class="o">.</span><span class="n">evolve</span><span class="p">(</span><span class="n">psi1</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="n">times</span><span class="p">,</span> <span class="n">iterate</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="linenos">32</span><span class="c1"># calculate expectation values of observables</span>
+<span class="linenos">33</span><span class="n">Obs_time</span> <span class="o">=</span> <span class="n">obs_vs_time</span><span class="p">(</span><span class="n">psi1_t</span><span class="p">,</span> <span class="n">times</span><span class="p">,</span> <span class="nb">dict</span><span class="p">(</span><span class="n">E1</span><span class="o">=</span><span class="n">H1</span><span class="p">,</span> <span class="n">Energy2</span><span class="o">=</span><span class="n">H2</span><span class="p">),</span> <span class="n">return_state</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="linenos">34</span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Output keys are same as input keys:&quot;</span><span class="p">,</span> <span class="n">Obs_time</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+<span class="linenos">35</span><span class="n">E1_time</span> <span class="o">=</span> <span class="n">Obs_time</span><span class="p">[</span><span class="s2">&quot;E1&quot;</span><span class="p">]</span>
+<span class="linenos">36</span><span class="n">psi_time</span> <span class="o">=</span> <span class="n">Obs_time</span><span class="p">[</span><span class="s2">&quot;psi_t&quot;</span><span class="p">]</span>
 </pre></div>
-</td></tr></table></div>
+</div>
 </dd></dl>
 
-</div>
+</section>
 
 
-            <div class="clearer"></div>
+           </div>
           </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="quspin.tools.measurements.diag_ensemble.html" class="btn btn-neutral float-left" title="quspin.tools.measurements.diag_ensemble" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="quspin.tools.misc.matvec.html" class="btn btn-neutral float-right" title="quspin.tools.misc.matvec" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2016, Phillip Weinberg, Markus Schmitt, and Marin Bukov.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
         </div>
       </div>
-      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
-        <div class="sphinxsidebarwrapper">
-  <h4>Previous topic</h4>
-  <p class="topless"><a href="quspin.tools.measurements.diag_ensemble.html"
-                        title="previous chapter">quspin.tools.measurements.diag_ensemble</a></p>
-  <h4>Next topic</h4>
-  <p class="topless"><a href="quspin.tools.block_tools.block_ops.html"
-                        title="next chapter">quspin.tools.block_tools.block_ops</a></p>
-  <div role="note" aria-label="source link">
-    <h3>This Page</h3>
-    <ul class="this-page-menu">
-      <li><a href="../sources/generated/quspin.tools.measurements.obs_vs_time.rst.txt"
-            rel="nofollow">Show Source</a></li>
-    </ul>
-   </div>
-<div id="searchbox" style="display: none" role="search">
-  <h3 id="searchlabel">Quick search</h3>
-    <div class="searchformwrapper">
-    <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" />
-      <input type="submit" value="Go" />
-    </form>
-    </div>
-</div>
-<script>$('#searchbox').show(0);</script>
-        </div>
-      </div>
-      <div class="clearer"></div>
-    </div>
-    <div class="related" role="navigation" aria-label="related navigation">
-      <h3>Navigation</h3>
-      <ul>
-        <li class="right" style="margin-right: 10px">
-          <a href="../genindex.html" title="General Index"
-             >index</a></li>
-        <li class="right" >
-          <a href="../py-modindex.html" title="Python Module Index"
-             >modules</a> |</li>
-        <li class="right" >
-          <a href="quspin.tools.block_tools.block_ops.html" title="quspin.tools.block_tools.block_ops"
-             >next</a> |</li>
-        <li class="right" >
-          <a href="quspin.tools.measurements.diag_ensemble.html" title="quspin.tools.measurements.diag_ensemble"
-             >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.7 documentation</a> &#187;</li>
-          <li class="nav-item nav-item-1"><a href="../tools.html" >Tools module (<code class="xref py py-mod docutils literal notranslate"><span class="pre">quspin.tools</span></code>)</a> &#187;</li>
-        <li class="nav-item nav-item-this"><a href="">quspin.tools.measurements.obs_vs_time</a></li> 
-      </ul>
-    </div>
-    <div class="footer" role="contentinfo">
-        &#169; Copyright 2016, Phillip Weinberg, Markus Schmitt and Marin Bukov.
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.5.4.
-    </div>
-  </body>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+    <!-- Theme Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-6885KZ7NH6"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-6885KZ7NH6', {
+          'anonymize_ip': false,
+      });
+    </script> 
+
+</body>
 </html>
