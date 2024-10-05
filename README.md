@@ -1,6 +1,6 @@
 # **QuSpin**
 
-QuSpin is an open-source Python package for Exact Diagonalization and quantum dynamics of arbitrary boson, fermion and spin many-body systems, supporting the use of various (user-defined) symmetries in one and higher dimensional lattice systems and (imaginary) time evolution following a user-specified driving protocol. 
+QuSpin is an open-source Python package for exact diagonalization and quantum dynamics of arbitrary boson, fermion and spin many-body systems. QuSpin supports the use of various (user-defined) symmetries for one and higher-dimensional lattice systems, (imaginary) time evolution following arbitrary user-specified driving protocols, constrained Hilbert spaces, and parallel sparse linear algebra tools.
 
 The complete ***Documentation*** for QuSpin (including a number of recent tutorials) can be found at 
 
@@ -14,77 +14,106 @@ For an ***indepth introduction*** to the package, check out the following papers
 * [SciPost Phys. __2__, 003 (2017)](https://scipost.org/10.21468/SciPostPhys.2.1.003)
 * [SciPost Phys. __7__, 020 (2019)](https://scipost.org/10.21468/SciPostPhys.7.2.020)
 
-QuSpin wraps Scipy, Numpy, and custom Cython libraries together to offer state-of-the art exact diagonalization calculations. The interface allows the user to define any many-body (and single particle) Hamiltonian which can be constructed from local single-particle operators. It also gives the user the flexibility of accessing many pre-defined symmetries in 1d (e.g. translation, reflection, spin inversion), as well as user-defined symmetry based on elementary transformations, such as site and spin flips. Moreover, there are convenient built-in ways to specify the time and parameter dependence of operators in the Hamiltonian, which is interfaced with user-friendly routines to solve the time dependent Schrödinger equation numerically. All the Hamiltonian data is stored either using Scipy's [sparse matrix](http://docs.scipy.org/doc/scipy/reference/sparse.html) library for sparse Hamiltonians or dense Numpy [arrays](http://docs.scipy.org/doc/numpy/reference/index.html) which allows the user to access any powerful Python scientific computing tools.
-
+QuSpin wraps Scipy, Numpy, and custom C++/Cython libraries together to offer state-of-the art exact diagonalization calculations. The interface allows the user to define any many-body (and single particle) Hamiltonian which can be constructed from local single-particle operators. It also gives the user the flexibility of accessing many pre-defined symmetries in 1d (e.g. translation, reflection, spin inversion), as well as user-defined symmetry based on elementary transformations, such as site and spin flips. Moreover, there are convenient built-in ways to specify the time and parameter dependence of operators in the Hamiltonian, which is interfaced with user-friendly routines to solve the time dependent Schrödinger equation numerically. All the Hamiltonian data is stored either using Scipy's [sparse matrix](http://docs.scipy.org/doc/scipy/reference/sparse.html) library for sparse Hamiltonians or dense Numpy [arrays](http://docs.scipy.org/doc/numpy/reference/index.html) which allows the user to access any powerful Python scientific computing tools.
 
 
 # **Contents**
 --------
 * [Installation](#installation)
   * [automatic install](#automatic-install)
-  * [manual install](#manual-install)
+  * [developer install](#developer-install)
   * [updating the package](#updating-the-package)
 * [Documentation](#documentation)
+
 
 # **Installation**
 
 ### **automatic install**
 
-The latest version of the package has the compiled modules written in [Cython](cython.org) which has made the code far more portable across different platforms. We will support precompiled version of the package for Linux, OS X and Windows 64-bit systems. The automatic installation of QuSpin requires the Anaconda package manager for Python. Once Anaconda has been installed, all one has to do to install QuSpin is run:
+The latest version of the package has the compiled modules written in [Cython](cython.org) which has made the code far more portable across different platforms. We will support precompiled version of the package for Linux, OS X and Windows 64-bit systems. The automatic installation of QuSpin requires the [pip](https://pypi.org/project/pip/) package manager for Python. Once pip has been installed, all one has to do to install QuSpin is run:
 ```
-$ conda install -c weinbe58 quspin
+$ pip install quspin
 ```
 This will install the latest version on your computer. Right now the package is in its beta stages and so it may not be available for installation on all platforms using this method. In such a case one can also manually install the package.
 
-OpenMP support is available starting from QuSpin 0.3.1. To instal quspin with OpenMP, use
+OpenMP support is automatically built in starting from QuSpin 1.0.0. 
+
+
+### **developer install**
+
+
+Clone the [QuSpin Workspace](https://github.com/QuSpin/QuSpin-workspace) repository:
 ```
-$ conda install -c weinbe58 omp quspin
+$ git clone https://github.com/QuSpin/QuSpin-workspace
 ```
 
-### **manual install**
+Initialize the submodules to pull the code:
+```
+$ git submodule init 
+$ git submodule update
+```
+  
+You will see three directories, each pointing to its own repository:
+  * [sparse parallel tools extension](https://github.com/QuSpin/parallel-sparse-tools) which contains the cpp code for the `tools` module;
+  * [QuSpin extension](https://github.com/QuSpin/QuSpin-Extensions) which contains the cpp code for the basis modules;
+  * [QuSpin](https://github.com/QuSpin/QuSpin) with the quspin python package that uses the other two modules. 
 
-To install QuSpin manually, download the source code either from the [master](https://github.com/weinbe58/QuSpin/archive/master.zip) branch, or by cloning the git repository. In the top directory of the source code you can execute the following commands from bash:
+Create a python>3.9 virtual environment. This can be done using [miniconda](http://conda.pydata.org/miniconda.html), or using python itself:
+```
+$ cd QuSpin-workspace/
+$ python3 -m venv .quspin_env
+```
 
-Unix:
+Activate the environment:
 ```
-python setup.py install --default-compiler-flags
+$ source .quspin_env/bin/activate 
 ```
-or Windows command line:
-```
-setup.py install --default-compiler-flags
-```
-<!--- begin packages --->
-For the **manual installation** you must have all the prerequisite python packages installed:
- * [scipy](https://www.scipy.org)>=0.19.1
- * [numpy](http://www.numpy.org)>=1.19.2
- * [cython](https://www.cython.org)>=0.29
- * [joblib](https://pythonhosted.org/joblib/)
- * [six](https://pythonhosted.org/six/)
- * [dill](https://pypi.python.org/pypi/dill)
- * [gmpy2](https://gmpy2.readthedocs.io/en/latest/)
- * [numba](http://numba.pydata.org/)
- * [numexpr](https://numexpr.readthedocs.io/en/latest/user_guide.html)
- * [boost](https://www.boost.org/doc/libs/1_70_0/libs/python/doc/html/index.html), installation must include header files for boost.
- * [llvm-openmp](http://openmp.llvm.org/), osx openmp version only.
-<!--- end packages --->
-For Windows machines one needs the correct verion of the Microsoft Visual Stuios compiler for the given python version you are building the package for. A good resource which can help you with this is [here](https://github.com/cython/cython/wiki/CythonExtensionsOnWindows). For OS-X and Linux the standard compilers should be fine for building the package. Note that some of the compiled extensions require Openmp 2.0 or above. For most setups We recommend [Anaconda](https://www.continuum.io/downloads) or [Miniconda](http://conda.pydata.org/miniconda.html) to manage your python packages and we have pre-built code which should be compatible with most 64-bit systems. When installing the package manually, if you add the flag ```--record install.txt```, the location of all the installed files will be output to install.txt which stores information about all installed files. This can prove useful when updating the code.
 
-For manual installation with OpenMP, use:
+Double check if the python and pip binaries point to the environment path:
+```
+$ which python
+$ which pip
+```
 
-Unix:
+Install extension modules (may take a bit of time to build the cpp code):
 ```
-python setup.py install --omp --default-compiler-flags
+$ pip install -e parallel-sparse-tools/ -v
+$ pip install -e QuSpin-Extensions/ -v
+$ pip install -e QuSpin/ -v
 ```
-or Windows command line:
+
+Make sure you add an exhaustive test to test any code you want to add to the package. To run unit tests, you can use pytest:
 ```
-setup.py install --omp --default-compiler-flags
+$ pip install pytest
+$ cd QuSpin-workspace/QuSpin/tests
+$ pytest  `# runs all tests in all subdirectories`
+$ pytest test_specific.py
 ```
+
+Make sure you also comment your code and add a your new public functions to the documentation. For the documentation, you need to install in addition:
+```
+$ pip install -U sphinx
+$ pip install numpydoc
+$ pip install sphinx-rtd-theme
+$ pip install sphinx-rtd-size
+```
+
+To build the documentation, do:
+```
+$ cd QuSpin-workspace/QuSpin/sphinx/
+$ rm ./source/generated/*   `# removes previously generated doc files`
+$ make clean
+$ make html
+$ open _build/html/index.html
+```
+
 
 ### **updating the package**
 
-To update the package with Anaconda, all one has to do is run the installation command again.
-
-To safely update a manually installed version of QuSpin, one must first manually delete the entire package from the python 'site-packages/' directory. In Unix, provided the flag ```--record install.txt``` has been used in the manual installation, the following command is sufficient to completely remove the installed files: ```cat install.txt | xargs rm -rf```. In Windows, it is easiest to just go to the folder and delete it from Windows Explorer. 
+To update the package with pip, all one has to do is run the command.
+```
+$ pip install --upgrade quspin
+```
 
 # **Documentation**
 
