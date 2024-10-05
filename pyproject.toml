@@ -6,7 +6,7 @@ authors = [
     {name = "Phillip Weinberg, Marin Bukov", email = "weinbe58@gmail.com"},
 ]
 dependencies = [
-    "quspin-extensions>=0.1.1",
+    "quspin-extensions>=0.1.3",
     "parallel-sparse-tools>=0.1.3",
     "numpy>=2.0.0",
     "dill>=0.3.8",
@@ -35,3 +35,11 @@ dev = [
     "black>=24.4.2",
     "pytest>=8.3.1",
 ]
+
+
+[tool.pdm.scripts]
+_.env_file = "./.env"
+upload = "python -m twine upload -r bloqade dist/*"
+build = {cmd = "pdm build"}
+publish = {composite = ["build", "upload"]}
+test = {shell = "pytest -x"}

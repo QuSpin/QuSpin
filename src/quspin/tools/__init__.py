@@ -72,6 +72,7 @@ misc
    KL_div
    ints_to_array
    array_to_ints
+   ints_to_array
 
 """
 
