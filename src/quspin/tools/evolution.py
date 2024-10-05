@@ -8,9 +8,12 @@ from scipy.integrate import ode
 from numpy.linalg import norm
 
 # needed for isinstance only
-from quspin.tools.expm_multiply_parallel_core import expm_multiply_parallel
+from quspin.tools.expm_multiply_parallel_core import ExpmMultiplyParallel
 
-__all__ = ["ED_state_vs_time", "evolve", "expm_multiply_parallel"]
+# define alias for backward compatibility
+expm_multiply_parallel = ExpmMultiplyParallel
+
+__all__ = ["ED_state_vs_time", "evolve", "ExpmMultiplyParallel", "expm_multiply_parallel"]
 
 ##### below are the routines for arbitary user-defimed time evolution.
 

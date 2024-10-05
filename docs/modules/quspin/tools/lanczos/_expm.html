@@ -1,145 +1,193 @@
-
 <!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>quspin.tools.lanczos._expm &mdash; QuSpin 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../../../../static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../../../static/css/sphinx_rtd_size.css?v=f26ae176" />
+      <link rel="stylesheet" type="text/css" href="../../../../static/css/py_class_property_fix.css?v=faf79ccd" />
 
-<html>
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><script type="text/javascript">
-
-      var _gaq = _gaq || [];
-      _gaq.push(['_setAccount', 'UA-110543543-1']);
-      _gaq.push(['_trackPageview']);
-
-      (function() {
-        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-      })();
-    </script>
-    <title>quspin.tools.lanczos._expm &#8212; QuSpin 0.3.7 documentation</title>
-    <link rel="stylesheet" href="../../../../static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="../../../../static/classic.css" type="text/css" />
-    
-    <script id="documentation_options" data-url_root="../../../../" src="../../../../static/documentation_options.js"></script>
-    <script src="../../../../static/jquery.js"></script>
-    <script src="../../../../static/underscore.js"></script>
-    <script src="../../../../static/doctools.js"></script>
-    
+  
+  <!--[if lt IE 9]>
+    <script src="../../../../static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../../../static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../../static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../../static/documentation_options.js?v=8d563738"></script>
+        <script src="../../../../static/doctools.js?v=9a2dae69"></script>
+        <script src="../../../../static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../../static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../search.html" /> 
-  </head><body>
-    <div class="related" role="navigation" aria-label="related navigation">
-      <h3>Navigation</h3>
-      <ul>
-        <li class="right" style="margin-right: 10px">
-          <a href="../../../../genindex.html" title="General Index"
-             accesskey="I">index</a></li>
-        <li class="right" >
-          <a href="../../../../py-modindex.html" title="Python Module Index"
-             >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">QuSpin 0.3.7 documentation</a> &#187;</li>
-          <li class="nav-item nav-item-1"><a href="../../../index.html" accesskey="U">Module code</a> &#187;</li>
-        <li class="nav-item nav-item-this"><a href="">quspin.tools.lanczos._expm</a></li> 
-      </ul>
-    </div>  
+</head>
 
-    <div class="document">
-      <div class="documentwrapper">
-        <div class="bodywrapper">
-          <div class="body" role="main">
-            
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            QuSpin
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">QuSpin (public API)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../basis.html">Basis module (<code class="xref py py-mod docutils literal notranslate"><span class="pre">quspin.basis</span></code>)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../operators.html">Operators module (<code class="xref py py-mod docutils literal notranslate"><span class="pre">quspin.operators</span></code>)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../tools.html">Tools module (<code class="xref py py-mod docutils literal notranslate"><span class="pre">quspin.tools</span></code>)</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Installation &amp; Use</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../installation/installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../installation/installation.html#basics-of-command-line-use">Basics of command line use</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../example_scripts.html">Example scripts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../jupyter_notebooks.html">Jupyter notebooks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../tutorials/parallelization.html">Parallel computing support</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../tutorials/user_basis.html"><cite>user_basis</cite> tutorial</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Bugs &amp; Questions</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../contribute/report_a_bug.html">Report a bug</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../contribute/ask_a_question.html">Ask a question</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">QuSpin</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content style-external-links">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">quspin.tools.lanczos._expm</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
   <h1>Source code for quspin.tools.lanczos._expm</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">_np</span>
-<span class="kn">from</span> <span class="nn">._lanczos_utils</span> <span class="kn">import</span> <span class="n">lin_comb_Q_T</span>
+<span class="kn">from</span> <span class="nn">quspin.tools.lanczos._lanczos_utils</span> <span class="kn">import</span> <span class="n">lin_comb_Q_T</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;expm_lanczos&quot;</span><span class="p">]</span>
 
-<div class="viewcode-block" id="expm_lanczos"><a class="viewcode-back" href="../../../../generated/quspin.tools.lanczos.expm_lanczos.html#quspin.tools.lanczos.expm_lanczos">[docs]</a><span class="k">def</span> <span class="nf">expm_lanczos</span><span class="p">(</span><span class="n">E</span><span class="p">,</span><span class="n">V</span><span class="p">,</span><span class="n">Q_T</span><span class="p">,</span><span class="n">a</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span><span class="n">out</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-	<span class="sd">&quot;&quot;&quot; Calculates action of matrix exponential on vector using Lanczos algorithm. </span>
 
-<span class="sd">	The Lanczos decomposition `(E,V,Q)` with initial state `v0` of a hermitian matrix `A` can be used to compute the matrix exponential </span>
-<span class="sd">	:math:`\\mathrm{exp}(aA)|v_0\\rangle` applied to the quantum state :math:`|v_0\\rangle`, without actually computing the exact matrix exponential:</span>
+<div class="viewcode-block" id="expm_lanczos">
+<a class="viewcode-back" href="../../../../generated/quspin.tools.lanczos.expm_lanczos.html#quspin.tools.lanczos.expm_lanczos">[docs]</a>
+<span class="k">def</span> <span class="nf">expm_lanczos</span><span class="p">(</span><span class="n">E</span><span class="p">,</span> <span class="n">V</span><span class="p">,</span> <span class="n">Q_T</span><span class="p">,</span> <span class="n">a</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Calculates action of matrix exponential on vector using Lanczos algorithm.</span>
 
-<span class="sd">	Let :math:`A \\approx Q T Q^\\dagger` with :math:`T=V \\mathrm{diag}(E) V^T`. Then, we can compute an approximation to the matrix exponential, applied to a state :math:`|\\psi\\rangle` as follows:</span>
+<span class="sd">    The Lanczos decomposition `(E,V,Q)` with initial state `v0` of a hermitian matrix `A` can be used to compute the matrix exponential</span>
+<span class="sd">    :math:`\\mathrm{exp}(aA)|v_0\\rangle` applied to the quantum state :math:`|v_0\\rangle`, without actually computing the exact matrix exponential:</span>
 
-<span class="sd">	.. math::</span>
-<span class="sd">		\\exp(a A)|v_0\\rangle \\approx Q \\exp(a T) Q^\\dagger |v_0\\rangle = Q V \\mathrm{diag}(e^{a E}) V^T Q^\\dagger |v_0\\rangle.</span>
+<span class="sd">    Let :math:`A \\approx Q T Q^\\dagger` with :math:`T=V \\mathrm{diag}(E) V^T`. Then, we can compute an approximation to the matrix exponential, applied to a state :math:`|\\psi\\rangle` as follows:</span>
 
-<span class="sd">	If we use :math:`|v_0\\rangle` as the (nondegenerate) initial state for the Lanczos algorithm, then :math:`\\sum_{j,k}V^T_{ij}Q^\\dagger_{jk}v_{0,k} = \\sum_{j}V_{ji}\\delta_{0,j} = V_{i,0}` [by construction, :math:`|v_{0}\\rangle` is the zero-th row of :math:`Q` and all the rows are orthonormal], and the expression simplifies further.   </span>
+<span class="sd">    .. math::</span>
+<span class="sd">            \\exp(a A)|v_0\\rangle \\approx Q \\exp(a T) Q^\\dagger |v_0\\rangle = Q V \\mathrm{diag}(e^{a E}) V^T Q^\\dagger |v_0\\rangle.</span>
 
-<span class="sd">	Notes</span>
-<span class="sd">	-----</span>
+<span class="sd">    If we use :math:`|v_0\\rangle` as the (nondegenerate) initial state for the Lanczos algorithm, then :math:`\\sum_{j,k}V^T_{ij}Q^\\dagger_{jk}v_{0,k} = \\sum_{j}V_{ji}\\delta_{0,j} = V_{i,0}` [by construction, :math:`|v_{0}\\rangle` is the zero-th row of :math:`Q` and all the rows are orthonormal], and the expression simplifies further.</span>
 
-<span class="sd">	* uses precomputed Lanczos data `(E,V,Q_T)`, see e.g., `lanczos_full` and `lanczos_iter` functions. </span>
-<span class="sd">	* the initial state `v0` used in `lanczos_full` and `lanczos_iter` is the state the matrix exponential is evaluated on.</span>
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
 
-<span class="sd">	Parameters</span>
-<span class="sd">	-----------</span>
-<span class="sd">	E : (m,) np.ndarray</span>
-<span class="sd">		eigenvalues of Krylov subspace tridiagonal matrix :math:`T`.</span>
-<span class="sd">	V : (m,m) np.ndarray</span>
-<span class="sd">		eigenvectors of Krylov subspace tridiagonal matrix :math:`T`.</span>
-<span class="sd">	Q_T : (m,n) np.ndarray, generator</span>
-<span class="sd">		Matrix containing the `m` Lanczos vectors in the rows. </span>
-<span class="sd">	a : scalar, optional</span>
-<span class="sd">		Scale factor `a` for the generator of the matrix exponential :math:`\\mathrm{exp}(aA)`.</span>
-<span class="sd">	out : (n,) np.ndarray()</span>
-<span class="sd">		Array to store the result in.</span>
-<span class="sd">	</span>
-<span class="sd">	Returns</span>
-<span class="sd">	--------</span>
-<span class="sd">	(n,) np.ndarray</span>
-<span class="sd">		Matrix exponential applied to a state, evaluated using the Lanczos method. </span>
+<span class="sd">    * uses precomputed Lanczos data `(E,V,Q_T)`, see e.g., `lanczos_full` and `lanczos_iter` functions.</span>
+<span class="sd">    * the initial state `v0` used in `lanczos_full` and `lanczos_iter` is the state the matrix exponential is evaluated on.</span>
 
-<span class="sd">	Examples</span>
-<span class="sd">	--------</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    E : (m,) np.ndarray</span>
+<span class="sd">            eigenvalues of Krylov subspace tridiagonal matrix :math:`T`.</span>
+<span class="sd">    V : (m,m) np.ndarray</span>
+<span class="sd">            eigenvectors of Krylov subspace tridiagonal matrix :math:`T`.</span>
+<span class="sd">    Q_T : (m,n) np.ndarray, generator</span>
+<span class="sd">            Matrix containing the `m` Lanczos vectors in the rows.</span>
+<span class="sd">    a : scalar, optional</span>
+<span class="sd">            Scale factor `a` for the generator of the matrix exponential :math:`\\mathrm{exp}(aA)`.</span>
+<span class="sd">    out : (n,) np.ndarray()</span>
+<span class="sd">            Array to store the result in.</span>
 
-<span class="sd">	&gt;&gt;&gt; E, V, Q_T = lanczos_iter(H,v0,20)</span>
-<span class="sd">	&gt;&gt;&gt; expH_v0 = expm_lanczos(E,V,Q_T,a=-1j)</span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    (n,) np.ndarray</span>
+<span class="sd">            Matrix exponential applied to a state, evaluated using the Lanczos method.</span>
 
-<span class="sd">	&quot;&quot;&quot;</span>
-	<span class="n">c</span> <span class="o">=</span> <span class="n">V</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">_np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">a</span><span class="o">*</span><span class="n">E</span><span class="p">)</span><span class="o">*</span><span class="n">V</span><span class="p">[</span><span class="mi">0</span><span class="p">,:])</span> 
-	<span class="k">return</span> <span class="n">lin_comb_Q_T</span><span class="p">(</span><span class="n">c</span><span class="p">,</span><span class="n">Q_T</span><span class="p">,</span><span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+
+<span class="sd">    &gt;&gt;&gt; E, V, Q_T = lanczos_iter(H,v0,20)</span>
+<span class="sd">    &gt;&gt;&gt; expH_v0 = expm_lanczos(E,V,Q_T,a=-1j)</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">c</span> <span class="o">=</span> <span class="n">V</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">_np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">a</span> <span class="o">*</span> <span class="n">E</span><span class="p">)</span> <span class="o">*</span> <span class="n">V</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="p">:])</span>
+    <span class="k">return</span> <span class="n">lin_comb_Q_T</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">Q_T</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
 </pre></div>
 
-            <div class="clearer"></div>
+           </div>
           </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2016, Phillip Weinberg, Markus Schmitt, and Marin Bukov.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
         </div>
       </div>
-      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
-        <div class="sphinxsidebarwrapper">
-<div id="searchbox" style="display: none" role="search">
-  <h3 id="searchlabel">Quick search</h3>
-    <div class="searchformwrapper">
-    <form class="search" action="../../../../search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" />
-      <input type="submit" value="Go" />
-    </form>
-    </div>
-</div>
-<script>$('#searchbox').show(0);</script>
-        </div>
-      </div>
-      <div class="clearer"></div>
-    </div>
-    <div class="related" role="navigation" aria-label="related navigation">
-      <h3>Navigation</h3>
-      <ul>
-        <li class="right" style="margin-right: 10px">
-          <a href="../../../../genindex.html" title="General Index"
-             >index</a></li>
-        <li class="right" >
-          <a href="../../../../py-modindex.html" title="Python Module Index"
-             >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">QuSpin 0.3.7 documentation</a> &#187;</li>
-          <li class="nav-item nav-item-1"><a href="../../../index.html" >Module code</a> &#187;</li>
-        <li class="nav-item nav-item-this"><a href="">quspin.tools.lanczos._expm</a></li> 
-      </ul>
-    </div>
-    <div class="footer" role="contentinfo">
-        &#169; Copyright 2016, Phillip Weinberg, Markus Schmitt and Marin Bukov.
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.5.4.
-    </div>
-  </body>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+    <!-- Theme Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-6885KZ7NH6"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-6885KZ7NH6', {
+          'anonymize_ip': false,
+      });
+    </script> 
+
+</body>
 </html>

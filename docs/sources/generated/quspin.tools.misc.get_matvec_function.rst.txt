@@ -1,4 +1,4 @@
-quspin.tools.misc.get\_matvec\_function
+﻿quspin.tools.misc.get\_matvec\_function
 =======================================
 
 .. currentmodule:: quspin.tools.misc

@@ -1,71 +1,130 @@
-
 <!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-<html>
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><script type="text/javascript">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>quspin.basis.spinful_fermion_basis_1d &mdash; QuSpin 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../static/css/sphinx_rtd_size.css?v=f26ae176" />
+      <link rel="stylesheet" type="text/css" href="../static/css/py_class_property_fix.css?v=faf79ccd" />
 
-      var _gaq = _gaq || [];
-      _gaq.push(['_setAccount', 'UA-110543543-1']);
-      _gaq.push(['_trackPageview']);
-
-      (function() {
-        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-      })();
-    </script>
-    <title>quspin.basis.spinful_fermion_basis_1d &#8212; QuSpin 0.3.7 documentation</title>
-    <link rel="stylesheet" href="../static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="../static/classic.css" type="text/css" />
-    
-    <script id="documentation_options" data-url_root="../" src="../static/documentation_options.js"></script>
-    <script src="../static/jquery.js"></script>
-    <script src="../static/underscore.js"></script>
-    <script src="../static/doctools.js"></script>
-    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    
+  
+  <!--[if lt IE 9]>
+    <script src="../static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../static/jquery.js?v=5d32c60e"></script>
+        <script src="../static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../static/documentation_options.js?v=8d563738"></script>
+        <script src="../static/doctools.js?v=9a2dae69"></script>
+        <script src="../static/sphinx_highlight.js?v=dc90522c"></script>
+        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="../static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="quspin.basis.spin_basis_general" href="quspin.basis.spin_basis_general.html" />
     <link rel="prev" title="quspin.basis.spinless_fermion_basis_1d" href="quspin.basis.spinless_fermion_basis_1d.html" /> 
-  </head><body>
-    <div class="related" role="navigation" aria-label="related navigation">
-      <h3>Navigation</h3>
-      <ul>
-        <li class="right" style="margin-right: 10px">
-          <a href="../genindex.html" title="General Index"
-             accesskey="I">index</a></li>
-        <li class="right" >
-          <a href="../py-modindex.html" title="Python Module Index"
-             >modules</a> |</li>
-        <li class="right" >
-          <a href="quspin.basis.spin_basis_general.html" title="quspin.basis.spin_basis_general"
-             accesskey="N">next</a> |</li>
-        <li class="right" >
-          <a href="quspin.basis.spinless_fermion_basis_1d.html" title="quspin.basis.spinless_fermion_basis_1d"
-             accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.7 documentation</a> &#187;</li>
-          <li class="nav-item nav-item-1"><a href="../basis.html" accesskey="U">Basis module (<code class="xref py py-mod docutils literal notranslate"><span class="pre">quspin.basis</span></code>)</a> &#187;</li>
-        <li class="nav-item nav-item-this"><a href="">quspin.basis.spinful_fermion_basis_1d</a></li> 
-      </ul>
-    </div>  
+</head>
 
-    <div class="document">
-      <div class="documentwrapper">
-        <div class="bodywrapper">
-          <div class="body" role="main">
-            
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            QuSpin
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">QuSpin (public API)</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../basis.html">Basis module (<code class="xref py py-mod docutils literal notranslate"><span class="pre">quspin.basis</span></code>)</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="../basis.html#one-dimensional-symmetries">one-dimensional symmetries</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="quspin.basis.spin_basis_1d.html">quspin.basis.spin_basis_1d</a></li>
+<li class="toctree-l3"><a class="reference internal" href="quspin.basis.boson_basis_1d.html">quspin.basis.boson_basis_1d</a></li>
+<li class="toctree-l3"><a class="reference internal" href="quspin.basis.spinless_fermion_basis_1d.html">quspin.basis.spinless_fermion_basis_1d</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">quspin.basis.spinful_fermion_basis_1d</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#quspin.basis.spinful_fermion_basis_1d"><code class="docutils literal notranslate"><span class="pre">spinful_fermion_basis_1d</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../basis.html#general-lattice-symmetries">general lattice symmetries</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../basis.html#user-basis">user basis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../basis.html#combining-basis-classes">combining basis classes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../basis.html#functions">functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../basis.html#large-integer-support-for-general-basis-classes">large integer support for general basis classes</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../operators.html">Operators module (<code class="xref py py-mod docutils literal notranslate"><span class="pre">quspin.operators</span></code>)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tools.html">Tools module (<code class="xref py py-mod docutils literal notranslate"><span class="pre">quspin.tools</span></code>)</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Installation &amp; Use</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../installation/installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../installation/installation.html#basics-of-command-line-use">Basics of command line use</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../example_scripts.html">Example scripts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../jupyter_notebooks.html">Jupyter notebooks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/parallelization.html">Parallel computing support</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/user_basis.html"><cite>user_basis</cite> tutorial</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Bugs &amp; Questions</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../contribute/report_a_bug.html">Report a bug</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contribute/ask_a_question.html">Ask a question</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">QuSpin</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content style-external-links">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../basis.html">Basis module (<code class="xref py py-mod docutils literal notranslate"><span class="pre">quspin.basis</span></code>)</a></li>
+      <li class="breadcrumb-item active">quspin.basis.spinful_fermion_basis_1d</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../sources/generated/quspin.basis.spinful_fermion_basis_1d.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
   <style> .red {color:#ff0000; font-weight:bold; font-style:italic; } </style>
 <style> .green {color:#00b200; font-weight:bold; font-style:italic; } </style>
 <style> .magenta {color:#FF33F3; font-weight:bold; font-style:italic; } </style>
-<style> .orange {color:#FE8E02; font-weight:bold; font-style:italic; } </style><div class="section" id="quspin-basis-spinful-fermion-basis-1d">
-<h1>quspin.basis.spinful_fermion_basis_1d<a class="headerlink" href="#quspin-basis-spinful-fermion-basis-1d" title="Permalink to this headline">¶</a></h1>
+<style> .orange {color:#FE8E02; font-weight:bold; font-style:italic; } </style><section id="quspin-basis-spinful-fermion-basis-1d">
+<h1>quspin.basis.spinful_fermion_basis_1d<a class="headerlink" href="#quspin-basis-spinful-fermion-basis-1d" title="Link to this heading"></a></h1>
 <dl class="py class">
-<dt id="quspin.basis.spinful_fermion_basis_1d">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">quspin.basis.</span></code><code class="sig-name descname"><span class="pre">spinful_fermion_basis_1d</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">L</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Nf</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nf</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">double_occupancy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">blocks</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/basis/basis_1d/fermion.html#spinful_fermion_basis_1d"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quspin.basis.spinful_fermion_basis_1d" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">quspin.basis.basis_1d.fermion.spinless_fermion_basis_1d</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">quspin.basis.basis_1d.base_1d.basis_1d</span></code></p>
+<dt class="sig sig-object py" id="quspin.basis.spinful_fermion_basis_1d">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">quspin.basis.</span></span><span class="sig-name descname"><span class="pre">spinful_fermion_basis_1d</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">L</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Nf</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nf</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">double_occupancy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">blocks</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/basis/basis_1d/fermion.html#spinful_fermion_basis_1d"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quspin.basis.spinful_fermion_basis_1d" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="quspin.basis.spinless_fermion_basis_1d.html#quspin.basis.spinless_fermion_basis_1d" title="quspin.basis.basis_1d.fermion.spinless_fermion_basis_1d"><code class="xref py py-class docutils literal notranslate"><span class="pre">spinless_fermion_basis_1d</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">basis_1d</span></code></p>
 <p>Constructs basis for spinful fermionic operators in a specified 1-d symmetry sector.</p>
 <p>The supported operator strings for <cite>spinful_fermion_basis_1d</cite> are:</p>
 <div class="math notranslate nohighlight">
@@ -84,71 +143,43 @@
 \[H=-J\sum_{j,\sigma} c^\dagger_{j+1\sigma}c_{j\sigma} + \mathrm{h.c.} - \mu\sum_{j,\sigma} n_{j\sigma} + U \sum_j n_{j\uparrow} n_{j\downarrow}\]</div>
 <p>Notice that the operator strings for constructing Hamiltonians with a <cite>spinful_fermion_basis</cite> object are separated by
 a pipe symbol, ‘|’, while the index array has no splitting pipe character.</p>
-<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
-<span class="normal"> 2</span>
-<span class="normal"> 3</span>
-<span class="normal"> 4</span>
-<span class="normal"> 5</span>
-<span class="normal"> 6</span>
-<span class="normal"> 7</span>
-<span class="normal"> 8</span>
-<span class="normal"> 9</span>
-<span class="normal">10</span>
-<span class="normal">11</span>
-<span class="normal">12</span>
-<span class="normal">13</span>
-<span class="normal">14</span>
-<span class="normal">15</span>
-<span class="normal">16</span>
-<span class="normal">17</span>
-<span class="normal">18</span>
-<span class="normal">19</span>
-<span class="normal">20</span>
-<span class="normal">21</span>
-<span class="normal">22</span>
-<span class="normal">23</span>
-<span class="normal">24</span>
-<span class="normal">25</span>
-<span class="normal">26</span>
-<span class="normal">27</span>
-<span class="normal">28</span>
-<span class="normal">29</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">quspin.operators</span> <span class="kn">import</span> <span class="n">hamiltonian</span> <span class="c1"># Hamiltonians and operators</span>
-<span class="kn">from</span> <span class="nn">quspin.basis</span> <span class="kn">import</span> <span class="n">spinful_fermion_basis_1d</span> <span class="c1"># Hilbert space spinful fermion basis</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span> <span class="c1"># generic math functions</span>
-<span class="c1">#</span>
-<span class="c1">##### define model parameters #####</span>
-<span class="n">L</span><span class="o">=</span><span class="mi">6</span> <span class="c1"># system size</span>
-<span class="n">J</span><span class="o">=</span><span class="mf">1.0</span> <span class="c1"># hopping strength</span>
-<span class="n">U</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span> <span class="c1"># onsite interaction strength</span>
-<span class="c1">#</span>
-<span class="c1">##### construct basis at half-filling in the 0-total momentum and +1-spin flip sector</span>
-<span class="n">basis</span><span class="o">=</span><span class="n">spinful_fermion_basis_1d</span><span class="p">(</span><span class="n">L</span><span class="o">=</span><span class="n">L</span><span class="p">,</span><span class="n">Nf</span><span class="o">=</span><span class="p">(</span><span class="n">L</span><span class="o">//</span><span class="mi">2</span><span class="p">,</span><span class="n">L</span><span class="o">//</span><span class="mi">2</span><span class="p">),</span><span class="n">a</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">kblock</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">sblock</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">basis</span><span class="p">)</span>
-<span class="c1">#</span>
-<span class="c1">##### define PBC site-coupling lists for operators</span>
-<span class="c1"># define site-coupling lists</span>
-<span class="n">hop_right</span> <span class="o">=</span> <span class="p">[[</span><span class="o">-</span><span class="n">J</span><span class="p">,</span><span class="n">i</span><span class="p">,(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">%</span><span class="n">L</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">L</span><span class="p">)]</span> <span class="c1"># hopping to the right PBC</span>
-<span class="n">hop_left</span> <span class="o">=</span> <span class="p">[[</span><span class="n">J</span><span class="p">,</span><span class="n">i</span><span class="p">,(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">%</span><span class="n">L</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">L</span><span class="p">)]</span> <span class="c1"># hopping to the left PBC</span>
-<span class="n">int_list</span> <span class="o">=</span> <span class="p">[[</span><span class="n">U</span><span class="p">,</span><span class="n">i</span><span class="p">,</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">L</span><span class="p">)]</span> <span class="c1"># onsite interaction</span>
-<span class="c1"># static and dynamic lists</span>
-<span class="n">static</span><span class="o">=</span> <span class="p">[</span>	
-		<span class="p">[</span><span class="s2">&quot;+-|&quot;</span><span class="p">,</span> <span class="n">hop_left</span><span class="p">],</span> <span class="c1"># up hop left</span>
-		<span class="p">[</span><span class="s2">&quot;-+|&quot;</span><span class="p">,</span> <span class="n">hop_right</span><span class="p">],</span> <span class="c1"># up hop right</span>
-		<span class="p">[</span><span class="s2">&quot;|+-&quot;</span><span class="p">,</span> <span class="n">hop_left</span><span class="p">],</span> <span class="c1"># down hop left</span>
-		<span class="p">[</span><span class="s2">&quot;|-+&quot;</span><span class="p">,</span> <span class="n">hop_right</span><span class="p">],</span> <span class="c1"># down hop right</span>
-		<span class="p">[</span><span class="s2">&quot;n|n&quot;</span><span class="p">,</span> <span class="n">int_list</span><span class="p">],</span> <span class="c1"># onsite interaction</span>
-		<span class="p">]</span>
-<span class="n">dynamic</span><span class="o">=</span><span class="p">[]</span>
-<span class="c1">###### construct Hamiltonian</span>
-<span class="n">H</span><span class="o">=</span><span class="n">hamiltonian</span><span class="p">(</span><span class="n">static</span><span class="p">,</span><span class="n">dynamic</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">,</span><span class="n">basis</span><span class="o">=</span><span class="n">basis</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="kn">from</span> <span class="nn">quspin.basis</span> <span class="kn">import</span> <span class="n">spinful_fermion_basis_1d</span>  <span class="c1"># Hilbert space spinful fermion basis</span>
+<span class="linenos"> 2</span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>  <span class="c1"># generic math functions</span>
+<span class="linenos"> 3</span>
+<span class="linenos"> 4</span><span class="c1">#</span>
+<span class="linenos"> 5</span><span class="c1">##### define model parameters #####</span>
+<span class="linenos"> 6</span><span class="n">L</span> <span class="o">=</span> <span class="mi">6</span>  <span class="c1"># system size</span>
+<span class="linenos"> 7</span><span class="n">J</span> <span class="o">=</span> <span class="mf">1.0</span>  <span class="c1"># hopping strength</span>
+<span class="linenos"> 8</span><span class="n">U</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>  <span class="c1"># onsite interaction strength</span>
+<span class="linenos"> 9</span><span class="c1">#</span>
+<span class="linenos">10</span><span class="c1">##### construct basis at half-filling in the 0-total momentum and +1-spin flip sector</span>
+<span class="linenos">11</span><span class="n">basis</span> <span class="o">=</span> <span class="n">spinful_fermion_basis_1d</span><span class="p">(</span><span class="n">L</span><span class="o">=</span><span class="n">L</span><span class="p">,</span> <span class="n">Nf</span><span class="o">=</span><span class="p">(</span><span class="n">L</span> <span class="o">//</span> <span class="mi">2</span><span class="p">,</span> <span class="n">L</span> <span class="o">//</span> <span class="mi">2</span><span class="p">),</span> <span class="n">a</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">kblock</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">sblock</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="linenos">12</span><span class="nb">print</span><span class="p">(</span><span class="n">basis</span><span class="p">)</span>
+<span class="linenos">13</span><span class="c1">#</span>
+<span class="linenos">14</span><span class="c1">##### define PBC site-coupling lists for operators</span>
+<span class="linenos">15</span><span class="c1"># define site-coupling lists</span>
+<span class="linenos">16</span><span class="n">hop_right</span> <span class="o">=</span> <span class="p">[[</span><span class="o">-</span><span class="n">J</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">%</span> <span class="n">L</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">L</span><span class="p">)]</span>  <span class="c1"># hopping to the right PBC</span>
+<span class="linenos">17</span><span class="n">hop_left</span> <span class="o">=</span> <span class="p">[[</span><span class="n">J</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">%</span> <span class="n">L</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">L</span><span class="p">)]</span>  <span class="c1"># hopping to the left PBC</span>
+<span class="linenos">18</span><span class="n">int_list</span> <span class="o">=</span> <span class="p">[[</span><span class="n">U</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">L</span><span class="p">)]</span>  <span class="c1"># onsite interaction</span>
+<span class="linenos">19</span><span class="c1"># static and dynamic lists</span>
+<span class="linenos">20</span><span class="n">static</span> <span class="o">=</span> <span class="p">[</span>
+<span class="linenos">21</span>    <span class="p">[</span><span class="s2">&quot;+-|&quot;</span><span class="p">,</span> <span class="n">hop_left</span><span class="p">],</span>  <span class="c1"># up hop left</span>
+<span class="linenos">22</span>    <span class="p">[</span><span class="s2">&quot;-+|&quot;</span><span class="p">,</span> <span class="n">hop_right</span><span class="p">],</span>  <span class="c1"># up hop right</span>
+<span class="linenos">23</span>    <span class="p">[</span><span class="s2">&quot;|+-&quot;</span><span class="p">,</span> <span class="n">hop_left</span><span class="p">],</span>  <span class="c1"># down hop left</span>
+<span class="linenos">24</span>    <span class="p">[</span><span class="s2">&quot;|-+&quot;</span><span class="p">,</span> <span class="n">hop_right</span><span class="p">],</span>  <span class="c1"># down hop right</span>
+<span class="linenos">25</span>    <span class="p">[</span><span class="s2">&quot;n|n&quot;</span><span class="p">,</span> <span class="n">int_list</span><span class="p">],</span>  <span class="c1"># onsite interaction</span>
+<span class="linenos">26</span><span class="p">]</span>
+<span class="linenos">27</span><span class="n">dynamic</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="linenos">28</span><span class="c1">###### construct Hamiltonian</span>
+<span class="linenos">29</span><span class="n">H</span> <span class="o">=</span> <span class="n">hamiltonian</span><span class="p">(</span><span class="n">static</span><span class="p">,</span> <span class="n">dynamic</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">,</span> <span class="n">basis</span><span class="o">=</span><span class="n">basis</span><span class="p">)</span>
 </pre></div>
-</td></tr></table></div>
+</div>
 <dl class="py method">
-<dt id="quspin.basis.spinful_fermion_basis_1d.__init__">
-<code class="sig-name descname"><span class="pre">__init__</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">L</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Nf</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nf</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">double_occupancy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">blocks</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/basis/basis_1d/fermion.html#spinful_fermion_basis_1d.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quspin.basis.spinful_fermion_basis_1d.__init__" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="quspin.basis.spinful_fermion_basis_1d.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">L</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Nf</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nf</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">double_occupancy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">blocks</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/basis/basis_1d/fermion.html#spinful_fermion_basis_1d.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quspin.basis.spinful_fermion_basis_1d.__init__" title="Link to this definition"></a></dt>
 <dd><p>Intializes the <cite>fermion_basis_1d</cite> object (basis for fermionic operators).</p>
 <dl class="field-list">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl>
 <dt><strong>L: int</strong></dt><dd><p>Length of chain/number of sites.</p>
 </dd>
@@ -175,11 +206,7 @@ entry refers to spin-down.</p>
 </dd></dl>
 
 <p class="rubric">Methods</p>
-<table class="longtable docutils align-default">
-<colgroup>
-<col style="width: 10%" />
-<col style="width: 90%" />
-</colgroup>
+<table class="autosummary longtable docutils align-default">
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#quspin.basis.spinful_fermion_basis_1d.Op" title="quspin.basis.spinful_fermion_basis_1d.Op"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Op</span></code></a>(opstr, indx, J, dtype)</p></td>
 <td><p>Constructs operator from a site-coupling list and an operator string in a lattice basis.</p></td>
@@ -196,11 +223,11 @@ entry refers to spin-down.</p>
 <tr class="row-odd"><td><p><a class="reference internal" href="#quspin.basis.spinful_fermion_basis_1d.check_symm" title="quspin.basis.spinful_fermion_basis_1d.check_symm"><code class="xref py py-obj docutils literal notranslate"><span class="pre">check_symm</span></code></a>(static, dynamic)</p></td>
 <td><p>Checks operator string lists for the required symmetries of the combined operator.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#quspin.basis.spinful_fermion_basis_1d.ent_entropy" title="quspin.basis.spinful_fermion_basis_1d.ent_entropy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ent_entropy</span></code></a>(state[, sub_sys_A, density, …])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#quspin.basis.spinful_fermion_basis_1d.ent_entropy" title="quspin.basis.spinful_fermion_basis_1d.ent_entropy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ent_entropy</span></code></a>(state[, sub_sys_A, density, ...])</p></td>
 <td><p>Calculates entanglement entropy of subsystem A and the corresponding reduced density matrix</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#quspin.basis.spinful_fermion_basis_1d.expanded_form" title="quspin.basis.spinful_fermion_basis_1d.expanded_form"><code class="xref py py-obj docutils literal notranslate"><span class="pre">expanded_form</span></code></a>([static, dynamic])</p></td>
-<td><p>Splits up operator strings containing “x” and “y” into operator combinations of “+” and “-“.</p></td>
+<td><p>Splits up operator strings containing &quot;x&quot; and &quot;y&quot; into operator combinations of &quot;+&quot; and &quot;-&quot;.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#quspin.basis.spinful_fermion_basis_1d.get_proj" title="quspin.basis.spinful_fermion_basis_1d.get_proj"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_proj</span></code></a>(dtype[, pcon])</p></td>
 <td><p>Calculates transformation/projector from symmetry-reduced basis to full (symmetry-free) basis.</p></td>
@@ -211,13 +238,13 @@ entry refers to spin-down.</p>
 <tr class="row-even"><td><p><a class="reference internal" href="#quspin.basis.spinful_fermion_basis_1d.index" title="quspin.basis.spinful_fermion_basis_1d.index"><code class="xref py py-obj docutils literal notranslate"><span class="pre">index</span></code></a>(up_state, down_state)</p></td>
 <td><p>Finds the index of user-defined Fock state in spinful fermion basis.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#quspin.basis.spinful_fermion_basis_1d.inplace_Op" title="quspin.basis.spinful_fermion_basis_1d.inplace_Op"><code class="xref py py-obj docutils literal notranslate"><span class="pre">inplace_Op</span></code></a>(v_in, op_list, dtype[, …])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#quspin.basis.spinful_fermion_basis_1d.inplace_Op" title="quspin.basis.spinful_fermion_basis_1d.inplace_Op"><code class="xref py py-obj docutils literal notranslate"><span class="pre">inplace_Op</span></code></a>(v_in, op_list, dtype[, ...])</p></td>
 <td><p>Calculates the action of an operator on a state.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#quspin.basis.spinful_fermion_basis_1d.int_to_state" title="quspin.basis.spinful_fermion_basis_1d.int_to_state"><code class="xref py py-obj docutils literal notranslate"><span class="pre">int_to_state</span></code></a>(state[, bracket_notation])</p></td>
 <td><p>Finds string representation of a state defined in integer representation.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#quspin.basis.spinful_fermion_basis_1d.partial_trace" title="quspin.basis.spinful_fermion_basis_1d.partial_trace"><code class="xref py py-obj docutils literal notranslate"><span class="pre">partial_trace</span></code></a>(state[, sub_sys_A, density, …])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#quspin.basis.spinful_fermion_basis_1d.partial_trace" title="quspin.basis.spinful_fermion_basis_1d.partial_trace"><code class="xref py py-obj docutils literal notranslate"><span class="pre">partial_trace</span></code></a>(state[, sub_sys_A, density, ...])</p></td>
 <td><p>Calculates reduced density matrix, through a partial trace of a quantum state in a lattice <cite>basis</cite>.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#quspin.basis.spinful_fermion_basis_1d.project_from" title="quspin.basis.spinful_fermion_basis_1d.project_from"><code class="xref py py-obj docutils literal notranslate"><span class="pre">project_from</span></code></a>(v0[, sparse, pcon])</p></td>
@@ -229,11 +256,7 @@ entry refers to spin-down.</p>
 </tbody>
 </table>
 <p class="rubric">Attributes</p>
-<table class="longtable docutils align-default">
-<colgroup>
-<col style="width: 10%" />
-<col style="width: 90%" />
-</colgroup>
+<table class="autosummary longtable docutils align-default">
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#quspin.basis.spinful_fermion_basis_1d.L" title="quspin.basis.spinful_fermion_basis_1d.L"><code class="xref py py-obj docutils literal notranslate"><span class="pre">L</span></code></a></p></td>
 <td><p>length of lattice.</p></td>
@@ -267,45 +290,45 @@ entry refers to spin-down.</p>
 </tr>
 </tbody>
 </table>
-<dl class="py method">
-<dt id="quspin.basis.spinful_fermion_basis_1d.L">
-<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">L</span></code><a class="headerlink" href="#quspin.basis.spinful_fermion_basis_1d.L" title="Permalink to this definition">¶</a></dt>
+<dl class="py property">
+<dt class="sig sig-object py" id="quspin.basis.spinful_fermion_basis_1d.L">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">L</span></span><a class="headerlink" href="#quspin.basis.spinful_fermion_basis_1d.L" title="Link to this definition"></a></dt>
 <dd><p>length of lattice.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Type</dt>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>int</p>
 </dd>
 </dl>
 </dd></dl>
 
-<dl class="py method">
-<dt id="quspin.basis.spinful_fermion_basis_1d.N">
-<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">N</span></code><a class="headerlink" href="#quspin.basis.spinful_fermion_basis_1d.N" title="Permalink to this definition">¶</a></dt>
+<dl class="py property">
+<dt class="sig sig-object py" id="quspin.basis.spinful_fermion_basis_1d.N">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">N</span></span><a class="headerlink" href="#quspin.basis.spinful_fermion_basis_1d.N" title="Link to this definition"></a></dt>
 <dd><p>Total number of sites (spin-up + spin-down) the basis is constructed with; <cite>N=2L</cite>.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Type</dt>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>int</p>
 </dd>
 </dl>
 </dd></dl>
 
-<dl class="py method">
-<dt id="quspin.basis.spinful_fermion_basis_1d.Ns">
-<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">Ns</span></code><a class="headerlink" href="#quspin.basis.spinful_fermion_basis_1d.Ns" title="Permalink to this definition">¶</a></dt>
+<dl class="py property">
+<dt class="sig sig-object py" id="quspin.basis.spinful_fermion_basis_1d.Ns">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Ns</span></span><a class="headerlink" href="#quspin.basis.spinful_fermion_basis_1d.Ns" title="Link to this definition"></a></dt>
 <dd><p>number of states in the Hilbert space.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Type</dt>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>int</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
-<dt id="quspin.basis.spinful_fermion_basis_1d.Op">
-<code class="sig-name descname"><span class="pre">Op</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">opstr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">indx</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">J</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quspin.basis.spinful_fermion_basis_1d.Op" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="quspin.basis.spinful_fermion_basis_1d.Op">
+<span class="sig-name descname"><span class="pre">Op</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">opstr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">indx</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">J</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quspin.basis.spinful_fermion_basis_1d.Op" title="Link to this definition"></a></dt>
 <dd><p>Constructs operator from a site-coupling list and an operator string in a lattice basis.</p>
 <dl class="field-list">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl>
 <dt><strong>opstr</strong><span class="classifier">str</span></dt><dd><p>Operator string in the lattice basis format. For instance:</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">opstr</span> <span class="o">=</span> <span class="s2">&quot;zz&quot;</span>
@@ -323,7 +346,7 @@ entry refers to spin-down.</p>
 </dd>
 </dl>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><dl class="simple">
 <dt>tuple</dt><dd><dl class="simple">
 <dt><cite>(ME,row,col)</cite>, where</dt><dd><ul class="simple">
@@ -355,23 +378,23 @@ entry refers to spin-down.</p>
 </div>
 </dd></dl>
 
-<dl class="py method">
-<dt id="quspin.basis.spinful_fermion_basis_1d.blocks">
-<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">blocks</span></code><a class="headerlink" href="#quspin.basis.spinful_fermion_basis_1d.blocks" title="Permalink to this definition">¶</a></dt>
+<dl class="py property">
+<dt class="sig sig-object py" id="quspin.basis.spinful_fermion_basis_1d.blocks">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">blocks</span></span><a class="headerlink" href="#quspin.basis.spinful_fermion_basis_1d.blocks" title="Link to this definition"></a></dt>
 <dd><p>contains the quantum numbers (blocks) for the symmetry sectors.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Type</dt>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>dict</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
-<dt id="quspin.basis.spinful_fermion_basis_1d.check_hermitian">
-<code class="sig-name descname"><span class="pre">check_hermitian</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">static</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dynamic</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quspin.basis.spinful_fermion_basis_1d.check_hermitian" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="quspin.basis.spinful_fermion_basis_1d.check_hermitian">
+<span class="sig-name descname"><span class="pre">check_hermitian</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">static</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dynamic</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quspin.basis.spinful_fermion_basis_1d.check_hermitian" title="Link to this definition"></a></dt>
 <dd><p>Checks operator string lists for hermiticity of the combined operator.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
 <dt><strong>static: list</strong></dt><dd><p>Static operators formatted to be passed into the static argument of the <cite>hamiltonian</cite> class.</p>
 </dd>
@@ -383,11 +406,11 @@ entry refers to spin-down.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="quspin.basis.spinful_fermion_basis_1d.check_pcon">
-<code class="sig-name descname"><span class="pre">check_pcon</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">static</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dynamic</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quspin.basis.spinful_fermion_basis_1d.check_pcon" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="quspin.basis.spinful_fermion_basis_1d.check_pcon">
+<span class="sig-name descname"><span class="pre">check_pcon</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">static</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dynamic</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quspin.basis.spinful_fermion_basis_1d.check_pcon" title="Link to this definition"></a></dt>
 <dd><p>Checks operator string lists for particle number (magnetisation) conservartion of the combined operator.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
 <dt><strong>static: list</strong></dt><dd><p>Static operators formatted to be passed into the static argument of the <cite>hamiltonian</cite> class.</p>
 </dd>
@@ -399,11 +422,11 @@ entry refers to spin-down.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="quspin.basis.spinful_fermion_basis_1d.check_symm">
-<code class="sig-name descname"><span class="pre">check_symm</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">static</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dynamic</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quspin.basis.spinful_fermion_basis_1d.check_symm" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="quspin.basis.spinful_fermion_basis_1d.check_symm">
+<span class="sig-name descname"><span class="pre">check_symm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">static</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dynamic</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quspin.basis.spinful_fermion_basis_1d.check_symm" title="Link to this definition"></a></dt>
 <dd><p>Checks operator string lists for the required symmetries of the combined operator.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
 <dt><strong>static: list</strong></dt><dd><p>Static operators formatted to be passed into the static argument of the <cite>hamiltonian</cite> class.</p>
 </dd>
@@ -414,34 +437,34 @@ entry refers to spin-down.</p>
 </dl>
 </dd></dl>
 
-<dl class="py method">
-<dt id="quspin.basis.spinful_fermion_basis_1d.description">
-<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">description</span></code><a class="headerlink" href="#quspin.basis.spinful_fermion_basis_1d.description" title="Permalink to this definition">¶</a></dt>
+<dl class="py property">
+<dt class="sig sig-object py" id="quspin.basis.spinful_fermion_basis_1d.description">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">description</span></span><a class="headerlink" href="#quspin.basis.spinful_fermion_basis_1d.description" title="Link to this definition"></a></dt>
 <dd><p>information about <cite>basis</cite> object.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Type</dt>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>str</p>
 </dd>
 </dl>
 </dd></dl>
 
-<dl class="py method">
-<dt id="quspin.basis.spinful_fermion_basis_1d.dtype">
-<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">dtype</span></code><a class="headerlink" href="#quspin.basis.spinful_fermion_basis_1d.dtype" title="Permalink to this definition">¶</a></dt>
+<dl class="py property">
+<dt class="sig sig-object py" id="quspin.basis.spinful_fermion_basis_1d.dtype">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">dtype</span></span><a class="headerlink" href="#quspin.basis.spinful_fermion_basis_1d.dtype" title="Link to this definition"></a></dt>
 <dd><p>data type of basis state integers.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Type</dt>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>numpy.dtype</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
-<dt id="quspin.basis.spinful_fermion_basis_1d.ent_entropy">
-<code class="sig-name descname"><span class="pre">ent_entropy</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sub_sys_A</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">density</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">subsys_ordering</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_rdm</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">enforce_pure</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_rdm_EVs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sparse</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sparse_diag</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maxiter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">svd_solver</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">svd_kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/basis/basis_1d/fermion.html#spinful_fermion_basis_1d.ent_entropy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quspin.basis.spinful_fermion_basis_1d.ent_entropy" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="quspin.basis.spinful_fermion_basis_1d.ent_entropy">
+<span class="sig-name descname"><span class="pre">ent_entropy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sub_sys_A</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">density</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">subsys_ordering</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_rdm</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">enforce_pure</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_rdm_EVs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sparse</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sparse_diag</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maxiter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">svd_solver</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">svd_kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/basis/basis_1d/fermion.html#spinful_fermion_basis_1d.ent_entropy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quspin.basis.spinful_fermion_basis_1d.ent_entropy" title="Link to this definition"></a></dt>
 <dd><p>Calculates entanglement entropy of subsystem A and the corresponding reduced density matrix</p>
 <dl class="field-list">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl>
 <dt><strong>state</strong><span class="classifier">obj</span></dt><dd><p>State of the quantum system. Can be either one of:</p>
 <blockquote>
@@ -482,11 +505,11 @@ the spectrum of <cite>rdm_A</cite> is returned by default. Default is <cite>Fals
 <p><strong>Note:</strong> The logarithm used is the natural logarithm (base e).</p>
 </dd>
 <dt><strong>sparse_diag</strong><span class="classifier">bool, optional</span></dt><dd><p>When <cite>sparse=True</cite>, this flag enforces the use of
-<a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/generated/scipy.sparse.linalg.eigsh.html">scipy.sparse.linalg.eigsh()</a>
+<a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.linalg.eigsh.html">scipy.sparse.linalg.eigsh()</a>
 to calculate the eigenvaues of the reduced DM.</p>
 </dd>
 <dt><strong>maxiter</strong><span class="classifier">int, optional</span></dt><dd><p>Specifies the number of iterations for Lanczos diagonalisation. Look up documentation for
-<a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/generated/scipy.sparse.linalg.eigsh.html">scipy.sparse.linalg.eigsh()</a>.</p>
+<a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.linalg.eigsh.html">scipy.sparse.linalg.eigsh()</a>.</p>
 </dd>
 <dt><strong>svd_solver</strong><span class="classifier">object, optional</span></dt><dd><p>Specifies the svd solver to be used, e.g. <cite>numpy.linalg.svd</cite> or <cite>scipy.linalg.svd</cite>, or a custom solver. Effective when <cite>enforce_pure=True</cite> or <cite>sparse=False</cite>.</p>
 </dd>
@@ -494,7 +517,7 @@ to calculate the eigenvaues of the reduced DM.</p>
 </dd>
 </dl>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><dl class="simple">
 <dt>dict</dt><dd><dl class="simple">
 <dt>Dictionary with following keys, depending on input parameters:</dt><dd><ul class="simple">
@@ -525,11 +548,11 @@ to calculate the eigenvaues of the reduced DM.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="quspin.basis.spinful_fermion_basis_1d.expanded_form">
-<code class="sig-name descname"><span class="pre">expanded_form</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">static</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dynamic</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quspin.basis.spinful_fermion_basis_1d.expanded_form" title="Permalink to this definition">¶</a></dt>
-<dd><p>Splits up operator strings containing “x” and “y” into operator combinations of “+” and “-“. This function is useful for higher spin hamiltonians where “x” and “y” operators are not appropriate operators.</p>
+<dt class="sig sig-object py" id="quspin.basis.spinful_fermion_basis_1d.expanded_form">
+<span class="sig-name descname"><span class="pre">expanded_form</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">static</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dynamic</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quspin.basis.spinful_fermion_basis_1d.expanded_form" title="Link to this definition"></a></dt>
+<dd><p>Splits up operator strings containing “x” and “y” into operator combinations of “+” and “-”. This function is useful for higher spin hamiltonians where “x” and “y” operators are not appropriate operators.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
 <dt><strong>static: list</strong></dt><dd><p>Static operators formatted to be passed into the static argument of the <cite>hamiltonian</cite> class.</p>
 </dd>
@@ -537,17 +560,17 @@ to calculate the eigenvaues of the reduced DM.</p>
 </dd>
 </dl>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><dl class="simple">
 <dt>tuple</dt><dd><dl class="simple">
 <dt><cite>(static, dynamic)</cite>, where</dt><dd><ul class="simple">
 <li><dl class="simple">
-<dt>list: <cite>static</cite>: operator strings with “x” and “y” expanded into “+” and “-“, formatted to</dt><dd><p>be passed into the static argument of the <cite>hamiltonian</cite> class.</p>
+<dt>list: <cite>static</cite>: operator strings with “x” and “y” expanded into “+” and “-”, formatted to</dt><dd><p>be passed into the static argument of the <cite>hamiltonian</cite> class.</p>
 </dd>
 </dl>
 </li>
 <li><dl class="simple">
-<dt>list: <cite>dynamic</cite>: operator strings with “x” and “y” expanded into “+” and “-“, formatted to</dt><dd><p>be passed into the dynamic argument of the <cite>hamiltonian</cite> class.</p>
+<dt>list: <cite>dynamic</cite>: operator strings with “x” and “y” expanded into “+” and “-”, formatted to</dt><dd><p>be passed into the dynamic argument of the <cite>hamiltonian</cite> class.</p>
 </dd>
 </dl>
 </li>
@@ -569,11 +592,11 @@ to calculate the eigenvaues of the reduced DM.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="quspin.basis.spinful_fermion_basis_1d.get_proj">
-<code class="sig-name descname"><span class="pre">get_proj</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dtype</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pcon</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quspin.basis.spinful_fermion_basis_1d.get_proj" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="quspin.basis.spinful_fermion_basis_1d.get_proj">
+<span class="sig-name descname"><span class="pre">get_proj</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dtype</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pcon</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quspin.basis.spinful_fermion_basis_1d.get_proj" title="Link to this definition"></a></dt>
 <dd><p>Calculates transformation/projector from symmetry-reduced basis to full (symmetry-free) basis.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
 <dt><strong>dtype</strong><span class="classifier">‘type’</span></dt><dd><p>Data type (e.g. numpy.float64) to construct the projector with.</p>
 </dd>
@@ -584,7 +607,7 @@ to calculate the eigenvaues of the reduced DM.</p>
 </dd>
 </dl>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><dl class="simple">
 <dt>scipy.sparse.csc_matrix</dt><dd><p>Transformation/projector between the symmetry-reduced and the full basis.</p>
 </dd>
@@ -602,19 +625,19 @@ in a straightforward manner.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="quspin.basis.spinful_fermion_basis_1d.get_vec">
-<code class="sig-name descname"><span class="pre">get_vec</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">v0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sparse</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pcon</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quspin.basis.spinful_fermion_basis_1d.get_vec" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="quspin.basis.spinful_fermion_basis_1d.get_vec">
+<span class="sig-name descname"><span class="pre">get_vec</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">v0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sparse</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pcon</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quspin.basis.spinful_fermion_basis_1d.get_vec" title="Link to this definition"></a></dt>
 <dd><p>DEPRECATED (cf <cite>project_from</cite>). Transforms state from symmetry-reduced basis to full (symmetry-free) basis.</p>
 <p class="rubric">Notes</p>
 <p>This function is <span class="red">deprecated</span>. Use <cite>project_from()</cite> instead (the inverse function, <cite>project_to()</cite>, is currently available in the <cite>basis_general</cite> classes only).</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="quspin.basis.spinful_fermion_basis_1d.index">
-<code class="sig-name descname"><span class="pre">index</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">up_state</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">down_state</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/basis/basis_1d/fermion.html#spinful_fermion_basis_1d.index"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quspin.basis.spinful_fermion_basis_1d.index" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="quspin.basis.spinful_fermion_basis_1d.index">
+<span class="sig-name descname"><span class="pre">index</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">up_state</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">down_state</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/basis/basis_1d/fermion.html#spinful_fermion_basis_1d.index"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quspin.basis.spinful_fermion_basis_1d.index" title="Link to this definition"></a></dt>
 <dd><p>Finds the index of user-defined Fock state in spinful fermion basis.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
 <dt><strong>up_state</strong><span class="classifier">str</span></dt><dd><p>string which define the Fock state for the spin up fermions.</p>
 </dd>
@@ -622,7 +645,7 @@ in a straightforward manner.</p>
 </dd>
 </dl>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><dl class="simple">
 <dt>int</dt><dd><p>Position of the Fock state in the <cite>spinful_fermion_basis_1d</cite>.</p>
 </dd>
@@ -641,11 +664,11 @@ by <cite>index()</cite>.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="quspin.basis.spinful_fermion_basis_1d.inplace_Op">
-<code class="sig-name descname"><span class="pre">inplace_Op</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">v_in</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">op_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transposed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">conjugated</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">a</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">v_out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quspin.basis.spinful_fermion_basis_1d.inplace_Op" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="quspin.basis.spinful_fermion_basis_1d.inplace_Op">
+<span class="sig-name descname"><span class="pre">inplace_Op</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">v_in</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">op_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transposed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">conjugated</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">a</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">v_out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quspin.basis.spinful_fermion_basis_1d.inplace_Op" title="Link to this definition"></a></dt>
 <dd><p>Calculates the action of an operator on a state.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
 <dt><strong>v_in</strong><span class="classifier">array_like</span></dt><dd><p>state (or states stored in columns) to act on with the operator.</p>
 </dd>
@@ -663,7 +686,7 @@ by <cite>index()</cite>.</p>
 </dd>
 </dl>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><dl class="simple">
 <dt>numpy.ndarray</dt><dd><ul class="simple">
 <li><p>if <cite>v_out</cite> is not <cite>None</cite>, this function modifies <cite>v_out</cite> inplace and returns it.</p></li>
@@ -686,11 +709,11 @@ by <cite>index()</cite>.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="quspin.basis.spinful_fermion_basis_1d.int_to_state">
-<code class="sig-name descname"><span class="pre">int_to_state</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bracket_notation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/basis/basis_1d/fermion.html#spinful_fermion_basis_1d.int_to_state"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quspin.basis.spinful_fermion_basis_1d.int_to_state" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="quspin.basis.spinful_fermion_basis_1d.int_to_state">
+<span class="sig-name descname"><span class="pre">int_to_state</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bracket_notation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/basis/basis_1d/fermion.html#spinful_fermion_basis_1d.int_to_state"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quspin.basis.spinful_fermion_basis_1d.int_to_state" title="Link to this definition"></a></dt>
 <dd><p>Finds string representation of a state defined in integer representation.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
 <dt><strong>state</strong><span class="classifier">int</span></dt><dd><p>Defines the Fock state in integer representation in underlying lattice <cite>basis</cite>.</p>
 </dd>
@@ -698,7 +721,7 @@ by <cite>index()</cite>.</p>
 </dd>
 </dl>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><dl class="simple">
 <dt>str</dt><dd><p>String corresponding to the Fock <cite>state</cite> in the lattice basis.</p>
 </dd>
@@ -715,34 +738,34 @@ by <cite>index()</cite>.</p>
 </div>
 </dd></dl>
 
-<dl class="py method">
-<dt id="quspin.basis.spinful_fermion_basis_1d.noncommuting_bits">
-<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">noncommuting_bits</span></code><a class="headerlink" href="#quspin.basis.spinful_fermion_basis_1d.noncommuting_bits" title="Permalink to this definition">¶</a></dt>
+<dl class="py property">
+<dt class="sig sig-object py" id="quspin.basis.spinful_fermion_basis_1d.noncommuting_bits">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">noncommuting_bits</span></span><a class="headerlink" href="#quspin.basis.spinful_fermion_basis_1d.noncommuting_bits" title="Link to this definition"></a></dt>
 <dd><p>list of bits that represent sites that do not commute along with the phase required from commuting sites</p>
 <dl class="field-list simple">
-<dt class="field-odd">Type</dt>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>list</p>
 </dd>
 </dl>
 </dd></dl>
 
-<dl class="py method">
-<dt id="quspin.basis.spinful_fermion_basis_1d.operators">
-<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">operators</span></code><a class="headerlink" href="#quspin.basis.spinful_fermion_basis_1d.operators" title="Permalink to this definition">¶</a></dt>
+<dl class="py property">
+<dt class="sig sig-object py" id="quspin.basis.spinful_fermion_basis_1d.operators">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">operators</span></span><a class="headerlink" href="#quspin.basis.spinful_fermion_basis_1d.operators" title="Link to this definition"></a></dt>
 <dd><p>set of available operator strings.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Type</dt>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>set</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
-<dt id="quspin.basis.spinful_fermion_basis_1d.partial_trace">
-<code class="sig-name descname"><span class="pre">partial_trace</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sub_sys_A</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">density</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">subsys_ordering</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_rdm</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">enforce_pure</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_rdm_EVs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sparse</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sparse_diag</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maxiter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/basis/basis_1d/fermion.html#spinful_fermion_basis_1d.partial_trace"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quspin.basis.spinful_fermion_basis_1d.partial_trace" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="quspin.basis.spinful_fermion_basis_1d.partial_trace">
+<span class="sig-name descname"><span class="pre">partial_trace</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sub_sys_A</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">density</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">subsys_ordering</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_rdm</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">enforce_pure</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_rdm_EVs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sparse</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sparse_diag</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maxiter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/basis/basis_1d/fermion.html#spinful_fermion_basis_1d.partial_trace"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quspin.basis.spinful_fermion_basis_1d.partial_trace" title="Link to this definition"></a></dt>
 <dd><p>Calculates reduced density matrix, through a partial trace of a quantum state in a lattice <cite>basis</cite>.</p>
 <dl class="field-list">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl>
 <dt><strong>state</strong><span class="classifier">obj</span></dt><dd><p>State of the quantum system. Can be either one of:</p>
 <blockquote>
@@ -775,7 +798,7 @@ it is a square array. Default is <cite>False</cite>.</p>
 </dd>
 </dl>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><dl class="simple">
 <dt>numpy.ndarray</dt><dd><p>Density matrix associated with <cite>state</cite>. Depends on optional arguments.</p>
 </dd>
@@ -793,11 +816,11 @@ it is a square array. Default is <cite>False</cite>.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="quspin.basis.spinful_fermion_basis_1d.project_from">
-<code class="sig-name descname"><span class="pre">project_from</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">v0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sparse</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pcon</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quspin.basis.spinful_fermion_basis_1d.project_from" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="quspin.basis.spinful_fermion_basis_1d.project_from">
+<span class="sig-name descname"><span class="pre">project_from</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">v0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sparse</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pcon</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quspin.basis.spinful_fermion_basis_1d.project_from" title="Link to this definition"></a></dt>
 <dd><p>Transforms state from symmetry-reduced basis to full (symmetry-free) basis.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
 <dt><strong>v0</strong><span class="classifier">numpy.ndarray</span></dt><dd><p>Contains in its columns the states in the symmetry-reduced basis.</p>
 </dd>
@@ -808,7 +831,7 @@ it is a square array. Default is <cite>False</cite>.</p>
 </dd>
 </dl>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><dl class="simple">
 <dt>numpy.ndarray</dt><dd><p>Array containing the state <cite>v0</cite> in the full basis.</p>
 </dd>
@@ -826,29 +849,29 @@ in a straightforward manner.</p>
 </div>
 </dd></dl>
 
-<dl class="py method">
-<dt id="quspin.basis.spinful_fermion_basis_1d.sps">
-<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">sps</span></code><a class="headerlink" href="#quspin.basis.spinful_fermion_basis_1d.sps" title="Permalink to this definition">¶</a></dt>
+<dl class="py property">
+<dt class="sig sig-object py" id="quspin.basis.spinful_fermion_basis_1d.sps">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">sps</span></span><a class="headerlink" href="#quspin.basis.spinful_fermion_basis_1d.sps" title="Link to this definition"></a></dt>
 <dd><p>number of states per site (ie, the on-site Hilbert space dimension).</p>
 <dl class="field-list simple">
-<dt class="field-odd">Type</dt>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>int</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
-<dt id="quspin.basis.spinful_fermion_basis_1d.state_to_int">
-<code class="sig-name descname"><span class="pre">state_to_int</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/basis/basis_1d/fermion.html#spinful_fermion_basis_1d.state_to_int"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quspin.basis.spinful_fermion_basis_1d.state_to_int" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="quspin.basis.spinful_fermion_basis_1d.state_to_int">
+<span class="sig-name descname"><span class="pre">state_to_int</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/basis/basis_1d/fermion.html#spinful_fermion_basis_1d.state_to_int"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quspin.basis.spinful_fermion_basis_1d.state_to_int" title="Link to this definition"></a></dt>
 <dd><p>Finds integer representation of a state defined in string format.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
 <dt><strong>state</strong><span class="classifier">str</span></dt><dd><p>Defines the Fock state with number of particles (spins) per site in underlying lattice <cite>basis</cite>.</p>
 </dd>
 </dl>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><dl class="simple">
 <dt>int</dt><dd><p>Integer corresponding to the Fock <cite>state</cite> in the lattice basis.</p>
 </dd>
@@ -865,12 +888,12 @@ in a straightforward manner.</p>
 </div>
 </dd></dl>
 
-<dl class="py method">
-<dt id="quspin.basis.spinful_fermion_basis_1d.states">
-<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">states</span></code><a class="headerlink" href="#quspin.basis.spinful_fermion_basis_1d.states" title="Permalink to this definition">¶</a></dt>
+<dl class="py property">
+<dt class="sig sig-object py" id="quspin.basis.spinful_fermion_basis_1d.states">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">states</span></span><a class="headerlink" href="#quspin.basis.spinful_fermion_basis_1d.states" title="Link to this definition"></a></dt>
 <dd><p>basis states stored in their integer representation.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Type</dt>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>numpy.ndarray(int)</p>
 </dd>
 </dl>
@@ -878,65 +901,48 @@ in a straightforward manner.</p>
 
 </dd></dl>
 
-</div>
+</section>
 
 
-            <div class="clearer"></div>
+           </div>
           </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="quspin.basis.spinless_fermion_basis_1d.html" class="btn btn-neutral float-left" title="quspin.basis.spinless_fermion_basis_1d" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="quspin.basis.spin_basis_general.html" class="btn btn-neutral float-right" title="quspin.basis.spin_basis_general" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2016, Phillip Weinberg, Markus Schmitt, and Marin Bukov.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
         </div>
       </div>
-      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
-        <div class="sphinxsidebarwrapper">
-  <h4>Previous topic</h4>
-  <p class="topless"><a href="quspin.basis.spinless_fermion_basis_1d.html"
-                        title="previous chapter">quspin.basis.spinless_fermion_basis_1d</a></p>
-  <h4>Next topic</h4>
-  <p class="topless"><a href="quspin.basis.spin_basis_general.html"
-                        title="next chapter">quspin.basis.spin_basis_general</a></p>
-  <div role="note" aria-label="source link">
-    <h3>This Page</h3>
-    <ul class="this-page-menu">
-      <li><a href="../sources/generated/quspin.basis.spinful_fermion_basis_1d.rst.txt"
-            rel="nofollow">Show Source</a></li>
-    </ul>
-   </div>
-<div id="searchbox" style="display: none" role="search">
-  <h3 id="searchlabel">Quick search</h3>
-    <div class="searchformwrapper">
-    <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" />
-      <input type="submit" value="Go" />
-    </form>
-    </div>
-</div>
-<script>$('#searchbox').show(0);</script>
-        </div>
-      </div>
-      <div class="clearer"></div>
-    </div>
-    <div class="related" role="navigation" aria-label="related navigation">
-      <h3>Navigation</h3>
-      <ul>
-        <li class="right" style="margin-right: 10px">
-          <a href="../genindex.html" title="General Index"
-             >index</a></li>
-        <li class="right" >
-          <a href="../py-modindex.html" title="Python Module Index"
-             >modules</a> |</li>
-        <li class="right" >
-          <a href="quspin.basis.spin_basis_general.html" title="quspin.basis.spin_basis_general"
-             >next</a> |</li>
-        <li class="right" >
-          <a href="quspin.basis.spinless_fermion_basis_1d.html" title="quspin.basis.spinless_fermion_basis_1d"
-             >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.7 documentation</a> &#187;</li>
-          <li class="nav-item nav-item-1"><a href="../basis.html" >Basis module (<code class="xref py py-mod docutils literal notranslate"><span class="pre">quspin.basis</span></code>)</a> &#187;</li>
-        <li class="nav-item nav-item-this"><a href="">quspin.basis.spinful_fermion_basis_1d</a></li> 
-      </ul>
-    </div>
-    <div class="footer" role="contentinfo">
-        &#169; Copyright 2016, Phillip Weinberg, Markus Schmitt and Marin Bukov.
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.5.4.
-    </div>
-  </body>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+    <!-- Theme Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-6885KZ7NH6"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-6885KZ7NH6', {
+          'anonymize_ip': false,
+      });
+    </script> 
+
+</body>
 </html>

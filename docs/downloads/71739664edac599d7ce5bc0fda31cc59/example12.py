@@ -1,3 +1,17 @@
+###########################################################################
+#                            example 12                                   #
+# In this script we show how to use QuSpin's OpenMP and MKL capabilities. #
+###########################################################################
+from quspin.operators import hamiltonian
+from quspin.basis import spin_basis_general
+from quspin.operators._make_hamiltonian import _consolidate_static
+import numpy as np
+from scipy.special import comb
+
+from time import time  # timing package
+import os
+import sys
+
 #
 os.environ["KMP_DUPLICATE_LIB_OK"] = (
     "True"  # uncomment this line if omp error occurs on OSX for python 3
@@ -9,18 +23,7 @@ os.environ["MKL_NUM_THREADS"] = str(
     int(sys.argv[2])
 )  # set number of MKL threads to run in parallel
 #
-###########################################################################
-#                            example 12                                   #
-# In this script we show how to use QuSpin's OpenMP and MKL capabilities. #
-###########################################################################
-from quspin.operators import hamiltonian
-from quspin.basis import spin_basis_general
-from quspin.operators._make_hamiltonian import _consolidate_static
-import numpy as np
-from scipy.special import comb
-
 np.random.seed(1)  # fixes seed of rng
-from time import time  # timing package
 
 
 def run_computation():

@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>parallel_sparse_tools.matvec.matvec_core &mdash; QuSpin 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../../../static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../../static/css/sphinx_rtd_size.css?v=f26ae176" />
+      <link rel="stylesheet" type="text/css" href="../../../static/css/py_class_property_fix.css?v=faf79ccd" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../../static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../static/documentation_options.js?v=8d563738"></script>
+        <script src="../../../static/doctools.js?v=9a2dae69"></script>
+        <script src="../../../static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            QuSpin
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">QuSpin (public API)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../basis.html">Basis module (<code class="xref py py-mod docutils literal notranslate"><span class="pre">quspin.basis</span></code>)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../operators.html">Operators module (<code class="xref py py-mod docutils literal notranslate"><span class="pre">quspin.operators</span></code>)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tools.html">Tools module (<code class="xref py py-mod docutils literal notranslate"><span class="pre">quspin.tools</span></code>)</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Installation &amp; Use</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation/installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation/installation.html#basics-of-command-line-use">Basics of command line use</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../example_scripts.html">Example scripts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../jupyter_notebooks.html">Jupyter notebooks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/parallelization.html">Parallel computing support</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/user_basis.html"><cite>user_basis</cite> tutorial</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Bugs &amp; Questions</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../contribute/report_a_bug.html">Report a bug</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../contribute/ask_a_question.html">Ask a question</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">QuSpin</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content style-external-links">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">parallel_sparse_tools.matvec.matvec_core</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for parallel_sparse_tools.matvec.matvec_core</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">._oputils</span> <span class="kn">import</span> <span class="n">_matvec</span><span class="p">,</span> <span class="n">_process_args</span>
+<span class="kn">from</span> <span class="nn">._oputils</span> <span class="kn">import</span> <span class="n">_get_matvec_function</span>
+
+
+<div class="viewcode-block" id="get_matvec_function">
+<a class="viewcode-back" href="../../../generated/quspin.tools.misc.get_matvec_function.html#quspin.tools.misc.get_matvec_function">[docs]</a>
+<span class="k">def</span> <span class="nf">get_matvec_function</span><span class="p">(</span><span class="n">array</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Determines automatically the matrix vector product routine for an `array` based on its type.</span>
+
+<span class="sd">    A highly specialized omp-parallelized application of a matrix-vector (`matvec`) product</span>
+<span class="sd">    depends on the array type (`csr`, `csc`, `dia`, `other` [e.g., dense]). This function determines automatically which `matvec` routine is most appropriate for a given array type.</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    * for QuSpin builds which support OpenMP, this function will be multithreaded.</span>
+<span class="sd">    * see function `tools.misc.matvec()` which shows how to use the python function returned by `get_matvec_function()`.</span>
+<span class="sd">    * the difference between `tools.misc.matvec()` and the python function returned by `get_matvec_function` is that `tools.misc.matvec()` determines the correct matrix-vector product type every time it is called, while `get_matvec_function` allows to circumvent this extra overhead and gain some speed.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+
+<span class="sd">    The example shows how to use the `get_matvec_function()` (line 43) and the `matvec()` function (lines 47-81) in a user-defined ODE which solves the Lindblad equation for a single qubit (see also Example 17).</span>
+
+<span class="sd">    .. literalinclude:: ../../doc_examples/matvec-example.py</span>
+<span class="sd">                    :linenos:</span>
+<span class="sd">                    :language: python</span>
+<span class="sd">                    :lines: 11-</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    array : array_like object (e.g. numpy.ndarray, scipy.sparse.csr_matrix,  scipy.sparse.csc_matrix,  scipy.sparse.dia_matrix)</span>
+<span class="sd">            Array-like object to determine the most appropriate omp-parallelized `matvec` function for.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    python function object</span>
+<span class="sd">            A python function to perform the matrix-vector product. For appropriate use, see `tools.misc.matvec()`.</span>
+
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">return</span> <span class="n">_get_matvec_function</span><span class="p">(</span><span class="n">array</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="matvec">
+<a class="viewcode-back" href="../../../generated/quspin.tools.misc.matvec.html#quspin.tools.misc.matvec">[docs]</a>
+<span class="k">def</span> <span class="nf">matvec</span><span class="p">(</span><span class="n">array</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="n">overwrite_out</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">a</span><span class="o">=</span><span class="mf">1.0</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Calculates omp-parallelized matrix vector products.</span>
+
+<span class="sd">    Let :math:`A` be a matrix (`array`), :math:`v` be a vector (`other`), and :math:`a` (`a`) be a scalar. This function</span>
+<span class="sd">    provides an omp-parallelized implementation of</span>
+
+<span class="sd">    .. math::</span>
+
+<span class="sd">            x += aAv \\qquad \\mathrm{or} \\qquad x = aAv.</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    * for QuSpin builds which support OpenMP, this function will be multithreaded.</span>
+<span class="sd">    * using `out=v` will result in incorrect results.</span>
+<span class="sd">    * `matvec` determines the correct omp-parallelized matrix-vector product, depending on the type of the input `array` (`csr`, `csc`, `dia`, `other` [e.g., dense]), every time `matvec` is called. To avoid this overhead, see `quspin.tools.misc.get_matvec_function()`.</span>
+
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+
+<span class="sd">    The example shows how to use the `get_matvec_function()` (line 43) and the `matvec()` function (lines 47-81) in a user-defined ODE which solves the Lindblad equation for a single qubit (see also Example 17).</span>
+
+<span class="sd">    .. literalinclude:: ../../doc_examples/matvec-example.py</span>
+<span class="sd">                    :linenos:</span>
+<span class="sd">                    :language: python</span>
+<span class="sd">                    :lines: 11-</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    -----------</span>
+<span class="sd">    array : array_like object (e.g. numpy.ndarray, scipy.sparse.csr_matrix,  scipy.sparse.csc_matrix,  scipy.sparse.dia_matrix)</span>
+<span class="sd">            Sparse or dense array to take the dot product with.</span>
+<span class="sd">    other : array_like</span>
+<span class="sd">            array which contains the vector to take the dot product with.</span>
+<span class="sd">    a : scalar, optional</span>
+<span class="sd">            value to scale the vector with after the product with `array` is taken: :math:`x += a A v` or :math:`x = a A v`.</span>
+<span class="sd">    out : array_like</span>
+<span class="sd">            output array to put the results of the calculation in.</span>
+<span class="sd">    overwrite_out : bool, optional</span>
+<span class="sd">            If set to `True`, the function overwrites the values in `out` with the result (cf. :math:`x = a A v`). Otherwise</span>
+<span class="sd">            the result is added to the values in `out` (in-pace addition, cf. :math:`x += a A v`).</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    --------</span>
+<span class="sd">    numpy.ndarray</span>
+<span class="sd">            result of the matrix-vector product :math:`a A v`.</span>
+
+<span class="sd">            * if `out` is not `None` and `overwrite_out = True`, the function returns `out` with the original data overwritten, otherwise if `overwrite_out = False` the result is added to `out`.</span>
+<span class="sd">            * if `out` is `None`, the result is stored in a new array which is returned by the function.</span>
+
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">array</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="n">overwrite_out</span><span class="p">,</span> <span class="n">out</span><span class="p">,</span> <span class="n">a</span> <span class="o">=</span> <span class="n">_process_args</span><span class="p">(</span><span class="n">array</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="n">overwrite_out</span><span class="p">,</span> <span class="n">out</span><span class="p">,</span> <span class="n">a</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">_matvec</span><span class="p">(</span><span class="n">array</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="n">overwrite_out</span><span class="o">=</span><span class="n">overwrite_out</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">,</span> <span class="n">a</span><span class="o">=</span><span class="n">a</span><span class="p">)</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2016, Phillip Weinberg, Markus Schmitt, and Marin Bukov.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+    <!-- Theme Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-6885KZ7NH6"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-6885KZ7NH6', {
+          'anonymize_ip': false,
+      });
+    </script> 
+
+</body>
+</html>

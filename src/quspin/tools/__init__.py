@@ -16,7 +16,7 @@ evolution
 
    ED_state_vs_time
    evolve
-   expm_multiply_parallel
+   ExpmMultiplyParallel
 
 
 Lanczos

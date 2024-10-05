@@ -1,58 +1,106 @@
-
 <!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-<html>
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><script type="text/javascript">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Direct Calculation of spectral functions using symmetries &mdash; QuSpin 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../static/css/sphinx_rtd_size.css?v=f26ae176" />
+      <link rel="stylesheet" type="text/css" href="../static/css/py_class_property_fix.css?v=faf79ccd" />
 
-      var _gaq = _gaq || [];
-      _gaq.push(['_setAccount', 'UA-110543543-1']);
-      _gaq.push(['_trackPageview']);
-
-      (function() {
-        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-      })();
-    </script>
-    <title>Direct Calculation of spectral functions using symmetries &#8212; QuSpin 0.3.7 documentation</title>
-    <link rel="stylesheet" href="../static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="../static/classic.css" type="text/css" />
-    
-    <script id="documentation_options" data-url_root="../" src="../static/documentation_options.js"></script>
-    <script src="../static/jquery.js"></script>
-    <script src="../static/underscore.js"></script>
-    <script src="../static/doctools.js"></script>
-    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    
+  
+  <!--[if lt IE 9]>
+    <script src="../static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../static/jquery.js?v=5d32c60e"></script>
+        <script src="../static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../static/documentation_options.js?v=8d563738"></script>
+        <script src="../static/doctools.js?v=9a2dae69"></script>
+        <script src="../static/sphinx_highlight.js?v=dc90522c"></script>
+        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="../static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" /> 
-  </head><body>
-    <div class="related" role="navigation" aria-label="related navigation">
-      <h3>Navigation</h3>
-      <ul>
-        <li class="right" style="margin-right: 10px">
-          <a href="../genindex.html" title="General Index"
-             accesskey="I">index</a></li>
-        <li class="right" >
-          <a href="../py-modindex.html" title="Python Module Index"
-             >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.7 documentation</a> &#187;</li>
-        <li class="nav-item nav-item-this"><a href="">Direct Calculation of spectral functions using symmetries</a></li> 
-      </ul>
-    </div>  
+</head>
 
-    <div class="document">
-      <div class="documentwrapper">
-        <div class="bodywrapper">
-          <div class="body" role="main">
-            
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            QuSpin
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">QuSpin (public API)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../basis.html">Basis module (<code class="xref py py-mod docutils literal notranslate"><span class="pre">quspin.basis</span></code>)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../operators.html">Operators module (<code class="xref py py-mod docutils literal notranslate"><span class="pre">quspin.operators</span></code>)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tools.html">Tools module (<code class="xref py py-mod docutils literal notranslate"><span class="pre">quspin.tools</span></code>)</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Installation &amp; Use</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../installation/installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../installation/installation.html#basics-of-command-line-use">Basics of command line use</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../example_scripts.html">Example scripts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../jupyter_notebooks.html">Jupyter notebooks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/parallelization.html">Parallel computing support</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/user_basis.html"><cite>user_basis</cite> tutorial</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Bugs &amp; Questions</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../contribute/report_a_bug.html">Report a bug</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contribute/ask_a_question.html">Ask a question</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">QuSpin</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content style-external-links">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Direct Calculation of spectral functions using symmetries</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../sources/examples/example26.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
   <style> .red {color:#ff0000; font-weight:bold; font-style:italic; } </style>
 <style> .green {color:#00b200; font-weight:bold; font-style:italic; } </style>
 <style> .magenta {color:#FF33F3; font-weight:bold; font-style:italic; } </style>
-<style> .orange {color:#FE8E02; font-weight:bold; font-style:italic; } </style><div class="section" id="direct-calculation-of-spectral-functions-using-symmetries">
-<span id="example26-label"></span><h1>Direct Calculation of spectral functions using symmetries<a class="headerlink" href="#direct-calculation-of-spectral-functions-using-symmetries" title="Permalink to this headline">¶</a></h1>
+<style> .orange {color:#FE8E02; font-weight:bold; font-style:italic; } </style><section id="direct-calculation-of-spectral-functions-using-symmetries">
+<span id="example26-label"></span><h1>Direct Calculation of spectral functions using symmetries<a class="headerlink" href="#direct-calculation-of-spectral-functions-using-symmetries" title="Link to this heading"></a></h1>
 <p>This example demonstrates how to use the general basis function method <cite>Op_shift_sector()</cite> to compute spectral functions directly without Fourier -transforming auto-correlation functions. The idea here is to use SciPy’s iterative solvers for sparse linear systems to calculate the action of an inverted operator on a state.</p>
 <p>The spectral function in ground state <span class="math notranslate nohighlight">\(|0\rangle\)</span> can be written as:</p>
 <div class="math notranslate nohighlight">
@@ -76,393 +124,257 @@
 <div class="math notranslate nohighlight">
 \[S^{\pm}_q = \frac{1}{\sqrt{2L}}\sum_{r=0}^{L-1} \exp\left(-i\frac{2\pi q r}{L}\right) S^{\pm}_r\]</div>
 <p>Because the model has full SU(2) symmetry, we expect that the two spectral functions should give the same result. We also exclude the spectral function for <span class="math notranslate nohighlight">\(q=L/2\)</span> (<span class="math notranslate nohighlight">\(\pi\)</span>-momentum) as the spectral peak is very large due to the quasi long-range antiferromagnetic order in the ground state. The variable <cite>on_the_fly</cite> can be used to switch between using a <cite>hamiltonian</cite> object to a <cite>quantum_LinearOperator</cite> object to calculate the matrix vector product. One can also change the total spin of the local spin operators by changing the variable <cite>S</cite> to compute the spectral function for higher-spin Heisenberg models.</p>
-</div>
-<div class="section" id="script">
-<h1>Script<a class="headerlink" href="#script" title="Permalink to this headline">¶</a></h1>
+</section>
+<section id="script">
+<h1>Script<a class="headerlink" href="#script" title="Link to this heading"></a></h1>
 <p><a class="reference download internal" download="" href="../downloads/3882c8953242e062a3b551c0bcca0c95/example26.py"><code class="xref download docutils literal notranslate"><span class="pre">download</span> <span class="pre">script</span></code></a></p>
-<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">  1</span>
-<span class="normal">  2</span>
-<span class="normal">  3</span>
-<span class="normal">  4</span>
-<span class="normal">  5</span>
-<span class="normal">  6</span>
-<span class="normal">  7</span>
-<span class="normal">  8</span>
-<span class="normal">  9</span>
-<span class="normal"> 10</span>
-<span class="normal"> 11</span>
-<span class="normal"> 12</span>
-<span class="normal"> 13</span>
-<span class="normal"> 14</span>
-<span class="normal"> 15</span>
-<span class="normal"> 16</span>
-<span class="normal"> 17</span>
-<span class="normal"> 18</span>
-<span class="normal"> 19</span>
-<span class="normal"> 20</span>
-<span class="normal"> 21</span>
-<span class="normal"> 22</span>
-<span class="normal"> 23</span>
-<span class="normal"> 24</span>
-<span class="normal"> 25</span>
-<span class="normal"> 26</span>
-<span class="normal"> 27</span>
-<span class="normal"> 28</span>
-<span class="normal"> 29</span>
-<span class="normal"> 30</span>
-<span class="normal"> 31</span>
-<span class="normal"> 32</span>
-<span class="normal"> 33</span>
-<span class="normal"> 34</span>
-<span class="normal"> 35</span>
-<span class="normal"> 36</span>
-<span class="normal"> 37</span>
-<span class="normal"> 38</span>
-<span class="normal"> 39</span>
-<span class="normal"> 40</span>
-<span class="normal"> 41</span>
-<span class="normal"> 42</span>
-<span class="normal"> 43</span>
-<span class="normal"> 44</span>
-<span class="normal"> 45</span>
-<span class="normal"> 46</span>
-<span class="normal"> 47</span>
-<span class="normal"> 48</span>
-<span class="normal"> 49</span>
-<span class="normal"> 50</span>
-<span class="normal"> 51</span>
-<span class="normal"> 52</span>
-<span class="normal"> 53</span>
-<span class="normal"> 54</span>
-<span class="normal"> 55</span>
-<span class="normal"> 56</span>
-<span class="normal"> 57</span>
-<span class="normal"> 58</span>
-<span class="normal"> 59</span>
-<span class="normal"> 60</span>
-<span class="normal"> 61</span>
-<span class="normal"> 62</span>
-<span class="normal"> 63</span>
-<span class="normal"> 64</span>
-<span class="normal"> 65</span>
-<span class="normal"> 66</span>
-<span class="normal"> 67</span>
-<span class="normal"> 68</span>
-<span class="normal"> 69</span>
-<span class="normal"> 70</span>
-<span class="normal"> 71</span>
-<span class="normal"> 72</span>
-<span class="normal"> 73</span>
-<span class="normal"> 74</span>
-<span class="normal"> 75</span>
-<span class="normal"> 76</span>
-<span class="normal"> 77</span>
-<span class="normal"> 78</span>
-<span class="normal"> 79</span>
-<span class="normal"> 80</span>
-<span class="normal"> 81</span>
-<span class="normal"> 82</span>
-<span class="normal"> 83</span>
-<span class="normal"> 84</span>
-<span class="normal"> 85</span>
-<span class="normal"> 86</span>
-<span class="normal"> 87</span>
-<span class="normal"> 88</span>
-<span class="normal"> 89</span>
-<span class="normal"> 90</span>
-<span class="normal"> 91</span>
-<span class="normal"> 92</span>
-<span class="normal"> 93</span>
-<span class="normal"> 94</span>
-<span class="normal"> 95</span>
-<span class="normal"> 96</span>
-<span class="normal"> 97</span>
-<span class="normal"> 98</span>
-<span class="normal"> 99</span>
-<span class="normal">100</span>
-<span class="normal">101</span>
-<span class="normal">102</span>
-<span class="normal">103</span>
-<span class="normal">104</span>
-<span class="normal">105</span>
-<span class="normal">106</span>
-<span class="normal">107</span>
-<span class="normal">108</span>
-<span class="normal">109</span>
-<span class="normal">110</span>
-<span class="normal">111</span>
-<span class="normal">112</span>
-<span class="normal">113</span>
-<span class="normal">114</span>
-<span class="normal">115</span>
-<span class="normal">116</span>
-<span class="normal">117</span>
-<span class="normal">118</span>
-<span class="normal">119</span>
-<span class="normal">120</span>
-<span class="normal">121</span>
-<span class="normal">122</span>
-<span class="normal">123</span>
-<span class="normal">124</span>
-<span class="normal">125</span>
-<span class="normal">126</span>
-<span class="normal">127</span>
-<span class="normal">128</span>
-<span class="normal">129</span>
-<span class="normal">130</span>
-<span class="normal">131</span>
-<span class="normal">132</span>
-<span class="normal">133</span>
-<span class="normal">134</span>
-<span class="normal">135</span>
-<span class="normal">136</span>
-<span class="normal">137</span>
-<span class="normal">138</span>
-<span class="normal">139</span>
-<span class="normal">140</span>
-<span class="normal">141</span>
-<span class="normal">142</span>
-<span class="normal">143</span>
-<span class="normal">144</span>
-<span class="normal">145</span>
-<span class="normal">146</span>
-<span class="normal">147</span>
-<span class="normal">148</span>
-<span class="normal">149</span>
-<span class="normal">150</span>
-<span class="normal">151</span>
-<span class="normal">152</span>
-<span class="normal">153</span>
-<span class="normal">154</span>
-<span class="normal">155</span>
-<span class="normal">156</span>
-<span class="normal">157</span>
-<span class="normal">158</span>
-<span class="normal">159</span>
-<span class="normal">160</span>
-<span class="normal">161</span>
-<span class="normal">162</span>
-<span class="normal">163</span>
-<span class="normal">164</span>
-<span class="normal">165</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span><span class="p">,</span> <span class="n">division</span>
-<span class="c1">#</span>
-<span class="kn">import</span> <span class="nn">sys</span><span class="o">,</span><span class="nn">os</span>
-<span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s1">&#39;KMP_DUPLICATE_LIB_OK&#39;</span><span class="p">]</span><span class="o">=</span><span class="s1">&#39;True&#39;</span> <span class="c1"># uncomment this line if omp error occurs on OSX for python 3</span>
-<span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s1">&#39;OMP_NUM_THREADS&#39;</span><span class="p">]</span><span class="o">=</span><span class="s1">&#39;1&#39;</span> <span class="c1"># set number of OpenMP threads to run in parallel</span>
-<span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s1">&#39;MKL_NUM_THREADS&#39;</span><span class="p">]</span><span class="o">=</span><span class="s1">&#39;1&#39;</span> <span class="c1"># set number of MKL threads to run in parallel</span>
-<span class="c1">#</span>
-<span class="n">quspin_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">(),</span><span class="s2">&quot;../../&quot;</span><span class="p">)</span>
-<span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">quspin_path</span><span class="p">)</span>
-<span class="c1">#######################################################################</span>
-<span class="c1">#                            example 26                               #</span>
-<span class="c1"># This example shows how to use the `Op-shit_sector` method of the    #</span>
-<span class="c1"># general basis class to compute spectral functions using symmetries. #</span>
-<span class="c1">#######################################################################</span>
-<span class="kn">from</span> <span class="nn">quspin.basis</span> <span class="kn">import</span> <span class="n">spin_basis_general</span>
-<span class="kn">from</span> <span class="nn">quspin.operators</span> <span class="kn">import</span> <span class="n">hamiltonian</span><span class="p">,</span><span class="n">quantum_LinearOperator</span>
-<span class="kn">import</span> <span class="nn">scipy.sparse</span> <span class="k">as</span> <span class="nn">sp</span>
-<span class="kn">import</span> <span class="nn">numexpr</span><span class="o">,</span><span class="nn">cProfile</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
-<span class="c1">#</span>
-<span class="c1">#</span>
-<span class="c1"># define custom LinearOperator object that generates the left hand side of the equation.</span>
-<span class="c1">#</span>
-<span class="k">class</span> <span class="nc">LHS</span><span class="p">(</span><span class="n">sp</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">LinearOperator</span><span class="p">):</span>
-	<span class="c1">#</span>
-	<span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">H</span><span class="p">,</span><span class="n">omega</span><span class="p">,</span><span class="n">eta</span><span class="p">,</span><span class="n">E0</span><span class="p">,</span><span class="n">kwargs</span><span class="o">=</span><span class="p">{}):</span>
-		<span class="bp">self</span><span class="o">.</span><span class="n">_H</span> <span class="o">=</span> <span class="n">H</span> <span class="c1"># Hamiltonian</span>
-		<span class="bp">self</span><span class="o">.</span><span class="n">_z</span> <span class="o">=</span> <span class="n">omega</span> <span class="o">+</span><span class="mi">1</span><span class="n">j</span><span class="o">*</span><span class="n">eta</span> <span class="o">+</span> <span class="n">E0</span> <span class="c1"># complex energy</span>
-		<span class="bp">self</span><span class="o">.</span><span class="n">_kwargs</span> <span class="o">=</span> <span class="n">kwargs</span> <span class="c1"># arguments</span>
-	<span class="c1">#</span>
-	<span class="nd">@property</span>
-	<span class="k">def</span> <span class="nf">shape</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-		<span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_H</span><span class="o">.</span><span class="n">Ns</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">_H</span><span class="o">.</span><span class="n">Ns</span><span class="p">)</span>
-	<span class="c1">#</span>
-	<span class="nd">@property</span>
-	<span class="k">def</span> <span class="nf">dtype</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-		<span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_H</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
-	<span class="c1">#</span>
-	<span class="k">def</span> <span class="nf">_matvec</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">v</span><span class="p">):</span>
-		<span class="c1"># left multiplication</span>
-		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_z</span> <span class="o">*</span> <span class="n">v</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_H</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">v</span><span class="p">,</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_kwargs</span><span class="p">)</span>
-	<span class="c1">#</span>
-	<span class="k">def</span> <span class="nf">_rmatvec</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">v</span><span class="p">):</span>
-		<span class="c1"># right multiplication</span>
-		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_z</span><span class="o">.</span><span class="n">conj</span><span class="p">()</span> <span class="o">*</span> <span class="n">v</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_H</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">v</span><span class="p">,</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_kwargs</span><span class="p">)</span>
-<span class="c1">#</span>
-<span class="c1">##### calculate action without constructing the Hamiltonian matrix</span>
-<span class="c1">#</span>
-<span class="n">on_the_fly</span> <span class="o">=</span> <span class="kc">False</span> <span class="c1"># toggles between using a `hamiltnian` or a `quantum_LinearOperator` object</span>
-<span class="c1"># chain length</span>
-<span class="n">L</span> <span class="o">=</span> <span class="mi">12</span>
-<span class="c1"># on-site spin size </span>
-<span class="n">S</span> <span class="o">=</span> <span class="s2">&quot;1/2&quot;</span>
-<span class="c1"># translation transformation on the lattice sites [0,...,L-1]</span>
-<span class="n">T</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">L</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">%</span><span class="n">L</span>
-<span class="c1"># this example does not work under these conditions because ground-state sector is not q=0</span>
-<span class="k">if</span> <span class="p">(</span><span class="n">L</span><span class="o">//</span><span class="mi">2</span><span class="p">)</span><span class="o">%</span><span class="mi">2</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
-	<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Example requires modifications for Heisenberg chains with L=4*n+2.&quot;</span><span class="p">)</span>
-<span class="k">if</span> <span class="n">L</span><span class="o">%</span><span class="mi">2</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
-	<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Example requires modifications for Heisenberg chains with odd number of sites.&quot;</span><span class="p">)</span>
-<span class="c1"># construct basis</span>
-<span class="n">basis0</span> <span class="o">=</span> <span class="n">spin_basis_general</span><span class="p">(</span><span class="n">L</span><span class="p">,</span><span class="n">S</span><span class="o">=</span><span class="n">S</span><span class="p">,</span><span class="n">m</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">pauli</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">kblock</span><span class="o">=</span><span class="p">(</span><span class="n">T</span><span class="p">,</span><span class="mi">0</span><span class="p">))</span>
-<span class="c1"># construct static list for Heisenberg chain</span>
-<span class="n">Jzz_list</span> <span class="o">=</span> <span class="p">[[</span><span class="mf">1.0</span><span class="p">,</span><span class="n">i</span><span class="p">,(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">%</span><span class="n">L</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">L</span><span class="p">)]</span>
-<span class="n">Jxy_list</span> <span class="o">=</span> <span class="p">[[</span><span class="mf">0.5</span><span class="p">,</span><span class="n">i</span><span class="p">,(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">%</span><span class="n">L</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">L</span><span class="p">)]</span>
-<span class="n">static</span> <span class="o">=</span> <span class="p">[[</span><span class="s2">&quot;zz&quot;</span><span class="p">,</span><span class="n">Jzz_list</span><span class="p">],[</span><span class="s2">&quot;+-&quot;</span><span class="p">,</span><span class="n">Jxy_list</span><span class="p">],[</span><span class="s2">&quot;-+&quot;</span><span class="p">,</span><span class="n">Jxy_list</span><span class="p">]]</span>
-<span class="c1"># construct operator for Hamiltonian in the ground state sector</span>
-<span class="k">if</span> <span class="n">on_the_fly</span><span class="p">:</span>
-	<span class="n">H0</span> <span class="o">=</span> <span class="n">quantum_LinearOperator</span><span class="p">(</span><span class="n">static</span><span class="p">,</span><span class="n">basis</span><span class="o">=</span><span class="n">basis0</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
-<span class="k">else</span><span class="p">:</span>
-	<span class="n">H0</span> <span class="o">=</span> <span class="n">hamiltonian</span><span class="p">(</span><span class="n">static</span><span class="p">,[],</span><span class="n">basis</span><span class="o">=</span><span class="n">basis0</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
-<span class="c1"># calculate ground state</span>
-<span class="p">[</span><span class="n">E0</span><span class="p">],</span><span class="n">psi0</span> <span class="o">=</span> <span class="n">H0</span><span class="o">.</span><span class="n">eigsh</span><span class="p">(</span><span class="n">k</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">which</span><span class="o">=</span><span class="s2">&quot;SA&quot;</span><span class="p">)</span>
-<span class="n">psi0</span> <span class="o">=</span> <span class="n">psi0</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
-<span class="c1"># define all possible momentum sectors excluding q=L/2 (pi-momentum) where the peak is abnormally large</span>
-<span class="n">qs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="o">-</span><span class="n">L</span><span class="o">//</span><span class="mi">2</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span><span class="n">L</span><span class="o">//</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
-<span class="c1"># define frequencies to calculate spectral function for</span>
-<span class="n">omegas</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mf">0.05</span><span class="p">)</span>
-<span class="c1"># spectral peaks broadening factor</span>
-<span class="n">eta</span> <span class="o">=</span> <span class="mf">0.1</span>
-<span class="c1"># allocate arrays to store data</span>
-<span class="n">Gzz</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">omegas</span><span class="o">.</span><span class="n">shape</span><span class="o">+</span><span class="n">qs</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">complex128</span><span class="p">)</span>
-<span class="n">Gpm</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">omegas</span><span class="o">.</span><span class="n">shape</span><span class="o">+</span><span class="n">qs</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">complex128</span><span class="p">)</span>
-<span class="c1"># loop over momentum sectors</span>
-<span class="k">for</span> <span class="n">j</span><span class="p">,</span><span class="n">q</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">qs</span><span class="p">):</span>
-	<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;computing momentum block q=</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">q</span><span class="p">)</span> <span class="p">)</span>
-	<span class="c1"># define block</span>
-	<span class="n">block</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">qblock</span><span class="o">=</span><span class="p">(</span><span class="n">T</span><span class="p">,</span><span class="n">q</span><span class="p">))</span>
-	<span class="c1">#</span>
-	<span class="c1">####################################################################</span>
-	<span class="c1">#</span>
-	<span class="c1"># ---------------------------------------------------- #</span>
-	<span class="c1">#                 calculation but for SzSz             #</span>
-	<span class="c1"># ---------------------------------------------------- #</span>
-	<span class="c1">#</span>
-	<span class="c1"># define operator list for Op_shift_sector</span>
-	<span class="n">f</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">i</span><span class="p">:</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="n">j</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">*</span><span class="n">q</span><span class="o">*</span><span class="n">i</span><span class="o">/</span><span class="n">L</span><span class="p">)</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">L</span><span class="p">)</span>
-	<span class="n">Op_list</span> <span class="o">=</span> <span class="p">[[</span><span class="s2">&quot;z&quot;</span><span class="p">,[</span><span class="n">i</span><span class="p">],</span><span class="n">f</span><span class="p">(</span><span class="n">i</span><span class="p">)]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">L</span><span class="p">)]</span>
-	<span class="c1"># define basis</span>
-	<span class="n">basisq</span> <span class="o">=</span> <span class="n">spin_basis_general</span><span class="p">(</span><span class="n">L</span><span class="p">,</span><span class="n">S</span><span class="o">=</span><span class="n">S</span><span class="p">,</span><span class="n">m</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">pauli</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="o">**</span><span class="n">block</span><span class="p">)</span>
-	<span class="c1"># define operators in the q-momentum sector</span>
-	<span class="k">if</span> <span class="n">on_the_fly</span><span class="p">:</span>
-		<span class="n">Hq</span> <span class="o">=</span> <span class="n">quantum_LinearOperator</span><span class="p">(</span><span class="n">static</span><span class="p">,</span><span class="n">basis</span><span class="o">=</span><span class="n">basisq</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">complex128</span><span class="p">,</span>
-			<span class="n">check_symm</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">check_pcon</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">check_herm</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-	<span class="k">else</span><span class="p">:</span>
-		<span class="n">Hq</span> <span class="o">=</span> <span class="n">hamiltonian</span><span class="p">(</span><span class="n">static</span><span class="p">,[],</span><span class="n">basis</span><span class="o">=</span><span class="n">basisq</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">complex128</span><span class="p">,</span>
-			<span class="n">check_symm</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">check_pcon</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">check_herm</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-	<span class="c1"># shift sectors</span>
-	<span class="n">psiA</span> <span class="o">=</span> <span class="n">basisq</span><span class="o">.</span><span class="n">Op_shift_sector</span><span class="p">(</span><span class="n">basis0</span><span class="p">,</span><span class="n">Op_list</span><span class="p">,</span><span class="n">psi0</span><span class="p">)</span>
-	<span class="c1">#</span>
-	<span class="c1">### apply vector correction method</span>
-	<span class="c1">#</span>
-	<span class="c1"># solve (z-H)|x&gt; = |A&gt; solve for |x&gt;  using iterative solver for each omega</span>
-	<span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">omega</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">omegas</span><span class="p">):</span>
-		<span class="n">lhs</span> <span class="o">=</span> <span class="n">LHS</span><span class="p">(</span><span class="n">Hq</span><span class="p">,</span><span class="n">omega</span><span class="p">,</span><span class="n">eta</span><span class="p">,</span><span class="n">E0</span><span class="p">)</span>
-		<span class="n">x</span><span class="p">,</span><span class="o">*</span><span class="n">_</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">bicg</span><span class="p">(</span><span class="n">lhs</span><span class="p">,</span><span class="n">psiA</span><span class="p">)</span>
-		<span class="n">Gzz</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">vdot</span><span class="p">(</span><span class="n">psiA</span><span class="p">,</span><span class="n">x</span><span class="p">)</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span>
-	<span class="c1">#</span>
-	<span class="c1">#####################################################################</span>
-	<span class="c1">#</span>
-	<span class="c1"># ---------------------------------------------------- #</span>
-	<span class="c1">#            same calculation but for S-S+             #</span>
-	<span class="c1"># ---------------------------------------------------- #</span>
-	<span class="c1">#</span>
-	<span class="c1"># divide by extra sqrt(2) to get extra factor of 1/2 when taking sandwich: needed since H = 1/2 (S^+_i S^-_j + h.c.) + S^z_j S^z_j</span>
-	<span class="n">f</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">i</span><span class="p">:</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="n">j</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">*</span><span class="n">q</span><span class="o">*</span><span class="n">i</span><span class="o">/</span><span class="n">L</span><span class="p">)</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mf">1.0</span><span class="o">/</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">L</span><span class="p">))</span>
-	<span class="n">Op_list</span> <span class="o">=</span> <span class="p">[[</span><span class="s2">&quot;+&quot;</span><span class="p">,[</span><span class="n">i</span><span class="p">],</span><span class="n">f</span><span class="p">(</span><span class="n">i</span><span class="p">)]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">L</span><span class="p">)]</span>
-	<span class="c1"># change S_z projection up by S for action of S+ operator</span>
-	<span class="n">S_z_tot</span> <span class="o">=</span> <span class="mi">0</span> <span class="o">+</span> <span class="nb">eval</span><span class="p">(</span><span class="n">S</span><span class="p">)</span>
-	<span class="c1"># calculate magnetization density from S_z_tot as defined in the documentation</span>
-	<span class="c1"># m = S_z_tot / (S * N), S: local spin (as number), N: total spins</span>
-	<span class="n">m</span> <span class="o">=</span> <span class="n">S_z_tot</span><span class="o">/</span><span class="p">(</span><span class="nb">eval</span><span class="p">(</span><span class="n">S</span><span class="p">)</span><span class="o">*</span><span class="n">L</span><span class="p">)</span> 
-	<span class="n">basisq</span> <span class="o">=</span> <span class="n">spin_basis_general</span><span class="p">(</span><span class="n">L</span><span class="p">,</span><span class="n">S</span><span class="o">=</span><span class="n">S</span><span class="p">,</span><span class="n">m</span><span class="o">=</span><span class="n">m</span><span class="p">,</span><span class="n">pauli</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="o">**</span><span class="n">block</span><span class="p">)</span>
-	<span class="c1"># define operators in the q-momentum sector</span>
-	<span class="k">if</span> <span class="n">on_the_fly</span><span class="p">:</span>
-		<span class="n">Hq</span> <span class="o">=</span> <span class="n">quantum_LinearOperator</span><span class="p">(</span><span class="n">static</span><span class="p">,</span><span class="n">basis</span><span class="o">=</span><span class="n">basisq</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">complex128</span><span class="p">,</span>
-			<span class="n">check_symm</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">check_pcon</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">check_herm</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-	<span class="k">else</span><span class="p">:</span>
-		<span class="n">Hq</span> <span class="o">=</span> <span class="n">hamiltonian</span><span class="p">(</span><span class="n">static</span><span class="p">,[],</span><span class="n">basis</span><span class="o">=</span><span class="n">basisq</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">complex128</span><span class="p">,</span>
-			<span class="n">check_symm</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">check_pcon</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">check_herm</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-	<span class="c1"># shift sectors</span>
-	<span class="n">psiA</span> <span class="o">=</span> <span class="n">basisq</span><span class="o">.</span><span class="n">Op_shift_sector</span><span class="p">(</span><span class="n">basis0</span><span class="p">,</span><span class="n">Op_list</span><span class="p">,</span><span class="n">psi0</span><span class="p">)</span>
-	<span class="c1">#</span>
-	<span class="c1">### apply vector correction method</span>
-	<span class="c1">#</span>
-	<span class="c1"># solve (z-H)|x&gt; = |A&gt; solve for |x&gt;  using iterative solver for each omega</span>
-	<span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">omega</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">omegas</span><span class="p">):</span>
-		<span class="n">lhs</span> <span class="o">=</span> <span class="n">LHS</span><span class="p">(</span><span class="n">Hq</span><span class="p">,</span><span class="n">omega</span><span class="p">,</span><span class="n">eta</span><span class="p">,</span><span class="n">E0</span><span class="p">)</span>
-		<span class="n">x</span><span class="p">,</span><span class="o">*</span><span class="n">_</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">bicg</span><span class="p">(</span><span class="n">lhs</span><span class="p">,</span><span class="n">psiA</span><span class="p">)</span>
-		<span class="n">Gpm</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">vdot</span><span class="p">(</span><span class="n">psiA</span><span class="p">,</span><span class="n">x</span><span class="p">)</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span>
-<span class="c1">#</span>
-<span class="c1">##### plot results</span>
-<span class="c1">#</span>
-<span class="n">ks</span> <span class="o">=</span> <span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">*</span><span class="n">qs</span><span class="o">/</span><span class="n">L</span> <span class="c1"># compute physical momentum values</span>
-<span class="n">f</span><span class="p">,(</span><span class="n">ax1</span><span class="p">,</span><span class="n">ax2</span><span class="p">)</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">),</span><span class="n">sharex</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="n">ax1</span><span class="o">.</span><span class="n">pcolormesh</span><span class="p">(</span><span class="n">ks</span><span class="p">,</span><span class="n">omegas</span><span class="p">,</span><span class="n">Gzz</span><span class="o">.</span><span class="n">imag</span><span class="p">,</span><span class="n">shading</span><span class="o">=</span><span class="s1">&#39;nearest&#39;</span><span class="p">)</span>
-<span class="n">ax2</span><span class="o">.</span><span class="n">pcolormesh</span><span class="p">(</span><span class="n">ks</span><span class="p">,</span><span class="n">omegas</span><span class="p">,</span><span class="n">Gpm</span><span class="o">.</span><span class="n">imag</span><span class="p">,</span><span class="n">shading</span><span class="o">=</span><span class="s1">&#39;nearest&#39;</span><span class="p">)</span>
-<span class="n">ax2</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;$k$&#39;</span><span class="p">)</span>
-<span class="n">ax2</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;$</span><span class="se">\\</span><span class="s1">omega$&#39;</span><span class="p">)</span>
-<span class="n">ax1</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;$</span><span class="se">\\</span><span class="s1">omega$&#39;</span><span class="p">)</span>
-<span class="n">ax1</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;$G_</span><span class="si">{zz}</span><span class="s1">(</span><span class="se">\\</span><span class="s1">omega,k)$&#39;</span><span class="p">)</span>
-<span class="n">ax2</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;$G_{+-}(</span><span class="se">\\</span><span class="s1">omega,k)$&#39;</span><span class="p">)</span>
-<span class="c1">#plt.show()</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos">  1</span><span class="c1">#</span>
+<span class="linenos">  2</span><span class="kn">import</span> <span class="nn">sys</span><span class="o">,</span> <span class="nn">os</span>
+<span class="linenos">  3</span>
+<span class="linenos">  4</span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;KMP_DUPLICATE_LIB_OK&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+<span class="linenos">  5</span>    <span class="s2">&quot;True&quot;</span>  <span class="c1"># uncomment this line if omp error occurs on OSX for python 3</span>
+<span class="linenos">  6</span><span class="p">)</span>
+<span class="linenos">  7</span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;OMP_NUM_THREADS&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;1&quot;</span>  <span class="c1"># set number of OpenMP threads to run in parallel</span>
+<span class="linenos">  8</span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;MKL_NUM_THREADS&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;1&quot;</span>  <span class="c1"># set number of MKL threads to run in parallel</span>
+<span class="linenos">  9</span><span class="c1">#</span>
+<span class="linenos"> 10</span>
+<span class="linenos"> 11</span><span class="c1">#######################################################################</span>
+<span class="linenos"> 12</span><span class="c1">#                            example 26                               #</span>
+<span class="linenos"> 13</span><span class="c1"># This example shows how to use the `Op-shit_sector` method of the    #</span>
+<span class="linenos"> 14</span><span class="c1"># general basis class to compute spectral functions using symmetries. #</span>
+<span class="linenos"> 15</span><span class="c1">#######################################################################</span>
+<span class="linenos"> 16</span><span class="kn">from</span> <span class="nn">quspin.basis</span> <span class="kn">import</span> <span class="n">spin_basis_general</span>
+<span class="linenos"> 17</span><span class="kn">from</span> <span class="nn">quspin.operators</span> <span class="kn">import</span> <span class="n">hamiltonian</span><span class="p">,</span> <span class="n">quantum_LinearOperator</span>
+<span class="linenos"> 18</span><span class="kn">import</span> <span class="nn">scipy.sparse</span> <span class="k">as</span> <span class="nn">sp</span>
+<span class="linenos"> 19</span><span class="kn">import</span> <span class="nn">numexpr</span><span class="o">,</span> <span class="nn">cProfile</span>
+<span class="linenos"> 20</span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="linenos"> 21</span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="linenos"> 22</span>
+<span class="linenos"> 23</span>
+<span class="linenos"> 24</span><span class="c1">#</span>
+<span class="linenos"> 25</span><span class="c1">#</span>
+<span class="linenos"> 26</span><span class="c1"># define custom LinearOperator object that generates the left hand side of the equation.</span>
+<span class="linenos"> 27</span><span class="c1">#</span>
+<span class="linenos"> 28</span><span class="k">class</span> <span class="nc">LHS</span><span class="p">(</span><span class="n">sp</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">LinearOperator</span><span class="p">):</span>
+<span class="linenos"> 29</span>    <span class="c1">#</span>
+<span class="linenos"> 30</span>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">H</span><span class="p">,</span> <span class="n">omega</span><span class="p">,</span> <span class="n">eta</span><span class="p">,</span> <span class="n">E0</span><span class="p">,</span> <span class="n">kwargs</span><span class="o">=</span><span class="p">{}):</span>
+<span class="linenos"> 31</span>        <span class="bp">self</span><span class="o">.</span><span class="n">_H</span> <span class="o">=</span> <span class="n">H</span>  <span class="c1"># Hamiltonian</span>
+<span class="linenos"> 32</span>        <span class="bp">self</span><span class="o">.</span><span class="n">_z</span> <span class="o">=</span> <span class="n">omega</span> <span class="o">+</span> <span class="mi">1</span><span class="n">j</span> <span class="o">*</span> <span class="n">eta</span> <span class="o">+</span> <span class="n">E0</span>  <span class="c1"># complex energy</span>
+<span class="linenos"> 33</span>        <span class="bp">self</span><span class="o">.</span><span class="n">_kwargs</span> <span class="o">=</span> <span class="n">kwargs</span>  <span class="c1"># arguments</span>
+<span class="linenos"> 34</span>
+<span class="linenos"> 35</span>    <span class="c1">#</span>
+<span class="linenos"> 36</span>    <span class="nd">@property</span>
+<span class="linenos"> 37</span>    <span class="k">def</span> <span class="nf">shape</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="linenos"> 38</span>        <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_H</span><span class="o">.</span><span class="n">Ns</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_H</span><span class="o">.</span><span class="n">Ns</span><span class="p">)</span>
+<span class="linenos"> 39</span>
+<span class="linenos"> 40</span>    <span class="c1">#</span>
+<span class="linenos"> 41</span>    <span class="nd">@property</span>
+<span class="linenos"> 42</span>    <span class="k">def</span> <span class="nf">dtype</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="linenos"> 43</span>        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_H</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
+<span class="linenos"> 44</span>
+<span class="linenos"> 45</span>    <span class="c1">#</span>
+<span class="linenos"> 46</span>    <span class="k">def</span> <span class="nf">_matvec</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
+<span class="linenos"> 47</span>        <span class="c1"># left multiplication</span>
+<span class="linenos"> 48</span>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_z</span> <span class="o">*</span> <span class="n">v</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_H</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_kwargs</span><span class="p">)</span>
+<span class="linenos"> 49</span>
+<span class="linenos"> 50</span>    <span class="c1">#</span>
+<span class="linenos"> 51</span>    <span class="k">def</span> <span class="nf">_rmatvec</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
+<span class="linenos"> 52</span>        <span class="c1"># right multiplication</span>
+<span class="linenos"> 53</span>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_z</span><span class="o">.</span><span class="n">conj</span><span class="p">()</span> <span class="o">*</span> <span class="n">v</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_H</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_kwargs</span><span class="p">)</span>
+<span class="linenos"> 54</span>
+<span class="linenos"> 55</span>
+<span class="linenos"> 56</span><span class="c1">#</span>
+<span class="linenos"> 57</span><span class="c1">##### calculate action without constructing the Hamiltonian matrix</span>
+<span class="linenos"> 58</span><span class="c1">#</span>
+<span class="linenos"> 59</span><span class="n">on_the_fly</span> <span class="o">=</span> <span class="p">(</span>
+<span class="linenos"> 60</span>    <span class="kc">False</span>  <span class="c1"># toggles between using a `hamiltnian` or a `quantum_LinearOperator` object</span>
+<span class="linenos"> 61</span><span class="p">)</span>
+<span class="linenos"> 62</span><span class="c1"># chain length</span>
+<span class="linenos"> 63</span><span class="n">L</span> <span class="o">=</span> <span class="mi">12</span>
+<span class="linenos"> 64</span><span class="c1"># on-site spin size</span>
+<span class="linenos"> 65</span><span class="n">S</span> <span class="o">=</span> <span class="s2">&quot;1/2&quot;</span>
+<span class="linenos"> 66</span><span class="c1"># translation transformation on the lattice sites [0,...,L-1]</span>
+<span class="linenos"> 67</span><span class="n">T</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">L</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">%</span> <span class="n">L</span>
+<span class="linenos"> 68</span><span class="c1"># this example does not work under these conditions because ground-state sector is not q=0</span>
+<span class="linenos"> 69</span><span class="k">if</span> <span class="p">(</span><span class="n">L</span> <span class="o">//</span> <span class="mi">2</span><span class="p">)</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+<span class="linenos"> 70</span>    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+<span class="linenos"> 71</span>        <span class="s2">&quot;Example requires modifications for Heisenberg chains with L=4*n+2.&quot;</span>
+<span class="linenos"> 72</span>    <span class="p">)</span>
+<span class="linenos"> 73</span><span class="k">if</span> <span class="n">L</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+<span class="linenos"> 74</span>    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+<span class="linenos"> 75</span>        <span class="s2">&quot;Example requires modifications for Heisenberg chains with odd number of sites.&quot;</span>
+<span class="linenos"> 76</span>    <span class="p">)</span>
+<span class="linenos"> 77</span><span class="c1"># construct basis</span>
+<span class="linenos"> 78</span><span class="n">basis0</span> <span class="o">=</span> <span class="n">spin_basis_general</span><span class="p">(</span><span class="n">L</span><span class="p">,</span> <span class="n">S</span><span class="o">=</span><span class="n">S</span><span class="p">,</span> <span class="n">m</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">pauli</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">kblock</span><span class="o">=</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+<span class="linenos"> 79</span><span class="c1"># construct static list for Heisenberg chain</span>
+<span class="linenos"> 80</span><span class="n">Jzz_list</span> <span class="o">=</span> <span class="p">[[</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">%</span> <span class="n">L</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">L</span><span class="p">)]</span>
+<span class="linenos"> 81</span><span class="n">Jxy_list</span> <span class="o">=</span> <span class="p">[[</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">%</span> <span class="n">L</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">L</span><span class="p">)]</span>
+<span class="linenos"> 82</span><span class="n">static</span> <span class="o">=</span> <span class="p">[[</span><span class="s2">&quot;zz&quot;</span><span class="p">,</span> <span class="n">Jzz_list</span><span class="p">],</span> <span class="p">[</span><span class="s2">&quot;+-&quot;</span><span class="p">,</span> <span class="n">Jxy_list</span><span class="p">],</span> <span class="p">[</span><span class="s2">&quot;-+&quot;</span><span class="p">,</span> <span class="n">Jxy_list</span><span class="p">]]</span>
+<span class="linenos"> 83</span><span class="c1"># construct operator for Hamiltonian in the ground state sector</span>
+<span class="linenos"> 84</span><span class="k">if</span> <span class="n">on_the_fly</span><span class="p">:</span>
+<span class="linenos"> 85</span>    <span class="n">H0</span> <span class="o">=</span> <span class="n">quantum_LinearOperator</span><span class="p">(</span><span class="n">static</span><span class="p">,</span> <span class="n">basis</span><span class="o">=</span><span class="n">basis0</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+<span class="linenos"> 86</span><span class="k">else</span><span class="p">:</span>
+<span class="linenos"> 87</span>    <span class="n">H0</span> <span class="o">=</span> <span class="n">hamiltonian</span><span class="p">(</span><span class="n">static</span><span class="p">,</span> <span class="p">[],</span> <span class="n">basis</span><span class="o">=</span><span class="n">basis0</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+<span class="linenos"> 88</span><span class="c1"># calculate ground state</span>
+<span class="linenos"> 89</span><span class="p">[</span><span class="n">E0</span><span class="p">],</span> <span class="n">psi0</span> <span class="o">=</span> <span class="n">H0</span><span class="o">.</span><span class="n">eigsh</span><span class="p">(</span><span class="n">k</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">which</span><span class="o">=</span><span class="s2">&quot;SA&quot;</span><span class="p">)</span>
+<span class="linenos"> 90</span><span class="n">psi0</span> <span class="o">=</span> <span class="n">psi0</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
+<span class="linenos"> 91</span><span class="c1"># define all possible momentum sectors excluding q=L/2 (pi-momentum) where the peak is abnormally large</span>
+<span class="linenos"> 92</span><span class="n">qs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="o">-</span><span class="n">L</span> <span class="o">//</span> <span class="mi">2</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">L</span> <span class="o">//</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="linenos"> 93</span><span class="c1"># define frequencies to calculate spectral function for</span>
+<span class="linenos"> 94</span><span class="n">omegas</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mf">0.05</span><span class="p">)</span>
+<span class="linenos"> 95</span><span class="c1"># spectral peaks broadening factor</span>
+<span class="linenos"> 96</span><span class="n">eta</span> <span class="o">=</span> <span class="mf">0.1</span>
+<span class="linenos"> 97</span><span class="c1"># allocate arrays to store data</span>
+<span class="linenos"> 98</span><span class="n">Gzz</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">omegas</span><span class="o">.</span><span class="n">shape</span> <span class="o">+</span> <span class="n">qs</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">complex128</span><span class="p">)</span>
+<span class="linenos"> 99</span><span class="n">Gpm</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">omegas</span><span class="o">.</span><span class="n">shape</span> <span class="o">+</span> <span class="n">qs</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">complex128</span><span class="p">)</span>
+<span class="linenos">100</span><span class="c1"># loop over momentum sectors</span>
+<span class="linenos">101</span><span class="k">for</span> <span class="n">j</span><span class="p">,</span> <span class="n">q</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">qs</span><span class="p">):</span>
+<span class="linenos">102</span>    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;computing momentum block q=</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">q</span><span class="p">))</span>
+<span class="linenos">103</span>    <span class="c1"># define block</span>
+<span class="linenos">104</span>    <span class="n">block</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">qblock</span><span class="o">=</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">q</span><span class="p">))</span>
+<span class="linenos">105</span>    <span class="c1">#</span>
+<span class="linenos">106</span>    <span class="c1">####################################################################</span>
+<span class="linenos">107</span>    <span class="c1">#</span>
+<span class="linenos">108</span>    <span class="c1"># ---------------------------------------------------- #</span>
+<span class="linenos">109</span>    <span class="c1">#                 calculation but for SzSz             #</span>
+<span class="linenos">110</span>    <span class="c1"># ---------------------------------------------------- #</span>
+<span class="linenos">111</span>    <span class="c1">#</span>
+<span class="linenos">112</span>    <span class="c1"># define operator list for Op_shift_sector</span>
+<span class="linenos">113</span>    <span class="n">f</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">i</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="n">j</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">q</span> <span class="o">*</span> <span class="n">i</span> <span class="o">/</span> <span class="n">L</span><span class="p">)</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">L</span><span class="p">)</span>
+<span class="linenos">114</span>    <span class="n">Op_list</span> <span class="o">=</span> <span class="p">[[</span><span class="s2">&quot;z&quot;</span><span class="p">,</span> <span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">f</span><span class="p">(</span><span class="n">i</span><span class="p">)]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">L</span><span class="p">)]</span>
+<span class="linenos">115</span>    <span class="c1"># define basis</span>
+<span class="linenos">116</span>    <span class="n">basisq</span> <span class="o">=</span> <span class="n">spin_basis_general</span><span class="p">(</span><span class="n">L</span><span class="p">,</span> <span class="n">S</span><span class="o">=</span><span class="n">S</span><span class="p">,</span> <span class="n">m</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">pauli</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">block</span><span class="p">)</span>
+<span class="linenos">117</span>    <span class="c1"># define operators in the q-momentum sector</span>
+<span class="linenos">118</span>    <span class="k">if</span> <span class="n">on_the_fly</span><span class="p">:</span>
+<span class="linenos">119</span>        <span class="n">Hq</span> <span class="o">=</span> <span class="n">quantum_LinearOperator</span><span class="p">(</span>
+<span class="linenos">120</span>            <span class="n">static</span><span class="p">,</span>
+<span class="linenos">121</span>            <span class="n">basis</span><span class="o">=</span><span class="n">basisq</span><span class="p">,</span>
+<span class="linenos">122</span>            <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">complex128</span><span class="p">,</span>
+<span class="linenos">123</span>            <span class="n">check_symm</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+<span class="linenos">124</span>            <span class="n">check_pcon</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+<span class="linenos">125</span>            <span class="n">check_herm</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+<span class="linenos">126</span>        <span class="p">)</span>
+<span class="linenos">127</span>    <span class="k">else</span><span class="p">:</span>
+<span class="linenos">128</span>        <span class="n">Hq</span> <span class="o">=</span> <span class="n">hamiltonian</span><span class="p">(</span>
+<span class="linenos">129</span>            <span class="n">static</span><span class="p">,</span>
+<span class="linenos">130</span>            <span class="p">[],</span>
+<span class="linenos">131</span>            <span class="n">basis</span><span class="o">=</span><span class="n">basisq</span><span class="p">,</span>
+<span class="linenos">132</span>            <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">complex128</span><span class="p">,</span>
+<span class="linenos">133</span>            <span class="n">check_symm</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+<span class="linenos">134</span>            <span class="n">check_pcon</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+<span class="linenos">135</span>            <span class="n">check_herm</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+<span class="linenos">136</span>        <span class="p">)</span>
+<span class="linenos">137</span>    <span class="c1"># shift sectors</span>
+<span class="linenos">138</span>    <span class="n">psiA</span> <span class="o">=</span> <span class="n">basisq</span><span class="o">.</span><span class="n">Op_shift_sector</span><span class="p">(</span><span class="n">basis0</span><span class="p">,</span> <span class="n">Op_list</span><span class="p">,</span> <span class="n">psi0</span><span class="p">)</span>
+<span class="linenos">139</span>    <span class="c1">#</span>
+<span class="linenos">140</span>    <span class="c1">### apply vector correction method</span>
+<span class="linenos">141</span>    <span class="c1">#</span>
+<span class="linenos">142</span>    <span class="c1"># solve (z-H)|x&gt; = |A&gt; solve for |x&gt;  using iterative solver for each omega</span>
+<span class="linenos">143</span>    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">omega</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">omegas</span><span class="p">):</span>
+<span class="linenos">144</span>        <span class="n">lhs</span> <span class="o">=</span> <span class="n">LHS</span><span class="p">(</span><span class="n">Hq</span><span class="p">,</span> <span class="n">omega</span><span class="p">,</span> <span class="n">eta</span><span class="p">,</span> <span class="n">E0</span><span class="p">)</span>
+<span class="linenos">145</span>        <span class="n">x</span><span class="p">,</span> <span class="o">*</span><span class="n">_</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">bicg</span><span class="p">(</span><span class="n">lhs</span><span class="p">,</span> <span class="n">psiA</span><span class="p">,</span> <span class="n">maxiter</span><span class="o">=</span><span class="mi">1000</span><span class="p">)</span>
+<span class="linenos">146</span>        <span class="n">Gzz</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">vdot</span><span class="p">(</span><span class="n">psiA</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span>
+<span class="linenos">147</span>    <span class="c1">#</span>
+<span class="linenos">148</span>    <span class="c1">#####################################################################</span>
+<span class="linenos">149</span>    <span class="c1">#</span>
+<span class="linenos">150</span>    <span class="c1"># ---------------------------------------------------- #</span>
+<span class="linenos">151</span>    <span class="c1">#            same calculation but for S-S+             #</span>
+<span class="linenos">152</span>    <span class="c1"># ---------------------------------------------------- #</span>
+<span class="linenos">153</span>    <span class="c1">#</span>
+<span class="linenos">154</span>    <span class="c1"># divide by extra sqrt(2) to get extra factor of 1/2 when taking sandwich: needed since H = 1/2 (S^+_i S^-_j + h.c.) + S^z_j S^z_j</span>
+<span class="linenos">155</span>    <span class="n">f</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">i</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="n">j</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">q</span> <span class="o">*</span> <span class="n">i</span> <span class="o">/</span> <span class="n">L</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mf">1.0</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">L</span><span class="p">))</span>
+<span class="linenos">156</span>    <span class="n">Op_list</span> <span class="o">=</span> <span class="p">[[</span><span class="s2">&quot;+&quot;</span><span class="p">,</span> <span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">f</span><span class="p">(</span><span class="n">i</span><span class="p">)]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">L</span><span class="p">)]</span>
+<span class="linenos">157</span>    <span class="c1"># change S_z projection up by S for action of S+ operator</span>
+<span class="linenos">158</span>    <span class="n">S_z_tot</span> <span class="o">=</span> <span class="mi">0</span> <span class="o">+</span> <span class="nb">eval</span><span class="p">(</span><span class="n">S</span><span class="p">)</span>
+<span class="linenos">159</span>    <span class="c1"># calculate magnetization density from S_z_tot as defined in the documentation</span>
+<span class="linenos">160</span>    <span class="c1"># m = S_z_tot / (S * N), S: local spin (as number), N: total spins</span>
+<span class="linenos">161</span>    <span class="n">m</span> <span class="o">=</span> <span class="n">S_z_tot</span> <span class="o">/</span> <span class="p">(</span><span class="nb">eval</span><span class="p">(</span><span class="n">S</span><span class="p">)</span> <span class="o">*</span> <span class="n">L</span><span class="p">)</span>
+<span class="linenos">162</span>    <span class="n">basisq</span> <span class="o">=</span> <span class="n">spin_basis_general</span><span class="p">(</span><span class="n">L</span><span class="p">,</span> <span class="n">S</span><span class="o">=</span><span class="n">S</span><span class="p">,</span> <span class="n">m</span><span class="o">=</span><span class="n">m</span><span class="p">,</span> <span class="n">pauli</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">block</span><span class="p">)</span>
+<span class="linenos">163</span>    <span class="c1"># define operators in the q-momentum sector</span>
+<span class="linenos">164</span>    <span class="k">if</span> <span class="n">on_the_fly</span><span class="p">:</span>
+<span class="linenos">165</span>        <span class="n">Hq</span> <span class="o">=</span> <span class="n">quantum_LinearOperator</span><span class="p">(</span>
+<span class="linenos">166</span>            <span class="n">static</span><span class="p">,</span>
+<span class="linenos">167</span>            <span class="n">basis</span><span class="o">=</span><span class="n">basisq</span><span class="p">,</span>
+<span class="linenos">168</span>            <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">complex128</span><span class="p">,</span>
+<span class="linenos">169</span>            <span class="n">check_symm</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+<span class="linenos">170</span>            <span class="n">check_pcon</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+<span class="linenos">171</span>            <span class="n">check_herm</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+<span class="linenos">172</span>        <span class="p">)</span>
+<span class="linenos">173</span>    <span class="k">else</span><span class="p">:</span>
+<span class="linenos">174</span>        <span class="n">Hq</span> <span class="o">=</span> <span class="n">hamiltonian</span><span class="p">(</span>
+<span class="linenos">175</span>            <span class="n">static</span><span class="p">,</span>
+<span class="linenos">176</span>            <span class="p">[],</span>
+<span class="linenos">177</span>            <span class="n">basis</span><span class="o">=</span><span class="n">basisq</span><span class="p">,</span>
+<span class="linenos">178</span>            <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">complex128</span><span class="p">,</span>
+<span class="linenos">179</span>            <span class="n">check_symm</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+<span class="linenos">180</span>            <span class="n">check_pcon</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+<span class="linenos">181</span>            <span class="n">check_herm</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+<span class="linenos">182</span>        <span class="p">)</span>
+<span class="linenos">183</span>    <span class="c1"># shift sectors</span>
+<span class="linenos">184</span>    <span class="n">psiA</span> <span class="o">=</span> <span class="n">basisq</span><span class="o">.</span><span class="n">Op_shift_sector</span><span class="p">(</span><span class="n">basis0</span><span class="p">,</span> <span class="n">Op_list</span><span class="p">,</span> <span class="n">psi0</span><span class="p">)</span>
+<span class="linenos">185</span>    <span class="c1">#</span>
+<span class="linenos">186</span>    <span class="c1">### apply vector correction method</span>
+<span class="linenos">187</span>    <span class="c1">#</span>
+<span class="linenos">188</span>    <span class="c1"># solve (z-H)|x&gt; = |A&gt; solve for |x&gt;  using iterative solver for each omega</span>
+<span class="linenos">189</span>    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">omega</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">omegas</span><span class="p">):</span>
+<span class="linenos">190</span>        <span class="n">lhs</span> <span class="o">=</span> <span class="n">LHS</span><span class="p">(</span><span class="n">Hq</span><span class="p">,</span> <span class="n">omega</span><span class="p">,</span> <span class="n">eta</span><span class="p">,</span> <span class="n">E0</span><span class="p">)</span>
+<span class="linenos">191</span>        <span class="n">x</span><span class="p">,</span> <span class="o">*</span><span class="n">_</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">bicg</span><span class="p">(</span><span class="n">lhs</span><span class="p">,</span> <span class="n">psiA</span><span class="p">)</span>
+<span class="linenos">192</span>        <span class="n">Gpm</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">vdot</span><span class="p">(</span><span class="n">psiA</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span>
+<span class="linenos">193</span><span class="c1">#</span>
+<span class="linenos">194</span><span class="c1">##### plot results</span>
+<span class="linenos">195</span><span class="c1">#</span>
+<span class="linenos">196</span><span class="n">ks</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">qs</span> <span class="o">/</span> <span class="n">L</span>  <span class="c1"># compute physical momentum values</span>
+<span class="linenos">197</span><span class="n">f</span><span class="p">,</span> <span class="p">(</span><span class="n">ax1</span><span class="p">,</span> <span class="n">ax2</span><span class="p">)</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span> <span class="n">sharex</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="linenos">198</span><span class="n">ax1</span><span class="o">.</span><span class="n">pcolormesh</span><span class="p">(</span><span class="n">ks</span><span class="p">,</span> <span class="n">omegas</span><span class="p">,</span> <span class="n">Gzz</span><span class="o">.</span><span class="n">imag</span><span class="p">,</span> <span class="n">shading</span><span class="o">=</span><span class="s2">&quot;nearest&quot;</span><span class="p">)</span>
+<span class="linenos">199</span><span class="n">ax2</span><span class="o">.</span><span class="n">pcolormesh</span><span class="p">(</span><span class="n">ks</span><span class="p">,</span> <span class="n">omegas</span><span class="p">,</span> <span class="n">Gpm</span><span class="o">.</span><span class="n">imag</span><span class="p">,</span> <span class="n">shading</span><span class="o">=</span><span class="s2">&quot;nearest&quot;</span><span class="p">)</span>
+<span class="linenos">200</span><span class="n">ax2</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;$k$&quot;</span><span class="p">)</span>
+<span class="linenos">201</span><span class="n">ax2</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;$</span><span class="se">\\</span><span class="s2">omega$&quot;</span><span class="p">)</span>
+<span class="linenos">202</span><span class="n">ax1</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;$</span><span class="se">\\</span><span class="s2">omega$&quot;</span><span class="p">)</span>
+<span class="linenos">203</span><span class="n">ax1</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;$G_</span><span class="si">{zz}</span><span class="s2">(</span><span class="se">\\</span><span class="s2">omega,k)$&quot;</span><span class="p">)</span>
+<span class="linenos">204</span><span class="n">ax2</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;$G_{+-}(</span><span class="se">\\</span><span class="s2">omega,k)$&quot;</span><span class="p">)</span>
+<span class="linenos">205</span><span class="c1"># plt.show()</span>
+<span class="linenos">206</span><span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 </pre></div>
-</td></tr></table></div>
 </div>
+</section>
 
 
-            <div class="clearer"></div>
+           </div>
           </div>
-        </div>
-      </div>
-      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
-        <div class="sphinxsidebarwrapper">
-  <h3><a href="../index.html">Table of Contents</a></h3>
-  <ul>
-<li><a class="reference internal" href="#">Direct Calculation of spectral functions using symmetries</a></li>
-<li><a class="reference internal" href="#script">Script</a></li>
-</ul>
+          <footer>
 
-  <div role="note" aria-label="source link">
-    <h3>This Page</h3>
-    <ul class="this-page-menu">
-      <li><a href="../sources/examples/example26.rst.txt"
-            rel="nofollow">Show Source</a></li>
-    </ul>
-   </div>
-<div id="searchbox" style="display: none" role="search">
-  <h3 id="searchlabel">Quick search</h3>
-    <div class="searchformwrapper">
-    <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" />
-      <input type="submit" value="Go" />
-    </form>
-    </div>
-</div>
-<script>$('#searchbox').show(0);</script>
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2016, Phillip Weinberg, Markus Schmitt, and Marin Bukov.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
         </div>
       </div>
-      <div class="clearer"></div>
-    </div>
-    <div class="related" role="navigation" aria-label="related navigation">
-      <h3>Navigation</h3>
-      <ul>
-        <li class="right" style="margin-right: 10px">
-          <a href="../genindex.html" title="General Index"
-             >index</a></li>
-        <li class="right" >
-          <a href="../py-modindex.html" title="Python Module Index"
-             >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.7 documentation</a> &#187;</li>
-        <li class="nav-item nav-item-this"><a href="">Direct Calculation of spectral functions using symmetries</a></li> 
-      </ul>
-    </div>
-    <div class="footer" role="contentinfo">
-        &#169; Copyright 2016, Phillip Weinberg, Markus Schmitt and Marin Bukov.
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.5.4.
-    </div>
-  </body>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+    <!-- Theme Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-6885KZ7NH6"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-6885KZ7NH6', {
+          'anonymize_ip': false,
+      });
+    </script> 
+
+</body>
 </html>

@@ -1,5 +1,5 @@
 #####################################################################
-#                            example 5                              #
+#                   example 5 (DEPRECATED)                          #
 #    In this script we demonstrate how to use QuSpin's to build     #
 #    the Hamiltonian of the SSH model in real and momentum space.   #
 #    Along the way, we showcase the block tools which allow the     #

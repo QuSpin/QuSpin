@@ -1,5 +1,5 @@
 #####################################################################
-#                            example 7                              #
+#                   example 7  (DEPRECATED)                         #
 #   In this script we demonstrate how to use QuSpin's to create	    #
 #   a ladder geometry and study quanch dynamics in the Bose-Hubbard #
 #   model. We also show how to compute the entanglement entropy of  #
