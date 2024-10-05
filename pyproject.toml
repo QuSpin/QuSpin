@@ -38,6 +38,7 @@ dev = [
     "numpydoc>=1.8.0",
     "sphinx-rtd-size>=0.2.0",
     "sphinx-rtd-theme>=2.0.0",
+    "sparse-dot-mkl>=0.9.5",
 ]
 
 

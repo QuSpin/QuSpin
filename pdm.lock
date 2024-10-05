@@ -5,7 +5,7 @@
 groups = ["default", "dev"]
 strategy = ["inherit_metadata"]
 lock_version = "4.5.0"
-content_hash = "sha256:d0a28d7c62098a132feb3bd71120cdbdd1ec78d7ad3f1e45a35b11e04abcdb1d"
+content_hash = "sha256:342d3d2b7fe9364447296d4a6d413ac0c9da5d31831e71bba57efffecafb17bd"
 
 [[metadata.targets]]
 requires_python = ">=3.9,<3.13"
@@ -761,7 +761,7 @@ name = "numpy"
 version = "2.0.2"
 requires_python = ">=3.9"
 summary = "Fundamental package for array computing in Python"
-groups = ["default"]
+groups = ["default", "dev"]
 files = [
     {file = "numpy-2.0.2-cp310-cp310-macosx_10_9_x86_64.whl", hash = "sha256:51129a29dbe56f9ca83438b706e2e69a39892b5eda6cedcb6b0c9fdc9b0d3ece"},
     {file = "numpy-2.0.2-cp310-cp310-macosx_11_0_arm64.whl", hash = "sha256:f15975dfec0cf2239224d80e32c3170b1d168335eaedee69da84fbe9f1f9cd04"},
@@ -1111,7 +1111,7 @@ name = "scipy"
 version = "1.13.1"
 requires_python = ">=3.9"
 summary = "Fundamental algorithms for scientific computing in Python"
-groups = ["default"]
+groups = ["default", "dev"]
 dependencies = [
     "numpy<2.3,>=1.22.4",
 ]
@@ -1162,6 +1162,20 @@ groups = ["dev"]
 files = [
     {file = "snowballstemmer-2.2.0-py2.py3-none-any.whl", hash = "sha256:c8e1716e83cc398ae16824e5572ae04e0d9fc2c6b985fb0f900f5f0c96ecba1a"},
     {file = "snowballstemmer-2.2.0.tar.gz", hash = "sha256:09b16deb8547d3412ad7b590689584cd0fe25ec8db3be37788be3810cbf19cb1"},
+]
+
+[[package]]
+name = "sparse-dot-mkl"
+version = "0.9.5"
+summary = "Intel MKL wrapper for sparse matrix multiplication"
+groups = ["dev"]
+dependencies = [
+    "numpy",
+    "scipy",
+]
+files = [
+    {file = "sparse_dot_mkl-0.9.5-py3-none-any.whl", hash = "sha256:cc9e740bc3e976dfe08a32728596eb1377679b331beae0be418a884a846b1284"},
+    {file = "sparse_dot_mkl-0.9.5.tar.gz", hash = "sha256:4018f2ffb95d5865320b77ad84a97ef66092c0eef418834c43f390515a783ed0"},
 ]
 
 [[package]]
