@@ -276,7 +276,7 @@
 
 <div class="viewcode-block" id="Floquet.__init__">
 <a class="viewcode-back" href="../../../generated/quspin.tools.Floquet.Floquet.html#quspin.tools.Floquet.Floquet.__init__">[docs]</a>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">evo_dict</span><span class="p">,</span> <span class="n">HF</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">UF</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">thetaF</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">VF</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">n_jobs</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">evo_dict</span><span class="p">,</span> <span class="n">HF</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">UF</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">thetaF</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">VF</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">n_jobs</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">force_ONB</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Instantiates the `Floquet` class.</span>
 
 <span class="sd">        Parameters</span>
@@ -312,7 +312,9 @@
 <span class="sd">                Set to `True` to save Floquet states under attribute _.VF. Default is `False`.</span>
 <span class="sd">        n_jobs : int, optional</span>
 <span class="sd">                Sets the number of processors which are used when looping over the basis states to compute the Floquet unitary. Default is `False`.</span>
-
+<span class="sd">        force_ONB : bool</span>
+<span class="sd">                Set to `True` to run an extra QR decomposition to orthogonalize the Floquet states; only effective for `VF=True`. </span>
+<span class="sd">    </span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="kn">from</span> <span class="nn">quspin.operators</span> <span class="kn">import</span> <span class="n">ishamiltonian</span>
 
@@ -449,7 +451,7 @@
         <span class="k">if</span> <span class="s2">&quot;VF&quot;</span> <span class="ow">in</span> <span class="n">variables</span><span class="p">:</span>
             <span class="n">thetaF</span><span class="p">,</span> <span class="n">VF</span> <span class="o">=</span> <span class="n">_la</span><span class="o">.</span><span class="n">eig</span><span class="p">(</span><span class="n">UF</span><span class="p">,</span> <span class="n">overwrite_a</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
             <span class="c1"># check and orthogonalise VF in degenerate subspaces</span>
-            <span class="k">if</span> <span class="n">_np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">_np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">_np</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">thetaF</span><span class="p">))</span> <span class="o">&lt;</span> <span class="mf">1e3</span> <span class="o">*</span> <span class="n">_np</span><span class="o">.</span><span class="n">finfo</span><span class="p">(</span><span class="n">thetaF</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span><span class="o">.</span><span class="n">eps</span><span class="p">):</span>
+            <span class="k">if</span> <span class="p">(</span> <span class="n">_np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">_np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">_np</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">thetaF</span><span class="p">))</span> <span class="o">&lt;</span> <span class="mf">1e3</span> <span class="o">*</span> <span class="n">_np</span><span class="o">.</span><span class="n">finfo</span><span class="p">(</span><span class="n">thetaF</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span><span class="o">.</span><span class="n">eps</span><span class="p">)</span> <span class="p">)</span> <span class="ow">or</span> <span class="n">force_ONB</span><span class="p">:</span>
                 <span class="n">VF</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">_la</span><span class="o">.</span><span class="n">qr</span><span class="p">(</span><span class="n">VF</span><span class="p">,</span> <span class="n">overwrite_a</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
             <span class="c1"># https://math.stackexchange.com/questions/269164/diagonalizable-unitarily-schur-factorization</span>
@@ -928,7 +930,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2016, Phillip Weinberg, Markus Schmitt, and Marin Bukov.</p>
+    <p>&#169; Copyright 2024, Phillip Weinberg, Markus Schmitt, and Marin Bukov.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

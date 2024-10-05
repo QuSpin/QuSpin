@@ -106,8 +106,8 @@
 <li><p>OpenMP,</p></li>
 <li><p>Intel’s MKL library for NumPy/SciPy (which is Anaconda’s default NumPy version, starting from Anaconda 2.5 onwards).</p></li>
 </ul>
-<p>To install quspin with OpenMP support using anaconda (see also <a class="reference internal" href="../tutorials/parallelization.html#parallelization-label"><span class="std std-ref">Parallel computing support</span></a>), run</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ conda install -c weinbe58 omp quspin
+<p>Quspin has OpenMP support built in starting from version 1.0.0 (see also <a class="reference internal" href="../tutorials/parallelization.html#parallelization-label"><span class="std std-ref">Parallel computing support</span></a>); to install it, simply run</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ pip install quspin
 </pre></div>
 </div>
 <p>The example below demonstrates how to use the OpenMP version of quspin for parallel computing. It is set up in such a way that the number of OpenMP and MKL threads is controlled from the command line [cf. code lines 8,9]. To run the script, run</p>
@@ -245,7 +245,7 @@ $ python example12.py 4 4 # simulaneous OpenMP and MKL multi-threading speedup
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2016, Phillip Weinberg, Markus Schmitt, and Marin Bukov.</p>
+    <p>&#169; Copyright 2024, Phillip Weinberg, Markus Schmitt, and Marin Bukov.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

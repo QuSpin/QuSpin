@@ -63,6 +63,7 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../tools.html#measurements">measurements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tools.html#block-tools">block_tools</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../tools.html#misc">misc</a></li>
 </ul>
 </li>
@@ -120,7 +121,7 @@
 <h1>quspin.tools.Floquet.Floquet<a class="headerlink" href="#quspin-tools-floquet-floquet" title="Link to this heading"></a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="quspin.tools.Floquet.Floquet">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">quspin.tools.Floquet.</span></span><span class="sig-name descname"><span class="pre">Floquet</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">evo_dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">HF</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">UF</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">thetaF</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">VF</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_jobs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/tools/Floquet.html#Floquet"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quspin.tools.Floquet.Floquet" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">quspin.tools.Floquet.</span></span><span class="sig-name descname"><span class="pre">Floquet</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">evo_dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">HF</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">UF</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">thetaF</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">VF</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_jobs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">force_ONB</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/tools/Floquet.html#Floquet"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quspin.tools.Floquet.Floquet" title="Link to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Calculates the Floquet spectrum, Floquet Hamiltonian and Floquet states.</p>
 <p>Loops over the basis states to compute the Floquet unitary <span class="math notranslate nohighlight">\(U_F\)</span> (evolution operator over one period) for a
@@ -190,7 +191,7 @@ using <cite>evo_dict</cite> variable, case ii (see below).</p>
 <span class="linenos">48</span>    <span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">T</span> <span class="o">/</span> <span class="mf">4.0</span><span class="p">,</span> <span class="n">t</span><span class="o">.</span><span class="n">T</span> <span class="o">/</span> <span class="mf">2.0</span><span class="p">,</span> <span class="n">t</span><span class="o">.</span><span class="n">T</span> <span class="o">/</span> <span class="mf">4.0</span><span class="p">]</span>
 <span class="linenos">49</span><span class="p">)</span>  <span class="c1"># time step durations to apply H for</span>
 <span class="linenos">50</span><span class="n">Floq</span> <span class="o">=</span> <span class="n">Floquet</span><span class="p">(</span>
-<span class="linenos">51</span>    <span class="p">{</span><span class="s2">&quot;H&quot;</span><span class="p">:</span> <span class="n">H</span><span class="p">,</span> <span class="s2">&quot;t_list&quot;</span><span class="p">:</span> <span class="n">t_list</span><span class="p">,</span> <span class="s2">&quot;dt_list&quot;</span><span class="p">:</span> <span class="n">dt_list</span><span class="p">},</span> <span class="n">VF</span><span class="o">=</span><span class="kc">True</span>
+<span class="linenos">51</span>    <span class="p">{</span><span class="s2">&quot;H&quot;</span><span class="p">:</span> <span class="n">H</span><span class="p">,</span> <span class="s2">&quot;t_list&quot;</span><span class="p">:</span> <span class="n">t_list</span><span class="p">,</span> <span class="s2">&quot;dt_list&quot;</span><span class="p">:</span> <span class="n">dt_list</span><span class="p">},</span> <span class="n">VF</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">force_ONB</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
 <span class="linenos">52</span><span class="p">)</span>  <span class="c1"># call Floquet class</span>
 <span class="linenos">53</span><span class="n">VF</span> <span class="o">=</span> <span class="n">Floq</span><span class="o">.</span><span class="n">VF</span>  <span class="c1"># read off Floquet states</span>
 <span class="linenos">54</span><span class="n">EF</span> <span class="o">=</span> <span class="n">Floq</span><span class="o">.</span><span class="n">EF</span>  <span class="c1"># read off quasienergies</span>
@@ -198,7 +199,7 @@ using <cite>evo_dict</cite> variable, case ii (see below).</p>
 </div>
 <dl class="py method">
 <dt class="sig sig-object py" id="quspin.tools.Floquet.Floquet.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">evo_dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">HF</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">UF</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">thetaF</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">VF</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_jobs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/tools/Floquet.html#Floquet.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quspin.tools.Floquet.Floquet.__init__" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">evo_dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">HF</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">UF</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">thetaF</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">VF</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_jobs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">force_ONB</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/tools/Floquet.html#Floquet.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quspin.tools.Floquet.Floquet.__init__" title="Link to this definition"></a></dt>
 <dd><p>Instantiates the <cite>Floquet</cite> class.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -247,6 +248,8 @@ Depending on the protocol type, it contains the following keys:</p>
 </dd>
 <dt><strong>n_jobs</strong><span class="classifier">int, optional</span></dt><dd><p>Sets the number of processors which are used when looping over the basis states to compute the Floquet unitary. Default is <cite>False</cite>.</p>
 </dd>
+<dt><strong>force_ONB</strong><span class="classifier">bool</span></dt><dd><p>Set to <cite>True</cite> to run an extra QR decomposition to orthogonalize the Floquet states; only effective for <cite>VF=True</cite>.</p>
+</dd>
 </dl>
 </dd>
 </dl>
@@ -255,7 +258,7 @@ Depending on the protocol type, it contains the following keys:</p>
 <p class="rubric">Methods</p>
 <table class="autosummary longtable docutils align-default">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#quspin.tools.Floquet.Floquet.__init__" title="quspin.tools.Floquet.Floquet.__init__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__init__</span></code></a>(evo_dict[, HF, UF, thetaF, VF, n_jobs])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#quspin.tools.Floquet.Floquet.__init__" title="quspin.tools.Floquet.Floquet.__init__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__init__</span></code></a>(evo_dict[, HF, UF, thetaF, VF, ...])</p></td>
 <td><p>Instantiates the <cite>Floquet</cite> class.</p></td>
 </tr>
 </tbody>
@@ -368,7 +371,7 @@ Depending on the protocol type, it contains the following keys:</p>
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2016, Phillip Weinberg, Markus Schmitt, and Marin Bukov.</p>
+    <p>&#169; Copyright 2024, Phillip Weinberg, Markus Schmitt, and Marin Bukov.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
