@@ -567,9 +567,9 @@ class block_ops(object):
 			p = self._get_P(key)
 
 			if _sp.issparse(psi_0):
-				psi = p.H.dot(psi_0).toarray()
+				psi = p.T.conj().dot(psi_0).toarray()
 			else:
-				psi = p.H.dot(psi_0)
+				psi = p.T.conj().dot(psi_0)
 
 			psi = _np.asarray(psi).ravel()
 			
@@ -723,9 +723,9 @@ class block_ops(object):
 			p = self._get_P(key)
 
 			if _sp.issparse(psi_0):
-				psi = p.H.dot(psi_0).toarray()
+				psi = p.T.conj().dot(psi_0).toarray()
 			else:
-				psi = p.H.dot(psi_0)
+				psi = p.T.conj().dot(psi_0)
 
 			psi = psi.ravel()
 			if _np.linalg.norm(psi) > 1000*_np.finfo(self.dtype).eps:
