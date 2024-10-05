@@ -31,7 +31,7 @@ dynamic = []
 H = hamiltonian(static, dynamic, basis=basis, dtype=np.float64)
 # calculate eigensystem
 E, V = H.eigh()
-E_GS, V_GS = H.eigsh(k=2, which="SA", maxiter=1e10)  # only GS
+E_GS, V_GS = H.eigsh(k=2, which="SA", maxiter=1e6)  # only GS
 print("eigenenergies:", E)
 print("GS energy is %0.3f" % (E_GS[0]))
 # calculate entanglement entropy per site of GS

@@ -1,6 +1,6 @@
 rm failed.txt
 
-cd tests/
+cd test/
 sh run_test.sh
 
 cd ../sphinx/doc_examples/
