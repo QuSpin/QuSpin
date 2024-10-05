@@ -10,7 +10,7 @@ np.set_printoptions(linewidth=100000,precision=2)
 def f(t,np):
 	return np.sin(t)*t
 
-@pytest.mark.xfail("iterator implementation is not working")
+@pytest.mark.xfail
 def test():
 	L=5
 
