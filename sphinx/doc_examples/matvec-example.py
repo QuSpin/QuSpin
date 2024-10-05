@@ -131,7 +131,7 @@ rho_t = evolve(
 population_down = np.zeros(time.shape, dtype=np.float64)
 for i, rho_flattened in enumerate(rho_t):
     rho = rho_flattened.reshape(H.Ns, H.Ns)
-    population_down[i] = rho_flattened[1, 1]
+    population_down[i] = rho_flattened[1, 1].real
     print(
         "time={0:.2f}, population of down state = {1:0.8f}".format(
             time[i], population_down[i]
