@@ -43,7 +43,12 @@
   </form>
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <p class="caption" role="heading"><span class="caption-text">QuSpin (public API)</span></p>
+              <p class="caption" role="heading"><span class="caption-text">New Features</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../new_features.html">Highlights</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../new_features.html#most-recent-changes-features">Most recent changes &amp; features</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">QuSpin (public API)</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../basis.html">Basis module (<code class="xref py py-mod docutils literal notranslate"><span class="pre">quspin.basis</span></code>)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../operators.html">Operators module (<code class="xref py py-mod docutils literal notranslate"><span class="pre">quspin.operators</span></code>)</a></li>
@@ -143,7 +148,7 @@
 <span class="sd">		:lines: 7-</span>
 
 <span class="sd">	Parameters</span>
-<span class="sd">	-----------</span>
+<span class="sd">	----------</span>
 <span class="sd">	blocks : list/tuple/iterator</span>
 <span class="sd">		Contains the symmetry blocks to construct the Hamiltonian with, as dictionaries.</span>
 <span class="sd">	static : list</span>
@@ -172,7 +177,7 @@
 <span class="sd">		Enable/Disable particle conservation check of the operators for the first Hamiltonian constructed.</span>
 
 <span class="sd">	Returns</span>
-<span class="sd">	--------</span>
+<span class="sd">	-------</span>
 <span class="sd">	tuple</span>
 <span class="sd">		P : scipy.sparse.csr </span>
 <span class="sd">			Projector to the symmetr-block subspace (e.g. Fourier transform in case of momentum blocks).</span>
@@ -405,7 +410,7 @@
 <span class="w">		</span><span class="sd">&quot;&quot;&quot;Instantiates the `block_ops` class.</span>
 <span class="sd">		</span>
 <span class="sd">		Parameters</span>
-<span class="sd">		-----------</span>
+<span class="sd">		----------</span>
 <span class="sd">		blocks : list/tuple/iterator</span>
 <span class="sd">			Contains the symmetry blocks to construct the Hamiltonian with, </span>
 <span class="sd">			as dictionaries or `hamiltonian` objects.	</span>
@@ -519,7 +524,7 @@
 <span class="w">		</span><span class="sd">&quot;&quot;&quot;Allows to update the `blocks` variable of the class.</span>
 
 <span class="sd">		Parameters</span>
-<span class="sd">		-----------</span>
+<span class="sd">		----------</span>
 <span class="sd">		blocks : list/tuple/iterator</span>
 <span class="sd">			Contains the new symmetry blocks to be added to the `basis_dict` attribute of the class, </span>
 <span class="sd">			as dictionaries or `hamiltonian` objects.</span>
@@ -625,7 +630,7 @@
 <span class="sd">			:lines: 69-</span>
 
 <span class="sd">		Parameters</span>
-<span class="sd">		-----------</span>
+<span class="sd">		----------</span>
 <span class="sd">		psi_0 : numpy.ndarray, list, tuple</span>
 <span class="sd">			Quantum state which defined on the full Hilbert space of the problem. </span>
 <span class="sd">			Does not need to obey and sort of symmetry.</span>
@@ -651,7 +656,7 @@
 <span class="sd">			This flag is useful if there are a lot of smaller-sized blocks.</span>
 
 <span class="sd">		Returns</span>
-<span class="sd">		--------</span>
+<span class="sd">		-------</span>
 <span class="sd">		obj</span>
 <span class="sd">			if `iterate = True`, returns generator which generates the time dependent state in the </span>
 <span class="sd">			full H-space basis.</span>
@@ -747,7 +752,7 @@
 <span class="sd">			:lines: 60-67</span>
 
 <span class="sd">		Parameters</span>
-<span class="sd">		-----------</span>
+<span class="sd">		----------</span>
 <span class="sd">		psi_0 : numpy.ndarray, list, tuple</span>
 <span class="sd">			Quantum state which defined on the full Hilbert space of the problem. </span>
 <span class="sd">			Does not need to obey and sort of symmetry.</span>
@@ -773,7 +778,7 @@
 <span class="sd">			This flag is useful if there are a lot of smaller-sized blocks.</span>
 
 <span class="sd">		Returns</span>
-<span class="sd">		--------</span>
+<span class="sd">		-------</span>
 <span class="sd">		obj</span>
 <span class="sd">			if `iterate = True`, returns generator which generates the time dependent state in the </span>
 <span class="sd">			full H-space basis.</span>
