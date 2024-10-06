@@ -1,4 +1,4 @@
-quspin.basis.spinful\_fermion\_basis\_general
+﻿quspin.basis.spinful\_fermion\_basis\_general
 =============================================
 
 .. currentmodule:: quspin.basis

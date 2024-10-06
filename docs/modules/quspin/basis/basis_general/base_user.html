@@ -1,98 +1,173 @@
-
 <!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>quspin.basis.basis_general.base_user &mdash; QuSpin 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../../../../static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../../../static/css/sphinx_rtd_size.css?v=f26ae176" />
+      <link rel="stylesheet" type="text/css" href="../../../../static/css/py_class_property_fix.css?v=faf79ccd" />
 
-<html>
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><script type="text/javascript">
-
-      var _gaq = _gaq || [];
-      _gaq.push(['_setAccount', 'UA-110543543-1']);
-      _gaq.push(['_trackPageview']);
-
-      (function() {
-        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-      })();
-    </script>
-    <title>quspin.basis.basis_general.base_user &#8212; QuSpin 0.3.7 documentation</title>
-    <link rel="stylesheet" href="../../../../static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="../../../../static/classic.css" type="text/css" />
-    
-    <script id="documentation_options" data-url_root="../../../../" src="../../../../static/documentation_options.js"></script>
-    <script src="../../../../static/jquery.js"></script>
-    <script src="../../../../static/underscore.js"></script>
-    <script src="../../../../static/doctools.js"></script>
-    
+  
+  <!--[if lt IE 9]>
+    <script src="../../../../static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../../../static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../../static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../../static/documentation_options.js?v=8d563738"></script>
+        <script src="../../../../static/doctools.js?v=9a2dae69"></script>
+        <script src="../../../../static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../../static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../search.html" /> 
-  </head><body>
-    <div class="related" role="navigation" aria-label="related navigation">
-      <h3>Navigation</h3>
-      <ul>
-        <li class="right" style="margin-right: 10px">
-          <a href="../../../../genindex.html" title="General Index"
-             accesskey="I">index</a></li>
-        <li class="right" >
-          <a href="../../../../py-modindex.html" title="Python Module Index"
-             >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">QuSpin 0.3.7 documentation</a> &#187;</li>
-          <li class="nav-item nav-item-1"><a href="../../../index.html" accesskey="U">Module code</a> &#187;</li>
-        <li class="nav-item nav-item-this"><a href="">quspin.basis.basis_general.base_user</a></li> 
-      </ul>
-    </div>  
+</head>
 
-    <div class="document">
-      <div class="documentwrapper">
-        <div class="bodywrapper">
-          <div class="body" role="main">
-            
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            QuSpin
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">QuSpin (public API)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../basis.html">Basis module (<code class="xref py py-mod docutils literal notranslate"><span class="pre">quspin.basis</span></code>)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../operators.html">Operators module (<code class="xref py py-mod docutils literal notranslate"><span class="pre">quspin.operators</span></code>)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../tools.html">Tools module (<code class="xref py py-mod docutils literal notranslate"><span class="pre">quspin.tools</span></code>)</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Installation &amp; Use</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../installation/installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../installation/installation.html#basics-of-command-line-use">Basics of command line use</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../example_scripts.html">Example scripts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../jupyter_notebooks.html">Jupyter notebooks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../tutorials/parallelization.html">Parallel computing support</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../tutorials/user_basis.html"><cite>user_basis</cite> tutorial</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Bugs &amp; Questions</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../contribute/report_a_bug.html">Report a bug</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../contribute/ask_a_question.html">Ask a question</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">QuSpin</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content style-external-links">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">quspin.basis.basis_general.base_user</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
   <h1>Source code for quspin.basis.basis_general.base_user</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">.base_general</span> <span class="kn">import</span> <span class="n">basis_general</span>
-<span class="kn">from</span> <span class="nn">._basis_general_core</span> <span class="kn">import</span> <span class="n">user_core_wrap</span>
+<span></span><span class="kn">from</span> <span class="nn">quspin.basis.basis_general.base_general</span> <span class="kn">import</span> <span class="n">basis_general</span>
+<span class="kn">from</span> <span class="nn">quspin_extensions.basis.basis_general._basis_general_core</span> <span class="kn">import</span> <span class="n">user_core_wrap</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">_np</span>
 <span class="kn">from</span> <span class="nn">numba</span> <span class="kn">import</span> <span class="n">cfunc</span><span class="p">,</span> <span class="n">types</span><span class="p">,</span> <span class="n">njit</span>
+
 <span class="k">try</span><span class="p">:</span>
-	<span class="kn">from</span> <span class="nn">numba.ccallback</span> <span class="kn">import</span> <span class="n">CFunc</span> <span class="c1"># numba &lt; 0.49.0</span>
+    <span class="kn">from</span> <span class="nn">numba.ccallback</span> <span class="kn">import</span> <span class="n">CFunc</span>  <span class="c1"># numba &lt; 0.49.0</span>
 <span class="k">except</span> <span class="ne">ModuleNotFoundError</span><span class="p">:</span>
-	<span class="kn">from</span> <span class="nn">numba.core.ccallback</span> <span class="kn">import</span> <span class="n">CFunc</span> <span class="c1"># numba &gt;= 0.49.0</span>
+    <span class="kn">from</span> <span class="nn">numba.core.ccallback</span> <span class="kn">import</span> <span class="n">CFunc</span>  <span class="c1"># numba &gt;= 0.49.0</span>
 
-<span class="n">map_sig_32</span> <span class="o">=</span> <span class="n">types</span><span class="o">.</span><span class="n">uint32</span><span class="p">(</span><span class="n">types</span><span class="o">.</span><span class="n">uint32</span><span class="p">,</span><span class="n">types</span><span class="o">.</span><span class="n">intc</span><span class="p">,</span><span class="n">types</span><span class="o">.</span><span class="n">CPointer</span><span class="p">(</span><span class="n">types</span><span class="o">.</span><span class="n">int8</span><span class="p">),</span><span class="n">types</span><span class="o">.</span><span class="n">CPointer</span><span class="p">(</span><span class="n">types</span><span class="o">.</span><span class="n">uint32</span><span class="p">))</span>
-<span class="n">map_sig_64</span> <span class="o">=</span> <span class="n">types</span><span class="o">.</span><span class="n">uint64</span><span class="p">(</span><span class="n">types</span><span class="o">.</span><span class="n">uint64</span><span class="p">,</span><span class="n">types</span><span class="o">.</span><span class="n">intc</span><span class="p">,</span><span class="n">types</span><span class="o">.</span><span class="n">CPointer</span><span class="p">(</span><span class="n">types</span><span class="o">.</span><span class="n">int8</span><span class="p">),</span><span class="n">types</span><span class="o">.</span><span class="n">CPointer</span><span class="p">(</span><span class="n">types</span><span class="o">.</span><span class="n">uint64</span><span class="p">))</span>
+<span class="n">map_sig_32</span> <span class="o">=</span> <span class="n">types</span><span class="o">.</span><span class="n">uint32</span><span class="p">(</span>
+    <span class="n">types</span><span class="o">.</span><span class="n">uint32</span><span class="p">,</span> <span class="n">types</span><span class="o">.</span><span class="n">intc</span><span class="p">,</span> <span class="n">types</span><span class="o">.</span><span class="n">CPointer</span><span class="p">(</span><span class="n">types</span><span class="o">.</span><span class="n">int8</span><span class="p">),</span> <span class="n">types</span><span class="o">.</span><span class="n">CPointer</span><span class="p">(</span><span class="n">types</span><span class="o">.</span><span class="n">uint32</span><span class="p">)</span>
+<span class="p">)</span>
+<span class="n">map_sig_64</span> <span class="o">=</span> <span class="n">types</span><span class="o">.</span><span class="n">uint64</span><span class="p">(</span>
+    <span class="n">types</span><span class="o">.</span><span class="n">uint64</span><span class="p">,</span> <span class="n">types</span><span class="o">.</span><span class="n">intc</span><span class="p">,</span> <span class="n">types</span><span class="o">.</span><span class="n">CPointer</span><span class="p">(</span><span class="n">types</span><span class="o">.</span><span class="n">int8</span><span class="p">),</span> <span class="n">types</span><span class="o">.</span><span class="n">CPointer</span><span class="p">(</span><span class="n">types</span><span class="o">.</span><span class="n">uint64</span><span class="p">)</span>
+<span class="p">)</span>
 
-<span class="n">next_state_sig_32</span> <span class="o">=</span> <span class="n">types</span><span class="o">.</span><span class="n">uint32</span><span class="p">(</span><span class="n">types</span><span class="o">.</span><span class="n">uint32</span><span class="p">,</span><span class="n">types</span><span class="o">.</span><span class="n">uint32</span><span class="p">,</span><span class="n">types</span><span class="o">.</span><span class="n">uint32</span><span class="p">,</span><span class="n">types</span><span class="o">.</span><span class="n">CPointer</span><span class="p">(</span><span class="n">types</span><span class="o">.</span><span class="n">uint32</span><span class="p">))</span>
-<span class="n">next_state_sig_64</span> <span class="o">=</span> <span class="n">types</span><span class="o">.</span><span class="n">uint64</span><span class="p">(</span><span class="n">types</span><span class="o">.</span><span class="n">uint64</span><span class="p">,</span><span class="n">types</span><span class="o">.</span><span class="n">uint64</span><span class="p">,</span><span class="n">types</span><span class="o">.</span><span class="n">uint64</span><span class="p">,</span><span class="n">types</span><span class="o">.</span><span class="n">CPointer</span><span class="p">(</span><span class="n">types</span><span class="o">.</span><span class="n">uint64</span><span class="p">))</span>
+<span class="n">next_state_sig_32</span> <span class="o">=</span> <span class="n">types</span><span class="o">.</span><span class="n">uint32</span><span class="p">(</span>
+    <span class="n">types</span><span class="o">.</span><span class="n">uint32</span><span class="p">,</span> <span class="n">types</span><span class="o">.</span><span class="n">uint32</span><span class="p">,</span> <span class="n">types</span><span class="o">.</span><span class="n">uint32</span><span class="p">,</span> <span class="n">types</span><span class="o">.</span><span class="n">CPointer</span><span class="p">(</span><span class="n">types</span><span class="o">.</span><span class="n">uint32</span><span class="p">)</span>
+<span class="p">)</span>
+<span class="n">next_state_sig_64</span> <span class="o">=</span> <span class="n">types</span><span class="o">.</span><span class="n">uint64</span><span class="p">(</span>
+    <span class="n">types</span><span class="o">.</span><span class="n">uint64</span><span class="p">,</span> <span class="n">types</span><span class="o">.</span><span class="n">uint64</span><span class="p">,</span> <span class="n">types</span><span class="o">.</span><span class="n">uint64</span><span class="p">,</span> <span class="n">types</span><span class="o">.</span><span class="n">CPointer</span><span class="p">(</span><span class="n">types</span><span class="o">.</span><span class="n">uint64</span><span class="p">)</span>
+<span class="p">)</span>
 
-<span class="n">pre_check_state_sig_32</span> <span class="o">=</span> <span class="n">types</span><span class="o">.</span><span class="n">uint32</span><span class="p">(</span><span class="n">types</span><span class="o">.</span><span class="n">uint32</span><span class="p">,</span><span class="n">types</span><span class="o">.</span><span class="n">uint32</span><span class="p">,</span><span class="n">types</span><span class="o">.</span><span class="n">CPointer</span><span class="p">(</span><span class="n">types</span><span class="o">.</span><span class="n">uint32</span><span class="p">))</span>
-<span class="n">pre_check_state_sig_64</span> <span class="o">=</span> <span class="n">types</span><span class="o">.</span><span class="n">uint64</span><span class="p">(</span><span class="n">types</span><span class="o">.</span><span class="n">uint64</span><span class="p">,</span><span class="n">types</span><span class="o">.</span><span class="n">uint64</span><span class="p">,</span><span class="n">types</span><span class="o">.</span><span class="n">CPointer</span><span class="p">(</span><span class="n">types</span><span class="o">.</span><span class="n">uint64</span><span class="p">))</span>
+<span class="n">pre_check_state_sig_32</span> <span class="o">=</span> <span class="n">types</span><span class="o">.</span><span class="n">uint32</span><span class="p">(</span>
+    <span class="n">types</span><span class="o">.</span><span class="n">uint32</span><span class="p">,</span> <span class="n">types</span><span class="o">.</span><span class="n">uint32</span><span class="p">,</span> <span class="n">types</span><span class="o">.</span><span class="n">CPointer</span><span class="p">(</span><span class="n">types</span><span class="o">.</span><span class="n">uint32</span><span class="p">)</span>
+<span class="p">)</span>
+<span class="n">pre_check_state_sig_64</span> <span class="o">=</span> <span class="n">types</span><span class="o">.</span><span class="n">uint64</span><span class="p">(</span>
+    <span class="n">types</span><span class="o">.</span><span class="n">uint64</span><span class="p">,</span> <span class="n">types</span><span class="o">.</span><span class="n">uint64</span><span class="p">,</span> <span class="n">types</span><span class="o">.</span><span class="n">CPointer</span><span class="p">(</span><span class="n">types</span><span class="o">.</span><span class="n">uint64</span><span class="p">)</span>
+<span class="p">)</span>
 
-<span class="n">op_results_32</span> <span class="o">=</span> <span class="n">types</span><span class="o">.</span><span class="n">Record</span><span class="o">.</span><span class="n">make_c_struct</span><span class="p">([</span>
-   <span class="p">(</span><span class="s1">&#39;matrix_ele&#39;</span><span class="p">,</span> <span class="n">types</span><span class="o">.</span><span class="n">complex128</span><span class="p">),(</span><span class="s1">&#39;state&#39;</span><span class="p">,</span> <span class="n">types</span><span class="o">.</span><span class="n">uint32</span><span class="p">),</span>
-<span class="p">])</span>
+<span class="n">op_results_32</span> <span class="o">=</span> <span class="n">types</span><span class="o">.</span><span class="n">Record</span><span class="o">.</span><span class="n">make_c_struct</span><span class="p">(</span>
+    <span class="p">[</span>
+        <span class="p">(</span><span class="s2">&quot;matrix_ele&quot;</span><span class="p">,</span> <span class="n">types</span><span class="o">.</span><span class="n">complex128</span><span class="p">),</span>
+        <span class="p">(</span><span class="s2">&quot;state&quot;</span><span class="p">,</span> <span class="n">types</span><span class="o">.</span><span class="n">uint32</span><span class="p">),</span>
+    <span class="p">]</span>
+<span class="p">)</span>
 
-<span class="n">op_results_64</span> <span class="o">=</span> <span class="n">types</span><span class="o">.</span><span class="n">Record</span><span class="o">.</span><span class="n">make_c_struct</span><span class="p">([</span>
-   <span class="p">(</span><span class="s1">&#39;matrix_ele&#39;</span><span class="p">,</span> <span class="n">types</span><span class="o">.</span><span class="n">complex128</span><span class="p">),(</span><span class="s1">&#39;state&#39;</span><span class="p">,</span> <span class="n">types</span><span class="o">.</span><span class="n">uint64</span><span class="p">)</span>
-<span class="p">])</span>
+<span class="n">op_results_64</span> <span class="o">=</span> <span class="n">types</span><span class="o">.</span><span class="n">Record</span><span class="o">.</span><span class="n">make_c_struct</span><span class="p">(</span>
+    <span class="p">[(</span><span class="s2">&quot;matrix_ele&quot;</span><span class="p">,</span> <span class="n">types</span><span class="o">.</span><span class="n">complex128</span><span class="p">),</span> <span class="p">(</span><span class="s2">&quot;state&quot;</span><span class="p">,</span> <span class="n">types</span><span class="o">.</span><span class="n">uint64</span><span class="p">)]</span>
+<span class="p">)</span>
 
-<span class="n">op_sig_32</span> <span class="o">=</span> <span class="n">types</span><span class="o">.</span><span class="n">intc</span><span class="p">(</span><span class="n">types</span><span class="o">.</span><span class="n">CPointer</span><span class="p">(</span><span class="n">op_results_32</span><span class="p">),</span>
-								<span class="n">types</span><span class="o">.</span><span class="n">char</span><span class="p">,</span>
-								<span class="n">types</span><span class="o">.</span><span class="n">intc</span><span class="p">,</span>
-								<span class="n">types</span><span class="o">.</span><span class="n">intc</span><span class="p">,</span>
-								<span class="n">types</span><span class="o">.</span><span class="n">CPointer</span><span class="p">(</span><span class="n">types</span><span class="o">.</span><span class="n">uint32</span><span class="p">)</span>
-								<span class="p">)</span>
-<span class="n">op_sig_64</span> <span class="o">=</span> <span class="n">types</span><span class="o">.</span><span class="n">intc</span><span class="p">(</span><span class="n">types</span><span class="o">.</span><span class="n">CPointer</span><span class="p">(</span><span class="n">op_results_64</span><span class="p">),</span>
-								<span class="n">types</span><span class="o">.</span><span class="n">char</span><span class="p">,</span>
-								<span class="n">types</span><span class="o">.</span><span class="n">intc</span><span class="p">,</span>
-								<span class="n">types</span><span class="o">.</span><span class="n">intc</span><span class="p">,</span>
-								<span class="n">types</span><span class="o">.</span><span class="n">CPointer</span><span class="p">(</span><span class="n">types</span><span class="o">.</span><span class="n">uint64</span><span class="p">)</span>
-								<span class="p">)</span>
+<span class="n">op_sig_32</span> <span class="o">=</span> <span class="n">types</span><span class="o">.</span><span class="n">intc</span><span class="p">(</span>
+    <span class="n">types</span><span class="o">.</span><span class="n">CPointer</span><span class="p">(</span><span class="n">op_results_32</span><span class="p">),</span>
+    <span class="n">types</span><span class="o">.</span><span class="n">char</span><span class="p">,</span>
+    <span class="n">types</span><span class="o">.</span><span class="n">intc</span><span class="p">,</span>
+    <span class="n">types</span><span class="o">.</span><span class="n">intc</span><span class="p">,</span>
+    <span class="n">types</span><span class="o">.</span><span class="n">CPointer</span><span class="p">(</span><span class="n">types</span><span class="o">.</span><span class="n">uint32</span><span class="p">),</span>
+<span class="p">)</span>
+<span class="n">op_sig_64</span> <span class="o">=</span> <span class="n">types</span><span class="o">.</span><span class="n">intc</span><span class="p">(</span>
+    <span class="n">types</span><span class="o">.</span><span class="n">CPointer</span><span class="p">(</span><span class="n">op_results_64</span><span class="p">),</span>
+    <span class="n">types</span><span class="o">.</span><span class="n">char</span><span class="p">,</span>
+    <span class="n">types</span><span class="o">.</span><span class="n">intc</span><span class="p">,</span>
+    <span class="n">types</span><span class="o">.</span><span class="n">intc</span><span class="p">,</span>
+    <span class="n">types</span><span class="o">.</span><span class="n">CPointer</span><span class="p">(</span><span class="n">types</span><span class="o">.</span><span class="n">uint64</span><span class="p">),</span>
+<span class="p">)</span>
 
-<span class="n">count_particles_sig_32</span> <span class="o">=</span> <span class="n">types</span><span class="o">.</span><span class="n">void</span><span class="p">(</span><span class="n">types</span><span class="o">.</span><span class="n">uint32</span><span class="p">,</span><span class="n">types</span><span class="o">.</span><span class="n">CPointer</span><span class="p">(</span><span class="n">types</span><span class="o">.</span><span class="n">intc</span><span class="p">),</span><span class="n">types</span><span class="o">.</span><span class="n">CPointer</span><span class="p">(</span><span class="n">types</span><span class="o">.</span><span class="n">intc</span><span class="p">))</span>
-<span class="n">count_particles_sig_64</span> <span class="o">=</span> <span class="n">types</span><span class="o">.</span><span class="n">void</span><span class="p">(</span><span class="n">types</span><span class="o">.</span><span class="n">uint64</span><span class="p">,</span><span class="n">types</span><span class="o">.</span><span class="n">CPointer</span><span class="p">(</span><span class="n">types</span><span class="o">.</span><span class="n">intc</span><span class="p">),</span><span class="n">types</span><span class="o">.</span><span class="n">CPointer</span><span class="p">(</span><span class="n">types</span><span class="o">.</span><span class="n">intc</span><span class="p">))</span>
+<span class="n">count_particles_sig_32</span> <span class="o">=</span> <span class="n">types</span><span class="o">.</span><span class="n">void</span><span class="p">(</span>
+    <span class="n">types</span><span class="o">.</span><span class="n">uint32</span><span class="p">,</span> <span class="n">types</span><span class="o">.</span><span class="n">CPointer</span><span class="p">(</span><span class="n">types</span><span class="o">.</span><span class="n">intc</span><span class="p">),</span> <span class="n">types</span><span class="o">.</span><span class="n">CPointer</span><span class="p">(</span><span class="n">types</span><span class="o">.</span><span class="n">intc</span><span class="p">)</span>
+<span class="p">)</span>
+<span class="n">count_particles_sig_64</span> <span class="o">=</span> <span class="n">types</span><span class="o">.</span><span class="n">void</span><span class="p">(</span>
+    <span class="n">types</span><span class="o">.</span><span class="n">uint64</span><span class="p">,</span> <span class="n">types</span><span class="o">.</span><span class="n">CPointer</span><span class="p">(</span><span class="n">types</span><span class="o">.</span><span class="n">intc</span><span class="p">),</span> <span class="n">types</span><span class="o">.</span><span class="n">CPointer</span><span class="p">(</span><span class="n">types</span><span class="o">.</span><span class="n">intc</span><span class="p">)</span>
+<span class="p">)</span>
 
-<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;map_sig_32&quot;</span><span class="p">,</span><span class="s2">&quot;map_sig_64&quot;</span><span class="p">,</span><span class="s2">&quot;next_state_sig_32&quot;</span><span class="p">,</span>
-	<span class="s2">&quot;next_state_sig_64&quot;</span><span class="p">,</span><span class="s2">&quot;op_func_sig_32&quot;</span><span class="p">,</span><span class="s2">&quot;op_func_sig_64&quot;</span><span class="p">,</span><span class="s2">&quot;user_basis&quot;</span><span class="p">]</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s2">&quot;map_sig_32&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;map_sig_64&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;next_state_sig_32&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;next_state_sig_64&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;op_func_sig_32&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;op_func_sig_64&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;user_basis&quot;</span><span class="p">,</span>
+<span class="p">]</span>
 
 <span class="c1"># @njit</span>
 <span class="c1"># def _is_sorted_decending(a):</span>
@@ -102,544 +177,710 @@
 
 <span class="c1"># 	return True</span>
 
-<span class="k">def</span> <span class="nf">_process_user_blocks</span><span class="p">(</span><span class="n">use_32bit</span><span class="p">,</span><span class="n">blocks_dict</span><span class="p">,</span><span class="n">block_order</span><span class="p">):</span>
 
-	<span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">((</span><span class="nb">type</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">tuple</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">v</span><span class="p">)</span><span class="o">==</span><span class="mi">4</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">blocks_dict</span><span class="o">.</span><span class="n">values</span><span class="p">()):</span>
-		<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;blocks must contain tuple with a CFunc, the period of the symmetry, the quantum number, and the extra arguments.&quot;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">_process_user_blocks</span><span class="p">(</span><span class="n">use_32bit</span><span class="p">,</span> <span class="n">blocks_dict</span><span class="p">,</span> <span class="n">block_order</span><span class="p">):</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">((</span><span class="nb">type</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">tuple</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="o">==</span> <span class="mi">4</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">blocks_dict</span><span class="o">.</span><span class="n">values</span><span class="p">()):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="s2">&quot;blocks must contain tuple with a CFunc, the period of the symmetry, the quantum number, and the extra arguments.&quot;</span>
+        <span class="p">)</span>
 
-	<span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">f</span><span class="p">,</span><span class="n">CFunc</span><span class="p">)</span> <span class="k">for</span> <span class="n">f</span><span class="p">,</span><span class="n">_</span><span class="p">,</span><span class="n">_</span><span class="p">,</span><span class="n">_</span> <span class="ow">in</span> <span class="n">blocks_dict</span><span class="o">.</span><span class="n">values</span><span class="p">()):</span>
-		<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;map_func must be instance of numba.CFunc.&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">CFunc</span><span class="p">)</span> <span class="k">for</span> <span class="n">f</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">blocks_dict</span><span class="o">.</span><span class="n">values</span><span class="p">()):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;map_func must be instance of numba.CFunc.&quot;</span><span class="p">)</span>
 
-	<span class="k">if</span> <span class="n">use_32bit</span><span class="p">:</span>
-		<span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">_sig</span><span class="o">==</span><span class="n">map_sig_32</span> <span class="k">for</span> <span class="n">f</span><span class="p">,</span><span class="n">_</span><span class="p">,</span><span class="n">_</span><span class="p">,</span><span class="n">_</span> <span class="ow">in</span> <span class="n">blocks_dict</span><span class="o">.</span><span class="n">values</span><span class="p">()):</span>
-			<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;map_func does not have the correct signature, </span><span class="se">\</span>
-<span class="s2">					try using map_sig_32 from quspin.basis.user module.&quot;</span><span class="p">)</span>
-	<span class="k">else</span><span class="p">:</span>
-		<span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">_sig</span><span class="o">==</span><span class="n">map_sig_64</span> <span class="k">for</span> <span class="n">f</span><span class="p">,</span><span class="n">_</span><span class="p">,</span><span class="n">_</span><span class="p">,</span><span class="n">_</span> <span class="ow">in</span> <span class="n">blocks_dict</span><span class="o">.</span><span class="n">values</span><span class="p">()):</span>
-			<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;map_func does not have the correct signature, </span><span class="se">\</span>
-<span class="s2">					try using map_sig_64 from quspin.basis.user module.&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">use_32bit</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">_sig</span> <span class="o">==</span> <span class="n">map_sig_32</span> <span class="k">for</span> <span class="n">f</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">blocks_dict</span><span class="o">.</span><span class="n">values</span><span class="p">()):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;map_func does not have the correct signature, </span><span class="se">\</span>
+<span class="s2">					try using map_sig_32 from quspin.basis.user module.&quot;</span>
+            <span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">_sig</span> <span class="o">==</span> <span class="n">map_sig_64</span> <span class="k">for</span> <span class="n">f</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">blocks_dict</span><span class="o">.</span><span class="n">values</span><span class="p">()):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;map_func does not have the correct signature, </span><span class="se">\</span>
+<span class="s2">					try using map_sig_64 from quspin.basis.user module.&quot;</span>
+            <span class="p">)</span>
 
-	<span class="k">if</span> <span class="n">block_order</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span> <span class="c1"># sort by periodicies largest to smallest</span>
-		<span class="n">sorted_items</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">blocks_dict</span><span class="o">.</span><span class="n">items</span><span class="p">(),</span><span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">])</span>
-		<span class="n">sorted_items</span><span class="o">.</span><span class="n">reverse</span><span class="p">()</span>
-	<span class="k">else</span><span class="p">:</span>
-		<span class="n">block_order</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">block_order</span><span class="p">)</span>
-		<span class="n">missing</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">blocks_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span> <span class="o">-</span> <span class="nb">set</span><span class="p">(</span><span class="n">block_order</span><span class="p">)</span>
-		<span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">missing</span><span class="p">)</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">:</span>
-			<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2"> names found in block names but missing from block_order.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">missing</span><span class="p">))</span>
+    <span class="k">if</span> <span class="n">block_order</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>  <span class="c1"># sort by periodicies largest to smallest</span>
+        <span class="n">sorted_items</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">blocks_dict</span><span class="o">.</span><span class="n">items</span><span class="p">(),</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">])</span>
+        <span class="n">sorted_items</span><span class="o">.</span><span class="n">reverse</span><span class="p">()</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">block_order</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">block_order</span><span class="p">)</span>
+        <span class="n">missing</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">blocks_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span> <span class="o">-</span> <span class="nb">set</span><span class="p">(</span><span class="n">block_order</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">missing</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;</span><span class="si">{}</span><span class="s2"> names found in block names but missing from block_order.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="n">missing</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
 
-		<span class="n">missing</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">block_order</span><span class="p">)</span> <span class="o">-</span> <span class="nb">set</span><span class="p">(</span><span class="n">blocks_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
-		<span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">missing</span><span class="p">)</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">:</span>
-			<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2"> names found in block_order but missing from block names.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">missing</span><span class="p">))</span>
+        <span class="n">missing</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">block_order</span><span class="p">)</span> <span class="o">-</span> <span class="nb">set</span><span class="p">(</span><span class="n">blocks_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">missing</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;</span><span class="si">{}</span><span class="s2"> names found in block_order but missing from block names.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="n">missing</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
 
-		<span class="n">sorted_items</span> <span class="o">=</span> <span class="p">[(</span><span class="n">key</span><span class="p">,</span><span class="n">blocks_dict</span><span class="p">[</span><span class="n">key</span><span class="p">])</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">block_order</span><span class="p">]</span>
+        <span class="n">sorted_items</span> <span class="o">=</span> <span class="p">[(</span><span class="n">key</span><span class="p">,</span> <span class="n">blocks_dict</span><span class="p">[</span><span class="n">key</span><span class="p">])</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">block_order</span><span class="p">]</span>
 
-	<span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">sorted_items</span><span class="p">)</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">:</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">sorted_items</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
 
-		<span class="n">blocks</span> <span class="o">=</span> <span class="p">{</span><span class="n">block</span><span class="p">:((</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">**</span><span class="n">q</span> <span class="k">if</span> <span class="n">per</span><span class="o">==</span><span class="mi">2</span> <span class="k">else</span> <span class="n">q</span><span class="p">)</span> <span class="k">for</span> <span class="n">block</span><span class="p">,(</span><span class="n">_</span><span class="p">,</span><span class="n">per</span><span class="p">,</span><span class="n">q</span><span class="p">,</span><span class="n">_</span><span class="p">)</span> <span class="ow">in</span> <span class="n">sorted_items</span><span class="p">}</span>
+        <span class="n">blocks</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="n">block</span><span class="p">:</span> <span class="p">((</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">**</span> <span class="n">q</span> <span class="k">if</span> <span class="n">per</span> <span class="o">==</span> <span class="mi">2</span> <span class="k">else</span> <span class="n">q</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">block</span><span class="p">,</span> <span class="p">(</span><span class="n">_</span><span class="p">,</span> <span class="n">per</span><span class="p">,</span> <span class="n">q</span><span class="p">,</span> <span class="n">_</span><span class="p">)</span> <span class="ow">in</span> <span class="n">sorted_items</span>
+        <span class="p">}</span>
+
+        <span class="n">_</span><span class="p">,</span> <span class="n">items</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">sorted_items</span><span class="p">)</span>
+        <span class="n">map_funcs</span><span class="p">,</span> <span class="n">pers</span><span class="p">,</span> <span class="n">qs</span><span class="p">,</span> <span class="n">map_args</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">items</span><span class="p">)</span>
+
+        <span class="c1"># exit()</span>
+
+        <span class="k">return</span> <span class="n">blocks</span><span class="p">,</span> <span class="n">map_funcs</span><span class="p">,</span> <span class="n">pers</span><span class="p">,</span> <span class="n">qs</span><span class="p">,</span> <span class="n">map_args</span>
+
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">{},</span> <span class="p">[],</span> <span class="p">[],</span> <span class="p">[],</span> <span class="p">[]</span>
+
+
+<span class="k">def</span> <span class="nf">_noncommuting_bits</span><span class="p">(</span><span class="n">N</span><span class="p">,</span> <span class="n">noncommuting_bits</span><span class="p">):</span>
+
+    <span class="n">completed_noncommuting_bits</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">for</span> <span class="n">bits</span><span class="p">,</span> <span class="n">swap_phase</span> <span class="ow">in</span> <span class="n">noncommuting_bits</span><span class="p">:</span>
+        <span class="n">bits</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">bits</span><span class="p">)</span>
+        <span class="n">swap_phase</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">swap_phase</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">_np</span><span class="o">.</span><span class="n">issubdtype</span><span class="p">(</span><span class="n">bits</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;site list most contain only integers.&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">_np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">swap_phase</span><span class="p">)</span><span class="o">.</span><span class="n">ndim</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;swap_phase must be scalar.&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">_np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">_np</span><span class="o">.</span><span class="n">logical_and</span><span class="p">(</span><span class="n">bits</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">,</span> <span class="n">bits</span> <span class="o">&gt;=</span> <span class="n">N</span><span class="p">)):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;bit number outside of range of system.&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">swap_phase</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+            <span class="n">swap_phase</span> <span class="o">=</span> <span class="n">swap_phase</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">_np</span><span class="o">.</span><span class="n">int8</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">swap_phase</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;must have |swap_phase|==1&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">swap_phase</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="k">continue</span>  <span class="c1"># skip</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># swap_phase = swap_phase.astype(_np.complex128)</span>
+                <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span>
+                    <span class="s2">&quot;Abealian anyons are not supported for user_basis.&quot;</span>
+                <span class="p">)</span>
+
+        <span class="n">completed_noncommuting_bits</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">bits</span><span class="p">,</span> <span class="n">swap_phase</span><span class="p">))</span>
+
+    <span class="k">return</span> <span class="n">completed_noncommuting_bits</span>
+
+
+<div class="viewcode-block" id="user_basis">
+<a class="viewcode-back" href="../../../../generated/quspin.basis.user_basis.html#quspin.basis.user_basis">[docs]</a>
+<span class="k">class</span> <span class="nc">user_basis</span><span class="p">(</span><span class="n">basis_general</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Constructs basis for USER-DEFINED functionality of a basis object.</span>
+
+
+<span class="sd">    The `user_basis` unveils the inner workings of QuSpin. This is the most advanced usage of the package, and requires some understanding of python,</span>
+<span class="sd">    the `numba` package used to interface QuSpin&#39;s underlying cpp code with python, and some experience with bitwise operations to manipulate integers.</span>
+
+<span class="sd">    Since we believe that the users will benefit from a more detailed discussion on how the `user_basis` is intended to work, we also provide a detailed</span>
+<span class="sd">    tutorial: :ref:`user_basis-label`, which covers the general concepts and provides six complete examples of various complexity.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+
+<span class="sd">    The following example shows how to use the `user_basis` class to construct the Hamiltonian</span>
+
+<span class="sd">    .. math::</span>
+
+<span class="sd">            H = \\sum_j P_{j-1}\\sigma^x_j P_{j+1},\\quad P_j = |\\downarrow_j\\rangle\\langle\\downarrow_j|</span>
+
+<span class="sd">    using translation and reflection symmetry. The projector operator :math:`P_j`, which only allows a spin-up state in the basis to be preceded and succeeded by a spin-down,</span>
+<span class="sd">    is incorporated by constructing the corresponding `user_basis` object. One can then just build the Hamiltonian :math:`H=\\sum_j\\sigma^x_j` in the</span>
+<span class="sd">    constrained Hilbert space.</span>
+
+<span class="sd">    More examples (including explanations of the class methods and attributes) can be found at: :ref:`user_basis-label`.</span>
+
+<span class="sd">    .. literalinclude:: ../../doc_examples/user_basis-example.py</span>
+<span class="sd">            :linenos:</span>
+<span class="sd">            :language: python</span>
+<span class="sd">            :lines: 11-</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="user_basis.__init__">
+<a class="viewcode-back" href="../../../../generated/quspin.basis.user_basis.html#quspin.basis.user_basis.__init__">[docs]</a>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">basis_dtype</span><span class="p">,</span>
+        <span class="n">N</span><span class="p">,</span>
+        <span class="n">op_dict</span><span class="p">,</span>
+        <span class="n">sps</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+        <span class="n">pcon_dict</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">pre_check_state</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">allowed_ops</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">parallel</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">Ns_block_est</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">_make_basis</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">block_order</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">noncommuting_bits</span><span class="o">=</span><span class="p">[],</span>
+        <span class="n">_Np</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">blocks</span><span class="p">,</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Intializes the `user_basis_general` object (basis for user defined ED calculations).</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        basis_dtype: numpy.dtype object</span>
+<span class="sd">                the data type used to represent the states in the basis: must be either uint32 or uint64.</span>
+<span class="sd">        N: int</span>
+<span class="sd">                Number of sites.</span>
+<span class="sd">        op_dict: dict</span>
+<span class="sd">                used to define the `basis.Op` function; the dictionary contais the following items:</span>
+<span class="sd">                        * **op(op_struct_ptr,op_str,site_ind,N,args): numba.CFunc object**</span>
+<span class="sd">                                This is a numba-compiled function (CFunc) which calculates the matrix elements :math:`\\mathrm{me}` given a state :math:`|s\\rangle` together with a character to</span>
+<span class="sd">                                represent the operator, an integer `site_ind` specifying the site of that local operator, the total number of sites `N`, and a set of optional `uint`-dtype arguments `args`. See the above example for how</span>
+<span class="sd">                                one would use this for spin-1/2 system.</span>
+<span class="sd">                        * **op_args: np.ndarray[basis_dtype]**</span>
+<span class="sd">                                used to pass the arguments `args` to the CFunc `op(...,args)`. The corresponding key must be a `np.ndarray[basis_dtype]`.</span>
+<span class="sd">        pcon_dict: dict, optional</span>
+<span class="sd">                This dictionary contains the following items which are required to use particle conservation in this basis:</span>
+<span class="sd">                        *minimum requirements*:</span>
+<span class="sd">                                * **Np: tuple/int, list(tuple/int)**</span>
+<span class="sd">                                        specifies the particle sector(s).</span>
+<span class="sd">                                * **next_state(s,counter,N,args): numba.CFunc object**</span>
+<span class="sd">                                        given a quantum state :math:`|s\\rangle` in the integer-representation `s`, this CFunc generates the next lexicographically ordered particle conservation state.</span>
+<span class="sd">                                        `counter` is an intrinsic variable which increments by unity every time the function is called, `N` is the total number of lattice sites, and `args` holds any optional arguments stored in a `np.ndarray[basis_dtype]`.</span>
+<span class="sd">                                * **next_state_args: np.ndarray(basis_dtype)**</span>
+<span class="sd">                                        optional arguments for `next_state(...,args)`.</span>
+<span class="sd">                                * **get_Ns_pcon(N,Np): python function**</span>
+<span class="sd">                                        when called as get_Ns_pcon(N,Np), this python function returns the size of the symmetery-free particle conservation basis, given the `N` lattice sites and `Np` (see above).</span>
+<span class="sd">                                * **get_s0_pcon(N,Np): python function**</span>
+<span class="sd">                                        when called as get_s0_pcon(N,Np), this python function returns the starting state to generate the whole particle conservation basis by repeatedly calling `next_state()`.</span>
+<span class="sd">                        *advanced requirements* to access `basis.Op_bra_ket()` functionality (on top of the minimum requirements):</span>
+<span class="sd">                                * **n_sectors: int, list(int)**</span>
+<span class="sd">                                        number of integers which parameterize the particle sectors, e.g. with spinful fermions there is a particle number for both the up and the down sectors, and hence `n_sectors=2`.</span>
+<span class="sd">                                * **count_particles(s,p_number_ptr,args): numba.CFunc object**</span>
+<span class="sd">                                        For a quantum state `s` in the integer representation, this CFunc counts the number of particles in each particle sector and places them into a pointer `p_number_ptr` (`count_particles` does **not** return any output). The pointer provided will have `n_sector` slots of memory allocated. The components of the pointer `p_number_ptr` must correspond to the ordering of `Np`. The integer `s` cannot be changed.</span>
+<span class="sd">                                * **count_particles_args: np.ndarray(int)**</span>
+<span class="sd">                                        compulsory arguments for `count_particles(...,args)` (whenever used).</span>
+<span class="sd">        pre_check_state(s,N,args): numba.CFunc object or tuple(numba.CFunc object,ndarray(C-contiguous,dtype=basis_dtype)), optional</span>
+<span class="sd">                This CFunc allows the user to specify a boolean criterion used to discard/filter states from the basis. In the low-level code, this function is applied before checking if a given state is</span>
+<span class="sd">                representative state (i.e. belogs to a given symmetry sector) or not. This allows the user to, e.g., enforce a local Hilbert-space constraint</span>
+<span class="sd">                (e.g. for a spinful fermion basis to never have a doubly occupied site). One can pass additional arguments `args` using a `np.ndarray[basis_dtype]`.</span>
+<span class="sd">        allowed_ops: list/set, optional</span>
+<span class="sd">                A list of allowed characters, each of which is to be passed in to the `op` in the form of `op_str` (see above).</span>
+<span class="sd">        parallel: bool, optional</span>
+<span class="sd">                turns on parallel code when constructing the basis even when no symmetries are implemented. Useful when constructing highly constrained Hilbert spaces with pre_check_state.</span>
+<span class="sd">        sps: int, optional</span>
+<span class="sd">                The number of states per site (i.e. the local on-site Hilbert space dimension).</span>
+<span class="sd">        Ns_full: int, optional</span>
+<span class="sd">                Total number of states in the Hilbert space without any symmetries. For a single species this value is `sps**N`</span>
+<span class="sd">        Ns_block_est: int, optional</span>
+<span class="sd">                An estimate for the size of the symmetry reduced block, QuSpin does a simple estimate which is not always correct.</span>
+<span class="sd">        block_order: tuple/list, optional</span>
+<span class="sd">                A list of strings containing the names of the symmetry blocks which specifies the order in which the symmetries will be applied to the state when calculating the basis. The first element in the list is applied to the state first followed by the second element, etc. If the list is not specificed the ordering is such that the symmetry with the largest cycle is the first, followed by the second largest, etc.</span>
+<span class="sd">        noncommuting_bits: list, optional</span>
+<span class="sd">                A list of tuples specifying if bits belong to a group of sites that do not commute. The first element in each tuple represents the group of sites, and the second element represents the phase-factor that is given during the exchange.</span>
+<span class="sd">        **blocks: optional</span>
+<span class="sd">                keyword arguments which pass the symmetry generator arrays. For instance:</span>
+
+<span class="sd">                &gt;&gt;&gt; basis(...,kxblock=(CFunc,m_Q,q,args),...)</span>
+
+<span class="sd">                The key names of the symmetry sector, e.g. `kxblock`, can be defined arbitrarily by the user. The</span>
+<span class="sd">                values are tuples where the first entry contains the numba-CFunc which generates the symmetry transformation :math:`Q`</span>
+<span class="sd">                acting on the state (see class example), the second entry is an integer :math:`m_Q` which gives the periodicity</span>
+<span class="sd">                of the symmetry sector (:math:`Q^{m_Q} = 1`), and :math:`q` is the quantum number for the given sector. Optional arguments can be passed using the`args` argument which is a `np.ndarray[basis_dtype]`. Note that if the periodicity is wrong</span>
+<span class="sd">                the basis will give undefined behavior.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># photon basis not supported hence this flag is always False.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_count_particles</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">if</span> <span class="n">_Np</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;cannot use photon basis with user_basis_general.&quot;</span><span class="p">)</span>
+
+        <span class="c1"># disable checks for this basis.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_check_herm</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_check_pcon</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_check_symm</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="c1"># this basis only supports unique matrix elements.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_unique_me</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="c1"># no particle conservation basis created at this point.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_basis_pcon</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_get_proj_pcon</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_made_basis</span> <span class="o">=</span> <span class="kc">False</span>  <span class="c1"># keeps track of whether the basis has been made</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_noncommuting_bits</span> <span class="o">=</span> <span class="n">_noncommuting_bits</span><span class="p">(</span><span class="n">N</span><span class="p">,</span> <span class="n">noncommuting_bits</span><span class="p">)</span>
+        <span class="n">Ns_full</span> <span class="o">=</span> <span class="n">sps</span><span class="o">**</span><span class="n">N</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_N</span> <span class="o">=</span> <span class="n">N</span>
+        <span class="k">if</span> <span class="n">basis_dtype</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="n">_np</span><span class="o">.</span><span class="n">uint32</span><span class="p">,</span> <span class="n">_np</span><span class="o">.</span><span class="n">uint64</span><span class="p">]:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;basis_dtype must be either uint32 or uint64 for the given basis representation.&quot;</span>
+            <span class="p">)</span>
+
+        <span class="n">use_32bit</span> <span class="o">=</span> <span class="n">basis_dtype</span> <span class="o">==</span> <span class="n">_np</span><span class="o">.</span><span class="n">uint32</span>
+
+        <span class="k">if</span> <span class="p">(</span>
+            <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span>
+                <span class="nb">isinstance</span><span class="p">(</span><span class="n">map_args</span><span class="p">,</span> <span class="n">_np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">map_args</span> <span class="ow">in</span> <span class="n">blocks</span><span class="o">.</span><span class="n">values</span><span class="p">()</span>
+            <span class="p">)</span>
+            <span class="ow">or</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span>
+                <span class="n">map_args</span><span class="o">.</span><span class="n">flags</span><span class="p">[</span><span class="s2">&quot;CARRAY&quot;</span><span class="p">]</span> <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">map_args</span> <span class="ow">in</span> <span class="n">blocks</span><span class="o">.</span><span class="n">values</span><span class="p">()</span>
+            <span class="p">)</span>
+            <span class="ow">or</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span>
+                <span class="n">map_args</span><span class="o">.</span><span class="n">dtype</span> <span class="o">==</span> <span class="n">basis_dtype</span> <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">map_args</span> <span class="ow">in</span> <span class="n">blocks</span><span class="o">.</span><span class="n">values</span><span class="p">()</span>
+            <span class="p">)</span>
+        <span class="p">):</span>
+
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;map_args must be a C-contiguous numpy array with dtype </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="n">basis_dtype</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">op_dict</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">dict</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">op_dict</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;op_dict must contain exactly two items.&quot;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">op_func</span> <span class="o">=</span> <span class="n">op_dict</span><span class="p">[</span><span class="s2">&quot;op&quot;</span><span class="p">]</span>
+                <span class="n">op_args</span> <span class="o">=</span> <span class="n">op_dict</span><span class="p">[</span><span class="s2">&quot;op_args&quot;</span><span class="p">]</span>
+
+                <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">op_func</span><span class="p">,</span> <span class="n">CFunc</span><span class="p">):</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;op_func must be a numba.CFunc object.&quot;</span><span class="p">)</span>
+
+                <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">op_args</span><span class="p">,</span> <span class="n">_np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                        <span class="s2">&quot;op_args must be a C-contiguous numpy </span><span class="se">\</span>
+<span class="s2">						array with dtype </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                            <span class="n">basis_dtype</span>
+                        <span class="p">)</span>
+                    <span class="p">)</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">op_args</span><span class="o">.</span><span class="n">flags</span><span class="p">[</span><span class="s2">&quot;CARRAY&quot;</span><span class="p">]:</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                        <span class="s2">&quot;op_args must be a C-contiguous numpy </span><span class="se">\</span>
+<span class="s2">						array with dtype </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                            <span class="n">basis_dtype</span>
+                        <span class="p">)</span>
+                    <span class="p">)</span>
+                <span class="k">if</span> <span class="n">op_args</span><span class="o">.</span><span class="n">dtype</span> <span class="o">!=</span> <span class="n">basis_dtype</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                        <span class="s2">&quot;op_args must be a C-contiguous numpy </span><span class="se">\</span>
+<span class="s2">						array with dtype </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                            <span class="n">basis_dtype</span>
+                        <span class="p">)</span>
+                    <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;op_dict input not understood.&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">use_32bit</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">op_func</span><span class="o">.</span><span class="n">_sig</span> <span class="o">!=</span> <span class="n">op_sig_32</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="s2">&quot;op_func does not have the correct signature, </span><span class="se">\</span>
+<span class="s2">					try using op_sig_32 from quspin.basis.user module.&quot;</span>
+                <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">op_func</span><span class="o">.</span><span class="n">_sig</span> <span class="o">!=</span> <span class="n">op_sig_64</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="s2">&quot;op_func does not have the correct signature, </span><span class="se">\</span>
+<span class="s2">					try using op_sig_64 from quspin.basis.user module.&quot;</span>
+                <span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">pcon_dict</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+
+            <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">pcon_dict</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">dict</span><span class="p">:</span>
+
+                <span class="n">next_state_args</span> <span class="o">=</span> <span class="n">pcon_dict</span><span class="p">[</span><span class="s2">&quot;next_state_args&quot;</span><span class="p">]</span>
+
+                <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">next_state_args</span><span class="p">,</span> <span class="n">_np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                        <span class="s2">&quot;next_state_args must be a C-contiguous numpy </span><span class="se">\</span>
+<span class="s2">						array with dtype </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                            <span class="n">basis_dtype</span>
+                        <span class="p">)</span>
+                    <span class="p">)</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">next_state_args</span><span class="o">.</span><span class="n">flags</span><span class="p">[</span><span class="s2">&quot;CARRAY&quot;</span><span class="p">]:</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                        <span class="s2">&quot;next_state_args must be a C-contiguous numpy </span><span class="se">\</span>
+<span class="s2">						array with dtype </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                            <span class="n">basis_dtype</span>
+                        <span class="p">)</span>
+                    <span class="p">)</span>
+                <span class="k">if</span> <span class="n">next_state_args</span><span class="o">.</span><span class="n">dtype</span> <span class="o">!=</span> <span class="n">basis_dtype</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                        <span class="s2">&quot;next_state_args must be a C-contiguous numpy </span><span class="se">\</span>
+<span class="s2">						array with dtype </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                            <span class="n">basis_dtype</span>
+                        <span class="p">)</span>
+                    <span class="p">)</span>
+
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">pcon_dict</span><span class="p">)</span> <span class="o">==</span> <span class="mi">5</span><span class="p">:</span>  <span class="c1"># basic usage</span>
+                    <span class="n">Np</span> <span class="o">=</span> <span class="n">pcon_dict</span><span class="p">[</span><span class="s2">&quot;Np&quot;</span><span class="p">]</span>
+                    <span class="n">next_state</span> <span class="o">=</span> <span class="n">pcon_dict</span><span class="p">[</span><span class="s2">&quot;next_state&quot;</span><span class="p">]</span>
+                    <span class="n">get_Ns_pcon</span> <span class="o">=</span> <span class="n">pcon_dict</span><span class="p">[</span><span class="s2">&quot;get_Ns_pcon&quot;</span><span class="p">]</span>
+                    <span class="n">get_s0_pcon</span> <span class="o">=</span> <span class="n">pcon_dict</span><span class="p">[</span><span class="s2">&quot;get_s0_pcon&quot;</span><span class="p">]</span>
+                    <span class="n">n_sectors</span> <span class="o">=</span> <span class="kc">None</span>
+                    <span class="n">count_particles</span> <span class="o">=</span> <span class="kc">None</span>
+                    <span class="n">count_particles_args</span> <span class="o">=</span> <span class="kc">None</span>
+
+                <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">pcon_dict</span><span class="p">)</span> <span class="o">==</span> <span class="mi">8</span><span class="p">:</span>
+                    <span class="n">Np</span> <span class="o">=</span> <span class="n">pcon_dict</span><span class="p">[</span><span class="s2">&quot;Np&quot;</span><span class="p">]</span>
+                    <span class="n">next_state</span> <span class="o">=</span> <span class="n">pcon_dict</span><span class="p">[</span><span class="s2">&quot;next_state&quot;</span><span class="p">]</span>
+                    <span class="n">get_Ns_pcon</span> <span class="o">=</span> <span class="n">pcon_dict</span><span class="p">[</span><span class="s2">&quot;get_Ns_pcon&quot;</span><span class="p">]</span>
+                    <span class="n">get_s0_pcon</span> <span class="o">=</span> <span class="n">pcon_dict</span><span class="p">[</span><span class="s2">&quot;get_s0_pcon&quot;</span><span class="p">]</span>
+                    <span class="n">n_sectors</span> <span class="o">=</span> <span class="n">pcon_dict</span><span class="p">[</span><span class="s2">&quot;n_sectors&quot;</span><span class="p">]</span>
+                    <span class="n">count_particles</span> <span class="o">=</span> <span class="n">pcon_dict</span><span class="p">[</span><span class="s2">&quot;count_particles&quot;</span><span class="p">]</span>
+                    <span class="n">count_particles_args</span> <span class="o">=</span> <span class="n">pcon_dict</span><span class="p">[</span><span class="s2">&quot;count_particles_args&quot;</span><span class="p">]</span>
+
+                    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">count_particles_args</span><span class="p">,</span> <span class="n">_np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+                        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                            <span class="s2">&quot;count_particles_args must be a C-contiguous numpy </span><span class="se">\</span>
+<span class="s2">							array with dtype </span><span class="si">{}</span><span class="s2"> or </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                                <span class="n">_np</span><span class="o">.</span><span class="n">int32</span><span class="p">,</span> <span class="n">_np</span><span class="o">.</span><span class="n">int64</span>
+                            <span class="p">)</span>
+                        <span class="p">)</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="n">count_particles_args</span><span class="o">.</span><span class="n">flags</span><span class="p">[</span><span class="s2">&quot;CARRAY&quot;</span><span class="p">]:</span>
+                        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                            <span class="s2">&quot;count_particles_args must be a C-contiguous numpy </span><span class="se">\</span>
+<span class="s2">							array with dtype </span><span class="si">{}</span><span class="s2"> or </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                                <span class="n">_np</span><span class="o">.</span><span class="n">int32</span><span class="p">,</span> <span class="n">_np</span><span class="o">.</span><span class="n">int64</span>
+                            <span class="p">)</span>
+                        <span class="p">)</span>
+                    <span class="k">if</span> <span class="p">(</span>
+                        <span class="n">count_particles_args</span><span class="o">.</span><span class="n">dtype</span> <span class="o">!=</span> <span class="n">_np</span><span class="o">.</span><span class="n">int32</span>
+                        <span class="ow">and</span> <span class="n">count_particles_args</span><span class="o">.</span><span class="n">dtype</span> <span class="o">!=</span> <span class="n">_np</span><span class="o">.</span><span class="n">int64</span>
+                    <span class="p">):</span>
+                        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                            <span class="s2">&quot;count_particles_args must be a C-contiguous numpy </span><span class="se">\</span>
+<span class="s2">							array with dtype </span><span class="si">{}</span><span class="s2"> or </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                                <span class="n">_np</span><span class="o">.</span><span class="n">int32</span><span class="p">,</span> <span class="n">_np</span><span class="o">.</span><span class="n">int64</span>
+                            <span class="p">)</span>
+                        <span class="p">)</span>
+
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                        <span class="s2">&quot;pcon_dict input not understood. Check if you passed all keys (currently pcon_dict can have either 5 or 8 keys.&quot;</span>
+                    <span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;pcon_dict input not understood.&quot;</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">Np</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">Ns</span> <span class="o">=</span> <span class="n">Ns_full</span>
+            <span class="k">elif</span> <span class="nb">type</span><span class="p">(</span><span class="n">Np</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">tuple</span> <span class="ow">or</span> <span class="nb">type</span><span class="p">(</span><span class="n">Np</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">int</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_get_proj_pcon</span> <span class="o">=</span> <span class="kc">True</span>
+                <span class="k">if</span> <span class="n">n_sectors</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">Np</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">int</span> <span class="ow">and</span> <span class="n">n_sectors</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
+                        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                            <span class="s2">&quot;n_sectors is </span><span class="si">{}</span><span class="s2"> when the size </span><span class="se">\</span>
+<span class="s2">							of the particle sector is 1&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                                <span class="n">n_sectors</span>
+                            <span class="p">)</span>
+                        <span class="p">)</span>
+                    <span class="k">elif</span> <span class="nb">type</span><span class="p">(</span><span class="n">Np</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">tuple</span> <span class="ow">and</span> <span class="n">n_sectors</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">Np</span><span class="p">):</span>
+                        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                            <span class="s2">&quot;n_sectors is </span><span class="si">{}</span><span class="s2"> when the size </span><span class="se">\</span>
+<span class="s2">							of the particle sector is </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                                <span class="n">n_sectors</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">np</span><span class="p">)</span>
+                            <span class="p">)</span>
+                        <span class="p">)</span>
+                    <span class="c1"># else:</span>
+                    <span class="c1"># 	raise ValueError(&quot;Np must be tuple, int, or a list of tuples/integers.&quot;)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">Np</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">int</span><span class="p">:</span>
+                        <span class="n">n_sectors</span> <span class="o">=</span> <span class="mi">1</span>
+                    <span class="k">elif</span> <span class="nb">type</span><span class="p">(</span><span class="n">Np</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">tuple</span><span class="p">:</span>
+                        <span class="n">n_sectors</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">Np</span><span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                            <span class="s2">&quot;Np must be tuple, int, or a list of tuples/integers.&quot;</span>
+                        <span class="p">)</span>
+
+                <span class="n">Ns</span> <span class="o">=</span> <span class="n">get_Ns_pcon</span><span class="p">(</span><span class="n">N</span><span class="p">,</span> <span class="n">Np</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">Np_iter</span> <span class="o">=</span> <span class="nb">iter</span><span class="p">(</span><span class="n">Np</span><span class="p">)</span>
+                <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Np must be integer or iteratable object.&quot;</span><span class="p">)</span>
+
+                <span class="n">Np</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">Np</span><span class="p">)</span>
+
+                <span class="k">for</span> <span class="n">np</span> <span class="ow">in</span> <span class="n">Np</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">n_sectors</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">np</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">int</span> <span class="ow">and</span> <span class="n">n_sectors</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
+                            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                                <span class="s2">&quot;n_sectors is </span><span class="si">{}</span><span class="s2"> when the size </span><span class="se">\</span>
+<span class="s2">								of the particle sector is 1&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                                    <span class="n">n_sectors</span>
+                                <span class="p">)</span>
+                            <span class="p">)</span>
+                        <span class="k">elif</span> <span class="nb">type</span><span class="p">(</span><span class="n">np</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">tuple</span> <span class="ow">and</span> <span class="n">n_sectors</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">np</span><span class="p">):</span>
+                            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                                <span class="s2">&quot;n_sectors is </span><span class="si">{}</span><span class="s2"> when the size </span><span class="se">\</span>
+<span class="s2">								of the particle sector is </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                                    <span class="n">n_sectors</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">np</span><span class="p">)</span>
+                                <span class="p">)</span>
+                            <span class="p">)</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                                <span class="s2">&quot;Np must be tuple, int, or a list of tuples/integers.&quot;</span>
+                            <span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">np</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">int</span><span class="p">:</span>
+                            <span class="n">n_sectors</span> <span class="o">=</span> <span class="mi">1</span>
+                        <span class="k">elif</span> <span class="nb">type</span><span class="p">(</span><span class="n">np</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">tuple</span><span class="p">:</span>
+                            <span class="n">n_sectors</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">np</span><span class="p">)</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                                <span class="s2">&quot;Np must be tuple, int, or a list of tuples/integers.&quot;</span>
+                            <span class="p">)</span>
+
+                <span class="n">Ns</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">get_Ns_pcon</span><span class="p">(</span><span class="n">N</span><span class="p">,</span> <span class="n">np</span><span class="p">)</span> <span class="k">for</span> <span class="n">np</span> <span class="ow">in</span> <span class="n">Np</span><span class="p">)</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_get_proj_pcon</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="n">Ns</span> <span class="o">=</span> <span class="n">Ns_full</span>
+            <span class="n">Np</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="n">next_state_args</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="n">next_state</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="n">count_particles</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="n">count_particles_args</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="n">get_s0_pcon</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="n">get_Ns_pcon</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="n">n_sectors</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+
+        <span class="c1"># check_state function BEFORE symmetry checks</span>
+        <span class="c1"># this can be used to impose local hilbert space constraints.</span>
+        <span class="k">if</span> <span class="n">pre_check_state</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">pre_check_state</span><span class="p">,</span> <span class="n">check_state_nosymm_args</span> <span class="o">=</span> <span class="n">pre_check_state</span>
+            <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+                <span class="n">check_state_nosymm_args</span> <span class="o">=</span> <span class="kc">None</span>
+
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">pre_check_state</span><span class="p">,</span> <span class="n">CFunc</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;pre_check_state must be a numba.CFunc object.&quot;</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">use_32bit</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">pre_check_state</span><span class="o">.</span><span class="n">_sig</span> <span class="o">!=</span> <span class="n">pre_check_state_sig_32</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                        <span class="s2">&quot;pre_check_state does not have the correct signature, </span><span class="se">\</span>
+<span class="s2">					try using pre_check_state_sig_32 from quspin.basis.user module.&quot;</span>
+                    <span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">pre_check_state</span><span class="o">.</span><span class="n">_sig</span> <span class="o">!=</span> <span class="n">pre_check_state_sig_64</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                        <span class="s2">&quot;pre_check_state does not have the correct signature, </span><span class="se">\</span>
+<span class="s2">					try using pre_check_state_sig_64 from quspin.basis.user module.&quot;</span>
+                    <span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">check_state_nosymm_args</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">check_state_nosymm_args</span><span class="p">,</span> <span class="n">_np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                        <span class="s2">&quot;next_state_args must be a C-contiguous numpy </span><span class="se">\</span>
+<span class="s2">						array with dtype </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                            <span class="n">basis_dtype</span>
+                        <span class="p">)</span>
+                    <span class="p">)</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">check_state_nosymm_args</span><span class="o">.</span><span class="n">flags</span><span class="p">[</span><span class="s2">&quot;CARRAY&quot;</span><span class="p">]:</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                        <span class="s2">&quot;next_state_args must be a C-contiguous numpy </span><span class="se">\</span>
+<span class="s2">						array with dtype </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                            <span class="n">basis_dtype</span>
+                        <span class="p">)</span>
+                    <span class="p">)</span>
+                <span class="k">if</span> <span class="n">check_state_nosymm_args</span><span class="o">.</span><span class="n">dtype</span> <span class="o">!=</span> <span class="n">basis_dtype</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                        <span class="s2">&quot;next_state_args must be a C-contiguous numpy </span><span class="se">\</span>
+<span class="s2">						array with dtype </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                            <span class="n">basis_dtype</span>
+                        <span class="p">)</span>
+                    <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">pre_check_state</span><span class="p">,</span> <span class="n">check_state_nosymm_args</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span>
+
+        <span class="k">if</span> <span class="n">next_state</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">next_state</span><span class="p">,</span> <span class="n">CFunc</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;next_state must be a numba.CFunc object.&quot;</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">use_32bit</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">next_state</span><span class="o">.</span><span class="n">_sig</span> <span class="o">!=</span> <span class="n">next_state_sig_32</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                        <span class="s2">&quot;next_state does not have the correct signature, </span><span class="se">\</span>
+<span class="s2">					try using next_state_sig_32 from quspin.basis.user module.&quot;</span>
+                    <span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">next_state</span><span class="o">.</span><span class="n">_sig</span> <span class="o">!=</span> <span class="n">next_state_sig_64</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                        <span class="s2">&quot;next_state does not have the correct signature, </span><span class="se">\</span>
+<span class="s2">					try using next_state_sig_64 from quspin.basis.user module.&quot;</span>
+                    <span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">count_particles</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">count_particles</span><span class="p">,</span> <span class="n">CFunc</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;count_particles must be a numba.CFunc object.&quot;</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">use_32bit</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">count_particles</span><span class="o">.</span><span class="n">_sig</span> <span class="o">!=</span> <span class="n">count_particles_sig_32</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                        <span class="s2">&quot;count_particles does not have the correct signature, </span><span class="se">\</span>
+<span class="s2">					try using count_particles_sig_64 from quspin.basis.user module.&quot;</span>
+                    <span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">count_particles</span><span class="o">.</span><span class="n">_sig</span> <span class="o">!=</span> <span class="n">count_particles_sig_64</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                        <span class="s2">&quot;count_particles does not have the correct signature, </span><span class="se">\</span>
+<span class="s2">					try using count_particles_sig_64 from quspin.basis.user module.&quot;</span>
+                    <span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">count_particles_args</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">count_particles_args</span><span class="p">,</span> <span class="n">_np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                        <span class="s2">&quot;count_particles_args must be a C-contiguous numpy </span><span class="se">\</span>
+<span class="s2">						array with dtype </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                            <span class="n">basis_dtype</span>
+                        <span class="p">)</span>
+                    <span class="p">)</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">count_particles_args</span><span class="o">.</span><span class="n">flags</span><span class="p">[</span><span class="s2">&quot;CARRAY&quot;</span><span class="p">]:</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                        <span class="s2">&quot;count_particles_args must be a C-contiguous numpy </span><span class="se">\</span>
+<span class="s2">						array with dtype </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                            <span class="n">basis_dtype</span>
+                        <span class="p">)</span>
+                    <span class="p">)</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">_np</span><span class="o">.</span><span class="n">issubdtype</span><span class="p">(</span><span class="n">count_particles_args</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span> <span class="n">_np</span><span class="o">.</span><span class="n">integer</span><span class="p">):</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                        <span class="s2">&quot;count_particles_args must be a C-contiguous numpy </span><span class="se">\</span>
+<span class="s2">						array with dtype </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                            <span class="n">_np</span><span class="o">.</span><span class="n">integer</span>
+                        <span class="p">)</span>
+                    <span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_blocks</span><span class="p">,</span> <span class="n">map_funcs</span><span class="p">,</span> <span class="n">pers</span><span class="p">,</span> <span class="n">qs</span><span class="p">,</span> <span class="n">map_args</span> <span class="o">=</span> <span class="n">_process_user_blocks</span><span class="p">(</span>
+            <span class="n">use_32bit</span><span class="p">,</span> <span class="n">blocks</span><span class="p">,</span> <span class="n">block_order</span>
+        <span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">map_funcs</span> <span class="o">=</span> <span class="n">map_funcs</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_pers</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">pers</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_qs</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">qs</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">map_args</span> <span class="o">=</span> <span class="n">map_args</span>
+
+        <span class="k">if</span> <span class="n">Ns_block_est</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_pers</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">Ns</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">Ns</span><span class="p">)</span> <span class="o">/</span> <span class="n">_np</span><span class="o">.</span><span class="n">multiply</span><span class="o">.</span><span class="n">reduce</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_pers</span><span class="p">))</span> <span class="o">*</span> <span class="mi">2</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">Ns_block_est</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="nb">int</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Ns_block_est must be integer value.&quot;</span><span class="p">)</span>
+
+            <span class="n">Ns</span> <span class="o">=</span> <span class="n">Ns_block_est</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_basis_dtype</span> <span class="o">=</span> <span class="n">basis_dtype</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_core_args</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">Ns_full</span><span class="p">,</span>
+            <span class="n">basis_dtype</span><span class="p">,</span>
+            <span class="n">N</span><span class="p">,</span>
+            <span class="n">sps</span><span class="p">,</span>
+            <span class="n">map_funcs</span><span class="p">,</span>
+            <span class="n">pers</span><span class="p">,</span>
+            <span class="n">qs</span><span class="p">,</span>
+            <span class="n">map_args</span><span class="p">,</span>
+            <span class="n">n_sectors</span><span class="p">,</span>
+            <span class="n">get_Ns_pcon</span><span class="p">,</span>
+            <span class="n">get_s0_pcon</span><span class="p">,</span>
+            <span class="n">next_state</span><span class="p">,</span>
+            <span class="n">next_state_args</span><span class="p">,</span>
+            <span class="n">pre_check_state</span><span class="p">,</span>
+            <span class="n">check_state_nosymm_args</span><span class="p">,</span>
+            <span class="n">parallel</span><span class="p">,</span>
+            <span class="n">count_particles</span><span class="p">,</span>
+            <span class="n">count_particles_args</span><span class="p">,</span>
+            <span class="n">op_func</span><span class="p">,</span>
+            <span class="n">op_args</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_core</span> <span class="o">=</span> <span class="n">user_core_wrap</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">_core_args</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_N</span> <span class="o">=</span> <span class="n">N</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_Ns</span> <span class="o">=</span> <span class="n">Ns</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_Ns_block_est</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Ns</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_Np</span> <span class="o">=</span> <span class="n">Np</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_sps</span> <span class="o">=</span> <span class="n">sps</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_allowed_ops</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">allowed_ops</span><span class="p">)</span>
+
+        <span class="n">nmax</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_pers</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_n_dtype</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">min_scalar_type</span><span class="p">(</span><span class="n">nmax</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">_make_basis</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">make</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_Ns</span> <span class="o">=</span> <span class="mi">1</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_basis</span> <span class="o">=</span> <span class="n">basis_zeros</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_Ns</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_basis_dtype</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_n</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_Ns</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_n_dtype</span><span class="p">)</span>
+
+        <span class="c1"># if not _is_sorted_decending(self._basis):</span>
+        <span class="c1"># 	ind = _np.argsort(self._basis,kind=&quot;heapsort&quot;)[::-1]</span>
+        <span class="c1"># 	self._basis = _np.asarray(self._basis[ind],order=&quot;C&quot;)</span>
+        <span class="c1"># 	self._n =  _np.asarray(self._n[ind],order=&quot;C&quot;)</span>
+        <span class="c1"># self.make_basis_blocks()</span>
+
+        <span class="k">if</span> <span class="n">allowed_ops</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">allowed_ops</span> <span class="o">=</span> <span class="nb">set</span><span class="p">([</span><span class="nb">chr</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">256</span><span class="p">)])</span>  <span class="c1"># all characters allowed.</span></div>
+
+
+    <span class="k">def</span> <span class="nf">__type__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s2">&quot;&lt;type &#39;qspin.basis.user.user_basis&#39;&gt;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s2">&quot;&lt; instance of &#39;qspin.basis.user.user_basis&#39; with </span><span class="si">{0}</span><span class="s2"> states &gt;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_Ns</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__name__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s2">&quot;&lt;type &#39;qspin.basis.user.user_basis&#39;&gt;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__setstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">state</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_core</span> <span class="o">=</span> <span class="n">user_core_wrap</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">_core_args</span><span class="p">)</span></div>
 
-
-		<span class="n">_</span><span class="p">,</span><span class="n">items</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">sorted_items</span><span class="p">)</span>
-		<span class="n">map_funcs</span><span class="p">,</span><span class="n">pers</span><span class="p">,</span><span class="n">qs</span><span class="p">,</span><span class="n">map_args</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">items</span><span class="p">)</span>
-		
-		<span class="c1">#exit()</span>
-
-		<span class="k">return</span> <span class="n">blocks</span><span class="p">,</span><span class="n">map_funcs</span><span class="p">,</span><span class="n">pers</span><span class="p">,</span><span class="n">qs</span><span class="p">,</span><span class="n">map_args</span>
-
-	<span class="k">else</span><span class="p">:</span>
-		<span class="k">return</span> <span class="p">{},[],[],[],[]</span>
-
-
-<span class="k">def</span> <span class="nf">_noncommuting_bits</span><span class="p">(</span><span class="n">N</span><span class="p">,</span><span class="n">noncommuting_bits</span><span class="p">):</span>
-	
-	<span class="n">completed_noncommuting_bits</span> <span class="o">=</span> <span class="p">[]</span>
-
-	<span class="k">for</span> <span class="n">bits</span><span class="p">,</span><span class="n">swap_phase</span> <span class="ow">in</span> <span class="n">noncommuting_bits</span><span class="p">:</span>
-		<span class="n">bits</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">bits</span><span class="p">)</span>
-		<span class="n">swap_phase</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">swap_phase</span><span class="p">)</span>
-
-		<span class="k">if</span> <span class="ow">not</span> <span class="n">_np</span><span class="o">.</span><span class="n">issubdtype</span><span class="p">(</span><span class="n">bits</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span><span class="n">_np</span><span class="o">.</span><span class="n">int</span><span class="p">):</span>
-			<span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;site list most contain only integers.&quot;</span><span class="p">)</span>
-
-		<span class="k">if</span> <span class="n">_np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">swap_phase</span><span class="p">)</span><span class="o">.</span><span class="n">ndim</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
-			<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;swap_phase must be scalar.&quot;</span><span class="p">)</span>
-
-		<span class="k">if</span> <span class="n">_np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">_np</span><span class="o">.</span><span class="n">logical_and</span><span class="p">(</span><span class="n">bits</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">,</span><span class="n">bits</span> <span class="o">&gt;=</span> <span class="n">N</span><span class="p">)):</span>
-			<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;bit number outside of range of system.&quot;</span><span class="p">)</span>
-
-		<span class="k">if</span> <span class="n">swap_phase</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
-			<span class="n">swap_phase</span> <span class="o">=</span> <span class="n">swap_phase</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">_np</span><span class="o">.</span><span class="n">int8</span><span class="p">)</span>
-		<span class="k">elif</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">swap_phase</span><span class="p">)</span><span class="o">!=</span><span class="mi">1</span><span class="p">:</span>
-			<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;must have |swap_phase|==1&quot;</span><span class="p">)</span>
-		<span class="k">else</span><span class="p">:</span>
-			<span class="k">if</span> <span class="n">swap_phase</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-				<span class="k">continue</span> <span class="c1"># skip </span>
-			<span class="k">else</span><span class="p">:</span>
-				<span class="c1"># swap_phase = swap_phase.astype(_np.complex128)</span>
-				<span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;Abealian anyons are not supported for user_basis.&quot;</span><span class="p">)</span>
-
-		<span class="n">completed_noncommuting_bits</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">bits</span><span class="p">,</span><span class="n">swap_phase</span><span class="p">))</span>
-
-	<span class="k">return</span> <span class="n">completed_noncommuting_bits</span>
-
-
-<div class="viewcode-block" id="user_basis"><a class="viewcode-back" href="../../../../generated/quspin.basis.user_basis.html#quspin.basis.user_basis">[docs]</a><span class="k">class</span> <span class="nc">user_basis</span><span class="p">(</span><span class="n">basis_general</span><span class="p">):</span>
-	<span class="sd">&quot;&quot;&quot;Constructs basis for USER-DEFINED functionality of a basis object.</span>
-
-
-<span class="sd">	The `user_basis` unveils the inner workings of QuSpin. This is the most advanced usage of the package, and requires some understanding of python,</span>
-<span class="sd">	the `numba` package used to interface QuSpin&#39;s underlying cpp code with python, and some experience with bitwise operations to manipulate integers. </span>
-
-<span class="sd">	Since we believe that the users will benefit from a more detailed discussion on how the `user_basis` is intended to work, we also provide a detailed </span>
-<span class="sd">	tutorial: :ref:`user_basis-label`, which covers the general concepts and provides six complete examples of various complexity.</span>
-
-<span class="sd">	Examples</span>
-<span class="sd">	--------</span>
-
-<span class="sd">	The following example shows how to use the `user_basis` class to construct the Hamiltonian</span>
-<span class="sd">	</span>
-<span class="sd">	.. math::</span>
-
-<span class="sd">		H = \\sum_j P_{j-1}\\sigma^x_j P_{j+1},\\quad P_j = |\\downarrow_j\\rangle\\langle\\downarrow_j|</span>
-
-<span class="sd">	using translation and reflection symmetry. The projector operator :math:`P_j`, which only allows a spin-up state in the basis to be preceded and succeeded by a spin-down,</span>
-<span class="sd">	is incorporated by constructing the corresponding `user_basis` object. One can then just build the Hamiltonian :math:`H=\\sum_j\\sigma^x_j` in the</span>
-<span class="sd">	constrained Hilbert space.</span>
-
-<span class="sd">	More examples (including explanations of the class methods and attributes) can be found at: :ref:`user_basis-label`.</span>
-
-<span class="sd">	.. literalinclude:: ../../doc_examples/user_basis-example.py</span>
-<span class="sd">		:linenos:</span>
-<span class="sd">		:language: python</span>
-<span class="sd">		:lines: 11-</span>
-
-<span class="sd">	&quot;&quot;&quot;</span>
-<div class="viewcode-block" id="user_basis.__init__"><a class="viewcode-back" href="../../../../generated/quspin.basis.user_basis.html#quspin.basis.user_basis.__init__">[docs]</a>	<span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">basis_dtype</span><span class="p">,</span><span class="n">N</span><span class="p">,</span><span class="n">op_dict</span><span class="p">,</span><span class="n">sps</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span><span class="n">pcon_dict</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">pre_check_state</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">allowed_ops</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-		<span class="n">parallel</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">Ns_block_est</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">_make_basis</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">block_order</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">noncommuting_bits</span><span class="o">=</span><span class="p">[],</span><span class="n">_Np</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="o">**</span><span class="n">blocks</span><span class="p">):</span>
-		<span class="sd">&quot;&quot;&quot;Intializes the `user_basis_general` object (basis for user defined ED calculations).</span>
-
-<span class="sd">		Parameters</span>
-<span class="sd">		-----------</span>
-<span class="sd">		basis_dtype: numpy.dtype object</span>
-<span class="sd">			the data type used to represent the states in the basis: must be either uint32 or uint64.</span>
-<span class="sd">		N: int</span>
-<span class="sd">			Number of sites.</span>
-<span class="sd">		op_dict: dict</span>
-<span class="sd">			used to define the `basis.Op` function; the dictionary contais the following items:</span>
-<span class="sd">				* **op(op_struct_ptr,op_str,site_ind,N,args): numba.CFunc object**</span>
-<span class="sd">					This is a numba-compiled function (CFunc) which calculates the matrix elements :math:`\\mathrm{me}` given a state :math:`|s\\rangle` together with a character to</span>
-<span class="sd">					represent the operator, an integer `site_ind` specifying the site of that local operator, the total number of sites `N`, and a set of optional `uint`-dtype arguments `args`. See the above example for how</span>
-<span class="sd">					one would use this for spin-1/2 system.</span>
-<span class="sd">				* **op_args: np.ndarray[basis_dtype]**</span>
-<span class="sd">					used to pass the arguments `args` to the CFunc `op(...,args)`. The corresponding key must be a `np.ndarray[basis_dtype]`.</span>
-<span class="sd">		pcon_dict: dict, optional</span>
-<span class="sd">			This dictionary contains the following items which are required to use particle conservation in this basis:</span>
-<span class="sd">				*minimum requirements*:</span>
-<span class="sd">					* **Np: tuple/int, list(tuple/int)**		</span>
-<span class="sd">						specifies the particle sector(s). </span>
-<span class="sd">					* **next_state(s,counter,N,args): numba.CFunc object**</span>
-<span class="sd">						given a quantum state :math:`|s\\rangle` in the integer-representation `s`, this CFunc generates the next lexicographically ordered particle conservation state. </span>
-<span class="sd">						`counter` is an intrinsic variable which increments by unity every time the function is called, `N` is the total number of lattice sites, and `args` holds any optional arguments stored in a `np.ndarray[basis_dtype]`.</span>
-<span class="sd">					* **next_state_args: np.ndarray(basis_dtype)**</span>
-<span class="sd">						optional arguments for `next_state(...,args)`.</span>
-<span class="sd">					* **get_Ns_pcon(N,Np): python function**</span>
-<span class="sd">						when called as get_Ns_pcon(N,Np), this python function returns the size of the symmetery-free particle conservation basis, given the `N` lattice sites and `Np` (see above).</span>
-<span class="sd">					* **get_s0_pcon(N,Np): python function**</span>
-<span class="sd">						when called as get_s0_pcon(N,Np), this python function returns the starting state to generate the whole particle conservation basis by repeatedly calling `next_state()`.</span>
-<span class="sd">				*advanced requirements* to access `basis.Op_bra_ket()` functionality (on top of the minimum requirements):</span>
-<span class="sd">					* **n_sectors: int, list(int)**</span>
-<span class="sd">						number of integers which parameterize the particle sectors, e.g. with spinful fermions there is a particle number for both the up and the down sectors, and hence `n_sectors=2`. </span>
-<span class="sd">					* **count_particles(s,p_number_ptr,args): numba.CFunc object**</span>
-<span class="sd">						For a quantum state `s` in the integer representation, this CFunc counts the number of particles in each particle sector and places them into a pointer `p_number_ptr` (`count_particles` does **not** return any output). The pointer provided will have `n_sector` slots of memory allocated. The components of the pointer `p_number_ptr` must correspond to the ordering of `Np`. The integer `s` cannot be changed.</span>
-<span class="sd">					* **count_particles_args: np.ndarray(int)**</span>
-<span class="sd">						compulsory arguments for `count_particles(...,args)` (whenever used).</span>
-<span class="sd">		pre_check_state(s,N,args): numba.CFunc object or tuple(numba.CFunc object,ndarray(C-contiguous,dtype=basis_dtype)), optional</span>
-<span class="sd">			This CFunc allows the user to specify a boolean criterion used to discard/filter states from the basis. In the low-level code, this function is applied before checking if a given state is</span>
-<span class="sd">			representative state (i.e. belogs to a given symmetry sector) or not. This allows the user to, e.g., enforce a local Hilbert-space constraint </span>
-<span class="sd">			(e.g. for a spinful fermion basis to never have a doubly occupied site). One can pass additional arguments `args` using a `np.ndarray[basis_dtype]`.</span>
-<span class="sd">		allowed_ops: list/set, optional</span>
-<span class="sd">			A list of allowed characters, each of which is to be passed in to the `op` in the form of `op_str` (see above).</span>
-<span class="sd">		parallel: bool, optional</span>
-<span class="sd">			turns on parallel code when constructing the basis even when no symmetries are implemented. Useful when constructing highly constrained Hilbert spaces with pre_check_state. </span>
-<span class="sd">		sps: int, optional</span>
-<span class="sd">			The number of states per site (i.e. the local on-site Hilbert space dimension).</span>
-<span class="sd">		Ns_full: int, optional</span>
-<span class="sd">			Total number of states in the Hilbert space without any symmetries. For a single species this value is `sps**N`</span>
-<span class="sd">		Ns_block_est: int, optional</span>
-<span class="sd">			An estimate for the size of the symmetry reduced block, QuSpin does a simple estimate which is not always correct. </span>
-<span class="sd">		block_order: tuple/list, optional</span>
-<span class="sd">			A list of strings containing the names of the symmetry blocks which specifies the order in which the symmetries will be applied to the state when calculating the basis. The first element in the list is applied to the state first followed by the second element, etc. If the list is not specificed the ordering is such that the symmetry with the largest cycle is the first, followed by the second largest, etc. </span>
-<span class="sd">		noncommuting_bits: list, optional</span>
-<span class="sd">			A list of tuples specifying if bits belong to a group of sites that do not commute. The first element in each tuple represents the group of sites, and the second element represents the phase-factor that is given during the exchange.</span>
-<span class="sd">		**blocks: optional</span>
-<span class="sd">			keyword arguments which pass the symmetry generator arrays. For instance:</span>
-
-<span class="sd">			&gt;&gt;&gt; basis(...,kxblock=(CFunc,m_Q,q,args),...)</span>
-
-<span class="sd">			The key names of the symmetry sector, e.g. `kxblock`, can be defined arbitrarily by the user. The</span>
-<span class="sd">			values are tuples where the first entry contains the numba-CFunc which generates the symmetry transformation :math:`Q` </span>
-<span class="sd">			acting on the state (see class example), the second entry is an integer :math:`m_Q` which gives the periodicity</span>
-<span class="sd">			of the symmetry sector (:math:`Q^{m_Q} = 1`), and :math:`q` is the quantum number for the given sector. Optional arguments can be passed using the`args` argument which is a `np.ndarray[basis_dtype]`. Note that if the periodicity is wrong</span>
-<span class="sd">			the basis will give undefined behavior. </span>
-<span class="sd">		&quot;&quot;&quot;</span>
-
-		<span class="c1"># photon basis not supported hence this flag is always False.</span>
-		<span class="bp">self</span><span class="o">.</span><span class="n">_count_particles</span> <span class="o">=</span> <span class="kc">False</span>
-		<span class="k">if</span> <span class="n">_Np</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-			<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;cannot use photon basis with user_basis_general.&quot;</span><span class="p">)</span>
-
-		<span class="c1"># disable checks for this basis.</span>
-		<span class="bp">self</span><span class="o">.</span><span class="n">_check_herm</span> <span class="o">=</span> <span class="kc">None</span>
-		<span class="bp">self</span><span class="o">.</span><span class="n">_check_pcon</span> <span class="o">=</span> <span class="kc">None</span>
-		<span class="bp">self</span><span class="o">.</span><span class="n">_check_symm</span> <span class="o">=</span> <span class="kc">None</span>
-
-		<span class="c1"># this basis only supports unique matrix elements.</span>
-		<span class="bp">self</span><span class="o">.</span><span class="n">_unique_me</span> <span class="o">=</span> <span class="kc">True</span>
-
-		<span class="c1"># no particle conservation basis created at this point.</span>
-		<span class="bp">self</span><span class="o">.</span><span class="n">_basis_pcon</span> <span class="o">=</span> <span class="kc">None</span>
-		<span class="bp">self</span><span class="o">.</span><span class="n">_get_proj_pcon</span> <span class="o">=</span> <span class="kc">False</span>
-		<span class="bp">self</span><span class="o">.</span><span class="n">_made_basis</span> <span class="o">=</span> <span class="kc">False</span> <span class="c1"># keeps track of whether the basis has been made</span>
-		
-		<span class="bp">self</span><span class="o">.</span><span class="n">_noncommuting_bits</span> <span class="o">=</span> <span class="n">_noncommuting_bits</span><span class="p">(</span><span class="n">N</span><span class="p">,</span><span class="n">noncommuting_bits</span><span class="p">)</span>
-		<span class="n">Ns_full</span> <span class="o">=</span> <span class="n">sps</span><span class="o">**</span><span class="n">N</span>
-		<span class="bp">self</span><span class="o">.</span><span class="n">_N</span> <span class="o">=</span> <span class="n">N</span>
-		<span class="k">if</span> <span class="n">basis_dtype</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="n">_np</span><span class="o">.</span><span class="n">uint32</span><span class="p">,</span><span class="n">_np</span><span class="o">.</span><span class="n">uint64</span><span class="p">]:</span>
-			<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;basis_dtype must be either uint32 or uint64 for the given basis representation.&quot;</span><span class="p">)</span>
-
-		<span class="n">use_32bit</span> <span class="o">=</span> <span class="p">(</span><span class="n">basis_dtype</span> <span class="o">==</span> <span class="n">_np</span><span class="o">.</span><span class="n">uint32</span><span class="p">)</span>
-
-
-		<span class="k">if</span>  <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">map_args</span><span class="p">,</span><span class="n">_np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="k">for</span> <span class="n">_</span><span class="p">,</span><span class="n">_</span><span class="p">,</span><span class="n">_</span><span class="p">,</span><span class="n">map_args</span> <span class="ow">in</span> <span class="n">blocks</span><span class="o">.</span><span class="n">values</span><span class="p">())</span> <span class="ow">or</span> \
-			<span class="ow">not</span> <span class="nb">all</span><span class="p">(</span><span class="n">map_args</span><span class="o">.</span><span class="n">flags</span><span class="p">[</span><span class="s2">&quot;CARRAY&quot;</span><span class="p">]</span> <span class="k">for</span> <span class="n">_</span><span class="p">,</span><span class="n">_</span><span class="p">,</span><span class="n">_</span><span class="p">,</span><span class="n">map_args</span> <span class="ow">in</span> <span class="n">blocks</span><span class="o">.</span><span class="n">values</span><span class="p">())</span> <span class="ow">or</span> \
-			<span class="ow">not</span> <span class="nb">all</span><span class="p">(</span><span class="n">map_args</span><span class="o">.</span><span class="n">dtype</span> <span class="o">==</span> <span class="n">basis_dtype</span> <span class="k">for</span> <span class="n">_</span><span class="p">,</span><span class="n">_</span><span class="p">,</span><span class="n">_</span><span class="p">,</span><span class="n">map_args</span> <span class="ow">in</span> <span class="n">blocks</span><span class="o">.</span><span class="n">values</span><span class="p">()):</span>
-
-			<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;map_args must be a C-contiguous numpy array with dtype </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">basis_dtype</span><span class="p">))</span>
-		
-
-		<span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">op_dict</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">dict</span><span class="p">:</span>
-			<span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">op_dict</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">:</span>
-				<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;op_dict must contain exactly two items.&quot;</span><span class="p">)</span>
-			<span class="k">else</span><span class="p">:</span>
-				<span class="n">op_func</span><span class="o">=</span><span class="n">op_dict</span><span class="p">[</span><span class="s1">&#39;op&#39;</span><span class="p">]</span>
-				<span class="n">op_args</span><span class="o">=</span><span class="n">op_dict</span><span class="p">[</span><span class="s1">&#39;op_args&#39;</span><span class="p">]</span>
-
-				<span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">op_func</span><span class="p">,</span><span class="n">CFunc</span><span class="p">):</span>
-					<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;op_func must be a numba.CFunc object.&quot;</span><span class="p">)</span>
-
-				<span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">op_args</span><span class="p">,</span><span class="n">_np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
-					<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;op_args must be a C-contiguous numpy </span><span class="se">\</span>
-<span class="s2">						array with dtype </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">basis_dtype</span><span class="p">))</span>
-				<span class="k">if</span> <span class="ow">not</span> <span class="n">op_args</span><span class="o">.</span><span class="n">flags</span><span class="p">[</span><span class="s2">&quot;CARRAY&quot;</span><span class="p">]:</span>
-					<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;op_args must be a C-contiguous numpy </span><span class="se">\</span>
-<span class="s2">						array with dtype </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">basis_dtype</span><span class="p">))</span>
-				<span class="k">if</span> <span class="n">op_args</span><span class="o">.</span><span class="n">dtype</span> <span class="o">!=</span> <span class="n">basis_dtype</span><span class="p">:</span>
-					<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;op_args must be a C-contiguous numpy </span><span class="se">\</span>
-<span class="s2">						array with dtype </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">basis_dtype</span><span class="p">))</span>
-		<span class="k">else</span><span class="p">:</span>
-			<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;op_dict input not understood.&quot;</span><span class="p">)</span>
-
-		
-
-		<span class="k">if</span> <span class="n">use_32bit</span><span class="p">:</span>
-			<span class="k">if</span> <span class="n">op_func</span><span class="o">.</span><span class="n">_sig</span> <span class="o">!=</span> <span class="n">op_sig_32</span><span class="p">:</span>
-				<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;op_func does not have the correct signature, </span><span class="se">\</span>
-<span class="s2">					try using op_sig_32 from quspin.basis.user module.&quot;</span><span class="p">)</span>
-		<span class="k">else</span><span class="p">:</span>
-			<span class="k">if</span> <span class="n">op_func</span><span class="o">.</span><span class="n">_sig</span> <span class="o">!=</span> <span class="n">op_sig_64</span><span class="p">:</span>
-				<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;op_func does not have the correct signature, </span><span class="se">\</span>
-<span class="s2">					try using op_sig_64 from quspin.basis.user module.&quot;</span><span class="p">)</span>
-
-
-		<span class="k">if</span> <span class="n">pcon_dict</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-
-			<span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">pcon_dict</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">dict</span><span class="p">:</span>
-
-				<span class="n">next_state_args</span> <span class="o">=</span> <span class="n">pcon_dict</span><span class="p">[</span><span class="s2">&quot;next_state_args&quot;</span><span class="p">]</span>
-				
-				<span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">next_state_args</span><span class="p">,</span><span class="n">_np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
-					<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;next_state_args must be a C-contiguous numpy </span><span class="se">\</span>
-<span class="s2">						array with dtype </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">basis_dtype</span><span class="p">))</span>
-				<span class="k">if</span> <span class="ow">not</span> <span class="n">next_state_args</span><span class="o">.</span><span class="n">flags</span><span class="p">[</span><span class="s2">&quot;CARRAY&quot;</span><span class="p">]:</span>
-					<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;next_state_args must be a C-contiguous numpy </span><span class="se">\</span>
-<span class="s2">						array with dtype </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">basis_dtype</span><span class="p">))</span>
-				<span class="k">if</span> <span class="n">next_state_args</span><span class="o">.</span><span class="n">dtype</span> <span class="o">!=</span> <span class="n">basis_dtype</span><span class="p">:</span>
-					<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;next_state_args must be a C-contiguous numpy </span><span class="se">\</span>
-<span class="s2">						array with dtype </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">basis_dtype</span><span class="p">))</span>
-
-
-				<span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">pcon_dict</span><span class="p">)</span> <span class="o">==</span> <span class="mi">5</span><span class="p">:</span> <span class="c1"># basic usage</span>
-					<span class="n">Np</span> <span class="o">=</span> <span class="n">pcon_dict</span><span class="p">[</span><span class="s2">&quot;Np&quot;</span><span class="p">]</span>
-					<span class="n">next_state</span> <span class="o">=</span> <span class="n">pcon_dict</span><span class="p">[</span><span class="s2">&quot;next_state&quot;</span><span class="p">]</span>
-					<span class="n">get_Ns_pcon</span> <span class="o">=</span> <span class="n">pcon_dict</span><span class="p">[</span><span class="s2">&quot;get_Ns_pcon&quot;</span><span class="p">]</span>
-					<span class="n">get_s0_pcon</span> <span class="o">=</span> <span class="n">pcon_dict</span><span class="p">[</span><span class="s2">&quot;get_s0_pcon&quot;</span><span class="p">]</span>
-					<span class="n">n_sectors</span> <span class="o">=</span> <span class="kc">None</span>
-					<span class="n">count_particles</span> <span class="o">=</span> <span class="kc">None</span>
-					<span class="n">count_particles_args</span> <span class="o">=</span> <span class="kc">None</span>
-
-				<span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">pcon_dict</span><span class="p">)</span> <span class="o">==</span> <span class="mi">8</span><span class="p">:</span>
-					<span class="n">Np</span> <span class="o">=</span> <span class="n">pcon_dict</span><span class="p">[</span><span class="s2">&quot;Np&quot;</span><span class="p">]</span>
-					<span class="n">next_state</span> <span class="o">=</span> <span class="n">pcon_dict</span><span class="p">[</span><span class="s2">&quot;next_state&quot;</span><span class="p">]</span>
-					<span class="n">get_Ns_pcon</span> <span class="o">=</span> <span class="n">pcon_dict</span><span class="p">[</span><span class="s2">&quot;get_Ns_pcon&quot;</span><span class="p">]</span>
-					<span class="n">get_s0_pcon</span> <span class="o">=</span> <span class="n">pcon_dict</span><span class="p">[</span><span class="s2">&quot;get_s0_pcon&quot;</span><span class="p">]</span>
-					<span class="n">n_sectors</span> <span class="o">=</span> <span class="n">pcon_dict</span><span class="p">[</span><span class="s2">&quot;n_sectors&quot;</span><span class="p">]</span>
-					<span class="n">count_particles</span> <span class="o">=</span> <span class="n">pcon_dict</span><span class="p">[</span><span class="s2">&quot;count_particles&quot;</span><span class="p">]</span>
-					<span class="n">count_particles_args</span> <span class="o">=</span> <span class="n">pcon_dict</span><span class="p">[</span><span class="s2">&quot;count_particles_args&quot;</span><span class="p">]</span>
-
-					<span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">count_particles_args</span><span class="p">,</span><span class="n">_np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
-						<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;count_particles_args must be a C-contiguous numpy </span><span class="se">\</span>
-<span class="s2">							array with dtype </span><span class="si">{}</span><span class="s2"> or </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">_np</span><span class="o">.</span><span class="n">int32</span><span class="p">,</span><span class="n">_np</span><span class="o">.</span><span class="n">int64</span><span class="p">))</span>
-					<span class="k">if</span> <span class="ow">not</span> <span class="n">count_particles_args</span><span class="o">.</span><span class="n">flags</span><span class="p">[</span><span class="s2">&quot;CARRAY&quot;</span><span class="p">]:</span>
-						<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;count_particles_args must be a C-contiguous numpy </span><span class="se">\</span>
-<span class="s2">							array with dtype </span><span class="si">{}</span><span class="s2"> or </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">_np</span><span class="o">.</span><span class="n">int32</span><span class="p">,</span><span class="n">_np</span><span class="o">.</span><span class="n">int64</span><span class="p">))</span>
-					<span class="k">if</span> <span class="n">count_particles_args</span><span class="o">.</span><span class="n">dtype</span> <span class="o">!=</span> <span class="n">_np</span><span class="o">.</span><span class="n">int32</span> <span class="ow">and</span> <span class="n">count_particles_args</span><span class="o">.</span><span class="n">dtype</span> <span class="o">!=</span> <span class="n">_np</span><span class="o">.</span><span class="n">int64</span><span class="p">:</span>
-						<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;count_particles_args must be a C-contiguous numpy </span><span class="se">\</span>
-<span class="s2">							array with dtype </span><span class="si">{}</span><span class="s2"> or </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">_np</span><span class="o">.</span><span class="n">int32</span><span class="p">,</span><span class="n">_np</span><span class="o">.</span><span class="n">int64</span><span class="p">))</span>
-
-
-				<span class="k">else</span><span class="p">:</span>
-					<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;pcon_dict input not understood. Check if you passed all keys (currently pcon_dict can have either 5 or 8 keys.&quot;</span><span class="p">)</span>
-			<span class="k">else</span><span class="p">:</span>
-				<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;pcon_dict input not understood.&quot;</span><span class="p">)</span>
-
-
-			<span class="k">if</span> <span class="n">Np</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-				<span class="n">Ns</span> <span class="o">=</span> <span class="n">Ns_full</span>
-			<span class="k">elif</span> <span class="nb">type</span><span class="p">(</span><span class="n">Np</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">tuple</span> <span class="ow">or</span> <span class="nb">type</span><span class="p">(</span><span class="n">Np</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">int</span><span class="p">:</span>
-				<span class="bp">self</span><span class="o">.</span><span class="n">_get_proj_pcon</span> <span class="o">=</span> <span class="kc">True</span>
-				<span class="k">if</span> <span class="n">n_sectors</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-					<span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">Np</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">int</span> <span class="ow">and</span> <span class="n">n_sectors</span><span class="o">!=</span><span class="mi">1</span><span class="p">:</span>
-						<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;n_sectors is </span><span class="si">{}</span><span class="s2"> when the size </span><span class="se">\</span>
-<span class="s2">							of the particle sector is 1&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">n_sectors</span><span class="p">))</span>
-					<span class="k">elif</span> <span class="nb">type</span><span class="p">(</span><span class="n">Np</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">tuple</span> <span class="ow">and</span> <span class="n">n_sectors</span><span class="o">!=</span><span class="nb">len</span><span class="p">(</span><span class="n">Np</span><span class="p">):</span>
-						<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;n_sectors is </span><span class="si">{}</span><span class="s2"> when the size </span><span class="se">\</span>
-<span class="s2">							of the particle sector is </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">n_sectors</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">np</span><span class="p">)))</span>
-					<span class="c1">#else:</span>
-					<span class="c1">#	raise ValueError(&quot;Np must be tuple, int, or a list of tuples/integers.&quot;)</span>
-				<span class="k">else</span><span class="p">:</span>
-					<span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">Np</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">int</span><span class="p">:</span>
-						<span class="n">n_sectors</span><span class="o">=</span><span class="mi">1</span>
-					<span class="k">elif</span> <span class="nb">type</span><span class="p">(</span><span class="n">Np</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">tuple</span><span class="p">:</span>
-						<span class="n">n_sectors</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">Np</span><span class="p">)</span>
-					<span class="k">else</span><span class="p">:</span>
-						<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Np must be tuple, int, or a list of tuples/integers.&quot;</span><span class="p">)</span>
-
-
-				<span class="n">Ns</span> <span class="o">=</span> <span class="n">get_Ns_pcon</span><span class="p">(</span><span class="n">N</span><span class="p">,</span><span class="n">Np</span><span class="p">)</span>
-			<span class="k">else</span><span class="p">:</span>
-				<span class="k">try</span><span class="p">:</span>
-					<span class="n">Np_iter</span> <span class="o">=</span> <span class="nb">iter</span><span class="p">(</span><span class="n">Np</span><span class="p">)</span>
-				<span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
-					<span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Np must be integer or iteratable object.&quot;</span><span class="p">)</span>
-
-				<span class="n">Np</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">Np</span><span class="p">)</span>
-				
-				<span class="k">for</span> <span class="n">np</span> <span class="ow">in</span> <span class="n">Np</span><span class="p">:</span>
-					<span class="k">if</span> <span class="n">n_sectors</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-						<span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">np</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">int</span> <span class="ow">and</span> <span class="n">n_sectors</span><span class="o">!=</span><span class="mi">1</span><span class="p">:</span>
-							<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;n_sectors is </span><span class="si">{}</span><span class="s2"> when the size </span><span class="se">\</span>
-<span class="s2">								of the particle sector is 1&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">n_sectors</span><span class="p">))</span>
-						<span class="k">elif</span> <span class="nb">type</span><span class="p">(</span><span class="n">np</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">tuple</span> <span class="ow">and</span> <span class="n">n_sectors</span><span class="o">!=</span><span class="nb">len</span><span class="p">(</span><span class="n">np</span><span class="p">):</span>
-							<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;n_sectors is </span><span class="si">{}</span><span class="s2"> when the size </span><span class="se">\</span>
-<span class="s2">								of the particle sector is </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">n_sectors</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">np</span><span class="p">)))</span>
-						<span class="k">else</span><span class="p">:</span>
-							<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Np must be tuple, int, or a list of tuples/integers.&quot;</span><span class="p">)</span>
-					<span class="k">else</span><span class="p">:</span>
-						<span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">np</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">int</span><span class="p">:</span>
-							<span class="n">n_sectors</span><span class="o">=</span><span class="mi">1</span>
-						<span class="k">elif</span> <span class="nb">type</span><span class="p">(</span><span class="n">np</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">tuple</span><span class="p">:</span>
-							<span class="n">n_sectors</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">np</span><span class="p">)</span>
-						<span class="k">else</span><span class="p">:</span>
-							<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Np must be tuple, int, or a list of tuples/integers.&quot;</span><span class="p">)</span>
-
-				<span class="n">Ns</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">get_Ns_pcon</span><span class="p">(</span><span class="n">N</span><span class="p">,</span><span class="n">np</span><span class="p">)</span> <span class="k">for</span> <span class="n">np</span> <span class="ow">in</span> <span class="n">Np</span><span class="p">)</span>
-
-
-		<span class="k">else</span><span class="p">:</span>
-			<span class="bp">self</span><span class="o">.</span><span class="n">_get_proj_pcon</span> <span class="o">=</span> <span class="kc">False</span>
-			<span class="n">Ns</span> <span class="o">=</span> <span class="n">Ns_full</span>
-			<span class="n">Np</span> <span class="o">=</span> <span class="kc">None</span>
-			<span class="n">next_state_args</span> <span class="o">=</span> <span class="kc">None</span>
-			<span class="n">next_state</span> <span class="o">=</span> <span class="kc">None</span>
-			<span class="n">count_particles</span> <span class="o">=</span> <span class="kc">None</span>
-			<span class="n">count_particles_args</span> <span class="o">=</span> <span class="kc">None</span>
-			<span class="n">get_s0_pcon</span> <span class="o">=</span> <span class="kc">None</span>
-			<span class="n">get_Ns_pcon</span> <span class="o">=</span> <span class="kc">None</span>
-			<span class="n">n_sectors</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
-
-		<span class="c1"># check_state function BEFORE symmetry checks</span>
-		<span class="c1"># this can be used to impose local hilbert space constraints.</span>
-		<span class="k">if</span> <span class="n">pre_check_state</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-			<span class="k">try</span><span class="p">:</span>
-				<span class="n">pre_check_state</span><span class="p">,</span><span class="n">check_state_nosymm_args</span> <span class="o">=</span> <span class="n">pre_check_state</span>
-			<span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
-				<span class="n">check_state_nosymm_args</span> <span class="o">=</span> <span class="kc">None</span>
-
-			<span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">pre_check_state</span><span class="p">,</span><span class="n">CFunc</span><span class="p">):</span>
-				<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;pre_check_state must be a numba.CFunc object.&quot;</span><span class="p">)</span>
-
-			<span class="k">if</span> <span class="n">use_32bit</span><span class="p">:</span>
-				<span class="k">if</span> <span class="n">pre_check_state</span><span class="o">.</span><span class="n">_sig</span> <span class="o">!=</span> <span class="n">pre_check_state_sig_32</span><span class="p">:</span>
-					<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;pre_check_state does not have the correct signature, </span><span class="se">\</span>
-<span class="s2">					try using pre_check_state_sig_32 from quspin.basis.user module.&quot;</span><span class="p">)</span>
-			<span class="k">else</span><span class="p">:</span>
-				<span class="k">if</span> <span class="n">pre_check_state</span><span class="o">.</span><span class="n">_sig</span> <span class="o">!=</span> <span class="n">pre_check_state_sig_64</span><span class="p">:</span>
-					<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;pre_check_state does not have the correct signature, </span><span class="se">\</span>
-<span class="s2">					try using pre_check_state_sig_64 from quspin.basis.user module.&quot;</span><span class="p">)</span>
-
-
-			<span class="k">if</span> <span class="n">check_state_nosymm_args</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-				<span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">check_state_nosymm_args</span><span class="p">,</span><span class="n">_np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
-					<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;next_state_args must be a C-contiguous numpy </span><span class="se">\</span>
-<span class="s2">						array with dtype </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">basis_dtype</span><span class="p">))</span>
-				<span class="k">if</span> <span class="ow">not</span> <span class="n">check_state_nosymm_args</span><span class="o">.</span><span class="n">flags</span><span class="p">[</span><span class="s2">&quot;CARRAY&quot;</span><span class="p">]:</span>
-					<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;next_state_args must be a C-contiguous numpy </span><span class="se">\</span>
-<span class="s2">						array with dtype </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">basis_dtype</span><span class="p">))</span>
-				<span class="k">if</span> <span class="n">check_state_nosymm_args</span><span class="o">.</span><span class="n">dtype</span> <span class="o">!=</span> <span class="n">basis_dtype</span><span class="p">:</span>
-					<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;next_state_args must be a C-contiguous numpy </span><span class="se">\</span>
-<span class="s2">						array with dtype </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">basis_dtype</span><span class="p">))</span>
-		<span class="k">else</span><span class="p">:</span>
-			<span class="n">pre_check_state</span><span class="p">,</span><span class="n">check_state_nosymm_args</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span><span class="kc">None</span>
-
-		<span class="k">if</span> <span class="n">next_state</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-			<span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">next_state</span><span class="p">,</span><span class="n">CFunc</span><span class="p">):</span>
-				<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;next_state must be a numba.CFunc object.&quot;</span><span class="p">)</span>
-
-			<span class="k">if</span> <span class="n">use_32bit</span><span class="p">:</span>
-				<span class="k">if</span> <span class="n">next_state</span><span class="o">.</span><span class="n">_sig</span> <span class="o">!=</span> <span class="n">next_state_sig_32</span><span class="p">:</span>
-					<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;next_state does not have the correct signature, </span><span class="se">\</span>
-<span class="s2">					try using next_state_sig_32 from quspin.basis.user module.&quot;</span><span class="p">)</span>
-			<span class="k">else</span><span class="p">:</span>
-				<span class="k">if</span> <span class="n">next_state</span><span class="o">.</span><span class="n">_sig</span> <span class="o">!=</span> <span class="n">next_state_sig_64</span><span class="p">:</span>
-					<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;next_state does not have the correct signature, </span><span class="se">\</span>
-<span class="s2">					try using next_state_sig_64 from quspin.basis.user module.&quot;</span><span class="p">)</span>
-
-		<span class="k">if</span> <span class="n">count_particles</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-			<span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">count_particles</span><span class="p">,</span><span class="n">CFunc</span><span class="p">):</span>
-				<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;count_particles must be a numba.CFunc object.&quot;</span><span class="p">)</span>
-
-			<span class="k">if</span> <span class="n">use_32bit</span><span class="p">:</span>
-				<span class="k">if</span> <span class="n">count_particles</span><span class="o">.</span><span class="n">_sig</span> <span class="o">!=</span> <span class="n">count_particles_sig_32</span><span class="p">:</span>
-					<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;count_particles does not have the correct signature, </span><span class="se">\</span>
-<span class="s2">					try using count_particles_sig_64 from quspin.basis.user module.&quot;</span><span class="p">)</span>
-			<span class="k">else</span><span class="p">:</span>
-				<span class="k">if</span> <span class="n">count_particles</span><span class="o">.</span><span class="n">_sig</span> <span class="o">!=</span> <span class="n">count_particles_sig_64</span><span class="p">:</span>
-					<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;count_particles does not have the correct signature, </span><span class="se">\</span>
-<span class="s2">					try using count_particles_sig_64 from quspin.basis.user module.&quot;</span><span class="p">)</span>
-
-			<span class="k">if</span> <span class="n">count_particles_args</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-				<span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">count_particles_args</span><span class="p">,</span><span class="n">_np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
-					<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;count_particles_args must be a C-contiguous numpy </span><span class="se">\</span>
-<span class="s2">						array with dtype </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">basis_dtype</span><span class="p">))</span>
-				<span class="k">if</span> <span class="ow">not</span> <span class="n">count_particles_args</span><span class="o">.</span><span class="n">flags</span><span class="p">[</span><span class="s2">&quot;CARRAY&quot;</span><span class="p">]:</span>
-					<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;count_particles_args must be a C-contiguous numpy </span><span class="se">\</span>
-<span class="s2">						array with dtype </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">basis_dtype</span><span class="p">))</span>
-				<span class="k">if</span> <span class="ow">not</span> <span class="n">_np</span><span class="o">.</span><span class="n">issubdtype</span><span class="p">(</span><span class="n">count_particles_args</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span><span class="n">_np</span><span class="o">.</span><span class="n">integer</span><span class="p">):</span>
-					<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;count_particles_args must be a C-contiguous numpy </span><span class="se">\</span>
-<span class="s2">						array with dtype </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">_np</span><span class="o">.</span><span class="n">integer</span><span class="p">))</span>
-
-		<span class="bp">self</span><span class="o">.</span><span class="n">_blocks</span><span class="p">,</span><span class="n">map_funcs</span><span class="p">,</span><span class="n">pers</span><span class="p">,</span><span class="n">qs</span><span class="p">,</span><span class="n">map_args</span> <span class="o">=</span> <span class="n">_process_user_blocks</span><span class="p">(</span><span class="n">use_32bit</span><span class="p">,</span><span class="n">blocks</span><span class="p">,</span><span class="n">block_order</span><span class="p">)</span>
-
-		<span class="bp">self</span><span class="o">.</span><span class="n">map_funcs</span> <span class="o">=</span> <span class="n">map_funcs</span>
-		<span class="bp">self</span><span class="o">.</span><span class="n">_pers</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">pers</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="n">_np</span><span class="o">.</span><span class="n">int</span><span class="p">)</span>
-		<span class="bp">self</span><span class="o">.</span><span class="n">_qs</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">qs</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="n">_np</span><span class="o">.</span><span class="n">int</span><span class="p">)</span>
-		<span class="bp">self</span><span class="o">.</span><span class="n">map_args</span> <span class="o">=</span> <span class="n">map_args</span>
-		
-
-		<span class="k">if</span> <span class="n">Ns_block_est</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-			<span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_pers</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-				<span class="n">Ns</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">Ns</span><span class="p">)</span><span class="o">/</span><span class="n">_np</span><span class="o">.</span><span class="n">multiply</span><span class="o">.</span><span class="n">reduce</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_pers</span><span class="p">))</span><span class="o">*</span><span class="mi">2</span>
-		<span class="k">else</span><span class="p">:</span>
-			<span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">Ns_block_est</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="nb">int</span><span class="p">:</span>
-				<span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Ns_block_est must be integer value.&quot;</span><span class="p">)</span>
-				
-			<span class="n">Ns</span> <span class="o">=</span> <span class="n">Ns_block_est</span>
-
-		<span class="bp">self</span><span class="o">.</span><span class="n">_basis_dtype</span> <span class="o">=</span> <span class="n">basis_dtype</span>
-		<span class="bp">self</span><span class="o">.</span><span class="n">_core_args</span> <span class="o">=</span> <span class="p">(</span><span class="n">Ns_full</span><span class="p">,</span> <span class="n">basis_dtype</span><span class="p">,</span> <span class="n">N</span><span class="p">,</span> <span class="n">sps</span><span class="p">,</span> <span class="n">map_funcs</span><span class="p">,</span> <span class="n">pers</span><span class="p">,</span> <span class="n">qs</span><span class="p">,</span> <span class="n">map_args</span><span class="p">,</span>
-								<span class="n">n_sectors</span><span class="p">,</span> <span class="n">get_Ns_pcon</span><span class="p">,</span> <span class="n">get_s0_pcon</span><span class="p">,</span> <span class="n">next_state</span><span class="p">,</span>
-								<span class="n">next_state_args</span><span class="p">,</span><span class="n">pre_check_state</span><span class="p">,</span><span class="n">check_state_nosymm_args</span><span class="p">,</span><span class="n">parallel</span><span class="p">,</span>
-								<span class="n">count_particles</span><span class="p">,</span> <span class="n">count_particles_args</span><span class="p">,</span> <span class="n">op_func</span><span class="p">,</span> <span class="n">op_args</span><span class="p">)</span>
-		<span class="bp">self</span><span class="o">.</span><span class="n">_core</span> <span class="o">=</span> <span class="n">user_core_wrap</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">_core_args</span><span class="p">)</span>
-		<span class="bp">self</span><span class="o">.</span><span class="n">_N</span> <span class="o">=</span> <span class="n">N</span>
-		<span class="bp">self</span><span class="o">.</span><span class="n">_Ns</span> <span class="o">=</span> <span class="n">Ns</span>
-		<span class="bp">self</span><span class="o">.</span><span class="n">_Ns_block_est</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Ns</span>
-		<span class="bp">self</span><span class="o">.</span><span class="n">_Np</span> <span class="o">=</span> <span class="n">Np</span>
-		<span class="bp">self</span><span class="o">.</span><span class="n">_sps</span><span class="o">=</span><span class="n">sps</span>
-		<span class="bp">self</span><span class="o">.</span><span class="n">_allowed_ops</span><span class="o">=</span><span class="nb">set</span><span class="p">(</span><span class="n">allowed_ops</span><span class="p">)</span>
-
-		<span class="n">nmax</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_pers</span><span class="p">)</span>
-		<span class="bp">self</span><span class="o">.</span><span class="n">_n_dtype</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">min_scalar_type</span><span class="p">(</span><span class="n">nmax</span><span class="p">)</span>
-
-		<span class="k">if</span> <span class="n">_make_basis</span><span class="p">:</span>	
-			<span class="bp">self</span><span class="o">.</span><span class="n">make</span><span class="p">()</span>
-		<span class="k">else</span><span class="p">:</span>
-			<span class="bp">self</span><span class="o">.</span><span class="n">_Ns</span><span class="o">=</span><span class="mi">1</span>
-			<span class="bp">self</span><span class="o">.</span><span class="n">_basis</span><span class="o">=</span><span class="n">basis_zeros</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_Ns</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_basis_dtype</span><span class="p">)</span>
-			<span class="bp">self</span><span class="o">.</span><span class="n">_n</span><span class="o">=</span><span class="n">_np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_Ns</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_n_dtype</span><span class="p">)</span>
-
-		<span class="c1"># if not _is_sorted_decending(self._basis):</span>
-		<span class="c1"># 	ind = _np.argsort(self._basis,kind=&quot;heapsort&quot;)[::-1]</span>
-		<span class="c1"># 	self._basis = _np.asarray(self._basis[ind],order=&quot;C&quot;)</span>
-		<span class="c1"># 	self._n =  _np.asarray(self._n[ind],order=&quot;C&quot;)</span>
-		<span class="c1"># self.make_basis_blocks()</span>
-
-		<span class="k">if</span> <span class="n">allowed_ops</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-			<span class="n">allowed_ops</span> <span class="o">=</span> <span class="nb">set</span><span class="p">([</span><span class="nb">chr</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">256</span><span class="p">)])</span> <span class="c1"># all characters allowed.</span></div>
-
-
-
-	<span class="k">def</span> <span class="nf">__type__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-		<span class="k">return</span> <span class="s2">&quot;&lt;type &#39;qspin.basis.user.user_basis&#39;&gt;&quot;</span>
-
-	<span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-		<span class="k">return</span> <span class="s2">&quot;&lt; instance of &#39;qspin.basis.user.user_basis&#39; with </span><span class="si">{0}</span><span class="s2"> states &gt;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_Ns</span><span class="p">)</span>
-
-	<span class="k">def</span> <span class="nf">__name__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-		<span class="k">return</span> <span class="s2">&quot;&lt;type &#39;qspin.basis.user.user_basis&#39;&gt;&quot;</span>
-
-	<span class="k">def</span> <span class="nf">__setstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">state</span><span class="p">):</span>
-		<span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">state</span><span class="p">)</span>
-		<span class="bp">self</span><span class="o">.</span><span class="n">_core</span> <span class="o">=</span> <span class="n">user_core_wrap</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">_core_args</span><span class="p">)</span></div>
 </pre></div>
 
-            <div class="clearer"></div>
+           </div>
           </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Phillip Weinberg, Markus Schmitt, and Marin Bukov.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
         </div>
       </div>
-      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
-        <div class="sphinxsidebarwrapper">
-<div id="searchbox" style="display: none" role="search">
-  <h3 id="searchlabel">Quick search</h3>
-    <div class="searchformwrapper">
-    <form class="search" action="../../../../search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" />
-      <input type="submit" value="Go" />
-    </form>
-    </div>
-</div>
-<script>$('#searchbox').show(0);</script>
-        </div>
-      </div>
-      <div class="clearer"></div>
-    </div>
-    <div class="related" role="navigation" aria-label="related navigation">
-      <h3>Navigation</h3>
-      <ul>
-        <li class="right" style="margin-right: 10px">
-          <a href="../../../../genindex.html" title="General Index"
-             >index</a></li>
-        <li class="right" >
-          <a href="../../../../py-modindex.html" title="Python Module Index"
-             >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">QuSpin 0.3.7 documentation</a> &#187;</li>
-          <li class="nav-item nav-item-1"><a href="../../../index.html" >Module code</a> &#187;</li>
-        <li class="nav-item nav-item-this"><a href="">quspin.basis.basis_general.base_user</a></li> 
-      </ul>
-    </div>
-    <div class="footer" role="contentinfo">
-        &#169; Copyright 2016, Phillip Weinberg, Markus Schmitt and Marin Bukov.
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.5.4.
-    </div>
-  </body>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+    <!-- Theme Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-6885KZ7NH6"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-6885KZ7NH6', {
+          'anonymize_ip': false,
+      });
+    </script> 
+
+</body>
 </html>

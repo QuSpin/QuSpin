@@ -1,75 +1,134 @@
-
 <!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-<html>
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><script type="text/javascript">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>quspin.tools.evolution.evolve &mdash; QuSpin 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../static/css/sphinx_rtd_size.css?v=f26ae176" />
+      <link rel="stylesheet" type="text/css" href="../static/css/py_class_property_fix.css?v=faf79ccd" />
 
-      var _gaq = _gaq || [];
-      _gaq.push(['_setAccount', 'UA-110543543-1']);
-      _gaq.push(['_trackPageview']);
-
-      (function() {
-        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-      })();
-    </script>
-    <title>quspin.tools.evolution.evolve &#8212; QuSpin 0.3.7 documentation</title>
-    <link rel="stylesheet" href="../static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="../static/classic.css" type="text/css" />
-    
-    <script id="documentation_options" data-url_root="../" src="../static/documentation_options.js"></script>
-    <script src="../static/jquery.js"></script>
-    <script src="../static/underscore.js"></script>
-    <script src="../static/doctools.js"></script>
-    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    
+  
+  <!--[if lt IE 9]>
+    <script src="../static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../static/jquery.js?v=5d32c60e"></script>
+        <script src="../static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../static/documentation_options.js?v=8d563738"></script>
+        <script src="../static/doctools.js?v=9a2dae69"></script>
+        <script src="../static/sphinx_highlight.js?v=dc90522c"></script>
+        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="../static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="quspin.tools.evolution.expm_multiply_parallel" href="quspin.tools.evolution.expm_multiply_parallel.html" />
+    <link rel="next" title="quspin.tools.evolution.ExpmMultiplyParallel" href="quspin.tools.evolution.ExpmMultiplyParallel.html" />
     <link rel="prev" title="quspin.tools.evolution.ED_state_vs_time" href="quspin.tools.evolution.ED_state_vs_time.html" /> 
-  </head><body>
-    <div class="related" role="navigation" aria-label="related navigation">
-      <h3>Navigation</h3>
-      <ul>
-        <li class="right" style="margin-right: 10px">
-          <a href="../genindex.html" title="General Index"
-             accesskey="I">index</a></li>
-        <li class="right" >
-          <a href="../py-modindex.html" title="Python Module Index"
-             >modules</a> |</li>
-        <li class="right" >
-          <a href="quspin.tools.evolution.expm_multiply_parallel.html" title="quspin.tools.evolution.expm_multiply_parallel"
-             accesskey="N">next</a> |</li>
-        <li class="right" >
-          <a href="quspin.tools.evolution.ED_state_vs_time.html" title="quspin.tools.evolution.ED_state_vs_time"
-             accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.7 documentation</a> &#187;</li>
-          <li class="nav-item nav-item-1"><a href="../tools.html" accesskey="U">Tools module (<code class="xref py py-mod docutils literal notranslate"><span class="pre">quspin.tools</span></code>)</a> &#187;</li>
-        <li class="nav-item nav-item-this"><a href="">quspin.tools.evolution.evolve</a></li> 
-      </ul>
-    </div>  
+</head>
 
-    <div class="document">
-      <div class="documentwrapper">
-        <div class="bodywrapper">
-          <div class="body" role="main">
-            
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            QuSpin
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">QuSpin (public API)</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../basis.html">Basis module (<code class="xref py py-mod docutils literal notranslate"><span class="pre">quspin.basis</span></code>)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../operators.html">Operators module (<code class="xref py py-mod docutils literal notranslate"><span class="pre">quspin.operators</span></code>)</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../tools.html">Tools module (<code class="xref py py-mod docutils literal notranslate"><span class="pre">quspin.tools</span></code>)</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="../tools.html#evolution">evolution</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="quspin.tools.evolution.ED_state_vs_time.html">quspin.tools.evolution.ED_state_vs_time</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">quspin.tools.evolution.evolve</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#quspin.tools.evolution.evolve"><code class="docutils literal notranslate"><span class="pre">evolve()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="quspin.tools.evolution.ExpmMultiplyParallel.html">quspin.tools.evolution.ExpmMultiplyParallel</a></li>
+<li class="toctree-l3"><a class="reference internal" href="quspin.tools.evolution.expm_multiply_parallel.html">quspin.tools.evolution.expm_multiply_parallel</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../tools.html#lanczos">Lanczos</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tools.html#floquet">Floquet</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tools.html#measurements">measurements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tools.html#block-tools">block_tools</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tools.html#misc">misc</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Installation &amp; Use</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../installation/installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../installation/installation.html#basics-of-command-line-use">Basics of command line use</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../example_scripts.html">Example scripts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../jupyter_notebooks.html">Jupyter notebooks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/parallelization.html">Parallel computing support</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/user_basis.html"><cite>user_basis</cite> tutorial</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Bugs &amp; Questions</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../contribute/report_a_bug.html">Report a bug</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contribute/ask_a_question.html">Ask a question</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">QuSpin</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content style-external-links">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../tools.html">Tools module (<code class="xref py py-mod docutils literal notranslate"><span class="pre">quspin.tools</span></code>)</a></li>
+      <li class="breadcrumb-item active">quspin.tools.evolution.evolve</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../sources/generated/quspin.tools.evolution.evolve.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
   <style> .red {color:#ff0000; font-weight:bold; font-style:italic; } </style>
 <style> .green {color:#00b200; font-weight:bold; font-style:italic; } </style>
 <style> .magenta {color:#FF33F3; font-weight:bold; font-style:italic; } </style>
-<style> .orange {color:#FE8E02; font-weight:bold; font-style:italic; } </style><div class="section" id="quspin-tools-evolution-evolve">
-<h1>quspin.tools.evolution.evolve<a class="headerlink" href="#quspin-tools-evolution-evolve" title="Permalink to this headline">¶</a></h1>
+<style> .orange {color:#FE8E02; font-weight:bold; font-style:italic; } </style><section id="quspin-tools-evolution-evolve">
+<h1>quspin.tools.evolution.evolve<a class="headerlink" href="#quspin-tools-evolution-evolve" title="Link to this heading"></a></h1>
 <dl class="py function">
-<dt id="quspin.tools.evolution.evolve">
-<code class="sig-prename descclassname"><span class="pre">quspin.tools.evolution.</span></code><code class="sig-name descname"><span class="pre">evolve</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">v0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">times</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">solver_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'dop853'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">real</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stack_state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">imag_time</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iterate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f_params</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">()</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">solver_args</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/tools/evolution.html#evolve"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quspin.tools.evolution.evolve" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="quspin.tools.evolution.evolve">
+<span class="sig-prename descclassname"><span class="pre">quspin.tools.evolution.</span></span><span class="sig-name descname"><span class="pre">evolve</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">v0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">times</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">solver_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'dop853'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">real</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stack_state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">imag_time</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iterate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f_params</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">()</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">solver_args</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/tools/evolution.html#evolve"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quspin.tools.evolution.evolve" title="Link to this definition"></a></dt>
 <dd><p>Implements (imaginary) time evolution for a user-defined first-order ODE.</p>
 <p>The function can be used to study nonlinear semiclassical dynamics. It can also serve as a pre-configured
 ODE solver in python, without any relation to other QuSpin objects.</p>
 <dl class="field-list">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl>
 <dt><strong>v0</strong><span class="classifier">numpy.ndarray</span></dt><dd><p>Initial state.</p>
 </dd>
@@ -86,9 +145,9 @@ ODE solver in python, without any relation to other QuSpin objects.</p>
 <dt><strong>iterate</strong><span class="classifier">bool, optional</span></dt><dd><p>If set to <cite>True</cite>, creates a generator object for the time-evolved the state. Default is <cite>False</cite>.</p>
 </dd>
 <dt><strong>solver_name</strong><span class="classifier">str, optional</span></dt><dd><p>Scipy solver integrator name. Default is <cite>dop853</cite>.</p>
-<p>See <a class="reference external" href="https://docs.scipy.org/doc/scipy-0.14.0/reference/generated/scipy.integrate.ode.html">scipy integrator (solver)</a> for other options.</p>
+<p>See <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.integrate.ode.html">scipy integrator (solver)</a> for other options.</p>
 </dd>
-<dt><strong>solver_args</strong><span class="classifier">dict, optional</span></dt><dd><p>Dictionary with additional <a class="reference external" href="https://docs.scipy.org/doc/scipy-0.14.0/reference/generated/scipy.integrate.ode.html">scipy integrator (solver)</a> arguments.</p>
+<dt><strong>solver_args</strong><span class="classifier">dict, optional</span></dt><dd><p>Dictionary with additional <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.integrate.ode.html">scipy integrator (solver)</a> arguments.</p>
 </dd>
 <dt><strong>real</strong><span class="classifier">bool, optional</span></dt><dd><p>Flag to determine if <cite>f</cite> is real or complex-valued. Default is <cite>False</cite>.</p>
 </dd>
@@ -103,7 +162,7 @@ Default is <cite>False</cite>.</p>
 </dd>
 </dl>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><dl class="simple">
 <dt>obj</dt><dd><dl class="simple">
 <dt>Can be either one of the following:</dt><dd><ul class="simple">
@@ -128,120 +187,68 @@ on a one-dimensional lattice for periodically-driven particles in a harmonic tra
 <p>where <span class="math notranslate nohighlight">\(j\)</span> labels the lattice sites, <span class="math notranslate nohighlight">\(J\)</span> is the lattice hopping amplitude, <span class="math notranslate nohighlight">\(\kappa_\mathrm{trap}\)</span> is
 the strength of the harmonic trap, and <span class="math notranslate nohighlight">\(U\)</span> – the mean-field interaction.</p>
 <p>Let us start by defining the single-particle Hamiltonian <span class="math notranslate nohighlight">\(H(t)\)</span>.</p>
-<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
-<span class="normal"> 2</span>
-<span class="normal"> 3</span>
-<span class="normal"> 4</span>
-<span class="normal"> 5</span>
-<span class="normal"> 6</span>
-<span class="normal"> 7</span>
-<span class="normal"> 8</span>
-<span class="normal"> 9</span>
-<span class="normal">10</span>
-<span class="normal">11</span>
-<span class="normal">12</span>
-<span class="normal">13</span>
-<span class="normal">14</span>
-<span class="normal">15</span>
-<span class="normal">16</span>
-<span class="normal">17</span>
-<span class="normal">18</span>
-<span class="normal">19</span>
-<span class="normal">20</span>
-<span class="normal">21</span>
-<span class="normal">22</span>
-<span class="normal">23</span>
-<span class="normal">24</span>
-<span class="normal">25</span>
-<span class="normal">26</span>
-<span class="normal">27</span>
-<span class="normal">28</span>
-<span class="normal">29</span>
-<span class="normal">30</span>
-<span class="normal">31</span>
-<span class="normal">32</span>
-<span class="normal">33</span>
-<span class="normal">34</span>
-<span class="normal">35</span>
-<span class="normal">36</span>
-<span class="normal">37</span>
-<span class="normal">38</span>
-<span class="normal">39</span>
-<span class="normal">40</span>
-<span class="normal">41</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">quspin.operators</span> <span class="kn">import</span> <span class="n">hamiltonian</span> <span class="c1"># Hamiltonians and operators</span>
-<span class="kn">from</span> <span class="nn">quspin.basis</span> <span class="kn">import</span> <span class="n">boson_basis_1d</span> <span class="c1"># Hilbert space spin basis</span>
-<span class="kn">from</span> <span class="nn">quspin.tools.evolution</span> <span class="kn">import</span> <span class="n">evolve</span> <span class="c1"># ODE evolve tool</span>
-<span class="kn">from</span> <span class="nn">quspin.tools.Floquet</span> <span class="kn">import</span> <span class="n">Floquet_t_vec</span> <span class="c1"># stroboscopic time vector</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span> <span class="c1"># generic math functions</span>
-<span class="kn">from</span> <span class="nn">six</span> <span class="kn">import</span> <span class="n">iteritems</span> <span class="c1"># loop over elements of dictionary</span>
-<span class="c1">#</span>
-<span class="n">L</span><span class="o">=</span><span class="mi">50</span> <span class="c1"># number of lattice sites</span>
-<span class="n">i_CM</span> <span class="o">=</span> <span class="n">L</span><span class="o">//</span><span class="mi">2</span><span class="o">-</span><span class="mf">0.5</span> <span class="c1"># centre of chain</span>
-<span class="c1">#</span>
-<span class="c1">### static model parameters</span>
-<span class="n">J</span><span class="o">=</span><span class="mf">1.0</span> <span class="c1"># hopping</span>
-<span class="n">kappa_trap</span><span class="o">=</span><span class="mf">0.002</span> <span class="c1"># harmonic trap strength</span>
-<span class="n">U</span><span class="o">=</span><span class="mf">1.0</span> <span class="c1"># mean-field (GPE) interaction</span>
-<span class="c1">#</span>
-<span class="c1">### periodic driving</span>
-<span class="n">A</span><span class="o">=</span><span class="mf">1.0</span> <span class="c1"># drive amplitude</span>
-<span class="n">Omega</span><span class="o">=</span><span class="mf">10.0</span> <span class="c1"># drive frequency</span>
-<span class="k">def</span> <span class="nf">drive</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">Omega</span><span class="p">):</span>
-	<span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="n">j</span><span class="o">*</span><span class="n">A</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">Omega</span><span class="o">*</span><span class="n">t</span><span class="p">)</span> <span class="p">)</span>
-<span class="k">def</span> <span class="nf">drive_conj</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">Omega</span><span class="p">):</span>
-	<span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">+</span><span class="mi">1</span><span class="n">j</span><span class="o">*</span><span class="n">A</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">Omega</span><span class="o">*</span><span class="n">t</span><span class="p">)</span> <span class="p">)</span>
-<span class="n">drive_args</span><span class="o">=</span><span class="p">[</span><span class="n">Omega</span><span class="p">]</span> <span class="c1"># drive arguments</span>
-<span class="n">t</span><span class="o">=</span><span class="n">Floquet_t_vec</span><span class="p">(</span><span class="n">Omega</span><span class="p">,</span><span class="mi">30</span><span class="p">,</span><span class="n">len_T</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="c1"># time vector, 30 stroboscopic periods</span>
-<span class="c1">#</span>
-<span class="c1">### site-couping lists</span>
-<span class="n">hopping</span><span class="o">=</span><span class="p">[[</span><span class="o">-</span><span class="n">J</span><span class="p">,</span><span class="n">i</span><span class="p">,(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">%</span><span class="n">L</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">L</span><span class="p">)]</span>
-<span class="n">trap</span><span class="o">=</span><span class="p">[[</span><span class="n">kappa_trap</span><span class="o">*</span><span class="p">(</span><span class="n">i</span><span class="o">-</span><span class="n">i_CM</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">L</span><span class="p">)]</span>
-<span class="c1">#</span>
-<span class="c1">### operator strings for single-particle Hamiltonian</span>
-<span class="n">static</span><span class="o">=</span><span class="p">[[</span><span class="s1">&#39;n&#39;</span><span class="p">,</span><span class="n">trap</span><span class="p">]]</span>
-<span class="n">dynamic</span><span class="o">=</span><span class="p">[[</span><span class="s2">&quot;+-&quot;</span><span class="p">,</span><span class="n">hopping</span><span class="p">,</span><span class="n">drive</span><span class="p">,</span><span class="n">drive_args</span><span class="p">],[</span><span class="s2">&quot;-+&quot;</span><span class="p">,</span><span class="n">hopping</span><span class="p">,</span><span class="n">drive_conj</span><span class="p">,</span><span class="n">drive_args</span><span class="p">]]</span>
-<span class="c1"># define single-particle basis</span>
-<span class="n">basis</span> <span class="o">=</span> <span class="n">boson_basis_1d</span><span class="p">(</span><span class="n">L</span><span class="p">,</span><span class="n">Nb</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">sps</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span> <span class="c1"># Nb=1 boson and sps=2 states per site [empty and filled]</span>
-<span class="c1">#</span>
-<span class="c1">### build Hamiltonian</span>
-<span class="n">H</span><span class="o">=</span><span class="n">hamiltonian</span><span class="p">(</span><span class="n">static</span><span class="p">,</span><span class="n">dynamic</span><span class="p">,</span><span class="n">basis</span><span class="o">=</span><span class="n">basis</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">complex128</span><span class="p">)</span>
-<span class="c1"># calculate eigenvalues and eigenvectors of free particle in a harmonic trap</span>
-<span class="n">E</span><span class="p">,</span><span class="n">V</span><span class="o">=</span><span class="n">H</span><span class="o">.</span><span class="n">eigh</span><span class="p">(</span><span class="n">time</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-<span class="c1"># initial state normalised to one partcile per site</span>
-<span class="n">phi0</span><span class="o">=</span><span class="n">V</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">L</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="kn">from</span> <span class="nn">quspin.basis</span> <span class="kn">import</span> <span class="n">boson_basis_1d</span>  <span class="c1"># Hilbert space spin basis</span>
+<span class="linenos"> 2</span><span class="kn">from</span> <span class="nn">quspin.tools.evolution</span> <span class="kn">import</span> <span class="n">evolve</span>  <span class="c1"># ODE evolve tool</span>
+<span class="linenos"> 3</span><span class="kn">from</span> <span class="nn">quspin.tools.Floquet</span> <span class="kn">import</span> <span class="n">Floquet_t_vec</span>  <span class="c1"># stroboscopic time vector</span>
+<span class="linenos"> 4</span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>  <span class="c1"># generic math functions</span>
+<span class="linenos"> 5</span><span class="kn">from</span> <span class="nn">six</span> <span class="kn">import</span> <span class="n">iteritems</span>  <span class="c1"># loop over elements of dictionary</span>
+<span class="linenos"> 6</span>
+<span class="linenos"> 7</span><span class="c1">#</span>
+<span class="linenos"> 8</span><span class="n">L</span> <span class="o">=</span> <span class="mi">50</span>  <span class="c1"># number of lattice sites</span>
+<span class="linenos"> 9</span><span class="n">i_CM</span> <span class="o">=</span> <span class="n">L</span> <span class="o">//</span> <span class="mi">2</span> <span class="o">-</span> <span class="mf">0.5</span>  <span class="c1"># centre of chain</span>
+<span class="linenos">10</span><span class="c1">#</span>
+<span class="linenos">11</span><span class="c1">### static model parameters</span>
+<span class="linenos">12</span><span class="n">J</span> <span class="o">=</span> <span class="mf">1.0</span>  <span class="c1"># hopping</span>
+<span class="linenos">13</span><span class="n">kappa_trap</span> <span class="o">=</span> <span class="mf">0.002</span>  <span class="c1"># harmonic trap strength</span>
+<span class="linenos">14</span><span class="n">U</span> <span class="o">=</span> <span class="mf">1.0</span>  <span class="c1"># mean-field (GPE) interaction</span>
+<span class="linenos">15</span><span class="c1">#</span>
+<span class="linenos">16</span><span class="c1">### periodic driving</span>
+<span class="linenos">17</span><span class="n">A</span> <span class="o">=</span> <span class="mf">1.0</span>  <span class="c1"># drive amplitude</span>
+<span class="linenos">18</span><span class="n">Omega</span> <span class="o">=</span> <span class="mf">10.0</span>  <span class="c1"># drive frequency</span>
+<span class="linenos">19</span>
+<span class="linenos">20</span>
+<span class="linenos">21</span><span class="k">def</span> <span class="nf">drive</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">Omega</span><span class="p">):</span>
+<span class="linenos">22</span>    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="n">j</span> <span class="o">*</span> <span class="n">A</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">Omega</span> <span class="o">*</span> <span class="n">t</span><span class="p">))</span>
+<span class="linenos">23</span>
+<span class="linenos">24</span>
+<span class="linenos">25</span><span class="k">def</span> <span class="nf">drive_conj</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">Omega</span><span class="p">):</span>
+<span class="linenos">26</span>    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">+</span><span class="mi">1</span><span class="n">j</span> <span class="o">*</span> <span class="n">A</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">Omega</span> <span class="o">*</span> <span class="n">t</span><span class="p">))</span>
+<span class="linenos">27</span>
+<span class="linenos">28</span>
+<span class="linenos">29</span><span class="n">drive_args</span> <span class="o">=</span> <span class="p">[</span><span class="n">Omega</span><span class="p">]</span>  <span class="c1"># drive arguments</span>
+<span class="linenos">30</span><span class="n">t</span> <span class="o">=</span> <span class="n">Floquet_t_vec</span><span class="p">(</span><span class="n">Omega</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="n">len_T</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>  <span class="c1"># time vector, 30 stroboscopic periods</span>
+<span class="linenos">31</span><span class="c1">#</span>
+<span class="linenos">32</span><span class="c1">### site-couping lists</span>
+<span class="linenos">33</span><span class="n">hopping</span> <span class="o">=</span> <span class="p">[[</span><span class="o">-</span><span class="n">J</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">%</span> <span class="n">L</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">L</span><span class="p">)]</span>
+<span class="linenos">34</span><span class="n">trap</span> <span class="o">=</span> <span class="p">[[</span><span class="n">kappa_trap</span> <span class="o">*</span> <span class="p">(</span><span class="n">i</span> <span class="o">-</span> <span class="n">i_CM</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span><span class="p">,</span> <span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">L</span><span class="p">)]</span>
+<span class="linenos">35</span><span class="c1">#</span>
+<span class="linenos">36</span><span class="c1">### operator strings for single-particle Hamiltonian</span>
+<span class="linenos">37</span><span class="n">static</span> <span class="o">=</span> <span class="p">[[</span><span class="s2">&quot;n&quot;</span><span class="p">,</span> <span class="n">trap</span><span class="p">]]</span>
+<span class="linenos">38</span><span class="n">dynamic</span> <span class="o">=</span> <span class="p">[[</span><span class="s2">&quot;+-&quot;</span><span class="p">,</span> <span class="n">hopping</span><span class="p">,</span> <span class="n">drive</span><span class="p">,</span> <span class="n">drive_args</span><span class="p">],</span> <span class="p">[</span><span class="s2">&quot;-+&quot;</span><span class="p">,</span> <span class="n">hopping</span><span class="p">,</span> <span class="n">drive_conj</span><span class="p">,</span> <span class="n">drive_args</span><span class="p">]]</span>
+<span class="linenos">39</span><span class="c1"># define single-particle basis</span>
+<span class="linenos">40</span><span class="n">basis</span> <span class="o">=</span> <span class="n">boson_basis_1d</span><span class="p">(</span>
+<span class="linenos">41</span>    <span class="n">L</span><span class="p">,</span> <span class="n">Nb</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">sps</span><span class="o">=</span><span class="mi">2</span>
 </pre></div>
-</td></tr></table></div>
+</div>
 <p>Next, we define the GPE</p>
 <div class="math notranslate nohighlight">
 \[-i\dot\varphi(t) = H(t)\varphi(t) + U |\varphi(t)|^2 \varphi(t)\]</div>
 <p>and solve it using <cite>evolve()</cite>:</p>
-<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">43</span>
-<span class="normal">44</span>
-<span class="normal">45</span>
-<span class="normal">46</span>
-<span class="normal">47</span>
-<span class="normal">48</span>
-<span class="normal">49</span>
-<span class="normal">50</span>
-<span class="normal">51</span>
-<span class="normal">52</span>
-<span class="normal">53</span>
-<span class="normal">54</span>
-<span class="normal">55</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">GPE</span><span class="p">(</span><span class="n">time</span><span class="p">,</span><span class="n">phi</span><span class="p">):</span>
-	<span class="sd">&#39;&#39;&#39;Solves the complex-valued time-dependent Gross-Pitaevskii equation:</span>
-<span class="sd">	</span>
-<span class="sd">	&#39;&#39;&#39;</span>
-	<span class="c1"># integrate static part of GPE</span>
-	<span class="n">phi_dot</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="n">j</span><span class="o">*</span><span class="p">(</span> <span class="n">H</span><span class="o">.</span><span class="n">static</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">phi</span><span class="p">)</span> <span class="o">+</span> <span class="n">U</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">phi</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="o">*</span><span class="n">phi</span> <span class="p">)</span>
-	<span class="c1"># integrate dynamic part of GPE</span>
-	<span class="k">for</span> <span class="n">fun</span><span class="p">,</span><span class="n">Hdyn</span> <span class="ow">in</span> <span class="n">iteritems</span><span class="p">(</span><span class="n">H</span><span class="o">.</span><span class="n">dynamic</span><span class="p">):</span>
-		<span class="n">phi_dot</span> <span class="o">+=</span> <span class="o">-</span><span class="mi">1</span><span class="n">j</span><span class="o">*</span><span class="n">fun</span><span class="p">(</span><span class="n">time</span><span class="p">)</span><span class="o">*</span><span class="n">Hdyn</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">phi</span><span class="p">)</span>
-	
-	<span class="k">return</span> <span class="n">phi_dot</span>
-<span class="c1"># solving the complex-valued GPE takes one line</span>
-<span class="n">phi_t</span> <span class="o">=</span> <span class="n">evolve</span><span class="p">(</span><span class="n">phi0</span><span class="p">,</span><span class="n">t</span><span class="o">.</span><span class="n">i</span><span class="p">,</span><span class="n">t</span><span class="o">.</span><span class="n">vals</span><span class="p">,</span><span class="n">GPE</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos">43</span><span class="c1">#</span>
+<span class="linenos">44</span><span class="c1">### build Hamiltonian</span>
+<span class="linenos">45</span><span class="n">H</span> <span class="o">=</span> <span class="n">hamiltonian</span><span class="p">(</span><span class="n">static</span><span class="p">,</span> <span class="n">dynamic</span><span class="p">,</span> <span class="n">basis</span><span class="o">=</span><span class="n">basis</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">complex128</span><span class="p">)</span>
+<span class="linenos">46</span><span class="c1"># calculate eigenvalues and eigenvectors of free particle in a harmonic trap</span>
+<span class="linenos">47</span><span class="n">E</span><span class="p">,</span> <span class="n">V</span> <span class="o">=</span> <span class="n">H</span><span class="o">.</span><span class="n">eigh</span><span class="p">(</span><span class="n">time</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="linenos">48</span><span class="c1"># initial state normalised to one partcile per site</span>
+<span class="linenos">49</span><span class="n">phi0</span> <span class="o">=</span> <span class="n">V</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">L</span><span class="p">)</span>
+<span class="linenos">50</span>
+<span class="linenos">51</span>
+<span class="linenos">52</span><span class="c1">#######</span>
+<span class="linenos">53</span><span class="k">def</span> <span class="nf">GPE</span><span class="p">(</span><span class="n">time</span><span class="p">,</span> <span class="n">phi</span><span class="p">):</span>
+<span class="linenos">54</span><span class="w">    </span><span class="sd">&quot;&quot;&quot;Solves the complex-valued time-dependent Gross-Pitaevskii equation:&quot;&quot;&quot;</span>
+<span class="linenos">55</span>    <span class="c1"># integrate static part of GPE</span>
 </pre></div>
-</td></tr></table></div>
+</div>
 <p>Since the GPE is a complex-valued equation, the above code requires the use of a complex-valued ODE solver
 [which is done by <cite>evolve()</cite> under the hood, so long as no solver is explicitly specified].</p>
 <p>An alternative way
@@ -260,61 +267,53 @@ the following real-valued form:</p>
 \[\dot u(t) = +\left[H_{stat} + U\left(|u(t)|^2 + |v(t)|^2\right) \right]v(t) + Re[f(t)]H_{dyn}v(t) + Im[f(t)]H_{dyn}u(t)\]</div>
 <div class="math notranslate nohighlight">
 \[\dot v(t) = -\left[H_{stat} + U\left(|u(t)|^2 + |v(t)|^2\right) \right]u(t) - Re[f(t)]H_{dyn}u(t) + Im[f(t)]H_{dyn}v(t)\]</div>
-<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">59</span>
-<span class="normal">60</span>
-<span class="normal">61</span>
-<span class="normal">62</span>
-<span class="normal">63</span>
-<span class="normal">64</span>
-<span class="normal">65</span>
-<span class="normal">66</span>
-<span class="normal">67</span>
-<span class="normal">68</span>
-<span class="normal">69</span>
-<span class="normal">70</span>
-<span class="normal">71</span>
-<span class="normal">72</span>
-<span class="normal">73</span>
-<span class="normal">74</span>
-<span class="normal">75</span>
-<span class="normal">76</span>
-<span class="normal">77</span>
-<span class="normal">78</span>
-<span class="normal">79</span>
-<span class="normal">80</span>
-<span class="normal">81</span>
-<span class="normal">82</span>
-<span class="normal">83</span>
-<span class="normal">84</span>
-<span class="normal">85</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">GPE_real</span><span class="p">(</span><span class="n">time</span><span class="p">,</span><span class="n">phi</span><span class="p">,</span><span class="n">H</span><span class="p">,</span><span class="n">U</span><span class="p">):</span>
-	<span class="sd">&#39;&#39;&#39;Solves the Gross-Pitaevskii equation, cast into real-valued form so it can be solved with a </span>
-<span class="sd">	real-valued ODE solver.</span>
-<span class="sd">	</span>
-<span class="sd">	&#39;&#39;&#39;</span>
-	<span class="c1"># preallocate memory for phi_dot</span>
-	<span class="n">phi_dot</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">phi</span><span class="p">)</span>
-	<span class="c1"># read off number of lattice sites (array dimension of phi)</span>
-	<span class="n">Ns</span><span class="o">=</span><span class="n">H</span><span class="o">.</span><span class="n">Ns</span>
-	<span class="c1"># static single-particle part</span>
-	<span class="n">phi_dot</span><span class="p">[:</span><span class="n">Ns</span><span class="p">]</span> <span class="o">=</span>  <span class="n">H</span><span class="o">.</span><span class="n">static</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">phi</span><span class="p">[</span><span class="n">Ns</span><span class="p">:])</span><span class="o">.</span><span class="n">real</span>
-	<span class="n">phi_dot</span><span class="p">[</span><span class="n">Ns</span><span class="p">:]</span> <span class="o">=</span> <span class="o">-</span><span class="n">H</span><span class="o">.</span><span class="n">static</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">phi</span><span class="p">[:</span><span class="n">Ns</span><span class="p">])</span><span class="o">.</span><span class="n">real</span>
-	<span class="c1"># static GPE interaction</span>
-	<span class="n">phi_dot_2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">phi</span><span class="p">[:</span><span class="n">Ns</span><span class="p">])</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">phi</span><span class="p">[</span><span class="n">Ns</span><span class="p">:])</span><span class="o">**</span><span class="mi">2</span>
-	<span class="n">phi_dot</span><span class="p">[:</span><span class="n">Ns</span><span class="p">]</span> <span class="o">+=</span> <span class="n">U</span><span class="o">*</span><span class="n">phi_dot_2</span><span class="o">*</span><span class="n">phi</span><span class="p">[</span><span class="n">Ns</span><span class="p">:]</span>
-	<span class="n">phi_dot</span><span class="p">[</span><span class="n">Ns</span><span class="p">:]</span> <span class="o">-=</span> <span class="n">U</span><span class="o">*</span><span class="n">phi_dot_2</span><span class="o">*</span><span class="n">phi</span><span class="p">[:</span><span class="n">Ns</span><span class="p">]</span>
-	<span class="c1"># dynamic single-particle term</span>
-	<span class="k">for</span> <span class="n">func</span><span class="p">,</span> <span class="n">Hdyn</span> <span class="ow">in</span> <span class="n">iteritems</span><span class="p">(</span><span class="n">H</span><span class="o">.</span><span class="n">dynamic</span><span class="p">):</span>
-		<span class="n">fun</span><span class="o">=</span><span class="n">func</span><span class="p">(</span><span class="n">time</span><span class="p">)</span> <span class="c1"># evaluate drive </span>
-		<span class="n">phi_dot</span><span class="p">[:</span><span class="n">Ns</span><span class="p">]</span> <span class="o">+=</span>  <span class="p">(</span> <span class="o">+</span><span class="p">(</span><span class="n">fun</span><span class="o">.</span><span class="n">real</span><span class="p">)</span><span class="o">*</span><span class="n">Hdyn</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">phi</span><span class="p">[</span><span class="n">Ns</span><span class="p">:])</span> <span class="o">+</span> <span class="p">(</span><span class="n">fun</span><span class="o">.</span><span class="n">imag</span><span class="p">)</span><span class="o">*</span><span class="n">Hdyn</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">phi</span><span class="p">[:</span><span class="n">Ns</span><span class="p">])</span>  <span class="p">)</span><span class="o">.</span><span class="n">real</span>
-		<span class="n">phi_dot</span><span class="p">[</span><span class="n">Ns</span><span class="p">:]</span> <span class="o">+=</span>  <span class="p">(</span> <span class="o">-</span><span class="p">(</span><span class="n">fun</span><span class="o">.</span><span class="n">real</span><span class="p">)</span><span class="o">*</span><span class="n">Hdyn</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">phi</span><span class="p">[:</span><span class="n">Ns</span><span class="p">])</span> <span class="o">+</span> <span class="p">(</span><span class="n">fun</span><span class="o">.</span><span class="n">imag</span><span class="p">)</span><span class="o">*</span><span class="n">Hdyn</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">phi</span><span class="p">[</span><span class="n">Ns</span><span class="p">:])</span>  <span class="p">)</span><span class="o">.</span><span class="n">real</span>
-	
-	<span class="k">return</span> <span class="n">phi_dot</span>
-<span class="c1"># define ODE solver parameters</span>
-<span class="n">GPE_params</span> <span class="o">=</span> <span class="p">(</span><span class="n">H</span><span class="p">,</span><span class="n">U</span><span class="p">)</span>
-<span class="c1"># solving the real-valued GPE takes one line</span>
-<span class="n">phi_t</span> <span class="o">=</span> <span class="n">evolve</span><span class="p">(</span><span class="n">phi0</span><span class="p">,</span><span class="n">t</span><span class="o">.</span><span class="n">i</span><span class="p">,</span><span class="n">t</span><span class="o">.</span><span class="n">vals</span><span class="p">,</span><span class="n">GPE_real</span><span class="p">,</span><span class="n">stack_state</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">f_params</span><span class="o">=</span><span class="n">GPE_params</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 59</span>    <span class="c1"># integrate dynamic part of GPE</span>
+<span class="linenos"> 60</span>    <span class="k">for</span> <span class="n">fun</span><span class="p">,</span> <span class="n">Hdyn</span> <span class="ow">in</span> <span class="n">iteritems</span><span class="p">(</span><span class="n">H</span><span class="o">.</span><span class="n">dynamic</span><span class="p">):</span>
+<span class="linenos"> 61</span>        <span class="n">phi_dot</span> <span class="o">+=</span> <span class="o">-</span><span class="mi">1</span><span class="n">j</span> <span class="o">*</span> <span class="n">fun</span><span class="p">(</span><span class="n">time</span><span class="p">)</span> <span class="o">*</span> <span class="n">Hdyn</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">phi</span><span class="p">)</span>
+<span class="linenos"> 62</span>
+<span class="linenos"> 63</span>    <span class="k">return</span> <span class="n">phi_dot</span>
+<span class="linenos"> 64</span>
+<span class="linenos"> 65</span>
+<span class="linenos"> 66</span><span class="c1"># solving the complex-valued GPE takes one line</span>
+<span class="linenos"> 67</span><span class="n">phi_t</span> <span class="o">=</span> <span class="n">evolve</span><span class="p">(</span><span class="n">phi0</span><span class="p">,</span> <span class="n">t</span><span class="o">.</span><span class="n">i</span><span class="p">,</span> <span class="n">t</span><span class="o">.</span><span class="n">vals</span><span class="p">,</span> <span class="n">GPE</span><span class="p">)</span>
+<span class="linenos"> 68</span>
+<span class="linenos"> 69</span>
+<span class="linenos"> 70</span><span class="c1">########</span>
+<span class="linenos"> 71</span><span class="k">def</span> <span class="nf">GPE_real</span><span class="p">(</span><span class="n">time</span><span class="p">,</span> <span class="n">phi</span><span class="p">,</span> <span class="n">H</span><span class="p">,</span> <span class="n">U</span><span class="p">):</span>
+<span class="linenos"> 72</span><span class="w">    </span><span class="sd">&quot;&quot;&quot;Solves the Gross-Pitaevskii equation, cast into real-valued form so it can be solved with a</span>
+<span class="linenos"> 73</span><span class="sd">    real-valued ODE solver.</span>
+<span class="linenos"> 74</span>
+<span class="linenos"> 75</span><span class="sd">    &quot;&quot;&quot;</span>
+<span class="linenos"> 76</span>    <span class="c1"># preallocate memory for phi_dot</span>
+<span class="linenos"> 77</span>    <span class="n">phi_dot</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">phi</span><span class="p">)</span>
+<span class="linenos"> 78</span>    <span class="c1"># read off number of lattice sites (array dimension of phi)</span>
+<span class="linenos"> 79</span>    <span class="n">Ns</span> <span class="o">=</span> <span class="n">H</span><span class="o">.</span><span class="n">Ns</span>
+<span class="linenos"> 80</span>    <span class="c1"># static single-particle part</span>
+<span class="linenos"> 81</span>    <span class="n">phi_dot</span><span class="p">[:</span><span class="n">Ns</span><span class="p">]</span> <span class="o">=</span> <span class="n">H</span><span class="o">.</span><span class="n">static</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">phi</span><span class="p">[</span><span class="n">Ns</span><span class="p">:])</span><span class="o">.</span><span class="n">real</span>
+<span class="linenos"> 82</span>    <span class="n">phi_dot</span><span class="p">[</span><span class="n">Ns</span><span class="p">:]</span> <span class="o">=</span> <span class="o">-</span><span class="n">H</span><span class="o">.</span><span class="n">static</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">phi</span><span class="p">[:</span><span class="n">Ns</span><span class="p">])</span><span class="o">.</span><span class="n">real</span>
+<span class="linenos"> 83</span>    <span class="c1"># static GPE interaction</span>
+<span class="linenos"> 84</span>    <span class="n">phi_dot_2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">phi</span><span class="p">[:</span><span class="n">Ns</span><span class="p">])</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">phi</span><span class="p">[</span><span class="n">Ns</span><span class="p">:])</span> <span class="o">**</span> <span class="mi">2</span>
+<span class="linenos"> 85</span>    <span class="n">phi_dot</span><span class="p">[:</span><span class="n">Ns</span><span class="p">]</span> <span class="o">+=</span> <span class="n">U</span> <span class="o">*</span> <span class="n">phi_dot_2</span> <span class="o">*</span> <span class="n">phi</span><span class="p">[</span><span class="n">Ns</span><span class="p">:]</span>
+<span class="linenos"> 86</span>    <span class="n">phi_dot</span><span class="p">[</span><span class="n">Ns</span><span class="p">:]</span> <span class="o">-=</span> <span class="n">U</span> <span class="o">*</span> <span class="n">phi_dot_2</span> <span class="o">*</span> <span class="n">phi</span><span class="p">[:</span><span class="n">Ns</span><span class="p">]</span>
+<span class="linenos"> 87</span>    <span class="c1"># dynamic single-particle term</span>
+<span class="linenos"> 88</span>    <span class="k">for</span> <span class="n">func</span><span class="p">,</span> <span class="n">Hdyn</span> <span class="ow">in</span> <span class="n">iteritems</span><span class="p">(</span><span class="n">H</span><span class="o">.</span><span class="n">dynamic</span><span class="p">):</span>
+<span class="linenos"> 89</span>        <span class="n">fun</span> <span class="o">=</span> <span class="n">func</span><span class="p">(</span><span class="n">time</span><span class="p">)</span>  <span class="c1"># evaluate drive</span>
+<span class="linenos"> 90</span>        <span class="n">phi_dot</span><span class="p">[:</span><span class="n">Ns</span><span class="p">]</span> <span class="o">+=</span> <span class="p">(</span>
+<span class="linenos"> 91</span>            <span class="o">+</span><span class="p">(</span><span class="n">fun</span><span class="o">.</span><span class="n">real</span><span class="p">)</span> <span class="o">*</span> <span class="n">Hdyn</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">phi</span><span class="p">[</span><span class="n">Ns</span><span class="p">:])</span> <span class="o">+</span> <span class="p">(</span><span class="n">fun</span><span class="o">.</span><span class="n">imag</span><span class="p">)</span> <span class="o">*</span> <span class="n">Hdyn</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">phi</span><span class="p">[:</span><span class="n">Ns</span><span class="p">])</span>
+<span class="linenos"> 92</span>        <span class="p">)</span><span class="o">.</span><span class="n">real</span>
+<span class="linenos"> 93</span>        <span class="n">phi_dot</span><span class="p">[</span><span class="n">Ns</span><span class="p">:]</span> <span class="o">+=</span> <span class="p">(</span>
+<span class="linenos"> 94</span>            <span class="o">-</span><span class="p">(</span><span class="n">fun</span><span class="o">.</span><span class="n">real</span><span class="p">)</span> <span class="o">*</span> <span class="n">Hdyn</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">phi</span><span class="p">[:</span><span class="n">Ns</span><span class="p">])</span> <span class="o">+</span> <span class="p">(</span><span class="n">fun</span><span class="o">.</span><span class="n">imag</span><span class="p">)</span> <span class="o">*</span> <span class="n">Hdyn</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">phi</span><span class="p">[</span><span class="n">Ns</span><span class="p">:])</span>
+<span class="linenos"> 95</span>        <span class="p">)</span><span class="o">.</span><span class="n">real</span>
+<span class="linenos"> 96</span>
+<span class="linenos"> 97</span>    <span class="k">return</span> <span class="n">phi_dot</span>
+<span class="linenos"> 98</span>
+<span class="linenos"> 99</span>
+<span class="linenos">100</span><span class="c1"># define ODE solver parameters</span>
+<span class="linenos">101</span><span class="n">GPE_params</span> <span class="o">=</span> <span class="p">(</span><span class="n">H</span><span class="p">,</span> <span class="n">U</span><span class="p">)</span>
+<span class="linenos">102</span><span class="c1"># solving the real-valued GPE takes one line</span>
+<span class="linenos">103</span><span class="n">phi_t</span> <span class="o">=</span> <span class="n">evolve</span><span class="p">(</span><span class="n">phi0</span><span class="p">,</span> <span class="n">t</span><span class="o">.</span><span class="n">i</span><span class="p">,</span> <span class="n">t</span><span class="o">.</span><span class="n">vals</span><span class="p">,</span> <span class="n">GPE_real</span><span class="p">,</span> <span class="n">stack_state</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">f_params</span><span class="o">=</span><span class="n">GPE_params</span><span class="p">)</span>
 </pre></div>
-</td></tr></table></div>
+</div>
 <p>The flag <cite>stack_state=True</cite> is required for <cite>evolve()</cite> to handle the complex-valued initial condition properly,
 as well as to put together the output solution as a complex-valued vector in the end. Since the real-valued ODE solver
 allows to parse ODE parameters, we can include them in the user-defined ODE function and use the
@@ -322,65 +321,48 @@ flag <cite>f_params</cite>. Notice the elegant way python allows one to circumve
 complex-valued example above.</p>
 </dd></dl>
 
-</div>
+</section>
 
 
-            <div class="clearer"></div>
+           </div>
           </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="quspin.tools.evolution.ED_state_vs_time.html" class="btn btn-neutral float-left" title="quspin.tools.evolution.ED_state_vs_time" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="quspin.tools.evolution.ExpmMultiplyParallel.html" class="btn btn-neutral float-right" title="quspin.tools.evolution.ExpmMultiplyParallel" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Phillip Weinberg, Markus Schmitt, and Marin Bukov.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
         </div>
       </div>
-      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
-        <div class="sphinxsidebarwrapper">
-  <h4>Previous topic</h4>
-  <p class="topless"><a href="quspin.tools.evolution.ED_state_vs_time.html"
-                        title="previous chapter">quspin.tools.evolution.ED_state_vs_time</a></p>
-  <h4>Next topic</h4>
-  <p class="topless"><a href="quspin.tools.evolution.expm_multiply_parallel.html"
-                        title="next chapter">quspin.tools.evolution.expm_multiply_parallel</a></p>
-  <div role="note" aria-label="source link">
-    <h3>This Page</h3>
-    <ul class="this-page-menu">
-      <li><a href="../sources/generated/quspin.tools.evolution.evolve.rst.txt"
-            rel="nofollow">Show Source</a></li>
-    </ul>
-   </div>
-<div id="searchbox" style="display: none" role="search">
-  <h3 id="searchlabel">Quick search</h3>
-    <div class="searchformwrapper">
-    <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" />
-      <input type="submit" value="Go" />
-    </form>
-    </div>
-</div>
-<script>$('#searchbox').show(0);</script>
-        </div>
-      </div>
-      <div class="clearer"></div>
-    </div>
-    <div class="related" role="navigation" aria-label="related navigation">
-      <h3>Navigation</h3>
-      <ul>
-        <li class="right" style="margin-right: 10px">
-          <a href="../genindex.html" title="General Index"
-             >index</a></li>
-        <li class="right" >
-          <a href="../py-modindex.html" title="Python Module Index"
-             >modules</a> |</li>
-        <li class="right" >
-          <a href="quspin.tools.evolution.expm_multiply_parallel.html" title="quspin.tools.evolution.expm_multiply_parallel"
-             >next</a> |</li>
-        <li class="right" >
-          <a href="quspin.tools.evolution.ED_state_vs_time.html" title="quspin.tools.evolution.ED_state_vs_time"
-             >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.7 documentation</a> &#187;</li>
-          <li class="nav-item nav-item-1"><a href="../tools.html" >Tools module (<code class="xref py py-mod docutils literal notranslate"><span class="pre">quspin.tools</span></code>)</a> &#187;</li>
-        <li class="nav-item nav-item-this"><a href="">quspin.tools.evolution.evolve</a></li> 
-      </ul>
-    </div>
-    <div class="footer" role="contentinfo">
-        &#169; Copyright 2016, Phillip Weinberg, Markus Schmitt and Marin Bukov.
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.5.4.
-    </div>
-  </body>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+    <!-- Theme Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-6885KZ7NH6"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-6885KZ7NH6', {
+          'anonymize_ip': false,
+      });
+    </script> 
+
+</body>
 </html>

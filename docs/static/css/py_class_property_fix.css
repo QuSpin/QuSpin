@@ -1,0 +1,5 @@
+/* fixed class properties in rtd sphinx theme  */
+/* https://github.com/readthedocs/sphinx_rtd_theme/issues/1247 */
+dl.py.property {
+    display: block !important;
+}

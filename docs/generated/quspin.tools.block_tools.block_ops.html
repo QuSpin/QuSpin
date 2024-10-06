@@ -1,70 +1,127 @@
-
 <!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-<html>
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><script type="text/javascript">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>quspin.tools.block_tools.block_ops &mdash; QuSpin 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../static/css/sphinx_rtd_size.css?v=f26ae176" />
+      <link rel="stylesheet" type="text/css" href="../static/css/py_class_property_fix.css?v=faf79ccd" />
 
-      var _gaq = _gaq || [];
-      _gaq.push(['_setAccount', 'UA-110543543-1']);
-      _gaq.push(['_trackPageview']);
-
-      (function() {
-        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-      })();
-    </script>
-    <title>quspin.tools.block_tools.block_ops &#8212; QuSpin 0.3.7 documentation</title>
-    <link rel="stylesheet" href="../static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="../static/classic.css" type="text/css" />
-    
-    <script id="documentation_options" data-url_root="../" src="../static/documentation_options.js"></script>
-    <script src="../static/jquery.js"></script>
-    <script src="../static/underscore.js"></script>
-    <script src="../static/doctools.js"></script>
-    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    
+  
+  <!--[if lt IE 9]>
+    <script src="../static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../static/jquery.js?v=5d32c60e"></script>
+        <script src="../static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../static/documentation_options.js?v=8d563738"></script>
+        <script src="../static/doctools.js?v=9a2dae69"></script>
+        <script src="../static/sphinx_highlight.js?v=dc90522c"></script>
+        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="../static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="quspin.tools.block_tools.block_diag_hamiltonian" href="quspin.tools.block_tools.block_diag_hamiltonian.html" />
     <link rel="prev" title="quspin.tools.measurements.obs_vs_time" href="quspin.tools.measurements.obs_vs_time.html" /> 
-  </head><body>
-    <div class="related" role="navigation" aria-label="related navigation">
-      <h3>Navigation</h3>
-      <ul>
-        <li class="right" style="margin-right: 10px">
-          <a href="../genindex.html" title="General Index"
-             accesskey="I">index</a></li>
-        <li class="right" >
-          <a href="../py-modindex.html" title="Python Module Index"
-             >modules</a> |</li>
-        <li class="right" >
-          <a href="quspin.tools.block_tools.block_diag_hamiltonian.html" title="quspin.tools.block_tools.block_diag_hamiltonian"
-             accesskey="N">next</a> |</li>
-        <li class="right" >
-          <a href="quspin.tools.measurements.obs_vs_time.html" title="quspin.tools.measurements.obs_vs_time"
-             accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.7 documentation</a> &#187;</li>
-          <li class="nav-item nav-item-1"><a href="../tools.html" accesskey="U">Tools module (<code class="xref py py-mod docutils literal notranslate"><span class="pre">quspin.tools</span></code>)</a> &#187;</li>
-        <li class="nav-item nav-item-this"><a href="">quspin.tools.block_tools.block_ops</a></li> 
-      </ul>
-    </div>  
+</head>
 
-    <div class="document">
-      <div class="documentwrapper">
-        <div class="bodywrapper">
-          <div class="body" role="main">
-            
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            QuSpin
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">QuSpin (public API)</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../basis.html">Basis module (<code class="xref py py-mod docutils literal notranslate"><span class="pre">quspin.basis</span></code>)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../operators.html">Operators module (<code class="xref py py-mod docutils literal notranslate"><span class="pre">quspin.operators</span></code>)</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../tools.html">Tools module (<code class="xref py py-mod docutils literal notranslate"><span class="pre">quspin.tools</span></code>)</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../tools.html#evolution">evolution</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tools.html#lanczos">Lanczos</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tools.html#floquet">Floquet</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tools.html#measurements">measurements</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../tools.html#block-tools">block_tools</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">quspin.tools.block_tools.block_ops</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#quspin.tools.block_tools.block_ops"><code class="docutils literal notranslate"><span class="pre">block_ops</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="quspin.tools.block_tools.block_diag_hamiltonian.html">quspin.tools.block_tools.block_diag_hamiltonian</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../tools.html#misc">misc</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Installation &amp; Use</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../installation/installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../installation/installation.html#basics-of-command-line-use">Basics of command line use</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../example_scripts.html">Example scripts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../jupyter_notebooks.html">Jupyter notebooks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/parallelization.html">Parallel computing support</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/user_basis.html"><cite>user_basis</cite> tutorial</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Bugs &amp; Questions</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../contribute/report_a_bug.html">Report a bug</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contribute/ask_a_question.html">Ask a question</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">QuSpin</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content style-external-links">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../tools.html">Tools module (<code class="xref py py-mod docutils literal notranslate"><span class="pre">quspin.tools</span></code>)</a></li>
+      <li class="breadcrumb-item active">quspin.tools.block_tools.block_ops</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../sources/generated/quspin.tools.block_tools.block_ops.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
   <style> .red {color:#ff0000; font-weight:bold; font-style:italic; } </style>
 <style> .green {color:#00b200; font-weight:bold; font-style:italic; } </style>
 <style> .magenta {color:#FF33F3; font-weight:bold; font-style:italic; } </style>
-<style> .orange {color:#FE8E02; font-weight:bold; font-style:italic; } </style><div class="section" id="quspin-tools-block-tools-block-ops">
-<h1>quspin.tools.block_tools.block_ops<a class="headerlink" href="#quspin-tools-block-tools-block-ops" title="Permalink to this headline">¶</a></h1>
+<style> .orange {color:#FE8E02; font-weight:bold; font-style:italic; } </style><section id="quspin-tools-block-tools-block-ops">
+<h1>quspin.tools.block_tools.block_ops<a class="headerlink" href="#quspin-tools-block-tools-block-ops" title="Link to this heading"></a></h1>
 <dl class="py class">
-<dt id="quspin.tools.block_tools.block_ops">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">quspin.tools.block_tools.</span></code><code class="sig-name descname"><span class="pre">block_ops</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">blocks</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">static</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dynamic</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">basis_con</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">basis_args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">basis_kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">get_proj_kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_previous_data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compute_all_blocks</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">check_symm</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">check_herm</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">check_pcon</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/tools/block_tools.html#block_ops"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quspin.tools.block_tools.block_ops" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="quspin.tools.block_tools.block_ops">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">quspin.tools.block_tools.</span></span><span class="sig-name descname"><span class="pre">block_ops</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">blocks</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">static</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dynamic</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">basis_con</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">basis_args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">basis_kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">get_proj_kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_previous_data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compute_all_blocks</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">check_symm</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">check_herm</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">check_pcon</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/tools/block_tools.html#block_ops"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quspin.tools.block_tools.block_ops" title="Link to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Splits up the dynamics of a state over various symmetry sectors.</p>
 <p>Particularly useful if the initial state does NOT obey a symmetry but the hamiltonian does.
@@ -82,111 +139,63 @@ translational invariance, by decomposing it in all momentum blocks, time-evolvin
 the state back together in the Fock basis in the end. We use the time-evolved state to measure the local density operator <span class="math notranslate nohighlight">\(n_j\)</span>.</p>
 <p>The code snippets for the time evolution can be found in the examples for the function methods of the class.
 The code snippet below initiates the class, and is required to run the example codes for the function methods.</p>
-<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
-<span class="normal"> 2</span>
-<span class="normal"> 3</span>
-<span class="normal"> 4</span>
-<span class="normal"> 5</span>
-<span class="normal"> 6</span>
-<span class="normal"> 7</span>
-<span class="normal"> 8</span>
-<span class="normal"> 9</span>
-<span class="normal">10</span>
-<span class="normal">11</span>
-<span class="normal">12</span>
-<span class="normal">13</span>
-<span class="normal">14</span>
-<span class="normal">15</span>
-<span class="normal">16</span>
-<span class="normal">17</span>
-<span class="normal">18</span>
-<span class="normal">19</span>
-<span class="normal">20</span>
-<span class="normal">21</span>
-<span class="normal">22</span>
-<span class="normal">23</span>
-<span class="normal">24</span>
-<span class="normal">25</span>
-<span class="normal">26</span>
-<span class="normal">27</span>
-<span class="normal">28</span>
-<span class="normal">29</span>
-<span class="normal">30</span>
-<span class="normal">31</span>
-<span class="normal">32</span>
-<span class="normal">33</span>
-<span class="normal">34</span>
-<span class="normal">35</span>
-<span class="normal">36</span>
-<span class="normal">37</span>
-<span class="normal">38</span>
-<span class="normal">39</span>
-<span class="normal">40</span>
-<span class="normal">41</span>
-<span class="normal">42</span>
-<span class="normal">43</span>
-<span class="normal">44</span>
-<span class="normal">45</span>
-<span class="normal">46</span>
-<span class="normal">47</span>
-<span class="normal">48</span>
-<span class="normal">49</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">quspin.operators</span> <span class="kn">import</span> <span class="n">hamiltonian</span> <span class="c1"># Hamiltonians and operators</span>
-<span class="kn">from</span> <span class="nn">quspin.basis</span> <span class="kn">import</span> <span class="n">boson_basis_1d</span> <span class="c1"># bosonic Hilbert space</span>
-<span class="kn">from</span> <span class="nn">quspin.tools.block_tools</span> <span class="kn">import</span> <span class="n">block_ops</span> <span class="c1"># dynamics in symmetry blocks</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span> <span class="c1"># general math functions</span>
-<span class="c1">#</span>
-<span class="c1">##### define model parameters</span>
-<span class="c1"># initial seed for random number generator</span>
-<span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="c1"># seed is 0 to produce plots from QuSpin2 paper</span>
-<span class="c1"># setting up parameters of simulation</span>
-<span class="n">L</span> <span class="o">=</span> <span class="mi">6</span> <span class="c1"># length of chain</span>
-<span class="n">J</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="c1"># top side of ladder hopping</span>
-<span class="n">U</span> <span class="o">=</span> <span class="mf">20.0</span> <span class="c1"># Hubbard interaction</span>
-<span class="c1">#</span>
-<span class="c1">##### set up Hamiltonian and observables</span>
-<span class="c1"># define site-coupling lists</span>
-<span class="n">int_list_1</span> <span class="o">=</span> <span class="p">[[</span><span class="o">-</span><span class="mf">0.5</span><span class="o">*</span><span class="n">U</span><span class="p">,</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">L</span><span class="p">)]</span> <span class="c1"># interaction $-U/2 \sum_i n_i$</span>
-<span class="n">int_list_2</span> <span class="o">=</span> <span class="p">[[</span><span class="mf">0.5</span><span class="o">*</span><span class="n">U</span><span class="p">,</span><span class="n">i</span><span class="p">,</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">L</span><span class="p">)]</span> <span class="c1"># interaction: $U/2 \num_i n_i^2$</span>
-<span class="c1"># setting up hopping lists</span>
-<span class="n">hop_list</span> <span class="o">=</span> <span class="p">[[</span><span class="o">-</span><span class="n">J</span><span class="p">,</span><span class="n">i</span><span class="p">,(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">%</span><span class="n">L</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">L</span><span class="p">)]</span> <span class="c1"># PBC </span>
-<span class="c1"># set up static and dynamic lists</span>
-<span class="n">static</span> <span class="o">=</span> <span class="p">[</span>
-			<span class="p">[</span><span class="s2">&quot;+-&quot;</span><span class="p">,</span><span class="n">hop_list</span><span class="p">],</span> <span class="c1"># hopping</span>
-			<span class="p">[</span><span class="s2">&quot;-+&quot;</span><span class="p">,</span><span class="n">hop_list</span><span class="p">],</span> <span class="c1"># hopping h.c.</span>
-			<span class="p">[</span><span class="s2">&quot;nn&quot;</span><span class="p">,</span><span class="n">int_list_2</span><span class="p">],</span> <span class="c1"># U n_i^2</span>
-			<span class="p">[</span><span class="s2">&quot;n&quot;</span><span class="p">,</span><span class="n">int_list_1</span><span class="p">]</span> <span class="c1"># -U n_i</span>
-		<span class="p">]</span>
-<span class="n">dynamic</span> <span class="o">=</span> <span class="p">[]</span> <span class="c1"># no dynamic operators</span>
-<span class="c1"># create block_ops object</span>
-<span class="n">blocks</span><span class="o">=</span><span class="p">[</span><span class="nb">dict</span><span class="p">(</span><span class="n">kblock</span><span class="o">=</span><span class="n">kblock</span><span class="p">)</span> <span class="k">for</span> <span class="n">kblock</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">L</span><span class="p">)]</span> <span class="c1"># blocks to project on to</span>
-<span class="n">baisis_args</span> <span class="o">=</span> <span class="p">(</span><span class="n">L</span><span class="p">,)</span> <span class="c1"># boson_basis_1d manditory arguments</span>
-<span class="n">basis_kwargs</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">Nb</span><span class="o">=</span><span class="n">L</span><span class="o">//</span><span class="mi">2</span><span class="p">,</span><span class="n">sps</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span> <span class="c1"># boson_basis_1d optional args</span>
-<span class="n">get_proj_kwargs</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">pcon</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="c1"># set projection to full particle basis</span>
-<span class="n">H_block</span> <span class="o">=</span> <span class="n">block_ops</span><span class="p">(</span><span class="n">blocks</span><span class="p">,</span><span class="n">static</span><span class="p">,</span><span class="n">dynamic</span><span class="p">,</span><span class="n">boson_basis_1d</span><span class="p">,</span><span class="n">baisis_args</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">complex128</span><span class="p">,</span>
-					<span class="n">basis_kwargs</span><span class="o">=</span><span class="n">basis_kwargs</span><span class="p">,</span><span class="n">get_proj_kwargs</span><span class="o">=</span><span class="n">get_proj_kwargs</span><span class="p">)</span>
-<span class="c1">#</span>
-<span class="c1"># setting up local Fock basis</span>
-<span class="n">basis</span> <span class="o">=</span> <span class="n">boson_basis_1d</span><span class="p">(</span><span class="n">L</span><span class="p">,</span><span class="n">Nb</span><span class="o">=</span><span class="n">L</span><span class="o">//</span><span class="mi">2</span><span class="p">,</span><span class="n">sps</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
-<span class="c1"># setting up observables</span>
-<span class="n">no_checks</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">check_herm</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">check_symm</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">check_pcon</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-<span class="n">n_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">hamiltonian</span><span class="p">([[</span><span class="s2">&quot;n&quot;</span><span class="p">,[[</span><span class="mf">1.0</span><span class="p">,</span><span class="n">i</span><span class="p">]]]],[],</span><span class="n">basis</span><span class="o">=</span><span class="n">basis</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">,</span><span class="o">**</span><span class="n">no_checks</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">L</span><span class="p">)]</span>
-<span class="c1">#</span>
-<span class="c1">##### time evolution</span>
-<span class="c1"># set up initial state</span>
-<span class="n">i0</span> <span class="o">=</span> <span class="n">basis</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s2">&quot;111000&quot;</span><span class="p">)</span> <span class="c1"># pick state from basis set</span>
-<span class="n">psi</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">basis</span><span class="o">.</span><span class="n">Ns</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
-<span class="n">psi</span><span class="p">[</span><span class="n">i0</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.0</span>
-<span class="c1"># print info about setup</span>
-<span class="n">state_str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="nb">int</span><span class="p">((</span><span class="n">basis</span><span class="p">[</span><span class="n">i0</span><span class="p">]</span><span class="o">//</span><span class="n">basis</span><span class="o">.</span><span class="n">sps</span><span class="o">**</span><span class="p">(</span><span class="n">L</span><span class="o">-</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span><span class="o">%</span><span class="n">basis</span><span class="o">.</span><span class="n">sps</span><span class="p">))</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">L</span><span class="p">))</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;total H-space size: </span><span class="si">{}</span><span class="s2">, initial state: |</span><span class="si">{}</span><span class="s2">&gt;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">basis</span><span class="o">.</span><span class="n">Ns</span><span class="p">,</span><span class="n">state_str</span><span class="p">))</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="kn">from</span> <span class="nn">quspin.basis</span> <span class="kn">import</span> <span class="n">boson_basis_1d</span>  <span class="c1"># bosonic Hilbert space</span>
+<span class="linenos"> 2</span><span class="kn">from</span> <span class="nn">quspin.tools.block_tools</span> <span class="kn">import</span> <span class="n">block_ops</span>  <span class="c1"># dynamics in symmetry blocks</span>
+<span class="linenos"> 3</span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>  <span class="c1"># general math functions</span>
+<span class="linenos"> 4</span>
+<span class="linenos"> 5</span><span class="c1">#</span>
+<span class="linenos"> 6</span><span class="c1">##### define model parameters</span>
+<span class="linenos"> 7</span><span class="c1"># initial seed for random number generator</span>
+<span class="linenos"> 8</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>  <span class="c1"># seed is 0 to produce plots from QuSpin2 paper</span>
+<span class="linenos"> 9</span><span class="c1"># setting up parameters of simulation</span>
+<span class="linenos">10</span><span class="n">L</span> <span class="o">=</span> <span class="mi">6</span>  <span class="c1"># length of chain</span>
+<span class="linenos">11</span><span class="n">J</span> <span class="o">=</span> <span class="mf">1.0</span>  <span class="c1"># top side of ladder hopping</span>
+<span class="linenos">12</span><span class="n">U</span> <span class="o">=</span> <span class="mf">20.0</span>  <span class="c1"># Hubbard interaction</span>
+<span class="linenos">13</span><span class="c1">#</span>
+<span class="linenos">14</span><span class="c1">##### set up Hamiltonian and observables</span>
+<span class="linenos">15</span><span class="c1"># define site-coupling lists</span>
+<span class="linenos">16</span><span class="n">int_list_1</span> <span class="o">=</span> <span class="p">[[</span><span class="o">-</span><span class="mf">0.5</span> <span class="o">*</span> <span class="n">U</span><span class="p">,</span> <span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">L</span><span class="p">)]</span>  <span class="c1"># interaction $-U/2 \sum_i n_i$</span>
+<span class="linenos">17</span><span class="n">int_list_2</span> <span class="o">=</span> <span class="p">[[</span><span class="mf">0.5</span> <span class="o">*</span> <span class="n">U</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">L</span><span class="p">)]</span>  <span class="c1"># interaction: $U/2 \num_i n_i^2$</span>
+<span class="linenos">18</span><span class="c1"># setting up hopping lists</span>
+<span class="linenos">19</span><span class="n">hop_list</span> <span class="o">=</span> <span class="p">[[</span><span class="o">-</span><span class="n">J</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">%</span> <span class="n">L</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">L</span><span class="p">)]</span>  <span class="c1"># PBC</span>
+<span class="linenos">20</span><span class="c1"># set up static and dynamic lists</span>
+<span class="linenos">21</span><span class="n">static</span> <span class="o">=</span> <span class="p">[</span>
+<span class="linenos">22</span>    <span class="p">[</span><span class="s2">&quot;+-&quot;</span><span class="p">,</span> <span class="n">hop_list</span><span class="p">],</span>  <span class="c1"># hopping</span>
+<span class="linenos">23</span>    <span class="p">[</span><span class="s2">&quot;-+&quot;</span><span class="p">,</span> <span class="n">hop_list</span><span class="p">],</span>  <span class="c1"># hopping h.c.</span>
+<span class="linenos">24</span>    <span class="p">[</span><span class="s2">&quot;nn&quot;</span><span class="p">,</span> <span class="n">int_list_2</span><span class="p">],</span>  <span class="c1"># U n_i^2</span>
+<span class="linenos">25</span>    <span class="p">[</span><span class="s2">&quot;n&quot;</span><span class="p">,</span> <span class="n">int_list_1</span><span class="p">],</span>  <span class="c1"># -U n_i</span>
+<span class="linenos">26</span><span class="p">]</span>
+<span class="linenos">27</span><span class="n">dynamic</span> <span class="o">=</span> <span class="p">[]</span>  <span class="c1"># no dynamic operators</span>
+<span class="linenos">28</span><span class="c1"># create block_ops object</span>
+<span class="linenos">29</span><span class="n">blocks</span> <span class="o">=</span> <span class="p">[</span><span class="nb">dict</span><span class="p">(</span><span class="n">kblock</span><span class="o">=</span><span class="n">kblock</span><span class="p">)</span> <span class="k">for</span> <span class="n">kblock</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">L</span><span class="p">)]</span>  <span class="c1"># blocks to project on to</span>
+<span class="linenos">30</span><span class="n">baisis_args</span> <span class="o">=</span> <span class="p">(</span><span class="n">L</span><span class="p">,)</span>  <span class="c1"># boson_basis_1d manditory arguments</span>
+<span class="linenos">31</span><span class="n">basis_kwargs</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">Nb</span><span class="o">=</span><span class="n">L</span> <span class="o">//</span> <span class="mi">2</span><span class="p">,</span> <span class="n">sps</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>  <span class="c1"># boson_basis_1d optional args</span>
+<span class="linenos">32</span><span class="n">get_proj_kwargs</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">pcon</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>  <span class="c1"># set projection to full particle basis</span>
+<span class="linenos">33</span><span class="n">H_block</span> <span class="o">=</span> <span class="n">block_ops</span><span class="p">(</span>
+<span class="linenos">34</span>    <span class="n">blocks</span><span class="p">,</span>
+<span class="linenos">35</span>    <span class="n">static</span><span class="p">,</span>
+<span class="linenos">36</span>    <span class="n">dynamic</span><span class="p">,</span>
+<span class="linenos">37</span>    <span class="n">boson_basis_1d</span><span class="p">,</span>
+<span class="linenos">38</span>    <span class="n">baisis_args</span><span class="p">,</span>
+<span class="linenos">39</span>    <span class="n">np</span><span class="o">.</span><span class="n">complex128</span><span class="p">,</span>
+<span class="linenos">40</span>    <span class="n">basis_kwargs</span><span class="o">=</span><span class="n">basis_kwargs</span><span class="p">,</span>
+<span class="linenos">41</span>    <span class="n">get_proj_kwargs</span><span class="o">=</span><span class="n">get_proj_kwargs</span><span class="p">,</span>
+<span class="linenos">42</span><span class="p">)</span>
+<span class="linenos">43</span><span class="c1">#</span>
+<span class="linenos">44</span><span class="c1"># setting up local Fock basis</span>
+<span class="linenos">45</span><span class="n">basis</span> <span class="o">=</span> <span class="n">boson_basis_1d</span><span class="p">(</span><span class="n">L</span><span class="p">,</span> <span class="n">Nb</span><span class="o">=</span><span class="n">L</span> <span class="o">//</span> <span class="mi">2</span><span class="p">,</span> <span class="n">sps</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+<span class="linenos">46</span><span class="c1"># setting up observables</span>
+<span class="linenos">47</span><span class="n">no_checks</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">check_herm</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">check_symm</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">check_pcon</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="linenos">48</span><span class="n">n_list</span> <span class="o">=</span> <span class="p">[</span>
+<span class="linenos">49</span>    <span class="n">hamiltonian</span><span class="p">([[</span><span class="s2">&quot;n&quot;</span><span class="p">,</span> <span class="p">[[</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">i</span><span class="p">]]]],</span> <span class="p">[],</span> <span class="n">basis</span><span class="o">=</span><span class="n">basis</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">,</span> <span class="o">**</span><span class="n">no_checks</span><span class="p">)</span>
 </pre></div>
-</td></tr></table></div>
+</div>
 <dl class="py method">
-<dt id="quspin.tools.block_tools.block_ops.__init__">
-<code class="sig-name descname"><span class="pre">__init__</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">blocks</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">static</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dynamic</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">basis_con</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">basis_args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">basis_kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">get_proj_kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_previous_data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compute_all_blocks</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">check_symm</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">check_herm</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">check_pcon</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/tools/block_tools.html#block_ops.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quspin.tools.block_tools.block_ops.__init__" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="quspin.tools.block_tools.block_ops.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">blocks</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">static</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dynamic</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">basis_con</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">basis_args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">basis_kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">get_proj_kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_previous_data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compute_all_blocks</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">check_symm</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">check_herm</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">check_pcon</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/tools/block_tools.html#block_ops.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quspin.tools.block_tools.block_ops.__init__" title="Link to this definition"></a></dt>
 <dd><p>Instantiates the <cite>block_ops</cite> class.</p>
 <dl class="field-list">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl>
 <dt><strong>blocks</strong><span class="classifier">list/tuple/iterator</span></dt><dd><p>Contains the symmetry blocks to construct the Hamiltonian with,
 as dictionaries or <cite>hamiltonian</cite> objects.</p>
@@ -227,22 +236,18 @@ Default is <cite>False</cite>.</p>
 </dd></dl>
 
 <p class="rubric">Methods</p>
-<table class="longtable docutils align-default">
-<colgroup>
-<col style="width: 10%" />
-<col style="width: 90%" />
-</colgroup>
+<table class="autosummary longtable docutils align-default">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#quspin.tools.block_tools.block_ops.__init__" title="quspin.tools.block_tools.block_ops.__init__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__init__</span></code></a>(blocks, static, dynamic, basis_con, …)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#quspin.tools.block_tools.block_ops.__init__" title="quspin.tools.block_tools.block_ops.__init__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__init__</span></code></a>(blocks, static, dynamic, basis_con, ...)</p></td>
 <td><p>Instantiates the <cite>block_ops</cite> class.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#quspin.tools.block_tools.block_ops.compute_all_blocks" title="quspin.tools.block_tools.block_ops.compute_all_blocks"><code class="xref py py-obj docutils literal notranslate"><span class="pre">compute_all_blocks</span></code></a>()</p></td>
 <td><p>Sets <cite>compute_all_blocks = True</cite>.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#quspin.tools.block_tools.block_ops.evolve" title="quspin.tools.block_tools.block_ops.evolve"><code class="xref py py-obj docutils literal notranslate"><span class="pre">evolve</span></code></a>(psi_0, t0, times[, iterate, n_jobs, …])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#quspin.tools.block_tools.block_ops.evolve" title="quspin.tools.block_tools.block_ops.evolve"><code class="xref py py-obj docutils literal notranslate"><span class="pre">evolve</span></code></a>(psi_0, t0, times[, iterate, n_jobs, ...])</p></td>
 <td><p>Creates symmetry blocks of the Hamiltonian and then uses them to run <cite>hamiltonian.evolve()</cite> in parallel.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#quspin.tools.block_tools.block_ops.expm" title="quspin.tools.block_tools.block_ops.expm"><code class="xref py py-obj docutils literal notranslate"><span class="pre">expm</span></code></a>(psi_0[, H_time_eval, iterate, n_jobs, …])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#quspin.tools.block_tools.block_ops.expm" title="quspin.tools.block_tools.block_ops.expm"><code class="xref py py-obj docutils literal notranslate"><span class="pre">expm</span></code></a>(psi_0[, H_time_eval, iterate, n_jobs, ...])</p></td>
 <td><p>Creates symmetry blocks of the Hamiltonian and then uses them to run <cite>_expm_multiply()</cite> in parallel.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#quspin.tools.block_tools.block_ops.update_blocks" title="quspin.tools.block_tools.block_ops.update_blocks"><code class="xref py py-obj docutils literal notranslate"><span class="pre">update_blocks</span></code></a>(blocks, basis_con, basis_args)</p></td>
@@ -251,20 +256,16 @@ Default is <cite>False</cite>.</p>
 </tbody>
 </table>
 <p class="rubric">Attributes</p>
-<table class="longtable docutils align-default">
-<colgroup>
-<col style="width: 10%" />
-<col style="width: 90%" />
-</colgroup>
+<table class="autosummary longtable docutils align-default">
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#quspin.tools.block_tools.block_ops.H_dict" title="quspin.tools.block_tools.block_ops.H_dict"><code class="xref py py-obj docutils literal notranslate"><span class="pre">H_dict</span></code></a></p></td>
-<td><p>dictionary which contains the block Hamiltonians under keys labelled by the symmetry blocks, e.g.</p></td>
+<td><p>dictionary which contains the block Hamiltonians under keys labelled by the symmetry blocks, e.g. <cite>str(block)</cite> where <cite>block</cite> is a block dictionary variable.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#quspin.tools.block_tools.block_ops.P_dict" title="quspin.tools.block_tools.block_ops.P_dict"><code class="xref py py-obj docutils literal notranslate"><span class="pre">P_dict</span></code></a></p></td>
-<td><p>dictionary which contains the block projectors under keys labelled by the symmetry blocks, e.g.</p></td>
+<td><p>dictionary which contains the block projectors under keys labelled by the symmetry blocks, e.g. <cite>str(block)</cite> where <cite>block</cite> is a block dictionary variable.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#quspin.tools.block_tools.block_ops.basis_dict" title="quspin.tools.block_tools.block_ops.basis_dict"><code class="xref py py-obj docutils literal notranslate"><span class="pre">basis_dict</span></code></a></p></td>
-<td><p>dictionary which contains the <cite>basis</cite> objects under keys labelled by the symmetry blocks, e.g.</p></td>
+<td><p>dictionary which contains the <cite>basis</cite> objects under keys labelled by the symmetry blocks, e.g. <cite>str(block)</cite> where <cite>block</cite> is a block dictionary variable.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#quspin.tools.block_tools.block_ops.dtype" title="quspin.tools.block_tools.block_ops.dtype"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dtype</span></code></a></p></td>
 <td><p>numpy data type to store the block hamiltonians in.</p></td>
@@ -280,84 +281,83 @@ Default is <cite>False</cite>.</p>
 </tr>
 </tbody>
 </table>
-<dl class="py method">
-<dt id="quspin.tools.block_tools.block_ops.H_dict">
-<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">H_dict</span></code><a class="headerlink" href="#quspin.tools.block_tools.block_ops.H_dict" title="Permalink to this definition">¶</a></dt>
+<dl class="py property">
+<dt class="sig sig-object py" id="quspin.tools.block_tools.block_ops.H_dict">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">H_dict</span></span><a class="headerlink" href="#quspin.tools.block_tools.block_ops.H_dict" title="Link to this definition"></a></dt>
 <dd><p>dictionary which contains the block Hamiltonians under keys labelled by the symmetry blocks,
 e.g. <cite>str(block)</cite> where <cite>block</cite> is a block dictionary variable.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Type</dt>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>dict</p>
 </dd>
 </dl>
 </dd></dl>
 
-<dl class="py method">
-<dt id="quspin.tools.block_tools.block_ops.P_dict">
-<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">P_dict</span></code><a class="headerlink" href="#quspin.tools.block_tools.block_ops.P_dict" title="Permalink to this definition">¶</a></dt>
+<dl class="py property">
+<dt class="sig sig-object py" id="quspin.tools.block_tools.block_ops.P_dict">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">P_dict</span></span><a class="headerlink" href="#quspin.tools.block_tools.block_ops.P_dict" title="Link to this definition"></a></dt>
 <dd><p>dictionary which contains the block projectors under keys labelled by the symmetry blocks,
 e.g. <cite>str(block)</cite> where <cite>block</cite> is a block dictionary variable.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Type</dt>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>dict</p>
 </dd>
 </dl>
 </dd></dl>
 
-<dl class="py method">
-<dt id="quspin.tools.block_tools.block_ops.basis_dict">
-<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">basis_dict</span></code><a class="headerlink" href="#quspin.tools.block_tools.block_ops.basis_dict" title="Permalink to this definition">¶</a></dt>
+<dl class="py property">
+<dt class="sig sig-object py" id="quspin.tools.block_tools.block_ops.basis_dict">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">basis_dict</span></span><a class="headerlink" href="#quspin.tools.block_tools.block_ops.basis_dict" title="Link to this definition"></a></dt>
 <dd><p>dictionary which contains the <cite>basis</cite> objects under keys labelled by the symmetry blocks,
 e.g. <cite>str(block)</cite> where <cite>block</cite> is a block dictionary variable.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Type</dt>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>dict</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
-<dt id="quspin.tools.block_tools.block_ops.compute_all_blocks">
-<code class="sig-name descname"><span class="pre">compute_all_blocks</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/tools/block_tools.html#block_ops.compute_all_blocks"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quspin.tools.block_tools.block_ops.compute_all_blocks" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="quspin.tools.block_tools.block_ops.compute_all_blocks">
+<span class="sig-name descname"><span class="pre">compute_all_blocks</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/tools/block_tools.html#block_ops.compute_all_blocks"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quspin.tools.block_tools.block_ops.compute_all_blocks" title="Link to this definition"></a></dt>
 <dd><p>Sets <cite>compute_all_blocks = True</cite>.</p>
 <p class="rubric">Examples</p>
 <p>The example below builds on the code snippet shown in the description of the <cite>block_ops</cite> class.</p>
-<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
-<span class="normal">2</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1">##### compute all momentum blocks</span>
-<span class="n">H_block</span><span class="o">.</span><span class="n">compute_all_blocks</span><span class="p">()</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="p">]</span>
+<span class="linenos">2</span><span class="c1">#</span>
 </pre></div>
-</td></tr></table></div>
+</div>
 </dd></dl>
 
-<dl class="py method">
-<dt id="quspin.tools.block_tools.block_ops.dtype">
-<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">dtype</span></code><a class="headerlink" href="#quspin.tools.block_tools.block_ops.dtype" title="Permalink to this definition">¶</a></dt>
+<dl class="py property">
+<dt class="sig sig-object py" id="quspin.tools.block_tools.block_ops.dtype">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">dtype</span></span><a class="headerlink" href="#quspin.tools.block_tools.block_ops.dtype" title="Link to this definition"></a></dt>
 <dd><p>numpy data type to store the block hamiltonians in.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Type</dt>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>type</p>
 </dd>
 </dl>
 </dd></dl>
 
-<dl class="py method">
-<dt id="quspin.tools.block_tools.block_ops.dynamic">
-<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">dynamic</span></code><a class="headerlink" href="#quspin.tools.block_tools.block_ops.dynamic" title="Permalink to this definition">¶</a></dt>
+<dl class="py property">
+<dt class="sig sig-object py" id="quspin.tools.block_tools.block_ops.dynamic">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">dynamic</span></span><a class="headerlink" href="#quspin.tools.block_tools.block_ops.dynamic" title="Link to this definition"></a></dt>
 <dd><p>contains the dynamic operators used to construct the symmetry-block Hamiltonians.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Type</dt>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>list</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
-<dt id="quspin.tools.block_tools.block_ops.evolve">
-<code class="sig-name descname"><span class="pre">evolve</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">psi_0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">times</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iterate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_jobs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">block_diag</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stack_state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">imag_time</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">solver_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'dop853'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">solver_args</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/tools/block_tools.html#block_ops.evolve"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quspin.tools.block_tools.block_ops.evolve" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="quspin.tools.block_tools.block_ops.evolve">
+<span class="sig-name descname"><span class="pre">evolve</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">psi_0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">times</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iterate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_jobs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">block_diag</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stack_state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">imag_time</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">solver_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'dop853'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">solver_args</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/tools/block_tools.html#block_ops.evolve"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quspin.tools.block_tools.block_ops.evolve" title="Link to this definition"></a></dt>
 <dd><p>Creates symmetry blocks of the Hamiltonian and then uses them to run <cite>hamiltonian.evolve()</cite> in parallel.</p>
 <p><strong>Arguments NOT described below can be found in the documentation for the `hamiltonian.evolve()` method.</strong></p>
 <dl class="field-list">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl>
 <dt><strong>psi_0</strong><span class="classifier">numpy.ndarray, list, tuple</span></dt><dd><p>Quantum state which defined on the full Hilbert space of the problem.
 Does not need to obey and sort of symmetry.</p>
@@ -382,7 +382,7 @@ blocks in a single giant sparse block diagonal matrix. Default is <cite>False</c
 </dd>
 </dl>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><dl>
 <dt>obj</dt><dd><p>if <cite>iterate = True</cite>, returns generator which generates the time dependent state in the
 full H-space basis.</p>
@@ -391,7 +391,7 @@ full H-space basis in the rows.</p>
 </dd>
 </dl>
 </dd>
-<dt class="field-odd">Raises</dt>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
 <dt>ValueError</dt><dd><p>Variable <cite>imag_time=True</cite> option on <cite>hamiltonian.evolve()</cite> method not supported.</p>
 </dd>
@@ -404,28 +404,38 @@ full H-space basis in the rows.</p>
 </dl>
 <p class="rubric">Examples</p>
 <p>The example below builds on the code snippet shown in the description of the <cite>block_ops</cite> class.</p>
-<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
-<span class="normal">2</span>
-<span class="normal">3</span>
-<span class="normal">4</span>
-<span class="normal">5</span>
-<span class="normal">6</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1">##### calculating the evolved state using the evolve method</span>
-<span class="c1"># setting up parameters for evolution</span>
-<span class="n">start</span><span class="p">,</span><span class="n">stop</span><span class="p">,</span><span class="n">num</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span><span class="mi">30</span><span class="p">,</span><span class="mi">301</span> <span class="c1"># 0.1 equally spaced points</span>
-<span class="n">times</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">start</span><span class="p">,</span><span class="n">stop</span><span class="p">,</span><span class="n">num</span><span class="p">)</span>
-<span class="n">psi_t</span> <span class="o">=</span> <span class="n">H_block</span><span class="o">.</span><span class="n">evolve</span><span class="p">(</span><span class="n">psi</span><span class="p">,</span><span class="n">times</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">times</span><span class="p">)</span>
-<span class="n">n_t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">([</span><span class="n">n</span><span class="o">.</span><span class="n">expt_value</span><span class="p">(</span><span class="n">psi_t</span><span class="p">)</span><span class="o">.</span><span class="n">real</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">n_list</span><span class="p">])</span><span class="o">.</span><span class="n">T</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="c1">#</span>
+<span class="linenos"> 2</span><span class="c1">##### compute all momentum blocks</span>
+<span class="linenos"> 3</span><span class="n">H_block</span><span class="o">.</span><span class="n">compute_all_blocks</span><span class="p">()</span>
+<span class="linenos"> 4</span><span class="c1">#</span>
+<span class="linenos"> 5</span><span class="c1">##### calculating the evolved states using matrix exponentiation</span>
+<span class="linenos"> 6</span><span class="c1"># setting up parameters for evolution</span>
+<span class="linenos"> 7</span><span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">,</span> <span class="n">num</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">301</span>  <span class="c1"># 0.1 equally spaced points</span>
+<span class="linenos"> 8</span><span class="n">times</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">,</span> <span class="n">num</span><span class="p">)</span>
+<span class="linenos"> 9</span><span class="n">n_jobs</span> <span class="o">=</span> <span class="mi">1</span>  <span class="c1"># paralelisation: increase to see if calculation runs faster!</span>
+<span class="linenos">10</span><span class="n">psi_t</span> <span class="o">=</span> <span class="n">H_block</span><span class="o">.</span><span class="n">expm</span><span class="p">(</span>
+<span class="linenos">11</span>    <span class="n">psi</span><span class="p">,</span> <span class="n">a</span><span class="o">=-</span><span class="mi">1</span><span class="n">j</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="o">=</span><span class="n">stop</span><span class="p">,</span> <span class="n">num</span><span class="o">=</span><span class="n">num</span><span class="p">,</span> <span class="n">block_diag</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">n_jobs</span><span class="o">=</span><span class="n">n_jobs</span>
+<span class="linenos">12</span><span class="p">)</span>
+<span class="linenos">13</span><span class="c1"># calculating the local densities as a function of time</span>
+<span class="linenos">14</span><span class="n">n_t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">([</span><span class="n">n</span><span class="o">.</span><span class="n">expt_value</span><span class="p">(</span><span class="n">psi_t</span><span class="p">)</span><span class="o">.</span><span class="n">real</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">n_list</span><span class="p">])</span><span class="o">.</span><span class="n">T</span>
+<span class="linenos">15</span><span class="c1">#</span>
+<span class="linenos">16</span><span class="c1">##### calculating the evolved state using the evolve method</span>
+<span class="linenos">17</span><span class="c1"># setting up parameters for evolution</span>
+<span class="linenos">18</span><span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">,</span> <span class="n">num</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">301</span>  <span class="c1"># 0.1 equally spaced points</span>
+<span class="linenos">19</span><span class="n">times</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">,</span> <span class="n">num</span><span class="p">)</span>
+<span class="linenos">20</span><span class="n">psi_t</span> <span class="o">=</span> <span class="n">H_block</span><span class="o">.</span><span class="n">evolve</span><span class="p">(</span><span class="n">psi</span><span class="p">,</span> <span class="n">times</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">times</span><span class="p">)</span>
+<span class="linenos">21</span><span class="n">n_t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">([</span><span class="n">n</span><span class="o">.</span><span class="n">expt_value</span><span class="p">(</span><span class="n">psi_t</span><span class="p">)</span><span class="o">.</span><span class="n">real</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">n_list</span><span class="p">])</span><span class="o">.</span><span class="n">T</span>
 </pre></div>
-</td></tr></table></div>
+</div>
 </dd></dl>
 
 <dl class="py method">
-<dt id="quspin.tools.block_tools.block_ops.expm">
-<code class="sig-name descname"><span class="pre">expm</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">psi_0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">H_time_eval</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iterate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_jobs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">block_diag</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">a</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-</span> <span class="pre">0</span> <span class="pre">-</span> <span class="pre">1j</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stop</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">endpoint</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shift</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/tools/block_tools.html#block_ops.expm"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quspin.tools.block_tools.block_ops.expm" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="quspin.tools.block_tools.block_ops.expm">
+<span class="sig-name descname"><span class="pre">expm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">psi_0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">H_time_eval</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iterate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_jobs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">block_diag</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">a</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-0</span> <span class="pre">-</span> <span class="pre">1j</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stop</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">endpoint</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shift</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/tools/block_tools.html#block_ops.expm"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quspin.tools.block_tools.block_ops.expm" title="Link to this definition"></a></dt>
 <dd><p>Creates symmetry blocks of the Hamiltonian and then uses them to run <cite>_expm_multiply()</cite> in parallel.</p>
 <p><strong>Arguments NOT described below can be found in the documentation for the `exp_op` class.</strong></p>
 <dl class="field-list">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl>
 <dt><strong>psi_0</strong><span class="classifier">numpy.ndarray, list, tuple</span></dt><dd><p>Quantum state which defined on the full Hilbert space of the problem.
 Does not need to obey and sort of symmetry.</p>
@@ -450,7 +460,7 @@ blocks in a single giant sparse block diagonal matrix. Default is <cite>False</c
 </dd>
 </dl>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><dl>
 <dt>obj</dt><dd><p>if <cite>iterate = True</cite>, returns generator which generates the time dependent state in the
 full H-space basis.</p>
@@ -459,7 +469,7 @@ full H-space basis in the rows.</p>
 </dd>
 </dl>
 </dd>
-<dt class="field-odd">Raises</dt>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
 <dt>ValueError</dt><dd><p>Various <cite>ValueError`s of `exp_op</cite> class.</p>
 </dd>
@@ -470,53 +480,46 @@ full H-space basis in the rows.</p>
 </dl>
 <p class="rubric">Examples</p>
 <p>The example below builds on the code snippet shown in the description of the <cite>block_ops</cite> class.</p>
-<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">1</span>
-<span class="normal">2</span>
-<span class="normal">3</span>
-<span class="normal">4</span>
-<span class="normal">5</span>
-<span class="normal">6</span>
-<span class="normal">7</span>
-<span class="normal">8</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1">##### calculating the evolved states using matrix exponentiation</span>
-<span class="c1"># setting up parameters for evolution</span>
-<span class="n">start</span><span class="p">,</span><span class="n">stop</span><span class="p">,</span><span class="n">num</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span><span class="mi">30</span><span class="p">,</span><span class="mi">301</span> <span class="c1"># 0.1 equally spaced points</span>
-<span class="n">times</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">start</span><span class="p">,</span><span class="n">stop</span><span class="p">,</span><span class="n">num</span><span class="p">)</span>
-<span class="n">n_jobs</span> <span class="o">=</span> <span class="mi">1</span> <span class="c1"># paralelisation: increase to see if calculation runs faster!</span>
-<span class="n">psi_t</span> <span class="o">=</span> <span class="n">H_block</span><span class="o">.</span><span class="n">expm</span><span class="p">(</span><span class="n">psi</span><span class="p">,</span><span class="n">a</span><span class="o">=-</span><span class="mi">1</span><span class="n">j</span><span class="p">,</span><span class="n">start</span><span class="o">=</span><span class="n">start</span><span class="p">,</span><span class="n">stop</span><span class="o">=</span><span class="n">stop</span><span class="p">,</span><span class="n">num</span><span class="o">=</span><span class="n">num</span><span class="p">,</span><span class="n">block_diag</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">n_jobs</span><span class="o">=</span><span class="n">n_jobs</span><span class="p">)</span>
-<span class="c1"># calculating the local densities as a function of time</span>
-<span class="n">n_t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">([</span><span class="n">n</span><span class="o">.</span><span class="n">expt_value</span><span class="p">(</span><span class="n">psi_t</span><span class="p">)</span><span class="o">.</span><span class="n">real</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">n_list</span><span class="p">])</span><span class="o">.</span><span class="n">T</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="c1"># set up initial state</span>
+<span class="linenos">2</span><span class="n">i0</span> <span class="o">=</span> <span class="n">basis</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s2">&quot;111000&quot;</span><span class="p">)</span>  <span class="c1"># pick state from basis set</span>
+<span class="linenos">3</span><span class="n">psi</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">basis</span><span class="o">.</span><span class="n">Ns</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+<span class="linenos">4</span><span class="n">psi</span><span class="p">[</span><span class="n">i0</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.0</span>
+<span class="linenos">5</span><span class="c1"># print info about setup</span>
+<span class="linenos">6</span><span class="n">state_str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+<span class="linenos">7</span>    <span class="nb">str</span><span class="p">(</span><span class="nb">int</span><span class="p">((</span><span class="n">basis</span><span class="p">[</span><span class="n">i0</span><span class="p">]</span> <span class="o">//</span> <span class="n">basis</span><span class="o">.</span><span class="n">sps</span> <span class="o">**</span> <span class="p">(</span><span class="n">L</span> <span class="o">-</span> <span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span> <span class="o">%</span> <span class="n">basis</span><span class="o">.</span><span class="n">sps</span><span class="p">))</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">L</span><span class="p">)</span>
+<span class="linenos">8</span><span class="p">)</span>
 </pre></div>
-</td></tr></table></div>
+</div>
 </dd></dl>
 
-<dl class="py method">
-<dt id="quspin.tools.block_tools.block_ops.save_previous_data">
-<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">save_previous_data</span></code><a class="headerlink" href="#quspin.tools.block_tools.block_ops.save_previous_data" title="Permalink to this definition">¶</a></dt>
+<dl class="py property">
+<dt class="sig sig-object py" id="quspin.tools.block_tools.block_ops.save_previous_data">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">save_previous_data</span></span><a class="headerlink" href="#quspin.tools.block_tools.block_ops.save_previous_data" title="Link to this definition"></a></dt>
 <dd><p>reflects state of optimal argument <cite>save_previous_data</cite>.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Type</dt>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>bool</p>
 </dd>
 </dl>
 </dd></dl>
 
-<dl class="py method">
-<dt id="quspin.tools.block_tools.block_ops.static">
-<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">static</span></code><a class="headerlink" href="#quspin.tools.block_tools.block_ops.static" title="Permalink to this definition">¶</a></dt>
+<dl class="py property">
+<dt class="sig sig-object py" id="quspin.tools.block_tools.block_ops.static">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">static</span></span><a class="headerlink" href="#quspin.tools.block_tools.block_ops.static" title="Link to this definition"></a></dt>
 <dd><p>contains the static operators used to construct the symmetry-block Hamiltonians.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Type</dt>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>list</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
-<dt id="quspin.tools.block_tools.block_ops.update_blocks">
-<code class="sig-name descname"><span class="pre">update_blocks</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">blocks</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">basis_con</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">basis_args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compute_all_blocks</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/tools/block_tools.html#block_ops.update_blocks"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quspin.tools.block_tools.block_ops.update_blocks" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="quspin.tools.block_tools.block_ops.update_blocks">
+<span class="sig-name descname"><span class="pre">update_blocks</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">blocks</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">basis_con</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">basis_args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compute_all_blocks</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/tools/block_tools.html#block_ops.update_blocks"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quspin.tools.block_tools.block_ops.update_blocks" title="Link to this definition"></a></dt>
 <dd><p>Allows to update the <cite>blocks</cite> variable of the class.</p>
 <dl class="field-list">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl>
 <dt><strong>blocks</strong><span class="classifier">list/tuple/iterator</span></dt><dd><p>Contains the new symmetry blocks to be added to the <cite>basis_dict</cite> attribute of the class,
 as dictionaries or <cite>hamiltonian</cite> objects.</p>
@@ -536,65 +539,48 @@ Default is <cite>False</cite>.</p>
 
 </dd></dl>
 
-</div>
+</section>
 
 
-            <div class="clearer"></div>
+           </div>
           </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="quspin.tools.measurements.obs_vs_time.html" class="btn btn-neutral float-left" title="quspin.tools.measurements.obs_vs_time" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="quspin.tools.block_tools.block_diag_hamiltonian.html" class="btn btn-neutral float-right" title="quspin.tools.block_tools.block_diag_hamiltonian" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Phillip Weinberg, Markus Schmitt, and Marin Bukov.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
         </div>
       </div>
-      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
-        <div class="sphinxsidebarwrapper">
-  <h4>Previous topic</h4>
-  <p class="topless"><a href="quspin.tools.measurements.obs_vs_time.html"
-                        title="previous chapter">quspin.tools.measurements.obs_vs_time</a></p>
-  <h4>Next topic</h4>
-  <p class="topless"><a href="quspin.tools.block_tools.block_diag_hamiltonian.html"
-                        title="next chapter">quspin.tools.block_tools.block_diag_hamiltonian</a></p>
-  <div role="note" aria-label="source link">
-    <h3>This Page</h3>
-    <ul class="this-page-menu">
-      <li><a href="../sources/generated/quspin.tools.block_tools.block_ops.rst.txt"
-            rel="nofollow">Show Source</a></li>
-    </ul>
-   </div>
-<div id="searchbox" style="display: none" role="search">
-  <h3 id="searchlabel">Quick search</h3>
-    <div class="searchformwrapper">
-    <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" />
-      <input type="submit" value="Go" />
-    </form>
-    </div>
-</div>
-<script>$('#searchbox').show(0);</script>
-        </div>
-      </div>
-      <div class="clearer"></div>
-    </div>
-    <div class="related" role="navigation" aria-label="related navigation">
-      <h3>Navigation</h3>
-      <ul>
-        <li class="right" style="margin-right: 10px">
-          <a href="../genindex.html" title="General Index"
-             >index</a></li>
-        <li class="right" >
-          <a href="../py-modindex.html" title="Python Module Index"
-             >modules</a> |</li>
-        <li class="right" >
-          <a href="quspin.tools.block_tools.block_diag_hamiltonian.html" title="quspin.tools.block_tools.block_diag_hamiltonian"
-             >next</a> |</li>
-        <li class="right" >
-          <a href="quspin.tools.measurements.obs_vs_time.html" title="quspin.tools.measurements.obs_vs_time"
-             >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.7 documentation</a> &#187;</li>
-          <li class="nav-item nav-item-1"><a href="../tools.html" >Tools module (<code class="xref py py-mod docutils literal notranslate"><span class="pre">quspin.tools</span></code>)</a> &#187;</li>
-        <li class="nav-item nav-item-this"><a href="">quspin.tools.block_tools.block_ops</a></li> 
-      </ul>
-    </div>
-    <div class="footer" role="contentinfo">
-        &#169; Copyright 2016, Phillip Weinberg, Markus Schmitt and Marin Bukov.
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.5.4.
-    </div>
-  </body>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+    <!-- Theme Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-6885KZ7NH6"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-6885KZ7NH6', {
+          'anonymize_ip': false,
+      });
+    </script> 
+
+</body>
 </html>

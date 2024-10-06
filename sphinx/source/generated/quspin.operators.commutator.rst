@@ -1,4 +1,4 @@
-quspin.operators.commutator
+﻿quspin.operators.commutator
 ===========================
 
 .. currentmodule:: quspin.operators

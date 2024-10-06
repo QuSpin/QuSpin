@@ -1,4 +1,4 @@
-quspin.basis.bitwise\_leftshift
+﻿quspin.basis.bitwise\_leftshift
 ===============================
 
 .. currentmodule:: quspin.basis

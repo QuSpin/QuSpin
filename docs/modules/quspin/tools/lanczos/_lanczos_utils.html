@@ -1,517 +1,572 @@
-
 <!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>quspin.tools.lanczos._lanczos_utils &mdash; QuSpin 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../../../../static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../../../static/css/sphinx_rtd_size.css?v=f26ae176" />
+      <link rel="stylesheet" type="text/css" href="../../../../static/css/py_class_property_fix.css?v=faf79ccd" />
 
-<html>
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><script type="text/javascript">
-
-      var _gaq = _gaq || [];
-      _gaq.push(['_setAccount', 'UA-110543543-1']);
-      _gaq.push(['_trackPageview']);
-
-      (function() {
-        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-      })();
-    </script>
-    <title>quspin.tools.lanczos._lanczos_utils &#8212; QuSpin 0.3.7 documentation</title>
-    <link rel="stylesheet" href="../../../../static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="../../../../static/classic.css" type="text/css" />
-    
-    <script id="documentation_options" data-url_root="../../../../" src="../../../../static/documentation_options.js"></script>
-    <script src="../../../../static/jquery.js"></script>
-    <script src="../../../../static/underscore.js"></script>
-    <script src="../../../../static/doctools.js"></script>
-    
+  
+  <!--[if lt IE 9]>
+    <script src="../../../../static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../../../static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../../static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../../static/documentation_options.js?v=8d563738"></script>
+        <script src="../../../../static/doctools.js?v=9a2dae69"></script>
+        <script src="../../../../static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../../static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../search.html" /> 
-  </head><body>
-    <div class="related" role="navigation" aria-label="related navigation">
-      <h3>Navigation</h3>
-      <ul>
-        <li class="right" style="margin-right: 10px">
-          <a href="../../../../genindex.html" title="General Index"
-             accesskey="I">index</a></li>
-        <li class="right" >
-          <a href="../../../../py-modindex.html" title="Python Module Index"
-             >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">QuSpin 0.3.7 documentation</a> &#187;</li>
-          <li class="nav-item nav-item-1"><a href="../../../index.html" accesskey="U">Module code</a> &#187;</li>
-        <li class="nav-item nav-item-this"><a href="">quspin.tools.lanczos._lanczos_utils</a></li> 
-      </ul>
-    </div>  
+</head>
 
-    <div class="document">
-      <div class="documentwrapper">
-        <div class="bodywrapper">
-          <div class="body" role="main">
-            
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            QuSpin
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">QuSpin (public API)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../basis.html">Basis module (<code class="xref py py-mod docutils literal notranslate"><span class="pre">quspin.basis</span></code>)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../operators.html">Operators module (<code class="xref py py-mod docutils literal notranslate"><span class="pre">quspin.operators</span></code>)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../tools.html">Tools module (<code class="xref py py-mod docutils literal notranslate"><span class="pre">quspin.tools</span></code>)</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Installation &amp; Use</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../installation/installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../installation/installation.html#basics-of-command-line-use">Basics of command line use</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../example_scripts.html">Example scripts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../jupyter_notebooks.html">Jupyter notebooks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../tutorials/parallelization.html">Parallel computing support</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../tutorials/user_basis.html"><cite>user_basis</cite> tutorial</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Bugs &amp; Questions</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../contribute/report_a_bug.html">Report a bug</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../contribute/ask_a_question.html">Ask a question</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">QuSpin</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content style-external-links">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">quspin.tools.lanczos._lanczos_utils</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
   <h1>Source code for quspin.tools.lanczos._lanczos_utils</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">_np</span>
 <span class="kn">from</span> <span class="nn">scipy.linalg</span> <span class="kn">import</span> <span class="n">eigh_tridiagonal</span>
 <span class="kn">from</span> <span class="nn">copy</span> <span class="kn">import</span> <span class="n">deepcopy</span>
 <span class="kn">from</span> <span class="nn">numba</span> <span class="kn">import</span> <span class="n">njit</span>
 
-<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;lanczos_full&quot;</span><span class="p">,</span><span class="s2">&quot;lanczos_iter&quot;</span><span class="p">,</span><span class="s2">&quot;lin_comb_Q_T&quot;</span><span class="p">]</span>
-
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;lanczos_full&quot;</span><span class="p">,</span> <span class="s2">&quot;lanczos_iter&quot;</span><span class="p">,</span> <span class="s2">&quot;lin_comb_Q_T&quot;</span><span class="p">]</span>
 
 
 <span class="nd">@njit</span>
-<span class="k">def</span> <span class="nf">_axpy</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">a</span><span class="p">):</span>
-	<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">size</span><span class="p">):</span>
-		<span class="n">y</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+=</span> <span class="n">a</span> <span class="o">*</span> <span class="n">x</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+<span class="k">def</span> <span class="nf">_axpy</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">a</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">size</span><span class="p">):</span>
+        <span class="n">y</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+=</span> <span class="n">a</span> <span class="o">*</span> <span class="n">x</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
 
 
+<span class="k">def</span> <span class="nf">_lanczos_vec_iter_core</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">v0</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+    <span class="n">dtype</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">result_type</span><span class="p">(</span><span class="n">A</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span> <span class="n">v0</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
 
+    <span class="n">q</span> <span class="o">=</span> <span class="n">v0</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">dtype</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
-<span class="k">def</span> <span class="nf">_lanczos_vec_iter_core</span><span class="p">(</span><span class="n">A</span><span class="p">,</span><span class="n">v0</span><span class="p">,</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">):</span>
-	<span class="n">dtype</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">result_type</span><span class="p">(</span><span class="n">A</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span><span class="n">v0</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
+    <span class="n">q_norm</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">q</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">_np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">q_norm</span> <span class="o">-</span> <span class="mf">1.0</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">_np</span><span class="o">.</span><span class="n">finfo</span><span class="p">(</span><span class="n">dtype</span><span class="p">)</span><span class="o">.</span><span class="n">eps</span><span class="p">:</span>
+        <span class="n">_np</span><span class="o">.</span><span class="n">divide</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">q_norm</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">q</span><span class="p">)</span>
 
-	<span class="n">q</span> <span class="o">=</span> <span class="n">v0</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">dtype</span><span class="p">,</span><span class="n">copy</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">q_view</span> <span class="o">=</span> <span class="n">q</span><span class="p">[:]</span>
+    <span class="n">q_view</span><span class="o">.</span><span class="n">setflags</span><span class="p">(</span><span class="n">write</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">uic</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
 
-	<span class="n">q_norm</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">q</span><span class="p">)</span>
-	<span class="k">if</span> <span class="n">_np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">q_norm</span><span class="o">-</span><span class="mf">1.0</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">_np</span><span class="o">.</span><span class="n">finfo</span><span class="p">(</span><span class="n">dtype</span><span class="p">)</span><span class="o">.</span><span class="n">eps</span><span class="p">:</span>
-			<span class="n">_np</span><span class="o">.</span><span class="n">divide</span><span class="p">(</span><span class="n">q</span><span class="p">,</span><span class="n">q_norm</span><span class="p">,</span><span class="n">out</span><span class="o">=</span><span class="n">q</span><span class="p">)</span>
+    <span class="n">m</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">size</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="n">q</span><span class="o">.</span><span class="n">size</span>
 
-	<span class="n">q_view</span> <span class="o">=</span> <span class="n">q</span><span class="p">[:]</span>
-	<span class="n">q_view</span><span class="o">.</span><span class="n">setflags</span><span class="p">(</span><span class="n">write</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">uic</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">v</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">v0</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
+    <span class="n">r</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">v0</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
 
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">A</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">r</span><span class="p">)</span>
+        <span class="n">use_out</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+        <span class="n">r</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">q</span><span class="p">)</span>
+        <span class="n">use_out</span> <span class="o">=</span> <span class="kc">False</span>
 
+    <span class="n">_axpy</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="o">-</span><span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
 
-	<span class="n">m</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">size</span>
-	<span class="n">n</span> <span class="o">=</span> <span class="n">q</span><span class="o">.</span><span class="n">size</span>
+    <span class="k">yield</span> <span class="n">q_view</span>  <span class="c1"># return non-writable array</span>
 
-	<span class="n">v</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">v0</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
-	<span class="n">r</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">v0</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="mi">1</span><span class="p">):</span>
+        <span class="n">v</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">q</span><span class="p">[:]</span>
 
-	<span class="k">try</span><span class="p">:</span>
-		<span class="n">A</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">q</span><span class="p">,</span><span class="n">out</span><span class="o">=</span><span class="n">r</span><span class="p">)</span>
-		<span class="n">use_out</span> <span class="o">=</span> <span class="kc">True</span>
-	<span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
-		<span class="n">r</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">q</span><span class="p">)</span>
-		<span class="n">use_out</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="n">_np</span><span class="o">.</span><span class="n">divide</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">b</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">],</span> <span class="n">out</span><span class="o">=</span><span class="n">q</span><span class="p">)</span>
 
-	<span class="n">_axpy</span><span class="p">(</span><span class="n">q</span><span class="p">,</span><span class="n">r</span><span class="p">,</span><span class="o">-</span><span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="k">if</span> <span class="n">use_out</span><span class="p">:</span>
+            <span class="n">A</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">r</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">r</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">q</span><span class="p">)</span>
 
-	<span class="k">yield</span> <span class="n">q_view</span> <span class="c1"># return non-writable array</span>
+        <span class="n">_axpy</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="o">-</span><span class="n">b</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">])</span>
+        <span class="n">_axpy</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="o">-</span><span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
 
-	<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="n">m</span><span class="p">,</span><span class="mi">1</span><span class="p">):</span>
-		<span class="n">v</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">q</span><span class="p">[:]</span>
-
-		<span class="n">_np</span><span class="o">.</span><span class="n">divide</span><span class="p">(</span><span class="n">r</span><span class="p">,</span><span class="n">b</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span><span class="n">out</span><span class="o">=</span><span class="n">q</span><span class="p">)</span>
-
-		<span class="k">if</span> <span class="n">use_out</span><span class="p">:</span>
-			<span class="n">A</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">q</span><span class="p">,</span><span class="n">out</span><span class="o">=</span><span class="n">r</span><span class="p">)</span>
-		<span class="k">else</span><span class="p">:</span>
-			<span class="n">r</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">q</span><span class="p">)</span>
-
-		<span class="n">_axpy</span><span class="p">(</span><span class="n">v</span><span class="p">,</span><span class="n">r</span><span class="p">,</span><span class="o">-</span><span class="n">b</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
-		<span class="n">_axpy</span><span class="p">(</span><span class="n">q</span><span class="p">,</span><span class="n">r</span><span class="p">,</span><span class="o">-</span><span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
-
-		<span class="k">yield</span> <span class="n">q_view</span> <span class="c1"># return non-writable array</span>
+        <span class="k">yield</span> <span class="n">q_view</span>  <span class="c1"># return non-writable array</span>
 
 
 <span class="k">class</span> <span class="nc">_lanczos_vec_iter</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-	<span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">A</span><span class="p">,</span><span class="n">v0</span><span class="p">,</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">):</span>
-		<span class="bp">self</span><span class="o">.</span><span class="n">_A</span> <span class="o">=</span> <span class="n">A</span>
-		<span class="bp">self</span><span class="o">.</span><span class="n">_v0</span> <span class="o">=</span> <span class="n">v0</span>
-		<span class="bp">self</span><span class="o">.</span><span class="n">_a</span> <span class="o">=</span> <span class="n">a</span>
-		<span class="bp">self</span><span class="o">.</span><span class="n">_b</span> <span class="o">=</span> <span class="n">b</span>
-
-	<span class="k">def</span> <span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-		<span class="k">return</span> <span class="n">_lanczos_vec_iter_core</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_A</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">_v0</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">_a</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">_b</span><span class="p">)</span>
-
-	<span class="k">def</span> <span class="fm">__del__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-		<span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_A</span>
-		<span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_v0</span>
-		<span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_b</span>
-		<span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_a</span>
-
-<div class="viewcode-block" id="lanczos_full"><a class="viewcode-back" href="../../../../generated/quspin.tools.lanczos.lanczos_full.html#quspin.tools.lanczos.lanczos_full">[docs]</a><span class="k">def</span> <span class="nf">lanczos_full</span><span class="p">(</span><span class="n">A</span><span class="p">,</span><span class="n">v0</span><span class="p">,</span><span class="n">m</span><span class="p">,</span><span class="n">full_ortho</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">out</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">eps</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-	<span class="sd">&quot;&quot;&quot; Creates Lanczos basis; diagonalizes Krylov subspace in Lanczos basis.</span>
-
-<span class="sd">	Given a hermitian matrix `A` of size :math:`n\\times n` and an integer `m`, the Lanczos algorithm computes </span>
-<span class="sd">	</span>
-<span class="sd">	* an :math:`n\\times m` matrix  :math:`Q`, and </span>
-<span class="sd">	* a real symmetric tridiagonal matrix :math:`T=Q^\\dagger A Q` of size :math:`m\\times m`. The matrix :math:`T` can be represented via its eigendecomposition `(E,V)`: :math:`T=V\\mathrm{diag}(E)V^T`. </span>
-<span class="sd">	</span>
-<span class="sd">	This function computes the triple :math:`(E,V,Q^T)`.</span>
-
-<span class="sd">	:red:`NOTE:` This function returns :math:`Q^T;\\,Q^T` is (in general) different from :math:`Q^\\dagger`.</span>
-
-<span class="sd"> </span>
-<span class="sd">	Notes</span>
-<span class="sd">	-----</span>
-<span class="sd">	</span>
-<span class="sd">	* performs classical lanczos algorithm for hermitian matrices and cannot handle degeneracies when calculating eigenvalues. </span>
-<span class="sd">	* the function allows for full orthogonalization, see `full_ortho`. The resulting :math:`T` will not neccesarily be tridiagonal.</span>
-<span class="sd">	* `V` is always real-valued, since :math:`T` is real and symmetric.</span>
-<span class="sd">	* `A` must have a &#39;dot&#39; method to perform calculation, </span>
-<span class="sd">	* The &#39;out&#39; argument to pass back the results of the matrix-vector product will be used if the &#39;dot&#39; function supports this argument.</span>
-
-<span class="sd">	Parameters</span>
-<span class="sd">	-----------</span>
-<span class="sd">	A : LinearOperator, hamiltonian, numpy.ndarray, or object with a &#39;dot&#39; method and a &#39;dtype&#39; method.</span>
-<span class="sd">		Python object representing a linear map to compute the Lanczos approximation to the largest eigenvalues/vectors of. Must contain a dot-product method, used as `A.dot(v)` and a dtype method, used as `A.dtype`, e.g. `hamiltonian`, `quantum_operator`, `quantum_LinearOperator`, sparse or dense matrix.</span>
-<span class="sd">	v0 : array_like, (n,)</span>
-<span class="sd">		initial vector to start the Lanczos algorithm from.</span>
-<span class="sd">	m : int</span>
-<span class="sd">		Number of Lanczos vectors (size of the Krylov subspace)</span>
-<span class="sd">	full_ortho : bool, optional</span>
-<span class="sd">		perform a QR decomposition on Q_T generated from the standard lanczos iteration to remove any loss of orthogonality due to numerical precision.</span>
-<span class="sd">	out : numpy.ndarray, optional</span>
-<span class="sd">		Array to store the Lanczos vectors in (e.g. `Q`). in memory efficient way.</span>
-<span class="sd">	eps : float, optional</span>
-<span class="sd">		Used to cutoff lanczos iteration when off diagonal matrix elements of `T` drops below this value. </span>
-
-<span class="sd">	Returns</span>
-<span class="sd">	--------</span>
-<span class="sd">	tuple(E,V,Q_T)</span>
-<span class="sd">		* E : (m,) numpy.ndarray: eigenvalues of Krylov subspace tridiagonal matrix :math:`T`.</span>
-<span class="sd">		* V : (m,m) numpy.ndarray: eigenvectors of Krylov subspace tridiagonal matrix :math:`T`.</span>
-<span class="sd">		* Q_T : (m,n) numpy.ndarray: matrix containing the `m` Lanczos vectors. This is :math:`Q^T` (not :math:`Q^\\dagger`)!</span>
-
-<span class="sd">	Examples</span>
-<span class="sd">	--------</span>
-
-<span class="sd">	&gt;&gt;&gt; E, V, Q_T = lanczos_full(H,v0,20)</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">A</span><span class="p">,</span> <span class="n">v0</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_A</span> <span class="o">=</span> <span class="n">A</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_v0</span> <span class="o">=</span> <span class="n">v0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_a</span> <span class="o">=</span> <span class="n">a</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_b</span> <span class="o">=</span> <span class="n">b</span>
+
+    <span class="k">def</span> <span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">_lanczos_vec_iter_core</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_A</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_v0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_a</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_b</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__del__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_A</span>
+        <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_v0</span>
+        <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_b</span>
+        <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_a</span>
 
 
-<span class="sd">	</span>
-<span class="sd">	&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="lanczos_full">
+<a class="viewcode-back" href="../../../../generated/quspin.tools.lanczos.lanczos_full.html#quspin.tools.lanczos.lanczos_full">[docs]</a>
+<span class="k">def</span> <span class="nf">lanczos_full</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">v0</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">full_ortho</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">eps</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Creates Lanczos basis; diagonalizes Krylov subspace in Lanczos basis.</span>
+
+<span class="sd">    Given a hermitian matrix `A` of size :math:`n\\times n` and an integer `m`, the Lanczos algorithm computes</span>
+
+<span class="sd">    * an :math:`n\\times m` matrix  :math:`Q`, and</span>
+<span class="sd">    * a real symmetric tridiagonal matrix :math:`T=Q^\\dagger A Q` of size :math:`m\\times m`. The matrix :math:`T` can be represented via its eigendecomposition `(E,V)`: :math:`T=V\\mathrm{diag}(E)V^T`.</span>
+
+<span class="sd">    This function computes the triple :math:`(E,V,Q^T)`.</span>
 
-	<span class="n">v0</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">asanyarray</span><span class="p">(</span><span class="n">v0</span><span class="p">)</span>
-	<span class="n">n</span> <span class="o">=</span> <span class="n">v0</span><span class="o">.</span><span class="n">size</span>
-	<span class="n">dtype</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">result_type</span><span class="p">(</span><span class="n">A</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span><span class="n">v0</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
+<span class="sd">    :red:`NOTE:` This function returns :math:`Q^T;\\,Q^T` is (in general) different from :math:`Q^\\dagger`.</span>
+
 
-	<span class="k">if</span> <span class="n">v0</span><span class="o">.</span><span class="n">ndim</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
-		<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;expecting array with ndim=1 for initial Lanczos vector.&quot;</span><span class="p">)</span>
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
 
-	<span class="k">if</span> <span class="n">m</span> <span class="o">&gt;=</span> <span class="n">n</span><span class="p">:</span>
-		<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Requested size of Lanczos basis must be smaller then size of original space (e.g. m &lt; n).&quot;</span><span class="p">)</span>
+<span class="sd">    * performs classical lanczos algorithm for hermitian matrices and cannot handle degeneracies when calculating eigenvalues.</span>
+<span class="sd">    * the function allows for full orthogonalization, see `full_ortho`. The resulting :math:`T` will not neccesarily be tridiagonal.</span>
+<span class="sd">    * `V` is always real-valued, since :math:`T` is real and symmetric.</span>
+<span class="sd">    * `A` must have a &#39;dot&#39; method to perform calculation,</span>
+<span class="sd">    * The &#39;out&#39; argument to pass back the results of the matrix-vector product will be used if the &#39;dot&#39; function supports this argument.</span>
 
-	<span class="k">if</span> <span class="n">out</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-		<span class="k">if</span> <span class="n">out</span><span class="o">.</span><span class="n">shape</span> <span class="o">!=</span> <span class="p">(</span><span class="n">m</span><span class="p">,</span><span class="n">n</span><span class="p">):</span>
-			<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;argument &#39;out&#39; must have shape (m,n), see documentation.&quot;</span><span class="p">)</span>
-		<span class="k">if</span> <span class="n">out</span><span class="o">.</span><span class="n">dtype</span> <span class="o">!=</span> <span class="n">dtype</span><span class="p">:</span>
-			<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;argument &#39;out&#39; has dtype </span><span class="si">{}</span><span class="s2">, expecting dtype </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">out</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span><span class="n">dtype</span><span class="p">))</span>
-		<span class="k">if</span> <span class="ow">not</span> <span class="n">out</span><span class="o">.</span><span class="n">flags</span><span class="p">[</span><span class="s2">&quot;CARRAY&quot;</span><span class="p">]:</span>
-			<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;argument &#39;out&#39; must be C-contiguous and writable.&quot;</span><span class="p">)</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    A : LinearOperator, hamiltonian, numpy.ndarray, or object with a &#39;dot&#39; method and a &#39;dtype&#39; method.</span>
+<span class="sd">            Python object representing a linear map to compute the Lanczos approximation to the largest eigenvalues/vectors of. Must contain a dot-product method, used as `A.dot(v)` and a dtype method, used as `A.dtype`, e.g. `hamiltonian`, `quantum_operator`, `quantum_LinearOperator`, sparse or dense matrix.</span>
+<span class="sd">    v0 : array_like, (n,)</span>
+<span class="sd">            initial vector to start the Lanczos algorithm from.</span>
+<span class="sd">    m : int</span>
+<span class="sd">            Number of Lanczos vectors (size of the Krylov subspace)</span>
+<span class="sd">    full_ortho : bool, optional</span>
+<span class="sd">            perform a QR decomposition on Q_T generated from the standard lanczos iteration to remove any loss of orthogonality due to numerical precision.</span>
+<span class="sd">    out : numpy.ndarray, optional</span>
+<span class="sd">            Array to store the Lanczos vectors in (e.g. `Q`). in memory efficient way.</span>
+<span class="sd">    eps : float, optional</span>
+<span class="sd">            Used to cutoff lanczos iteration when off diagonal matrix elements of `T` drops below this value.</span>
 
-		<span class="n">Q</span> <span class="o">=</span> <span class="n">out</span>
-	<span class="k">else</span><span class="p">:</span>
-		<span class="n">Q</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">m</span><span class="p">,</span><span class="n">n</span><span class="p">),</span><span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
-
-	<span class="n">Q</span><span class="p">[</span><span class="mi">0</span><span class="p">,:]</span> <span class="o">=</span> <span class="n">v0</span><span class="p">[:]</span>
-	<span class="n">v</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">v0</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
-	<span class="n">r</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">v0</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
-
-	<span class="n">b</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">m</span><span class="p">,),</span><span class="n">dtype</span><span class="o">=</span><span class="n">v</span><span class="o">.</span><span class="n">real</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
-	<span class="n">a</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">m</span><span class="p">,),</span><span class="n">dtype</span><span class="o">=</span><span class="n">v</span><span class="o">.</span><span class="n">real</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
-
-
-	<span class="k">if</span> <span class="n">eps</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-		<span class="n">eps</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">finfo</span><span class="p">(</span><span class="n">dtype</span><span class="p">)</span><span class="o">.</span><span class="n">eps</span>
-
-	<span class="n">q_norm</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">Q</span><span class="p">[</span><span class="mi">0</span><span class="p">,:])</span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    tuple(E,V,Q_T)</span>
+<span class="sd">            * E : (m,) numpy.ndarray: eigenvalues of Krylov subspace tridiagonal matrix :math:`T`.</span>
+<span class="sd">            * V : (m,m) numpy.ndarray: eigenvectors of Krylov subspace tridiagonal matrix :math:`T`.</span>
+<span class="sd">            * Q_T : (m,n) numpy.ndarray: matrix containing the `m` Lanczos vectors. This is :math:`Q^T` (not :math:`Q^\\dagger`)!</span>
 
-	<span class="k">if</span> <span class="n">_np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">q_norm</span><span class="o">-</span><span class="mf">1.0</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">eps</span><span class="p">:</span>
-		<span class="n">_np</span><span class="o">.</span><span class="n">divide</span><span class="p">(</span><span class="n">Q</span><span class="p">[</span><span class="mi">0</span><span class="p">,:],</span><span class="n">q_norm</span><span class="p">,</span><span class="n">out</span><span class="o">=</span><span class="n">Q</span><span class="p">[</span><span class="mi">0</span><span class="p">,:])</span>
-	
-	<span class="k">try</span><span class="p">:</span>
-		<span class="n">A</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">Q</span><span class="p">[</span><span class="mi">0</span><span class="p">,:],</span><span class="n">out</span><span class="o">=</span><span class="n">r</span><span class="p">)</span> <span class="c1"># call if operator supports &#39;out&#39; argument</span>
-		<span class="n">use_out</span>  <span class="o">=</span> <span class="kc">True</span>
-	<span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
-		<span class="n">r</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">Q</span><span class="p">[</span><span class="mi">0</span><span class="p">,:])</span>
-		<span class="n">use_out</span> <span class="o">=</span> <span class="kc">False</span>
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
 
-	<span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">vdot</span><span class="p">(</span><span class="n">Q</span><span class="p">[</span><span class="mi">0</span><span class="p">,:],</span><span class="n">r</span><span class="p">)</span><span class="o">.</span><span class="n">real</span>
+<span class="sd">    &gt;&gt;&gt; E, V, Q_T = lanczos_full(H,v0,20)</span>
 
-	<span class="n">_axpy</span><span class="p">(</span><span class="n">Q</span><span class="p">[</span><span class="mi">0</span><span class="p">,:],</span><span class="n">r</span><span class="p">,</span><span class="o">-</span><span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-	<span class="n">b</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
 
-	<span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
-	<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="n">m</span><span class="p">,</span><span class="mi">1</span><span class="p">):</span>
-		<span class="n">v</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">Q</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">,:]</span>
 
-		<span class="n">_np</span><span class="o">.</span><span class="n">divide</span><span class="p">(</span><span class="n">r</span><span class="p">,</span><span class="n">b</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span><span class="n">out</span><span class="o">=</span><span class="n">Q</span><span class="p">[</span><span class="n">i</span><span class="p">,:])</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
-		<span class="k">if</span> <span class="n">use_out</span><span class="p">:</span>
-			<span class="n">A</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">Q</span><span class="p">[</span><span class="n">i</span><span class="p">,:],</span><span class="n">out</span><span class="o">=</span><span class="n">r</span><span class="p">)</span> <span class="c1"># call if operator supports &#39;out&#39; argument</span>
-		<span class="k">else</span><span class="p">:</span>
-			<span class="n">r</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">Q</span><span class="p">[</span><span class="n">i</span><span class="p">,:])</span>
+    <span class="n">v0</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">asanyarray</span><span class="p">(</span><span class="n">v0</span><span class="p">)</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="n">v0</span><span class="o">.</span><span class="n">size</span>
+    <span class="n">dtype</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">result_type</span><span class="p">(</span><span class="n">A</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span> <span class="n">v0</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
 
-		<span class="n">_axpy</span><span class="p">(</span><span class="n">v</span><span class="p">,</span><span class="n">r</span><span class="p">,</span><span class="o">-</span><span class="n">b</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+    <span class="k">if</span> <span class="n">v0</span><span class="o">.</span><span class="n">ndim</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;expecting array with ndim=1 for initial Lanczos vector.&quot;</span><span class="p">)</span>
 
-		<span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">vdot</span><span class="p">(</span><span class="n">Q</span><span class="p">[</span><span class="n">i</span><span class="p">,:],</span><span class="n">r</span><span class="p">)</span><span class="o">.</span><span class="n">real</span>
-		<span class="n">_axpy</span><span class="p">(</span><span class="n">Q</span><span class="p">[</span><span class="n">i</span><span class="p">,:],</span><span class="n">r</span><span class="p">,</span><span class="o">-</span><span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+    <span class="k">if</span> <span class="n">m</span> <span class="o">&gt;=</span> <span class="n">n</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="s2">&quot;Requested size of Lanczos basis must be smaller then size of original space (e.g. m &lt; n).&quot;</span>
+        <span class="p">)</span>
 
-		<span class="n">b</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
-		<span class="k">if</span> <span class="n">b</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">eps</span><span class="p">:</span>
-			<span class="n">m</span> <span class="o">=</span> <span class="n">i</span>
-			<span class="k">break</span>
+    <span class="k">if</span> <span class="n">out</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">out</span><span class="o">.</span><span class="n">shape</span> <span class="o">!=</span> <span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;argument &#39;out&#39; must have shape (m,n), see documentation.&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">out</span><span class="o">.</span><span class="n">dtype</span> <span class="o">!=</span> <span class="n">dtype</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;argument &#39;out&#39; has dtype </span><span class="si">{}</span><span class="s2">, expecting dtype </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="n">out</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span> <span class="n">dtype</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">out</span><span class="o">.</span><span class="n">flags</span><span class="p">[</span><span class="s2">&quot;CARRAY&quot;</span><span class="p">]:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;argument &#39;out&#39; must be C-contiguous and writable.&quot;</span><span class="p">)</span>
 
+        <span class="n">Q</span> <span class="o">=</span> <span class="n">out</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">Q</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">m</span><span class="p">,</span> <span class="n">n</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
 
-	<span class="k">if</span> <span class="n">full_ortho</span><span class="p">:</span>
-		<span class="n">q</span><span class="p">,</span><span class="n">_</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">qr</span><span class="p">(</span><span class="n">Q</span><span class="p">[:</span><span class="n">m</span><span class="p">]</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+    <span class="n">Q</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">v0</span><span class="p">[:]</span>
+    <span class="n">v</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">v0</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
+    <span class="n">r</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">v0</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
 
-		<span class="n">Q</span><span class="p">[:</span><span class="n">m</span><span class="p">,:]</span> <span class="o">=</span> <span class="n">q</span><span class="o">.</span><span class="n">T</span><span class="p">[</span><span class="o">...</span><span class="p">]</span>
+    <span class="n">b</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">m</span><span class="p">,),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">v</span><span class="o">.</span><span class="n">real</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
+    <span class="n">a</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">m</span><span class="p">,),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">v</span><span class="o">.</span><span class="n">real</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
 
-		<span class="n">h</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">m</span><span class="p">,</span><span class="n">m</span><span class="p">),</span><span class="n">dtype</span><span class="o">=</span><span class="n">a</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">eps</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">eps</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">finfo</span><span class="p">(</span><span class="n">dtype</span><span class="p">)</span><span class="o">.</span><span class="n">eps</span>
 
-		<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">m</span><span class="p">):</span>
-			<span class="k">if</span> <span class="n">use_out</span><span class="p">:</span>
-				<span class="n">A</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">Q</span><span class="p">[</span><span class="n">i</span><span class="p">,:],</span><span class="n">out</span><span class="o">=</span><span class="n">r</span><span class="p">)</span> <span class="c1"># call if operator supports &#39;out&#39; argument</span>
-			<span class="k">else</span><span class="p">:</span>
-				<span class="n">r</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">Q</span><span class="p">[</span><span class="n">i</span><span class="p">,:])</span>
+    <span class="n">q_norm</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">Q</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="p">:])</span>
 
-			<span class="n">_np</span><span class="o">.</span><span class="n">conj</span><span class="p">(</span><span class="n">r</span><span class="p">,</span><span class="n">out</span><span class="o">=</span><span class="n">r</span><span class="p">)</span>
-			<span class="n">h</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">i</span><span class="p">:]</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">Q</span><span class="p">[</span><span class="n">i</span><span class="p">:</span><span class="n">m</span><span class="p">,:],</span><span class="n">r</span><span class="p">)</span><span class="o">.</span><span class="n">real</span>
+    <span class="k">if</span> <span class="n">_np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">q_norm</span> <span class="o">-</span> <span class="mf">1.0</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">eps</span><span class="p">:</span>
+        <span class="n">_np</span><span class="o">.</span><span class="n">divide</span><span class="p">(</span><span class="n">Q</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="p">:],</span> <span class="n">q_norm</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">Q</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="p">:])</span>
 
-		<span class="n">E</span><span class="p">,</span><span class="n">V</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">eigh</span><span class="p">(</span><span class="n">h</span><span class="p">,</span><span class="n">UPLO</span><span class="o">=</span><span class="s2">&quot;U&quot;</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">A</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">Q</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="p">:],</span> <span class="n">out</span><span class="o">=</span><span class="n">r</span><span class="p">)</span>  <span class="c1"># call if operator supports &#39;out&#39; argument</span>
+        <span class="n">use_out</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+        <span class="n">r</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">Q</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="p">:])</span>
+        <span class="n">use_out</span> <span class="o">=</span> <span class="kc">False</span>
 
-	<span class="k">else</span><span class="p">:</span>
-		<span class="n">E</span><span class="p">,</span><span class="n">V</span> <span class="o">=</span> <span class="n">eigh_tridiagonal</span><span class="p">(</span><span class="n">a</span><span class="p">[:</span><span class="n">m</span><span class="p">],</span><span class="n">b</span><span class="p">[:</span><span class="n">m</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+    <span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">vdot</span><span class="p">(</span><span class="n">Q</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="p">:],</span> <span class="n">r</span><span class="p">)</span><span class="o">.</span><span class="n">real</span>
 
+    <span class="n">_axpy</span><span class="p">(</span><span class="n">Q</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="p">:],</span> <span class="n">r</span><span class="p">,</span> <span class="o">-</span><span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">b</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
 
-	<span class="k">return</span> <span class="n">E</span><span class="p">,</span><span class="n">V</span><span class="p">,</span><span class="n">Q</span><span class="p">[:</span><span class="n">m</span><span class="p">]</span></div>
+    <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="mi">1</span><span class="p">):</span>
+        <span class="n">v</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">Q</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="p">:]</span>
 
+        <span class="n">_np</span><span class="o">.</span><span class="n">divide</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">b</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">],</span> <span class="n">out</span><span class="o">=</span><span class="n">Q</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:])</span>
 
-<div class="viewcode-block" id="lanczos_iter"><a class="viewcode-back" href="../../../../generated/quspin.tools.lanczos.lanczos_iter.html#quspin.tools.lanczos.lanczos_iter">[docs]</a><span class="k">def</span> <span class="nf">lanczos_iter</span><span class="p">(</span><span class="n">A</span><span class="p">,</span><span class="n">v0</span><span class="p">,</span><span class="n">m</span><span class="p">,</span><span class="n">return_vec_iter</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">copy_v0</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">copy_A</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">eps</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-	<span class="sd">&quot;&quot;&quot; Creates generator for Lanczos basis; diagonalizes Krylov subspace in Lanczos basis.</span>
+        <span class="k">if</span> <span class="n">use_out</span><span class="p">:</span>
+            <span class="n">A</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">Q</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:],</span> <span class="n">out</span><span class="o">=</span><span class="n">r</span><span class="p">)</span>  <span class="c1"># call if operator supports &#39;out&#39; argument</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">r</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">Q</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:])</span>
 
-<span class="sd">	Given a hermitian matrix `A` of size :math:`n\\times n` and an integer `m`, the Lanczos algorithm computes </span>
-<span class="sd">	</span>
-<span class="sd">	* an :math:`n\\times m` matrix  :math:`Q`, and </span>
-<span class="sd">	* a real symmetric tridiagonal matrix :math:`T=Q^\\dagger A Q` of size :math:`m\\times m`. The matrix :math:`T` can be represented via its eigendecomposition `(E,V)`: :math:`T=V\\mathrm{diag}(E)V^T`. </span>
+        <span class="n">_axpy</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="o">-</span><span class="n">b</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">])</span>
 
-<span class="sd">	This function computes the triple :math:`(E,V,Q^T)`.</span>
+        <span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">vdot</span><span class="p">(</span><span class="n">Q</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:],</span> <span class="n">r</span><span class="p">)</span><span class="o">.</span><span class="n">real</span>
+        <span class="n">_axpy</span><span class="p">(</span><span class="n">Q</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:],</span> <span class="n">r</span><span class="p">,</span> <span class="o">-</span><span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
 
-<span class="sd">	:red:`NOTE:` This function returns :math:`Q^T;\\,Q^T` is (in general) different from :math:`Q^\\dagger`.</span>
-<span class="sd"> </span>
+        <span class="n">b</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">b</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">eps</span><span class="p">:</span>
+            <span class="n">m</span> <span class="o">=</span> <span class="n">i</span>
+            <span class="k">break</span>
 
-<span class="sd">	Parameters</span>
-<span class="sd">	----------</span>
-<span class="sd">	A : LinearOperator, hamiltonian, numpy.ndarray, etc. with a &#39;dot&#39; method and a &#39;dtype&#39; method.</span>
-<span class="sd">		Python object representing a linear map to compute the Lanczos approximation to the largest eigenvalues/vectors of. Must contain a dot-product method, used as `A.dot(v)` and a dtype method, used as `A.dtype`, e.g. `hamiltonian`, `quantum_operator`, `quantum_LinearOperator`, sparse or dense matrix.</span>
-<span class="sd">	v0 : array_like, (n,)</span>
-<span class="sd">		initial vector to start the Lanczos algorithm from.</span>
-<span class="sd">	m : int</span>
-<span class="sd">		Number of Lanczos vectors (size of the Krylov subspace)</span>
-<span class="sd">	return_vec_iter : bool, optional</span>
-<span class="sd">		Toggles whether or not to return the Lanczos basis iterator.</span>
-<span class="sd">	copy_v0 : bool, optional</span>
-<span class="sd">		Whether or not to produce of copy of initial vector `v0`.</span>
-<span class="sd">	copy_A : bool, optional</span>
-<span class="sd">		Whether or not to produce of copy of linear operator `A`.</span>
-<span class="sd">	eps : float, optional</span>
-<span class="sd">		Used to cutoff lanczos iteration when off diagonal matrix elements of `T` drops below this value. </span>
+    <span class="k">if</span> <span class="n">full_ortho</span><span class="p">:</span>
+        <span class="n">q</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">qr</span><span class="p">(</span><span class="n">Q</span><span class="p">[:</span><span class="n">m</span><span class="p">]</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
 
-<span class="sd">	Returns</span>
-<span class="sd">	--------</span>
-<span class="sd">	tuple(E,V,Q_T)</span>
-<span class="sd">		* E : (m,) numpy.ndarray: eigenvalues of Krylov subspace tridiagonal matrix :math:`T`.</span>
-<span class="sd">		* V : (m,m) numpy.ndarray: eigenvectors of Krylov subspace tridiagonal matrix :math:`T`.</span>
-<span class="sd">		* Q_T : generator that yields the `m` lanczos basis vectors on the fly, produces the same result as: :code:`iter(Q_T[:])` where `Q_T` is the array generated by `lanczos_full`</span>
+        <span class="n">Q</span><span class="p">[:</span><span class="n">m</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">q</span><span class="o">.</span><span class="n">T</span><span class="p">[</span><span class="o">...</span><span class="p">]</span>
 
-<span class="sd"> 	Notes</span>
-<span class="sd"> 	-----</span>
-<span class="sd"> 	* this function is useful to minimize any memory requirements in the calculation of the Lanczos basis. </span>
-<span class="sd"> 	* the generator of the lanczos basis performs the calculation &#39;on the fly&#39;. This means that the lanczos iteration is repeated every time this generator is looped over. </span>
-<span class="sd"> 	* this generator `Q_T` can be reused as many times as needed, this relies on the data in both `v0` and `A` remaining unchanged during runtime. If this cannot be guaranteed then it is safer to set both `copy_v0` and `copy_A` to be true. </span>
-<span class="sd"> 	* `V` is always real-valued, since :math:`T` is real and symmetric.</span>
+        <span class="n">h</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">m</span><span class="p">,</span> <span class="n">m</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">a</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
 
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">m</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">use_out</span><span class="p">:</span>
+                <span class="n">A</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">Q</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:],</span> <span class="n">out</span><span class="o">=</span><span class="n">r</span><span class="p">)</span>  <span class="c1"># call if operator supports &#39;out&#39; argument</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">r</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">Q</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:])</span>
 
-<span class="sd">	Examples</span>
-<span class="sd">	--------</span>
+            <span class="n">_np</span><span class="o">.</span><span class="n">conj</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">r</span><span class="p">)</span>
+            <span class="n">h</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">i</span><span class="p">:]</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">Q</span><span class="p">[</span><span class="n">i</span><span class="p">:</span><span class="n">m</span><span class="p">,</span> <span class="p">:],</span> <span class="n">r</span><span class="p">)</span><span class="o">.</span><span class="n">real</span>
 
-<span class="sd">	&gt;&gt;&gt; E, V, Q_T_iterator = lanczos_iter(H,v0,20)</span>
+        <span class="n">E</span><span class="p">,</span> <span class="n">V</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">eigh</span><span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="n">UPLO</span><span class="o">=</span><span class="s2">&quot;U&quot;</span><span class="p">)</span>
 
-<span class="sd">	&quot;&quot;&quot;</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">E</span><span class="p">,</span> <span class="n">V</span> <span class="o">=</span> <span class="n">eigh_tridiagonal</span><span class="p">(</span><span class="n">a</span><span class="p">[:</span><span class="n">m</span><span class="p">],</span> <span class="n">b</span><span class="p">[:</span> <span class="n">m</span> <span class="o">-</span> <span class="mi">1</span><span class="p">])</span>
 
-	<span class="n">v0</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">asanyarray</span><span class="p">(</span><span class="n">v0</span><span class="p">)</span>
-	<span class="n">n</span> <span class="o">=</span> <span class="n">v0</span><span class="o">.</span><span class="n">size</span>
-	<span class="n">dtype</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">result_type</span><span class="p">(</span><span class="n">A</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span><span class="n">v0</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">E</span><span class="p">,</span> <span class="n">V</span><span class="p">,</span> <span class="n">Q</span><span class="p">[:</span><span class="n">m</span><span class="p">]</span></div>
 
-	<span class="k">if</span> <span class="n">copy_v0</span> <span class="ow">and</span> <span class="n">return_vec_iter</span><span class="p">:</span>
-		<span class="n">v0</span> <span class="o">=</span> <span class="n">v0</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
 
-	<span class="k">if</span> <span class="n">copy_A</span> <span class="ow">and</span> <span class="n">return_vec_iter</span><span class="p">:</span>
-		<span class="n">A</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>
 
-	<span class="k">if</span> <span class="n">v0</span><span class="o">.</span><span class="n">ndim</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
-		<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;expecting array with ndim=1 for initial Lanczos vector.&quot;</span><span class="p">)</span>
+<div class="viewcode-block" id="lanczos_iter">
+<a class="viewcode-back" href="../../../../generated/quspin.tools.lanczos.lanczos_iter.html#quspin.tools.lanczos.lanczos_iter">[docs]</a>
+<span class="k">def</span> <span class="nf">lanczos_iter</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">v0</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">return_vec_iter</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">copy_v0</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">copy_A</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">eps</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Creates generator for Lanczos basis; diagonalizes Krylov subspace in Lanczos basis.</span>
 
-	<span class="k">if</span> <span class="n">m</span> <span class="o">&gt;=</span> <span class="n">n</span><span class="p">:</span>
-		<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Requested size of Lanczos basis must be smaller then size of original space (e.g. m &lt; n).&quot;</span><span class="p">)</span>
+<span class="sd">    Given a hermitian matrix `A` of size :math:`n\\times n` and an integer `m`, the Lanczos algorithm computes</span>
 
-	<span class="n">q</span> <span class="o">=</span> <span class="n">v0</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">dtype</span><span class="p">,</span><span class="n">copy</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-	<span class="n">v</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">v0</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
-	<span class="n">r</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">v0</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
+<span class="sd">    * an :math:`n\\times m` matrix  :math:`Q`, and</span>
+<span class="sd">    * a real symmetric tridiagonal matrix :math:`T=Q^\\dagger A Q` of size :math:`m\\times m`. The matrix :math:`T` can be represented via its eigendecomposition `(E,V)`: :math:`T=V\\mathrm{diag}(E)V^T`.</span>
 
-	<span class="n">b</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">m</span><span class="p">,),</span><span class="n">dtype</span><span class="o">=</span><span class="n">q</span><span class="o">.</span><span class="n">real</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
-	<span class="n">a</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">m</span><span class="p">,),</span><span class="n">dtype</span><span class="o">=</span><span class="n">q</span><span class="o">.</span><span class="n">real</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
+<span class="sd">    This function computes the triple :math:`(E,V,Q^T)`.</span>
 
-	<span class="k">if</span> <span class="n">eps</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-		<span class="n">eps</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">finfo</span><span class="p">(</span><span class="n">dtype</span><span class="p">)</span><span class="o">.</span><span class="n">eps</span>
+<span class="sd">    :red:`NOTE:` This function returns :math:`Q^T;\\,Q^T` is (in general) different from :math:`Q^\\dagger`.</span>
 
-	<span class="n">q_norm</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">q</span><span class="p">)</span>
 
-	<span class="k">if</span> <span class="n">_np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">q_norm</span><span class="o">-</span><span class="mf">1.0</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">eps</span><span class="p">:</span>
-		<span class="n">_np</span><span class="o">.</span><span class="n">divide</span><span class="p">(</span><span class="n">q</span><span class="p">,</span><span class="n">q_norm</span><span class="p">,</span><span class="n">out</span><span class="o">=</span><span class="n">q</span><span class="p">)</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    A : LinearOperator, hamiltonian, numpy.ndarray, etc. with a &#39;dot&#39; method and a &#39;dtype&#39; method.</span>
+<span class="sd">            Python object representing a linear map to compute the Lanczos approximation to the largest eigenvalues/vectors of. Must contain a dot-product method, used as `A.dot(v)` and a dtype method, used as `A.dtype`, e.g. `hamiltonian`, `quantum_operator`, `quantum_LinearOperator`, sparse or dense matrix.</span>
+<span class="sd">    v0 : array_like, (n,)</span>
+<span class="sd">            initial vector to start the Lanczos algorithm from.</span>
+<span class="sd">    m : int</span>
+<span class="sd">            Number of Lanczos vectors (size of the Krylov subspace)</span>
+<span class="sd">    return_vec_iter : bool, optional</span>
+<span class="sd">            Toggles whether or not to return the Lanczos basis iterator.</span>
+<span class="sd">    copy_v0 : bool, optional</span>
+<span class="sd">            Whether or not to produce of copy of initial vector `v0`.</span>
+<span class="sd">    copy_A : bool, optional</span>
+<span class="sd">            Whether or not to produce of copy of linear operator `A`.</span>
+<span class="sd">    eps : float, optional</span>
+<span class="sd">            Used to cutoff lanczos iteration when off diagonal matrix elements of `T` drops below this value.</span>
 
-	<span class="k">try</span><span class="p">:</span>
-		<span class="n">A</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">q</span><span class="p">,</span><span class="n">out</span><span class="o">=</span><span class="n">r</span><span class="p">)</span> <span class="c1"># call if operator supports &#39;out&#39; argument</span>
-		<span class="n">use_out</span> <span class="o">=</span> <span class="kc">True</span>
-	<span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
-		<span class="n">r</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">q</span><span class="p">)</span>
-		<span class="n">use_out</span> <span class="o">=</span> <span class="kc">False</span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    tuple(E,V,Q_T)</span>
+<span class="sd">            * E : (m,) numpy.ndarray: eigenvalues of Krylov subspace tridiagonal matrix :math:`T`.</span>
+<span class="sd">            * V : (m,m) numpy.ndarray: eigenvectors of Krylov subspace tridiagonal matrix :math:`T`.</span>
+<span class="sd">            * Q_T : generator that yields the `m` lanczos basis vectors on the fly, produces the same result as: :code:`iter(Q_T[:])` where `Q_T` is the array generated by `lanczos_full`</span>
 
-	<span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">vdot</span><span class="p">(</span><span class="n">q</span><span class="p">,</span><span class="n">r</span><span class="p">)</span><span class="o">.</span><span class="n">real</span>
-	<span class="n">_axpy</span><span class="p">(</span><span class="n">q</span><span class="p">,</span><span class="n">r</span><span class="p">,</span><span class="o">-</span><span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-	<span class="n">b</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    * this function is useful to minimize any memory requirements in the calculation of the Lanczos basis.</span>
+<span class="sd">    * the generator of the lanczos basis performs the calculation &#39;on the fly&#39;. This means that the lanczos iteration is repeated every time this generator is looped over.</span>
+<span class="sd">    * this generator `Q_T` can be reused as many times as needed, this relies on the data in both `v0` and `A` remaining unchanged during runtime. If this cannot be guaranteed then it is safer to set both `copy_v0` and `copy_A` to be true.</span>
+<span class="sd">    * `V` is always real-valued, since :math:`T` is real and symmetric.</span>
 
-	<span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
-	<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="n">m</span><span class="p">,</span><span class="mi">1</span><span class="p">):</span>
-		<span class="n">v</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">q</span><span class="p">[:]</span>
 
-		<span class="n">_np</span><span class="o">.</span><span class="n">divide</span><span class="p">(</span><span class="n">r</span><span class="p">,</span><span class="n">b</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span><span class="n">out</span><span class="o">=</span><span class="n">q</span><span class="p">)</span>
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
 
-		<span class="k">if</span> <span class="n">use_out</span><span class="p">:</span>
-			<span class="n">A</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">q</span><span class="p">,</span><span class="n">out</span><span class="o">=</span><span class="n">r</span><span class="p">)</span> <span class="c1"># call if operator supports &#39;out&#39; argument</span>
-		<span class="k">else</span><span class="p">:</span>
-			<span class="n">r</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">q</span><span class="p">)</span>
+<span class="sd">    &gt;&gt;&gt; E, V, Q_T_iterator = lanczos_iter(H,v0,20)</span>
 
-		<span class="n">_axpy</span><span class="p">(</span><span class="n">v</span><span class="p">,</span><span class="n">r</span><span class="p">,</span><span class="o">-</span><span class="n">b</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
-		<span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">vdot</span><span class="p">(</span><span class="n">q</span><span class="p">,</span><span class="n">r</span><span class="p">)</span><span class="o">.</span><span class="n">real</span>
-		<span class="n">_axpy</span><span class="p">(</span><span class="n">q</span><span class="p">,</span><span class="n">r</span><span class="p">,</span><span class="o">-</span><span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
-		<span class="n">b</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
-		<span class="k">if</span> <span class="n">b</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">eps</span><span class="p">:</span>
-			<span class="n">m</span> <span class="o">=</span> <span class="n">i</span>
-			<span class="k">break</span>
+    <span class="n">v0</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">asanyarray</span><span class="p">(</span><span class="n">v0</span><span class="p">)</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="n">v0</span><span class="o">.</span><span class="n">size</span>
+    <span class="n">dtype</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">result_type</span><span class="p">(</span><span class="n">A</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span> <span class="n">v0</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
 
-	<span class="n">E</span><span class="p">,</span><span class="n">V</span> <span class="o">=</span> <span class="n">eigh_tridiagonal</span><span class="p">(</span><span class="n">a</span><span class="p">[:</span><span class="n">m</span><span class="p">],</span><span class="n">b</span><span class="p">[:</span><span class="n">m</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+    <span class="k">if</span> <span class="n">copy_v0</span> <span class="ow">and</span> <span class="n">return_vec_iter</span><span class="p">:</span>
+        <span class="n">v0</span> <span class="o">=</span> <span class="n">v0</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
 
-	<span class="k">if</span> <span class="n">return_vec_iter</span><span class="p">:</span>
-		<span class="k">return</span> <span class="n">E</span><span class="p">,</span><span class="n">V</span><span class="p">,</span><span class="n">_lanczos_vec_iter</span><span class="p">(</span><span class="n">A</span><span class="p">,</span><span class="n">v0</span><span class="p">,</span><span class="n">a</span><span class="p">[:</span><span class="n">m</span><span class="p">],</span><span class="n">b</span><span class="p">[:</span><span class="n">m</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
-	<span class="k">else</span><span class="p">:</span>
-		<span class="k">return</span> <span class="n">E</span><span class="p">,</span><span class="n">V</span></div>
+    <span class="k">if</span> <span class="n">copy_A</span> <span class="ow">and</span> <span class="n">return_vec_iter</span><span class="p">:</span>
+        <span class="n">A</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>
 
+    <span class="k">if</span> <span class="n">v0</span><span class="o">.</span><span class="n">ndim</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;expecting array with ndim=1 for initial Lanczos vector.&quot;</span><span class="p">)</span>
 
-<span class="k">def</span> <span class="nf">_get_first_lv_iter</span><span class="p">(</span><span class="n">r</span><span class="p">,</span><span class="n">Q_iter</span><span class="p">):</span>
-	<span class="k">yield</span> <span class="n">r</span>
-	<span class="k">for</span> <span class="n">Q</span> <span class="ow">in</span> <span class="n">Q_iter</span><span class="p">:</span>
-		<span class="k">yield</span> <span class="n">Q</span>
+    <span class="k">if</span> <span class="n">m</span> <span class="o">&gt;=</span> <span class="n">n</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="s2">&quot;Requested size of Lanczos basis must be smaller then size of original space (e.g. m &lt; n).&quot;</span>
+        <span class="p">)</span>
+
+    <span class="n">q</span> <span class="o">=</span> <span class="n">v0</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">dtype</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">v</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">v0</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
+    <span class="n">r</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">v0</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
+
+    <span class="n">b</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">m</span><span class="p">,),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">q</span><span class="o">.</span><span class="n">real</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
+    <span class="n">a</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">m</span><span class="p">,),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">q</span><span class="o">.</span><span class="n">real</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">eps</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">eps</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">finfo</span><span class="p">(</span><span class="n">dtype</span><span class="p">)</span><span class="o">.</span><span class="n">eps</span>
+
+    <span class="n">q_norm</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">q</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">_np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">q_norm</span> <span class="o">-</span> <span class="mf">1.0</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">eps</span><span class="p">:</span>
+        <span class="n">_np</span><span class="o">.</span><span class="n">divide</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">q_norm</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">q</span><span class="p">)</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">A</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">r</span><span class="p">)</span>  <span class="c1"># call if operator supports &#39;out&#39; argument</span>
+        <span class="n">use_out</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+        <span class="n">r</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">q</span><span class="p">)</span>
+        <span class="n">use_out</span> <span class="o">=</span> <span class="kc">False</span>
+
+    <span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">vdot</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">r</span><span class="p">)</span><span class="o">.</span><span class="n">real</span>
+    <span class="n">_axpy</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="o">-</span><span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">b</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
+
+    <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="mi">1</span><span class="p">):</span>
+        <span class="n">v</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">q</span><span class="p">[:]</span>
+
+        <span class="n">_np</span><span class="o">.</span><span class="n">divide</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">b</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">],</span> <span class="n">out</span><span class="o">=</span><span class="n">q</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">use_out</span><span class="p">:</span>
+            <span class="n">A</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">r</span><span class="p">)</span>  <span class="c1"># call if operator supports &#39;out&#39; argument</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">r</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">q</span><span class="p">)</span>
+
+        <span class="n">_axpy</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="o">-</span><span class="n">b</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">])</span>
+        <span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">vdot</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">r</span><span class="p">)</span><span class="o">.</span><span class="n">real</span>
+        <span class="n">_axpy</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="o">-</span><span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+
+        <span class="n">b</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">b</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">eps</span><span class="p">:</span>
+            <span class="n">m</span> <span class="o">=</span> <span class="n">i</span>
+            <span class="k">break</span>
+
+    <span class="n">E</span><span class="p">,</span> <span class="n">V</span> <span class="o">=</span> <span class="n">eigh_tridiagonal</span><span class="p">(</span><span class="n">a</span><span class="p">[:</span><span class="n">m</span><span class="p">],</span> <span class="n">b</span><span class="p">[:</span> <span class="n">m</span> <span class="o">-</span> <span class="mi">1</span><span class="p">])</span>
+
+    <span class="k">if</span> <span class="n">return_vec_iter</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">E</span><span class="p">,</span> <span class="n">V</span><span class="p">,</span> <span class="n">_lanczos_vec_iter</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">v0</span><span class="p">,</span> <span class="n">a</span><span class="p">[:</span><span class="n">m</span><span class="p">],</span> <span class="n">b</span><span class="p">[:</span> <span class="n">m</span> <span class="o">-</span> <span class="mi">1</span><span class="p">])</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">E</span><span class="p">,</span> <span class="n">V</span></div>
+
+
+
+<span class="k">def</span> <span class="nf">_get_first_lv_iter</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">Q_iter</span><span class="p">):</span>
+    <span class="k">yield</span> <span class="n">r</span>
+    <span class="k">for</span> <span class="n">Q</span> <span class="ow">in</span> <span class="n">Q_iter</span><span class="p">:</span>
+        <span class="k">yield</span> <span class="n">Q</span>
 
 
 <span class="k">def</span> <span class="nf">_get_first_lv</span><span class="p">(</span><span class="n">Q_iter</span><span class="p">):</span>
-	<span class="n">r</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">Q_iter</span><span class="p">)</span>
-	<span class="k">return</span> <span class="n">r</span><span class="p">,</span><span class="n">_get_first_lv_iter</span><span class="p">(</span><span class="n">r</span><span class="p">,</span><span class="n">Q_iter</span><span class="p">)</span>
+    <span class="n">r</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">Q_iter</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">r</span><span class="p">,</span> <span class="n">_get_first_lv_iter</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">Q_iter</span><span class="p">)</span>
 
 
 <span class="c1"># I suggest the name `lv_average()` or `lv_linearcomb` or `linear_combine_Q()` instead of `lin_comb_Q()`</span>
-<div class="viewcode-block" id="lin_comb_Q_T"><a class="viewcode-back" href="../../../../generated/quspin.tools.lanczos.lin_comb_Q_T.html#quspin.tools.lanczos.lin_comb_Q_T">[docs]</a><span class="k">def</span> <span class="nf">lin_comb_Q_T</span><span class="p">(</span><span class="n">coeff</span><span class="p">,</span><span class="n">Q_T</span><span class="p">,</span><span class="n">out</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-	<span class="sd">&quot;&quot;&quot; Computes a linear combination of the Lanczos basis vectors:</span>
+<div class="viewcode-block" id="lin_comb_Q_T">
+<a class="viewcode-back" href="../../../../generated/quspin.tools.lanczos.lin_comb_Q_T.html#quspin.tools.lanczos.lin_comb_Q_T">[docs]</a>
+<span class="k">def</span> <span class="nf">lin_comb_Q_T</span><span class="p">(</span><span class="n">coeff</span><span class="p">,</span> <span class="n">Q_T</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Computes a linear combination of the Lanczos basis vectors:</span>
 
-<span class="sd">	.. math::</span>
-<span class="sd">		v_j = \\sum_{i=1}^{m} c_i \\left(Q^T\\right)_{ij} </span>
-
-<span class="sd">	</span>
-<span class="sd">	Parameters</span>
-<span class="sd">	-----------</span>
-<span class="sd">	coeff : (m,) array_like</span>
-<span class="sd">		list of coefficients to compute the linear combination of Lanczos basis vectors with.</span>
-<span class="sd">	Q_T : (m,n) numpy.ndarray, generator</span>
-<span class="sd">		Lanczos basis vectors or a generator for the Lanczos basis.</span>
-<span class="sd">	out : (n,) numpy.ndarray, optional</span>
-<span class="sd">		Array to store the result in.</span>
-<span class="sd">	</span>
-<span class="sd">	Returns</span>
-<span class="sd">	--------</span>
-<span class="sd">	(n,) numpy.ndarray</span>
-<span class="sd">		Linear combination :math:`v` of Lanczos basis vectors. </span>
-
-<span class="sd">	Examples</span>
-<span class="sd">	--------</span>
-
-<span class="sd">	&gt;&gt;&gt; v = lin_comb_Q(coeff,Q_T)</span>
-
-<span class="sd">	&quot;&quot;&quot;</span>
+<span class="sd">    .. math::</span>
+<span class="sd">            v_j = \\sum_{i=1}^{m} c_i \\left(Q^T\\right)_{ij}</span>
 
 
-	<span class="n">coeff</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">asanyarray</span><span class="p">(</span><span class="n">coeff</span><span class="p">)</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    coeff : (m,) array_like</span>
+<span class="sd">            list of coefficients to compute the linear combination of Lanczos basis vectors with.</span>
+<span class="sd">    Q_T : (m,n) numpy.ndarray, generator</span>
+<span class="sd">            Lanczos basis vectors or a generator for the Lanczos basis.</span>
+<span class="sd">    out : (n,) numpy.ndarray, optional</span>
+<span class="sd">            Array to store the result in.</span>
 
-	<span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">Q_T</span><span class="p">,</span><span class="n">_np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
-		<span class="n">Q_iter</span> <span class="o">=</span> <span class="nb">iter</span><span class="p">(</span><span class="n">Q_T</span><span class="p">[:])</span>
-	<span class="k">else</span><span class="p">:</span>
-		<span class="n">Q_iter</span> <span class="o">=</span> <span class="nb">iter</span><span class="p">(</span><span class="n">Q_T</span><span class="p">)</span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    (n,) numpy.ndarray</span>
+<span class="sd">            Linear combination :math:`v` of Lanczos basis vectors.</span>
 
-	<span class="n">q</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">Q_iter</span><span class="p">)</span>
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
 
-	<span class="n">dtype</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">result_type</span><span class="p">(</span><span class="n">q</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span><span class="n">coeff</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
+<span class="sd">    &gt;&gt;&gt; v = lin_comb_Q(coeff,Q_T)</span>
 
-	<span class="k">if</span> <span class="n">out</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-		<span class="k">if</span> <span class="n">out</span><span class="o">.</span><span class="n">shape</span> <span class="o">!=</span> <span class="n">q</span><span class="o">.</span><span class="n">shape</span><span class="p">:</span>
-			<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;&#39;out&#39; must have same shape as a Lanczos vector.&quot;</span><span class="p">)</span>
-		<span class="k">if</span> <span class="n">out</span><span class="o">.</span><span class="n">dtype</span> <span class="o">!=</span> <span class="n">dtype</span><span class="p">:</span>
-			<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;argument &#39;out&#39; has dtype </span><span class="si">{}</span><span class="s2">, expecting dtype </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">out</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span><span class="n">dtype</span><span class="p">))</span>
-		<span class="k">if</span> <span class="ow">not</span> <span class="n">out</span><span class="o">.</span><span class="n">flags</span><span class="p">[</span><span class="s2">&quot;CARRAY&quot;</span><span class="p">]:</span>
-			<span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;argument &#39;out&#39; must be C-contiguous and writable.&quot;</span><span class="p">)</span>
-	<span class="k">else</span><span class="p">:</span>
-		<span class="n">out</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">q</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
-	
-	<span class="n">n</span> <span class="o">=</span> <span class="n">q</span><span class="o">.</span><span class="n">size</span>
+    <span class="n">coeff</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">asanyarray</span><span class="p">(</span><span class="n">coeff</span><span class="p">)</span>
 
-	<span class="n">_np</span><span class="o">.</span><span class="n">multiply</span><span class="p">(</span><span class="n">q</span><span class="p">,</span><span class="n">coeff</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span>
-	<span class="k">for</span> <span class="n">weight</span><span class="p">,</span><span class="n">q</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">coeff</span><span class="p">[</span><span class="mi">1</span><span class="p">:],</span><span class="n">Q_iter</span><span class="p">):</span>
-		<span class="n">_axpy</span><span class="p">(</span><span class="n">q</span><span class="p">,</span><span class="n">out</span><span class="p">,</span><span class="n">weight</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">Q_T</span><span class="p">,</span> <span class="n">_np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+        <span class="n">Q_iter</span> <span class="o">=</span> <span class="nb">iter</span><span class="p">(</span><span class="n">Q_T</span><span class="p">[:])</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">Q_iter</span> <span class="o">=</span> <span class="nb">iter</span><span class="p">(</span><span class="n">Q_T</span><span class="p">)</span>
 
+    <span class="n">q</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">Q_iter</span><span class="p">)</span>
 
+    <span class="n">dtype</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">result_type</span><span class="p">(</span><span class="n">q</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span> <span class="n">coeff</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
 
-	<span class="k">return</span> <span class="n">out</span></div>
+    <span class="k">if</span> <span class="n">out</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">out</span><span class="o">.</span><span class="n">shape</span> <span class="o">!=</span> <span class="n">q</span><span class="o">.</span><span class="n">shape</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;&#39;out&#39; must have same shape as a Lanczos vector.&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">out</span><span class="o">.</span><span class="n">dtype</span> <span class="o">!=</span> <span class="n">dtype</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;argument &#39;out&#39; has dtype </span><span class="si">{}</span><span class="s2">, expecting dtype </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="n">out</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span> <span class="n">dtype</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">out</span><span class="o">.</span><span class="n">flags</span><span class="p">[</span><span class="s2">&quot;CARRAY&quot;</span><span class="p">]:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;argument &#39;out&#39; must be C-contiguous and writable.&quot;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">out</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">q</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
+
+    <span class="n">n</span> <span class="o">=</span> <span class="n">q</span><span class="o">.</span><span class="n">size</span>
+
+    <span class="n">_np</span><span class="o">.</span><span class="n">multiply</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">coeff</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">weight</span><span class="p">,</span> <span class="n">q</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">coeff</span><span class="p">[</span><span class="mi">1</span><span class="p">:],</span> <span class="n">Q_iter</span><span class="p">):</span>
+        <span class="n">_axpy</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">out</span><span class="p">,</span> <span class="n">weight</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">out</span></div>
+
 </pre></div>
 
-            <div class="clearer"></div>
+           </div>
           </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Phillip Weinberg, Markus Schmitt, and Marin Bukov.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
         </div>
       </div>
-      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
-        <div class="sphinxsidebarwrapper">
-<div id="searchbox" style="display: none" role="search">
-  <h3 id="searchlabel">Quick search</h3>
-    <div class="searchformwrapper">
-    <form class="search" action="../../../../search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" />
-      <input type="submit" value="Go" />
-    </form>
-    </div>
-</div>
-<script>$('#searchbox').show(0);</script>
-        </div>
-      </div>
-      <div class="clearer"></div>
-    </div>
-    <div class="related" role="navigation" aria-label="related navigation">
-      <h3>Navigation</h3>
-      <ul>
-        <li class="right" style="margin-right: 10px">
-          <a href="../../../../genindex.html" title="General Index"
-             >index</a></li>
-        <li class="right" >
-          <a href="../../../../py-modindex.html" title="Python Module Index"
-             >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">QuSpin 0.3.7 documentation</a> &#187;</li>
-          <li class="nav-item nav-item-1"><a href="../../../index.html" >Module code</a> &#187;</li>
-        <li class="nav-item nav-item-this"><a href="">quspin.tools.lanczos._lanczos_utils</a></li> 
-      </ul>
-    </div>
-    <div class="footer" role="contentinfo">
-        &#169; Copyright 2016, Phillip Weinberg, Markus Schmitt and Marin Bukov.
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.5.4.
-    </div>
-  </body>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+    <!-- Theme Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-6885KZ7NH6"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-6885KZ7NH6', {
+          'anonymize_ip': false,
+      });
+    </script> 
+
+</body>
 </html>

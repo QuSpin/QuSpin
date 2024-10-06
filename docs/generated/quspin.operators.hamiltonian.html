@@ -1,70 +1,125 @@
-
 <!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-<html>
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><script type="text/javascript">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>quspin.operators.hamiltonian &mdash; QuSpin 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../static/css/sphinx_rtd_size.css?v=f26ae176" />
+      <link rel="stylesheet" type="text/css" href="../static/css/py_class_property_fix.css?v=faf79ccd" />
 
-      var _gaq = _gaq || [];
-      _gaq.push(['_setAccount', 'UA-110543543-1']);
-      _gaq.push(['_trackPageview']);
-
-      (function() {
-        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-      })();
-    </script>
-    <title>quspin.operators.hamiltonian &#8212; QuSpin 0.3.7 documentation</title>
-    <link rel="stylesheet" href="../static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="../static/classic.css" type="text/css" />
-    
-    <script id="documentation_options" data-url_root="../" src="../static/documentation_options.js"></script>
-    <script src="../static/jquery.js"></script>
-    <script src="../static/underscore.js"></script>
-    <script src="../static/doctools.js"></script>
-    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    
+  
+  <!--[if lt IE 9]>
+    <script src="../static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../static/jquery.js?v=5d32c60e"></script>
+        <script src="../static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../static/documentation_options.js?v=8d563738"></script>
+        <script src="../static/doctools.js?v=9a2dae69"></script>
+        <script src="../static/sphinx_highlight.js?v=dc90522c"></script>
+        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="../static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="quspin.operators.quantum_operator" href="quspin.operators.quantum_operator.html" />
     <link rel="prev" title="Operators module (quspin.operators)" href="../operators.html" /> 
-  </head><body>
-    <div class="related" role="navigation" aria-label="related navigation">
-      <h3>Navigation</h3>
-      <ul>
-        <li class="right" style="margin-right: 10px">
-          <a href="../genindex.html" title="General Index"
-             accesskey="I">index</a></li>
-        <li class="right" >
-          <a href="../py-modindex.html" title="Python Module Index"
-             >modules</a> |</li>
-        <li class="right" >
-          <a href="quspin.operators.quantum_operator.html" title="quspin.operators.quantum_operator"
-             accesskey="N">next</a> |</li>
-        <li class="right" >
-          <a href="../operators.html" title="Operators module (quspin.operators)"
-             accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.7 documentation</a> &#187;</li>
-          <li class="nav-item nav-item-1"><a href="../operators.html" accesskey="U">Operators module (<code class="xref py py-mod docutils literal notranslate"><span class="pre">quspin.operators</span></code>)</a> &#187;</li>
-        <li class="nav-item nav-item-this"><a href="">quspin.operators.hamiltonian</a></li> 
-      </ul>
-    </div>  
+</head>
 
-    <div class="document">
-      <div class="documentwrapper">
-        <div class="bodywrapper">
-          <div class="body" role="main">
-            
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            QuSpin
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">QuSpin (public API)</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../basis.html">Basis module (<code class="xref py py-mod docutils literal notranslate"><span class="pre">quspin.basis</span></code>)</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../operators.html">Operators module (<code class="xref py py-mod docutils literal notranslate"><span class="pre">quspin.operators</span></code>)</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="../operators.html#classes">classes</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">quspin.operators.hamiltonian</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#quspin.operators.hamiltonian"><code class="docutils literal notranslate"><span class="pre">hamiltonian</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="quspin.operators.quantum_operator.html">quspin.operators.quantum_operator</a></li>
+<li class="toctree-l3"><a class="reference internal" href="quspin.operators.exp_op.html">quspin.operators.exp_op</a></li>
+<li class="toctree-l3"><a class="reference internal" href="quspin.operators.quantum_LinearOperator.html">quspin.operators.quantum_LinearOperator</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../operators.html#functions">functions</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../tools.html">Tools module (<code class="xref py py-mod docutils literal notranslate"><span class="pre">quspin.tools</span></code>)</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Installation &amp; Use</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../installation/installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../installation/installation.html#basics-of-command-line-use">Basics of command line use</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../example_scripts.html">Example scripts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../jupyter_notebooks.html">Jupyter notebooks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/parallelization.html">Parallel computing support</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/user_basis.html"><cite>user_basis</cite> tutorial</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Bugs &amp; Questions</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../contribute/report_a_bug.html">Report a bug</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contribute/ask_a_question.html">Ask a question</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">QuSpin</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content style-external-links">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../operators.html">Operators module (<code class="xref py py-mod docutils literal notranslate"><span class="pre">quspin.operators</span></code>)</a></li>
+      <li class="breadcrumb-item active">quspin.operators.hamiltonian</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../sources/generated/quspin.operators.hamiltonian.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
   <style> .red {color:#ff0000; font-weight:bold; font-style:italic; } </style>
 <style> .green {color:#00b200; font-weight:bold; font-style:italic; } </style>
 <style> .magenta {color:#FF33F3; font-weight:bold; font-style:italic; } </style>
-<style> .orange {color:#FE8E02; font-weight:bold; font-style:italic; } </style><div class="section" id="quspin-operators-hamiltonian">
-<h1>quspin.operators.hamiltonian<a class="headerlink" href="#quspin-operators-hamiltonian" title="Permalink to this headline">¶</a></h1>
+<style> .orange {color:#FE8E02; font-weight:bold; font-style:italic; } </style><section id="quspin-operators-hamiltonian">
+<h1>quspin.operators.hamiltonian<a class="headerlink" href="#quspin-operators-hamiltonian" title="Link to this heading"></a></h1>
 <dl class="py class">
-<dt id="quspin.operators.hamiltonian">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">quspin.operators.</span></code><code class="sig-name descname"><span class="pre">hamiltonian</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="pre">static_list</span></em>, <em class="sig-param"><span class="pre">dynamic_list</span></em>, <em class="sig-param"><span class="pre">N=None</span></em>, <em class="sig-param"><span class="pre">basis=None</span></em>, <em class="sig-param"><span class="pre">shape=None</span></em>, <em class="sig-param"><span class="pre">dtype=&lt;class</span> <span class="pre">'numpy.complex128'&gt;</span></em>, <em class="sig-param"><span class="pre">static_fmt=None</span></em>, <em class="sig-param"><span class="pre">dynamic_fmt=None</span></em>, <em class="sig-param"><span class="pre">copy=True</span></em>, <em class="sig-param"><span class="pre">check_symm=True</span></em>, <em class="sig-param"><span class="pre">check_herm=True</span></em>, <em class="sig-param"><span class="pre">check_pcon=True</span></em>, <em class="sig-param"><span class="pre">**basis_kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/operators/hamiltonian_core.html#hamiltonian"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quspin.operators.hamiltonian" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="quspin.operators.hamiltonian">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">quspin.operators.</span></span><span class="sig-name descname"><span class="pre">hamiltonian</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">static_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dynamic_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">N=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">basis=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shape=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype=&lt;class</span> <span class="pre">'numpy.complex128'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">static_fmt=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dynamic_fmt=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">copy=True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">check_symm=True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">check_herm=True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">check_pcon=True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">**basis_kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/operators/hamiltonian_core.html#hamiltonian"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quspin.operators.hamiltonian" title="Link to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Constructs time-dependent (hermitian and nonhermitian) operators.</p>
 <p>The <cite>hamiltonian</cite> class wraps most of the functionalty of the QuSpin package. This object allows the user to construct
@@ -81,67 +136,45 @@ instantiation with a <cite>basis</cite> will automatically ignore all symmetry i
 \[H(t) = \sum_{j=0}^{L-1} \left( JS^z_{j+1}S^z_j + hS^z_j + g\cos(\Omega t)S^x_j \right)\]</div>
 <p>in the zero-momentum sector (<cite>kblock=0</cite>) of positive parity (<cite>pblock=1</cite>). We use periodic boundary conditions.</p>
 <p>The code snippet below initiates the class, and is required to run the example codes for the function methods.</p>
-<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal"> 1</span>
-<span class="normal"> 2</span>
-<span class="normal"> 3</span>
-<span class="normal"> 4</span>
-<span class="normal"> 5</span>
-<span class="normal"> 6</span>
-<span class="normal"> 7</span>
-<span class="normal"> 8</span>
-<span class="normal"> 9</span>
-<span class="normal">10</span>
-<span class="normal">11</span>
-<span class="normal">12</span>
-<span class="normal">13</span>
-<span class="normal">14</span>
-<span class="normal">15</span>
-<span class="normal">16</span>
-<span class="normal">17</span>
-<span class="normal">18</span>
-<span class="normal">19</span>
-<span class="normal">20</span>
-<span class="normal">21</span>
-<span class="normal">22</span>
-<span class="normal">23</span>
-<span class="normal">24</span>
-<span class="normal">25</span>
-<span class="normal">26</span>
-<span class="normal">27</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">quspin.operators</span> <span class="kn">import</span> <span class="n">hamiltonian</span> <span class="c1"># Hamiltonians and operators</span>
-<span class="kn">from</span> <span class="nn">quspin.basis</span> <span class="kn">import</span> <span class="n">spin_basis_1d</span> <span class="c1"># Hilbert space spin basis</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span> <span class="c1"># generic math functions</span>
-<span class="c1">#</span>
-<span class="c1">##### define model parameters #####</span>
-<span class="n">L</span><span class="o">=</span><span class="mi">4</span> <span class="c1"># system size</span>
-<span class="n">J</span><span class="o">=</span><span class="mf">1.0</span> <span class="c1"># spin interaction</span>
-<span class="n">g</span><span class="o">=</span><span class="mf">0.809</span> <span class="c1"># transverse field</span>
-<span class="n">h</span><span class="o">=</span><span class="mf">0.9045</span> <span class="c1"># longitudinal field</span>
-<span class="c1">##### define periodic drive #####</span>
-<span class="n">Omega</span><span class="o">=</span><span class="mf">4.5</span> <span class="c1"># drive frequency</span>
-<span class="k">def</span> <span class="nf">drive</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">Omega</span><span class="p">):</span>
-	<span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">Omega</span><span class="o">*</span><span class="n">t</span><span class="p">)</span>
-<span class="n">drive_args</span><span class="o">=</span><span class="p">[</span><span class="n">Omega</span><span class="p">]</span>
-<span class="c1">#</span>
-<span class="c1">##### construct basis in the 0-total momentum and +1-parity sector</span>
-<span class="n">basis</span><span class="o">=</span><span class="n">spin_basis_1d</span><span class="p">(</span><span class="n">L</span><span class="o">=</span><span class="n">L</span><span class="p">,</span><span class="n">a</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">kblock</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">pblock</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-<span class="c1"># define PBC site-coupling lists for operators</span>
-<span class="n">x_field</span><span class="o">=</span><span class="p">[[</span><span class="n">g</span><span class="p">,</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">L</span><span class="p">)]</span>
-<span class="n">z_field</span><span class="o">=</span><span class="p">[[</span><span class="n">h</span><span class="p">,</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">L</span><span class="p">)]</span>
-<span class="n">J_nn</span><span class="o">=</span><span class="p">[[</span><span class="n">J</span><span class="p">,</span><span class="n">i</span><span class="p">,(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">%</span><span class="n">L</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">L</span><span class="p">)]</span> <span class="c1"># PBC</span>
-<span class="c1"># static and dynamic lists</span>
-<span class="n">static</span><span class="o">=</span><span class="p">[[</span><span class="s2">&quot;zz&quot;</span><span class="p">,</span><span class="n">J_nn</span><span class="p">],[</span><span class="s2">&quot;z&quot;</span><span class="p">,</span><span class="n">z_field</span><span class="p">]]</span>
-<span class="n">dynamic</span><span class="o">=</span><span class="p">[[</span><span class="s2">&quot;x&quot;</span><span class="p">,</span><span class="n">x_field</span><span class="p">,</span><span class="n">drive</span><span class="p">,</span><span class="n">drive_args</span><span class="p">]]</span>
-<span class="c1">###### construct Hamiltonian</span>
-<span class="n">H</span><span class="o">=</span><span class="n">hamiltonian</span><span class="p">(</span><span class="n">static</span><span class="p">,</span><span class="n">dynamic</span><span class="p">,</span><span class="n">static_fmt</span><span class="o">=</span><span class="s2">&quot;dia&quot;</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">,</span><span class="n">basis</span><span class="o">=</span><span class="n">basis</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">H</span><span class="o">.</span><span class="n">toarray</span><span class="p">())</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="kn">from</span> <span class="nn">quspin.basis</span> <span class="kn">import</span> <span class="n">spin_basis_1d</span>  <span class="c1"># Hilbert space spin basis</span>
+<span class="linenos"> 2</span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>  <span class="c1"># generic math functions</span>
+<span class="linenos"> 3</span>
+<span class="linenos"> 4</span><span class="c1">#</span>
+<span class="linenos"> 5</span><span class="c1">##### define model parameters #####</span>
+<span class="linenos"> 6</span><span class="n">L</span> <span class="o">=</span> <span class="mi">4</span>  <span class="c1"># system size</span>
+<span class="linenos"> 7</span><span class="n">J</span> <span class="o">=</span> <span class="mf">1.0</span>  <span class="c1"># spin interaction</span>
+<span class="linenos"> 8</span><span class="n">g</span> <span class="o">=</span> <span class="mf">0.809</span>  <span class="c1"># transverse field</span>
+<span class="linenos"> 9</span><span class="n">h</span> <span class="o">=</span> <span class="mf">0.9045</span>  <span class="c1"># longitudinal field</span>
+<span class="linenos">10</span><span class="c1">##### define periodic drive #####</span>
+<span class="linenos">11</span><span class="n">Omega</span> <span class="o">=</span> <span class="mf">4.5</span>  <span class="c1"># drive frequency</span>
+<span class="linenos">12</span>
+<span class="linenos">13</span>
+<span class="linenos">14</span><span class="k">def</span> <span class="nf">drive</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">Omega</span><span class="p">):</span>
+<span class="linenos">15</span>    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">Omega</span> <span class="o">*</span> <span class="n">t</span><span class="p">)</span>
+<span class="linenos">16</span>
+<span class="linenos">17</span>
+<span class="linenos">18</span><span class="n">drive_args</span> <span class="o">=</span> <span class="p">[</span><span class="n">Omega</span><span class="p">]</span>
+<span class="linenos">19</span><span class="c1">#</span>
+<span class="linenos">20</span><span class="c1">##### construct basis in the 0-total momentum and +1-parity sector</span>
+<span class="linenos">21</span><span class="n">basis</span> <span class="o">=</span> <span class="n">spin_basis_1d</span><span class="p">(</span><span class="n">L</span><span class="o">=</span><span class="n">L</span><span class="p">,</span> <span class="n">a</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">kblock</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">pblock</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="linenos">22</span><span class="c1"># define PBC site-coupling lists for operators</span>
+<span class="linenos">23</span><span class="n">x_field</span> <span class="o">=</span> <span class="p">[[</span><span class="n">g</span><span class="p">,</span> <span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">L</span><span class="p">)]</span>
+<span class="linenos">24</span><span class="n">z_field</span> <span class="o">=</span> <span class="p">[[</span><span class="n">h</span><span class="p">,</span> <span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">L</span><span class="p">)]</span>
+<span class="linenos">25</span><span class="n">J_nn</span> <span class="o">=</span> <span class="p">[[</span><span class="n">J</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">%</span> <span class="n">L</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">L</span><span class="p">)]</span>  <span class="c1"># PBC</span>
+<span class="linenos">26</span><span class="c1"># static and dynamic lists</span>
+<span class="linenos">27</span><span class="n">static</span> <span class="o">=</span> <span class="p">[[</span><span class="s2">&quot;zz&quot;</span><span class="p">,</span> <span class="n">J_nn</span><span class="p">],</span> <span class="p">[</span><span class="s2">&quot;z&quot;</span><span class="p">,</span> <span class="n">z_field</span><span class="p">]]</span>
+<span class="linenos">28</span><span class="n">dynamic</span> <span class="o">=</span> <span class="p">[[</span><span class="s2">&quot;x&quot;</span><span class="p">,</span> <span class="n">x_field</span><span class="p">,</span> <span class="n">drive</span><span class="p">,</span> <span class="n">drive_args</span><span class="p">]]</span>
+<span class="linenos">29</span><span class="c1">###### construct Hamiltonian</span>
+<span class="linenos">30</span><span class="n">H</span> <span class="o">=</span> <span class="n">hamiltonian</span><span class="p">(</span><span class="n">static</span><span class="p">,</span> <span class="n">dynamic</span><span class="p">,</span> <span class="n">static_fmt</span><span class="o">=</span><span class="s2">&quot;dia&quot;</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">,</span> <span class="n">basis</span><span class="o">=</span><span class="n">basis</span><span class="p">)</span>
+<span class="linenos">31</span><span class="nb">print</span><span class="p">(</span><span class="n">H</span><span class="o">.</span><span class="n">toarray</span><span class="p">())</span>
 </pre></div>
-</td></tr></table></div>
+</div>
 <dl class="py method">
-<dt id="quspin.operators.hamiltonian.__init__">
-<code class="sig-name descname"><span class="pre">__init__</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="pre">static_list</span></em>, <em class="sig-param"><span class="pre">dynamic_list</span></em>, <em class="sig-param"><span class="pre">N=None</span></em>, <em class="sig-param"><span class="pre">basis=None</span></em>, <em class="sig-param"><span class="pre">shape=None</span></em>, <em class="sig-param"><span class="pre">dtype=&lt;class</span> <span class="pre">'numpy.complex128'&gt;</span></em>, <em class="sig-param"><span class="pre">static_fmt=None</span></em>, <em class="sig-param"><span class="pre">dynamic_fmt=None</span></em>, <em class="sig-param"><span class="pre">copy=True</span></em>, <em class="sig-param"><span class="pre">check_symm=True</span></em>, <em class="sig-param"><span class="pre">check_herm=True</span></em>, <em class="sig-param"><span class="pre">check_pcon=True</span></em>, <em class="sig-param"><span class="pre">**basis_kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/operators/hamiltonian_core.html#hamiltonian.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quspin.operators.hamiltonian.__init__" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="quspin.operators.hamiltonian.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">static_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dynamic_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">N=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">basis=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shape=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype=&lt;class</span> <span class="pre">'numpy.complex128'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">static_fmt=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dynamic_fmt=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">copy=True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">check_symm=True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">check_herm=True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">check_pcon=True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">**basis_kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/operators/hamiltonian_core.html#hamiltonian.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quspin.operators.hamiltonian.__init__" title="Link to this definition"></a></dt>
 <dd><p>Intializes the <cite>hamtilonian</cite> object (any quantum operator).</p>
 <dl class="field-list">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl>
 <dt><strong>static_list</strong><span class="classifier">list</span></dt><dd><p>Contains list of objects to calculate the static part of a <cite>hamiltonian</cite> operator. The format goes like:</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">static_list</span><span class="o">=</span><span class="p">[[</span><span class="n">opstr_1</span><span class="p">,[</span><span class="n">indx_11</span><span class="p">,</span><span class="o">...</span><span class="p">,</span><span class="n">indx_1m</span><span class="p">]],</span><span class="n">matrix_2</span><span class="p">,</span><span class="o">...</span><span class="p">]</span>
@@ -191,13 +224,9 @@ to create the operator.</p>
 </dd></dl>
 
 <p class="rubric">Methods</p>
-<table class="longtable docutils align-default">
-<colgroup>
-<col style="width: 10%" />
-<col style="width: 90%" />
-</colgroup>
+<table class="autosummary longtable docutils align-default">
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#quspin.operators.hamiltonian.__init__" title="quspin.operators.hamiltonian.__init__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__init__</span></code></a>(static_list, dynamic_list[, N, …])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#quspin.operators.hamiltonian.__init__" title="quspin.operators.hamiltonian.__init__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__init__</span></code></a>(static_list, dynamic_list[, N, ...])</p></td>
 <td><p>Intializes the <cite>hamtilonian</cite> object (any quantum operator).</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#quspin.operators.hamiltonian.as_dense_format" title="quspin.operators.hamiltonian.as_dense_format"><code class="xref py py-obj docutils literal notranslate"><span class="pre">as_dense_format</span></code></a>([copy])</p></td>
@@ -239,7 +268,7 @@ to create the operator.</p>
 <tr class="row-even"><td><p><a class="reference internal" href="#quspin.operators.hamiltonian.eigvalsh" title="quspin.operators.hamiltonian.eigvalsh"><code class="xref py py-obj docutils literal notranslate"><span class="pre">eigvalsh</span></code></a>([time])</p></td>
 <td><p>Computes ALL eigenvalues of hermitian <cite>hamiltonian</cite> operator using DENSE hermitian methods.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#quspin.operators.hamiltonian.evolve" title="quspin.operators.hamiltonian.evolve"><code class="xref py py-obj docutils literal notranslate"><span class="pre">evolve</span></code></a>(v0, t0, times[, eom, solver_name, …])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#quspin.operators.hamiltonian.evolve" title="quspin.operators.hamiltonian.evolve"><code class="xref py py-obj docutils literal notranslate"><span class="pre">evolve</span></code></a>(v0, t0, times[, eom, solver_name, ...])</p></td>
 <td><p>Implements (imaginary) time evolution generated by the <cite>hamiltonian</cite> object.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#quspin.operators.hamiltonian.expt_value" title="quspin.operators.hamiltonian.expt_value"><code class="xref py py-obj docutils literal notranslate"><span class="pre">expt_value</span></code></a>(V[, time, check, enforce_pure])</p></td>
@@ -287,11 +316,7 @@ to create the operator.</p>
 </tbody>
 </table>
 <p class="rubric">Attributes</p>
-<table class="longtable docutils align-default">
-<colgroup>
-<col style="width: 10%" />
-<col style="width: 90%" />
-</colgroup>
+<table class="autosummary longtable docutils align-default">
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#quspin.operators.hamiltonian.H" title="quspin.operators.hamiltonian.H"><code class="xref py py-obj docutils literal notranslate"><span class="pre">H</span></code></a></p></td>
 <td><p>transposes and conjugates the operator matrix, <span class="math notranslate nohighlight">\(H_{ij}\mapsto H_{ji}^*\)</span>.</p></td>
@@ -331,51 +356,51 @@ to create the operator.</p>
 </tr>
 </tbody>
 </table>
-<dl class="py method">
-<dt id="quspin.operators.hamiltonian.H">
-<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">H</span></code><a class="headerlink" href="#quspin.operators.hamiltonian.H" title="Permalink to this definition">¶</a></dt>
+<dl class="py property">
+<dt class="sig sig-object py" id="quspin.operators.hamiltonian.H">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">H</span></span><a class="headerlink" href="#quspin.operators.hamiltonian.H" title="Link to this definition"></a></dt>
 <dd><p>transposes and conjugates the operator matrix, <span class="math notranslate nohighlight">\(H_{ij}\mapsto H_{ji}^*\)</span>.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Type</dt>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference internal" href="#quspin.operators.hamiltonian" title="quspin.operators.hamiltonian"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hamiltonian</span></code></a></p>
 </dd>
 </dl>
 </dd></dl>
 
-<dl class="py method">
-<dt id="quspin.operators.hamiltonian.Ns">
-<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">Ns</span></code><a class="headerlink" href="#quspin.operators.hamiltonian.Ns" title="Permalink to this definition">¶</a></dt>
+<dl class="py property">
+<dt class="sig sig-object py" id="quspin.operators.hamiltonian.Ns">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Ns</span></span><a class="headerlink" href="#quspin.operators.hamiltonian.Ns" title="Link to this definition"></a></dt>
 <dd><p>number of states in the (symmetry-reduced) Hilbert space spanned by <cite>basis</cite>.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Type</dt>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>int</p>
 </dd>
 </dl>
 </dd></dl>
 
-<dl class="py method">
-<dt id="quspin.operators.hamiltonian.T">
-<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">T</span></code><a class="headerlink" href="#quspin.operators.hamiltonian.T" title="Permalink to this definition">¶</a></dt>
+<dl class="py property">
+<dt class="sig sig-object py" id="quspin.operators.hamiltonian.T">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">T</span></span><a class="headerlink" href="#quspin.operators.hamiltonian.T" title="Link to this definition"></a></dt>
 <dd><p>transposes the operator matrix, <span class="math notranslate nohighlight">\(H_{ij}\mapsto H_{ji}\)</span>.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Type</dt>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference internal" href="#quspin.operators.hamiltonian" title="quspin.operators.hamiltonian"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hamiltonian</span></code></a></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
-<dt id="quspin.operators.hamiltonian.as_dense_format">
-<code class="sig-name descname"><span class="pre">as_dense_format</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">copy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/operators/hamiltonian_core.html#hamiltonian.as_dense_format"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quspin.operators.hamiltonian.as_dense_format" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="quspin.operators.hamiltonian.as_dense_format">
+<span class="sig-name descname"><span class="pre">as_dense_format</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">copy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/operators/hamiltonian_core.html#hamiltonian.as_dense_format"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quspin.operators.hamiltonian.as_dense_format" title="Link to this definition"></a></dt>
 <dd><p>Casts <cite>hamiltonian</cite> operator to DENSE format.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
 <dt><strong>copy</strong><span class="classifier">bool,optional</span></dt><dd><p>Whether to return a deep copy of the original object. Default is <cite>copy = False</cite>.</p>
 </dd>
 </dl>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><dl class="simple">
 <dt>obj</dt><dd><p>Either one of the following:</p>
 <ul class="simple">
@@ -393,11 +418,11 @@ to create the operator.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="quspin.operators.hamiltonian.as_sparse_format">
-<code class="sig-name descname"><span class="pre">as_sparse_format</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">static_fmt</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'csr'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dynamic_fmt</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">copy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/operators/hamiltonian_core.html#hamiltonian.as_sparse_format"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quspin.operators.hamiltonian.as_sparse_format" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="quspin.operators.hamiltonian.as_sparse_format">
+<span class="sig-name descname"><span class="pre">as_sparse_format</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">static_fmt</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'csr'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dynamic_fmt</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">copy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/operators/hamiltonian_core.html#hamiltonian.as_sparse_format"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quspin.operators.hamiltonian.as_sparse_format" title="Link to this definition"></a></dt>
 <dd><p>Casts <cite>hamiltonian</cite> operator to SPARSE format(s).</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
 <dt><strong>static_fmt</strong><span class="classifier">str {“csr”,”csc”,”dia”,”dense”}</span></dt><dd><p>Specifies format of static part of Hamiltonian.</p>
 </dd>
@@ -408,7 +433,7 @@ used in the construction of the hamiltonian as a key in the dictionary.</p>
 </dd>
 </dl>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><dl class="simple">
 <dt>obj</dt><dd><p>Either one of the following:</p>
 <ul class="simple">
@@ -426,20 +451,20 @@ used in the construction of the hamiltonian as a key in the dictionary.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="quspin.operators.hamiltonian.aslinearoperator">
-<code class="sig-name descname"><span class="pre">aslinearoperator</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/operators/hamiltonian_core.html#hamiltonian.aslinearoperator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quspin.operators.hamiltonian.aslinearoperator" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="quspin.operators.hamiltonian.aslinearoperator">
+<span class="sig-name descname"><span class="pre">aslinearoperator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/operators/hamiltonian_core.html#hamiltonian.aslinearoperator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quspin.operators.hamiltonian.aslinearoperator" title="Link to this definition"></a></dt>
 <dd><p>Returns copy of a <cite>hamiltonian</cite> object at time <cite>time</cite> as a <cite>scipy.sparse.linalg.LinearOperator</cite>.</p>
 <p>Casts the <cite>hamiltonian</cite> object as a
-<a class="reference external" href="https://docs.scipy.org/doc/scipy-0.16.0/reference/generated/scipy.sparse.linalg.LinearOperator.html">scipy.sparse.linalg.LinearOperator</a>
+<a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.linalg.LinearOperator.html">scipy.sparse.linalg.LinearOperator</a>
 object.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
 <dt><strong>time</strong><span class="classifier">float, optional</span></dt><dd><p>Time to evalute the time-dependent part of the operator at (if existent). Default is <cite>time = 0.0</cite>.</p>
 </dd>
 </dl>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><dl class="simple">
 <dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">scipy.sparse.linalg.LinearOperator</span></code></dt><dd></dd>
 </dl>
@@ -452,17 +477,17 @@ object.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="quspin.operators.hamiltonian.astype">
-<code class="sig-name descname"><span class="pre">astype</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dtype</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">copy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">casting</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'unsafe'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/operators/hamiltonian_core.html#hamiltonian.astype"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quspin.operators.hamiltonian.astype" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="quspin.operators.hamiltonian.astype">
+<span class="sig-name descname"><span class="pre">astype</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dtype</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">copy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">casting</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'unsafe'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/operators/hamiltonian_core.html#hamiltonian.astype"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quspin.operators.hamiltonian.astype" title="Link to this definition"></a></dt>
 <dd><p>Changes data type of <cite>hamiltonian</cite> object.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
 <dt><strong>dtype</strong><span class="classifier">‘type’</span></dt><dd><p>The data type (e.g. numpy.float64) to cast the Hamiltonian with.</p>
 </dd>
 </dl>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><dl class="simple">
 <dt><cite>hamiltonian</cite></dt><dd><p>Operator with altered data type.</p>
 </dd>
@@ -479,36 +504,36 @@ object.</p>
 </div>
 </dd></dl>
 
-<dl class="py method">
-<dt id="quspin.operators.hamiltonian.basis">
-<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">basis</span></code><a class="headerlink" href="#quspin.operators.hamiltonian.basis" title="Permalink to this definition">¶</a></dt>
+<dl class="py property">
+<dt class="sig sig-object py" id="quspin.operators.hamiltonian.basis">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">basis</span></span><a class="headerlink" href="#quspin.operators.hamiltonian.basis" title="Link to this definition"></a></dt>
 <dd><p>basis used to build the <cite>hamiltonian</cite> object.</p>
 <p>Defaults to <cite>None</cite> if operator has no basis (i.e. was created externally and passed as a precalculated array).</p>
 <dl class="field-list simple">
-<dt class="field-odd">Type</dt>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference internal" href="#quspin.operators.hamiltonian.basis" title="quspin.operators.hamiltonian.basis"><code class="xref py py-obj docutils literal notranslate"><span class="pre">basis</span></code></a></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
-<dt id="quspin.operators.hamiltonian.check_is_dense">
-<code class="sig-name descname"><span class="pre">check_is_dense</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/operators/hamiltonian_core.html#hamiltonian.check_is_dense"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quspin.operators.hamiltonian.check_is_dense" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="quspin.operators.hamiltonian.check_is_dense">
+<span class="sig-name descname"><span class="pre">check_is_dense</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/operators/hamiltonian_core.html#hamiltonian.check_is_dense"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quspin.operators.hamiltonian.check_is_dense" title="Link to this definition"></a></dt>
 <dd><p>updates attribute <cite>_.is_dense</cite>.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="quspin.operators.hamiltonian.conj">
-<code class="sig-name descname"><span class="pre">conj</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/operators/hamiltonian_core.html#hamiltonian.conj"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quspin.operators.hamiltonian.conj" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="quspin.operators.hamiltonian.conj">
+<span class="sig-name descname"><span class="pre">conj</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/operators/hamiltonian_core.html#hamiltonian.conj"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quspin.operators.hamiltonian.conj" title="Link to this definition"></a></dt>
 <dd><p>Same functionality as <a class="reference internal" href="#quspin.operators.hamiltonian.conjugate" title="quspin.operators.hamiltonian.conjugate"><code class="xref py py-func docutils literal notranslate"><span class="pre">conjugate()</span></code></a>.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="quspin.operators.hamiltonian.conjugate">
-<code class="sig-name descname"><span class="pre">conjugate</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/operators/hamiltonian_core.html#hamiltonian.conjugate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quspin.operators.hamiltonian.conjugate" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="quspin.operators.hamiltonian.conjugate">
+<span class="sig-name descname"><span class="pre">conjugate</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/operators/hamiltonian_core.html#hamiltonian.conjugate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quspin.operators.hamiltonian.conjugate" title="Link to this definition"></a></dt>
 <dd><p>Conjugates <cite>hamiltonian</cite> operator.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
 <dt><a class="reference internal" href="#quspin.operators.hamiltonian" title="quspin.operators.hamiltonian"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hamiltonian</span></code></a></dt><dd><p><span class="math notranslate nohighlight">\(H_{ij}\mapsto H_{ij}^*\)</span></p>
 </dd>
@@ -524,23 +549,23 @@ object.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="quspin.operators.hamiltonian.copy">
-<code class="sig-name descname"><span class="pre">copy</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/operators/hamiltonian_core.html#hamiltonian.copy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quspin.operators.hamiltonian.copy" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="quspin.operators.hamiltonian.copy">
+<span class="sig-name descname"><span class="pre">copy</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/operators/hamiltonian_core.html#hamiltonian.copy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quspin.operators.hamiltonian.copy" title="Link to this definition"></a></dt>
 <dd><p>Returns a copy of <cite>hamiltonian</cite> object.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="quspin.operators.hamiltonian.diagonal">
-<code class="sig-name descname"><span class="pre">diagonal</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/operators/hamiltonian_core.html#hamiltonian.diagonal"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quspin.operators.hamiltonian.diagonal" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="quspin.operators.hamiltonian.diagonal">
+<span class="sig-name descname"><span class="pre">diagonal</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/operators/hamiltonian_core.html#hamiltonian.diagonal"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quspin.operators.hamiltonian.diagonal" title="Link to this definition"></a></dt>
 <dd><p>Calculates diagonal of <cite>hamiltonian</cite> operator at time <cite>time</cite>.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
 <dt><strong>time</strong><span class="classifier">float, optional</span></dt><dd><p>Time to evalute the time-dependent part of the operator at (if existent). Default is <cite>time = 0.0</cite>.</p>
 </dd>
 </dl>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><dl class="simple">
 <dt>numpy.ndarray</dt><dd><p>Diagonal part of operator <span class="math notranslate nohighlight">\(H(t=\texttt{time})\)</span>.</p>
 </dd>
@@ -554,13 +579,13 @@ object.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="quspin.operators.hamiltonian.dot">
-<code class="sig-name descname"><span class="pre">dot</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">V</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">check</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite_out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">a</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/operators/hamiltonian_core.html#hamiltonian.dot"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quspin.operators.hamiltonian.dot" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="quspin.operators.hamiltonian.dot">
+<span class="sig-name descname"><span class="pre">dot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">V</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">check</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite_out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">a</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/operators/hamiltonian_core.html#hamiltonian.dot"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quspin.operators.hamiltonian.dot" title="Link to this definition"></a></dt>
 <dd><p>Matrix-vector multiplication of <cite>hamiltonian</cite> operator at time <cite>time</cite>, with state <cite>V</cite>.</p>
 <div class="math notranslate nohighlight">
 \[aH(t=\texttt{time})|V\rangle\]</div>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
 <dt><strong>V</strong><span class="classifier">{numpy.ndarray, scipy.spmatrix}</span></dt><dd><p>Array containing the quantums state to multiply the <cite>hamiltonian</cite> operator with.</p>
 </dd>
@@ -590,7 +615,7 @@ If <cite>False</cite> the result of the dot product will be added to the values 
 </dd>
 </dl>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><dl class="simple">
 <dt>numpy.ndarray</dt><dd><p>Vector corresponding to the <cite>hamiltonian</cite> operator applied on the state <cite>V</cite>.</p>
 </dd>
@@ -609,47 +634,47 @@ If <cite>False</cite> the result of the dot product will be added to the values 
 <p>corresponds to <span class="math notranslate nohighlight">\(B = HA\)</span>.</p>
 </dd></dl>
 
-<dl class="py method">
-<dt id="quspin.operators.hamiltonian.dtype">
-<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">dtype</span></code><a class="headerlink" href="#quspin.operators.hamiltonian.dtype" title="Permalink to this definition">¶</a></dt>
+<dl class="py property">
+<dt class="sig sig-object py" id="quspin.operators.hamiltonian.dtype">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">dtype</span></span><a class="headerlink" href="#quspin.operators.hamiltonian.dtype" title="Link to this definition"></a></dt>
 <dd><p>data type of <cite>hamiltonian</cite> object.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Type</dt>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>type</p>
 </dd>
 </dl>
 </dd></dl>
 
-<dl class="py method">
-<dt id="quspin.operators.hamiltonian.dynamic">
-<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">dynamic</span></code><a class="headerlink" href="#quspin.operators.hamiltonian.dynamic" title="Permalink to this definition">¶</a></dt>
+<dl class="py property">
+<dt class="sig sig-object py" id="quspin.operators.hamiltonian.dynamic">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">dynamic</span></span><a class="headerlink" href="#quspin.operators.hamiltonian.dynamic" title="Link to this definition"></a></dt>
 <dd><p>contains dynamic parts of the operator as <cite>dict(func=Hdyn)</cite>.</p>
 <p>The key <cite>func</cite> is the memory address of the time-dependent function which can be called as <cite>func(time)</cite>. The function arguments are hard-coded, and are not passed.
 The value <cite>Hdyn</cite> is the sparse matrix to which the drive couples.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Type</dt>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>dict</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
-<dt id="quspin.operators.hamiltonian.eigh">
-<code class="sig-name descname"><span class="pre">eigh</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">eigh_args</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/operators/hamiltonian_core.html#hamiltonian.eigh"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quspin.operators.hamiltonian.eigh" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="quspin.operators.hamiltonian.eigh">
+<span class="sig-name descname"><span class="pre">eigh</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">eigh_args</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/operators/hamiltonian_core.html#hamiltonian.eigh"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quspin.operators.hamiltonian.eigh" title="Link to this definition"></a></dt>
 <dd><p>Computes COMPLETE eigensystem of hermitian <cite>hamiltonian</cite> operator using DENSE hermitian methods.</p>
 <p>This function method solves for all eigenvalues and eigenvectors. It calls
-<a class="reference external" href="https://docs.scipy.org/doc/numpy-1.10.1/reference/generated/numpy.linalg.eigh.html">numpy.linalg.eigh</a>,
+<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.linalg.eigh.html">numpy.linalg.eigh</a>,
 and uses wrapped LAPACK functions which are contained in the module py_lapack.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
 <dt><strong>time</strong><span class="classifier">float</span></dt><dd><p>Time to evalute the <cite>hamiltonian</cite> operator at (if time dependent). Default is <cite>time = 0.0</cite>.</p>
 </dd>
-<dt><strong>eigh_args :</strong></dt><dd><p>For all additional arguments see documentation of <a class="reference external" href="https://docs.scipy.org/doc/numpy-1.10.1/reference/generated/numpy.linalg.eigh.html">numpy.linalg.eigh</a>.</p>
+<dt><strong>eigh_args</strong></dt><dd><p>For all additional arguments see documentation of <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.linalg.eigh.html">numpy.linalg.eigh</a>.</p>
 </dd>
 </dl>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><dl class="simple">
 <dt>tuple</dt><dd><p>Tuple containing the <cite>(eigenvalues, eigenvectors)</cite> of the <cite>hamiltonian</cite> operator.</p>
 </dd>
@@ -666,21 +691,21 @@ to reassure themselves of the hermiticity properties before use.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="quspin.operators.hamiltonian.eigsh">
-<code class="sig-name descname"><span class="pre">eigsh</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">eigsh_args</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/operators/hamiltonian_core.html#hamiltonian.eigsh"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quspin.operators.hamiltonian.eigsh" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="quspin.operators.hamiltonian.eigsh">
+<span class="sig-name descname"><span class="pre">eigsh</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">eigsh_args</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/operators/hamiltonian_core.html#hamiltonian.eigsh"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quspin.operators.hamiltonian.eigsh" title="Link to this definition"></a></dt>
 <dd><p>Computes SOME eigenvalues and eigenvectors of hermitian <cite>hamiltonian</cite> operator using SPARSE hermitian methods.</p>
 <p>This function method solves for eigenvalues and eigenvectors, but can only solve for a few of them accurately.
-It calls <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/generated/scipy.sparse.linalg.eigsh.html">scipy.sparse.linalg.eigsh</a>, which is a wrapper for ARPACK.</p>
+It calls <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.linalg.eigsh.html">scipy.sparse.linalg.eigsh</a>, which is a wrapper for ARPACK.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
 <dt><strong>time</strong><span class="classifier">float</span></dt><dd><p>Time to evalute the <cite>hamiltonian</cite> operator at (if time dependent). Default is <cite>time = 0.0</cite>.</p>
 </dd>
-<dt><strong>eigsh_args :</strong></dt><dd><p>For all additional arguments see documentation of <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/generated/scipy.sparse.linalg.eigsh.html">scipy.sparse.linalg.eigsh</a>.</p>
+<dt><strong>eigsh_args</strong></dt><dd><p>For all additional arguments see documentation of <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.linalg.eigsh.html">scipy.sparse.linalg.eigsh</a>.</p>
 </dd>
 </dl>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><dl class="simple">
 <dt>tuple</dt><dd><p>Tuple containing the <cite>(eigenvalues, eigenvectors)</cite> of the <cite>hamiltonian</cite> operator.</p>
 </dd>
@@ -697,22 +722,22 @@ to reassure themselves of the hermiticity properties before use.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="quspin.operators.hamiltonian.eigvalsh">
-<code class="sig-name descname"><span class="pre">eigvalsh</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">eigvalsh_args</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/operators/hamiltonian_core.html#hamiltonian.eigvalsh"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quspin.operators.hamiltonian.eigvalsh" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="quspin.operators.hamiltonian.eigvalsh">
+<span class="sig-name descname"><span class="pre">eigvalsh</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">eigvalsh_args</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/operators/hamiltonian_core.html#hamiltonian.eigvalsh"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quspin.operators.hamiltonian.eigvalsh" title="Link to this definition"></a></dt>
 <dd><p>Computes ALL eigenvalues of hermitian <cite>hamiltonian</cite> operator using DENSE hermitian methods.</p>
 <p>This function method solves for all eigenvalues. It calls
-<a class="reference external" href="https://docs.scipy.org/doc/numpy-1.10.1/reference/generated/numpy.linalg.eigvalsh.html#numpy.linalg.eigvalsh">numpy.linalg.eigvalsh</a>,
+<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.linalg.eigvalsh.html">numpy.linalg.eigvalsh</a>,
 and uses wrapped LAPACK functions which are contained in the module py_lapack.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
 <dt><strong>time</strong><span class="classifier">float</span></dt><dd><p>Time to evalute the <cite>hamiltonian</cite> operator at (if time dependent). Default is <cite>time = 0.0</cite>.</p>
 </dd>
-<dt><strong>eigvalsh_args :</strong></dt><dd><p>For all additional arguments see documentation of <a class="reference external" href="https://docs.scipy.org/doc/numpy-1.10.1/reference/generated/numpy.linalg.eigvalsh.html#numpy.linalg.eigvalsh">numpy.linalg.eigvalsh</a>.</p>
+<dt><strong>eigvalsh_args</strong></dt><dd><p>For all additional arguments see documentation of <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.linalg.eigvalsh.html">numpy.linalg.eigvalsh</a>.</p>
 </dd>
 </dl>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><dl class="simple">
 <dt>numpy.ndarray</dt><dd><p>Eigenvalues of the <cite>hamiltonian</cite> operator.</p>
 </dd>
@@ -729,8 +754,8 @@ to reassure themselves of the hermiticity properties before use.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="quspin.operators.hamiltonian.evolve">
-<code class="sig-name descname"><span class="pre">evolve</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">v0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">times</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eom</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'SE'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">solver_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'dop853'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stack_state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iterate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">imag_time</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">solver_args</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/operators/hamiltonian_core.html#hamiltonian.evolve"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quspin.operators.hamiltonian.evolve" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="quspin.operators.hamiltonian.evolve">
+<span class="sig-name descname"><span class="pre">evolve</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">v0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">times</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eom</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'SE'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">solver_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'dop853'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stack_state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iterate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">imag_time</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">solver_args</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/operators/hamiltonian_core.html#hamiltonian.evolve"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quspin.operators.hamiltonian.evolve" title="Link to this definition"></a></dt>
 <dd><p>Implements (imaginary) time evolution generated by the <cite>hamiltonian</cite> object.</p>
 <p>The functions handles evolution generated by both time-dependent and time-independent Hamiltonians.</p>
 <dl class="simple">
@@ -742,7 +767,7 @@ to reassure themselves of the hermiticity properties before use.</p>
 </dd>
 </dl>
 <dl class="field-list">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl>
 <dt><strong>v0</strong><span class="classifier">numpy.ndarray</span></dt><dd><p>Initial state <span class="math notranslate nohighlight">\(|v(t)\rangle\)</span> or density matrix (pure and mixed) <span class="math notranslate nohighlight">\(\rho(t)\)</span>.</p>
 </dd>
@@ -762,9 +787,9 @@ to reassure themselves of the hermiticity properties before use.</p>
 <dt><strong>iterate</strong><span class="classifier">bool, optional</span></dt><dd><p>If set to <cite>True</cite>, creates a generator object for the time-evolved the state. Default is <cite>False</cite>.</p>
 </dd>
 <dt><strong>solver_name</strong><span class="classifier">str, optional</span></dt><dd><p>Scipy solver integrator name. Default is <cite>dop853</cite>.</p>
-<p>See <a class="reference external" href="https://docs.scipy.org/doc/scipy-0.14.0/reference/generated/scipy.integrate.ode.html">scipy integrator (solver)</a> for other options.</p>
+<p>See <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.integrate.ode.html">scipy integrator (solver)</a> for other options.</p>
 </dd>
-<dt><strong>solver_args</strong><span class="classifier">dict, optional</span></dt><dd><p>Dictionary with additional <a class="reference external" href="https://docs.scipy.org/doc/scipy-0.14.0/reference/generated/scipy.integrate.ode.html">scipy integrator (solver)</a>.</p>
+<dt><strong>solver_args</strong><span class="classifier">dict, optional</span></dt><dd><p>Dictionary with additional <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.integrate.ode.html">scipy integrator (solver)</a>.</p>
 </dd>
 <dt><strong>stack_state</strong><span class="classifier">bool, optional</span></dt><dd><p>Flag to determine if <cite>f</cite> is real or complex-valued. Default is <cite>False</cite> (i.e. complex-valued).</p>
 </dd>
@@ -775,7 +800,7 @@ at each time in <cite>times</cite>. Default is <cite>False</cite>.</p>
 </dd>
 </dl>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><dl>
 <dt>obj</dt><dd><p>Can be either one of the following:</p>
 <ul class="simple">
@@ -799,13 +824,13 @@ over the differential equation to be solved.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="quspin.operators.hamiltonian.expt_value">
-<code class="sig-name descname"><span class="pre">expt_value</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">V</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">check</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">enforce_pure</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/operators/hamiltonian_core.html#hamiltonian.expt_value"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quspin.operators.hamiltonian.expt_value" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="quspin.operators.hamiltonian.expt_value">
+<span class="sig-name descname"><span class="pre">expt_value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">V</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">check</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">enforce_pure</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/operators/hamiltonian_core.html#hamiltonian.expt_value"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quspin.operators.hamiltonian.expt_value" title="Link to this definition"></a></dt>
 <dd><p>Calculates expectation value of <cite>hamiltonian</cite> operator at time <cite>time</cite>, in state <cite>V</cite>.</p>
 <div class="math notranslate nohighlight">
 \[\langle V|H(t=\texttt{time})|V\rangle,\qquad \mathrm{tr}(V H(t=\texttt{time}))\]</div>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
 <dt><strong>V</strong><span class="classifier">numpy.ndarray</span></dt><dd><p>Depending on the shape, can be a single state or a collection of pure or mixed states
 [see <cite>enforce_pure</cite> argument of <cite>basis.ent_entropy</cite>].</p>
@@ -831,7 +856,7 @@ in the columns.</p>
 <dt><strong>check</strong><span class="classifier">bool, optional</span></dt><dd></dd>
 </dl>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><dl class="simple">
 <dt>float</dt><dd><p>Expectation value of <cite>hamiltonian</cite> operator in state <cite>V</cite>.</p>
 </dd>
@@ -846,17 +871,17 @@ in the columns.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="quspin.operators.hamiltonian.getH">
-<code class="sig-name descname"><span class="pre">getH</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">copy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/operators/hamiltonian_core.html#hamiltonian.getH"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quspin.operators.hamiltonian.getH" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="quspin.operators.hamiltonian.getH">
+<span class="sig-name descname"><span class="pre">getH</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">copy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/operators/hamiltonian_core.html#hamiltonian.getH"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quspin.operators.hamiltonian.getH" title="Link to this definition"></a></dt>
 <dd><p>Calculates hermitian conjugate of <cite>hamiltonian</cite> operator.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
 <dt><strong>copy</strong><span class="classifier">bool, optional</span></dt><dd><p>Whether to return a deep copy of the original object. Default is <cite>copy = False</cite>.</p>
 </dd>
 </dl>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><dl class="simple">
 <dt><a class="reference internal" href="#quspin.operators.hamiltonian" title="quspin.operators.hamiltonian"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hamiltonian</span></code></a></dt><dd><p><span class="math notranslate nohighlight">\(H_{ij}\mapsto H_{ij}^*\)</span></p>
 </dd>
@@ -869,38 +894,38 @@ in the columns.</p>
 </div>
 </dd></dl>
 
-<dl class="py method">
-<dt id="quspin.operators.hamiltonian.get_shape">
-<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">get_shape</span></code><a class="headerlink" href="#quspin.operators.hamiltonian.get_shape" title="Permalink to this definition">¶</a></dt>
+<dl class="py property">
+<dt class="sig sig-object py" id="quspin.operators.hamiltonian.get_shape">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_shape</span></span><a class="headerlink" href="#quspin.operators.hamiltonian.get_shape" title="Link to this definition"></a></dt>
 <dd><p>shape of the <cite>hamiltonian</cite> object, always equal to <cite>(Ns,Ns)</cite>.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Type</dt>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>tuple</p>
 </dd>
 </dl>
 </dd></dl>
 
-<dl class="py method">
-<dt id="quspin.operators.hamiltonian.is_dense">
-<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">is_dense</span></code><a class="headerlink" href="#quspin.operators.hamiltonian.is_dense" title="Permalink to this definition">¶</a></dt>
+<dl class="py property">
+<dt class="sig sig-object py" id="quspin.operators.hamiltonian.is_dense">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">is_dense</span></span><a class="headerlink" href="#quspin.operators.hamiltonian.is_dense" title="Link to this definition"></a></dt>
 <dd><p>checks sparsity of operator matrix.</p>
 <p><cite>True</cite> if the operator contains a dense matrix as a component of either
 the static or dynamic lists.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Type</dt>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>bool</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
-<dt id="quspin.operators.hamiltonian.matrix_ele">
-<code class="sig-name descname"><span class="pre">matrix_ele</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Vl</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Vr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">diagonal</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">check</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/operators/hamiltonian_core.html#hamiltonian.matrix_ele"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quspin.operators.hamiltonian.matrix_ele" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="quspin.operators.hamiltonian.matrix_ele">
+<span class="sig-name descname"><span class="pre">matrix_ele</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Vl</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Vr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">diagonal</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">check</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/operators/hamiltonian_core.html#hamiltonian.matrix_ele"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quspin.operators.hamiltonian.matrix_ele" title="Link to this definition"></a></dt>
 <dd><p>Calculates matrix element of <cite>hamiltonian</cite> operator at time <cite>time</cite> in states <cite>Vl</cite> and <cite>Vr</cite>.</p>
 <div class="math notranslate nohighlight">
 \[\langle V_l|H(t=\texttt{time})|V_r\rangle\]</div>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
 <dt><strong>Vl</strong><span class="classifier">{numpy.ndarray, scipy.spmatrix}</span></dt><dd><p>Vector(s)/state(s) to multiple with on left side.</p>
 </dd>
@@ -926,7 +951,7 @@ containing pure states in the columns of the array.</p>
 <dt><strong>check</strong><span class="classifier">bool,</span></dt><dd></dd>
 </dl>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><dl class="simple">
 <dt>float</dt><dd><p>Matrix element of <cite>hamiltonian</cite> operator between the states <cite>Vl</cite> and <cite>Vr</cite>.</p>
 </dd>
@@ -942,37 +967,37 @@ containing pure states in the columns of the array.</p>
 <p>corresponds to <span class="math notranslate nohighlight">\(H_{lr} = \langle V_l|H(t=0)|V_r\rangle\)</span>.</p>
 </dd></dl>
 
-<dl class="py method">
-<dt id="quspin.operators.hamiltonian.nbytes">
-<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">nbytes</span></code><a class="headerlink" href="#quspin.operators.hamiltonian.nbytes" title="Permalink to this definition">¶</a></dt>
+<dl class="py property">
+<dt class="sig sig-object py" id="quspin.operators.hamiltonian.nbytes">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">nbytes</span></span><a class="headerlink" href="#quspin.operators.hamiltonian.nbytes" title="Link to this definition"></a></dt>
 <dd><p>Total bytes consumed by the elements of the <cite>hamiltonian</cite> array.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Type</dt>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>float</p>
 </dd>
 </dl>
 </dd></dl>
 
-<dl class="py method">
-<dt id="quspin.operators.hamiltonian.ndim">
-<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">ndim</span></code><a class="headerlink" href="#quspin.operators.hamiltonian.ndim" title="Permalink to this definition">¶</a></dt>
+<dl class="py property">
+<dt class="sig sig-object py" id="quspin.operators.hamiltonian.ndim">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ndim</span></span><a class="headerlink" href="#quspin.operators.hamiltonian.ndim" title="Link to this definition"></a></dt>
 <dd><p>number of dimensions, always equal to 2.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Type</dt>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>int</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
-<dt id="quspin.operators.hamiltonian.project_to">
-<code class="sig-name descname"><span class="pre">project_to</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">proj</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/operators/hamiltonian_core.html#hamiltonian.project_to"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quspin.operators.hamiltonian.project_to" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="quspin.operators.hamiltonian.project_to">
+<span class="sig-name descname"><span class="pre">project_to</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">proj</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/operators/hamiltonian_core.html#hamiltonian.project_to"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quspin.operators.hamiltonian.project_to" title="Link to this definition"></a></dt>
 <dd><p>Projects/Transforms <cite>hamiltonian</cite> operator with projector/operator <cite>proj</cite>.</p>
 <p>Let us call the projector/transformation <span class="math notranslate nohighlight">\(V\)</span>. Then, the function computes</p>
 <div class="math notranslate nohighlight">
 \[V^\dagger H V\]</div>
 <dl class="field-list">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl>
 <dt><strong>proj</strong><span class="classifier">obj</span></dt><dd><p>Can be either one of the following:</p>
 <blockquote>
@@ -988,7 +1013,7 @@ in the definition above.</p>
 </dd>
 </dl>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><dl class="simple">
 <dt>obj</dt><dd><p>Projected/Transformed <cite>hamiltonian</cite> operator. The output object type depends on the object
 type of <cite>proj</cite>.</p>
@@ -1010,13 +1035,13 @@ a smaller Hilbert space.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="quspin.operators.hamiltonian.quant_fluct">
-<code class="sig-name descname"><span class="pre">quant_fluct</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">V</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">check</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">enforce_pure</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/operators/hamiltonian_core.html#hamiltonian.quant_fluct"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quspin.operators.hamiltonian.quant_fluct" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="quspin.operators.hamiltonian.quant_fluct">
+<span class="sig-name descname"><span class="pre">quant_fluct</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">V</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">check</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">enforce_pure</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/operators/hamiltonian_core.html#hamiltonian.quant_fluct"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quspin.operators.hamiltonian.quant_fluct" title="Link to this definition"></a></dt>
 <dd><p>Calculates the quantum fluctuations (variance) of <cite>hamiltonian</cite> operator at time <cite>time</cite>, in state <cite>V</cite>.</p>
 <div class="math notranslate nohighlight">
 \[\langle V|H^2(t=\texttt{time})|V\rangle - \langle V|H(t=\texttt{time})|V\rangle^2\]</div>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
 <dt><strong>V</strong><span class="classifier">numpy.ndarray</span></dt><dd><p>Depending on the shape, can be a single state or a collection of pure or mixed states
 [see <cite>enforce_pure</cite>].</p>
@@ -1042,7 +1067,7 @@ in the columns.</p>
 <dt><strong>check</strong><span class="classifier">bool, optional</span></dt><dd></dd>
 </dl>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><dl class="simple">
 <dt>float</dt><dd><p>Quantum fluctuations of <cite>hamiltonian</cite> operator in state <cite>V</cite>.</p>
 </dd>
@@ -1057,13 +1082,13 @@ in the columns.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="quspin.operators.hamiltonian.rdot">
-<code class="sig-name descname"><span class="pre">rdot</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">V</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">check</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite_out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">a</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/operators/hamiltonian_core.html#hamiltonian.rdot"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quspin.operators.hamiltonian.rdot" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="quspin.operators.hamiltonian.rdot">
+<span class="sig-name descname"><span class="pre">rdot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">V</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">check</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite_out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">a</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/operators/hamiltonian_core.html#hamiltonian.rdot"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quspin.operators.hamiltonian.rdot" title="Link to this definition"></a></dt>
 <dd><p>Vector-Matrix multiplication of <cite>hamiltonian</cite> operator at time <cite>time</cite>, with state <cite>V</cite>.</p>
 <div class="math notranslate nohighlight">
 \[a\langle V|H(t=\texttt{time})\]</div>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
 <dt><strong>V</strong><span class="classifier">numpy.ndarray</span></dt><dd><p>Vector (quantum state) to multiply the <cite>hamiltonian</cite> operator with on the left.</p>
 </dd>
@@ -1093,7 +1118,7 @@ If <cite>False</cite> the result of the dot product will be added to the values 
 </dd>
 </dl>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><dl class="simple">
 <dt>numpy.ndarray</dt><dd><p>Vector corresponding to the <cite>hamiltonian</cite> operator applied on the state <cite>V</cite>.</p>
 </dd>
@@ -1112,8 +1137,8 @@ If <cite>False</cite> the result of the dot product will be added to the values 
 </dd></dl>
 
 <dl class="py method">
-<dt id="quspin.operators.hamiltonian.rotate_by">
-<code class="sig-name descname"><span class="pre">rotate_by</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">generator</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">exp_op_kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/operators/hamiltonian_core.html#hamiltonian.rotate_by"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quspin.operators.hamiltonian.rotate_by" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="quspin.operators.hamiltonian.rotate_by">
+<span class="sig-name descname"><span class="pre">rotate_by</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">generator</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">exp_op_kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/operators/hamiltonian_core.html#hamiltonian.rotate_by"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quspin.operators.hamiltonian.rotate_by" title="Link to this definition"></a></dt>
 <dd><p>Rotates/Transforms <cite>hamiltonian</cite> object by an operator <cite>other</cite>.</p>
 <p>Let us denote the transformation by <span class="math notranslate nohighlight">\(V\)</span>. With <cite>generator=False</cite>, <cite>other</cite> corresponds to the
 transformation <span class="math notranslate nohighlight">\(V\)</span>, and this function implements</p>
@@ -1123,7 +1148,7 @@ transformation <span class="math notranslate nohighlight">\(V\)</span>, and this
 <div class="math notranslate nohighlight">
 \[\exp(a^*K^\dagger) H \exp(a K)\]</div>
 <dl class="field-list">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl>
 <dt><strong>other</strong><span class="classifier">obj</span></dt><dd><p>Can be either one of the following:</p>
 <blockquote>
@@ -1146,7 +1171,7 @@ transformation <span class="math notranslate nohighlight">\(V\)</span>, and this
 <dt><strong>All other optional arguments are the same as for the `exp_op` class.</strong></dt><dd></dd>
 </dl>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><dl class="simple">
 <dt>obj</dt><dd><p>Transformed <cite>hamiltonian</cite> operator. The output object type depends on the object type of <cite>other</cite>.</p>
 </dd>
@@ -1166,35 +1191,35 @@ transformation <span class="math notranslate nohighlight">\(V\)</span>, and this
 <p>corresponds to <span class="math notranslate nohighlight">\(\exp(K^\dagger) H \exp(K)\)</span>.</p>
 </dd></dl>
 
-<dl class="py method">
-<dt id="quspin.operators.hamiltonian.shape">
-<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">shape</span></code><a class="headerlink" href="#quspin.operators.hamiltonian.shape" title="Permalink to this definition">¶</a></dt>
+<dl class="py property">
+<dt class="sig sig-object py" id="quspin.operators.hamiltonian.shape">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">shape</span></span><a class="headerlink" href="#quspin.operators.hamiltonian.shape" title="Link to this definition"></a></dt>
 <dd><p>shape of the <cite>hamiltonian</cite> object, always equal to <cite>(Ns,Ns)</cite>.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Type</dt>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>tuple</p>
 </dd>
 </dl>
 </dd></dl>
 
-<dl class="py method">
-<dt id="quspin.operators.hamiltonian.static">
-<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">static</span></code><a class="headerlink" href="#quspin.operators.hamiltonian.static" title="Permalink to this definition">¶</a></dt>
+<dl class="py property">
+<dt class="sig sig-object py" id="quspin.operators.hamiltonian.static">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">static</span></span><a class="headerlink" href="#quspin.operators.hamiltonian.static" title="Link to this definition"></a></dt>
 <dd><p>static part of the operator.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Type</dt>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>scipy.sparse.csr</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
-<dt id="quspin.operators.hamiltonian.toarray">
-<code class="sig-name descname"><span class="pre">toarray</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">order</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/operators/hamiltonian_core.html#hamiltonian.toarray"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quspin.operators.hamiltonian.toarray" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="quspin.operators.hamiltonian.toarray">
+<span class="sig-name descname"><span class="pre">toarray</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">order</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/operators/hamiltonian_core.html#hamiltonian.toarray"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quspin.operators.hamiltonian.toarray" title="Link to this definition"></a></dt>
 <dd><p>Returns copy of a <cite>hamiltonian</cite> object at time <cite>time</cite> as a dense array.</p>
 <p>This function can overflow memory if not used carefully!</p>
 <dl class="field-list">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl>
 <dt><strong>time</strong><span class="classifier">float, optional</span></dt><dd><p>Time to evalute the time-dependent part of the operator at (if existent). Default is <cite>time = 0.0</cite>.</p>
 </dd>
@@ -1206,7 +1231,7 @@ transformation <span class="math notranslate nohighlight">\(V\)</span>, and this
 </dd>
 </dl>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><dl class="simple">
 <dt>numpy.ndarray</dt><dd><p>Dense array.</p>
 </dd>
@@ -1220,20 +1245,20 @@ transformation <span class="math notranslate nohighlight">\(V\)</span>, and this
 </dd></dl>
 
 <dl class="py method">
-<dt id="quspin.operators.hamiltonian.tocsc">
-<code class="sig-name descname"><span class="pre">tocsc</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/operators/hamiltonian_core.html#hamiltonian.tocsc"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quspin.operators.hamiltonian.tocsc" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="quspin.operators.hamiltonian.tocsc">
+<span class="sig-name descname"><span class="pre">tocsc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/operators/hamiltonian_core.html#hamiltonian.tocsc"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quspin.operators.hamiltonian.tocsc" title="Link to this definition"></a></dt>
 <dd><p>Returns copy of a <cite>hamiltonian</cite> object at time <cite>time</cite> as a <cite>scipy.sparse.csc_matrix</cite>.</p>
 <p>Casts the <cite>hamiltonian</cite> object as a
 <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csc_matrix.html">scipy.sparse.csc_matrix</a>
 object.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
 <dt><strong>time</strong><span class="classifier">float, optional</span></dt><dd><p>Time to evalute the time-dependent part of the operator at (if existent). Default is <cite>time = 0.0</cite>.</p>
 </dd>
 </dl>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><dl class="simple">
 <dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">scipy.sparse.csc_matrix</span></code></dt><dd></dd>
 </dl>
@@ -1246,20 +1271,20 @@ object.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="quspin.operators.hamiltonian.tocsr">
-<code class="sig-name descname"><span class="pre">tocsr</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/operators/hamiltonian_core.html#hamiltonian.tocsr"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quspin.operators.hamiltonian.tocsr" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="quspin.operators.hamiltonian.tocsr">
+<span class="sig-name descname"><span class="pre">tocsr</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/operators/hamiltonian_core.html#hamiltonian.tocsr"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quspin.operators.hamiltonian.tocsr" title="Link to this definition"></a></dt>
 <dd><p>Returns copy of a <cite>hamiltonian</cite> object at time <cite>time</cite> as a <cite>scipy.sparse.csr_matrix</cite>.</p>
 <p>Casts the <cite>hamiltonian</cite> object as a
 <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html">scipy.sparse.csr_matrix</a>
 object.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
 <dt><strong>time</strong><span class="classifier">float, optional</span></dt><dd><p>Time to evalute the time-dependent part of the operator at (if existent). Default is <cite>time = 0.0</cite>.</p>
 </dd>
 </dl>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><dl class="simple">
 <dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">scipy.sparse.csr_matrix</span></code></dt><dd></dd>
 </dl>
@@ -1272,12 +1297,12 @@ object.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="quspin.operators.hamiltonian.todense">
-<code class="sig-name descname"><span class="pre">todense</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">order</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/operators/hamiltonian_core.html#hamiltonian.todense"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quspin.operators.hamiltonian.todense" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="quspin.operators.hamiltonian.todense">
+<span class="sig-name descname"><span class="pre">todense</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">order</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/operators/hamiltonian_core.html#hamiltonian.todense"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quspin.operators.hamiltonian.todense" title="Link to this definition"></a></dt>
 <dd><p>Returns copy of a <cite>hamiltonian</cite> object at time <cite>time</cite> as a dense array.</p>
 <p>This function can overflow memory if not used carefully!</p>
 <dl class="field-list">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl>
 <dt><strong>time</strong><span class="classifier">float, optional</span></dt><dd><p>Time to evalute the time-dependent part of the operator at (if existent). Default is <cite>time = 0.0</cite>.</p>
 </dd>
@@ -1289,7 +1314,7 @@ object.</p>
 </dd>
 </dl>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><dl class="simple">
 <dt>obj</dt><dd><p>Depending of size of array, can be either one of</p>
 <ul class="simple">
@@ -1311,17 +1336,17 @@ method.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="quspin.operators.hamiltonian.trace">
-<code class="sig-name descname"><span class="pre">trace</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/operators/hamiltonian_core.html#hamiltonian.trace"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quspin.operators.hamiltonian.trace" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="quspin.operators.hamiltonian.trace">
+<span class="sig-name descname"><span class="pre">trace</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/operators/hamiltonian_core.html#hamiltonian.trace"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quspin.operators.hamiltonian.trace" title="Link to this definition"></a></dt>
 <dd><p>Calculates trace of <cite>hamiltonian</cite> operator at time <cite>time</cite>.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
 <dt><strong>time</strong><span class="classifier">float, optional</span></dt><dd><p>Time to evalute the time-dependent part of the operator at (if existent). Default is <cite>time = 0.0</cite>.</p>
 </dd>
 </dl>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><dl class="simple">
 <dt>float</dt><dd><p>Trace of operator <span class="math notranslate nohighlight">\(\sum_{j=1}^{Ns} H_{jj}(t=\texttt{time})\)</span>.</p>
 </dd>
@@ -1335,11 +1360,11 @@ method.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="quspin.operators.hamiltonian.transpose">
-<code class="sig-name descname"><span class="pre">transpose</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">copy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/operators/hamiltonian_core.html#hamiltonian.transpose"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quspin.operators.hamiltonian.transpose" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="quspin.operators.hamiltonian.transpose">
+<span class="sig-name descname"><span class="pre">transpose</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">copy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/operators/hamiltonian_core.html#hamiltonian.transpose"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quspin.operators.hamiltonian.transpose" title="Link to this definition"></a></dt>
 <dd><p>Transposes <cite>hamiltonian</cite> operator.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
 <dt><a class="reference internal" href="#quspin.operators.hamiltonian" title="quspin.operators.hamiltonian"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hamiltonian</span></code></a></dt><dd><p><span class="math notranslate nohighlight">\(H_{ij}\mapsto H_{ji}\)</span></p>
 </dd>
@@ -1355,11 +1380,11 @@ method.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="quspin.operators.hamiltonian.update_matrix_formats">
-<code class="sig-name descname"><span class="pre">update_matrix_formats</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">static_fmt</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dynamic_fmt</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/operators/hamiltonian_core.html#hamiltonian.update_matrix_formats"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quspin.operators.hamiltonian.update_matrix_formats" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="quspin.operators.hamiltonian.update_matrix_formats">
+<span class="sig-name descname"><span class="pre">update_matrix_formats</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">static_fmt</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dynamic_fmt</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/operators/hamiltonian_core.html#hamiltonian.update_matrix_formats"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quspin.operators.hamiltonian.update_matrix_formats" title="Link to this definition"></a></dt>
 <dd><p>Change the internal structure of the matrices in-place.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
 <dt><strong>static_fmt</strong><span class="classifier">str {“csr”,”csc”,”dia”,”dense”}</span></dt><dd><p>Specifies format of static part of Hamiltonian.</p>
 </dd>
@@ -1380,65 +1405,48 @@ used in the construction of the hamiltonian as a key in the dictionary.</p>
 
 </dd></dl>
 
-</div>
+</section>
 
 
-            <div class="clearer"></div>
+           </div>
           </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../operators.html" class="btn btn-neutral float-left" title="Operators module (quspin.operators)" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="quspin.operators.quantum_operator.html" class="btn btn-neutral float-right" title="quspin.operators.quantum_operator" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Phillip Weinberg, Markus Schmitt, and Marin Bukov.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
         </div>
       </div>
-      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
-        <div class="sphinxsidebarwrapper">
-  <h4>Previous topic</h4>
-  <p class="topless"><a href="../operators.html"
-                        title="previous chapter">Operators module (<code class="xref py py-mod docutils literal notranslate"><span class="pre">quspin.operators</span></code>)</a></p>
-  <h4>Next topic</h4>
-  <p class="topless"><a href="quspin.operators.quantum_operator.html"
-                        title="next chapter">quspin.operators.quantum_operator</a></p>
-  <div role="note" aria-label="source link">
-    <h3>This Page</h3>
-    <ul class="this-page-menu">
-      <li><a href="../sources/generated/quspin.operators.hamiltonian.rst.txt"
-            rel="nofollow">Show Source</a></li>
-    </ul>
-   </div>
-<div id="searchbox" style="display: none" role="search">
-  <h3 id="searchlabel">Quick search</h3>
-    <div class="searchformwrapper">
-    <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" />
-      <input type="submit" value="Go" />
-    </form>
-    </div>
-</div>
-<script>$('#searchbox').show(0);</script>
-        </div>
-      </div>
-      <div class="clearer"></div>
-    </div>
-    <div class="related" role="navigation" aria-label="related navigation">
-      <h3>Navigation</h3>
-      <ul>
-        <li class="right" style="margin-right: 10px">
-          <a href="../genindex.html" title="General Index"
-             >index</a></li>
-        <li class="right" >
-          <a href="../py-modindex.html" title="Python Module Index"
-             >modules</a> |</li>
-        <li class="right" >
-          <a href="quspin.operators.quantum_operator.html" title="quspin.operators.quantum_operator"
-             >next</a> |</li>
-        <li class="right" >
-          <a href="../operators.html" title="Operators module (quspin.operators)"
-             >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.7 documentation</a> &#187;</li>
-          <li class="nav-item nav-item-1"><a href="../operators.html" >Operators module (<code class="xref py py-mod docutils literal notranslate"><span class="pre">quspin.operators</span></code>)</a> &#187;</li>
-        <li class="nav-item nav-item-this"><a href="">quspin.operators.hamiltonian</a></li> 
-      </ul>
-    </div>
-    <div class="footer" role="contentinfo">
-        &#169; Copyright 2016, Phillip Weinberg, Markus Schmitt and Marin Bukov.
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.5.4.
-    </div>
-  </body>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+    <!-- Theme Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-6885KZ7NH6"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-6885KZ7NH6', {
+          'anonymize_ip': false,
+      });
+    </script> 
+
+</body>
 </html>

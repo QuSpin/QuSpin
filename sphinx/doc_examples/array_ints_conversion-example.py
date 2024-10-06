@@ -1,8 +1,7 @@
-from __future__ import print_function, division
 #
-import sys,os
-quspin_path = os.path.join(os.getcwd(),"../../")
-sys.path.insert(0,quspin_path)
+import sys, os
+
+
 #
 import numpy as np
 from quspin.basis import spin_basis_general
@@ -21,7 +20,7 @@ print(state_array)
 basis_ints = array_to_ints(state_array, basis.dtype)
 
 # apply Sx on site 4
-ME, bra, ket = basis.Op_bra_ket("x", [4], 1., np.float64, basis_ints)
+ME, bra, ket = basis.Op_bra_ket("x", [4], 1.0, np.float64, basis_ints)
 
 # convert outcome back to state array
 bra_array = ints_to_array(bra, N)

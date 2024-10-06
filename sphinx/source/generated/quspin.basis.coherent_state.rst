@@ -1,4 +1,4 @@
-quspin.basis.coherent\_state
+﻿quspin.basis.coherent\_state
 ============================
 
 .. currentmodule:: quspin.basis

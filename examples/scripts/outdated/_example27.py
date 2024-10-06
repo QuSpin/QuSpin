@@ -1,8 +1,3 @@
-from __future__ import print_function, division
-import sys,os
-# line 4 and line 5 below are for development purposes and can be removed
-qspin_path = os.path.join(os.getcwd(),"../../")
-sys.path.insert(0,qspin_path)
 ###########################################################################
 #                            example 27                                   #
 #  ...                                                                    #
@@ -14,37 +9,43 @@ import networkx as nx
 from scipy.sparse import csr_matrix
 from scipy.linalg import eigh
 import matplotlib.pyplot as plt
+
 #
 ###### define model parameters ######
 Lx = 4
 Ly = 4
-N_2d = Lx*Ly # total # of sites
-K = 1.0 # interaction strength
+N_2d = Lx * Ly  # total # of sites
+K = 1.0  # interaction strength
 #
 ###### define translation operations ######
 #
-sites = np.arange(N_2d) # lattice sites
-x = sites % Lx # x-coordinates
-y = sites // Lx # y-coordinates
+sites = np.arange(N_2d)  # lattice sites
+x = sites % Lx  # x-coordinates
+y = sites // Lx  # y-coordinates
 #
-T_x = (x+1) % Lx + Lx*y  # translation along x direction by 1 site
-T_y = x + Lx*((y+1) % Ly)  # translation along y direction by 1 site
-T_x_y = (x+1) % Lx + Lx*((y+1) % Ly)  # translation along x and y directions by 1 site each
+T_x = (x + 1) % Lx + Lx * y  # translation along x direction by 1 site
+T_y = x + Lx * ((y + 1) % Ly)  # translation along y direction by 1 site
+T_x_y = (x + 1) % Lx + Lx * (
+    (y + 1) % Ly
+)  # translation along x and y directions by 1 site each
 #
-P_x = x + Lx*(Ly-y-1) # reflection about x-axis
-P_y = (Lx-x-1) + Lx*y # reflection about y-axis
-P_d = y + Lx*x # reflection about diagonal
+P_x = x + Lx * (Ly - y - 1)  # reflection about x-axis
+P_y = (Lx - x - 1) + Lx * y  # reflection about y-axis
+P_d = y + Lx * x  # reflection about diagonal
 #
-Z   = -(sites+1) # spin inversion
+Z = -(sites + 1)  # spin inversion
 #
 ###### create basis ######
 #
-basis = spin_basis_general(N_2d, pauli=False,
-                            #     Nup=N_2d//2,
-                                 kxblock=(T_x,0), kyblock=(T_y,0),
-                            #     pdblock=(P_d,0),
-                            #     zblock=(Z,0),
-                        )
+basis = spin_basis_general(
+    N_2d,
+    pauli=False,
+    #     Nup=N_2d//2,
+    kxblock=(T_x, 0),
+    kyblock=(T_y, 0),
+    #     pdblock=(P_d,0),
+    #     zblock=(Z,0),
+)
 # print(basis.Ns)
 # exit()
 #
@@ -52,17 +53,21 @@ basis = spin_basis_general(N_2d, pauli=False,
 #
 # site-coupling lists
 K_list = [[K, i, T_x[i], T_y[i], T_x_y[i]] for i in range(N_2d)]
-static = [["+--+", K_list], ] # non-hermitian (!) (h.c. added below below)
+static = [
+    ["+--+", K_list],
+]  # non-hermitian (!) (h.c. added below below)
 dynamic = []
 # build (half of) Hamiltonian [non-hermitian (!), see below]
-H = hamiltonian(static, dynamic, basis=basis, dtype=np.float64, check_symm=False, check_herm=False)
-E = (H+H.T).eigvalsh()
+H = hamiltonian(
+    static, dynamic, basis=basis, dtype=np.float64, check_symm=False, check_herm=False
+)
+E = (H + H.T).eigvalsh()
 np.set_printoptions(suppress=True, precision=2)
 print(E)
-#exit()
-#print(H.toarray())
-if H.tocsr().getnnz()==0:
-    print('\nHamiltonian is identically zero.\nExiting...\n')
+# exit()
+# print(H.toarray())
+if H.tocsr().getnnz() == 0:
+    print("\nHamiltonian is identically zero.\nExiting...\n")
     exit()
 # extract sparse matrix info
 mels = H.tocsr().data  # matrix elements of H
@@ -73,13 +78,13 @@ rows, cols = H.tocsr().nonzero()  # row/column indices of nonzero elements in H
 # define graph properties
 edges = np.array((rows, cols)).T  # edges of the graph (numpy array with two columns)
 # create graph from basis states
-graph = nx.Graph() 
+graph = nx.Graph()
 graph.add_nodes_from(np.arange(basis.Ns))
 graph.add_edges_from(edges)
 # compute all connected subgraphs
 connected_subgraphs = nx.connected_components(graph)  # determine connected subgraphs
 # print(list(connected_subgraphs))
-#print(basis.states)
+# print(basis.states)
 #
 ###### Lists where we will store energies of eigenstates and their von Neumann entanglement entropies ######
 #
@@ -92,11 +97,11 @@ for j, subgraph in enumerate(connected_subgraphs):
     # compute basis of block subspace (represented by integers)
     block_basis_states_inds = list(subgraph)
     block_basis_states = basis.states[block_basis_states_inds]
-    #print(block_basis_states)
-    #print('block {} contains {} state(s);'.format(j, len(block_basis_states)))
+    # print(block_basis_states)
+    # print('block {} contains {} state(s);'.format(j, len(block_basis_states)))
     #
     # define boolean mask showing which entries of H are in the subgraph
-    mask = np.in1d(rows, block_basis_states_inds)  
+    mask = np.in1d(rows, block_basis_states_inds)
     #
     # check if there are nonzero entries of H in the subgraph
     if np.any(mask):
@@ -106,29 +111,35 @@ for j, subgraph in enumerate(connected_subgraphs):
         mels_block = mels[mask]
         #
         # define block Hamiltonian (still non-hermitian!)
-        H_block = csr_matrix((mels_block, (rows_block, cols_block)), shape=(basis.Ns, basis.Ns))
+        H_block = csr_matrix(
+            (mels_block, (rows_block, cols_block)), shape=(basis.Ns, basis.Ns)
+        )
         # add hermitian conjugate part of Hamiltonian (cf. definition of static list above)
         H_block += H_block.conj().T
         # shrink the csr matrix size by deleting all-zero rows and columns
-        H_block = H_block[H_block.getnnz(1) > 0][:, H_block.getnnz(0) > 0] 
-        #print(H_block.toarray())
+        H_block = H_block[H_block.getnnz(1) > 0][:, H_block.getnnz(0) > 0]
+        # print(H_block.toarray())
         #
         # solve the eigenproblem of the block
         E, V = eigh(H_block.toarray())
-        print('energies', E)
+        print("energies", E)
         #
         # define eigenstates in the full basis defined by basis
-        V_full = np.zeros((basis.Ns,len(block_basis_states_inds) ),dtype=V.dtype)
-        V_full[block_basis_states_inds,:] = V
+        V_full = np.zeros((basis.Ns, len(block_basis_states_inds)), dtype=V.dtype)
+        V_full[block_basis_states_inds, :] = V
         #
         # compute entropy
-        Sent =  basis.ent_entropy(V_full, sub_sys_A=(0, 1, 3, 4, 6, 7), enforce_pure=True, density=False)['Sent_A']
+        Sent = basis.ent_entropy(
+            V_full, sub_sys_A=(0, 1, 3, 4, 6, 7), enforce_pure=True, density=False
+        )["Sent_A"]
         Sent = np.atleast_1d(Sent)
 
     else:
         # If no, then the matrix is just a 1x1 zero matrix
-        E=np.array([0.0])
-        Sent=[0.0,]
+        E = np.array([0.0])
+        Sent = [
+            0.0,
+        ]
     #
     # store data
     enrgs += list(E)
@@ -148,13 +159,11 @@ exit()
 ###### plot population dynamics of down state
 #
 fig, ax = plt.subplots(tight_layout=True)
-ax.set_ylabel('entanglement entropy, $S_{AB}$', fontsize=18)
-ax.set_xlabel('eigenenergy, $E$', fontsize=18)
-ax.scatter(enrgs, ents, c='red', s=20, marker='o')
+ax.set_ylabel("entanglement entropy, $S_{AB}$", fontsize=18)
+ax.set_xlabel("eigenenergy, $E$", fontsize=18)
+ax.scatter(enrgs, ents, c="red", s=20, marker="o")
 plt.yticks(fontsize=18)
 plt.xticks(fontsize=18)
 plt.show()
 # plt.savefig('example27.pdf', bbox_inches='tight')
 # plt.close()
-
-

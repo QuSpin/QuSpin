@@ -1,0 +1,39 @@
+name: Testing
+
+on:
+  pull_request:
+  push:
+    branches:
+      - master
+  schedule:
+  - cron: '00 01 * * *'
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    strategy:
+      matrix:
+        python-version: ["3.9", "3.10", "3.11", "3.12"]
+        os: [ubuntu-latest, windows-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - uses: pdm-project/setup-pdm@v4
+        name: Setup PDM
+        with:
+          python-version: ${{ matrix.python-version }}  # Version range or exact version of a Python version to use, the same as actions/setup-python
+          # well we use virtualenv here
+          # prerelease: true     # Allow prerelease versions to be installed
+          # enable-pep582: true  # Enable PEP 582 package loading globally
+      - name: Install dependencies
+        run: pdm install       # Then you can use pdm in the following steps.
+      - name: Test with pytest & generate coverage
+        run: |
+          pdm test
