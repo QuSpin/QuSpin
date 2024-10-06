@@ -1,0 +1,24 @@
+### Required packages
+
+# sphinx=7.4.7
+pip install -U sphinx
+
+# numpydoc=1.8.0
+pip install numpydoc 
+
+# sphinx-rtd-theme=2.0.0
+pip install sphinx-rtd-theme
+
+# sphinx-rtd-size=0.2.0
+pip install sphinx-rtd-size
+
+
+### building the docs:
+
+1. from /QuSpin/sphinx run:
+
+make clean
+make html
+
+2. if sphinx does not compile, make sure to manually rm the /source/generated directory!
+

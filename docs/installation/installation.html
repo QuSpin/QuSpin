@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Installation &mdash; QuSpin 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../static/css/sphinx_rtd_size.css?v=f26ae176" />
+      <link rel="stylesheet" type="text/css" href="../static/css/py_class_property_fix.css?v=faf79ccd" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../static/jquery.js?v=5d32c60e"></script>
+        <script src="../static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../static/documentation_options.js?v=8d563738"></script>
+        <script src="../static/doctools.js?v=9a2dae69"></script>
+        <script src="../static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Example scripts" href="../example_scripts.html" />
+    <link rel="prev" title="quspin.tools.misc.array_to_ints" href="../generated/quspin.tools.misc.array_to_ints.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            QuSpin
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">QuSpin (public API)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../basis.html">Basis module (<code class="xref py py-mod docutils literal notranslate"><span class="pre">quspin.basis</span></code>)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../operators.html">Operators module (<code class="xref py py-mod docutils literal notranslate"><span class="pre">quspin.operators</span></code>)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tools.html">Tools module (<code class="xref py py-mod docutils literal notranslate"><span class="pre">quspin.tools</span></code>)</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Installation &amp; Use</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#user-install-automatic">User Install (Automatic)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#developer-install-manual">Developer Install (Manual)</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="#basics-of-command-line-use">Basics of command line use</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#mac-os-x-linux">Mac OS X/Linux</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#windows">Windows</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#execute-python-script-any-operating-system">Execute Python Script (any operating system)</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../example_scripts.html">Example scripts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../jupyter_notebooks.html">Jupyter notebooks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/parallelization.html">Parallel computing support</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/user_basis.html"><cite>user_basis</cite> tutorial</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Bugs &amp; Questions</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../contribute/report_a_bug.html">Report a bug</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contribute/ask_a_question.html">Ask a question</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">QuSpin</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content style-external-links">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Installation</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../sources/installation/installation.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <style> .red {color:#ff0000; font-weight:bold; font-style:italic; } </style>
+<style> .green {color:#00b200; font-weight:bold; font-style:italic; } </style>
+<style> .magenta {color:#FF33F3; font-weight:bold; font-style:italic; } </style>
+<style> .orange {color:#FE8E02; font-weight:bold; font-style:italic; } </style><section id="installation">
+<span id="installation-label"></span><h1>Installation<a class="headerlink" href="#installation" title="Link to this heading"></a></h1>
+<p>QuSpin is currently being supported for Python 3 which is a prerequisite. We recommend the use of the free python package installer <a class="reference external" href="https://pypi.org/project/pip/">pip</a> which installs Python packages and manages them automatically.</p>
+<p>The old anaconda guide: <a class="reference internal" href="installation_old.html#installation-old-label"><span class="std std-ref">Installation (Outdated)</span></a> has been <strong>deprecated</strong> with <cite>quspin&gt;=1.0.0</cite>.</p>
+<section id="user-install-automatic">
+<h2>User Install (Automatic)<a class="headerlink" href="#user-install-automatic" title="Link to this heading"></a></h2>
+<p>The user install is meant for deploying <cite>quspin</cite> on your private machine or an HPC cluster:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">pip</span> <span class="n">install</span> <span class="n">quspin</span>
+</pre></div>
+</div>
+</section>
+<section id="developer-install-manual">
+<h2>Developer Install (Manual)<a class="headerlink" href="#developer-install-manual" title="Link to this heading"></a></h2>
+<p>Clone the <a class="reference external" href="https://github.com/QuSpin/QuSpin-workspace">QuSpin Workspace</a> repository:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">git</span> <span class="n">clone</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">QuSpin</span><span class="o">/</span><span class="n">QuSpin</span><span class="o">-</span><span class="n">workspace</span>
+</pre></div>
+</div>
+<p>Initialize the submodules to pull the code:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">git</span> <span class="n">submodule</span> <span class="n">init</span>
+<span class="o">&gt;</span> <span class="n">git</span> <span class="n">submodule</span> <span class="n">update</span>
+</pre></div>
+</div>
+<dl class="simple">
+<dt>You will see three directories, each pointing to its own repository:</dt><dd><ul class="simple">
+<li><p><a class="reference external" href="https://github.com/QuSpin/parallel-sparse-tools">sparse parallel tools extension</a> which contains the cpp code for the <cite>tools</cite> module;</p></li>
+<li><p><a class="reference external" href="https://github.com/QuSpin/QuSpin-Extensions">QuSpin extension</a> which contains the cpp code for the basis modules;</p></li>
+<li><p><a class="reference external" href="https://github.com/QuSpin/QuSpin">QuSpin</a> with the quspin python package that uses the other two modules.</p></li>
+</ul>
+</dd>
+</dl>
+<p>Create a <cite>python&gt;3.9</cite> virtual environment. This can be done using <a class="reference external" href="http://conda.pydata.org/miniconda.html">miniconda</a>, or using python itself:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">cd</span> <span class="n">QuSpin</span><span class="o">-</span><span class="n">workspace</span><span class="o">/</span>
+<span class="o">&gt;</span> <span class="n">python3</span> <span class="o">-</span><span class="n">m</span> <span class="n">venv</span> <span class="o">.</span><span class="n">quspin_env</span>
+</pre></div>
+</div>
+<p>Activate the environment:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">source</span> <span class="o">.</span><span class="n">quspin_env</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">activate</span>
+</pre></div>
+</div>
+<p>Double check if the python and pip binaries point to the environment path:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">which</span> <span class="n">python</span>
+<span class="o">&gt;</span> <span class="n">which</span> <span class="n">pip</span>
+</pre></div>
+</div>
+<p>Install extension modules (may take a bit of time to build the cpp code):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">pip</span> <span class="n">install</span> <span class="o">-</span><span class="n">e</span> <span class="n">parallel</span><span class="o">-</span><span class="n">sparse</span><span class="o">-</span><span class="n">tools</span><span class="o">/</span> <span class="o">-</span><span class="n">v</span>
+<span class="o">&gt;</span> <span class="n">pip</span> <span class="n">install</span> <span class="o">-</span><span class="n">e</span> <span class="n">QuSpin</span><span class="o">-</span><span class="n">Extensions</span><span class="o">/</span> <span class="o">-</span><span class="n">v</span>
+<span class="o">&gt;</span> <span class="n">pip</span> <span class="n">install</span> <span class="o">-</span><span class="n">e</span> <span class="n">QuSpin</span><span class="o">/</span> <span class="o">-</span><span class="n">v</span>
+</pre></div>
+</div>
+<p>Make sure you add an exhaustive test to test any code you want to add to the package. To run unit tests, you can use <cite>pytest</cite>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>&gt; pip install pytest
+&gt; cd QuSpin-workspace/QuSpin/tests
+&gt; pytest  `# runs all tests in all subdirectories`
+&gt; pytest test_specific.py
+</pre></div>
+</div>
+<p>Make sure you also comment your code and add a your new public functions to the documentation. For the documentation, you need to install in addition:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">pip</span> <span class="n">install</span> <span class="o">-</span><span class="n">U</span> <span class="n">sphinx</span>
+<span class="o">&gt;</span> <span class="n">pip</span> <span class="n">install</span> <span class="n">numpydoc</span>
+<span class="o">&gt;</span> <span class="n">pip</span> <span class="n">install</span> <span class="n">sphinx</span><span class="o">-</span><span class="n">rtd</span><span class="o">-</span><span class="n">theme</span>
+<span class="o">&gt;</span> <span class="n">pip</span> <span class="n">install</span> <span class="n">sphinx</span><span class="o">-</span><span class="n">rtd</span><span class="o">-</span><span class="n">size</span>
+</pre></div>
+</div>
+<p>To build the documentation, do:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>&gt; cd QuSpin-workspace/QuSpin/sphinx/
+&gt; rm ./source/generated/*   `# removes previously generated doc files`
+&gt; make clean
+&gt; make html
+&gt; open _build/html/index.html
+</pre></div>
+</div>
+</section>
+</section>
+<section id="basics-of-command-line-use">
+<h1>Basics of command line use<a class="headerlink" href="#basics-of-command-line-use" title="Link to this heading"></a></h1>
+<p>Let us review how to use the command line for Windows and OS X/Linux to navigate your computer’s folders/directories and run the Python scripts.</p>
+<section id="mac-os-x-linux">
+<h2>Mac OS X/Linux<a class="headerlink" href="#mac-os-x-linux" title="Link to this heading"></a></h2>
+<p>Some basic commands:</p>
+<blockquote>
+<div><ul>
+<li><p>change directory:</p>
+<blockquote>
+<div><div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ cd &lt; path_to_directory &gt;
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+<li><p>list files in current directory:</p>
+<blockquote>
+<div><div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ ls
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+<li><p>list files in another directory:</p>
+<blockquote>
+<div><div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ ls &lt; path_to_directory &gt;
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+<li><p>make new directory:</p>
+<blockquote>
+<div><div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ mkdir &lt;path&gt;/&lt; directory_name &gt;
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+<li><p>copy file:</p>
+<blockquote>
+<div><div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ cp &lt; path &gt;/&lt; file_name &gt; &lt; new_path &gt;/&lt; new_file_name &gt;
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+<li><p>move file or change file name:</p>
+<blockquote>
+<div><div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ mv &lt; path &gt;/&lt; file_name &gt; &lt; new_path &gt;/&lt; new_file_name &gt;
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+<li><p>remove file:</p>
+<blockquote>
+<div><div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ rm &lt; path_to_file &gt;/&lt; file_name &gt;
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+</ul>
+</div></blockquote>
+<p>Unix also has an auto complete feature if one hits the TAB key. It will complete a word or stop when it matches more than one file/folder name. The current directory is denoted by “.” and the directory above is “..”.</p>
+</section>
+<section id="windows">
+<h2>Windows<a class="headerlink" href="#windows" title="Link to this heading"></a></h2>
+<p>Some basic commands:</p>
+<blockquote>
+<div><ul>
+<li><p>change directory:</p>
+<blockquote>
+<div><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">cd</span> <span class="o">&lt;</span> <span class="n">path_to_directory</span> <span class="o">&gt;</span>
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+<li><p>list files in current directory:</p>
+<blockquote>
+<div><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="nb">dir</span>
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+<li><p>list files in another directory:</p>
+<blockquote>
+<div><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="nb">dir</span> <span class="o">&lt;</span> <span class="n">path_to_directory</span> <span class="o">&gt;</span>
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+<li><p>make new directory:</p>
+<blockquote>
+<div><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">mkdir</span> <span class="o">&lt;</span><span class="n">path</span><span class="o">&gt;</span>\<span class="o">&lt;</span> <span class="n">directory_name</span> <span class="o">&gt;</span>
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+<li><p>copy file:</p>
+<blockquote>
+<div><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">copy</span> <span class="o">&lt;</span> <span class="n">path</span> <span class="o">&gt;</span>\<span class="o">&lt;</span> <span class="n">file_name</span> <span class="o">&gt;</span> <span class="o">&lt;</span> <span class="n">new_path</span> <span class="o">&gt;</span>\<span class="o">&lt;</span> <span class="n">new_file_name</span> <span class="o">&gt;</span>
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+<li><p>move file or change file name:</p>
+<blockquote>
+<div><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">move</span> <span class="o">&lt;</span> <span class="n">path</span> <span class="o">&gt;</span>\<span class="o">&lt;</span> <span class="n">file_name</span> <span class="o">&gt;</span> <span class="o">&lt;</span> <span class="n">new_path</span> <span class="o">&gt;</span>\<span class="o">&lt;</span> <span class="n">new_file_name</span> <span class="o">&gt;</span>
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+<li><p>remove file:</p>
+<blockquote>
+<div><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">erase</span> <span class="o">&lt;</span> <span class="n">path</span> <span class="o">&gt;</span>\<span class="o">&lt;</span> <span class="n">file_name</span> <span class="o">&gt;</span>
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+</ul>
+</div></blockquote>
+<p>Windows also has a auto complete feature using the TAB key but instead of stopping when there multiple files/folders with the same name, it will complete it with the first file alphabetically. The current directory is denoted by “.” and the directory above is “..”.</p>
+</section>
+<section id="execute-python-script-any-operating-system">
+<h2>Execute Python Script (any operating system)<a class="headerlink" href="#execute-python-script-any-operating-system" title="Link to this heading"></a></h2>
+<p>To execute a Python script all one has to do is open up a terminal and navigate to the directory which contains the Python script. Python can be recognised by the extension <cite>.py</cite>. To execute the script just use the following command:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="n">script</span><span class="o">.</span><span class="n">py</span>
+</pre></div>
+</div>
+<p>It’s that simple!</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../generated/quspin.tools.misc.array_to_ints.html" class="btn btn-neutral float-left" title="quspin.tools.misc.array_to_ints" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../example_scripts.html" class="btn btn-neutral float-right" title="Example scripts" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Phillip Weinberg, Markus Schmitt, and Marin Bukov.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+    <!-- Theme Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-6885KZ7NH6"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-6885KZ7NH6', {
+          'anonymize_ip': false,
+      });
+    </script> 
+
+</body>
+</html>

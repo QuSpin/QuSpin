@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Example scripts &mdash; QuSpin 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="static/css/sphinx_rtd_size.css?v=f26ae176" />
+      <link rel="stylesheet" type="text/css" href="static/css/py_class_property_fix.css?v=faf79ccd" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="static/jquery.js?v=5d32c60e"></script>
+        <script src="static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="static/documentation_options.js?v=8d563738"></script>
+        <script src="static/doctools.js?v=9a2dae69"></script>
+        <script src="static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Jupyter notebooks" href="jupyter_notebooks.html" />
+    <link rel="prev" title="Installation" href="installation/installation.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            QuSpin
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">QuSpin (public API)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="basis.html">Basis module (<code class="xref py py-mod docutils literal notranslate"><span class="pre">quspin.basis</span></code>)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="operators.html">Operators module (<code class="xref py py-mod docutils literal notranslate"><span class="pre">quspin.operators</span></code>)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tools.html">Tools module (<code class="xref py py-mod docutils literal notranslate"><span class="pre">quspin.tools</span></code>)</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Installation &amp; Use</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="installation/installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation/installation.html#basics-of-command-line-use">Basics of command line use</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Example scripts</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#getting-started">Getting started</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#parallel-computing-in-quspin">Parallel computing in QuSpin</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#basic-usage">Basic usage</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#non-interacting-systems">Non-interacting systems</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#interacting-systems">Interacting systems</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#advanced-usage">Advanced usage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#algorithms-and-routines">Algorithms and routines</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="jupyter_notebooks.html">Jupyter notebooks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/parallelization.html">Parallel computing support</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/user_basis.html"><cite>user_basis</cite> tutorial</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Bugs &amp; Questions</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="contribute/report_a_bug.html">Report a bug</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contribute/ask_a_question.html">Ask a question</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">QuSpin</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content style-external-links">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Example scripts</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="sources/example_scripts.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <style> .red {color:#ff0000; font-weight:bold; font-style:italic; } </style>
+<style> .green {color:#00b200; font-weight:bold; font-style:italic; } </style>
+<style> .magenta {color:#FF33F3; font-weight:bold; font-style:italic; } </style>
+<style> .orange {color:#FE8E02; font-weight:bold; font-style:italic; } </style><section id="example-scripts">
+<span id="example-scripts-label"></span><h1>Example scripts<a class="headerlink" href="#example-scripts" title="Link to this heading"></a></h1>
+<dl class="simple">
+<dt>For a detailed tutorial on how to use the package, check out these papers:</dt><dd><ul class="simple">
+<li><p><a class="reference external" href="https://scipost.org/10.21468/SciPostPhys.2.1.003">SciPost Phys. 2, 003 (2017)</a></p></li>
+<li><p><a class="reference external" href="https://scipost.org/10.21468/SciPostPhys.7.2.020">SciPost Phys. 7, 020 (2019)</a></p></li>
+</ul>
+</dd>
+</dl>
+<p>The following Python scripts demonstrate basic and advanced functionality of QuSpin. In many cases, we have chosen to exhibit QuSpin’s functionality, and <em>there may exist a more efficient approach</em> to obtain the same result using QuSpin.</p>
+<p>To run the example scripts, besides QuSpin, you have to also install <a class="reference external" href="https://matplotlib.org/users/installing.html">matplotlib</a> (e.g. by using pip or anaconda):</p>
+<section id="getting-started">
+<h2>Getting started<a class="headerlink" href="#getting-started" title="Link to this heading"></a></h2>
+<blockquote>
+<div><ul class="simple">
+<li><p><a class="reference internal" href="examples/example00.html#example-00-label"><span class="std std-ref">Basics of QuSpin basis objects</span></a>, <a class="reference download internal" download="" href="downloads/4992a1264f17a0f637037b4f628487ad/example00.py"><code class="xref download docutils literal notranslate"><span class="pre">download</span> <span class="pre">script</span></code></a></p></li>
+<li><p><a class="reference internal" href="examples/example0.html#example0-label"><span class="std std-ref">Exact Diagonalisation of Spin Hamiltonians</span></a>, <a class="reference download internal" download="" href="downloads/ba4c31f48ead8bc0475a004b83f0c8a1/example0.py"><code class="xref download docutils literal notranslate"><span class="pre">download</span> <span class="pre">script</span></code></a></p></li>
+<li><p><a class="reference internal" href="examples/example8.html#example8-label"><span class="std std-ref">User-defined ODEs: the Gross-Pitaevskii Equation and Nonlinear Time Evolution</span></a>, <a class="reference download internal" download="" href="downloads/98c48fa6c5eb71fa9a831e8e21d6fdbd/example8.py"><code class="xref download docutils literal notranslate"><span class="pre">download</span> <span class="pre">script</span></code></a></p></li>
+</ul>
+</div></blockquote>
+</section>
+<section id="parallel-computing-in-quspin">
+<h2>Parallel computing in QuSpin<a class="headerlink" href="#parallel-computing-in-quspin" title="Link to this heading"></a></h2>
+<blockquote>
+<div><ul class="simple">
+<li><p><a class="reference internal" href="examples/example12.html#example12-label"><span class="std std-ref">Parallel Computing in QuSpin</span></a>, <a class="reference download internal" download="" href="downloads/71739664edac599d7ce5bc0fda31cc59/example12.py"><code class="xref download docutils literal notranslate"><span class="pre">download</span> <span class="pre">script</span></code></a></p></li>
+</ul>
+</div></blockquote>
+</section>
+<section id="basic-usage">
+<h2>Basic usage<a class="headerlink" href="#basic-usage" title="Link to this heading"></a></h2>
+<section id="non-interacting-systems">
+<h3>Non-interacting systems<a class="headerlink" href="#non-interacting-systems" title="Link to this heading"></a></h3>
+<blockquote>
+<div><ul class="simple">
+<li><p><a class="reference internal" href="examples/example3.html#example3-label"><span class="std std-ref">Quantised Light-Atom Interactions in the Semi-classical Limit: Recovering the Periodically Driven Atom</span></a>, <a class="reference download internal" download="" href="downloads/e69db8689f657bf92d0e9e158dad5bbf/example3.py"><code class="xref download docutils literal notranslate"><span class="pre">download</span> <span class="pre">script</span></code></a></p></li>
+<li><p><a class="reference internal" href="examples/example5.html#example5-label"><span class="std std-ref">Free Particle Systems: the Fermionic SSH Chain</span></a>, <a class="reference download internal" download="" href="downloads/be9497383fff21e4d03309a4d1a24ce1/example5.py"><code class="xref download docutils literal notranslate"><span class="pre">download</span> <span class="pre">script</span></code></a></p></li>
+<li><p><a class="reference internal" href="examples/example17.html#example17-label"><span class="std std-ref">Optical Bloch equations: Lindblad dynamics using the matvec function</span></a>, <a class="reference download internal" download="" href="downloads/cf0b1d50e34e6bdd8bba3dd41ed87743/example17.py"><code class="xref download docutils literal notranslate"><span class="pre">download</span> <span class="pre">script</span></code></a></p></li>
+<li><p><a class="reference internal" href="examples/example4.html#example4-label"><span class="std std-ref">The Spectrum of the Transverse Field Ising Model and the Jordan-Wigner Transformation</span></a>, <a class="reference download internal" download="" href="downloads/2fde8c15e76629056f9b920253d5ab0e/example4.py"><code class="xref download docutils literal notranslate"><span class="pre">download</span> <span class="pre">script</span></code></a></p></li>
+</ul>
+</div></blockquote>
+</section>
+<section id="interacting-systems">
+<h3>Interacting systems<a class="headerlink" href="#interacting-systems" title="Link to this heading"></a></h3>
+<blockquote>
+<div><ul class="simple">
+<li><p><a class="reference internal" href="examples/example13.html#example13-label"><span class="std std-ref">Fermi-Hubbard model without doubly-occupied sites</span></a>, <a class="reference download internal" download="" href="downloads/49ec94918c0a2ffe37530f5cf57f8a58/example13.py"><code class="xref download docutils literal notranslate"><span class="pre">download</span> <span class="pre">script</span></code></a></p></li>
+<li><p><a class="reference internal" href="examples/example18.html#example18-label"><span class="std std-ref">Hexagonal Lattice: Fermi-Hubbard model [courtesy of A. Buyskikh]</span></a>, <a class="reference download internal" download="" href="downloads/ed3cd0ad58f647362121fce89f1c78cf/example18.py"><code class="xref download docutils literal notranslate"><span class="pre">download</span> <span class="pre">script</span></code></a></p></li>
+<li><p><a class="reference internal" href="examples/example2.html#example2-label"><span class="std std-ref">Heating in Periodically Driven Spin Chains</span></a>, <a class="reference download internal" download="" href="downloads/a0df779618cbf5e1f873dc09c6b380a4/example2.py"><code class="xref download docutils literal notranslate"><span class="pre">download</span> <span class="pre">script</span></code></a></p></li>
+<li><p><a class="reference internal" href="examples/example9.html#example9-label"><span class="std std-ref">Integrability Breaking and Thermalising Dynamics in the 2D Transverse-Field Ising Model</span></a>, <a class="reference download internal" download="" href="downloads/51839bd4f6d13d9b99c7584c13625513/example9.py"><code class="xref download docutils literal notranslate"><span class="pre">download</span> <span class="pre">script</span></code></a></p></li>
+<li><p><a class="reference internal" href="examples/example6.html#example6-label"><span class="std std-ref">Many-Body Localization in the Fermi-Hubbard Model</span></a>, <a class="reference download internal" download="" href="downloads/a4ca601309f5f844f14dda93534620e3/example6.py"><code class="xref download docutils literal notranslate"><span class="pre">download</span> <span class="pre">script</span></code></a></p></li>
+<li><p><a class="reference internal" href="examples/example1.html#example1-label"><span class="std std-ref">Adiabatic Control of Parameters in Many-Body Localised Phases</span></a>, <a class="reference download internal" download="" href="downloads/bc988b4712e036dd41fb47ffed54e916/example1.py"><code class="xref download docutils literal notranslate"><span class="pre">download</span> <span class="pre">script</span></code></a></p></li>
+<li><p><a class="reference internal" href="examples/example10.html#example10-label"><span class="std std-ref">Out-of-Equilibrium Bose-Fermi Mixtures</span></a>, <a class="reference download internal" download="" href="downloads/0b4dfd9cfa371cb73204eefad7803ba1/example10.py"><code class="xref download docutils literal notranslate"><span class="pre">download</span> <span class="pre">script</span></code></a></p></li>
+<li><p><a class="reference internal" href="examples/example25.html#example25-label"><span class="std std-ref">Majorana Fermions: SYK Model</span></a>, <a class="reference download internal" download="" href="downloads/460611eeb7068a8c904cc022d840b739/example25.py"><code class="xref download docutils literal notranslate"><span class="pre">download</span> <span class="pre">script</span></code></a></p></li>
+<li><p><a class="reference internal" href="examples/example7.html#example7-label"><span class="std std-ref">The Bose-Hubbard Model on Translationally Invariant Ladder</span></a>, <a class="reference download internal" download="" href="downloads/df7ec3452e1e3329f2cd19a882c02a70/example7.py"><code class="xref download docutils literal notranslate"><span class="pre">download</span> <span class="pre">script</span></code></a></p></li>
+</ul>
+</div></blockquote>
+</section>
+</section>
+<section id="advanced-usage">
+<h2>Advanced usage<a class="headerlink" href="#advanced-usage" title="Link to this heading"></a></h2>
+<blockquote>
+<div><ul class="simple">
+<li><p><a class="reference internal" href="examples/example14.html#example14-label"><span class="std std-ref">Quantum scars Hamiltonian: spin-1/2 system with Hilbert space constraint</span></a>, <a class="reference download internal" download="" href="downloads/ce24628b1934b1aacd9f1ac29dfbc30e/example14.py"><code class="xref download docutils literal notranslate"><span class="pre">download</span> <span class="pre">script</span></code></a></p></li>
+<li><p><a class="reference internal" href="examples/example15.html#example15-label"><span class="std std-ref">Spin-1/2 system with sublattice particle consevation</span></a>, <a class="reference download internal" download="" href="downloads/c6fb308e3731bcee1b7864776743455f/example15.py"><code class="xref download docutils literal notranslate"><span class="pre">download</span> <span class="pre">script</span></code></a></p></li>
+<li><p><a class="reference internal" href="examples/example16.html#example16-label"><span class="std std-ref">Applying symmetries to reduce user-imported bases using QuSpin</span></a>, <a class="reference download internal" download="" href="downloads/dbdd6400ff1ff3f244148fb3a442525e/example16.py"><code class="xref download docutils literal notranslate"><span class="pre">download</span> <span class="pre">script</span></code></a></p></li>
+<li><p><a class="reference internal" href="examples/example19.html#example19-label"><span class="std std-ref">Autocorrelation functions using symmetries</span></a>, <a class="reference download internal" download="" href="downloads/4d13fe244e1430a03563aca7644ea77e/example19.py"><code class="xref download docutils literal notranslate"><span class="pre">download</span> <span class="pre">script</span></code></a></p></li>
+<li><p><a class="reference internal" href="examples/example26.html#example26-label"><span class="std std-ref">Direct Calculation of spectral functions using symmetries</span></a>, <a class="reference download internal" download="" href="downloads/3882c8953242e062a3b551c0bcca0c95/example26.py"><code class="xref download docutils literal notranslate"><span class="pre">download</span> <span class="pre">script</span></code></a></p></li>
+<li><p><a class="reference internal" href="examples/example23.html#example23-label"><span class="std std-ref">Gell-Mann Operators for Spin-1 systems</span></a>, <a class="reference download internal" download="" href="downloads/25f20672070bc09359d1b2414896faed/example23.py"><code class="xref download docutils literal notranslate"><span class="pre">download</span> <span class="pre">script</span></code></a></p></li>
+<li><p><a class="reference internal" href="examples/example24.html#example24-label"><span class="std std-ref">Majorana Fermions: Spinless Fermi-Hubbard Model</span></a>, <a class="reference download internal" download="" href="downloads/52293556b936bd2bddddce4265362036/example24.py"><code class="xref download docutils literal notranslate"><span class="pre">download</span> <span class="pre">script</span></code></a></p></li>
+<li><p><a class="reference internal" href="examples/example28.html#example28-label"><span class="std std-ref">Kitaev’s honeycomb Hamiltonian in vortex sectors given by the plaquette operators</span></a>, <a class="reference download internal" download="" href="downloads/742bd5321bc32bd51459669fe21a55a1/example28.py"><code class="xref download docutils literal notranslate"><span class="pre">download</span> <span class="pre">script</span></code></a></p></li>
+</ul>
+</div></blockquote>
+</section>
+<section id="algorithms-and-routines">
+<h2>Algorithms and routines<a class="headerlink" href="#algorithms-and-routines" title="Link to this heading"></a></h2>
+<blockquote>
+<div><ul class="simple">
+<li><p><a class="reference internal" href="examples/example11.html#example11-label"><span class="std std-ref">Monte Carlo Sampling Expectation Values of Obsevables</span></a>, <a class="reference download internal" download="" href="downloads/fb758a48aa50b0ba15ddc07c526fc7fc/example11.py"><code class="xref download docutils literal notranslate"><span class="pre">download</span> <span class="pre">script</span></code></a></p></li>
+<li><p><a class="reference internal" href="examples/example22.html#example22-label"><span class="std std-ref">Efficient time evolution using the omp-parallelized expm_multiply_parallel</span></a>, <a class="reference download internal" download="" href="downloads/69d2917b08355de59511c8270f6f852f/example22.py"><code class="xref download docutils literal notranslate"><span class="pre">download</span> <span class="pre">script</span></code></a></p></li>
+<li><p><a class="reference internal" href="examples/example20.html#example20-label"><span class="std std-ref">Lanczos module: time-evolution and ground state search</span></a>, <a class="reference download internal" download="" href="downloads/4c50eee7ce639c83e9e8a09efbb01010/example20.py"><code class="xref download docutils literal notranslate"><span class="pre">download</span> <span class="pre">script</span></code></a></p></li>
+<li><p><a class="reference internal" href="examples/example21.html#example21-label"><span class="std std-ref">Lanczos module: finite-temperature calculations</span></a>, <a class="reference download internal" download="" href="downloads/a87bfae50b414d833905d1869f69df0b/example21.py"><code class="xref download docutils literal notranslate"><span class="pre">download</span> <span class="pre">script</span></code></a></p></li>
+<li><p><a class="reference internal" href="examples/example27.html#example27-label"><span class="std std-ref">Liouville-von Neumann Equation using the MKL-enhanced Sparse Matrix Product [courtesy of J. Verlage]</span></a>, <a class="reference download internal" download="" href="downloads/c11be7fb861667010dde48b25d9d66b4/example27.py"><code class="xref download docutils literal notranslate"><span class="pre">download</span> <span class="pre">script</span></code></a></p></li>
+</ul>
+</div></blockquote>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="installation/installation.html" class="btn btn-neutral float-left" title="Installation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="jupyter_notebooks.html" class="btn btn-neutral float-right" title="Jupyter notebooks" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Phillip Weinberg, Markus Schmitt, and Marin Bukov.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+    <!-- Theme Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-6885KZ7NH6"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-6885KZ7NH6', {
+          'anonymize_ip': false,
+      });
+    </script> 
+
+</body>
+</html>

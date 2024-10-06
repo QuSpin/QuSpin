@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Parallel computing support &mdash; QuSpin 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../static/css/sphinx_rtd_size.css?v=f26ae176" />
+      <link rel="stylesheet" type="text/css" href="../static/css/py_class_property_fix.css?v=faf79ccd" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../static/jquery.js?v=5d32c60e"></script>
+        <script src="../static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../static/documentation_options.js?v=8d563738"></script>
+        <script src="../static/doctools.js?v=9a2dae69"></script>
+        <script src="../static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="user_basis tutorial" href="user_basis.html" />
+    <link rel="prev" title="Jupyter notebooks" href="../jupyter_notebooks.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            QuSpin
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">QuSpin (public API)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../basis.html">Basis module (<code class="xref py py-mod docutils literal notranslate"><span class="pre">quspin.basis</span></code>)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../operators.html">Operators module (<code class="xref py py-mod docutils literal notranslate"><span class="pre">quspin.operators</span></code>)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tools.html">Tools module (<code class="xref py py-mod docutils literal notranslate"><span class="pre">quspin.tools</span></code>)</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Installation &amp; Use</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../installation/installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../installation/installation.html#basics-of-command-line-use">Basics of command line use</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../example_scripts.html">Example scripts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../jupyter_notebooks.html">Jupyter notebooks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Parallel computing support</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#multi-threading-via-openmp-in-quspin">1. Multi-threading via OpenMP in QuSpin:</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#install-quspin-with-openmp-support">1.1. Install QuSpin with OpenMP support:</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#multi-threaded-support-for-quspin-functions">1.2. Multi-threaded support for QuSpin functions:</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#parallel-support-in-the-operator-module-hamiltonian-quantum-operator-and-quantum-linearoperator">1.2.1 Parallel support in the operator module: <cite>hamiltonian</cite>, <cite>quantum_operator</cite> and <cite>quantum_LinearOperator</cite></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#parallel-support-in-the-general-basis-classes-basis-general">1.2.2 Parallel support in the general basis classes <cite>*_basis_general</cite></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#parallel-support-in-tools-module">1.2.3 Parallel support in <cite>tools</cite> module</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#multi-threading-via-mkl-and-numpy-scipy-functions-in-quspin">2. Multi-threading via MKL and NumPy/SciPy Functions in QuSpin:</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="user_basis.html"><cite>user_basis</cite> tutorial</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Bugs &amp; Questions</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../contribute/report_a_bug.html">Report a bug</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contribute/ask_a_question.html">Ask a question</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">QuSpin</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content style-external-links">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Parallel computing support</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../sources/tutorials/parallelization.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <style> .red {color:#ff0000; font-weight:bold; font-style:italic; } </style>
+<style> .green {color:#00b200; font-weight:bold; font-style:italic; } </style>
+<style> .magenta {color:#FF33F3; font-weight:bold; font-style:italic; } </style>
+<style> .orange {color:#FE8E02; font-weight:bold; font-style:italic; } </style><section id="parallel-computing-support">
+<span id="parallelization-label"></span><h1>Parallel computing support<a class="headerlink" href="#parallel-computing-support" title="Link to this heading"></a></h1>
+<p>In the recent years we have witnessed the move for processors to have more and more individual cores on a single chip, both in the consumer markets as well as in the server markets for CPUs. This means that as these chips come out we will see less improvements in terms of the actual speed of individual processors and more improvements in terms of memory access speeds and large cache sizes which will boost the performance of parallel computing.</p>
+<p>Having software which can easily be supported on these architectures is increasingly important to the users of QuSpin in order to keep this software capable of performing state-of-the-art calculations in the future. In the next few years we will start to see CPUs in high performance computing (hpc) clusters that will have at or above 30 cores on a single chip. A goal for QuSpin’s developers is to allow the user to harness all that computational power without having to make significant changes to already developed QuSpin code. This can accomplished using <a class="reference external" href="https://www.openmp.org/">OpenMP</a> which works on the shared memory model of parallel computing. this model is ideal for new architectures with large numbers of cores. It also fits within the computing model we have with QuSpin, in which we focus on very general kinds of exact diagonalization calculations.</p>
+<p>Below, we introduce some of the new features in QuSpin 0.3.1 which are included in the OpenMP enabled version of QuSpin.</p>
+<p>Check out also our example script <a class="reference internal" href="../examples/example12.html#example12-label"><span class="std std-ref">Parallel Computing in QuSpin</span></a>, which demonstrates how to use multi-threading with QuSpin in practice.</p>
+<section id="multi-threading-via-openmp-in-quspin">
+<h2>1. Multi-threading via OpenMP in QuSpin:<a class="headerlink" href="#multi-threading-via-openmp-in-quspin" title="Link to this heading"></a></h2>
+<section id="install-quspin-with-openmp-support">
+<h3>1.1. Install QuSpin with OpenMP support:<a class="headerlink" href="#install-quspin-with-openmp-support" title="Link to this heading"></a></h3>
+<p>In order to make use of OpenMP features in QuSpin, one just needs to install the <cite>omp</cite> metapackage which will track the OpenMP compiled version of QuSpin for your platform. Starting from QuSpin 0.3.1, we have OpenMP support across the different operating systems. With QuSpin 1.0.0, the OpenMP installation is default; to install the OpenMP version of QuSpin simply run:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ pip install quspin
+</pre></div>
+</div>
+</section>
+<section id="multi-threaded-support-for-quspin-functions">
+<h3>1.2. Multi-threaded support for QuSpin functions:<a class="headerlink" href="#multi-threaded-support-for-quspin-functions" title="Link to this heading"></a></h3>
+<p>All the support for QuSpin’s OpenMP multi-threading can be accessed using the OpenMP environment variable: <cite>OMP_NUM_THREADS</cite>. Simply put, if you want to use multiple cores when running your script, set that variable equal to the number of cores you request during the calculation. Then the segments of code which use OpenMP will automatically begin to use those extra cores.</p>
+<p>There are two ways to set up the OpenMP environment variable:</p>
+<ol class="arabic simple">
+<li><p>in the terminal/Anaconda prompt, set</p></li>
+</ol>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ export OMP_NUM_THREADS = 4
+$ echo $OMP_NUM_THREADS
+</pre></div>
+</div>
+<p>Make sure you run your script from that terminal window. If you run your code from a different terminal window, you have to set this variable again.</p>
+<ol class="arabic simple" start="2">
+<li><p>in the beginning of your python script, <strong>before you import QuSpin</strong>,  set</p></li>
+</ol>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">os</span>
+<span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s1">&#39;OMP_NUM_THREADS&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;4&#39;</span> <span class="c1"># set number of OpenMP threads to run in parallel</span>
+</pre></div>
+</div>
+<p>This allows to change the OpenMP variable dynamically from your python script.</p>
+<p>In QuSpin 0.3.1 we have worked on trying to make the user experience seamless so that the user does not need to write special code in order to take advantage of these parallelized functions, much like how NumPy uses MKL for doing linear algebra operations. In the next two sections we discuss where the new OpenMP support happens so that one can more easily write new code which takes advantage of it.</p>
+<p>While this is very convenient, it does not make it clear which segments of the code will run faster. Thus, let us now go over all features which take advantage of this multi-threading.</p>
+<section id="parallel-support-in-the-operator-module-hamiltonian-quantum-operator-and-quantum-linearoperator">
+<h4>1.2.1 Parallel support in the operator module: <cite>hamiltonian</cite>, <cite>quantum_operator</cite> and <cite>quantum_LinearOperator</cite><a class="headerlink" href="#parallel-support-in-the-operator-module-hamiltonian-quantum-operator-and-quantum-linearoperator" title="Link to this heading"></a></h4>
+<p>One of the most ubiquitous operations in exact diagonalization codes is the matrix-vector product: the matrix represents a quantum operator and the vector – the quantum state being acted on by the operator. This is used pretty much everywhere except for full diagonalization of the matrix: from evolution to Lanczos methods.</p>
+<p>In QuSpin, operators are represented by large sparse matrices and the quantum states are typically represented by dense vectors. In the computer science/mathematics literature, it is well known that this matrix-vector product is one of the most important operations done during a computation, so there has been a lot of work on trying to efficiently implement this operation in parallel. Most of the literature discusses only sparse-matrix – vector product as opposed to sparse-matrix – dense matrix products, and this is reflected in QuSpin’s implementation. Currently QuSpin supports multi-threading only when the multiplication is on a vector (even though multiplication by two-dimensional arrays is allowed as well, but the code switches to a single-threaded version).</p>
+<p>We have specifically designed QuSpin to work very efficiently with the structure of the <cite>hamiltonian</cite> and <cite>quantum_operator</cite> classes. This low level code replaces the use of SciPy’s default functionality (which adds unnecessary overhead and slows down the code when pushing to large system sizes). This required to limit the number of supported matrix formats used by QuSpin’s operator classes. Currently, we support: <cite>csr</cite>, <cite>csc</cite>, <cite>dia</cite> and also dense matrices when constructing a <cite>hamiltonian</cite> or <cite>quantum_operator</cite> objects to allow for a broad range of applicability. For example, one can get a performance boost when transposing your <cite>hamiltonian</cite> or <cite>quantum_operator</cite> as <cite>csr</cite> &lt;–&gt; <cite>csc</cite> and <cite>dia</cite> &lt;–&gt; <cite>dia</cite> without having to copy any data. The dense matrices we fall back on NumPy’s library to do the calculation as it is specifically optimized for the kinds of calculations we need in QuSpin.</p>
+<p>For the supported sparse-matrix formats <cite>csr</cite>, <cite>csc</cite>, and <cite>dia</cite>, we have implemented multi-threaded matrix-vector products (see <cite>tools.misc.matvec()</cite> function), all of which show very nearly linear scaling with increasing the number of cores on modern processors. Even though the performance gains are more modest on older CPU architectures, they can still be useful when simulating large system sizes as one typically needs to allocate a lot of memory space when submitting a job (which usually just means requesting more cores).</p>
+<p>To sum up, whenever one can prefer matrix-vector products in the code, using QuSpin’s interface this will lead to the automatic use of multi-threading, when the OpenMP version is used. For instance, one commonly used function, which automatically benefits from multi-threading via the parallel matrix-vector product, is <cite>hamiltonian.evolve()</cite>.</p>
+<p>At the same time, in some places automatic multithreading is not so obvious: for instance if one is trying to find the ground state of a particular <cite>hamiltonian</cite> object <cite>H</cite> one might do the following:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">E</span><span class="p">,</span><span class="n">V</span> <span class="o">=</span> <span class="n">H</span><span class="o">.</span><span class="n">eigsh</span><span class="p">(</span><span class="n">time</span><span class="o">=</span><span class="n">t0</span><span class="p">,</span><span class="n">k</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">which</span><span class="o">=</span><span class="s2">&quot;SA&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The code just above will actually not use any multi-threading: this is because this code is actually equivilent to doing:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">E</span><span class="p">,</span><span class="n">V</span> <span class="o">=</span> <span class="n">eigsh</span><span class="p">(</span><span class="n">H</span><span class="o">.</span><span class="n">tocsr</span><span class="p">(</span><span class="n">time</span><span class="o">=</span><span class="n">t0</span><span class="p">),</span><span class="n">k</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">which</span><span class="o">=</span><span class="s2">&quot;SA&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>However, one can still beneft from the multi-threaded matrix-vector product by using the <cite>H.aslinearoperator(time=t0)</cite> method:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">E</span><span class="p">,</span><span class="n">V</span> <span class="o">=</span> <span class="n">eigsh</span><span class="p">(</span><span class="n">H</span><span class="o">.</span><span class="n">aslinearoperator</span><span class="p">(</span><span class="n">time</span><span class="o">=</span><span class="n">t0</span><span class="p">),</span><span class="n">k</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">which</span><span class="o">=</span><span class="s2">&quot;SA&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Casting <cite>H</cite> as a <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.linalg.LinearOperator.html">LinearOperator</a> object enables the use of the methods <cite>H.dot()</cite> and <cite>H.transpose().conj().dot()</cite>. These methods will be used to do the eigenvalue calculation, which will then benefit from multi-threading (note that one cannot use <cite>LinearOperator</cite> by default when calling <cite>H.eigsh()</cite> since it limits the code functionality).</p>
+</section>
+<section id="parallel-support-in-the-general-basis-classes-basis-general">
+<h4>1.2.2 Parallel support in the general basis classes <cite>*_basis_general</cite><a class="headerlink" href="#parallel-support-in-the-general-basis-classes-basis-general" title="Link to this heading"></a></h4>
+<p>Starting from QuSpin 0.3.1, we have efficient implementation of parallel support for the methods in the <cite>*_basis_general</cite> classes.
+Additionally, we have also added an implementation of <cite>inplace_Op</cite> which is used to do ‘on the fly’ calculation of an operator acting on a state using multi-threading OpenMP speed-up (which can be accessed simply by using any general basis in the <cite>quantum_LinearOperator</cite> class).</p>
+<p>Note that the <cite>*_basis_1d</cite> classes do <strong>not</strong> support OpenMP.</p>
+</section>
+<section id="parallel-support-in-tools-module">
+<h4>1.2.3 Parallel support in <cite>tools</cite> module<a class="headerlink" href="#parallel-support-in-tools-module" title="Link to this heading"></a></h4>
+<p>The function <cite>tools.misc.matvec()</cite> wraps an efficient version of various matrix-vector products based on a scheme which provides equal work load to all the threads, regardless of the sparsity structure of the matrix (see <a class="reference external" href="https://ieeexplore.ieee.org/document/7877136">this paper</a> for more details). This speedup will be automatically inherited by the function <cite>tools.evolution.expm_multiply_parallel()</cite>, which creates a more efficient multi-threaded version of SciPy’s <cite>SciPy.sparse.linalg.expm_multiply</cite> function, and also by the <cite>dot</cite> attribute of the classes in the Operators module (and hence, for instance, also in the <cite>evolve</cite> functions).</p>
+<p>Notice that the Tools module functions would have to be explicitly used by the user in order for a calculation to gain speedup via OMP.</p>
+</section>
+</section>
+</section>
+<section id="multi-threading-via-mkl-and-numpy-scipy-functions-in-quspin">
+<h2>2. Multi-threading via MKL and NumPy/SciPy Functions in QuSpin:<a class="headerlink" href="#multi-threading-via-mkl-and-numpy-scipy-functions-in-quspin" title="Link to this heading"></a></h2>
+<p>Depending on the version of NumPy you have installed, you may also be able to access some additional multi-threading to speed up diagonalization, e.g. using <cite>eigh()</cite>, <cite>eigvalsh()</cite>, or <cite>svd()</cite> operations during calculations of eigenvalues/vectors or entanglement entropy.
+To do this, the default version of NumPy installed with Anaconda must be linked against Intel’s Math Kernel Library (MKL) which implemented very efficient multi-threaded variations of LAPACK functions. If you use Anaconda 2.5 or later, MKL is the default numpy version. To turn on the multi-threading, simply use the MKL environment variables. For more info visit this <a class="reference external" href="https://software.intel.com/en-us/mkl-linux-developer-guide-intel-mkl-specific-environment-variables-for-openmp-threading-control">MKL website</a>.</p>
+<p>There are two ways to set up the MKL environment variable:</p>
+<ol class="arabic simple">
+<li><p>in the terminal/Anaconda prompt, set</p></li>
+</ol>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ export MKL_NUM_THREADS = 4
+$ echo $MKL_NUM_THREADS
+</pre></div>
+</div>
+<p>Make sure you run your script from that terminal window. If you run your code from a different terminal window, you have to set this variable again.</p>
+<ol class="arabic simple" start="2">
+<li><p>in the beginning of your python script, <strong>before you import NumPy or SciPy</strong> set</p></li>
+</ol>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">os</span>
+<span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s1">&#39;MKL_NUM_THREADS&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;4&#39;</span> <span class="c1"># set number of MKL threads to run in parallel</span>
+</pre></div>
+</div>
+<p>This allows to change the MKL variable dynamically from your python script.</p>
+<p>Another useful python package for changing the number of cores MKL is using at runtime is <a class="reference external" href="https://docs.anaconda.com/mkl-service/">mkl-service</a>. For more information about MKL-accelerated versions of NumPy, check out this <a class="reference external" href="https://docs.anaconda.com/mkl-optimizations/">website</a>.</p>
+<p>There is the possibility for an extra speedup for people who use Anaconda installs with a <cite>numpy</cite> build that uses the Intel MKL library. If they have an <strong>AMD CPU</strong>, MKL will not enable any SIMD instructions for it leading to about 1/4 the speed the chip is capable of for linear algebra. However, an environment variable can be set to force SIMD instructions to be used anyway (<strong>Intel CPU</strong> users don’t have to worry about this, nor does anyone who is using a <cite>numpy</cite> built on top of <cite>OpenBLAS</cite> or <cite>BLIS</cite>).</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">os</span>
+<span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s1">&#39;MKL_DEBUG_CPU_TYPE&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;5&#39;</span> <span class="c1"># AVX2 instructions; good for any Ryzen-era CPU and probably some earlier ones.</span>
+<span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s1">&#39;MKL_DEBUG_CPU_TYPE&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;4&#39;</span> <span class="c1"># AVX instructions; good for any reasonably recent AMD CPU.</span>
+</pre></div>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../jupyter_notebooks.html" class="btn btn-neutral float-left" title="Jupyter notebooks" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="user_basis.html" class="btn btn-neutral float-right" title="user_basis tutorial" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Phillip Weinberg, Markus Schmitt, and Marin Bukov.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+    <!-- Theme Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-6885KZ7NH6"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-6885KZ7NH6', {
+          'anonymize_ip': false,
+      });
+    </script> 
+
+</body>
+</html>

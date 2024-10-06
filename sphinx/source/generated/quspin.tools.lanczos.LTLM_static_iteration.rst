@@ -1,4 +1,4 @@
-quspin.tools.lanczos.LTLM\_static\_iteration
+﻿quspin.tools.lanczos.LTLM\_static\_iteration
 ============================================
 
 .. currentmodule:: quspin.tools.lanczos

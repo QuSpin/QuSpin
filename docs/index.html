@@ -1,193 +1,197 @@
-
 <!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-<html>
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><script type="text/javascript">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>QuSpin: Quantum Many-Body Dynamics &mdash; QuSpin 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="static/css/sphinx_rtd_size.css?v=f26ae176" />
+      <link rel="stylesheet" type="text/css" href="static/css/py_class_property_fix.css?v=faf79ccd" />
 
-      var _gaq = _gaq || [];
-      _gaq.push(['_setAccount', 'UA-110543543-1']);
-      _gaq.push(['_trackPageview']);
-
-      (function() {
-        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-      })();
-    </script>
-    <title>Welcome to the Official QuSpin Documentation! &#8212; QuSpin 0.3.7 documentation</title>
-    <link rel="stylesheet" href="static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="static/classic.css" type="text/css" />
-    
-    <script id="documentation_options" data-url_root="./" src="static/documentation_options.js"></script>
-    <script src="static/jquery.js"></script>
-    <script src="static/underscore.js"></script>
-    <script src="static/doctools.js"></script>
-    
+  
+  <!--[if lt IE 9]>
+    <script src="static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="static/jquery.js?v=5d32c60e"></script>
+        <script src="static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="static/documentation_options.js?v=8d563738"></script>
+        <script src="static/doctools.js?v=9a2dae69"></script>
+        <script src="static/sphinx_highlight.js?v=dc90522c"></script>
+        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="QuSpin 0.3.7 (released on 2023.01.01)" href="New_Features.html" /> 
-  </head><body>
-    <div class="related" role="navigation" aria-label="related navigation">
-      <h3>Navigation</h3>
-      <ul>
-        <li class="right" style="margin-right: 10px">
-          <a href="genindex.html" title="General Index"
-             accesskey="I">index</a></li>
-        <li class="right" >
-          <a href="py-modindex.html" title="Python Module Index"
-             >modules</a> |</li>
-        <li class="right" >
-          <a href="New_Features.html" title="QuSpin 0.3.7 (released on 2023.01.01)"
-             accesskey="N">next</a> |</li>
-        <li class="nav-item nav-item-0"><a href="#">QuSpin 0.3.7 documentation</a> &#187;</li>
-        <li class="nav-item nav-item-this"><a href="">Welcome to the Official QuSpin Documentation!</a></li> 
-      </ul>
-    </div>  
+    <link rel="next" title="Basis module (quspin.basis)" href="basis.html" /> 
+</head>
 
-    <div class="document">
-      <div class="documentwrapper">
-        <div class="bodywrapper">
-          <div class="body" role="main">
-            
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="#" class="icon icon-home">
+            QuSpin
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">QuSpin (public API)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="basis.html">Basis module (<code class="xref py py-mod docutils literal notranslate"><span class="pre">quspin.basis</span></code>)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="operators.html">Operators module (<code class="xref py py-mod docutils literal notranslate"><span class="pre">quspin.operators</span></code>)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tools.html">Tools module (<code class="xref py py-mod docutils literal notranslate"><span class="pre">quspin.tools</span></code>)</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Installation &amp; Use</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="installation/installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation/installation.html#basics-of-command-line-use">Basics of command line use</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="example_scripts.html">Example scripts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="jupyter_notebooks.html">Jupyter notebooks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/parallelization.html">Parallel computing support</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/user_basis.html"><cite>user_basis</cite> tutorial</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Bugs &amp; Questions</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="contribute/report_a_bug.html">Report a bug</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contribute/ask_a_question.html">Ask a question</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="#">QuSpin</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content style-external-links">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="#" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">QuSpin: Quantum Many-Body Dynamics</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="sources/index.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
   <style> .red {color:#ff0000; font-weight:bold; font-style:italic; } </style>
 <style> .green {color:#00b200; font-weight:bold; font-style:italic; } </style>
 <style> .magenta {color:#FF33F3; font-weight:bold; font-style:italic; } </style>
-<style> .orange {color:#FE8E02; font-weight:bold; font-style:italic; } </style><div class="section" id="welcome-to-the-official-quspin-documentation">
-<h1>Welcome to the Official QuSpin Documentation!<a class="headerlink" href="#welcome-to-the-official-quspin-documentation" title="Permalink to this headline">¶</a></h1>
-<p>QuSpin is an open-source Python package for exact diagonalization and quantum dynamics of arbitrary boson, fermion and spin many-body systems. QuSpin supports the use of various (user-defined) symmetries for one and higher-dimensional lattice systems, (imaginary) time evolution following arbitrary user-specified driving protocols, and constrained Hilbert spaces.</p>
-<p>This page contains the documentation for the use of all public functions and classes contained in QuSpin.</p>
+<style> .orange {color:#FE8E02; font-weight:bold; font-style:italic; } </style><section id="quspin-quantum-many-body-dynamics">
+<h1>QuSpin: Quantum Many-Body Dynamics<a class="headerlink" href="#quspin-quantum-many-body-dynamics" title="Link to this heading"></a></h1>
+<p>QuSpin is an open-source Python package for exact diagonalization and quantum dynamics of arbitrary boson, fermion and spin many-body systems. QuSpin supports the use of various (user-defined) symmetries for one and higher-dimensional lattice systems, (imaginary) time evolution following arbitrary user-specified driving protocols, constrained Hilbert spaces, and parallel sparse linear algebra tools.</p>
+<p>This page contains the Documentation for the use of all public functions and classes contained in QuSpin.</p>
 <dl class="simple">
-<dt>Check out these papers and the example scripts (below) for a detailed tutorial:</dt><dd><ul class="simple">
-<li><p><a class="reference external" href="https://scipost.org/SciPostPhys.2.1.003">SciPost Phys. 2, 003 (2017)</a>.</p></li>
-<li><p><a class="reference external" href="https://scipost.org/SciPostPhys.7.2.020">SciPost Phys. 7, 020 (2019)</a>.</p></li>
+<dt>Check out these tutorial papers, the <a class="reference internal" href="example_scripts.html#example-scripts-label"><span class="std std-ref">Example scripts</span></a>, and <a class="reference internal" href="jupyter_notebooks.html#jypiter-notebooks-label"><span class="std std-ref">Jupyter notebooks</span></a> for a detailed introduction:</dt><dd><ul class="simple">
+<li><p><a class="reference external" href="https://scipost.org/SciPostPhys.2.1.003">SciPost Phys. 2, 003 (2017)</a></p></li>
+<li><p><a class="reference external" href="https://scipost.org/SciPostPhys.7.2.020">SciPost Phys. 7, 020 (2019)</a></p></li>
 </ul>
 </dd>
 </dl>
-<p><strong>Report</strong> any <strong>bugs</strong> and <strong>ask questions</strong> <a class="reference external" href="https://github.com/weinbe58/QuSpin/issues/new/choose">here</a>.</p>
-<p>The source code is available on <a class="reference external" href="https://github.com/weinbe58/QuSpin/tree/master">Github</a>; Suggestions for future improvements and user contributions are always welcome!</p>
-</div>
-<div class="section" id="new-features">
-<h1>New Features<a class="headerlink" href="#new-features" title="Permalink to this headline">¶</a></h1>
+<p><strong>Report</strong> any <strong>bugs</strong> <a class="reference external" href="https://github.com/QuSpin/QuSpin/issues/new/choose">on github</a> and <strong>ask questions</strong> in the <a class="reference external" href="https://github.com/QuSpin/QuSpin/discussions">quspin discussion forum</a>. Help us create an actively contributing QuSpin community!</p>
+<p>The source code is available on <a class="reference external" href="https://github.com/QuSpin/QuSpin">Github</a>. Suggestions for future improvements and user contributions are always welcome: just check out the Developer <a class="reference internal" href="installation/installation.html#installation-label"><span class="std std-ref">Installation</span></a>, and make a pull request!</p>
 <div class="toctree-wrapper compound">
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="New_Features.html"><span class="orange">QuSpin 0.3.7</span> (released on 2023.01.01)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="New_Features.html#highlights-lanczos-module-now-here-constrained-hilbert-spaces-support-available-openmp-support-available"><span class="magenta">Highlights:</span> Lanczos module now here; Constrained Hilbert spaces support available; OpenMP support available!</a></li>
-<li class="toctree-l1"><a class="reference internal" href="New_Features.html#complete-list-of-the-most-recent-features">Complete list of the most recent features</a></li>
-</ul>
 </div>
-</div>
-<div class="section" id="quspin-api-reference">
-<h1>QuSpin API reference<a class="headerlink" href="#quspin-api-reference" title="Permalink to this headline">¶</a></h1>
 <div class="toctree-wrapper compound">
+<p class="caption" role="heading"><span class="caption-text">QuSpin (public API)</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="basis.html">Basis module (<code class="xref py py-mod docutils literal notranslate"><span class="pre">quspin.basis</span></code>)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="operators.html">Operators module (<code class="xref py py-mod docutils literal notranslate"><span class="pre">quspin.operators</span></code>)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tools.html">Tools module (<code class="xref py py-mod docutils literal notranslate"><span class="pre">quspin.tools</span></code>)</a></li>
 </ul>
 </div>
-</div>
-<div class="section" id="installation-and-usage">
-<h1>Installation and Usage<a class="headerlink" href="#installation-and-usage" title="Permalink to this headline">¶</a></h1>
 <div class="toctree-wrapper compound">
+<p class="caption" role="heading"><span class="caption-text">Installation &amp; Use</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="Installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation/installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation/installation.html#basics-of-command-line-use">Basics of command line use</a></li>
 </ul>
 </div>
-</div>
-<div class="section" id="example-scripts">
-<h1>Example Scripts<a class="headerlink" href="#example-scripts" title="Permalink to this headline">¶</a></h1>
 <div class="toctree-wrapper compound">
+<p class="caption" role="heading"><span class="caption-text">Examples</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="Examples.html">Examples</a></li>
-<li class="toctree-l1"><a class="reference internal" href="Examples.html#tutorials">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="example_scripts.html">Example scripts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="jupyter_notebooks.html">Jupyter notebooks</a></li>
 </ul>
 </div>
-</div>
-<div class="section" id="parallel-computing-capabilities">
-<h1>Parallel Computing Capabilities<a class="headerlink" href="#parallel-computing-capabilities" title="Permalink to this headline">¶</a></h1>
 <div class="toctree-wrapper compound">
+<p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="parallelization.html">Parallel Computing Support</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/parallelization.html">Parallel computing support</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/user_basis.html"><cite>user_basis</cite> tutorial</a></li>
 </ul>
 </div>
-</div>
-<div class="section" id="user-basis-tutorial">
-<h1>User Basis Tutorial<a class="headerlink" href="#user-basis-tutorial" title="Permalink to this headline">¶</a></h1>
 <div class="toctree-wrapper compound">
+<p class="caption" role="heading"><span class="caption-text">Bugs &amp; Questions</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="user_basis.html">A tutorial on QuSpin’s <cite>user_basis</cite></a></li>
+<li class="toctree-l1"><a class="reference internal" href="contribute/report_a_bug.html">Report a bug</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contribute/ask_a_question.html">Ask a question</a></li>
 </ul>
 </div>
-</div>
-<div class="section" id="report-a-bug-ask-a-question">
-<h1>Report a Bug / Ask a Question<a class="headerlink" href="#report-a-bug-ask-a-question" title="Permalink to this headline">¶</a></h1>
-<p>To report a bug in QuSpin, or ask a question about the package, please <a class="reference external" href="https://github.com/weinbe58/QuSpin/issues">open up a new issue</a> on GitHub.</p>
-</div>
+</section>
 
 
-            <div class="clearer"></div>
+           </div>
           </div>
-        </div>
-      </div>
-      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
-        <div class="sphinxsidebarwrapper">
-  <h3><a href="#">Table of Contents</a></h3>
-  <ul>
-<li><a class="reference internal" href="#">Welcome to the Official QuSpin Documentation!</a></li>
-<li><a class="reference internal" href="#new-features">New Features</a></li>
-<li><a class="reference internal" href="#quspin-api-reference">QuSpin API reference</a></li>
-<li><a class="reference internal" href="#installation-and-usage">Installation and Usage</a></li>
-<li><a class="reference internal" href="#example-scripts">Example Scripts</a></li>
-<li><a class="reference internal" href="#parallel-computing-capabilities">Parallel Computing Capabilities</a></li>
-<li><a class="reference internal" href="#user-basis-tutorial">User Basis Tutorial</a></li>
-<li><a class="reference internal" href="#report-a-bug-ask-a-question">Report a Bug / Ask a Question</a></li>
-</ul>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="basis.html" class="btn btn-neutral float-right" title="Basis module (quspin.basis)" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
 
-  <h4>Next topic</h4>
-  <p class="topless"><a href="New_Features.html"
-                        title="next chapter"><span class="orange">QuSpin 0.3.7</span> (released on 2023.01.01)</a></p>
-  <div role="note" aria-label="source link">
-    <h3>This Page</h3>
-    <ul class="this-page-menu">
-      <li><a href="sources/index.rst.txt"
-            rel="nofollow">Show Source</a></li>
-    </ul>
-   </div>
-<div id="searchbox" style="display: none" role="search">
-  <h3 id="searchlabel">Quick search</h3>
-    <div class="searchformwrapper">
-    <form class="search" action="search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" />
-      <input type="submit" value="Go" />
-    </form>
-    </div>
-</div>
-<script>$('#searchbox').show(0);</script>
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Phillip Weinberg, Markus Schmitt, and Marin Bukov.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
         </div>
       </div>
-      <div class="clearer"></div>
-    </div>
-    <div class="related" role="navigation" aria-label="related navigation">
-      <h3>Navigation</h3>
-      <ul>
-        <li class="right" style="margin-right: 10px">
-          <a href="genindex.html" title="General Index"
-             >index</a></li>
-        <li class="right" >
-          <a href="py-modindex.html" title="Python Module Index"
-             >modules</a> |</li>
-        <li class="right" >
-          <a href="New_Features.html" title="QuSpin 0.3.7 (released on 2023.01.01)"
-             >next</a> |</li>
-        <li class="nav-item nav-item-0"><a href="#">QuSpin 0.3.7 documentation</a> &#187;</li>
-        <li class="nav-item nav-item-this"><a href="">Welcome to the Official QuSpin Documentation!</a></li> 
-      </ul>
-    </div>
-    <div class="footer" role="contentinfo">
-        &#169; Copyright 2016, Phillip Weinberg, Markus Schmitt and Marin Bukov.
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.5.4.
-    </div>
-  </body>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+    <!-- Theme Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-6885KZ7NH6"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-6885KZ7NH6', {
+          'anonymize_ip': false,
+      });
+    </script> 
+
+</body>
 </html>

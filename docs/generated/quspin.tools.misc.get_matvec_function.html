@@ -1,80 +1,143 @@
-
 <!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-<html>
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><script type="text/javascript">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>quspin.tools.misc.get_matvec_function &mdash; QuSpin 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../static/css/sphinx_rtd_size.css?v=f26ae176" />
+      <link rel="stylesheet" type="text/css" href="../static/css/py_class_property_fix.css?v=faf79ccd" />
 
-      var _gaq = _gaq || [];
-      _gaq.push(['_setAccount', 'UA-110543543-1']);
-      _gaq.push(['_trackPageview']);
-
-      (function() {
-        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-      })();
-    </script>
-    <title>quspin.tools.misc.get_matvec_function &#8212; QuSpin 0.3.7 documentation</title>
-    <link rel="stylesheet" href="../static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="../static/classic.css" type="text/css" />
-    
-    <script id="documentation_options" data-url_root="../" src="../static/documentation_options.js"></script>
-    <script src="../static/jquery.js"></script>
-    <script src="../static/underscore.js"></script>
-    <script src="../static/doctools.js"></script>
-    
+  
+  <!--[if lt IE 9]>
+    <script src="../static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../static/jquery.js?v=5d32c60e"></script>
+        <script src="../static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../static/documentation_options.js?v=8d563738"></script>
+        <script src="../static/doctools.js?v=9a2dae69"></script>
+        <script src="../static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="quspin.tools.misc.mean_level_spacing" href="quspin.tools.misc.mean_level_spacing.html" />
     <link rel="prev" title="quspin.tools.misc.matvec" href="quspin.tools.misc.matvec.html" /> 
-  </head><body>
-    <div class="related" role="navigation" aria-label="related navigation">
-      <h3>Navigation</h3>
-      <ul>
-        <li class="right" style="margin-right: 10px">
-          <a href="../genindex.html" title="General Index"
-             accesskey="I">index</a></li>
-        <li class="right" >
-          <a href="../py-modindex.html" title="Python Module Index"
-             >modules</a> |</li>
-        <li class="right" >
-          <a href="quspin.tools.misc.mean_level_spacing.html" title="quspin.tools.misc.mean_level_spacing"
-             accesskey="N">next</a> |</li>
-        <li class="right" >
-          <a href="quspin.tools.misc.matvec.html" title="quspin.tools.misc.matvec"
-             accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.7 documentation</a> &#187;</li>
-          <li class="nav-item nav-item-1"><a href="../tools.html" accesskey="U">Tools module (<code class="xref py py-mod docutils literal notranslate"><span class="pre">quspin.tools</span></code>)</a> &#187;</li>
-        <li class="nav-item nav-item-this"><a href="">quspin.tools.misc.get_matvec_function</a></li> 
-      </ul>
-    </div>  
+</head>
 
-    <div class="document">
-      <div class="documentwrapper">
-        <div class="bodywrapper">
-          <div class="body" role="main">
-            
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            QuSpin
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">QuSpin (public API)</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../basis.html">Basis module (<code class="xref py py-mod docutils literal notranslate"><span class="pre">quspin.basis</span></code>)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../operators.html">Operators module (<code class="xref py py-mod docutils literal notranslate"><span class="pre">quspin.operators</span></code>)</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../tools.html">Tools module (<code class="xref py py-mod docutils literal notranslate"><span class="pre">quspin.tools</span></code>)</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../tools.html#evolution">evolution</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tools.html#lanczos">Lanczos</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tools.html#floquet">Floquet</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tools.html#measurements">measurements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tools.html#block-tools">block_tools</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../tools.html#misc">misc</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="quspin.tools.misc.matvec.html">quspin.tools.misc.matvec</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">quspin.tools.misc.get_matvec_function</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#quspin.tools.misc.get_matvec_function"><code class="docutils literal notranslate"><span class="pre">get_matvec_function()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="quspin.tools.misc.mean_level_spacing.html">quspin.tools.misc.mean_level_spacing</a></li>
+<li class="toctree-l3"><a class="reference internal" href="quspin.tools.misc.project_op.html">quspin.tools.misc.project_op</a></li>
+<li class="toctree-l3"><a class="reference internal" href="quspin.tools.misc.KL_div.html">quspin.tools.misc.KL_div</a></li>
+<li class="toctree-l3"><a class="reference internal" href="quspin.tools.misc.ints_to_array.html">quspin.tools.misc.ints_to_array</a></li>
+<li class="toctree-l3"><a class="reference internal" href="quspin.tools.misc.array_to_ints.html">quspin.tools.misc.array_to_ints</a></li>
+<li class="toctree-l3"><a class="reference internal" href="quspin.tools.misc.ints_to_array.html">quspin.tools.misc.ints_to_array</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Installation &amp; Use</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../installation/installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../installation/installation.html#basics-of-command-line-use">Basics of command line use</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../example_scripts.html">Example scripts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../jupyter_notebooks.html">Jupyter notebooks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/parallelization.html">Parallel computing support</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/user_basis.html"><cite>user_basis</cite> tutorial</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Bugs &amp; Questions</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../contribute/report_a_bug.html">Report a bug</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contribute/ask_a_question.html">Ask a question</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">QuSpin</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content style-external-links">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../tools.html">Tools module (<code class="xref py py-mod docutils literal notranslate"><span class="pre">quspin.tools</span></code>)</a></li>
+      <li class="breadcrumb-item active">quspin.tools.misc.get_matvec_function</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../sources/generated/quspin.tools.misc.get_matvec_function.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
   <style> .red {color:#ff0000; font-weight:bold; font-style:italic; } </style>
 <style> .green {color:#00b200; font-weight:bold; font-style:italic; } </style>
 <style> .magenta {color:#FF33F3; font-weight:bold; font-style:italic; } </style>
-<style> .orange {color:#FE8E02; font-weight:bold; font-style:italic; } </style><div class="section" id="quspin-tools-misc-get-matvec-function">
-<h1>quspin.tools.misc.get_matvec_function<a class="headerlink" href="#quspin-tools-misc-get-matvec-function" title="Permalink to this headline">¶</a></h1>
+<style> .orange {color:#FE8E02; font-weight:bold; font-style:italic; } </style><section id="quspin-tools-misc-get-matvec-function">
+<h1>quspin.tools.misc.get_matvec_function<a class="headerlink" href="#quspin-tools-misc-get-matvec-function" title="Link to this heading"></a></h1>
 <dl class="py function">
-<dt id="quspin.tools.misc.get_matvec_function">
-<code class="sig-prename descclassname"><span class="pre">quspin.tools.misc.</span></code><code class="sig-name descname"><span class="pre">get_matvec_function</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">array</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/tools/matvec/matvec_core.html#get_matvec_function"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quspin.tools.misc.get_matvec_function" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="quspin.tools.misc.get_matvec_function">
+<span class="sig-prename descclassname"><span class="pre">quspin.tools.misc.</span></span><span class="sig-name descname"><span class="pre">get_matvec_function</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">array</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../modules/parallel_sparse_tools/matvec/matvec_core.html#get_matvec_function"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quspin.tools.misc.get_matvec_function" title="Link to this definition"></a></dt>
 <dd><p>Determines automatically the matrix vector product routine for an <cite>array</cite> based on its type.</p>
 <p>A highly specialized omp-parallelized application of a matrix-vector (<cite>matvec</cite>) product
 depends on the array type (<cite>csr</cite>, <cite>csc</cite>, <cite>dia</cite>, <cite>other</cite> [e.g., dense]). This function determines automatically which <cite>matvec</cite> routine is most appropriate for a given array type.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
 <dt><strong>array</strong><span class="classifier">array_like object (e.g. numpy.ndarray, scipy.sparse.csr_matrix,  scipy.sparse.csc_matrix,  scipy.sparse.dia_matrix)</span></dt><dd><p>Array-like object to determine the most appropriate omp-parallelized <cite>matvec</cite> function for.</p>
 </dd>
 </dl>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><dl class="simple">
 <dt>python function object</dt><dd><p>A python function to perform the matrix-vector product. For appropriate use, see <cite>tools.misc.matvec()</cite>.</p>
 </dd>
@@ -89,276 +152,181 @@ depends on the array type (<cite>csr</cite>, <cite>csc</cite>, <cite>dia</cite>,
 </ul>
 <p class="rubric">Examples</p>
 <p>The example shows how to use the <cite>get_matvec_function()</cite> (line 43) and the <cite>matvec()</cite> function (lines 47-81) in a user-defined ODE which solves the Lindblad equation for a single qubit (see also Example 17).</p>
-<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span class="normal">  1</span>
-<span class="normal">  2</span>
-<span class="normal">  3</span>
-<span class="normal">  4</span>
-<span class="normal">  5</span>
-<span class="normal">  6</span>
-<span class="normal">  7</span>
-<span class="normal">  8</span>
-<span class="normal">  9</span>
-<span class="normal"> 10</span>
-<span class="normal"> 11</span>
-<span class="normal"> 12</span>
-<span class="normal"> 13</span>
-<span class="normal"> 14</span>
-<span class="normal"> 15</span>
-<span class="normal"> 16</span>
-<span class="normal"> 17</span>
-<span class="normal"> 18</span>
-<span class="normal"> 19</span>
-<span class="normal"> 20</span>
-<span class="normal"> 21</span>
-<span class="normal"> 22</span>
-<span class="normal"> 23</span>
-<span class="normal"> 24</span>
-<span class="normal"> 25</span>
-<span class="normal"> 26</span>
-<span class="normal"> 27</span>
-<span class="normal"> 28</span>
-<span class="normal"> 29</span>
-<span class="normal"> 30</span>
-<span class="normal"> 31</span>
-<span class="normal"> 32</span>
-<span class="normal"> 33</span>
-<span class="normal"> 34</span>
-<span class="normal"> 35</span>
-<span class="normal"> 36</span>
-<span class="normal"> 37</span>
-<span class="normal"> 38</span>
-<span class="normal"> 39</span>
-<span class="normal"> 40</span>
-<span class="normal"> 41</span>
-<span class="normal"> 42</span>
-<span class="normal"> 43</span>
-<span class="normal"> 44</span>
-<span class="normal"> 45</span>
-<span class="normal"> 46</span>
-<span class="normal"> 47</span>
-<span class="normal"> 48</span>
-<span class="normal"> 49</span>
-<span class="normal"> 50</span>
-<span class="normal"> 51</span>
-<span class="normal"> 52</span>
-<span class="normal"> 53</span>
-<span class="normal"> 54</span>
-<span class="normal"> 55</span>
-<span class="normal"> 56</span>
-<span class="normal"> 57</span>
-<span class="normal"> 58</span>
-<span class="normal"> 59</span>
-<span class="normal"> 60</span>
-<span class="normal"> 61</span>
-<span class="normal"> 62</span>
-<span class="normal"> 63</span>
-<span class="normal"> 64</span>
-<span class="normal"> 65</span>
-<span class="normal"> 66</span>
-<span class="normal"> 67</span>
-<span class="normal"> 68</span>
-<span class="normal"> 69</span>
-<span class="normal"> 70</span>
-<span class="normal"> 71</span>
-<span class="normal"> 72</span>
-<span class="normal"> 73</span>
-<span class="normal"> 74</span>
-<span class="normal"> 75</span>
-<span class="normal"> 76</span>
-<span class="normal"> 77</span>
-<span class="normal"> 78</span>
-<span class="normal"> 79</span>
-<span class="normal"> 80</span>
-<span class="normal"> 81</span>
-<span class="normal"> 82</span>
-<span class="normal"> 83</span>
-<span class="normal"> 84</span>
-<span class="normal"> 85</span>
-<span class="normal"> 86</span>
-<span class="normal"> 87</span>
-<span class="normal"> 88</span>
-<span class="normal"> 89</span>
-<span class="normal"> 90</span>
-<span class="normal"> 91</span>
-<span class="normal"> 92</span>
-<span class="normal"> 93</span>
-<span class="normal"> 94</span>
-<span class="normal"> 95</span>
-<span class="normal"> 96</span>
-<span class="normal"> 97</span>
-<span class="normal"> 98</span>
-<span class="normal"> 99</span>
-<span class="normal">100</span>
-<span class="normal">101</span>
-<span class="normal">102</span>
-<span class="normal">103</span>
-<span class="normal">104</span></pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">quspin.operators</span> <span class="kn">import</span> <span class="n">hamiltonian</span><span class="p">,</span> <span class="n">commutator</span><span class="p">,</span> <span class="n">anti_commutator</span>
-<span class="kn">from</span> <span class="nn">quspin.basis</span> <span class="kn">import</span> <span class="n">spin_basis_1d</span> <span class="c1"># Hilbert space spin basis_1d</span>
-<span class="kn">from</span> <span class="nn">quspin.tools.evolution</span> <span class="kn">import</span> <span class="n">evolve</span>
-<span class="kn">from</span> <span class="nn">quspin.tools.misc</span> <span class="kn">import</span> <span class="n">get_matvec_function</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">six</span> <span class="kn">import</span> <span class="n">iteritems</span> <span class="c1"># loop over elements of dictionary</span>
-<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span> <span class="c1"># plotting library</span>
-<span class="c1">#</span>
-<span class="c1">###### model parameters</span>
-<span class="c1">#</span>
-<span class="n">L</span><span class="o">=</span><span class="mi">1</span> <span class="c1"># one qubit</span>
-<span class="n">delta</span><span class="o">=</span><span class="mf">1.0</span> <span class="c1"># detuning</span>
-<span class="n">Omega_0</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span> <span class="c1"># bare Rabi frequency</span>
-<span class="n">Omega_Rabi</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">Omega_0</span><span class="o">**</span><span class="mi">2</span><span class="o">+</span><span class="n">delta</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> <span class="c1"># Rabi frequency</span>
-<span class="n">gamma</span> <span class="o">=</span> <span class="mf">0.5</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="c1"># decay rate</span>
-<span class="c1">#</span>
-<span class="c1">##### create Hamiltonian to evolve unitarily</span>
-<span class="c1"># basis</span>
-<span class="n">basis</span><span class="o">=</span><span class="n">spin_basis_1d</span><span class="p">(</span><span class="n">L</span><span class="p">,</span><span class="n">pauli</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span> <span class="c1"># uses convention &quot;+&quot; = [[0,1],[0,0]] (mind the spin factor 1/2)</span>
-<span class="c1"># site-coupling lists</span>
-<span class="n">hx_list</span><span class="o">=</span><span class="p">[[</span><span class="n">Omega_0</span><span class="p">,</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">L</span><span class="p">)]</span>
-<span class="n">hz_list</span><span class="o">=</span><span class="p">[[</span><span class="n">delta</span><span class="p">,</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">L</span><span class="p">)]</span>
-<span class="c1"># static opstr list </span>
-<span class="n">static_H</span><span class="o">=</span><span class="p">[[</span><span class="s1">&#39;x&#39;</span><span class="p">,</span><span class="n">hx_list</span><span class="p">],[</span><span class="s1">&#39;z&#39;</span><span class="p">,</span><span class="n">hz_list</span><span class="p">]]</span>
-<span class="c1"># hamiltonian</span>
-<span class="n">H</span><span class="o">=</span><span class="n">hamiltonian</span><span class="p">(</span><span class="n">static_H</span><span class="p">,[],</span><span class="n">basis</span><span class="o">=</span><span class="n">basis</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Hamiltonian:</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span><span class="n">H</span><span class="o">.</span><span class="n">toarray</span><span class="p">())</span>
-<span class="c1">#</span>
-<span class="c1">##### create Lindbladian</span>
-<span class="c1"># site-coupling lists</span>
-<span class="n">L_list</span><span class="o">=</span><span class="p">[[</span><span class="mf">1.0</span><span class="p">,</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">L</span><span class="p">)]</span>
-<span class="c1"># static opstr list </span>
-<span class="n">static_L</span><span class="o">=</span><span class="p">[[</span><span class="s1">&#39;+&#39;</span><span class="p">,</span><span class="n">L_list</span><span class="p">]]</span>
-<span class="c1"># Lindblad operator</span>
-<span class="n">L</span><span class="o">=</span><span class="n">hamiltonian</span><span class="p">(</span><span class="n">static_L</span><span class="p">,[],</span><span class="n">basis</span><span class="o">=</span><span class="n">basis</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">complex128</span><span class="p">,</span><span class="n">check_herm</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Lindblad operator:</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span><span class="n">L</span><span class="o">.</span><span class="n">toarray</span><span class="p">())</span>
-<span class="c1"># pre-compute operators for efficiency</span>
-<span class="n">L_dagger</span><span class="o">=</span><span class="n">L</span><span class="o">.</span><span class="n">getH</span><span class="p">()</span>
-<span class="n">L_daggerL</span><span class="o">=</span><span class="n">L_dagger</span><span class="o">*</span><span class="n">L</span>
-<span class="c1">#</span>
-<span class="c1">#### determine the corresponding matvec routines ####</span>
-<span class="c1">#</span>
-<span class="c1"># different matvec functions are required since we use both matrices and their transposed, cf. Lindblad_EOM_v3</span>
-<span class="n">matvec_csr</span><span class="o">=</span><span class="n">get_matvec_function</span><span class="p">(</span><span class="n">H</span><span class="o">.</span><span class="n">static</span><span class="p">)</span> <span class="c1"># csr matvec function</span>
-<span class="n">matvec_csc</span><span class="o">=</span><span class="n">get_matvec_function</span><span class="p">(</span><span class="n">H</span><span class="o">.</span><span class="n">static</span><span class="o">.</span><span class="n">T</span><span class="p">)</span> <span class="c1"># csc matvec function</span>
-<span class="c1">#</span>
-<span class="c1"># fast function (not as memory efficient)</span>
-<span class="k">def</span> <span class="nf">Lindblad_EOM</span><span class="p">(</span><span class="n">time</span><span class="p">,</span><span class="n">rho</span><span class="p">,</span><span class="n">rho_out</span><span class="p">,</span><span class="n">rho_aux</span><span class="p">):</span>
-	<span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">	This function solves the complex-valued time-dependent GPE:</span>
-<span class="sd">	$$ \dot\rho(t) = -i[H,\rho(t)] + 2\gamma\left( L\rho L^\dagger - \frac{1}{2}\{L^\dagger L, \rho \} \right) $$</span>
-<span class="sd">	&quot;&quot;&quot;</span>
-	<span class="n">rho</span> <span class="o">=</span> <span class="n">rho</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="n">H</span><span class="o">.</span><span class="n">Ns</span><span class="p">,</span><span class="n">H</span><span class="o">.</span><span class="n">Ns</span><span class="p">))</span> <span class="c1"># reshape vector from ODE solver input</span>
-	<span class="c1">### Hamiltonian part</span>
-	<span class="c1"># commutator term (unitary</span>
-	<span class="c1"># rho_out = H.static.dot(rho))</span>
-	<span class="n">matvec_csr</span><span class="p">(</span><span class="n">H</span><span class="o">.</span><span class="n">static</span>  <span class="p">,</span><span class="n">rho</span>  <span class="p">,</span><span class="n">out</span><span class="o">=</span><span class="n">rho_out</span>  <span class="p">,</span><span class="n">a</span><span class="o">=+</span><span class="mf">1.0</span><span class="p">,</span><span class="n">overwrite_out</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-	<span class="c1"># rho_out -= (H.static.T.dot(rho.T)).T // RHS~rho.dot(H) </span>
-	<span class="n">matvec_csc</span><span class="p">(</span><span class="n">H</span><span class="o">.</span><span class="n">static</span><span class="o">.</span><span class="n">T</span><span class="p">,</span><span class="n">rho</span><span class="o">.</span><span class="n">T</span><span class="p">,</span><span class="n">out</span><span class="o">=</span><span class="n">rho_out</span><span class="o">.</span><span class="n">T</span><span class="p">,</span><span class="n">a</span><span class="o">=-</span><span class="mf">1.0</span><span class="p">,</span><span class="n">overwrite_out</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-	<span class="c1"># </span>
-	<span class="k">for</span> <span class="n">func</span><span class="p">,</span><span class="n">Hd</span> <span class="ow">in</span> <span class="n">iteritems</span><span class="p">(</span><span class="n">H</span><span class="o">.</span><span class="n">_dynamic</span><span class="p">):</span>
-		<span class="n">ft</span> <span class="o">=</span> <span class="n">func</span><span class="p">(</span><span class="n">time</span><span class="p">)</span>
-		<span class="c1"># rho_out += ft*Hd.dot(rho)</span>
-		<span class="n">matvec_csr</span><span class="p">(</span><span class="n">Hd</span>  <span class="p">,</span><span class="n">rho</span>  <span class="p">,</span><span class="n">out</span><span class="o">=</span><span class="n">rho_out</span>  <span class="p">,</span><span class="n">a</span><span class="o">=+</span><span class="n">ft</span><span class="p">,</span><span class="n">overwrite_out</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-		<span class="c1"># rho_out -= ft*(Hd.T.dot(rho.T)).T </span>
-		<span class="n">matvec_csc</span><span class="p">(</span><span class="n">Hd</span><span class="o">.</span><span class="n">T</span><span class="p">,</span><span class="n">rho</span><span class="o">.</span><span class="n">T</span><span class="p">,</span><span class="n">out</span><span class="o">=</span><span class="n">rho_out</span><span class="o">.</span><span class="n">T</span><span class="p">,</span><span class="n">a</span><span class="o">=-</span><span class="n">ft</span><span class="p">,</span><span class="n">overwrite_out</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-	<span class="c1"># multiply by -i</span>
-	<span class="n">rho_out</span> <span class="o">*=</span> <span class="o">-</span><span class="mf">1.0</span><span class="n">j</span>
-	<span class="c1">#</span>
-	<span class="c1">### Lindbladian part (static only)</span>
-	<span class="c1">## 1st Lindblad term (nonunitary): 2\gamma * L*rho*L^\dagger</span>
-	<span class="c1"># rho_aux = 2\gamma*L.dot(rho)</span>
-	<span class="n">matvec_csr</span><span class="p">(</span><span class="n">L</span><span class="o">.</span><span class="n">static</span>  <span class="p">,</span><span class="n">rho</span>             <span class="p">,</span><span class="n">out</span><span class="o">=</span><span class="n">rho_aux</span>  <span class="p">,</span><span class="n">a</span><span class="o">=+</span><span class="mf">2.0</span><span class="o">*</span><span class="n">gamma</span><span class="p">,</span><span class="n">overwrite_out</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-	<span class="c1"># rho_out += (L.static.conj().dot(rho_aux.T)).T // RHS ~ rho_aux.dot(L_dagger)</span>
-	<span class="n">matvec_csr</span><span class="p">(</span><span class="n">L</span><span class="o">.</span><span class="n">static</span><span class="o">.</span><span class="n">conj</span><span class="p">(),</span><span class="n">rho_aux</span><span class="o">.</span><span class="n">T</span><span class="p">,</span><span class="n">out</span><span class="o">=</span><span class="n">rho_out</span><span class="o">.</span><span class="n">T</span><span class="p">,</span><span class="n">a</span><span class="o">=+</span><span class="mf">1.0</span><span class="p">,</span><span class="n">overwrite_out</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-	<span class="c1"># </span>
-	<span class="c1">## anticommutator (2nd Lindblad) term (nonunitary): -\gamma \{L^\dagger * L, \eho}</span>
-	<span class="c1"># rho_out += gamma*L_daggerL.static.dot(rho)</span>
-	<span class="n">matvec_csr</span><span class="p">(</span><span class="n">L_daggerL</span><span class="o">.</span><span class="n">static</span><span class="p">,</span><span class="n">rho</span>  <span class="p">,</span><span class="n">out</span><span class="o">=</span><span class="n">rho_out</span>  <span class="p">,</span><span class="n">a</span><span class="o">=-</span><span class="n">gamma</span><span class="p">,</span><span class="n">overwrite_out</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-	<span class="c1"># rho_out += gamma*(L_daggerL.static.T.dot(rho.T)).T // RHS~rho.dot(L_daggerL) </span>
-	<span class="n">matvec_csc</span><span class="p">(</span><span class="n">L_daggerL</span><span class="o">.</span><span class="n">static</span><span class="o">.</span><span class="n">T</span><span class="p">,</span><span class="n">rho</span><span class="o">.</span><span class="n">T</span><span class="p">,</span><span class="n">out</span><span class="o">=</span><span class="n">rho_out</span><span class="o">.</span><span class="n">T</span><span class="p">,</span><span class="n">a</span><span class="o">=-</span><span class="n">gamma</span><span class="p">,</span><span class="n">overwrite_out</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> 
-	<span class="c1">#</span>
-	<span class="k">return</span> <span class="n">rho_out</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span> <span class="c1"># ODE solver accepts vectors only</span>
-<span class="c1">#</span>
-<span class="c1"># define auxiliary arguments</span>
-<span class="n">EOM_args</span><span class="o">=</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">H</span><span class="o">.</span><span class="n">Ns</span><span class="p">,</span><span class="n">H</span><span class="o">.</span><span class="n">Ns</span><span class="p">),</span><span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">complex128</span><span class="p">,</span><span class="n">order</span><span class="o">=</span><span class="s2">&quot;C&quot;</span><span class="p">),</span>    <span class="c1"># auxiliary variable rho_out</span>
-		  <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">H</span><span class="o">.</span><span class="n">Ns</span><span class="p">,</span><span class="n">H</span><span class="o">.</span><span class="n">Ns</span><span class="p">),</span><span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">complex128</span><span class="p">,</span><span class="n">order</span><span class="o">=</span><span class="s2">&quot;C&quot;</span><span class="p">),</span>  <span class="p">)</span> <span class="c1"># auxiliary variable rho_aux</span>
-<span class="c1">#</span>
-<span class="c1">##### time-evolve state according to Lindlad equation</span>
-<span class="c1"># define real time vector</span>
-<span class="n">t_max</span><span class="o">=</span><span class="mf">6.0</span>
-<span class="n">time</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span><span class="n">t_max</span><span class="p">,</span><span class="mi">101</span><span class="p">)</span>
-<span class="c1"># define initial state</span>
-<span class="n">rho0</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">0.5</span><span class="p">,</span><span class="mf">0.5</span><span class="n">j</span><span class="p">],[</span><span class="o">-</span><span class="mf">0.5</span><span class="n">j</span><span class="p">,</span><span class="mf">0.5</span><span class="p">]],</span><span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">complex128</span><span class="p">)</span>
-<span class="c1">#</span>
-<span class="c1"># evolution </span>
-<span class="n">rho_t</span> <span class="o">=</span> <span class="n">evolve</span><span class="p">(</span><span class="n">rho0</span><span class="p">,</span><span class="n">time</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">time</span><span class="p">,</span><span class="n">Lindblad_EOM</span><span class="p">,</span><span class="n">f_params</span><span class="o">=</span><span class="n">EOM_args</span><span class="p">,</span><span class="n">iterate</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">atol</span><span class="o">=</span><span class="mf">1E-12</span><span class="p">,</span><span class="n">rtol</span><span class="o">=</span><span class="mf">1E-12</span><span class="p">)</span> 
-<span class="c1">#</span>
-<span class="c1"># compute state evolution</span>
-<span class="n">population_down</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
-<span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">rho_flattened</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">rho_t</span><span class="p">):</span>
-	<span class="n">rho</span><span class="o">=</span><span class="n">rho_flattened</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">H</span><span class="o">.</span><span class="n">Ns</span><span class="p">,</span><span class="n">H</span><span class="o">.</span><span class="n">Ns</span><span class="p">)</span>
-	<span class="n">population_down</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">=</span><span class="n">rho_flattened</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span>
-	<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;time=</span><span class="si">{0:.2f}</span><span class="s2">, population of down state = </span><span class="si">{1:0.8f}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">time</span><span class="p">[</span><span class="n">i</span><span class="p">],</span><span class="n">population_down</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos">  1</span><span class="c1">#</span>
+<span class="linenos">  2</span><span class="kn">from</span> <span class="nn">quspin.operators</span> <span class="kn">import</span> <span class="n">hamiltonian</span><span class="p">,</span> <span class="n">commutator</span><span class="p">,</span> <span class="n">anti_commutator</span>
+<span class="linenos">  3</span><span class="kn">from</span> <span class="nn">quspin.basis</span> <span class="kn">import</span> <span class="n">spin_basis_1d</span>  <span class="c1"># Hilbert space spin basis_1d</span>
+<span class="linenos">  4</span><span class="kn">from</span> <span class="nn">quspin.tools.evolution</span> <span class="kn">import</span> <span class="n">evolve</span>
+<span class="linenos">  5</span><span class="kn">from</span> <span class="nn">quspin.tools.misc</span> <span class="kn">import</span> <span class="n">get_matvec_function</span>
+<span class="linenos">  6</span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="linenos">  7</span><span class="kn">from</span> <span class="nn">six</span> <span class="kn">import</span> <span class="n">iteritems</span>  <span class="c1"># loop over elements of dictionary</span>
+<span class="linenos">  8</span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>  <span class="c1"># plotting library</span>
+<span class="linenos">  9</span>
+<span class="linenos"> 10</span><span class="c1">#</span>
+<span class="linenos"> 11</span><span class="c1">###### model parameters</span>
+<span class="linenos"> 12</span><span class="c1">#</span>
+<span class="linenos"> 13</span><span class="n">L</span> <span class="o">=</span> <span class="mi">1</span>  <span class="c1"># one qubit</span>
+<span class="linenos"> 14</span><span class="n">delta</span> <span class="o">=</span> <span class="mf">1.0</span>  <span class="c1"># detuning</span>
+<span class="linenos"> 15</span><span class="n">Omega_0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>  <span class="c1"># bare Rabi frequency</span>
+<span class="linenos"> 16</span><span class="n">Omega_Rabi</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">Omega_0</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">delta</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>  <span class="c1"># Rabi frequency</span>
+<span class="linenos"> 17</span><span class="n">gamma</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>  <span class="c1"># decay rate</span>
+<span class="linenos"> 18</span><span class="c1">#</span>
+<span class="linenos"> 19</span><span class="c1">##### create Hamiltonian to evolve unitarily</span>
+<span class="linenos"> 20</span><span class="c1"># basis</span>
+<span class="linenos"> 21</span><span class="n">basis</span> <span class="o">=</span> <span class="n">spin_basis_1d</span><span class="p">(</span>
+<span class="linenos"> 22</span>    <span class="n">L</span><span class="p">,</span> <span class="n">pauli</span><span class="o">=-</span><span class="mi">1</span>
+<span class="linenos"> 23</span><span class="p">)</span>  <span class="c1"># uses convention &quot;+&quot; = [[0,1],[0,0]] (mind the spin factor 1/2)</span>
+<span class="linenos"> 24</span><span class="c1"># site-coupling lists</span>
+<span class="linenos"> 25</span><span class="n">hx_list</span> <span class="o">=</span> <span class="p">[[</span><span class="n">Omega_0</span><span class="p">,</span> <span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">L</span><span class="p">)]</span>
+<span class="linenos"> 26</span><span class="n">hz_list</span> <span class="o">=</span> <span class="p">[[</span><span class="n">delta</span><span class="p">,</span> <span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">L</span><span class="p">)]</span>
+<span class="linenos"> 27</span><span class="c1"># static opstr list</span>
+<span class="linenos"> 28</span><span class="n">static_H</span> <span class="o">=</span> <span class="p">[[</span><span class="s2">&quot;x&quot;</span><span class="p">,</span> <span class="n">hx_list</span><span class="p">],</span> <span class="p">[</span><span class="s2">&quot;z&quot;</span><span class="p">,</span> <span class="n">hz_list</span><span class="p">]]</span>
+<span class="linenos"> 29</span><span class="c1"># hamiltonian</span>
+<span class="linenos"> 30</span><span class="n">H</span> <span class="o">=</span> <span class="n">hamiltonian</span><span class="p">(</span><span class="n">static_H</span><span class="p">,</span> <span class="p">[],</span> <span class="n">basis</span><span class="o">=</span><span class="n">basis</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+<span class="linenos"> 31</span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Hamiltonian:</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">H</span><span class="o">.</span><span class="n">toarray</span><span class="p">())</span>
+<span class="linenos"> 32</span><span class="c1">#</span>
+<span class="linenos"> 33</span><span class="c1">##### create Lindbladian</span>
+<span class="linenos"> 34</span><span class="c1"># site-coupling lists</span>
+<span class="linenos"> 35</span><span class="n">L_list</span> <span class="o">=</span> <span class="p">[[</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">L</span><span class="p">)]</span>
+<span class="linenos"> 36</span><span class="c1"># static opstr list</span>
+<span class="linenos"> 37</span><span class="n">static_L</span> <span class="o">=</span> <span class="p">[[</span><span class="s2">&quot;+&quot;</span><span class="p">,</span> <span class="n">L_list</span><span class="p">]]</span>
+<span class="linenos"> 38</span><span class="c1"># Lindblad operator</span>
+<span class="linenos"> 39</span><span class="n">L</span> <span class="o">=</span> <span class="n">hamiltonian</span><span class="p">(</span><span class="n">static_L</span><span class="p">,</span> <span class="p">[],</span> <span class="n">basis</span><span class="o">=</span><span class="n">basis</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">complex128</span><span class="p">,</span> <span class="n">check_herm</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="linenos"> 40</span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Lindblad operator:</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">L</span><span class="o">.</span><span class="n">toarray</span><span class="p">())</span>
+<span class="linenos"> 41</span><span class="c1"># pre-compute operators for efficiency</span>
+<span class="linenos"> 42</span><span class="n">L_dagger</span> <span class="o">=</span> <span class="n">L</span><span class="o">.</span><span class="n">getH</span><span class="p">()</span>
+<span class="linenos"> 43</span><span class="n">L_daggerL</span> <span class="o">=</span> <span class="n">L_dagger</span> <span class="o">*</span> <span class="n">L</span>
+<span class="linenos"> 44</span><span class="c1">#</span>
+<span class="linenos"> 45</span><span class="c1">#### determine the corresponding matvec routines ####</span>
+<span class="linenos"> 46</span><span class="c1">#</span>
+<span class="linenos"> 47</span><span class="c1"># different matvec functions are required since we use both matrices and their transposed, cf. Lindblad_EOM_v3</span>
+<span class="linenos"> 48</span><span class="n">matvec_csr</span> <span class="o">=</span> <span class="n">get_matvec_function</span><span class="p">(</span><span class="n">H</span><span class="o">.</span><span class="n">static</span><span class="p">)</span>  <span class="c1"># csr matvec function</span>
+<span class="linenos"> 49</span><span class="n">matvec_csc</span> <span class="o">=</span> <span class="n">get_matvec_function</span><span class="p">(</span><span class="n">H</span><span class="o">.</span><span class="n">static</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>  <span class="c1"># csc matvec function</span>
+<span class="linenos"> 50</span>
+<span class="linenos"> 51</span>
+<span class="linenos"> 52</span><span class="c1">#</span>
+<span class="linenos"> 53</span><span class="c1"># fast function (not as memory efficient)</span>
+<span class="linenos"> 54</span><span class="k">def</span> <span class="nf">Lindblad_EOM</span><span class="p">(</span><span class="n">time</span><span class="p">,</span> <span class="n">rho</span><span class="p">,</span> <span class="n">rho_out</span><span class="p">,</span> <span class="n">rho_aux</span><span class="p">):</span>
+<span class="linenos"> 55</span><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="linenos"> 56</span><span class="sd">    This function solves the complex-valued time-dependent GPE:</span>
+<span class="linenos"> 57</span><span class="sd">    $$ \dot\rho(t) = -i[H,\rho(t)] + 2\gamma\left( L\rho L^\dagger - \frac{1}{2}\{L^\dagger L, \rho \} \right) $$</span>
+<span class="linenos"> 58</span><span class="sd">    &quot;&quot;&quot;</span>
+<span class="linenos"> 59</span>    <span class="n">rho</span> <span class="o">=</span> <span class="n">rho</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="n">H</span><span class="o">.</span><span class="n">Ns</span><span class="p">,</span> <span class="n">H</span><span class="o">.</span><span class="n">Ns</span><span class="p">))</span>  <span class="c1"># reshape vector from ODE solver input</span>
+<span class="linenos"> 60</span>    <span class="c1">### Hamiltonian part</span>
+<span class="linenos"> 61</span>    <span class="c1"># commutator term (unitary</span>
+<span class="linenos"> 62</span>    <span class="c1"># rho_out = H.static.dot(rho))</span>
+<span class="linenos"> 63</span>    <span class="n">matvec_csr</span><span class="p">(</span><span class="n">H</span><span class="o">.</span><span class="n">static</span><span class="p">,</span> <span class="n">rho</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">rho_out</span><span class="p">,</span> <span class="n">a</span><span class="o">=+</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">overwrite_out</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="linenos"> 64</span>    <span class="c1"># rho_out -= (H.static.T.dot(rho.T)).T // RHS~rho.dot(H)</span>
+<span class="linenos"> 65</span>    <span class="n">matvec_csc</span><span class="p">(</span><span class="n">H</span><span class="o">.</span><span class="n">static</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">rho</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">rho_out</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">a</span><span class="o">=-</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">overwrite_out</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="linenos"> 66</span>    <span class="c1">#</span>
+<span class="linenos"> 67</span>    <span class="k">for</span> <span class="n">func</span><span class="p">,</span> <span class="n">Hd</span> <span class="ow">in</span> <span class="n">iteritems</span><span class="p">(</span><span class="n">H</span><span class="o">.</span><span class="n">_dynamic</span><span class="p">):</span>
+<span class="linenos"> 68</span>        <span class="n">ft</span> <span class="o">=</span> <span class="n">func</span><span class="p">(</span><span class="n">time</span><span class="p">)</span>
+<span class="linenos"> 69</span>        <span class="c1"># rho_out += ft*Hd.dot(rho)</span>
+<span class="linenos"> 70</span>        <span class="n">matvec_csr</span><span class="p">(</span><span class="n">Hd</span><span class="p">,</span> <span class="n">rho</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">rho_out</span><span class="p">,</span> <span class="n">a</span><span class="o">=+</span><span class="n">ft</span><span class="p">,</span> <span class="n">overwrite_out</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="linenos"> 71</span>        <span class="c1"># rho_out -= ft*(Hd.T.dot(rho.T)).T</span>
+<span class="linenos"> 72</span>        <span class="n">matvec_csc</span><span class="p">(</span><span class="n">Hd</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">rho</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">rho_out</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">a</span><span class="o">=-</span><span class="n">ft</span><span class="p">,</span> <span class="n">overwrite_out</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="linenos"> 73</span>    <span class="c1"># multiply by -i</span>
+<span class="linenos"> 74</span>    <span class="n">rho_out</span> <span class="o">*=</span> <span class="o">-</span><span class="mf">1.0</span><span class="n">j</span>
+<span class="linenos"> 75</span>    <span class="c1">#</span>
+<span class="linenos"> 76</span>    <span class="c1">### Lindbladian part (static only)</span>
+<span class="linenos"> 77</span>    <span class="c1">## 1st Lindblad term (nonunitary): 2\gamma * L*rho*L^\dagger</span>
+<span class="linenos"> 78</span>    <span class="c1"># rho_aux = 2\gamma*L.dot(rho)</span>
+<span class="linenos"> 79</span>    <span class="n">matvec_csr</span><span class="p">(</span><span class="n">L</span><span class="o">.</span><span class="n">static</span><span class="p">,</span> <span class="n">rho</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">rho_aux</span><span class="p">,</span> <span class="n">a</span><span class="o">=+</span><span class="mf">2.0</span> <span class="o">*</span> <span class="n">gamma</span><span class="p">,</span> <span class="n">overwrite_out</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="linenos"> 80</span>    <span class="c1"># rho_out += (L.static.conj().dot(rho_aux.T)).T // RHS ~ rho_aux.dot(L_dagger)</span>
+<span class="linenos"> 81</span>    <span class="n">matvec_csr</span><span class="p">(</span><span class="n">L</span><span class="o">.</span><span class="n">static</span><span class="o">.</span><span class="n">conj</span><span class="p">(),</span> <span class="n">rho_aux</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">rho_out</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">a</span><span class="o">=+</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">overwrite_out</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="linenos"> 82</span>    <span class="c1">#</span>
+<span class="linenos"> 83</span>    <span class="c1">## anticommutator (2nd Lindblad) term (nonunitary): -\gamma \{L^\dagger * L, \eho}</span>
+<span class="linenos"> 84</span>    <span class="c1"># rho_out += gamma*L_daggerL.static.dot(rho)</span>
+<span class="linenos"> 85</span>    <span class="n">matvec_csr</span><span class="p">(</span><span class="n">L_daggerL</span><span class="o">.</span><span class="n">static</span><span class="p">,</span> <span class="n">rho</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">rho_out</span><span class="p">,</span> <span class="n">a</span><span class="o">=-</span><span class="n">gamma</span><span class="p">,</span> <span class="n">overwrite_out</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="linenos"> 86</span>    <span class="c1"># rho_out += gamma*(L_daggerL.static.T.dot(rho.T)).T // RHS~rho.dot(L_daggerL)</span>
+<span class="linenos"> 87</span>    <span class="n">matvec_csc</span><span class="p">(</span><span class="n">L_daggerL</span><span class="o">.</span><span class="n">static</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">rho</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">rho_out</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">a</span><span class="o">=-</span><span class="n">gamma</span><span class="p">,</span> <span class="n">overwrite_out</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="linenos"> 88</span>    <span class="c1">#</span>
+<span class="linenos"> 89</span>    <span class="k">return</span> <span class="n">rho_out</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>  <span class="c1"># ODE solver accepts vectors only</span>
+<span class="linenos"> 90</span>
+<span class="linenos"> 91</span>
+<span class="linenos"> 92</span><span class="c1">#</span>
+<span class="linenos"> 93</span><span class="c1"># define auxiliary arguments</span>
+<span class="linenos"> 94</span><span class="n">EOM_args</span> <span class="o">=</span> <span class="p">(</span>
+<span class="linenos"> 95</span>    <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span>
+<span class="linenos"> 96</span>        <span class="p">(</span><span class="n">H</span><span class="o">.</span><span class="n">Ns</span><span class="p">,</span> <span class="n">H</span><span class="o">.</span><span class="n">Ns</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">complex128</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="s2">&quot;C&quot;</span>
+<span class="linenos"> 97</span>    <span class="p">),</span>  <span class="c1"># auxiliary variable rho_out</span>
+<span class="linenos"> 98</span>    <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">H</span><span class="o">.</span><span class="n">Ns</span><span class="p">,</span> <span class="n">H</span><span class="o">.</span><span class="n">Ns</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">complex128</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="s2">&quot;C&quot;</span><span class="p">),</span>
+<span class="linenos"> 99</span><span class="p">)</span>  <span class="c1"># auxiliary variable rho_aux</span>
+<span class="linenos">100</span><span class="c1">#</span>
+<span class="linenos">101</span><span class="c1">##### time-evolve state according to Lindlad equation</span>
+<span class="linenos">102</span><span class="c1"># define real time vector</span>
+<span class="linenos">103</span><span class="n">t_max</span> <span class="o">=</span> <span class="mf">6.0</span>
+<span class="linenos">104</span><span class="n">time</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">t_max</span><span class="p">,</span> <span class="mi">101</span><span class="p">)</span>
+<span class="linenos">105</span><span class="c1"># define initial state</span>
+<span class="linenos">106</span><span class="n">rho0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="n">j</span><span class="p">],</span> <span class="p">[</span><span class="o">-</span><span class="mf">0.5</span><span class="n">j</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">]],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">complex128</span><span class="p">)</span>
+<span class="linenos">107</span><span class="c1">#</span>
+<span class="linenos">108</span><span class="c1"># evolution</span>
+<span class="linenos">109</span><span class="n">rho_t</span> <span class="o">=</span> <span class="n">evolve</span><span class="p">(</span>
+<span class="linenos">110</span>    <span class="n">rho0</span><span class="p">,</span>
+<span class="linenos">111</span>    <span class="n">time</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+<span class="linenos">112</span>    <span class="n">time</span><span class="p">,</span>
+<span class="linenos">113</span>    <span class="n">Lindblad_EOM</span><span class="p">,</span>
+<span class="linenos">114</span>    <span class="n">f_params</span><span class="o">=</span><span class="n">EOM_args</span><span class="p">,</span>
+<span class="linenos">115</span>    <span class="n">iterate</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="linenos">116</span>    <span class="n">atol</span><span class="o">=</span><span class="mf">1e-12</span><span class="p">,</span>
+<span class="linenos">117</span>    <span class="n">rtol</span><span class="o">=</span><span class="mf">1e-12</span><span class="p">,</span>
+<span class="linenos">118</span><span class="p">)</span>
+<span class="linenos">119</span><span class="c1">#</span>
+<span class="linenos">120</span><span class="c1"># compute state evolution</span>
+<span class="linenos">121</span><span class="n">population_down</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+<span class="linenos">122</span><span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">rho_flattened</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">rho_t</span><span class="p">):</span>
+<span class="linenos">123</span>    <span class="n">rho</span> <span class="o">=</span> <span class="n">rho_flattened</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">H</span><span class="o">.</span><span class="n">Ns</span><span class="p">,</span> <span class="n">H</span><span class="o">.</span><span class="n">Ns</span><span class="p">)</span>
+<span class="linenos">124</span>    <span class="n">population_down</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">rho_flattened</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">real</span>
+<span class="linenos">125</span>    <span class="nb">print</span><span class="p">(</span>
+<span class="linenos">126</span>        <span class="s2">&quot;time=</span><span class="si">{0:.2f}</span><span class="s2">, population of down state = </span><span class="si">{1:0.8f}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+<span class="linenos">127</span>            <span class="n">time</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">population_down</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+<span class="linenos">128</span>        <span class="p">)</span>
+<span class="linenos">129</span>    <span class="p">)</span>
 </pre></div>
-</td></tr></table></div>
+</div>
 </dd></dl>
 
-</div>
+</section>
 
 
-            <div class="clearer"></div>
+           </div>
           </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="quspin.tools.misc.matvec.html" class="btn btn-neutral float-left" title="quspin.tools.misc.matvec" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="quspin.tools.misc.mean_level_spacing.html" class="btn btn-neutral float-right" title="quspin.tools.misc.mean_level_spacing" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Phillip Weinberg, Markus Schmitt, and Marin Bukov.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
         </div>
       </div>
-      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
-        <div class="sphinxsidebarwrapper">
-  <h4>Previous topic</h4>
-  <p class="topless"><a href="quspin.tools.misc.matvec.html"
-                        title="previous chapter">quspin.tools.misc.matvec</a></p>
-  <h4>Next topic</h4>
-  <p class="topless"><a href="quspin.tools.misc.mean_level_spacing.html"
-                        title="next chapter">quspin.tools.misc.mean_level_spacing</a></p>
-  <div role="note" aria-label="source link">
-    <h3>This Page</h3>
-    <ul class="this-page-menu">
-      <li><a href="../sources/generated/quspin.tools.misc.get_matvec_function.rst.txt"
-            rel="nofollow">Show Source</a></li>
-    </ul>
-   </div>
-<div id="searchbox" style="display: none" role="search">
-  <h3 id="searchlabel">Quick search</h3>
-    <div class="searchformwrapper">
-    <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" />
-      <input type="submit" value="Go" />
-    </form>
-    </div>
-</div>
-<script>$('#searchbox').show(0);</script>
-        </div>
-      </div>
-      <div class="clearer"></div>
-    </div>
-    <div class="related" role="navigation" aria-label="related navigation">
-      <h3>Navigation</h3>
-      <ul>
-        <li class="right" style="margin-right: 10px">
-          <a href="../genindex.html" title="General Index"
-             >index</a></li>
-        <li class="right" >
-          <a href="../py-modindex.html" title="Python Module Index"
-             >modules</a> |</li>
-        <li class="right" >
-          <a href="quspin.tools.misc.mean_level_spacing.html" title="quspin.tools.misc.mean_level_spacing"
-             >next</a> |</li>
-        <li class="right" >
-          <a href="quspin.tools.misc.matvec.html" title="quspin.tools.misc.matvec"
-             >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">QuSpin 0.3.7 documentation</a> &#187;</li>
-          <li class="nav-item nav-item-1"><a href="../tools.html" >Tools module (<code class="xref py py-mod docutils literal notranslate"><span class="pre">quspin.tools</span></code>)</a> &#187;</li>
-        <li class="nav-item nav-item-this"><a href="">quspin.tools.misc.get_matvec_function</a></li> 
-      </ul>
-    </div>
-    <div class="footer" role="contentinfo">
-        &#169; Copyright 2016, Phillip Weinberg, Markus Schmitt and Marin Bukov.
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.5.4.
-    </div>
-  </body>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+    <!-- Theme Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-6885KZ7NH6"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-6885KZ7NH6', {
+          'anonymize_ip': false,
+      });
+    </script> 
+
+</body>
 </html>

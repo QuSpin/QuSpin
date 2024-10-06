@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>quspin.tools.evolution.ExpmMultiplyParallel &mdash; QuSpin 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../static/css/sphinx_rtd_size.css?v=f26ae176" />
+      <link rel="stylesheet" type="text/css" href="../static/css/py_class_property_fix.css?v=faf79ccd" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../static/jquery.js?v=5d32c60e"></script>
+        <script src="../static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../static/documentation_options.js?v=8d563738"></script>
+        <script src="../static/doctools.js?v=9a2dae69"></script>
+        <script src="../static/sphinx_highlight.js?v=dc90522c"></script>
+        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="../static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="quspin.tools.evolution.expm_multiply_parallel" href="quspin.tools.evolution.expm_multiply_parallel.html" />
+    <link rel="prev" title="quspin.tools.evolution.evolve" href="quspin.tools.evolution.evolve.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            QuSpin
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">QuSpin (public API)</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../basis.html">Basis module (<code class="xref py py-mod docutils literal notranslate"><span class="pre">quspin.basis</span></code>)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../operators.html">Operators module (<code class="xref py py-mod docutils literal notranslate"><span class="pre">quspin.operators</span></code>)</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../tools.html">Tools module (<code class="xref py py-mod docutils literal notranslate"><span class="pre">quspin.tools</span></code>)</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="../tools.html#evolution">evolution</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="quspin.tools.evolution.ED_state_vs_time.html">quspin.tools.evolution.ED_state_vs_time</a></li>
+<li class="toctree-l3"><a class="reference internal" href="quspin.tools.evolution.evolve.html">quspin.tools.evolution.evolve</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">quspin.tools.evolution.ExpmMultiplyParallel</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#quspin.tools.evolution.ExpmMultiplyParallel"><code class="docutils literal notranslate"><span class="pre">ExpmMultiplyParallel</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="quspin.tools.evolution.expm_multiply_parallel.html">quspin.tools.evolution.expm_multiply_parallel</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../tools.html#lanczos">Lanczos</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tools.html#floquet">Floquet</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tools.html#measurements">measurements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tools.html#block-tools">block_tools</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tools.html#misc">misc</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Installation &amp; Use</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../installation/installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../installation/installation.html#basics-of-command-line-use">Basics of command line use</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../example_scripts.html">Example scripts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../jupyter_notebooks.html">Jupyter notebooks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/parallelization.html">Parallel computing support</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/user_basis.html"><cite>user_basis</cite> tutorial</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Bugs &amp; Questions</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../contribute/report_a_bug.html">Report a bug</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contribute/ask_a_question.html">Ask a question</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">QuSpin</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content style-external-links">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../tools.html">Tools module (<code class="xref py py-mod docutils literal notranslate"><span class="pre">quspin.tools</span></code>)</a></li>
+      <li class="breadcrumb-item active">quspin.tools.evolution.ExpmMultiplyParallel</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../sources/generated/quspin.tools.evolution.ExpmMultiplyParallel.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <style> .red {color:#ff0000; font-weight:bold; font-style:italic; } </style>
+<style> .green {color:#00b200; font-weight:bold; font-style:italic; } </style>
+<style> .magenta {color:#FF33F3; font-weight:bold; font-style:italic; } </style>
+<style> .orange {color:#FE8E02; font-weight:bold; font-style:italic; } </style><section id="quspin-tools-evolution-expmmultiplyparallel">
+<h1>quspin.tools.evolution.ExpmMultiplyParallel<a class="headerlink" href="#quspin-tools-evolution-expmmultiplyparallel" title="Link to this heading"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="quspin.tools.evolution.ExpmMultiplyParallel">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">quspin.tools.evolution.</span></span><span class="sig-name descname"><span class="pre">ExpmMultiplyParallel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">A</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">a</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">copy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../modules/parallel_sparse_tools/expm_multiply_parallel_core/expm_multiply_parallel_core.html#ExpmMultiplyParallel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quspin.tools.evolution.ExpmMultiplyParallel" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Implements <cite>scipy.sparse.linalg.expm_multiply()</cite> for <em>openmp</em>.</p>
+<p class="rubric">Notes</p>
+<ul class="simple">
+<li><p>this is a wrapper over custom c++ code.</p></li>
+<li><p>the <cite>dtype</cite> input need not be the same dtype as <cite>A</cite> or <cite>a</cite>; however, it must be possible to cast the result of <cite>a*A</cite> to this <cite>dtype</cite>.</p></li>
+<li><p>consider the special case of real-time evolution with a purely-imaginary Hamiltonian, in which case <cite>a=-1j*time</cite> and <cite>A</cite> are both complex-valued, while the resulting matrix exponential is real-valued: in such cases, one can use either one of</p></li>
+</ul>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span>&gt;&gt;&gt; expm_multiply_parallel( (1j*H.tocsr()).astype(np.float64), a=-1.0, dtype=np.float64)`
+</pre></div>
+</div>
+<p>and</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">expm_multiply_parallel</span><span class="p">(</span> <span class="n">H</span><span class="o">.</span><span class="n">tocsr</span><span class="p">(),</span> <span class="n">a</span><span class="o">=-</span><span class="mf">1.0</span><span class="n">j</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">complex128</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The more efficient way to compute the matrix exponential in this case is to use a real-valued <cite>dtype</cite>.</p>
+<p class="rubric">Examples</p>
+<p>This example shows how to construct the <cite>expm_multiply_parallel</cite> object.</p>
+<p>Further code snippets can be found in the examples for the function methods of the class.
+The code snippet below initiates the class, and is required to run the example codes for the function methods.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="kn">from</span> <span class="nn">quspin.basis</span> <span class="kn">import</span> <span class="n">spin_basis_1d</span>  <span class="c1"># bosonic Hilbert space</span>
+<span class="linenos"> 2</span><span class="kn">from</span> <span class="nn">quspin.tools.evolution</span> <span class="kn">import</span> <span class="n">expm_multiply_parallel</span>  <span class="c1"># expm_multiply_parallel</span>
+<span class="linenos"> 3</span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>  <span class="c1"># general math functions</span>
+<span class="linenos"> 4</span>
+<span class="linenos"> 5</span><span class="c1">#</span>
+<span class="linenos"> 6</span><span class="n">L</span> <span class="o">=</span> <span class="mi">12</span>  <span class="c1"># syste size</span>
+<span class="linenos"> 7</span><span class="c1"># coupling strenghts</span>
+<span class="linenos"> 8</span><span class="n">J</span> <span class="o">=</span> <span class="mf">1.0</span>  <span class="c1"># spin-spin coupling</span>
+<span class="linenos"> 9</span><span class="n">h</span> <span class="o">=</span> <span class="mf">0.8945</span>  <span class="c1"># x-field strength</span>
+<span class="linenos">10</span><span class="n">g</span> <span class="o">=</span> <span class="mf">0.945</span>  <span class="c1"># z-field strength</span>
+<span class="linenos">11</span><span class="c1"># create site-coupling lists</span>
+<span class="linenos">12</span><span class="n">J_zz</span> <span class="o">=</span> <span class="p">[[</span><span class="n">J</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">%</span> <span class="n">L</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">L</span><span class="p">)]</span>  <span class="c1"># PBC</span>
+<span class="linenos">13</span><span class="n">x_field</span> <span class="o">=</span> <span class="p">[[</span><span class="n">h</span><span class="p">,</span> <span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">L</span><span class="p">)]</span>
+<span class="linenos">14</span><span class="n">z_field</span> <span class="o">=</span> <span class="p">[[</span><span class="n">g</span><span class="p">,</span> <span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">L</span><span class="p">)]</span>
+<span class="linenos">15</span><span class="c1"># create static and dynamic lists</span>
+<span class="linenos">16</span><span class="n">static</span> <span class="o">=</span> <span class="p">[[</span><span class="s2">&quot;zz&quot;</span><span class="p">,</span> <span class="n">J_zz</span><span class="p">],</span> <span class="p">[</span><span class="s2">&quot;x&quot;</span><span class="p">,</span> <span class="n">x_field</span><span class="p">],</span> <span class="p">[</span><span class="s2">&quot;z&quot;</span><span class="p">,</span> <span class="n">z_field</span><span class="p">]]</span>
+<span class="linenos">17</span><span class="n">dynamic</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="linenos">18</span><span class="c1"># create spin-1/2 basis</span>
+<span class="linenos">19</span><span class="n">basis</span> <span class="o">=</span> <span class="n">spin_basis_1d</span><span class="p">(</span><span class="n">L</span><span class="p">,</span> <span class="n">kblock</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">pblock</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="linenos">20</span><span class="c1"># set up Hamiltonian</span>
+<span class="linenos">21</span><span class="n">H</span> <span class="o">=</span> <span class="n">hamiltonian</span><span class="p">(</span><span class="n">static</span><span class="p">,</span> <span class="n">dynamic</span><span class="p">,</span> <span class="n">basis</span><span class="o">=</span><span class="n">basis</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+<span class="linenos">22</span><span class="c1"># prealocate computation of matrix exponential</span>
+<span class="linenos">23</span><span class="n">expH</span> <span class="o">=</span> <span class="n">expm_multiply_parallel</span><span class="p">(</span><span class="n">H</span><span class="o">.</span><span class="n">tocsr</span><span class="p">(),</span> <span class="n">a</span><span class="o">=</span><span class="mf">0.2</span><span class="n">j</span><span class="p">)</span>
+<span class="linenos">24</span><span class="nb">print</span><span class="p">(</span><span class="n">expH</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="py method">
+<dt class="sig sig-object py" id="quspin.tools.evolution.ExpmMultiplyParallel.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">A</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">a</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">copy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../modules/parallel_sparse_tools/expm_multiply_parallel_core/expm_multiply_parallel_core.html#ExpmMultiplyParallel.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quspin.tools.evolution.ExpmMultiplyParallel.__init__" title="Link to this definition"></a></dt>
+<dd><p>Initializes <cite>expm_multiply_parallel</cite>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>A</strong><span class="classifier">{array_like, scipy.sparse matrix}</span></dt><dd><p>The operator (matrix) whose exponential is to be calculated.</p>
+</dd>
+<dt><strong>a</strong><span class="classifier">scalar, optional</span></dt><dd><p>scalar value multiplying generator matrix <span class="math notranslate nohighlight">\(A\)</span> in matrix exponential: <span class="math notranslate nohighlight">\(\mathrm{e}^{aA}\)</span>.</p>
+</dd>
+<dt><strong>dtype</strong><span class="classifier">numpy.dtype, optional</span></dt><dd><p>data type specified for the total operator <span class="math notranslate nohighlight">\(\mathrm{e}^{aA}\)</span>. Default is: <cite>numpy.result_type(A.dtype,min_scalar_type(a),float64)</cite>.</p>
+</dd>
+<dt><strong>copy</strong><span class="classifier">bool, optional</span></dt><dd><p>if <cite>True</cite> the matrix is copied otherwise the matrix is stored by reference.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<p class="rubric">Methods</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#quspin.tools.evolution.ExpmMultiplyParallel.__init__" title="quspin.tools.evolution.ExpmMultiplyParallel.__init__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__init__</span></code></a>(A[, a, dtype, copy])</p></td>
+<td><p>Initializes <cite>expm_multiply_parallel</cite>.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#quspin.tools.evolution.ExpmMultiplyParallel.dot" title="quspin.tools.evolution.ExpmMultiplyParallel.dot"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dot</span></code></a>(v[, work_array, overwrite_v, tol])</p></td>
+<td><p>Calculates the action of <span class="math notranslate nohighlight">\(\mathrm{e}^{aA}\)</span> on a vector <span class="math notranslate nohighlight">\(v\)</span>.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#quspin.tools.evolution.ExpmMultiplyParallel.set_a" title="quspin.tools.evolution.ExpmMultiplyParallel.set_a"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_a</span></code></a>(a[, dtype])</p></td>
+<td><p>Sets the value of the property <cite>a</cite>.</p></td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Attributes</p>
+<table class="autosummary longtable docutils align-default">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#quspin.tools.evolution.ExpmMultiplyParallel.A" title="quspin.tools.evolution.ExpmMultiplyParallel.A"><code class="xref py py-obj docutils literal notranslate"><span class="pre">A</span></code></a></p></td>
+<td><p>csr_matrix to be exponentiated.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#quspin.tools.evolution.ExpmMultiplyParallel.a" title="quspin.tools.evolution.ExpmMultiplyParallel.a"><code class="xref py py-obj docutils literal notranslate"><span class="pre">a</span></code></a></p></td>
+<td><p><span class="math notranslate nohighlight">\(\mathrm{e}^{aA}\)</span></p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py property">
+<dt class="sig sig-object py" id="quspin.tools.evolution.ExpmMultiplyParallel.A">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">A</span></span><a class="headerlink" href="#quspin.tools.evolution.ExpmMultiplyParallel.A" title="Link to this definition"></a></dt>
+<dd><p>csr_matrix to be exponentiated.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>scipy.sparse.csr_matrix</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="quspin.tools.evolution.ExpmMultiplyParallel.a">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">a</span></span><a class="headerlink" href="#quspin.tools.evolution.ExpmMultiplyParallel.a" title="Link to this definition"></a></dt>
+<dd><p><span class="math notranslate nohighlight">\(\mathrm{e}^{aA}\)</span></p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>scalar</p>
+</dd>
+<dt class="field-even">Type<span class="colon">:</span></dt>
+<dd class="field-even"><p>value multiplying generator matrix <span class="math notranslate nohighlight">\(A\)</span> in matrix exponential</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="quspin.tools.evolution.ExpmMultiplyParallel.dot">
+<span class="sig-name descname"><span class="pre">dot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">v</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">work_array</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite_v</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../modules/parallel_sparse_tools/expm_multiply_parallel_core/expm_multiply_parallel_core.html#ExpmMultiplyParallel.dot"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quspin.tools.evolution.ExpmMultiplyParallel.dot" title="Link to this definition"></a></dt>
+<dd><p>Calculates the action of <span class="math notranslate nohighlight">\(\mathrm{e}^{aA}\)</span> on a vector <span class="math notranslate nohighlight">\(v\)</span>.</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>v</strong><span class="classifier">contiguous numpy.ndarray, 1d or 2d array</span></dt><dd><p>array to apply <span class="math notranslate nohighlight">\(\mathrm{e}^{aA}\)</span> on.</p>
+</dd>
+<dt><strong>work_array</strong><span class="classifier">contiguous numpy.ndarray, optional</span></dt><dd><p>array can be any shape but must contain 2*v.size contiguous elements.
+This array is used as temporary memory space for the underlying c-code. This saves extra memory allocation for function operations.</p>
+</dd>
+<dt><strong>overwrite_v</strong><span class="classifier">bool, optoinal</span></dt><dd><p>if set to <cite>True</cite>, the data in <cite>v</cite> is overwritten by the function. This saves extra memory allocation for the results.</p>
+</dd>
+<dt><strong>tol: float, optoinal</strong></dt><dd><p>tolerance value used to truncate Taylor expansion of matrix exponential.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl>
+<dt>numpy.ndarray</dt><dd><p>result of <span class="math notranslate nohighlight">\(\mathrm{e}^{aA}v\)</span>.</p>
+<p>If <cite>overwrite_v = True</cite> the dunction returns <cite>v</cite> with the data overwritten, otherwise the result is stored in a new array.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="c1">##### compute expm_multiply applied on a state</span>
+<span class="linenos"> 2</span><span class="n">_</span><span class="p">,</span> <span class="n">psi</span> <span class="o">=</span> <span class="n">H</span><span class="o">.</span><span class="n">eigsh</span><span class="p">(</span><span class="n">k</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">which</span><span class="o">=</span><span class="s2">&quot;SA&quot;</span><span class="p">)</span>  <span class="c1"># compute GS of H</span>
+<span class="linenos"> 3</span><span class="n">psi</span> <span class="o">=</span> <span class="n">psi</span><span class="o">.</span><span class="n">squeeze</span><span class="p">()</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span>
+<span class="linenos"> 4</span>    <span class="n">np</span><span class="o">.</span><span class="n">complex128</span>
+<span class="linenos"> 5</span><span class="p">)</span>  <span class="c1"># cast array type to complex double due to complex matrix exp</span>
+<span class="linenos"> 6</span><span class="c1"># construct c++ work array for speed</span>
+<span class="linenos"> 7</span><span class="n">work_array</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">2</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">psi</span><span class="p">),),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">psi</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
+<span class="linenos"> 8</span><span class="nb">print</span><span class="p">(</span><span class="n">H</span><span class="o">.</span><span class="n">expt_value</span><span class="p">(</span><span class="n">psi</span><span class="p">))</span>  <span class="c1"># measure energy of state |psi&gt;</span>
+<span class="linenos"> 9</span><span class="n">expH</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span>
+<span class="linenos">10</span>    <span class="n">psi</span><span class="p">,</span> <span class="n">work_array</span><span class="o">=</span><span class="n">work_array</span><span class="p">,</span> <span class="n">overwrite_v</span><span class="o">=</span><span class="kc">True</span>
+<span class="linenos">11</span><span class="p">)</span>  <span class="c1"># compute action of matrix exponential on a state</span>
+<span class="linenos">12</span><span class="nb">print</span><span class="p">(</span><span class="n">H</span><span class="o">.</span><span class="n">expt_value</span><span class="p">(</span><span class="n">psi</span><span class="p">))</span>  <span class="c1"># measure energy of state exp(aH)|psi&gt;</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="quspin.tools.evolution.ExpmMultiplyParallel.set_a">
+<span class="sig-name descname"><span class="pre">set_a</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">a</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../modules/parallel_sparse_tools/expm_multiply_parallel_core/expm_multiply_parallel_core.html#ExpmMultiplyParallel.set_a"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quspin.tools.evolution.ExpmMultiplyParallel.set_a" title="Link to this definition"></a></dt>
+<dd><p>Sets the value of the property <cite>a</cite>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>a</strong><span class="classifier">scalar</span></dt><dd><p>new value of <cite>a</cite>.</p>
+</dd>
+<dt><strong>dtype</strong><span class="classifier">numpy.dtype, optional</span></dt><dd><p>dtype specified for this operator. Default is: result_type(A.dtype,min_scalar_type(a),float64)</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="c1">##### change value of `a`</span>
+<span class="linenos">2</span><span class="nb">print</span><span class="p">(</span><span class="n">expH</span><span class="o">.</span><span class="n">a</span><span class="p">)</span>
+<span class="linenos">3</span><span class="n">expH</span><span class="o">.</span><span class="n">set_a</span><span class="p">(</span><span class="mf">0.3</span><span class="n">j</span><span class="p">)</span>
+<span class="linenos">4</span><span class="nb">print</span><span class="p">(</span><span class="n">expH</span><span class="o">.</span><span class="n">a</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="quspin.tools.evolution.evolve.html" class="btn btn-neutral float-left" title="quspin.tools.evolution.evolve" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="quspin.tools.evolution.expm_multiply_parallel.html" class="btn btn-neutral float-right" title="quspin.tools.evolution.expm_multiply_parallel" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Phillip Weinberg, Markus Schmitt, and Marin Bukov.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+    <!-- Theme Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-6885KZ7NH6"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-6885KZ7NH6', {
+          'anonymize_ip': false,
+      });
+    </script> 
+
+</body>
+</html>

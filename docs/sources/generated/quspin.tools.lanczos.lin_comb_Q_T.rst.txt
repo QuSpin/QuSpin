@@ -1,4 +1,4 @@
-quspin.tools.lanczos.lin\_comb\_Q\_T
+﻿quspin.tools.lanczos.lin\_comb\_Q\_T
 ====================================
 
 .. currentmodule:: quspin.tools.lanczos

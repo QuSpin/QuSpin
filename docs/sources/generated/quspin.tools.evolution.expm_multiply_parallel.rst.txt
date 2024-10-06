@@ -1,4 +1,4 @@
-quspin.tools.evolution.expm\_multiply\_parallel
+﻿quspin.tools.evolution.expm\_multiply\_parallel
 ===============================================
 
 .. currentmodule:: quspin.tools.evolution

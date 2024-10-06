@@ -1,4 +1,4 @@
-quspin.operators.quantum\_LinearOperator
+﻿quspin.operators.quantum\_LinearOperator
 ========================================
 
 .. currentmodule:: quspin.operators

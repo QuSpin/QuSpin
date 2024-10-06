@@ -1,4 +1,4 @@
-quspin.basis.photon\_Hspace\_dim
+﻿quspin.basis.photon\_Hspace\_dim
 ================================
 
 .. currentmodule:: quspin.basis
