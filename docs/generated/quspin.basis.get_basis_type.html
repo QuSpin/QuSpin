@@ -130,14 +130,14 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="quspin.basis.get_basis_type">
 <span class="sig-prename descclassname"><span class="pre">quspin.basis.</span></span><span class="sig-name descname"><span class="pre">get_basis_type</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">N</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Np</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sps</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#quspin.basis.get_basis_type" title="Link to this definition"></a></dt>
-<dd><p>Returns minimum dtype to represent manybody state.</p>
-<p>Given the system size, number of particles and states per site this function calculates the minimum type required to represent those states.</p>
+<dd><p>Returns minimum <cite>dtype</cite> to represent manybody state.</p>
+<p>Given the system size, number of particles and states per site, this function calculates the minimum type required to represent those states.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><dl class="simple">
 <dt><strong>N</strong><span class="classifier">int</span></dt><dd><p>total number of sites on lattice</p>
 </dd>
-<dt><strong>Np</strong><span class="classifier">None, int, or list of ints</span></dt><dd><p>number of particles on the lattice. For a list, the largest particle sector is chosen for the representation.</p>
+<dt><strong>Np</strong><span class="classifier">None, int, list[int]</span></dt><dd><p>number of particles on the lattice. For a list, the largest particle sector is chosen for the representation.</p>
 </dd>
 <dt><strong>sps: int</strong></dt><dd><p>number of possible states allowed per site. e.g. spin-1/2 has 2 possible states per site.</p>
 </dd>

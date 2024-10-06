@@ -28,9 +28,6 @@ Improved Functionality
 
 New Attributes, Functions, Methods, Classes, and Examples
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-* deprecated `tools.block_tools` class, together with the examples:
-	- :ref:`example5-label`
-	- :ref:`example7-label`
 * renamed properties of `photon_basis` as follows:
 	- `photon_basis.photon_basis` -> `photon_basis.basis.photon`
 	- `photon_basis.particle_basis` -> `photon_basis.basis.particle`

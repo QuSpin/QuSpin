@@ -140,9 +140,14 @@ for j, q in enumerate(qs):
     ### apply vector correction method
     #
     # solve (z-H)|x> = |A> solve for |x>  using iterative solver for each omega
+    if np.linalg.norm(psiA, ord=np.inf) < 1e-10:
+        # since the vector is zero, we can skip the calculation as the result will be zero
+        continue
+        
     for i, omega in enumerate(omegas):
         lhs = LHS(Hq, omega, eta, E0)
-        x, *_ = sp.linalg.bicg(lhs, psiA, maxiter=1000)
+        
+        x, *_ = sp.linalg.bicgstab(lhs, psiA, maxiter=1000)
         Gzz[i, j] = -np.vdot(psiA, x) / np.pi
     #
     #####################################################################

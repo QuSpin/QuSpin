@@ -680,9 +680,9 @@
 			<span class="n">p</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_P</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
 
 			<span class="k">if</span> <span class="n">_sp</span><span class="o">.</span><span class="n">issparse</span><span class="p">(</span><span class="n">psi_0</span><span class="p">):</span>
-				<span class="n">psi</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">H</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">psi_0</span><span class="p">)</span><span class="o">.</span><span class="n">toarray</span><span class="p">()</span>
+				<span class="n">psi</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">T</span><span class="o">.</span><span class="n">conj</span><span class="p">()</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">psi_0</span><span class="p">)</span><span class="o">.</span><span class="n">toarray</span><span class="p">()</span>
 			<span class="k">else</span><span class="p">:</span>
-				<span class="n">psi</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">H</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">psi_0</span><span class="p">)</span>
+				<span class="n">psi</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">T</span><span class="o">.</span><span class="n">conj</span><span class="p">()</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">psi_0</span><span class="p">)</span>
 
 			<span class="n">psi</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">psi</span><span class="p">)</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
 			
@@ -839,9 +839,9 @@
 			<span class="n">p</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_P</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
 
 			<span class="k">if</span> <span class="n">_sp</span><span class="o">.</span><span class="n">issparse</span><span class="p">(</span><span class="n">psi_0</span><span class="p">):</span>
-				<span class="n">psi</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">H</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">psi_0</span><span class="p">)</span><span class="o">.</span><span class="n">toarray</span><span class="p">()</span>
+				<span class="n">psi</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">T</span><span class="o">.</span><span class="n">conj</span><span class="p">()</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">psi_0</span><span class="p">)</span><span class="o">.</span><span class="n">toarray</span><span class="p">()</span>
 			<span class="k">else</span><span class="p">:</span>
-				<span class="n">psi</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">H</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">psi_0</span><span class="p">)</span>
+				<span class="n">psi</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">T</span><span class="o">.</span><span class="n">conj</span><span class="p">()</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">psi_0</span><span class="p">)</span>
 
 			<span class="n">psi</span> <span class="o">=</span> <span class="n">psi</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
 			<span class="k">if</span> <span class="n">_np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">psi</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1000</span><span class="o">*</span><span class="n">_np</span><span class="o">.</span><span class="n">finfo</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span><span class="o">.</span><span class="n">eps</span><span class="p">:</span>
