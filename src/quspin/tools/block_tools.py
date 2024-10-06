@@ -44,7 +44,7 @@ def block_diag_hamiltonian(blocks,static,dynamic,basis_con,basis_args,dtype,basi
 		:lines: 7-
 
 	Parameters
-	-----------
+	----------
 	blocks : list/tuple/iterator
 		Contains the symmetry blocks to construct the Hamiltonian with, as dictionaries.
 	static : list
@@ -73,7 +73,7 @@ def block_diag_hamiltonian(blocks,static,dynamic,basis_con,basis_args,dtype,basi
 		Enable/Disable particle conservation check of the operators for the first Hamiltonian constructed.
 
 	Returns
-	--------
+	-------
 	tuple
 		P : scipy.sparse.csr 
 			Projector to the symmetr-block subspace (e.g. Fourier transform in case of momentum blocks).
@@ -301,7 +301,7 @@ class block_ops(object):
 		"""Instantiates the `block_ops` class.
 		
 		Parameters
-		-----------
+		----------
 		blocks : list/tuple/iterator
 			Contains the symmetry blocks to construct the Hamiltonian with, 
 			as dictionaries or `hamiltonian` objects.	
@@ -412,7 +412,7 @@ class block_ops(object):
 		"""Allows to update the `blocks` variable of the class.
 
 		Parameters
-		-----------
+		----------
 		blocks : list/tuple/iterator
 			Contains the new symmetry blocks to be added to the `basis_dict` attribute of the class, 
 			as dictionaries or `hamiltonian` objects.
@@ -512,7 +512,7 @@ class block_ops(object):
 			:lines: 69-
 
 		Parameters
-		-----------
+		----------
 		psi_0 : numpy.ndarray, list, tuple
 			Quantum state which defined on the full Hilbert space of the problem. 
 			Does not need to obey and sort of symmetry.
@@ -538,7 +538,7 @@ class block_ops(object):
 			This flag is useful if there are a lot of smaller-sized blocks.
 
 		Returns
-		--------
+		-------
 		obj
 			if `iterate = True`, returns generator which generates the time dependent state in the 
 			full H-space basis.
@@ -631,7 +631,7 @@ class block_ops(object):
 			:lines: 60-67
 
 		Parameters
-		-----------
+		----------
 		psi_0 : numpy.ndarray, list, tuple
 			Quantum state which defined on the full Hilbert space of the problem. 
 			Does not need to obey and sort of symmetry.
@@ -657,7 +657,7 @@ class block_ops(object):
 			This flag is useful if there are a lot of smaller-sized blocks.
 
 		Returns
-		--------
+		-------
 		obj
 			if `iterate = True`, returns generator which generates the time dependent state in the 
 			full H-space basis.
