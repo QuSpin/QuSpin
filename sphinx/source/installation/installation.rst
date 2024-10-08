@@ -37,7 +37,7 @@ You will see three directories, each pointing to its own repository:
 	- `QuSpin extension <https://github.com/QuSpin/QuSpin-Extensions>`_ which contains the cpp code for the basis modules;
 	- `QuSpin <https://github.com/QuSpin/QuSpin>`_ with the quspin python package that uses the other two modules. 
 
-Create a `python>3.9` virtual environment. This can be done using `miniconda <http://conda.pydata.org/miniconda.html>`_, or using python itself:
+Create a ``python>3.9`` virtual environment. This can be done using `miniconda <http://conda.pydata.org/miniconda.html>`_, or using python itself:
 ::
 
 	> cd QuSpin-workspace/
@@ -60,7 +60,15 @@ Install extension modules (may take a bit of time to build the cpp code):
 	> pip install -e parallel-sparse-tools/ -v
 	> pip install -e QuSpin-Extensions/ -v
 	> pip install -e QuSpin/ -v
+	
+If you get a ``FileNotFoundError("Could not find boost headers")``, then you need to ensure that the Boost library is installed and can be found by QuSpin:
+::
 
+	> pip install boost
+	> export $BOOST_ROOT = <path to C libraries>  # Unix
+	> $Env:BOOST_ROOT = <path to C libraries>     # Windows Powershell
+	
+where <path to C libaries> contains ``include/boost``. For a conda virtual environment, this will be ``<env>/Library``; for a pure python venv, this will simply be the relevant ``venv`` folder.
 
 Make sure you add an exhaustive test to test any code you want to add to the package. To run unit tests, you can use `pytest`:
 ::
