@@ -37,7 +37,7 @@ You will see three directories, each pointing to its own repository:
 	- `QuSpin extension <https://github.com/QuSpin/QuSpin-Extensions>`_ which contains the cpp code for the basis modules;
 	- `QuSpin <https://github.com/QuSpin/QuSpin>`_ with the quspin python package that uses the other two modules. 
 
-Create a `python>3.9` virtual environment. This can be done using `miniconda <http://conda.pydata.org/miniconda.html>`_, or using python itself:
+Create a ``python>3.9`` virtual environment. This can be done using `miniconda <http://conda.pydata.org/miniconda.html>`_, or using python itself:
 ::
 
 	> cd QuSpin-workspace/
@@ -54,13 +54,80 @@ Double check if the python and pip binaries point to the environment path:
 	> which python
 	> which pip
 
-Install extension modules (may take a bit of time to build the cpp code):
+You can decide whether you want to contribute to the `QuSpin <https://github.com/QuSpin/QuSpin>`_ main package only, to the `QuSpin extension <https://github.com/QuSpin/QuSpin-Extensions>`_ package which contains the cpp code for the basis constructors, or to the `sparse parallel tools extension <https://github.com/QuSpin/parallel-sparse-tools>`_ that contains the core of the tools package also written in cpp. 
+
+Developing the main QuSpin package (python only)
+------------------------------------------------
+
+To install the `QuSpin <https://github.com/QuSpin/QuSpin>`_ package, run 
+
+::
+
+	> pip install -e QuSpin/ -v
+
+You may now just edit locally the `python` source code; all that you need is knowledge in `python`. Please consider making a pull request on GitHub with your custom functions to add them to the next release of `QuSpin`.
+
+**All pull requests should be directed into the most recent development branch.** 
+
+
+Developing the QuSpin basis constructor subpackage (cpp, cython)
+----------------------------------------------------------------
+
+To install the `QuSpin extension <https://github.com/QuSpin/QuSpin-Extensions>`_ package only, run 
+::
+
+	> pip install -e QuSpin-Extensions/ -v
+
+You can now make changes to the `cpp` source code that provides the core for the basis constructions. You need knowledge in `cpp` and `cython`. To compile the code, use the command
+::
+
+	> python setup.py install build_ext -i
+
+Please consider making a pull request on GitHub with your custom functions to add them to the next release of `QuSpin`. **All pull requests should be directed into the most recent development branch.** 
+
+
+Developing the QuSpin sparse parallel tools subpackage (cpp, cython)
+--------------------------------------------------------------------
+
+To install the `sparse parallel tools extension <https://github.com/QuSpin/parallel-sparse-tools>`_ subpackage only, run 
+::
+
+	> pip install -e parallel-sparse-tools/ -v
+
+You can now make changes to the functionality of the subpacke; required languages are `cpp` and `cython`. To compile the code, use the command
+::
+
+	> python setup.py install build_ext -i
+
+Please consider making a pull request on GitHub with your custom functions to add them to the next release of `QuSpin`. **All pull requests should be directed into the most recent development branch.** 
+
+
+Developing all subpackages (cpp, cython, python)
+------------------------------------------------
+
+Install all extension modules (may take a bit of time to build the cpp code):
 ::
 
 	> pip install -e parallel-sparse-tools/ -v
 	> pip install -e QuSpin-Extensions/ -v
 	> pip install -e QuSpin/ -v
 
+
+Installing the `boost` headers
+------------------------------
+
+If you get a ``FileNotFoundError("Could not find boost headers")``, then you need to ensure that the `boost library <https://www.boost.org/>`_ is installed and can be found by QuSpin:
+::
+
+	> pip install boost
+	> export $BOOST_ROOT = <path to C libraries>  # Unix
+	> $Env:BOOST_ROOT = <path to C libraries>     # Windows Powershell
+	
+where `<path to C libaries>` contains ``include/boost``. For a conda virtual environment, this will be ``<env>/Library``; for a pure python venv, this will simply be the relevant ``venv`` folder.
+
+
+Tests and testing
+-----------------
 
 Make sure you add an exhaustive test to test any code you want to add to the package. To run unit tests, you can use `pytest`:
 ::
@@ -69,6 +136,11 @@ Make sure you add an exhaustive test to test any code you want to add to the pac
 	> cd QuSpin-workspace/QuSpin/tests
 	> pytest  `# runs all tests in all subdirectories`
 	> pytest test_specific.py
+
+Tests should be added to the `/test` directory of the corresponding extension. 
+
+Documentation
+-------------
 
 Make sure you also comment your code and add a your new public functions to the documentation. For the documentation, you need to install in addition:
 ::
