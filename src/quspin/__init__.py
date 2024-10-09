@@ -3,6 +3,6 @@ import numpy, dill
 from . import operators
 from . import basis
 from . import tools
+from ._version import __version__
 
-__version__ = "0.3.7"
 __all__ = ["basis", "operators", "tools"]
