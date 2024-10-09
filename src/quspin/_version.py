@@ -1,3 +1,3 @@
 import importlib
 
-__version__ = importlib.metadata.version("bloqade")
+__version__ = importlib.metadata.version("quspin")
