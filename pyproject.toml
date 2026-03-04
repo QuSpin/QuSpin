@@ -18,7 +18,7 @@ dependencies = [
     "joblib>=1.4.2",
     "importlib>=1.0.4",
 ]
-requires-python = "<3.15,>=3.10"
+requires-python = "<3.14,>=3.10"
 readme = "README.md"
 license = {text = "BDS-3"}
 
