@@ -16,8 +16,8 @@ jobs:
   test:
     strategy:
       matrix:
-        python-version: ["3.10", "3.11", "3.12", "3.13"]
-        os: [ubuntu-latest, windows-latest, macos-latest]
+        python-version: ["3.11", "3.12", "3.13", "3.14"]
+        os: [ubuntu-latest, windows-latest, macos-15-intel, macos-15]
     runs-on: ${{ matrix.os }}
 
     steps:
@@ -34,7 +34,7 @@ jobs:
           # prerelease: true     # Allow prerelease versions to be installed
           # enable-pep582: true  # Enable PEP 582 package loading globally
       - name: Install dependencies
-        run: pdm install       # Then you can use pdm in the following steps.
+        run: pdm install -G dev      # Then you can use pdm in the following steps.
       - name: Test with pytest & generate coverage
         run: |
           pdm test
