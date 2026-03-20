@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" data-content_root="../">
 <head>
@@ -5,22 +7,18 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Lanczos module: finite-temperature calculations &mdash; QuSpin 1.0.1 documentation</title>
-      <link rel="stylesheet" type="text/css" href="../static/pygments.css?v=fa44fd50" />
-      <link rel="stylesheet" type="text/css" href="../static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../static/css/sphinx_rtd_size.css?v=f26ae176" />
       <link rel="stylesheet" type="text/css" href="../static/css/py_class_property_fix.css?v=faf79ccd" />
 
   
-  <!--[if lt IE 9]>
-    <script src="../static/js/html5shiv.min.js"></script>
-  <![endif]-->
-  
-        <script src="../static/jquery.js?v=5d32c60e"></script>
-        <script src="../static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../static/documentation_options.js?v=292eb321"></script>
-        <script src="../static/doctools.js?v=9a2dae69"></script>
-        <script src="../static/sphinx_highlight.js?v=dc90522c"></script>
-        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+      <script src="../static/jquery.js?v=5d32c60e"></script>
+      <script src="../static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../static/documentation_options.js?v=292eb321"></script>
+      <script src="../static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
     <script src="../static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" /> 
@@ -45,12 +43,7 @@
   </form>
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <p class="caption" role="heading"><span class="caption-text">New Features</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../new_features.html">Highlights</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../new_features.html#most-recent-changes-features">Most recent changes &amp; features</a></li>
-</ul>
-<p class="caption" role="heading"><span class="caption-text">QuSpin (public API)</span></p>
+              <p class="caption" role="heading"><span class="caption-text">QuSpin (public API)</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../basis.html">Basis module (<code class="xref py py-mod docutils literal notranslate"><span class="pre">quspin.basis</span></code>)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../operators.html">Operators module (<code class="xref py py-mod docutils literal notranslate"><span class="pre">quspin.operators</span></code>)</a></li>
@@ -125,7 +118,7 @@
 <h1>Script<a class="headerlink" href="#script" title="Link to this heading"></a></h1>
 <p><a class="reference download internal" download="" href="../downloads/a87bfae50b414d833905d1869f69df0b/example21.py"><code class="xref download docutils literal notranslate"><span class="pre">download</span> <span class="pre">script</span></code></a></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos">  1</span><span class="c1">#</span>
-<span class="linenos">  2</span><span class="kn">import</span> <span class="nn">sys</span><span class="o">,</span> <span class="nn">os</span>
+<span class="linenos">  2</span><span class="kn">import</span><span class="w"> </span><span class="nn">sys</span><span class="o">,</span><span class="w"> </span><span class="nn">os</span>
 <span class="linenos">  3</span>
 <span class="linenos">  4</span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;KMP_DUPLICATE_LIB_OK&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
 <span class="linenos">  5</span>    <span class="s2">&quot;True&quot;</span>  <span class="c1"># uncomment this line if omp error occurs on OSX for python 3</span>
@@ -140,17 +133,17 @@
 <span class="linenos"> 14</span><span class="c1"># `tools` module to compute finite temperature expectation values     #</span>
 <span class="linenos"> 15</span><span class="c1"># using `FTLM_statc_iteration` and `LTLM_statiic_iteration`.          #</span>
 <span class="linenos"> 16</span><span class="c1">#######################################################################</span>
-<span class="linenos"> 17</span><span class="kn">from</span> <span class="nn">quspin.basis</span> <span class="kn">import</span> <span class="n">spin_basis_1d</span>
-<span class="linenos"> 18</span><span class="kn">from</span> <span class="nn">quspin.operators</span> <span class="kn">import</span> <span class="n">hamiltonian</span><span class="p">,</span> <span class="n">quantum_operator</span>
-<span class="linenos"> 19</span><span class="kn">from</span> <span class="nn">quspin.tools.lanczos</span> <span class="kn">import</span> <span class="p">(</span>
+<span class="linenos"> 17</span><span class="kn">from</span><span class="w"> </span><span class="nn">quspin.basis</span><span class="w"> </span><span class="kn">import</span> <span class="n">spin_basis_1d</span>
+<span class="linenos"> 18</span><span class="kn">from</span><span class="w"> </span><span class="nn">quspin.operators</span><span class="w"> </span><span class="kn">import</span> <span class="n">hamiltonian</span><span class="p">,</span> <span class="n">quantum_operator</span>
+<span class="linenos"> 19</span><span class="kn">from</span><span class="w"> </span><span class="nn">quspin.tools.lanczos</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
 <span class="linenos"> 20</span>    <span class="n">lanczos_full</span><span class="p">,</span>
 <span class="linenos"> 21</span>    <span class="n">lanczos_iter</span><span class="p">,</span>
 <span class="linenos"> 22</span>    <span class="n">FTLM_static_iteration</span><span class="p">,</span>
 <span class="linenos"> 23</span>    <span class="n">LTLM_static_iteration</span><span class="p">,</span>
 <span class="linenos"> 24</span><span class="p">)</span>
-<span class="linenos"> 25</span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="linenos"> 26</span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
-<span class="linenos"> 27</span><span class="kn">from</span> <span class="nn">mpl_toolkits.axes_grid1.inset_locator</span> <span class="kn">import</span> <span class="n">inset_axes</span>
+<span class="linenos"> 25</span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="linenos"> 26</span><span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="linenos"> 27</span><span class="kn">from</span><span class="w"> </span><span class="nn">mpl_toolkits.axes_grid1.inset_locator</span><span class="w"> </span><span class="kn">import</span> <span class="n">inset_axes</span>
 <span class="linenos"> 28</span>
 <span class="linenos"> 29</span><span class="c1">#</span>
 <span class="linenos"> 30</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">1203901</span><span class="p">)</span>  <span class="c1"># fix seed</span>
@@ -158,7 +151,7 @@
 <span class="linenos"> 32</span>
 <span class="linenos"> 33</span><span class="c1">#</span>
 <span class="linenos"> 34</span><span class="c1">#</span>
-<span class="linenos"> 35</span><span class="k">def</span> <span class="nf">bootstrap_mean</span><span class="p">(</span><span class="n">O_r</span><span class="p">,</span> <span class="n">Id_r</span><span class="p">,</span> <span class="n">n_bootstrap</span><span class="o">=</span><span class="mi">100</span><span class="p">):</span>
+<span class="linenos"> 35</span><span class="k">def</span><span class="w"> </span><span class="nf">bootstrap_mean</span><span class="p">(</span><span class="n">O_r</span><span class="p">,</span> <span class="n">Id_r</span><span class="p">,</span> <span class="n">n_bootstrap</span><span class="o">=</span><span class="mi">100</span><span class="p">):</span>
 <span class="linenos"> 36</span><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="linenos"> 37</span><span class="sd">    Uses boostraping to esimate the error due to sampling.</span>
 <span class="linenos"> 38</span>
@@ -187,7 +180,7 @@
 <span class="linenos"> 61</span>
 <span class="linenos"> 62</span>
 <span class="linenos"> 63</span><span class="c1">#</span>
-<span class="linenos"> 64</span><span class="k">def</span> <span class="nf">get_operators</span><span class="p">(</span><span class="n">L</span><span class="p">):</span>
+<span class="linenos"> 64</span><span class="k">def</span><span class="w"> </span><span class="nf">get_operators</span><span class="p">(</span><span class="n">L</span><span class="p">):</span>
 <span class="linenos"> 65</span><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="linenos"> 66</span><span class="sd">    Generates hamiltonian for TFIM, see quspin tutorial papers to learn more aabout this</span>
 <span class="linenos"> 67</span>
@@ -209,7 +202,7 @@
 <span class="linenos"> 83</span>
 <span class="linenos"> 84</span>
 <span class="linenos"> 85</span><span class="c1">#</span>
-<span class="linenos"> 86</span><span class="k">class</span> <span class="nc">lanczos_wrapper</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<span class="linenos"> 86</span><span class="k">class</span><span class="w"> </span><span class="nc">lanczos_wrapper</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
 <span class="linenos"> 87</span><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="linenos"> 88</span><span class="sd">    Class that contains minimum requirments to use Lanczos.</span>
 <span class="linenos"> 89</span>
@@ -218,7 +211,7 @@
 <span class="linenos"> 92</span><span class="sd">    &quot;&quot;&quot;</span>
 <span class="linenos"> 93</span>
 <span class="linenos"> 94</span>    <span class="c1">#</span>
-<span class="linenos"> 95</span>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">A</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="linenos"> 95</span>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">A</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 <span class="linenos"> 96</span><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="linenos"> 97</span><span class="sd">        A: array-like object to assign/overwrite the dot and dtype objects of</span>
 <span class="linenos"> 98</span><span class="sd">        kwargs: any optional arguments used when overwriting the methods</span>
@@ -228,7 +221,7 @@
 <span class="linenos">102</span>        <span class="bp">self</span><span class="o">.</span><span class="n">_kwargs</span> <span class="o">=</span> <span class="n">kwargs</span>
 <span class="linenos">103</span>
 <span class="linenos">104</span>    <span class="c1">#</span>
-<span class="linenos">105</span>    <span class="k">def</span> <span class="nf">dot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="linenos">105</span>    <span class="k">def</span><span class="w"> </span><span class="nf">dot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="linenos">106</span><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="linenos">107</span><span class="sd">        Calls the `dot` method of quantum_operator with the parameters fixed to a given value.</span>
 <span class="linenos">108</span>
@@ -237,7 +230,7 @@
 <span class="linenos">111</span>
 <span class="linenos">112</span>    <span class="c1">#</span>
 <span class="linenos">113</span>    <span class="nd">@property</span>
-<span class="linenos">114</span>    <span class="k">def</span> <span class="nf">dtype</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="linenos">114</span>    <span class="k">def</span><span class="w"> </span><span class="nf">dtype</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="linenos">115</span><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="linenos">116</span><span class="sd">        The dtype attribute is required to figure out result types in lanczos calculations.</span>
 <span class="linenos">117</span>

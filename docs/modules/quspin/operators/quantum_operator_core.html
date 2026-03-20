@@ -1,24 +1,22 @@
+
+
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" data-content_root="../../../">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>quspin.operators.quantum_operator_core &mdash; QuSpin 1.0.1 documentation</title>
-      <link rel="stylesheet" type="text/css" href="../../../static/pygments.css?v=fa44fd50" />
-      <link rel="stylesheet" type="text/css" href="../../../static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../../static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../../static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../../static/css/sphinx_rtd_size.css?v=f26ae176" />
       <link rel="stylesheet" type="text/css" href="../../../static/css/py_class_property_fix.css?v=faf79ccd" />
 
   
-  <!--[if lt IE 9]>
-    <script src="../../../static/js/html5shiv.min.js"></script>
-  <![endif]-->
-  
-        <script src="../../../static/jquery.js?v=5d32c60e"></script>
-        <script src="../../../static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../../static/documentation_options.js?v=292eb321"></script>
-        <script src="../../../static/doctools.js?v=9a2dae69"></script>
-        <script src="../../../static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../../static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../static/documentation_options.js?v=292eb321"></script>
+      <script src="../../../static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../../static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" /> 
@@ -43,12 +41,7 @@
   </form>
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <p class="caption" role="heading"><span class="caption-text">New Features</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../new_features.html">Highlights</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../new_features.html#most-recent-changes-features">Most recent changes &amp; features</a></li>
-</ul>
-<p class="caption" role="heading"><span class="caption-text">QuSpin (public API)</span></p>
+              <p class="caption" role="heading"><span class="caption-text">QuSpin (public API)</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../basis.html">Basis module (<code class="xref py py-mod docutils literal notranslate"><span class="pre">quspin.basis</span></code>)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../operators.html">Operators module (<code class="xref py py-mod docutils literal notranslate"><span class="pre">quspin.operators</span></code>)</a></li>
@@ -100,44 +93,44 @@
            <div itemprop="articleBody">
              
   <h1>Source code for quspin.operators.quantum_operator_core</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">quspin.basis</span> <span class="kn">import</span> <span class="n">spin_basis_1d</span> <span class="k">as</span> <span class="n">_default_basis</span>
-<span class="kn">from</span> <span class="nn">quspin.basis</span> <span class="kn">import</span> <span class="n">isbasis</span> <span class="k">as</span> <span class="n">_isbasis</span>
+<span></span><span class="kn">from</span><span class="w"> </span><span class="nn">quspin.basis</span><span class="w"> </span><span class="kn">import</span> <span class="n">spin_basis_1d</span> <span class="k">as</span> <span class="n">_default_basis</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">quspin.basis</span><span class="w"> </span><span class="kn">import</span> <span class="n">isbasis</span> <span class="k">as</span> <span class="n">_isbasis</span>
 
 <span class="c1"># from quspin.operators._oputils import _get_matvec_function, matvec as _matvec</span>
 
-<span class="kn">from</span> <span class="nn">quspin.tools.matvec</span> <span class="kn">import</span> <span class="n">_matvec</span>
-<span class="kn">from</span> <span class="nn">quspin.tools.matvec</span> <span class="kn">import</span> <span class="n">_get_matvec_function</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">quspin.tools.matvec</span><span class="w"> </span><span class="kn">import</span> <span class="n">_matvec</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">quspin.tools.matvec</span><span class="w"> </span><span class="kn">import</span> <span class="n">_get_matvec_function</span>
 
-<span class="kn">from</span> <span class="nn">quspin.operators._make_hamiltonian</span> <span class="kn">import</span> <span class="n">make_static</span>
-<span class="kn">from</span> <span class="nn">quspin.operators._make_hamiltonian</span> <span class="kn">import</span> <span class="n">_check_almost_zero</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">quspin.operators._make_hamiltonian</span><span class="w"> </span><span class="kn">import</span> <span class="n">make_static</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">quspin.operators._make_hamiltonian</span><span class="w"> </span><span class="kn">import</span> <span class="n">_check_almost_zero</span>
 
-<span class="kn">from</span> <span class="nn">quspin.operators</span> <span class="kn">import</span> <span class="n">hamiltonian_core</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">quspin.operators</span><span class="w"> </span><span class="kn">import</span> <span class="n">hamiltonian_core</span>
 
 <span class="c1"># need linear algebra packages</span>
-<span class="kn">import</span> <span class="nn">scipy.sparse.linalg</span> <span class="k">as</span> <span class="nn">_sla</span>
-<span class="kn">import</span> <span class="nn">scipy.linalg</span> <span class="k">as</span> <span class="nn">_la</span>
-<span class="kn">import</span> <span class="nn">scipy.sparse</span> <span class="k">as</span> <span class="nn">_sp</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">_np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">scipy.sparse.linalg</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">_sla</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">scipy.linalg</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">_la</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">scipy.sparse</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">_sp</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">_np</span>
 
-<span class="kn">import</span> <span class="nn">functools</span>
-<span class="kn">from</span> <span class="nn">six</span> <span class="kn">import</span> <span class="n">iteritems</span><span class="p">,</span> <span class="n">itervalues</span><span class="p">,</span> <span class="n">viewkeys</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">functools</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">six</span><span class="w"> </span><span class="kn">import</span> <span class="n">iteritems</span><span class="p">,</span> <span class="n">itervalues</span><span class="p">,</span> <span class="n">viewkeys</span>
 
-<span class="kn">from</span> <span class="nn">zipfile</span> <span class="kn">import</span> <span class="n">ZipFile</span>
-<span class="kn">from</span> <span class="nn">tempfile</span> <span class="kn">import</span> <span class="n">TemporaryDirectory</span>
-<span class="kn">import</span> <span class="nn">os</span><span class="o">,</span> <span class="nn">pickle</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">zipfile</span><span class="w"> </span><span class="kn">import</span> <span class="n">ZipFile</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">tempfile</span><span class="w"> </span><span class="kn">import</span> <span class="n">TemporaryDirectory</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span><span class="o">,</span><span class="w"> </span><span class="nn">pickle</span>
 
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;quantum_operator&quot;</span><span class="p">,</span> <span class="s2">&quot;isquantum_operator&quot;</span><span class="p">,</span> <span class="s2">&quot;save_zip&quot;</span><span class="p">,</span> <span class="s2">&quot;load_zip&quot;</span><span class="p">]</span>
 
 
 <span class="c1"># function used to create Linearquantum_operator with fixed set of parameters.</span>
-<span class="k">def</span> <span class="nf">_quantum_operator_dot</span><span class="p">(</span><span class="n">op</span><span class="p">,</span> <span class="n">pars</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_quantum_operator_dot</span><span class="p">(</span><span class="n">op</span><span class="p">,</span> <span class="n">pars</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
     <span class="k">return</span> <span class="n">op</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">pars</span><span class="o">=</span><span class="n">pars</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="quantum_operator">
 <a class="viewcode-back" href="../../../generated/quspin.operators.quantum_operator.html#quspin.operators.quantum_operator">[docs]</a>
-<span class="k">class</span> <span class="nc">quantum_operator</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">quantum_operator</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Constructs parameter-dependent (hermitian and nonhermitian) operators.</span>
 
 <span class="sd">    The `quantum_operator` class maps quantum operators to keys of a dictionary. When calling various methods</span>
@@ -163,7 +156,7 @@
 
 <div class="viewcode-block" id="quantum_operator.__init__">
 <a class="viewcode-back" href="../../../generated/quspin.operators.quantum_operator.html#quspin.operators.quantum_operator.__init__">[docs]</a>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">input_dict</span><span class="p">,</span>
         <span class="n">N</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -428,17 +421,17 @@
 
 <div class="viewcode-block" id="quantum_operator.get_operators">
 <a class="viewcode-back" href="../../../generated/quspin.operators.quantum_operator.html#quspin.operators.quantum_operator.get_operators">[docs]</a>
-    <span class="k">def</span> <span class="nf">get_operators</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_operators</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_quantum_operator</span><span class="p">[</span><span class="n">key</span><span class="p">]</span></div>
 
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">shape</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">shape</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;tuple: shape of the `quantum_operator` object, always equal to `(Ns,Ns)`.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_shape</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">basis</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">basis</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;:obj:`basis`: basis used to build the `hamiltonian` object. Defaults to `None` if quantum_operator has</span>
 <span class="sd">        no basis (i.e. was created externally and passed as a precalculated array).</span>
 
@@ -449,27 +442,27 @@
             <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="s2">&quot;object has no attribute &#39;basis&#39;&quot;</span><span class="p">)</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">ndim</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">ndim</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;int: number of dimensions, always equal to 2.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ndim</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">Ns</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">Ns</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;int: number of states in the (symmetry-reduced) Hilbert space spanned by `basis`.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Ns</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">get_shape</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_shape</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;tuple: shape of the `quantum_operator` object, always equal to `(Ns,Ns)`.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_shape</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">shape</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">shape</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;tuple: shape of the `quantum_operator` object, always equal to `(Ns,Ns)`.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_shape</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">is_dense</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">is_dense</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;bool: `True` if `quantum_operator` contains a dense matrix as a componnent of either</span>
 <span class="sd">        the static or dynamic list.</span>
 
@@ -477,17 +470,17 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_dense</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">dtype</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">dtype</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;type: data type of `quantum_operator` object.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">_np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dtype</span><span class="p">)</span><span class="o">.</span><span class="n">name</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">T</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">T</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;:obj:`quantum_operator`: transposes the operator matrix, :math:`H_{ij}\\mapsto H_{ji}`.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">transpose</span><span class="p">()</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">H</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">H</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;:obj:`quantum_operator`: transposes and conjugates the operator matrix, :math:`H_{ij}\\mapsto H_{ji}^*`.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">getH</span><span class="p">()</span>
 
@@ -495,7 +488,7 @@
 
 <div class="viewcode-block" id="quantum_operator.matvec">
 <a class="viewcode-back" href="../../../generated/quspin.operators.quantum_operator.html#quspin.operators.quantum_operator.matvec">[docs]</a>
-    <span class="k">def</span> <span class="nf">matvec</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">matvec</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Matrix-vector multiplication.</span>
 
 <span class="sd">        Performs the operation y=A*x where A is an MxN linear operator and x is a column vector or 1-d array.</span>
@@ -521,7 +514,7 @@
 
 <div class="viewcode-block" id="quantum_operator.rmatvec">
 <a class="viewcode-back" href="../../../generated/quspin.operators.quantum_operator.html#quspin.operators.quantum_operator.rmatvec">[docs]</a>
-    <span class="k">def</span> <span class="nf">rmatvec</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">rmatvec</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Adjoint matrix-vector multiplication.</span>
 
 <span class="sd">        Performs the operation y = A^H * x where A is an MxN linear operator and x is a column vector or 1-d array.</span>
@@ -546,7 +539,7 @@
 
 <div class="viewcode-block" id="quantum_operator.matmat">
 <a class="viewcode-back" href="../../../generated/quspin.operators.quantum_operator.html#quspin.operators.quantum_operator.matmat">[docs]</a>
-    <span class="k">def</span> <span class="nf">matmat</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">matmat</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Matrix-matrix multiplication.</span>
 
 <span class="sd">        Performs the operation y=A*X where A is an MxN linear operator and X dense N*K matrix or ndarray.</span>
@@ -571,7 +564,7 @@
 
 <div class="viewcode-block" id="quantum_operator.dot">
 <a class="viewcode-back" href="../../../generated/quspin.operators.quantum_operator.html#quspin.operators.quantum_operator.dot">[docs]</a>
-    <span class="k">def</span> <span class="nf">dot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">V</span><span class="p">,</span> <span class="n">pars</span><span class="o">=</span><span class="p">{},</span> <span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">overwrite_out</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">a</span><span class="o">=</span><span class="mf">1.0</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">dot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">V</span><span class="p">,</span> <span class="n">pars</span><span class="o">=</span><span class="p">{},</span> <span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">overwrite_out</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">a</span><span class="o">=</span><span class="mf">1.0</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Matrix-vector multiplication of `quantum_operator` quantum_operator for parameters `pars`, with state `V`.</span>
 
 <span class="sd">        .. math::</span>
@@ -704,7 +697,7 @@
 
 <div class="viewcode-block" id="quantum_operator.rdot">
 <a class="viewcode-back" href="../../../generated/quspin.operators.quantum_operator.html#quspin.operators.quantum_operator.rdot">[docs]</a>
-    <span class="k">def</span> <span class="nf">rdot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">V</span><span class="p">,</span> <span class="n">pars</span><span class="o">=</span><span class="p">{},</span> <span class="n">check</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">overwrite_out</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">a</span><span class="o">=</span><span class="mf">1.0</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">rdot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">V</span><span class="p">,</span> <span class="n">pars</span><span class="o">=</span><span class="p">{},</span> <span class="n">check</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">overwrite_out</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">a</span><span class="o">=</span><span class="mf">1.0</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Vector-matrix multiplication of `quantum_operator` quantum_operator for parameters `pars`, with state `V`.</span>
 
 <span class="sd">        .. math::</span>
@@ -757,7 +750,7 @@
 
 <div class="viewcode-block" id="quantum_operator.quant_fluct">
 <a class="viewcode-back" href="../../../generated/quspin.operators.quantum_operator.html#quspin.operators.quantum_operator.quant_fluct">[docs]</a>
-    <span class="k">def</span> <span class="nf">quant_fluct</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">V</span><span class="p">,</span> <span class="n">pars</span><span class="o">=</span><span class="p">{},</span> <span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">enforce_pure</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">quant_fluct</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">V</span><span class="p">,</span> <span class="n">pars</span><span class="o">=</span><span class="p">{},</span> <span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">enforce_pure</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculates the quantum fluctuations (variance) of `quantum_operator` object for parameters `pars`, in state `V`.</span>
 
 <span class="sd">        .. math::</span>
@@ -790,7 +783,7 @@
 
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="kn">from</span> <span class="nn">quspin.operators.exp_op_core</span> <span class="kn">import</span> <span class="n">isexp_op</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">quspin.operators.exp_op_core</span><span class="w"> </span><span class="kn">import</span> <span class="n">isexp_op</span>
 
         <span class="k">if</span> <span class="n">hamiltonian_core</span><span class="o">.</span><span class="n">ishamiltonian</span><span class="p">(</span><span class="n">V</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Can&#39;t take expectation value of hamiltonian&quot;</span><span class="p">)</span>
@@ -814,7 +807,7 @@
 
 <div class="viewcode-block" id="quantum_operator.expt_value">
 <a class="viewcode-back" href="../../../generated/quspin.operators.quantum_operator.html#quspin.operators.quantum_operator.expt_value">[docs]</a>
-    <span class="k">def</span> <span class="nf">expt_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">V</span><span class="p">,</span> <span class="n">pars</span><span class="o">=</span><span class="p">{},</span> <span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">enforce_pure</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">expt_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">V</span><span class="p">,</span> <span class="n">pars</span><span class="o">=</span><span class="p">{},</span> <span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">enforce_pure</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculates expectation value of of `quantum_operator` object for parameters `pars`, in state `V`.</span>
 
 <span class="sd">        .. math::</span>
@@ -845,7 +838,7 @@
 <span class="sd">        corresponds to :math:`H_{expt} = \\langle V|H(t=0)|V\\rangle`.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="kn">from</span> <span class="nn">quspin.operators.exp_op_core</span> <span class="kn">import</span> <span class="n">isexp_op</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">quspin.operators.exp_op_core</span><span class="w"> </span><span class="kn">import</span> <span class="n">isexp_op</span>
 
         <span class="k">if</span> <span class="n">hamiltonian_core</span><span class="o">.</span><span class="n">ishamiltonian</span><span class="p">(</span><span class="n">V</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Can&#39;t take expectation value of hamiltonian&quot;</span><span class="p">)</span>
@@ -857,7 +850,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_expt_value_core</span><span class="p">(</span><span class="n">V</span><span class="p">,</span> <span class="n">V_dot</span><span class="p">,</span> <span class="n">enforce_pure</span><span class="o">=</span><span class="n">enforce_pure</span><span class="p">)</span></div>
 
 
-    <span class="k">def</span> <span class="nf">_expt_value_core</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">V_left</span><span class="p">,</span> <span class="n">V_right</span><span class="p">,</span> <span class="n">enforce_pure</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_expt_value_core</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">V_left</span><span class="p">,</span> <span class="n">V_right</span><span class="p">,</span> <span class="n">enforce_pure</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">_sp</span><span class="o">.</span><span class="n">issparse</span><span class="p">(</span><span class="n">V_right</span><span class="p">):</span>
             <span class="k">if</span> <span class="n">V_left</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="n">V_left</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="ow">or</span> <span class="n">enforce_pure</span><span class="p">:</span>  <span class="c1"># pure states</span>
                 <span class="k">return</span> <span class="n">_np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span>
@@ -878,7 +871,7 @@
 
 <div class="viewcode-block" id="quantum_operator.matrix_ele">
 <a class="viewcode-back" href="../../../generated/quspin.operators.quantum_operator.html#quspin.operators.quantum_operator.matrix_ele">[docs]</a>
-    <span class="k">def</span> <span class="nf">matrix_ele</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">Vl</span><span class="p">,</span> <span class="n">Vr</span><span class="p">,</span> <span class="n">pars</span><span class="o">=</span><span class="p">{},</span> <span class="n">diagonal</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">matrix_ele</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">Vl</span><span class="p">,</span> <span class="n">Vr</span><span class="p">,</span> <span class="n">pars</span><span class="o">=</span><span class="p">{},</span> <span class="n">diagonal</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculates matrix element of `quantum_operator` object for parameters `pars` in states `Vl` and `Vr`.</span>
 
 <span class="sd">        .. math::</span>
@@ -953,7 +946,7 @@
 
 <div class="viewcode-block" id="quantum_operator.eigsh">
 <a class="viewcode-back" href="../../../generated/quspin.operators.quantum_operator.html#quspin.operators.quantum_operator.eigsh">[docs]</a>
-    <span class="k">def</span> <span class="nf">eigsh</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pars</span><span class="o">=</span><span class="p">{},</span> <span class="o">**</span><span class="n">eigsh_args</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">eigsh</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pars</span><span class="o">=</span><span class="p">{},</span> <span class="o">**</span><span class="n">eigsh_args</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Computes SOME eigenvalues and eigenvectors of hermitian `quantum_operator` quantum_operator using SPARSE hermitian methods.</span>
 
 <span class="sd">        This function method solves for eigenvalues and eigenvectors, but can only solve for a few of them accurately.</span>
@@ -990,7 +983,7 @@
 
 <div class="viewcode-block" id="quantum_operator.eigh">
 <a class="viewcode-back" href="../../../generated/quspin.operators.quantum_operator.html#quspin.operators.quantum_operator.eigh">[docs]</a>
-    <span class="k">def</span> <span class="nf">eigh</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pars</span><span class="o">=</span><span class="p">{},</span> <span class="o">**</span><span class="n">eigh_args</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">eigh</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pars</span><span class="o">=</span><span class="p">{},</span> <span class="o">**</span><span class="n">eigh_args</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Computes COMPLETE eigensystem of hermitian `quantum_operator` quantum_operator using DENSE hermitian methods.</span>
 
 <span class="sd">        This function method solves for all eigenvalues and eigenvectors. It calls</span>
@@ -1034,7 +1027,7 @@
 
 <div class="viewcode-block" id="quantum_operator.eigvalsh">
 <a class="viewcode-back" href="../../../generated/quspin.operators.quantum_operator.html#quspin.operators.quantum_operator.eigvalsh">[docs]</a>
-    <span class="k">def</span> <span class="nf">eigvalsh</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pars</span><span class="o">=</span><span class="p">{},</span> <span class="o">**</span><span class="n">eigvalsh_args</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">eigvalsh</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pars</span><span class="o">=</span><span class="p">{},</span> <span class="o">**</span><span class="n">eigvalsh_args</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Computes ALL eigenvalues of hermitian `quantum_operator` quantum_operator using DENSE hermitian methods.</span>
 
 <span class="sd">        This function method solves for all eigenvalues. It calls</span>
@@ -1079,7 +1072,7 @@
 
 <div class="viewcode-block" id="quantum_operator.tocsr">
 <a class="viewcode-back" href="../../../generated/quspin.operators.quantum_operator.html#quspin.operators.quantum_operator.tocsr">[docs]</a>
-    <span class="k">def</span> <span class="nf">tocsr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pars</span><span class="o">=</span><span class="p">{}):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">tocsr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pars</span><span class="o">=</span><span class="p">{}):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns copy of a `quantum_operator` object for parameters `pars` as a `scipy.sparse.csr_matrix`.</span>
 
 <span class="sd">        Casts the `quantum_operator` object as a</span>
@@ -1116,7 +1109,7 @@
 
 <div class="viewcode-block" id="quantum_operator.tocsc">
 <a class="viewcode-back" href="../../../generated/quspin.operators.quantum_operator.html#quspin.operators.quantum_operator.tocsc">[docs]</a>
-    <span class="k">def</span> <span class="nf">tocsc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pars</span><span class="o">=</span><span class="p">{}):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">tocsc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pars</span><span class="o">=</span><span class="p">{}):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns copy of a `quantum_operator` object for parameters `pars` as a `scipy.sparse.csc_matrix`.</span>
 
 <span class="sd">        Casts the `quantum_operator` object as a</span>
@@ -1153,7 +1146,7 @@
 
 <div class="viewcode-block" id="quantum_operator.todense">
 <a class="viewcode-back" href="../../../generated/quspin.operators.quantum_operator.html#quspin.operators.quantum_operator.todense">[docs]</a>
-    <span class="k">def</span> <span class="nf">todense</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pars</span><span class="o">=</span><span class="p">{},</span> <span class="n">out</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">todense</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pars</span><span class="o">=</span><span class="p">{},</span> <span class="n">out</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns copy of a `quantum_operator` object for parameters `pars` as a dense array.</span>
 
 <span class="sd">        This function can overflow memory if not used carefully!</span>
@@ -1199,7 +1192,7 @@
 
 <div class="viewcode-block" id="quantum_operator.toarray">
 <a class="viewcode-back" href="../../../generated/quspin.operators.quantum_operator.html#quspin.operators.quantum_operator.toarray">[docs]</a>
-    <span class="k">def</span> <span class="nf">toarray</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pars</span><span class="o">=</span><span class="p">{},</span> <span class="n">out</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">toarray</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pars</span><span class="o">=</span><span class="p">{},</span> <span class="n">out</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns copy of a `quantum_operator` object for parameters `pars` as a dense array.</span>
 
 <span class="sd">        This function can overflow memory if not used carefully!</span>
@@ -1237,7 +1230,7 @@
 
 <div class="viewcode-block" id="quantum_operator.aslinearoperator">
 <a class="viewcode-back" href="../../../generated/quspin.operators.quantum_operator.html#quspin.operators.quantum_operator.aslinearoperator">[docs]</a>
-    <span class="k">def</span> <span class="nf">aslinearoperator</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pars</span><span class="o">=</span><span class="p">{}):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">aslinearoperator</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pars</span><span class="o">=</span><span class="p">{}):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns copy of a `quantum_operator` object for parameters `pars` as a `scipy.sparse.linalg.Linearquantum_operator`.</span>
 
 <span class="sd">        Casts the `quantum_operator` object as a</span>
@@ -1269,7 +1262,7 @@
 
 <div class="viewcode-block" id="quantum_operator.tohamiltonian">
 <a class="viewcode-back" href="../../../generated/quspin.operators.quantum_operator.html#quspin.operators.quantum_operator.tohamiltonian">[docs]</a>
-    <span class="k">def</span> <span class="nf">tohamiltonian</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pars</span><span class="o">=</span><span class="p">{},</span> <span class="n">copy</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">tohamiltonian</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pars</span><span class="o">=</span><span class="p">{},</span> <span class="n">copy</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns copy of a `quantum_operator` object for parameters `pars` as a `hamiltonian` object.</span>
 
 <span class="sd">        Parameters</span>
@@ -1311,7 +1304,7 @@
 
 <div class="viewcode-block" id="quantum_operator.update_matrix_formats">
 <a class="viewcode-back" href="../../../generated/quspin.operators.quantum_operator.html#quspin.operators.quantum_operator.update_matrix_formats">[docs]</a>
-    <span class="k">def</span> <span class="nf">update_matrix_formats</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">matrix_formats</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">update_matrix_formats</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">matrix_formats</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Change the internal structure of the matrices in-place.</span>
 
 <span class="sd">        Parameters</span>
@@ -1365,7 +1358,7 @@
 
 <div class="viewcode-block" id="quantum_operator.transpose">
 <a class="viewcode-back" href="../../../generated/quspin.operators.quantum_operator.html#quspin.operators.quantum_operator.transpose">[docs]</a>
-    <span class="k">def</span> <span class="nf">transpose</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">transpose</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Transposes `quantum_operator` quantum_operator.</span>
 
 <span class="sd">        Notes</span>
@@ -1394,7 +1387,7 @@
 
 <div class="viewcode-block" id="quantum_operator.conjugate">
 <a class="viewcode-back" href="../../../generated/quspin.operators.quantum_operator.html#quspin.operators.quantum_operator.conjugate">[docs]</a>
-    <span class="k">def</span> <span class="nf">conjugate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">conjugate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Conjugates `quantum_operator` quantum_operator.</span>
 
 <span class="sd">        Notes</span>
@@ -1426,7 +1419,7 @@
 
 <div class="viewcode-block" id="quantum_operator.conj">
 <a class="viewcode-back" href="../../../generated/quspin.operators.quantum_operator.html#quspin.operators.quantum_operator.conj">[docs]</a>
-    <span class="k">def</span> <span class="nf">conj</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">conj</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Conjugates `quantum_operator` quantum_operator.</span>
 
 <span class="sd">        Notes</span>
@@ -1449,7 +1442,7 @@
 
 <div class="viewcode-block" id="quantum_operator.getH">
 <a class="viewcode-back" href="../../../generated/quspin.operators.quantum_operator.html#quspin.operators.quantum_operator.getH">[docs]</a>
-    <span class="k">def</span> <span class="nf">getH</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">getH</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculates hermitian conjugate of `quantum_operator` quantum_operator.</span>
 
 <span class="sd">        Parameters</span>
@@ -1473,7 +1466,7 @@
 
 <div class="viewcode-block" id="quantum_operator.copy">
 <a class="viewcode-back" href="../../../generated/quspin.operators.quantum_operator.html#quspin.operators.quantum_operator.copy">[docs]</a>
-    <span class="k">def</span> <span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a deep copy of `quantum_operator` object.&quot;&quot;&quot;</span>
         <span class="n">new_dict</span> <span class="o">=</span> <span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="p">[</span><span class="n">op</span><span class="p">]</span> <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">op</span> <span class="ow">in</span> <span class="n">iteritems</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_quantum_operator</span><span class="p">)}</span>
         <span class="k">return</span> <span class="n">quantum_operator</span><span class="p">(</span>
@@ -1483,7 +1476,7 @@
 
 <div class="viewcode-block" id="quantum_operator.astype">
 <a class="viewcode-back" href="../../../generated/quspin.operators.quantum_operator.html#quspin.operators.quantum_operator.astype">[docs]</a>
-    <span class="k">def</span> <span class="nf">astype</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dtype</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">casting</span><span class="o">=</span><span class="s2">&quot;unsafe&quot;</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">astype</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dtype</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">casting</span><span class="o">=</span><span class="s2">&quot;unsafe&quot;</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Changes data type of `quantum_operator` object.</span>
 
 <span class="sd">        Parameters</span>
@@ -1519,7 +1512,7 @@
 
 <div class="viewcode-block" id="quantum_operator.diagonal">
 <a class="viewcode-back" href="../../../generated/quspin.operators.quantum_operator.html#quspin.operators.quantum_operator.diagonal">[docs]</a>
-    <span class="k">def</span> <span class="nf">diagonal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pars</span><span class="o">=</span><span class="p">{}):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">diagonal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pars</span><span class="o">=</span><span class="p">{}):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns diagonal of `quantum_operator` quantum_operator for parameters `pars`.</span>
 
 <span class="sd">        Parameters</span>
@@ -1548,7 +1541,7 @@
 
 <div class="viewcode-block" id="quantum_operator.trace">
 <a class="viewcode-back" href="../../../generated/quspin.operators.quantum_operator.html#quspin.operators.quantum_operator.trace">[docs]</a>
-    <span class="k">def</span> <span class="nf">trace</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pars</span><span class="o">=</span><span class="p">{}):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">trace</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pars</span><span class="o">=</span><span class="p">{}):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculates trace of `quantum_operator` quantum_operator for parameters `pars`.</span>
 
 <span class="sd">        Parameters</span>
@@ -1578,29 +1571,29 @@
         <span class="k">return</span> <span class="n">tr</span></div>
 
 
-    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">s</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
         <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">op</span> <span class="ow">in</span> <span class="n">iteritems</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_quantum_operator</span><span class="p">):</span>
             <span class="n">s</span> <span class="o">=</span> <span class="n">s</span> <span class="o">+</span> <span class="p">(</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2">:</span><span class="se">\n</span><span class="si">{}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">op</span><span class="p">))</span>
 
         <span class="k">return</span> <span class="n">s</span>
 
-    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="s2">&quot;&lt;</span><span class="si">{}</span><span class="s2"> x </span><span class="si">{}</span><span class="s2"> quspin.operator.quantum_operator with </span><span class="si">{}</span><span class="s2"> operator(s)&gt;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_quantum_operator</span><span class="p">)</span>
         <span class="p">)</span>
 
-    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">pars</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">pars</span><span class="p">):</span>
         <span class="n">pars</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_check_scalar_pars</span><span class="p">(</span><span class="n">pars</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_dense</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">todense</span><span class="p">(</span><span class="n">pars</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">tocsr</span><span class="p">(</span><span class="n">pars</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="fm">__neg__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__neg__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="fm">__imul__</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="fm">__iadd__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__iadd__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_is_dense</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_dense</span> <span class="ow">or</span> <span class="n">other</span><span class="o">.</span><span class="n">_is_dense</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">quantum_operator</span><span class="p">):</span>
             <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">iteritems</span><span class="p">(</span><span class="n">other</span><span class="o">.</span><span class="n">_quantum_operator</span><span class="p">):</span>
@@ -1619,13 +1612,13 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">NotImplemented</span>
 
-    <span class="k">def</span> <span class="fm">__add__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__add__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
         <span class="n">result_dtype</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">result_type</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dtype</span><span class="p">,</span> <span class="n">other</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
         <span class="n">new</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">result_dtype</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="n">new</span> <span class="o">+=</span> <span class="n">other</span>
         <span class="k">return</span> <span class="n">new</span>
 
-    <span class="k">def</span> <span class="fm">__isub__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__isub__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_is_dense</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_dense</span> <span class="ow">or</span> <span class="n">other</span><span class="o">.</span><span class="n">_is_dense</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">quantum_operator</span><span class="p">):</span>
             <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">iteritems</span><span class="p">(</span><span class="n">other</span><span class="o">.</span><span class="n">_quantum_operator</span><span class="p">):</span>
@@ -1644,13 +1637,13 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">NotImplemented</span>
 
-    <span class="k">def</span> <span class="fm">__sub__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__sub__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
         <span class="n">result_dtype</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">result_type</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dtype</span><span class="p">,</span> <span class="n">other</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
         <span class="n">new</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">result_dtype</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="n">new</span> <span class="o">-=</span> <span class="n">other</span>
         <span class="k">return</span> <span class="n">new</span>
 
-    <span class="k">def</span> <span class="fm">__imul__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__imul__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">quantum_operator</span><span class="p">):</span>
             <span class="k">return</span> <span class="bp">NotImplemented</span>
         <span class="k">elif</span> <span class="ow">not</span> <span class="n">_np</span><span class="o">.</span><span class="n">isscalar</span><span class="p">(</span><span class="n">other</span><span class="p">):</span>
@@ -1662,13 +1655,13 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_update_matvecs</span><span class="p">()</span>
             <span class="k">return</span> <span class="bp">self</span>
 
-    <span class="k">def</span> <span class="fm">__mul__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__mul__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
         <span class="n">result_dtype</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">result_type</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dtype</span><span class="p">,</span> <span class="n">other</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
         <span class="n">new</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">result_dtype</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="n">new</span> <span class="o">*=</span> <span class="n">other</span>
         <span class="k">return</span> <span class="n">new</span>
 
-    <span class="k">def</span> <span class="nf">__idiv__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">__idiv__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">quantum_operator</span><span class="p">):</span>
             <span class="k">return</span> <span class="bp">NotImplemented</span>
         <span class="k">elif</span> <span class="ow">not</span> <span class="n">_np</span><span class="o">.</span><span class="n">isscalar</span><span class="p">(</span><span class="n">other</span><span class="p">):</span>
@@ -1679,13 +1672,13 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_update_matvecs</span><span class="p">()</span>
             <span class="k">return</span> <span class="bp">self</span>
 
-    <span class="k">def</span> <span class="nf">__div__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">__div__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
         <span class="n">result_dtype</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">result_type</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dtype</span><span class="p">,</span> <span class="n">other</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
         <span class="n">new</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">result_dtype</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="n">new</span> <span class="o">/=</span> <span class="n">other</span>
         <span class="k">return</span> <span class="n">new</span>
 
-    <span class="k">def</span> <span class="nf">_check_hamiltonian_pars</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pars</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_check_hamiltonian_pars</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pars</span><span class="p">):</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">pars</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;expecing dictionary for parameters.&quot;</span><span class="p">)</span>
@@ -1715,7 +1708,7 @@
 
         <span class="k">return</span> <span class="n">pars</span>
 
-    <span class="k">def</span> <span class="nf">_check_scalar_pars</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pars</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_check_scalar_pars</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pars</span><span class="p">):</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">pars</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;expecing dictionary for parameters.&quot;</span><span class="p">)</span>
@@ -1734,7 +1727,7 @@
         <span class="k">return</span> <span class="n">pars</span>
 
     <span class="c1"># checks</span>
-    <span class="k">def</span> <span class="nf">_mat_checks</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="n">casting</span><span class="o">=</span><span class="s2">&quot;same_kind&quot;</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_mat_checks</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="n">casting</span><span class="o">=</span><span class="s2">&quot;same_kind&quot;</span><span class="p">):</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">other</span><span class="o">.</span><span class="n">shape</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_shape</span><span class="p">:</span>  <span class="c1"># only accepts square matricies</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;shapes do not match&quot;</span><span class="p">)</span>
@@ -1746,7 +1739,7 @@
             <span class="k">if</span> <span class="ow">not</span> <span class="n">_np</span><span class="o">.</span><span class="n">can_cast</span><span class="p">(</span><span class="n">other</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dtype</span><span class="p">,</span> <span class="n">casting</span><span class="o">=</span><span class="n">casting</span><span class="p">):</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;cannot cast types&quot;</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_update_matvecs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_update_matvecs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_matvec_functions</span> <span class="o">=</span> <span class="p">{}</span>
 
         <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_quantum_operator</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
@@ -1758,7 +1751,7 @@
 
 <div class="viewcode-block" id="isquantum_operator">
 <a class="viewcode-back" href="../../../generated/quspin.operators.isquantum_operator.html#quspin.operators.isquantum_operator">[docs]</a>
-<span class="k">def</span> <span class="nf">isquantum_operator</span><span class="p">(</span><span class="n">obj</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">isquantum_operator</span><span class="p">(</span><span class="n">obj</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Checks if instance is object of `quantum_operator` class.</span>
 
 <span class="sd">    Parameters</span>
@@ -1781,7 +1774,7 @@
 
 <div class="viewcode-block" id="save_zip">
 <a class="viewcode-back" href="../../../generated/quspin.operators.save_zip.html#quspin.operators.save_zip">[docs]</a>
-<span class="k">def</span> <span class="nf">save_zip</span><span class="p">(</span><span class="n">archive</span><span class="p">,</span> <span class="n">op</span><span class="p">,</span> <span class="n">save_basis</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">save_zip</span><span class="p">(</span><span class="n">archive</span><span class="p">,</span> <span class="n">op</span><span class="p">,</span> <span class="n">save_basis</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Save a `quantum_operator` to a zip archive to be used later.</span>
 
 <span class="sd">    Parameters</span>
@@ -1838,7 +1831,7 @@
 
 <div class="viewcode-block" id="load_zip">
 <a class="viewcode-back" href="../../../generated/quspin.operators.load_zip.html#quspin.operators.load_zip">[docs]</a>
-<span class="k">def</span> <span class="nf">load_zip</span><span class="p">(</span><span class="n">archive</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">load_zip</span><span class="p">(</span><span class="n">archive</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Load quantum_operator object from a zip archive.</span>
 
 <span class="sd">    Parameters</span>

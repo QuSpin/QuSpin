@@ -1,24 +1,22 @@
+
+
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" data-content_root="../../../">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>quspin.tools.Floquet &mdash; QuSpin 1.0.1 documentation</title>
-      <link rel="stylesheet" type="text/css" href="../../../static/pygments.css?v=fa44fd50" />
-      <link rel="stylesheet" type="text/css" href="../../../static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../../static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../../static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../../static/css/sphinx_rtd_size.css?v=f26ae176" />
       <link rel="stylesheet" type="text/css" href="../../../static/css/py_class_property_fix.css?v=faf79ccd" />
 
   
-  <!--[if lt IE 9]>
-    <script src="../../../static/js/html5shiv.min.js"></script>
-  <![endif]-->
-  
-        <script src="../../../static/jquery.js?v=5d32c60e"></script>
-        <script src="../../../static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../../static/documentation_options.js?v=292eb321"></script>
-        <script src="../../../static/doctools.js?v=9a2dae69"></script>
-        <script src="../../../static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../../static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../static/documentation_options.js?v=292eb321"></script>
+      <script src="../../../static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../../static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" /> 
@@ -43,12 +41,7 @@
   </form>
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <p class="caption" role="heading"><span class="caption-text">New Features</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../new_features.html">Highlights</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../new_features.html#most-recent-changes-features">Most recent changes &amp; features</a></li>
-</ul>
-<p class="caption" role="heading"><span class="caption-text">QuSpin (public API)</span></p>
+              <p class="caption" role="heading"><span class="caption-text">QuSpin (public API)</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../basis.html">Basis module (<code class="xref py py-mod docutils literal notranslate"><span class="pre">quspin.basis</span></code>)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../operators.html">Operators module (<code class="xref py py-mod docutils literal notranslate"><span class="pre">quspin.operators</span></code>)</a></li>
@@ -104,29 +97,29 @@
 
 
 <span class="c1"># need linear algebra packages</span>
-<span class="kn">import</span> <span class="nn">scipy.sparse.linalg</span> <span class="k">as</span> <span class="nn">_sla</span>
-<span class="kn">import</span> <span class="nn">scipy.linalg</span> <span class="k">as</span> <span class="nn">_la</span>
-<span class="kn">import</span> <span class="nn">scipy.sparse</span> <span class="k">as</span> <span class="nn">_sp</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">scipy.sparse.linalg</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">_sla</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">scipy.linalg</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">_la</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">scipy.sparse</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">_sp</span>
 
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">_np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">_np</span>
 
-<span class="kn">from</span> <span class="nn">scipy.integrate</span> <span class="kn">import</span> <span class="n">complex_ode</span>
-<span class="kn">from</span> <span class="nn">joblib</span> <span class="kn">import</span> <span class="n">delayed</span><span class="p">,</span> <span class="n">Parallel</span>
-<span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="n">vstack</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">scipy.integrate</span><span class="w"> </span><span class="kn">import</span> <span class="n">complex_ode</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">joblib</span><span class="w"> </span><span class="kn">import</span> <span class="n">delayed</span><span class="p">,</span> <span class="n">Parallel</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="kn">import</span> <span class="n">vstack</span>
 
-<span class="kn">import</span> <span class="nn">warnings</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Floquet_t_vec&quot;</span><span class="p">,</span> <span class="s2">&quot;Floquet_t_vec&quot;</span><span class="p">]</span>
 
 <span class="c1"># warnings.warn(&quot;Floquet Package has not been fully tested yet, please report bugs to: https://github.com/weinbe58/qspin/issues.&quot;,UserWarning,stacklevel=3)</span>
 
 
-<span class="k">def</span> <span class="nf">_range_iter</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">,</span> <span class="n">step</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_range_iter</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">,</span> <span class="n">step</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;&#39;xrange&#39; is replaced with &#39;range&#39; in python 3. If python 2 is being used, range will cause memory overflow.</span>
 <span class="sd">    This function is a work around to get the functionality of &#39;xrange&#39; for both python 2 and 3 simultaineously.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">count</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">itertools</span><span class="w"> </span><span class="kn">import</span> <span class="n">count</span>
 
     <span class="n">counter</span> <span class="o">=</span> <span class="n">count</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">step</span><span class="p">)</span>
     <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
@@ -137,7 +130,7 @@
             <span class="k">break</span>
 
 
-<span class="k">def</span> <span class="nf">_evolve_cont</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">H</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">atol</span><span class="o">=</span><span class="mf">1e-9</span><span class="p">,</span> <span class="n">rtol</span><span class="o">=</span><span class="mf">1e-9</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_evolve_cont</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">H</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">atol</span><span class="o">=</span><span class="mf">1e-9</span><span class="p">,</span> <span class="n">rtol</span><span class="o">=</span><span class="mf">1e-9</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;This function evolves the i-th local basis state under the Hamiltonian H up to period T.</span>
 <span class="sd">    It is used to construct the stroboscpoic evolution operator.</span>
 
@@ -187,7 +180,7 @@
 <span class="sd">	&quot;&quot;&quot;</span>
 
 
-<span class="k">def</span> <span class="nf">_evolve_step_3</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">H_list</span><span class="p">,</span> <span class="n">dt_list</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_evolve_step_3</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">H_list</span><span class="p">,</span> <span class="n">dt_list</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;This function calculates the evolved state for Periodic Step (point 3. in def of &#39;evo_dict&#39;).&quot;&quot;&quot;</span>
 
     <span class="n">psi0</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">H_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">Ns</span><span class="p">,),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">_np</span><span class="o">.</span><span class="n">complex128</span><span class="p">)</span>
@@ -200,7 +193,7 @@
     <span class="k">return</span> <span class="n">psi0</span>
 
 
-<span class="k">def</span> <span class="nf">_evolve_step_2</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">H</span><span class="p">,</span> <span class="n">t_list</span><span class="p">,</span> <span class="n">dt_list</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_evolve_step_2</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">H</span><span class="p">,</span> <span class="n">t_list</span><span class="p">,</span> <span class="n">dt_list</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;This function calculates the evolved state for Periodic Step (point 2. in def of &#39;evo_dict&#39;.&quot;&quot;&quot;</span>
 
     <span class="n">psi0</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">H</span><span class="o">.</span><span class="n">Ns</span><span class="p">,),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">_np</span><span class="o">.</span><span class="n">complex128</span><span class="p">)</span>
@@ -214,7 +207,7 @@
 
 
 <span class="c1">### USING JOBLIB ###</span>
-<span class="k">def</span> <span class="nf">_get_U_cont</span><span class="p">(</span><span class="n">H</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">n_jobs</span><span class="p">,</span> <span class="n">atol</span><span class="o">=</span><span class="mf">1e-9</span><span class="p">,</span> <span class="n">rtol</span><span class="o">=</span><span class="mf">1e-9</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_get_U_cont</span><span class="p">(</span><span class="n">H</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">n_jobs</span><span class="p">,</span> <span class="n">atol</span><span class="o">=</span><span class="mf">1e-9</span><span class="p">,</span> <span class="n">rtol</span><span class="o">=</span><span class="mf">1e-9</span><span class="p">):</span>
 
     <span class="n">sols</span> <span class="o">=</span> <span class="n">Parallel</span><span class="p">(</span><span class="n">n_jobs</span><span class="o">=</span><span class="n">n_jobs</span><span class="p">)(</span>
         <span class="n">delayed</span><span class="p">(</span><span class="n">_evolve_cont</span><span class="p">)(</span><span class="n">i</span><span class="p">,</span> <span class="n">H</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">atol</span><span class="p">,</span> <span class="n">rtol</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">_range_iter</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">H</span><span class="o">.</span><span class="n">Ns</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
@@ -222,7 +215,7 @@
     <span class="k">return</span> <span class="n">vstack</span><span class="p">(</span><span class="n">sols</span><span class="p">)</span><span class="o">.</span><span class="n">T</span>
 
 
-<span class="k">def</span> <span class="nf">_get_U_step_3</span><span class="p">(</span><span class="n">H_list</span><span class="p">,</span> <span class="n">dt_list</span><span class="p">,</span> <span class="n">n_jobs</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_get_U_step_3</span><span class="p">(</span><span class="n">H_list</span><span class="p">,</span> <span class="n">dt_list</span><span class="p">,</span> <span class="n">n_jobs</span><span class="p">):</span>
 
     <span class="n">sols</span> <span class="o">=</span> <span class="n">Parallel</span><span class="p">(</span><span class="n">n_jobs</span><span class="o">=</span><span class="n">n_jobs</span><span class="p">)(</span>
         <span class="n">delayed</span><span class="p">(</span><span class="n">_evolve_step_3</span><span class="p">)(</span><span class="n">i</span><span class="p">,</span> <span class="n">H_list</span><span class="p">,</span> <span class="n">dt_list</span><span class="p">)</span>
@@ -232,7 +225,7 @@
     <span class="k">return</span> <span class="n">vstack</span><span class="p">(</span><span class="n">sols</span><span class="p">)</span><span class="o">.</span><span class="n">T</span>
 
 
-<span class="k">def</span> <span class="nf">_get_U_step_2</span><span class="p">(</span><span class="n">H</span><span class="p">,</span> <span class="n">t_list</span><span class="p">,</span> <span class="n">dt_list</span><span class="p">,</span> <span class="n">n_jobs</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_get_U_step_2</span><span class="p">(</span><span class="n">H</span><span class="p">,</span> <span class="n">t_list</span><span class="p">,</span> <span class="n">dt_list</span><span class="p">,</span> <span class="n">n_jobs</span><span class="p">):</span>
 
     <span class="n">sols</span> <span class="o">=</span> <span class="n">Parallel</span><span class="p">(</span><span class="n">n_jobs</span><span class="o">=</span><span class="n">n_jobs</span><span class="p">)(</span>
         <span class="n">delayed</span><span class="p">(</span><span class="n">_evolve_step_2</span><span class="p">)(</span><span class="n">i</span><span class="p">,</span> <span class="n">H</span><span class="p">,</span> <span class="n">t_list</span><span class="p">,</span> <span class="n">dt_list</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">_range_iter</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">H</span><span class="o">.</span><span class="n">Ns</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
@@ -243,7 +236,7 @@
 
 <div class="viewcode-block" id="Floquet">
 <a class="viewcode-back" href="../../../generated/quspin.tools.Floquet.Floquet.html#quspin.tools.Floquet.Floquet">[docs]</a>
-<span class="k">class</span> <span class="nc">Floquet</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">Floquet</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Calculates the Floquet spectrum, Floquet Hamiltonian and Floquet states.</span>
 
 <span class="sd">    Loops over the basis states to compute the Floquet unitary :math:`U_F` (evolution operator over one period) for a</span>
@@ -281,7 +274,7 @@
 
 <div class="viewcode-block" id="Floquet.__init__">
 <a class="viewcode-back" href="../../../generated/quspin.tools.Floquet.Floquet.html#quspin.tools.Floquet.Floquet.__init__">[docs]</a>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">evo_dict</span><span class="p">,</span> <span class="n">HF</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">UF</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">thetaF</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">VF</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">n_jobs</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">force_ONB</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">evo_dict</span><span class="p">,</span> <span class="n">HF</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">UF</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">thetaF</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">VF</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">n_jobs</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">force_ONB</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Instantiates the `Floquet` class.</span>
 
 <span class="sd">        Parameters</span>
@@ -321,7 +314,7 @@
 <span class="sd">                Set to `True` to run an extra QR decomposition to orthogonalize the Floquet states; only effective for `VF=True`. </span>
 <span class="sd">    </span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="kn">from</span> <span class="nn">quspin.operators</span> <span class="kn">import</span> <span class="n">ishamiltonian</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">quspin.operators</span><span class="w"> </span><span class="kn">import</span> <span class="n">ishamiltonian</span>
 
         <span class="n">variables</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">if</span> <span class="n">HF</span><span class="p">:</span>
@@ -485,17 +478,17 @@
 
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">T</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">T</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;float: drive period.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_T</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">EF</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">EF</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;numpy.ndarray(float): ordered Floquet quasi-energies in interval :math:`[-\\Omega,\\Omega]`.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_EF</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">HF</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">HF</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;numpy.ndarray(float): Floquet Hamiltonian.</span>
 
 <span class="sd">        Requires __init__ argument HF=True.</span>
@@ -507,7 +500,7 @@
             <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="s2">&quot;missing atrribute &#39;HF&#39;.&quot;</span><span class="p">)</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">UF</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">UF</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;numpy.ndarray(float): Floquet unitary.</span>
 
 <span class="sd">        Requires __init__ argument UF=True.</span>
@@ -519,7 +512,7 @@
             <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="s2">&quot;missing atrribute &#39;UF&#39;.&quot;</span><span class="p">)</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">thetaF</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">thetaF</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;numpy.ndarray(float): Floquet eigenphases.</span>
 
 <span class="sd">        Requires __init__ argument thetaF=True.</span>
@@ -531,7 +524,7 @@
             <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="s2">&quot;missing atrribute &#39;thetaF&#39;.&quot;</span><span class="p">)</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">VF</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">VF</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;numpy.ndarray(float): Floquet eigenbasis (in columns).</span>
 
 <span class="sd">        Requires __init__ argument VF=True.</span>
@@ -546,7 +539,7 @@
 
 <div class="viewcode-block" id="Floquet_t_vec">
 <a class="viewcode-back" href="../../../generated/quspin.tools.Floquet.Floquet_t_vec.html#quspin.tools.Floquet.Floquet_t_vec">[docs]</a>
-<span class="k">class</span> <span class="nc">Floquet_t_vec</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">Floquet_t_vec</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Creates a Floquet time vector with fixed number of points per period.</span>
 
 <span class="sd">    This time vector hits all stroboscopic times, and has many useful attributes. The time vector</span>
@@ -569,7 +562,7 @@
 
 <div class="viewcode-block" id="Floquet_t_vec.__init__">
 <a class="viewcode-back" href="../../../generated/quspin.tools.Floquet.Floquet_t_vec.html#quspin.tools.Floquet.Floquet_t_vec.__init__">[docs]</a>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">Omega</span><span class="p">,</span> <span class="n">N_const</span><span class="p">,</span> <span class="n">len_T</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">N_up</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">N_down</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">Omega</span><span class="p">,</span> <span class="n">N_const</span><span class="p">,</span> <span class="n">len_T</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">N_up</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">N_down</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 
 <span class="sd">        Parameters</span>
@@ -655,79 +648,79 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_down</span> <span class="o">=</span> <span class="n">_periodic_ramp</span><span class="p">(</span><span class="n">N_down</span><span class="p">,</span> <span class="n">t_down</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">len_T</span><span class="p">,</span> <span class="n">ind0</span><span class="p">)</span></div>
 
 
-    <span class="k">def</span> <span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">vals</span><span class="o">.</span><span class="fm">__iter__</span><span class="p">()</span>
 
-    <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">s</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">s</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_vals</span><span class="o">.</span><span class="fm">__getitem__</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_vals</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="fm">__mul__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__mul__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_vals</span> <span class="o">*</span> <span class="n">other</span>
 
-    <span class="k">def</span> <span class="nf">__div__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">__div__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_vals</span> <span class="o">/</span> <span class="n">other</span>
 
-    <span class="k">def</span> <span class="fm">__truediv__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__truediv__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_vals</span> <span class="o">/</span> <span class="n">other</span>
 
-    <span class="k">def</span> <span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_vals</span><span class="o">.</span><span class="fm">__len__</span><span class="p">()</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">N</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">N</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;int: total number of periods.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_N</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">shape</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">shape</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;tuple: shape of array.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_shape</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">len_T</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">len_T</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;int: number of time points within one period, assumed half-open; [0,T).&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_len_T</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">T</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">T</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;float: drive period.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_T</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">vals</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">vals</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;np.ndarray(float): time vector values.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_vals</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">len</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">len</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;int: length of time vector.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_len</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">dt</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">dt</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;float: time vector step size.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dt</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">i</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">i</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;float: initial time value.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_i</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">f</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">f</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;foat: final time value.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_f</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">tot</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">tot</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;float: total time duration; `_.f - _.i` .&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tot</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">strobo</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">strobo</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;obj: calculates stroboscopic times in time vector with period length `len_T` and assigns them as</span>
 <span class="sd">        attributes:</span>
 
@@ -740,7 +733,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_strobo</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">up</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">up</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;obj: refers to time vector of up-part (regime).</span>
 
 <span class="sd">        Inherits all attributes (e.g. `_.up.strobo.inds`) except `_.T`, `_.dt`, and `_.lenT`.</span>
@@ -754,7 +747,7 @@
             <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="s2">&quot;missing attribute &#39;up&#39;&quot;</span><span class="p">)</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">const</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">const</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;obj: refers to time vector of const-part (regime).</span>
 
 <span class="sd">        Inherits all attributes (e.g. `_.const.strobo.inds`) except `_.T`, `_.dt`, and `_.lenT`.</span>
@@ -766,7 +759,7 @@
             <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="s2">&quot;missing attribute &#39;const&#39;&quot;</span><span class="p">)</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">down</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">down</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;obj: refers to time vector of down-part (regime).</span>
 
 <span class="sd">        Inherits all attributes (e.g. `_.down.strobo.inds`) except `_.T`, `_.dt`, and `_.lenT`.</span>
@@ -780,7 +773,7 @@
 
 <div class="viewcode-block" id="Floquet_t_vec.get_coordinates">
 <a class="viewcode-back" href="../../../generated/quspin.tools.Floquet.Floquet_t_vec.html#quspin.tools.Floquet.Floquet_t_vec.get_coordinates">[docs]</a>
-    <span class="k">def</span> <span class="nf">get_coordinates</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_coordinates</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns (period number, index within period) of the `Floquet_t_vec` value stored at `index`.</span>
 
 <span class="sd">        Notes</span>
@@ -823,8 +816,8 @@
 
 
 
-<span class="k">class</span> <span class="nc">_strobo_times</span><span class="p">:</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">len_T</span><span class="p">,</span> <span class="n">ind0</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">_strobo_times</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">len_T</span><span class="p">,</span> <span class="n">ind0</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Calculates stroboscopic times in time vector t with period length len_T and assigns them as</span>
 <span class="sd">        attributes.</span>
@@ -838,37 +831,37 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_inds</span> <span class="o">+=</span> <span class="n">ind0</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">inds</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">inds</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_inds</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">vals</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">vals</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_vals</span>
 
-    <span class="k">def</span> <span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">vals</span><span class="o">.</span><span class="fm">__iter__</span><span class="p">()</span>
 
-    <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">s</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">s</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_vals</span><span class="o">.</span><span class="fm">__getitem__</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_vals</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="fm">__mul__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__mul__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_vals</span> <span class="o">*</span> <span class="n">other</span>
 
-    <span class="k">def</span> <span class="nf">__div__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">__div__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_vals</span> <span class="o">/</span> <span class="n">other</span>
 
-    <span class="k">def</span> <span class="fm">__truediv__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__truediv__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_vals</span> <span class="o">/</span> <span class="n">other</span>
 
-    <span class="k">def</span> <span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_vals</span><span class="o">.</span><span class="fm">__len__</span><span class="p">()</span>
 
 
-<span class="k">class</span> <span class="nc">_periodic_ramp</span><span class="p">:</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">N</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">len_T</span><span class="p">,</span> <span class="n">ind0</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">_periodic_ramp</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">N</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">len_T</span><span class="p">,</span> <span class="n">ind0</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Defines time vector attributes of each regime.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_N</span> <span class="o">=</span> <span class="n">N</span>  <span class="c1"># total # periods</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_vals</span> <span class="o">=</span> <span class="n">t</span>  <span class="c1"># time values</span>
@@ -878,53 +871,53 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_len</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_vals</span><span class="o">.</span><span class="n">size</span>  <span class="c1"># total length</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_strobo</span> <span class="o">=</span> <span class="n">_strobo_times</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_vals</span><span class="p">,</span> <span class="n">len_T</span><span class="p">,</span> <span class="n">ind0</span><span class="p">)</span>  <span class="c1"># strobo attributes</span>
 
-    <span class="k">def</span> <span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">vals</span><span class="o">.</span><span class="fm">__iter__</span><span class="p">()</span>
 
-    <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">s</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">s</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_vals</span><span class="o">.</span><span class="fm">__getitem__</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_vals</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="fm">__mul__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__mul__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_vals</span> <span class="o">*</span> <span class="n">other</span>
 
-    <span class="k">def</span> <span class="nf">__div__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">__div__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_vals</span> <span class="o">/</span> <span class="n">other</span>
 
-    <span class="k">def</span> <span class="fm">__truediv__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__truediv__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_vals</span> <span class="o">/</span> <span class="n">other</span>
 
-    <span class="k">def</span> <span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_vals</span><span class="o">.</span><span class="fm">__len__</span><span class="p">()</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">N</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">N</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_N</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">vals</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">vals</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_vals</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">i</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">i</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_i</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">f</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">f</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_f</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">tot</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">tot</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tot</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">len</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">len</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_len</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">strobo</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">strobo</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_strobo</span>
 </pre></div>
 

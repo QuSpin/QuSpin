@@ -1,24 +1,22 @@
+
+
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" data-content_root="../../../">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>quspin.tools.measurements &mdash; QuSpin 1.0.1 documentation</title>
-      <link rel="stylesheet" type="text/css" href="../../../static/pygments.css?v=fa44fd50" />
-      <link rel="stylesheet" type="text/css" href="../../../static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../../static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../../static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../../static/css/sphinx_rtd_size.css?v=f26ae176" />
       <link rel="stylesheet" type="text/css" href="../../../static/css/py_class_property_fix.css?v=faf79ccd" />
 
   
-  <!--[if lt IE 9]>
-    <script src="../../../static/js/html5shiv.min.js"></script>
-  <![endif]-->
-  
-        <script src="../../../static/jquery.js?v=5d32c60e"></script>
-        <script src="../../../static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../../static/documentation_options.js?v=292eb321"></script>
-        <script src="../../../static/doctools.js?v=9a2dae69"></script>
-        <script src="../../../static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../../static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../static/documentation_options.js?v=292eb321"></script>
+      <script src="../../../static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../../static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" /> 
@@ -43,12 +41,7 @@
   </form>
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <p class="caption" role="heading"><span class="caption-text">New Features</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../new_features.html">Highlights</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../new_features.html#most-recent-changes-features">Most recent changes &amp; features</a></li>
-</ul>
-<p class="caption" role="heading"><span class="caption-text">QuSpin (public API)</span></p>
+              <p class="caption" role="heading"><span class="caption-text">QuSpin (public API)</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../basis.html">Basis module (<code class="xref py py-mod docutils literal notranslate"><span class="pre">quspin.basis</span></code>)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../operators.html">Operators module (<code class="xref py py-mod docutils literal notranslate"><span class="pre">quspin.operators</span></code>)</a></li>
@@ -102,23 +95,23 @@
   <h1>Source code for quspin.tools.measurements</h1><div class="highlight"><pre>
 <span></span><span class="c1"># -*- coding: utf-8 -*-</span>
 
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span><span class="p">,</span> <span class="n">division</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">print_function</span><span class="p">,</span> <span class="n">division</span>
 
 <span class="c1"># need linear algebra packages</span>
-<span class="kn">import</span> <span class="nn">scipy.sparse.linalg</span> <span class="k">as</span> <span class="nn">_sla</span>
-<span class="kn">import</span> <span class="nn">scipy.linalg</span> <span class="k">as</span> <span class="nn">_la</span>
-<span class="kn">import</span> <span class="nn">numpy.linalg</span> <span class="k">as</span> <span class="nn">_npla</span>
-<span class="kn">import</span> <span class="nn">scipy.sparse</span> <span class="k">as</span> <span class="nn">_sp</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">_np</span>
-<span class="kn">from</span> <span class="nn">inspect</span> <span class="kn">import</span> <span class="n">isgenerator</span> <span class="k">as</span> <span class="n">_isgenerator</span> 
+<span class="kn">import</span><span class="w"> </span><span class="nn">scipy.sparse.linalg</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">_sla</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">scipy.linalg</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">_la</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy.linalg</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">_npla</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">scipy.sparse</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">_sp</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">_np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">inspect</span><span class="w"> </span><span class="kn">import</span> <span class="n">isgenerator</span> <span class="k">as</span> <span class="n">_isgenerator</span> 
 
 <span class="c1"># needed for isinstance only</span>
-<span class="kn">from</span> <span class="nn">..basis</span> <span class="kn">import</span> <span class="n">isbasis</span> <span class="k">as</span> <span class="n">_isbasis</span>
-<span class="kn">from</span> <span class="nn">..basis.photon</span> <span class="kn">import</span> <span class="n">photon_Hspace_dim</span>
-<span class="kn">from</span> <span class="nn">.evolution</span> <span class="kn">import</span> <span class="n">ED_state_vs_time</span>
-<span class="kn">from</span> <span class="nn">.misc</span> <span class="kn">import</span> <span class="n">project_op</span><span class="p">,</span><span class="n">KL_div</span><span class="p">,</span><span class="n">mean_level_spacing</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..basis</span><span class="w"> </span><span class="kn">import</span> <span class="n">isbasis</span> <span class="k">as</span> <span class="n">_isbasis</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..basis.photon</span><span class="w"> </span><span class="kn">import</span> <span class="n">photon_Hspace_dim</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.evolution</span><span class="w"> </span><span class="kn">import</span> <span class="n">ED_state_vs_time</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.misc</span><span class="w"> </span><span class="kn">import</span> <span class="n">project_op</span><span class="p">,</span><span class="n">KL_div</span><span class="p">,</span><span class="n">mean_level_spacing</span>
 
-<span class="kn">import</span> <span class="nn">warnings</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
 
 
 <span class="n">__all__</span> <span class="o">=</span>  <span class="p">[</span><span class="s2">&quot;ent_entropy&quot;</span><span class="p">,</span> 
@@ -133,7 +126,7 @@
 
 <div class="viewcode-block" id="ent_entropy">
 <a class="viewcode-back" href="../../../generated/quspin.tools.measurements.ent_entropy.html#quspin.tools.measurements.ent_entropy">[docs]</a>
-<span class="k">def</span> <span class="nf">ent_entropy</span><span class="p">(</span><span class="n">system_state</span><span class="p">,</span><span class="n">basis</span><span class="p">,</span><span class="n">chain_subsys</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">DM</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">svd_return_vec</span><span class="o">=</span><span class="p">[</span><span class="kc">False</span><span class="p">,</span><span class="kc">False</span><span class="p">,</span><span class="kc">False</span><span class="p">],</span><span class="o">**</span><span class="n">_basis_kwargs</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">ent_entropy</span><span class="p">(</span><span class="n">system_state</span><span class="p">,</span><span class="n">basis</span><span class="p">,</span><span class="n">chain_subsys</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">DM</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">svd_return_vec</span><span class="o">=</span><span class="p">[</span><span class="kc">False</span><span class="p">,</span><span class="kc">False</span><span class="p">,</span><span class="kc">False</span><span class="p">],</span><span class="o">**</span><span class="n">_basis_kwargs</span><span class="p">):</span>
 <span class="w">	</span><span class="sd">&quot;&quot;&quot;DEPRECATED (cf `basis.ent_entropy`). Calculates entanglement entropy of a subsystem using Singular Value Decomposition (svd).</span>
 
 <span class="sd">	:red:`Note: we recommend the use of the &quot;basis.ent_entropy()&quot; method instead of this function. This function is now deprecated!`</span>
@@ -204,7 +197,7 @@
 		
 <div class="viewcode-block" id="diag_ensemble">
 <a class="viewcode-back" href="../../../generated/quspin.tools.measurements.diag_ensemble.html#quspin.tools.measurements.diag_ensemble">[docs]</a>
-<span class="k">def</span> <span class="nf">diag_ensemble</span><span class="p">(</span><span class="n">N</span><span class="p">,</span><span class="n">system_state</span><span class="p">,</span><span class="n">E2</span><span class="p">,</span><span class="n">V2</span><span class="p">,</span><span class="n">density</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">alpha</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span><span class="n">rho_d</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">Obs</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">delta_t_Obs</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">delta_q_Obs</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">Sd_Renyi</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">Srdm_Renyi</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">Srdm_args</span><span class="o">=</span><span class="p">{}):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">diag_ensemble</span><span class="p">(</span><span class="n">N</span><span class="p">,</span><span class="n">system_state</span><span class="p">,</span><span class="n">E2</span><span class="p">,</span><span class="n">V2</span><span class="p">,</span><span class="n">density</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">alpha</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span><span class="n">rho_d</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">Obs</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">delta_t_Obs</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">delta_q_Obs</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">Sd_Renyi</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">Srdm_Renyi</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">Srdm_args</span><span class="o">=</span><span class="p">{}):</span>
 <span class="w">	</span><span class="sd">&quot;&quot;&quot;Calculates expectation values in the Diagonal ensemble of the initial state. </span>
 
 <span class="sd">	Equivalently, these are also the infinite-time expectation values after a sudden quench from a </span>
@@ -569,7 +562,7 @@
 
 <div class="viewcode-block" id="obs_vs_time">
 <a class="viewcode-back" href="../../../generated/quspin.tools.measurements.obs_vs_time.html#quspin.tools.measurements.obs_vs_time">[docs]</a>
-<span class="k">def</span> <span class="nf">obs_vs_time</span><span class="p">(</span><span class="n">psi_t</span><span class="p">,</span><span class="n">times</span><span class="p">,</span><span class="n">Obs_dict</span><span class="p">,</span><span class="n">return_state</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">Sent_args</span><span class="o">=</span><span class="p">{},</span><span class="n">enforce_pure</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">obs_vs_time</span><span class="p">(</span><span class="n">psi_t</span><span class="p">,</span><span class="n">times</span><span class="p">,</span><span class="n">Obs_dict</span><span class="p">,</span><span class="n">return_state</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">Sent_args</span><span class="o">=</span><span class="p">{},</span><span class="n">enforce_pure</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">	</span><span class="sd">&quot;&quot;&quot;Calculates expectation value of observable(s) as a function of time in a time-dependent state.</span>
 <span class="sd">	</span>
 <span class="sd">	This function computes the expectation of a time-dependent state :math:`|\\psi(t)\\rangle` in a time-dependent observable :math:`\\mathcal{O}(t)`. </span>
@@ -653,7 +646,7 @@
 <span class="sd">				DM was also requested (toggled through `Srdm_args`.)</span>
 
 <span class="sd">	&quot;&quot;&quot;</span>
-	<span class="kn">from</span> <span class="nn">..operators</span> <span class="kn">import</span> <span class="n">ishamiltonian</span><span class="p">,</span><span class="n">hamiltonian</span>
+	<span class="kn">from</span><span class="w"> </span><span class="nn">..operators</span><span class="w"> </span><span class="kn">import</span> <span class="n">ishamiltonian</span><span class="p">,</span><span class="n">hamiltonian</span>
 	
 	<span class="n">variables</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Expt_time&#39;</span><span class="p">]</span>
 	
@@ -811,7 +804,7 @@
 
 <span class="c1">##### private functions</span>
 
-<span class="k">def</span> <span class="nf">_ent_entropy</span><span class="p">(</span><span class="n">system_state</span><span class="p">,</span><span class="n">basis</span><span class="p">,</span><span class="n">chain_subsys</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">density</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">subsys_ordering</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">alpha</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span><span class="n">DM</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">svd_return_vec</span><span class="o">=</span><span class="p">[</span><span class="kc">False</span><span class="p">,</span><span class="kc">False</span><span class="p">,</span><span class="kc">False</span><span class="p">]):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_ent_entropy</span><span class="p">(</span><span class="n">system_state</span><span class="p">,</span><span class="n">basis</span><span class="p">,</span><span class="n">chain_subsys</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">density</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">subsys_ordering</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">alpha</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span><span class="n">DM</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">svd_return_vec</span><span class="o">=</span><span class="p">[</span><span class="kc">False</span><span class="p">,</span><span class="kc">False</span><span class="p">,</span><span class="kc">False</span><span class="p">]):</span>
 <span class="w">	</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">	This function calculates the entanglement entropy of a lattice quantum subsystem based on the Singular Value Decomposition (svd). The entanglement entropy is NORMALISED by the size of the</span>
 <span class="sd">	reduced subsystem. </span>
@@ -985,7 +978,7 @@
 
 	<span class="k">return</span> <span class="n">return_dict</span>
 
-<span class="k">def</span> <span class="nf">_reshape_as_subsys</span><span class="p">(</span><span class="n">system_state</span><span class="p">,</span><span class="n">basis</span><span class="p">,</span><span class="n">chain_subsys</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">subsys_ordering</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_reshape_as_subsys</span><span class="p">(</span><span class="n">system_state</span><span class="p">,</span><span class="n">basis</span><span class="p">,</span><span class="n">chain_subsys</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">subsys_ordering</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 <span class="w">	</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">	This function reshapes an input state (or matrix with &#39;Nstates&#39; initial states) into an array of</span>
 <span class="sd">	the shape (Nstates,Ns_subsys,Ns_other) with &#39;Ns_subsys&#39; and &#39;Ns_other&#39; the Hilbert space dimensions</span>
@@ -1257,7 +1250,7 @@
 
 	<span class="k">return</span> <span class="n">v</span><span class="p">,</span> <span class="n">rho_d</span><span class="p">,</span> <span class="n">N_A</span>
 
-<span class="k">def</span> <span class="nf">_inf_time_obs</span><span class="p">(</span><span class="n">rho</span><span class="p">,</span><span class="n">istate</span><span class="p">,</span><span class="n">Obs</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">delta_t_Obs</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">delta_q_Obs</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">Sd_Renyi</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">Srdm_Renyi</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">alpha</span><span class="o">=</span><span class="mf">1.0</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_inf_time_obs</span><span class="p">(</span><span class="n">rho</span><span class="p">,</span><span class="n">istate</span><span class="p">,</span><span class="n">Obs</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">delta_t_Obs</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">delta_q_Obs</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">Sd_Renyi</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">Srdm_Renyi</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">alpha</span><span class="o">=</span><span class="mf">1.0</span><span class="p">):</span>
 <span class="w">	</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">	This function calculates various quantities (observables, fluctuations, entropies) written in the</span>
 <span class="sd">	diagonal basis of a density matrix &#39;rho&#39;. See also documentation of &#39;Diagonal_Ensemble&#39;. The </span>
@@ -1337,7 +1330,7 @@
 
 		
 	<span class="c1"># calculate Shannon _entropy for the distribution p</span>
-	<span class="k">def</span> <span class="nf">_entropy</span><span class="p">(</span><span class="n">p</span><span class="p">,</span><span class="n">alpha</span><span class="p">):</span>
+	<span class="k">def</span><span class="w"> </span><span class="nf">_entropy</span><span class="p">(</span><span class="n">p</span><span class="p">,</span><span class="n">alpha</span><span class="p">):</span>
 <span class="w">		</span><span class="sd">&quot;&quot;&quot; </span>
 <span class="sd">		This function calculates the Renyi _entropy of the distribution p with parameter alpha.</span>
 <span class="sd">		&quot;&quot;&quot;</span>

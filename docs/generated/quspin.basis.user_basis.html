@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" data-content_root="../">
 <head>
@@ -5,22 +7,18 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>quspin.basis.user_basis &mdash; QuSpin 1.0.1 documentation</title>
-      <link rel="stylesheet" type="text/css" href="../static/pygments.css?v=fa44fd50" />
-      <link rel="stylesheet" type="text/css" href="../static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../static/css/sphinx_rtd_size.css?v=f26ae176" />
       <link rel="stylesheet" type="text/css" href="../static/css/py_class_property_fix.css?v=faf79ccd" />
 
   
-  <!--[if lt IE 9]>
-    <script src="../static/js/html5shiv.min.js"></script>
-  <![endif]-->
-  
-        <script src="../static/jquery.js?v=5d32c60e"></script>
-        <script src="../static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../static/documentation_options.js?v=292eb321"></script>
-        <script src="../static/doctools.js?v=9a2dae69"></script>
-        <script src="../static/sphinx_highlight.js?v=dc90522c"></script>
-        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+      <script src="../static/jquery.js?v=5d32c60e"></script>
+      <script src="../static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../static/documentation_options.js?v=292eb321"></script>
+      <script src="../static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
     <script src="../static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -47,12 +45,7 @@
   </form>
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <p class="caption" role="heading"><span class="caption-text">New Features</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../new_features.html">Highlights</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../new_features.html#most-recent-changes-features">Most recent changes &amp; features</a></li>
-</ul>
-<p class="caption" role="heading"><span class="caption-text">QuSpin (public API)</span></p>
+              <p class="caption" role="heading"><span class="caption-text">QuSpin (public API)</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="../basis.html">Basis module (<code class="xref py py-mod docutils literal notranslate"><span class="pre">quspin.basis</span></code>)</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="../basis.html#one-dimensional-symmetries">one-dimensional symmetries</a></li>
@@ -125,7 +118,7 @@
 <h1>quspin.basis.user_basis<a class="headerlink" href="#quspin-basis-user-basis" title="Link to this heading"></a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="quspin.basis.user_basis">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">quspin.basis.</span></span><span class="sig-name descname"><span class="pre">user_basis</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">basis_dtype</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">N</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">op_dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pcon_dict</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pre_check_state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">allowed_ops</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parallel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Ns_block_est</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_make_basis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">block_order</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">noncommuting_bits</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_Np</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">blocks</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/basis/basis_general/base_user.html#user_basis"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quspin.basis.user_basis" title="Link to this definition"></a></dt>
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">quspin.basis.</span></span><span class="sig-name descname"><span class="pre">user_basis</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">basis_dtype</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">N</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">op_dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pcon_dict</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pre_check_state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">allowed_ops</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parallel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Ns_block_est</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_make_basis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">block_order</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">noncommuting_bits</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_Np</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">blocks</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/basis/basis_general/base_user.html#user_basis"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quspin.basis.user_basis" title="Link to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">basis_general</span></code></p>
 <p>Constructs basis for USER-DEFINED functionality of a basis object.</p>
 <p>The <cite>user_basis</cite> unveils the inner workings of QuSpin. This is the most advanced usage of the package, and requires some understanding of python,
@@ -141,17 +134,17 @@ is incorporated by constructing the corresponding <cite>user_basis</cite> object
 constrained Hilbert space.</p>
 <p>More examples (including explanations of the class methods and attributes) can be found at: <a class="reference internal" href="../tutorials/user_basis.html#user-basis-label"><span class="std std-ref">user_basis tutorial</span></a>.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos">  1</span><span class="c1">#</span>
-<span class="linenos">  2</span><span class="kn">from</span> <span class="nn">quspin.operators</span> <span class="kn">import</span> <span class="n">hamiltonian</span>
-<span class="linenos">  3</span><span class="kn">from</span> <span class="nn">quspin.basis.user</span> <span class="kn">import</span> <span class="n">user_basis</span>  <span class="c1"># Hilbert space user basis</span>
-<span class="linenos">  4</span><span class="kn">from</span> <span class="nn">quspin.basis.user</span> <span class="kn">import</span> <span class="p">(</span>
+<span class="linenos">  2</span><span class="kn">from</span><span class="w"> </span><span class="nn">quspin.operators</span><span class="w"> </span><span class="kn">import</span> <span class="n">hamiltonian</span>
+<span class="linenos">  3</span><span class="kn">from</span><span class="w"> </span><span class="nn">quspin.basis.user</span><span class="w"> </span><span class="kn">import</span> <span class="n">user_basis</span>  <span class="c1"># Hilbert space user basis</span>
+<span class="linenos">  4</span><span class="kn">from</span><span class="w"> </span><span class="nn">quspin.basis.user</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
 <span class="linenos">  5</span>    <span class="n">next_state_sig_32</span><span class="p">,</span>
 <span class="linenos">  6</span>    <span class="n">pre_check_state_sig_32</span><span class="p">,</span>
 <span class="linenos">  7</span>    <span class="n">op_sig_32</span><span class="p">,</span>
 <span class="linenos">  8</span>    <span class="n">map_sig_32</span><span class="p">,</span>
 <span class="linenos">  9</span><span class="p">)</span>  <span class="c1"># user_basis dtypes</span>
-<span class="linenos"> 10</span><span class="kn">from</span> <span class="nn">numba</span> <span class="kn">import</span> <span class="n">carray</span><span class="p">,</span> <span class="n">cfunc</span>  <span class="c1"># numba helper functions</span>
-<span class="linenos"> 11</span><span class="kn">from</span> <span class="nn">numba</span> <span class="kn">import</span> <span class="n">uint32</span><span class="p">,</span> <span class="n">int32</span>  <span class="c1"># numba data types</span>
-<span class="linenos"> 12</span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="linenos"> 10</span><span class="kn">from</span><span class="w"> </span><span class="nn">numba</span><span class="w"> </span><span class="kn">import</span> <span class="n">carray</span><span class="p">,</span> <span class="n">cfunc</span>  <span class="c1"># numba helper functions</span>
+<span class="linenos"> 11</span><span class="kn">from</span><span class="w"> </span><span class="nn">numba</span><span class="w"> </span><span class="kn">import</span> <span class="n">uint32</span><span class="p">,</span> <span class="n">int32</span>  <span class="c1"># numba data types</span>
+<span class="linenos"> 12</span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 <span class="linenos"> 13</span>
 <span class="linenos"> 14</span><span class="c1">#</span>
 <span class="linenos"> 15</span><span class="n">N</span> <span class="o">=</span> <span class="mi">14</span>  <span class="c1"># lattice sites</span>
@@ -160,7 +153,7 @@ constrained Hilbert space.</p>
 <span class="linenos"> 18</span><span class="c1">#</span>
 <span class="linenos"> 19</span><span class="c1">######  function to call when applying operators</span>
 <span class="linenos"> 20</span><span class="nd">@cfunc</span><span class="p">(</span><span class="n">op_sig_32</span><span class="p">,</span> <span class="nb">locals</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">s</span><span class="o">=</span><span class="n">int32</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="n">uint32</span><span class="p">))</span>
-<span class="linenos"> 21</span><span class="k">def</span> <span class="nf">op</span><span class="p">(</span><span class="n">op_struct_ptr</span><span class="p">,</span> <span class="n">op_str</span><span class="p">,</span> <span class="n">ind</span><span class="p">,</span> <span class="n">N</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
+<span class="linenos"> 21</span><span class="k">def</span><span class="w"> </span><span class="nf">op</span><span class="p">(</span><span class="n">op_struct_ptr</span><span class="p">,</span> <span class="n">op_str</span><span class="p">,</span> <span class="n">ind</span><span class="p">,</span> <span class="n">N</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
 <span class="linenos"> 22</span>    <span class="c1"># using struct pointer to pass op_struct_ptr back to C++ see numba Records</span>
 <span class="linenos"> 23</span>    <span class="n">op_struct</span> <span class="o">=</span> <span class="n">carray</span><span class="p">(</span><span class="n">op_struct_ptr</span><span class="p">,</span> <span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
 <span class="linenos"> 24</span>    <span class="n">err</span> <span class="o">=</span> <span class="mi">0</span>
@@ -193,7 +186,7 @@ constrained Hilbert space.</p>
 <span class="linenos"> 51</span>    <span class="n">pre_check_state_sig_32</span><span class="p">,</span>
 <span class="linenos"> 52</span>    <span class="nb">locals</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">s_shift_left</span><span class="o">=</span><span class="n">uint32</span><span class="p">,</span> <span class="n">s_shift_right</span><span class="o">=</span><span class="n">uint32</span><span class="p">),</span>
 <span class="linenos"> 53</span><span class="p">)</span>
-<span class="linenos"> 54</span><span class="k">def</span> <span class="nf">pre_check_state</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">N</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
+<span class="linenos"> 54</span><span class="k">def</span><span class="w"> </span><span class="nf">pre_check_state</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">N</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
 <span class="linenos"> 55</span><span class="w">    </span><span class="sd">&quot;&quot;&quot;imposes that that a bit with 1 must be preceded and followed by 0,</span>
 <span class="linenos"> 56</span><span class="sd">    i.e. a particle on a given site must have empty neighboring sites.</span>
 <span class="linenos"> 57</span><span class="sd">    #</span>
@@ -228,7 +221,7 @@ constrained Hilbert space.</p>
 <span class="linenos"> 86</span>        <span class="n">l</span><span class="o">=</span><span class="n">int32</span><span class="p">,</span>
 <span class="linenos"> 87</span>    <span class="p">),</span>
 <span class="linenos"> 88</span><span class="p">)</span>
-<span class="linenos"> 89</span><span class="k">def</span> <span class="nf">translation</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">N</span><span class="p">,</span> <span class="n">sign_ptr</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
+<span class="linenos"> 89</span><span class="k">def</span><span class="w"> </span><span class="nf">translation</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">N</span><span class="p">,</span> <span class="n">sign_ptr</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
 <span class="linenos"> 90</span><span class="w">    </span><span class="sd">&quot;&quot;&quot;works for all system sizes N.&quot;&quot;&quot;</span>
 <span class="linenos"> 91</span>    <span class="n">shift</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>  <span class="c1"># translate state by shift sites</span>
 <span class="linenos"> 92</span>    <span class="n">period</span> <span class="o">=</span> <span class="n">N</span>  <span class="c1"># periodicity/cyclicity of translation</span>
@@ -252,7 +245,7 @@ constrained Hilbert space.</p>
 <span class="linenos">110</span>        <span class="n">s</span><span class="o">=</span><span class="n">int32</span><span class="p">,</span>
 <span class="linenos">111</span>    <span class="p">),</span>
 <span class="linenos">112</span><span class="p">)</span>
-<span class="linenos">113</span><span class="k">def</span> <span class="nf">parity</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">N</span><span class="p">,</span> <span class="n">sign_ptr</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
+<span class="linenos">113</span><span class="k">def</span><span class="w"> </span><span class="nf">parity</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">N</span><span class="p">,</span> <span class="n">sign_ptr</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
 <span class="linenos">114</span><span class="w">    </span><span class="sd">&quot;&quot;&quot;works for all system sizes N.&quot;&quot;&quot;</span>
 <span class="linenos">115</span>    <span class="n">out</span> <span class="o">=</span> <span class="mi">0</span>
 <span class="linenos">116</span>    <span class="n">s</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>  <span class="c1"># N-1</span>
@@ -533,7 +526,7 @@ the basis will give undefined behavior.</p>
 </table>
 <dl class="py property">
 <dt class="sig sig-object py" id="quspin.basis.user_basis.N">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">N</span></span><a class="headerlink" href="#quspin.basis.user_basis.N" title="Link to this definition"></a></dt>
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">N</span></span><a class="headerlink" href="#quspin.basis.user_basis.N" title="Link to this definition"></a></dt>
 <dd><p>number of sites the basis is constructed with.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
@@ -544,7 +537,7 @@ the basis will give undefined behavior.</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="quspin.basis.user_basis.Ns">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Ns</span></span><a class="headerlink" href="#quspin.basis.user_basis.Ns" title="Link to this definition"></a></dt>
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">Ns</span></span><a class="headerlink" href="#quspin.basis.user_basis.Ns" title="Link to this definition"></a></dt>
 <dd><p>number of states in the Hilbert space.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
@@ -721,7 +714,7 @@ the basis will give undefined behavior.</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="quspin.basis.user_basis.blocks">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">blocks</span></span><a class="headerlink" href="#quspin.basis.user_basis.blocks" title="Link to this definition"></a></dt>
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">blocks</span></span><a class="headerlink" href="#quspin.basis.user_basis.blocks" title="Link to this definition"></a></dt>
 <dd><p>contains the quantum numbers (blocks) for the symmetry sectors.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
@@ -780,7 +773,7 @@ the basis will give undefined behavior.</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="quspin.basis.user_basis.description">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">description</span></span><a class="headerlink" href="#quspin.basis.user_basis.description" title="Link to this definition"></a></dt>
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">description</span></span><a class="headerlink" href="#quspin.basis.user_basis.description" title="Link to this definition"></a></dt>
 <dd><p>information about <cite>basis</cite> object.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
@@ -791,7 +784,7 @@ the basis will give undefined behavior.</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="quspin.basis.user_basis.dtype">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">dtype</span></span><a class="headerlink" href="#quspin.basis.user_basis.dtype" title="Link to this definition"></a></dt>
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">dtype</span></span><a class="headerlink" href="#quspin.basis.user_basis.dtype" title="Link to this definition"></a></dt>
 <dd><p>data type of basis state integers.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
@@ -1201,7 +1194,7 @@ for basis which small particle numbers as the blocks have very uneven sizes. To 
 
 <dl class="py property">
 <dt class="sig sig-object py" id="quspin.basis.user_basis.noncommuting_bits">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">noncommuting_bits</span></span><a class="headerlink" href="#quspin.basis.user_basis.noncommuting_bits" title="Link to this definition"></a></dt>
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">noncommuting_bits</span></span><a class="headerlink" href="#quspin.basis.user_basis.noncommuting_bits" title="Link to this definition"></a></dt>
 <dd><p>list of bits that represent sites that do not commute along with the phase required from commuting sites</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
@@ -1246,7 +1239,7 @@ for basis which small particle numbers as the blocks have very uneven sizes. To 
 
 <dl class="py property">
 <dt class="sig sig-object py" id="quspin.basis.user_basis.operators">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">operators</span></span><a class="headerlink" href="#quspin.basis.user_basis.operators" title="Link to this definition"></a></dt>
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">operators</span></span><a class="headerlink" href="#quspin.basis.user_basis.operators" title="Link to this definition"></a></dt>
 <dd><p>set of available operator strings.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
@@ -1423,7 +1416,7 @@ it is a square array. Default is <cite>False</cite>.</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="quspin.basis.user_basis.sps">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">sps</span></span><a class="headerlink" href="#quspin.basis.user_basis.sps" title="Link to this definition"></a></dt>
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">sps</span></span><a class="headerlink" href="#quspin.basis.user_basis.sps" title="Link to this definition"></a></dt>
 <dd><p>number of states per site (ie, the on-site Hilbert space dimension).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
@@ -1462,7 +1455,7 @@ it is a square array. Default is <cite>False</cite>.</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="quspin.basis.user_basis.states">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">states</span></span><a class="headerlink" href="#quspin.basis.user_basis.states" title="Link to this definition"></a></dt>
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">states</span></span><a class="headerlink" href="#quspin.basis.user_basis.states" title="Link to this definition"></a></dt>
 <dd><p>basis states stored in their integer representation.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
