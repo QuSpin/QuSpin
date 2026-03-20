@@ -37,7 +37,7 @@ You will see three directories, each pointing to its own repository:
 	- `QuSpin extension <https://github.com/QuSpin/QuSpin-Extensions>`_ which contains the cpp code for the basis modules;
 	- `QuSpin <https://github.com/QuSpin/QuSpin>`_ with the quspin python package that uses the other two modules. 
 
-Create a ``python>3.9`` virtual environment. This can be done using `miniconda <http://conda.pydata.org/miniconda.html>`_, or using python itself:
+Create a ``python>=3.11, <=3.14`` virtual environment. This can be done using `miniconda <http://conda.pydata.org/miniconda.html>`_, or using python itself:
 ::
 
 	> cd QuSpin-workspace/
