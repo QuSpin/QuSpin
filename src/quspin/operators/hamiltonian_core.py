@@ -2923,7 +2923,7 @@ class hamiltonian(object):
             self._static = _sp.dia_matrix(self._shape, dtype=self._dtype)
 
         for func in list(self._dynamic):
-            self._dynamic[func] = other.dot(self._dynamic[func])
+            self._dynamic[func] = self._dynamic[func].dot(other)
 
             try:
                 self._dynamic[func].sum_duplicates()
