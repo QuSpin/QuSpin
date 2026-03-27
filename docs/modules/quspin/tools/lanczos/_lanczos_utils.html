@@ -1,24 +1,22 @@
+
+
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" data-content_root="../../../../">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>quspin.tools.lanczos._lanczos_utils &mdash; QuSpin 1.0.1 documentation</title>
-      <link rel="stylesheet" type="text/css" href="../../../../static/pygments.css?v=fa44fd50" />
-      <link rel="stylesheet" type="text/css" href="../../../../static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../../../static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../../../static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../../../static/css/sphinx_rtd_size.css?v=f26ae176" />
       <link rel="stylesheet" type="text/css" href="../../../../static/css/py_class_property_fix.css?v=faf79ccd" />
 
   
-  <!--[if lt IE 9]>
-    <script src="../../../../static/js/html5shiv.min.js"></script>
-  <![endif]-->
-  
-        <script src="../../../../static/jquery.js?v=5d32c60e"></script>
-        <script src="../../../../static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../../../static/documentation_options.js?v=292eb321"></script>
-        <script src="../../../../static/doctools.js?v=9a2dae69"></script>
-        <script src="../../../../static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../../../static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../static/documentation_options.js?v=292eb321"></script>
+      <script src="../../../../static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../../../static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../../static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../search.html" /> 
@@ -43,12 +41,7 @@
   </form>
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <p class="caption" role="heading"><span class="caption-text">New Features</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../new_features.html">Highlights</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../new_features.html#most-recent-changes-features">Most recent changes &amp; features</a></li>
-</ul>
-<p class="caption" role="heading"><span class="caption-text">QuSpin (public API)</span></p>
+              <p class="caption" role="heading"><span class="caption-text">QuSpin (public API)</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../basis.html">Basis module (<code class="xref py py-mod docutils literal notranslate"><span class="pre">quspin.basis</span></code>)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../operators.html">Operators module (<code class="xref py py-mod docutils literal notranslate"><span class="pre">quspin.operators</span></code>)</a></li>
@@ -100,21 +93,21 @@
            <div itemprop="articleBody">
              
   <h1>Source code for quspin.tools.lanczos._lanczos_utils</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">_np</span>
-<span class="kn">from</span> <span class="nn">scipy.linalg</span> <span class="kn">import</span> <span class="n">eigh_tridiagonal</span>
-<span class="kn">from</span> <span class="nn">copy</span> <span class="kn">import</span> <span class="n">deepcopy</span>
-<span class="kn">from</span> <span class="nn">numba</span> <span class="kn">import</span> <span class="n">njit</span>
+<span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">_np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">scipy.linalg</span><span class="w"> </span><span class="kn">import</span> <span class="n">eigh_tridiagonal</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">copy</span><span class="w"> </span><span class="kn">import</span> <span class="n">deepcopy</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">numba</span><span class="w"> </span><span class="kn">import</span> <span class="n">njit</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;lanczos_full&quot;</span><span class="p">,</span> <span class="s2">&quot;lanczos_iter&quot;</span><span class="p">,</span> <span class="s2">&quot;lin_comb_Q_T&quot;</span><span class="p">]</span>
 
 
 <span class="nd">@njit</span>
-<span class="k">def</span> <span class="nf">_axpy</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">a</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_axpy</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">a</span><span class="p">):</span>
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">size</span><span class="p">):</span>
         <span class="n">y</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+=</span> <span class="n">a</span> <span class="o">*</span> <span class="n">x</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
 
 
-<span class="k">def</span> <span class="nf">_lanczos_vec_iter_core</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">v0</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_lanczos_vec_iter_core</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">v0</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
     <span class="n">dtype</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">result_type</span><span class="p">(</span><span class="n">A</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span> <span class="n">v0</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
 
     <span class="n">q</span> <span class="o">=</span> <span class="n">v0</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">dtype</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -159,17 +152,17 @@
         <span class="k">yield</span> <span class="n">q_view</span>  <span class="c1"># return non-writable array</span>
 
 
-<span class="k">class</span> <span class="nc">_lanczos_vec_iter</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">A</span><span class="p">,</span> <span class="n">v0</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">_lanczos_vec_iter</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">A</span><span class="p">,</span> <span class="n">v0</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_A</span> <span class="o">=</span> <span class="n">A</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_v0</span> <span class="o">=</span> <span class="n">v0</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_a</span> <span class="o">=</span> <span class="n">a</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_b</span> <span class="o">=</span> <span class="n">b</span>
 
-    <span class="k">def</span> <span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">_lanczos_vec_iter_core</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_A</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_v0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_a</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_b</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="fm">__del__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__del__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_A</span>
         <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_v0</span>
         <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_b</span>
@@ -178,7 +171,7 @@
 
 <div class="viewcode-block" id="lanczos_full">
 <a class="viewcode-back" href="../../../../generated/quspin.tools.lanczos.lanczos_full.html#quspin.tools.lanczos.lanczos_full">[docs]</a>
-<span class="k">def</span> <span class="nf">lanczos_full</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">v0</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">full_ortho</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">eps</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">lanczos_full</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">v0</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">full_ortho</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">eps</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Creates Lanczos basis; diagonalizes Krylov subspace in Lanczos basis.</span>
 
 <span class="sd">    Given a hermitian matrix `A` of size :math:`n\\times n` and an integer `m`, the Lanczos algorithm computes</span>
@@ -334,7 +327,7 @@
 
 <div class="viewcode-block" id="lanczos_iter">
 <a class="viewcode-back" href="../../../../generated/quspin.tools.lanczos.lanczos_iter.html#quspin.tools.lanczos.lanczos_iter">[docs]</a>
-<span class="k">def</span> <span class="nf">lanczos_iter</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">v0</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">return_vec_iter</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">copy_v0</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">copy_A</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">eps</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">lanczos_iter</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">v0</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">return_vec_iter</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">copy_v0</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">copy_A</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">eps</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Creates generator for Lanczos basis; diagonalizes Krylov subspace in Lanczos basis.</span>
 
 <span class="sd">    Given a hermitian matrix `A` of size :math:`n\\times n` and an integer `m`, the Lanczos algorithm computes</span>
@@ -459,13 +452,13 @@
 
 
 
-<span class="k">def</span> <span class="nf">_get_first_lv_iter</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">Q_iter</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_get_first_lv_iter</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">Q_iter</span><span class="p">):</span>
     <span class="k">yield</span> <span class="n">r</span>
     <span class="k">for</span> <span class="n">Q</span> <span class="ow">in</span> <span class="n">Q_iter</span><span class="p">:</span>
         <span class="k">yield</span> <span class="n">Q</span>
 
 
-<span class="k">def</span> <span class="nf">_get_first_lv</span><span class="p">(</span><span class="n">Q_iter</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_get_first_lv</span><span class="p">(</span><span class="n">Q_iter</span><span class="p">):</span>
     <span class="n">r</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">Q_iter</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">r</span><span class="p">,</span> <span class="n">_get_first_lv_iter</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">Q_iter</span><span class="p">)</span>
 
@@ -473,7 +466,7 @@
 <span class="c1"># I suggest the name `lv_average()` or `lv_linearcomb` or `linear_combine_Q()` instead of `lin_comb_Q()`</span>
 <div class="viewcode-block" id="lin_comb_Q_T">
 <a class="viewcode-back" href="../../../../generated/quspin.tools.lanczos.lin_comb_Q_T.html#quspin.tools.lanczos.lin_comb_Q_T">[docs]</a>
-<span class="k">def</span> <span class="nf">lin_comb_Q_T</span><span class="p">(</span><span class="n">coeff</span><span class="p">,</span> <span class="n">Q_T</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">lin_comb_Q_T</span><span class="p">(</span><span class="n">coeff</span><span class="p">,</span> <span class="n">Q_T</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Computes a linear combination of the Lanczos basis vectors:</span>
 
 <span class="sd">    .. math::</span>

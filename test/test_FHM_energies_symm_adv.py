@@ -72,7 +72,7 @@ def test():
         # print(H.get_shape)
         # exit()
 
-        E_quspin[j] = H.eigsh(k=1, which="SA", maxiter=1e4, return_eigenvectors=False)
+        E_quspin[j] = H.eigsh(k=1, which="SA", maxiter=1e4, return_eigenvectors=False)[0]
 
     np.testing.assert_allclose(E_quspin, E_paper, atol=1e-13)
     print("passed Fermi Hubbard model test for " + basis_name)

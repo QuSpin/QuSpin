@@ -1,24 +1,22 @@
+
+
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" data-content_root="../../../">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>quspin.operators.exp_op_core &mdash; QuSpin 1.0.1 documentation</title>
-      <link rel="stylesheet" type="text/css" href="../../../static/pygments.css?v=fa44fd50" />
-      <link rel="stylesheet" type="text/css" href="../../../static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../../static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../../static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../../static/css/sphinx_rtd_size.css?v=f26ae176" />
       <link rel="stylesheet" type="text/css" href="../../../static/css/py_class_property_fix.css?v=faf79ccd" />
 
   
-  <!--[if lt IE 9]>
-    <script src="../../../static/js/html5shiv.min.js"></script>
-  <![endif]-->
-  
-        <script src="../../../static/jquery.js?v=5d32c60e"></script>
-        <script src="../../../static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../../static/documentation_options.js?v=292eb321"></script>
-        <script src="../../../static/doctools.js?v=9a2dae69"></script>
-        <script src="../../../static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../../../static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../static/documentation_options.js?v=292eb321"></script>
+      <script src="../../../static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../../static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" /> 
@@ -43,12 +41,7 @@
   </form>
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <p class="caption" role="heading"><span class="caption-text">New Features</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../new_features.html">Highlights</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../new_features.html#most-recent-changes-features">Most recent changes &amp; features</a></li>
-</ul>
-<p class="caption" role="heading"><span class="caption-text">QuSpin (public API)</span></p>
+              <p class="caption" role="heading"><span class="caption-text">QuSpin (public API)</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../basis.html">Basis module (<code class="xref py py-mod docutils literal notranslate"><span class="pre">quspin.basis</span></code>)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../operators.html">Operators module (<code class="xref py py-mod docutils literal notranslate"><span class="pre">quspin.operators</span></code>)</a></li>
@@ -100,27 +93,27 @@
            <div itemprop="articleBody">
              
   <h1>Source code for quspin.operators.exp_op_core</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">quspin.operators</span> <span class="kn">import</span> <span class="n">hamiltonian_core</span><span class="p">,</span> <span class="n">quantum_operator_core</span>
+<span></span><span class="kn">from</span><span class="w"> </span><span class="nn">quspin.operators</span><span class="w"> </span><span class="kn">import</span> <span class="n">hamiltonian_core</span><span class="p">,</span> <span class="n">quantum_operator_core</span>
 
 <span class="c1"># need linear algebra packages</span>
-<span class="kn">import</span> <span class="nn">scipy</span>
-<span class="kn">import</span> <span class="nn">scipy.linalg</span> <span class="k">as</span> <span class="nn">_la</span>
-<span class="kn">import</span> <span class="nn">scipy.sparse</span> <span class="k">as</span> <span class="nn">_sp</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">_np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">scipy</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">scipy.linalg</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">_la</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">scipy.sparse</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">_sp</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">_np</span>
 
-<span class="kn">from</span> <span class="nn">scipy.sparse.linalg</span> <span class="kn">import</span> <span class="n">expm_multiply</span> <span class="k">as</span> <span class="n">_expm_multiply</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">scipy.sparse.linalg</span><span class="w"> </span><span class="kn">import</span> <span class="n">expm_multiply</span> <span class="k">as</span> <span class="n">_expm_multiply</span>
 
-<span class="kn">from</span> <span class="nn">copy</span> <span class="kn">import</span> <span class="n">deepcopy</span> <span class="k">as</span> <span class="n">_deepcopy</span>  <span class="c1"># recursively copies all data into new object</span>
-<span class="kn">from</span> <span class="nn">copy</span> <span class="kn">import</span> <span class="n">copy</span> <span class="k">as</span> <span class="n">_shallowcopy</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">copy</span><span class="w"> </span><span class="kn">import</span> <span class="n">deepcopy</span> <span class="k">as</span> <span class="n">_deepcopy</span>  <span class="c1"># recursively copies all data into new object</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">copy</span><span class="w"> </span><span class="kn">import</span> <span class="n">copy</span> <span class="k">as</span> <span class="n">_shallowcopy</span>
 
-<span class="kn">from</span> <span class="nn">six</span> <span class="kn">import</span> <span class="n">iteritems</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">six</span><span class="w"> </span><span class="kn">import</span> <span class="n">iteritems</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;exp_op&quot;</span><span class="p">,</span> <span class="s2">&quot;isexp_op&quot;</span><span class="p">]</span>
 
 
 <div class="viewcode-block" id="exp_op">
 <a class="viewcode-back" href="../../../generated/quspin.operators.exp_op.html#quspin.operators.exp_op">[docs]</a>
-<span class="k">class</span> <span class="nc">exp_op</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">exp_op</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Constructs matrix exponentials of quantum operators.</span>
 
 <span class="sd">    The `exp_op` class does not calculate the actual matrix exponential but instead computes the action of the</span>
@@ -153,7 +146,7 @@
 
 <div class="viewcode-block" id="exp_op.__init__">
 <a class="viewcode-back" href="../../../generated/quspin.operators.exp_op.html#quspin.operators.exp_op.__init__">[docs]</a>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">O</span><span class="p">,</span> <span class="n">a</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">stop</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">num</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">endpoint</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">iterate</span><span class="o">=</span><span class="kc">False</span>
     <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialises the `exp_op` object (matrix exponential of the operator `O`).</span>
@@ -267,58 +260,58 @@
 
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">ndim</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">ndim</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;int: number of dimensions, always equal to 2.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ndim</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">H</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">H</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;:obj:`exp_op`: transposes and conjugates the matrix exponential.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">getH</span><span class="p">(</span><span class="n">copy</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">T</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">T</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;:obj:`exp_op`: transposes the matrix exponential.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">copy</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">O</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">O</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;obj: Returns the operator to be exponentiated.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_O</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">a</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">a</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;`numpy.dtype`: constant (c-number) multiplying the operator to be exponentiated, `exp(a*O)`.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_a</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">get_shape</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_shape</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;tuple: shape of the `hamiltonian` object, always equal to `(Ns,Ns)`.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">O</span><span class="o">.</span><span class="n">get_shape</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">Ns</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">Ns</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;int: number of states in the (symmetry-reduced) Hilbert space spanned by `basis`.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">O</span><span class="o">.</span><span class="n">Ns</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">grid</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">grid</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;numpy.array: grid containing equidistant points to evaluate the matrix exponential at.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_grid</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">step</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">step</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;float: step size between equidistant grid points.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_step</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">iterate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">iterate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;bool: shows if iterate option is on/off.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_iterate</span>
 
 <div class="viewcode-block" id="exp_op.transpose">
 <a class="viewcode-back" href="../../../generated/quspin.operators.exp_op.html#quspin.operators.exp_op.transpose">[docs]</a>
-    <span class="k">def</span> <span class="nf">transpose</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">transpose</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Transposes `exp_op` operator.</span>
 
 <span class="sd">        Notes</span>
@@ -345,7 +338,7 @@
 
 <div class="viewcode-block" id="exp_op.conj">
 <a class="viewcode-back" href="../../../generated/quspin.operators.exp_op.html#quspin.operators.exp_op.conj">[docs]</a>
-    <span class="k">def</span> <span class="nf">conj</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">conj</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Conjugates `exp_op` operator.</span>
 
 <span class="sd">        Notes</span>
@@ -370,7 +363,7 @@
 
 <div class="viewcode-block" id="exp_op.getH">
 <a class="viewcode-back" href="../../../generated/quspin.operators.exp_op.html#quspin.operators.exp_op.getH">[docs]</a>
-    <span class="k">def</span> <span class="nf">getH</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">getH</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculates hermitian conjugate of `exp_op` operator.</span>
 
 <span class="sd">        Parameters</span>
@@ -399,14 +392,14 @@
 
 <div class="viewcode-block" id="exp_op.copy">
 <a class="viewcode-back" href="../../../generated/quspin.operators.exp_op.html#quspin.operators.exp_op.copy">[docs]</a>
-    <span class="k">def</span> <span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns a deep copy of `exp_op` object.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">_deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="exp_op.set_a">
 <a class="viewcode-back" href="../../../generated/quspin.operators.exp_op.html#quspin.operators.exp_op.set_a">[docs]</a>
-    <span class="k">def</span> <span class="nf">set_a</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new_a</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_a</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new_a</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Resets attribute `a` to multiply the operator in `exp(a*O)`.</span>
 
 <span class="sd">        Parameters</span>
@@ -429,7 +422,7 @@
 
 <div class="viewcode-block" id="exp_op.set_grid">
 <a class="viewcode-back" href="../../../generated/quspin.operators.exp_op.html#quspin.operators.exp_op.set_grid">[docs]</a>
-    <span class="k">def</span> <span class="nf">set_grid</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">,</span> <span class="n">num</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">endpoint</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_grid</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">,</span> <span class="n">num</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">endpoint</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Resets attribute `grid` to evaluate the operator for every `i` in `exp(a*O*grid[i])`.</span>
 
 <span class="sd">        Parameters</span>
@@ -478,7 +471,7 @@
 
 <div class="viewcode-block" id="exp_op.unset_grid">
 <a class="viewcode-back" href="../../../generated/quspin.operators.exp_op.html#quspin.operators.exp_op.unset_grid">[docs]</a>
-    <span class="k">def</span> <span class="nf">unset_grid</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">unset_grid</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Resets grid parameters to their default values.</span>
 
 <span class="sd">        Examples</span>
@@ -499,7 +492,7 @@
 
 <div class="viewcode-block" id="exp_op.set_iterate">
 <a class="viewcode-back" href="../../../generated/quspin.operators.exp_op.html#quspin.operators.exp_op.set_iterate">[docs]</a>
-    <span class="k">def</span> <span class="nf">set_iterate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">Value</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_iterate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">Value</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Resets `iterate` attribute.</span>
 
 <span class="sd">        Parameters</span>
@@ -528,7 +521,7 @@
 
 <div class="viewcode-block" id="exp_op.get_mat">
 <a class="viewcode-back" href="../../../generated/quspin.operators.exp_op.html#quspin.operators.exp_op.get_mat">[docs]</a>
-    <span class="k">def</span> <span class="nf">get_mat</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dense</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">call_kwargs</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_mat</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dense</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">call_kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculates matrix corresponding to matrix exponential object: `exp(a*O)`.</span>
 
 <span class="sd">        Parameters</span>
@@ -563,7 +556,7 @@
 
 <div class="viewcode-block" id="exp_op.dot">
 <a class="viewcode-back" href="../../../generated/quspin.operators.exp_op.html#quspin.operators.exp_op.dot">[docs]</a>
-    <span class="k">def</span> <span class="nf">dot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="n">shift</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">call_kwargs</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">dot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="n">shift</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">call_kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Left-multiply operator by matrix exponential.</span>
 
 <span class="sd">        Let the matrix exponential object be :math:`\\exp(\\mathcal{O})` and let the operator be :math:`A`.</span>
@@ -670,7 +663,7 @@
 
 <div class="viewcode-block" id="exp_op.rdot">
 <a class="viewcode-back" href="../../../generated/quspin.operators.exp_op.html#quspin.operators.exp_op.rdot">[docs]</a>
-    <span class="k">def</span> <span class="nf">rdot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="n">shift</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">call_kwargs</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">rdot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="n">shift</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">call_kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Right-multiply an operator by matrix exponential.</span>
 
 <span class="sd">        Let the matrix exponential object be :math:`\\exp(\\mathcal{O})` and let the operator be :math:`A`.</span>
@@ -801,7 +794,7 @@
 
 <div class="viewcode-block" id="exp_op.sandwich">
 <a class="viewcode-back" href="../../../generated/quspin.operators.exp_op.html#quspin.operators.exp_op.sandwich">[docs]</a>
-    <span class="k">def</span> <span class="nf">sandwich</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="n">shift</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">call_kwargs</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">sandwich</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="n">shift</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">call_kwargs</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Sandwich operator between matrix exponentials.</span>
 
 <span class="sd">        Let the matrix exponential object be :math:`\\exp(\\mathcal{O})` and let the operator to be sandwiched be</span>
@@ -900,7 +893,7 @@
 
 
 <span class="c1">### helper functions</span>
-<span class="k">def</span> <span class="nf">_iter_dot</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="n">step</span><span class="p">,</span> <span class="n">grid</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_iter_dot</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="n">step</span><span class="p">,</span> <span class="n">grid</span><span class="p">):</span>
     <span class="k">if</span> <span class="n">grid</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
         <span class="n">M</span> <span class="o">*=</span> <span class="n">grid</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
         <span class="n">other</span> <span class="o">=</span> <span class="n">_expm_multiply</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="n">other</span><span class="p">)</span>
@@ -914,7 +907,7 @@
         <span class="k">yield</span> <span class="n">other</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
 
 
-<span class="k">def</span> <span class="nf">_iter_rdot</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="n">step</span><span class="p">,</span> <span class="n">grid</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_iter_rdot</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="n">step</span><span class="p">,</span> <span class="n">grid</span><span class="p">):</span>
     <span class="k">if</span> <span class="n">grid</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
         <span class="n">M</span> <span class="o">*=</span> <span class="n">grid</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
         <span class="n">other</span> <span class="o">=</span> <span class="n">_expm_multiply</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="n">other</span><span class="p">)</span>
@@ -928,7 +921,7 @@
         <span class="k">yield</span> <span class="n">other</span><span class="o">.</span><span class="n">T</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
 
 
-<span class="k">def</span> <span class="nf">_iter_sandwich</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="n">step</span><span class="p">,</span> <span class="n">grid</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_iter_sandwich</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="n">step</span><span class="p">,</span> <span class="n">grid</span><span class="p">):</span>
     <span class="k">if</span> <span class="n">grid</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
         <span class="n">M</span> <span class="o">*=</span> <span class="n">grid</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
         <span class="n">other</span> <span class="o">=</span> <span class="n">_expm_multiply</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="n">other</span><span class="p">)</span>
@@ -945,7 +938,7 @@
         <span class="k">yield</span> <span class="n">other</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
 
 
-<span class="k">def</span> <span class="nf">_hamiltonian_dot</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_hamiltonian_dot</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
     <span class="n">new</span> <span class="o">=</span> <span class="n">other</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>  <span class="c1"># deep=False: not implememnted in hamiltonian_core.copy()</span>
     <span class="n">new</span><span class="o">.</span><span class="n">_dtype</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">result_type</span><span class="p">(</span><span class="n">M</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span> <span class="n">new</span><span class="o">.</span><span class="n">_dtype</span><span class="p">)</span>
     <span class="n">new</span><span class="o">.</span><span class="n">_static</span> <span class="o">=</span> <span class="n">_expm_multiply</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="n">other</span><span class="o">.</span><span class="n">static</span><span class="p">)</span>
@@ -956,7 +949,7 @@
     <span class="k">return</span> <span class="n">new</span>
 
 
-<span class="k">def</span> <span class="nf">_hamiltonian_iter_dot</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="n">grid</span><span class="p">,</span> <span class="n">step</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_hamiltonian_iter_dot</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="n">grid</span><span class="p">,</span> <span class="n">step</span><span class="p">):</span>
     <span class="k">if</span> <span class="n">grid</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
         <span class="n">M</span> <span class="o">*=</span> <span class="n">grid</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
         <span class="n">other</span> <span class="o">=</span> <span class="n">_hamiltonian_dot</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="n">other</span><span class="p">)</span>
@@ -970,7 +963,7 @@
         <span class="k">yield</span> <span class="n">other</span>
 
 
-<span class="k">def</span> <span class="nf">_hamiltonian_rdot</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_hamiltonian_rdot</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
     <span class="n">new</span> <span class="o">=</span> <span class="n">other</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>  <span class="c1"># deep=False: not implememnted in hamiltonian_core.copy()</span>
     <span class="n">new</span><span class="o">.</span><span class="n">_dtype</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">result_type</span><span class="p">(</span><span class="n">M</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span> <span class="n">new</span><span class="o">.</span><span class="n">_dtype</span><span class="p">)</span>
     <span class="n">new</span><span class="o">.</span><span class="n">_static</span> <span class="o">=</span> <span class="n">_expm_multiply</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="n">other</span><span class="o">.</span><span class="n">static</span><span class="p">)</span>
@@ -981,7 +974,7 @@
     <span class="k">return</span> <span class="n">new</span>
 
 
-<span class="k">def</span> <span class="nf">_hamiltonian_iter_rdot</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="n">grid</span><span class="p">,</span> <span class="n">step</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_hamiltonian_iter_rdot</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="n">grid</span><span class="p">,</span> <span class="n">step</span><span class="p">):</span>
     <span class="k">if</span> <span class="n">grid</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
         <span class="n">M</span> <span class="o">*=</span> <span class="n">grid</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
         <span class="n">other</span> <span class="o">=</span> <span class="n">_hamiltonian_rdot</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="n">other</span><span class="p">)</span>
@@ -995,7 +988,7 @@
         <span class="k">yield</span> <span class="n">other</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">copy</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
 
-<span class="k">def</span> <span class="nf">_hamiltonian_iter_sandwich</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="n">step</span><span class="p">,</span> <span class="n">grid</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_hamiltonian_iter_sandwich</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="n">step</span><span class="p">,</span> <span class="n">grid</span><span class="p">):</span>
     <span class="k">if</span> <span class="n">grid</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
         <span class="n">M</span> <span class="o">*=</span> <span class="n">grid</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
         <span class="n">other</span> <span class="o">=</span> <span class="n">_hamiltonian_dot</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="n">other</span><span class="p">)</span>
@@ -1013,7 +1006,7 @@
 
 <div class="viewcode-block" id="isexp_op">
 <a class="viewcode-back" href="../../../generated/quspin.operators.isexp_op.html#quspin.operators.isexp_op">[docs]</a>
-<span class="k">def</span> <span class="nf">isexp_op</span><span class="p">(</span><span class="n">obj</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">isexp_op</span><span class="p">(</span><span class="n">obj</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Checks if instance is object of `exp_op` class.</span>
 
 <span class="sd">    Parameters</span>

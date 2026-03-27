@@ -10,19 +10,21 @@ except ImportError:
     pass
 
 def value_test(lhs, rhs, **kwargs):
-    import matplotlib.pyplot as plt
     try:
         np.testing.assert_allclose(lhs, rhs, **kwargs)
     except Exception as e:
-        from matplotlib import pyplot as plt
-
-        plt.plot(lhs, label="lhs")
-        plt.plot(rhs, label="rhs")
-        plt.legend()
-        plt.figure()
-        plt.plot(lhs - rhs, label="diff")
-        plt.show()
+        import os
         
+        log_filename = os.path.join(os.getcwd(), f"test_evolve_error.log")
+        
+        with open(log_filename, "w") as f:
+            f.write(f"Error: {e}\n\n")
+            f.write(f"kwargs: {kwargs}\n\n")
+            f.write(f"lhs:\n{lhs}\n\n")
+            f.write(f"rhs:\n{rhs}\n\n")
+            f.write(f"diff (lhs - rhs):\n{lhs - rhs}\n")
+        
+        print(f"Test failed. Data saved to: {log_filename}")
         raise e
 
 

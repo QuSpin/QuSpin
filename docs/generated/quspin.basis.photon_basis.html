@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" data-content_root="../">
 <head>
@@ -5,22 +7,18 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>quspin.basis.photon_basis &mdash; QuSpin 1.0.1 documentation</title>
-      <link rel="stylesheet" type="text/css" href="../static/pygments.css?v=fa44fd50" />
-      <link rel="stylesheet" type="text/css" href="../static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../static/css/sphinx_rtd_size.css?v=f26ae176" />
       <link rel="stylesheet" type="text/css" href="../static/css/py_class_property_fix.css?v=faf79ccd" />
 
   
-  <!--[if lt IE 9]>
-    <script src="../static/js/html5shiv.min.js"></script>
-  <![endif]-->
-  
-        <script src="../static/jquery.js?v=5d32c60e"></script>
-        <script src="../static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../static/documentation_options.js?v=292eb321"></script>
-        <script src="../static/doctools.js?v=9a2dae69"></script>
-        <script src="../static/sphinx_highlight.js?v=dc90522c"></script>
-        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+      <script src="../static/jquery.js?v=5d32c60e"></script>
+      <script src="../static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../static/documentation_options.js?v=292eb321"></script>
+      <script src="../static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
     <script src="../static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -47,12 +45,7 @@
   </form>
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <p class="caption" role="heading"><span class="caption-text">New Features</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../new_features.html">Highlights</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../new_features.html#most-recent-changes-features">Most recent changes &amp; features</a></li>
-</ul>
-<p class="caption" role="heading"><span class="caption-text">QuSpin (public API)</span></p>
+              <p class="caption" role="heading"><span class="caption-text">QuSpin (public API)</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="../basis.html">Basis module (<code class="xref py py-mod docutils literal notranslate"><span class="pre">quspin.basis</span></code>)</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="../basis.html#one-dimensional-symmetries">one-dimensional symmetries</a></li>
@@ -126,7 +119,7 @@
 <h1>quspin.basis.photon_basis<a class="headerlink" href="#quspin-basis-photon-basis" title="Link to this heading"></a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="quspin.basis.photon_basis">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">quspin.basis.</span></span><span class="sig-name descname"><span class="pre">photon_basis</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">basis_constructor</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">constructor_args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">blocks</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/basis/photon.html#photon_basis"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quspin.basis.photon_basis" title="Link to this definition"></a></dt>
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">quspin.basis.</span></span><span class="sig-name descname"><span class="pre">photon_basis</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">basis_constructor</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">constructor_args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">blocks</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/basis/photon.html#photon_basis"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quspin.basis.photon_basis" title="Link to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="quspin.basis.tensor_basis.html#quspin.basis.tensor_basis" title="quspin.basis.tensor.tensor_basis"><code class="xref py py-class docutils literal notranslate"><span class="pre">tensor_basis</span></code></a></p>
 <p>Constructs basis in photon-particle Hilbert space.</p>
 <p>The <cite>photon_basis</cite> is child class of <cite>tensor_basis</cite> which allows the user to define a basis which couples a lattice particle to a single photon mode.</p>
@@ -157,9 +150,9 @@ states using the <cite>Nph</cite> argument:</p>
 </pre></div>
 </div>
 <p>The code snippet below shows how to use the <cite>photon_basis</cite> class to construct the Jaynes-Cummings Hamiltonian. As an initial state, we choose a coherent state in the photon sector and the ground state of the two-level system (atom).</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="kn">from</span> <span class="nn">quspin.operators</span> <span class="kn">import</span> <span class="n">hamiltonian</span>  <span class="c1"># Hamiltonian and observables</span>
-<span class="linenos"> 2</span><span class="kn">from</span> <span class="nn">quspin.basis.photon</span> <span class="kn">import</span> <span class="n">coherent_state</span>  <span class="c1"># HO coherent state</span>
-<span class="linenos"> 3</span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>  <span class="c1"># generic math functions</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="kn">from</span><span class="w"> </span><span class="nn">quspin.operators</span><span class="w"> </span><span class="kn">import</span> <span class="n">hamiltonian</span>  <span class="c1"># Hamiltonian and observables</span>
+<span class="linenos"> 2</span><span class="kn">from</span><span class="w"> </span><span class="nn">quspin.basis.photon</span><span class="w"> </span><span class="kn">import</span> <span class="n">coherent_state</span>  <span class="c1"># HO coherent state</span>
+<span class="linenos"> 3</span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>  <span class="c1"># generic math functions</span>
 <span class="linenos"> 4</span>
 <span class="linenos"> 5</span><span class="c1">#</span>
 <span class="linenos"> 6</span><span class="c1">##### define model parameters #####</span>
@@ -315,7 +308,7 @@ states using the <cite>Nph</cite> argument:</p>
 </table>
 <dl class="py property">
 <dt class="sig sig-object py" id="quspin.basis.photon_basis.N">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">N</span></span><a class="headerlink" href="#quspin.basis.photon_basis.N" title="Link to this definition"></a></dt>
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">N</span></span><a class="headerlink" href="#quspin.basis.photon_basis.N" title="Link to this definition"></a></dt>
 <dd><p>the value of <cite>N</cite> attribute from all the basis objects tensored together in a tuple ordered according to the input basis list.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
@@ -326,7 +319,7 @@ states using the <cite>Nph</cite> argument:</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="quspin.basis.photon_basis.Ns">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Ns</span></span><a class="headerlink" href="#quspin.basis.photon_basis.Ns" title="Link to this definition"></a></dt>
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">Ns</span></span><a class="headerlink" href="#quspin.basis.photon_basis.Ns" title="Link to this definition"></a></dt>
 <dd><p>number of states in the Hilbert space.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
@@ -390,7 +383,7 @@ the lattice site position. For instance:
 
 <dl class="py property">
 <dt class="sig sig-object py" id="quspin.basis.photon_basis.basis_left">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">basis_left</span></span><a class="headerlink" href="#quspin.basis.photon_basis.basis_left" title="Link to this definition"></a></dt>
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">basis_left</span></span><a class="headerlink" href="#quspin.basis.photon_basis.basis_left" title="Link to this definition"></a></dt>
 <dd><p>first basis constructor out of the <cite>basis</cite> objects list to be tensored.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
@@ -401,7 +394,7 @@ the lattice site position. For instance:
 
 <dl class="py property">
 <dt class="sig sig-object py" id="quspin.basis.photon_basis.basis_particle">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">basis_particle</span></span><a class="headerlink" href="#quspin.basis.photon_basis.basis_particle" title="Link to this definition"></a></dt>
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">basis_particle</span></span><a class="headerlink" href="#quspin.basis.photon_basis.basis_particle" title="Link to this definition"></a></dt>
 <dd><p>lattice basis.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
@@ -412,7 +405,7 @@ the lattice site position. For instance:
 
 <dl class="py property">
 <dt class="sig sig-object py" id="quspin.basis.photon_basis.basis_photon">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">basis_photon</span></span><a class="headerlink" href="#quspin.basis.photon_basis.basis_photon" title="Link to this definition"></a></dt>
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">basis_photon</span></span><a class="headerlink" href="#quspin.basis.photon_basis.basis_photon" title="Link to this definition"></a></dt>
 <dd><p>photon basis.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
@@ -423,7 +416,7 @@ the lattice site position. For instance:
 
 <dl class="py property">
 <dt class="sig sig-object py" id="quspin.basis.photon_basis.basis_right">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">basis_right</span></span><a class="headerlink" href="#quspin.basis.photon_basis.basis_right" title="Link to this definition"></a></dt>
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">basis_right</span></span><a class="headerlink" href="#quspin.basis.photon_basis.basis_right" title="Link to this definition"></a></dt>
 <dd><p>all others basis constructors except for the first one of the <cite>basis</cite> objects list to be tensored.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
@@ -434,7 +427,7 @@ the lattice site position. For instance:
 
 <dl class="py property">
 <dt class="sig sig-object py" id="quspin.basis.photon_basis.blocks">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">blocks</span></span><a class="headerlink" href="#quspin.basis.photon_basis.blocks" title="Link to this definition"></a></dt>
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">blocks</span></span><a class="headerlink" href="#quspin.basis.photon_basis.blocks" title="Link to this definition"></a></dt>
 <dd><p>contains the quantum numbers (blocks) for the symmetry sectors.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
@@ -445,7 +438,7 @@ the lattice site position. For instance:
 
 <dl class="py property">
 <dt class="sig sig-object py" id="quspin.basis.photon_basis.chain_N">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">chain_N</span></span><a class="headerlink" href="#quspin.basis.photon_basis.chain_N" title="Link to this definition"></a></dt>
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">chain_N</span></span><a class="headerlink" href="#quspin.basis.photon_basis.chain_N" title="Link to this definition"></a></dt>
 <dd><p>number of sites on lattice.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
@@ -456,7 +449,7 @@ the lattice site position. For instance:
 
 <dl class="py property">
 <dt class="sig sig-object py" id="quspin.basis.photon_basis.chain_Ns">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">chain_Ns</span></span><a class="headerlink" href="#quspin.basis.photon_basis.chain_Ns" title="Link to this definition"></a></dt>
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">chain_Ns</span></span><a class="headerlink" href="#quspin.basis.photon_basis.chain_Ns" title="Link to this definition"></a></dt>
 <dd><p>number of states in the photon Hilbert space only.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
@@ -756,7 +749,7 @@ by <cite>index()</cite>.</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="quspin.basis.photon_basis.operators">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">operators</span></span><a class="headerlink" href="#quspin.basis.photon_basis.operators" title="Link to this definition"></a></dt>
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">operators</span></span><a class="headerlink" href="#quspin.basis.photon_basis.operators" title="Link to this definition"></a></dt>
 <dd><p>set of available operator strings.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
@@ -819,7 +812,7 @@ it is a square array. Default is <cite>False</cite>.</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="quspin.basis.photon_basis.particle_N">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">particle_N</span></span><a class="headerlink" href="#quspin.basis.photon_basis.particle_N" title="Link to this definition"></a></dt>
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">particle_N</span></span><a class="headerlink" href="#quspin.basis.photon_basis.particle_N" title="Link to this definition"></a></dt>
 <dd><p>number of sites on lattice.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
@@ -830,7 +823,7 @@ it is a square array. Default is <cite>False</cite>.</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="quspin.basis.photon_basis.particle_Ns">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">particle_Ns</span></span><a class="headerlink" href="#quspin.basis.photon_basis.particle_Ns" title="Link to this definition"></a></dt>
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">particle_Ns</span></span><a class="headerlink" href="#quspin.basis.photon_basis.particle_Ns" title="Link to this definition"></a></dt>
 <dd><p>number of states in the lattice Hilbert space only.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
@@ -841,7 +834,7 @@ it is a square array. Default is <cite>False</cite>.</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="quspin.basis.photon_basis.particle_sps">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">particle_sps</span></span><a class="headerlink" href="#quspin.basis.photon_basis.particle_sps" title="Link to this definition"></a></dt>
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">particle_sps</span></span><a class="headerlink" href="#quspin.basis.photon_basis.particle_sps" title="Link to this definition"></a></dt>
 <dd><p>number of lattice states per site.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
@@ -852,7 +845,7 @@ it is a square array. Default is <cite>False</cite>.</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="quspin.basis.photon_basis.photon_Ns">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">photon_Ns</span></span><a class="headerlink" href="#quspin.basis.photon_basis.photon_Ns" title="Link to this definition"></a></dt>
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">photon_Ns</span></span><a class="headerlink" href="#quspin.basis.photon_basis.photon_Ns" title="Link to this definition"></a></dt>
 <dd><p>number of states in the photon Hilbert space only.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
@@ -863,7 +856,7 @@ it is a square array. Default is <cite>False</cite>.</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="quspin.basis.photon_basis.photon_sps">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">photon_sps</span></span><a class="headerlink" href="#quspin.basis.photon_basis.photon_sps" title="Link to this definition"></a></dt>
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">photon_sps</span></span><a class="headerlink" href="#quspin.basis.photon_basis.photon_sps" title="Link to this definition"></a></dt>
 <dd><p>number of photon states per site.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
@@ -909,7 +902,7 @@ of a conserving <cite>photon_basis</cite>. Default is <cite>True</cite>.</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="quspin.basis.photon_basis.sps">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">sps</span></span><a class="headerlink" href="#quspin.basis.photon_basis.sps" title="Link to this definition"></a></dt>
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">sps</span></span><a class="headerlink" href="#quspin.basis.photon_basis.sps" title="Link to this definition"></a></dt>
 <dd><p>number of states per site (ie, the on-site Hilbert space dimension).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>

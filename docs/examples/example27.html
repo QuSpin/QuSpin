@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" data-content_root="../">
 <head>
@@ -5,22 +7,18 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Liouville-von Neumann Equation using the MKL-enhanced Sparse Matrix Product [courtesy of J. Verlage] &mdash; QuSpin 1.0.1 documentation</title>
-      <link rel="stylesheet" type="text/css" href="../static/pygments.css?v=fa44fd50" />
-      <link rel="stylesheet" type="text/css" href="../static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../static/css/sphinx_rtd_size.css?v=f26ae176" />
       <link rel="stylesheet" type="text/css" href="../static/css/py_class_property_fix.css?v=faf79ccd" />
 
   
-  <!--[if lt IE 9]>
-    <script src="../static/js/html5shiv.min.js"></script>
-  <![endif]-->
-  
-        <script src="../static/jquery.js?v=5d32c60e"></script>
-        <script src="../static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../static/documentation_options.js?v=292eb321"></script>
-        <script src="../static/doctools.js?v=9a2dae69"></script>
-        <script src="../static/sphinx_highlight.js?v=dc90522c"></script>
-        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+      <script src="../static/jquery.js?v=5d32c60e"></script>
+      <script src="../static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../static/documentation_options.js?v=292eb321"></script>
+      <script src="../static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
     <script src="../static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" /> 
@@ -45,12 +43,7 @@
   </form>
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <p class="caption" role="heading"><span class="caption-text">New Features</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../new_features.html">Highlights</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../new_features.html#most-recent-changes-features">Most recent changes &amp; features</a></li>
-</ul>
-<p class="caption" role="heading"><span class="caption-text">QuSpin (public API)</span></p>
+              <p class="caption" role="heading"><span class="caption-text">QuSpin (public API)</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../basis.html">Basis module (<code class="xref py py-mod docutils literal notranslate"><span class="pre">quspin.basis</span></code>)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../operators.html">Operators module (<code class="xref py py-mod docutils literal notranslate"><span class="pre">quspin.operators</span></code>)</a></li>
@@ -131,7 +124,7 @@ Since we are limited to small system sizes by the exponentially growing Hilbert 
 <h1>Script<a class="headerlink" href="#script" title="Link to this heading"></a></h1>
 <p><a class="reference download internal" download="" href="../downloads/c11be7fb861667010dde48b25d9d66b4/example27.py"><code class="xref download docutils literal notranslate"><span class="pre">download</span> <span class="pre">script</span></code></a></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos">  1</span><span class="c1">#</span>
-<span class="linenos">  2</span><span class="kn">import</span> <span class="nn">sys</span><span class="o">,</span> <span class="nn">os</span>
+<span class="linenos">  2</span><span class="kn">import</span><span class="w"> </span><span class="nn">sys</span><span class="o">,</span><span class="w"> </span><span class="nn">os</span>
 <span class="linenos">  3</span>
 <span class="linenos">  4</span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;KMP_DUPLICATE_LIB_OK&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
 <span class="linenos">  5</span>    <span class="s2">&quot;True&quot;</span>  <span class="c1"># uncomment this line if omp error occurs on OSX for python 3</span>
@@ -149,13 +142,13 @@ Since we are limited to small system sizes by the exponentially growing Hilbert 
 <span class="linenos"> 17</span><span class="c1">#  that makes use of an MKL-parllelized dot function for sparse matrices. #</span>
 <span class="linenos"> 18</span><span class="c1">###########################################################################</span>
 <span class="linenos"> 19</span><span class="c1"># import sparse_dot library, see https://github.com/flatironinstitute/sparse_dot.git</span>
-<span class="linenos"> 20</span><span class="kn">from</span> <span class="nn">sparse_dot_mkl</span> <span class="kn">import</span> <span class="n">dot_product_mkl</span>
-<span class="linenos"> 21</span><span class="kn">from</span> <span class="nn">quspin.tools.misc</span> <span class="kn">import</span> <span class="n">get_matvec_function</span>
-<span class="linenos"> 22</span><span class="kn">from</span> <span class="nn">quspin.operators</span> <span class="kn">import</span> <span class="n">hamiltonian</span>
-<span class="linenos"> 23</span><span class="kn">from</span> <span class="nn">scipy.sparse</span> <span class="kn">import</span> <span class="n">csr_matrix</span>
-<span class="linenos"> 24</span><span class="kn">from</span> <span class="nn">quspin.basis</span> <span class="kn">import</span> <span class="n">spinful_fermion_basis_general</span>
-<span class="linenos"> 25</span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="linenos"> 26</span><span class="kn">import</span> <span class="nn">time</span>
+<span class="linenos"> 20</span><span class="kn">from</span><span class="w"> </span><span class="nn">sparse_dot_mkl</span><span class="w"> </span><span class="kn">import</span> <span class="n">dot_product_mkl</span>
+<span class="linenos"> 21</span><span class="kn">from</span><span class="w"> </span><span class="nn">quspin.tools.misc</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_matvec_function</span>
+<span class="linenos"> 22</span><span class="kn">from</span><span class="w"> </span><span class="nn">quspin.operators</span><span class="w"> </span><span class="kn">import</span> <span class="n">hamiltonian</span>
+<span class="linenos"> 23</span><span class="kn">from</span><span class="w"> </span><span class="nn">scipy.sparse</span><span class="w"> </span><span class="kn">import</span> <span class="n">csr_matrix</span>
+<span class="linenos"> 24</span><span class="kn">from</span><span class="w"> </span><span class="nn">quspin.basis</span><span class="w"> </span><span class="kn">import</span> <span class="n">spinful_fermion_basis_general</span>
+<span class="linenos"> 25</span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="linenos"> 26</span><span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
 <span class="linenos"> 27</span>
 <span class="linenos"> 28</span><span class="c1">#</span>
 <span class="linenos"> 29</span><span class="c1">##### define model parameters #####</span>
@@ -224,7 +217,7 @@ Since we are limited to small system sizes by the exponentially growing Hilbert 
 <span class="linenos"> 92</span><span class="c1">##### define Runge-Kutta solver for sparse matrix</span>
 <span class="linenos"> 93</span><span class="c1">#</span>
 <span class="linenos"> 94</span><span class="c1"># MKL-parallel function using the sparse_dot library</span>
-<span class="linenos"> 95</span><span class="k">def</span> <span class="nf">LvN_mkl</span><span class="p">(</span><span class="n">rho</span><span class="p">):</span>
+<span class="linenos"> 95</span><span class="k">def</span><span class="w"> </span><span class="nf">LvN_mkl</span><span class="p">(</span><span class="n">rho</span><span class="p">):</span>
 <span class="linenos"> 96</span>    <span class="c1"># define right-hand side of Liouville-von Neumann equation</span>
 <span class="linenos"> 97</span>    <span class="c1"># see https://github.com/flatironinstitute/sparse_dot.git, needs v0.8 or higher</span>
 <span class="linenos"> 98</span>    <span class="k">return</span> <span class="o">-</span><span class="mi">1</span><span class="n">j</span> <span class="o">*</span> <span class="p">(</span>
@@ -234,13 +227,13 @@ Since we are limited to small system sizes by the exponentially growing Hilbert 
 <span class="linenos">102</span>
 <span class="linenos">103</span><span class="c1">#</span>
 <span class="linenos">104</span><span class="c1"># scipy function</span>
-<span class="linenos">105</span><span class="k">def</span> <span class="nf">LvN_scipy</span><span class="p">(</span><span class="n">rho</span><span class="p">):</span>
+<span class="linenos">105</span><span class="k">def</span><span class="w"> </span><span class="nf">LvN_scipy</span><span class="p">(</span><span class="n">rho</span><span class="p">):</span>
 <span class="linenos">106</span>    <span class="k">return</span> <span class="o">-</span><span class="mi">1</span><span class="n">j</span> <span class="o">*</span> <span class="p">(</span><span class="n">Hcsc</span> <span class="o">@</span> <span class="n">rho</span> <span class="o">-</span> <span class="n">rho</span> <span class="o">@</span> <span class="n">Hcsc</span><span class="p">)</span>
 <span class="linenos">107</span>
 <span class="linenos">108</span>
 <span class="linenos">109</span><span class="c1">#</span>
 <span class="linenos">110</span><span class="c1"># define fixed step-size Runge-Kutta 4th order method</span>
-<span class="linenos">111</span><span class="k">def</span> <span class="nf">RK_solver</span><span class="p">(</span><span class="n">rho</span><span class="p">,</span> <span class="n">dt</span><span class="p">,</span> <span class="n">LvN</span><span class="p">):</span>
+<span class="linenos">111</span><span class="k">def</span><span class="w"> </span><span class="nf">RK_solver</span><span class="p">(</span><span class="n">rho</span><span class="p">,</span> <span class="n">dt</span><span class="p">,</span> <span class="n">LvN</span><span class="p">):</span>
 <span class="linenos">112</span>    <span class="n">k1</span> <span class="o">=</span> <span class="n">LvN</span><span class="p">(</span><span class="n">rho</span><span class="p">)</span>
 <span class="linenos">113</span>    <span class="n">k2</span> <span class="o">=</span> <span class="n">LvN</span><span class="p">(</span><span class="n">rho</span> <span class="o">+</span> <span class="p">(</span><span class="mf">0.5</span> <span class="o">*</span> <span class="n">dt</span><span class="p">)</span> <span class="o">*</span> <span class="n">k1</span><span class="p">)</span>
 <span class="linenos">114</span>    <span class="n">k3</span> <span class="o">=</span> <span class="n">LvN</span><span class="p">(</span><span class="n">rho</span> <span class="o">+</span> <span class="p">(</span><span class="mf">0.5</span> <span class="o">*</span> <span class="n">dt</span><span class="p">)</span> <span class="o">*</span> <span class="n">k2</span><span class="p">)</span>

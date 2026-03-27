@@ -193,7 +193,7 @@ def _lattice_reshape_sparse_pure(psi, sub_sys_A, L, sps):
 
     Ns_A = sps**L_A
     Ns_B = sps**L_B
-    psi = psi.tocoo()
+    psi = psi.tocoo(copy=True) 
 
     T_tup = sub_sys_A + sub_sys_B
     # reshuffle indices for the sub-systems.
