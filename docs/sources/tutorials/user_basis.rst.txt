@@ -121,6 +121,7 @@ For instance in a chain of four sites with at most two particles per site (i.e.,
 
 Reading off particle occupation on a given site:
 ................................................
+
 To read off the particle occupation on site :math:`j` of the state :math:`s` (with a total of :math:`N` sites and :math:`sps` states per site), do
 
 >>> j = N - j - 1            # compute lattice site in reversed bit configuration (cf QuSpin convention for mapping from bits to sites)
@@ -370,6 +371,7 @@ corresponds to the bit operation (again, fixed system size and data type):
    def translation(x,N,sign_ptr,args):
        """ works for N=10 sites and 32 bit-integers spin-1/2 states only. """
        return ((x & 0x0007fdff) << 1) | ((x & 0x00080200) >> 9)
+
 
 Symmetry `maps` dictionary
 ````````````````````````````
