@@ -8,13 +8,12 @@ Basis classes for quantum many-body systems.
 The following table shows the available operator strings for the different bases (`sps` is the onsite Hilbert space dimension):
 
 .. math::
-   \\begin{array}{cccc}
-      \\texttt{basis}/\\texttt{opstr}   &   \\texttt{"I"}   &   \\texttt{"+"}   &   \\texttt{"-"}  &   \\texttt{"n"}   &   \\texttt{"z"}   &   \\texttt{"x"}   &   \\texttt{"y"}  \\newline  
-      \\texttt{spin_basis_*} &   \\hat{1}        &   \\hat S^+(\\hat\\sigma^+)       &   \\hat S^-(\\hat\\sigma^-)      &         -         &   \\hat S^z(\\hat\\sigma^z)       &   \\hat S^x(\\hat\\sigma^x)     &   \\hat S^y(\\hat\\sigma^y)  \\  \\newline
-      \\texttt{boson_basis_*}&   \\hat{1}        &   \\hat b^\\dagger      &       \\hat b          & \\hat b^\\dagger \\hat b     &  \\hat b^\\dagger\\hat b - \\frac{\\mathrm{sps}-1}{2}       &   -       &   -  \\newline
-      \\texttt{*_fermion_basis_*}& \\hat{1}        &   \\hat c^\\dagger      &       \\hat c          & \\hat c^\\dagger \\hat c     &  \\hat c^\\dagger\\hat c - \\frac{1}{2}       &   \\hat c + \\hat c^\\dagger       &   -i\\left( \\hat c - \\hat c^\\dagger\\right)  \\newline
-   \\end{array}
-
+   \begin{array}{cccccccc}
+      \mathrm{basis}/\mathrm{opstr} & \text{"I"} & \text{"+"} & \text{"-"} & \text{"n"} & \text{"z"} & \text{"x"} & \text{"y"} \\
+      \mathrm{spin\_basis\_*} & \hat{1} & \hat S^+ (\hat\sigma^+) & \hat S^- (\hat\sigma^-) & - & \hat S^z (\hat\sigma^z) & \hat S^x (\hat\sigma^x) & \hat S^y (\hat\sigma^y) \\
+      \mathrm{boson\_basis\_*} & \hat{1} & \hat b^\dagger & \hat b & \hat b^\dagger \hat b & \hat b^\dagger \hat b - \frac{\mathrm{sps}-1}{2} & - & - \\
+      \mathrm{*\_fermion\_basis\_*} & \hat{1} & \hat c^\dagger & \hat c & \hat c^\dagger \hat c & \hat c^\dagger \hat c - \frac{1}{2} & \hat c + \hat c^\dagger & -i(\hat c - \hat c^\dagger)
+   \end{array}
 **Notes:** 
 
 * The default operators for spin-1/2 are the Pauli matrices, NOT the spin operators. To change this, see the argument `pauli` of the `spin_basis_*` classes. 
