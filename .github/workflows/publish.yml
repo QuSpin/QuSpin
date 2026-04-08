@@ -13,9 +13,6 @@ jobs:
       id-token: write
     steps:
       - uses: actions/checkout@v4
-      - name: Install libomp on macOS
-        if: runner.os == 'macOS'
-        run: brew install libomp
 
       - uses: pdm-project/setup-pdm@v4
 
