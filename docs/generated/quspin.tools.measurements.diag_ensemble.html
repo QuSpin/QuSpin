@@ -1,0 +1,361 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>quspin.tools.measurements.diag_ensemble &mdash; QuSpin 1.0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../static/css/sphinx_rtd_size.css?v=f26ae176" />
+      <link rel="stylesheet" type="text/css" href="../static/css/py_class_property_fix.css?v=faf79ccd" />
+
+  
+      <script src="../static/jquery.js?v=5d32c60e"></script>
+      <script src="../static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../static/documentation_options.js?v=292eb321"></script>
+      <script src="../static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
+    <script src="../static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="quspin.tools.measurements.obs_vs_time" href="quspin.tools.measurements.obs_vs_time.html" />
+    <link rel="prev" title="quspin.tools.measurements.ent_entropy" href="quspin.tools.measurements.ent_entropy.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            QuSpin
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">New Features</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../New_Features.html">Highlights</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../New_Features.html#most-recent-changes-features">Most recent changes &amp; features</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">QuSpin (public API)</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../basis.html">Basis module (<code class="xref py py-mod docutils literal notranslate"><span class="pre">quspin.basis</span></code>)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../operators.html">Operators module (<code class="xref py py-mod docutils literal notranslate"><span class="pre">quspin.operators</span></code>)</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../tools.html">Tools module (<code class="xref py py-mod docutils literal notranslate"><span class="pre">quspin.tools</span></code>)</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../tools.html#evolution">evolution</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tools.html#lanczos">Lanczos</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tools.html#floquet">Floquet</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../tools.html#measurements">measurements</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="quspin.tools.measurements.ent_entropy.html">quspin.tools.measurements.ent_entropy</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">quspin.tools.measurements.diag_ensemble</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#quspin.tools.measurements.diag_ensemble"><code class="docutils literal notranslate"><span class="pre">diag_ensemble()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="quspin.tools.measurements.obs_vs_time.html">quspin.tools.measurements.obs_vs_time</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../tools.html#block-tools">block_tools</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tools.html#misc">misc</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Installation &amp; Use</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../installation/installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../installation/installation.html#basics-of-command-line-use">Basics of command line use</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../example_scripts.html">Example scripts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../jupyter_notebooks.html">Jupyter notebooks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/parallelization.html">Parallel computing support</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/user_basis.html"><cite>user_basis</cite> tutorial</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Bugs &amp; Questions</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../contribute/report_a_bug.html">Report a bug</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contribute/ask_a_question.html">Ask a question</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">QuSpin</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content style-external-links">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../tools.html">Tools module (<code class="xref py py-mod docutils literal notranslate"><span class="pre">quspin.tools</span></code>)</a></li>
+      <li class="breadcrumb-item active">quspin.tools.measurements.diag_ensemble</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../sources/generated/quspin.tools.measurements.diag_ensemble.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <style> .red {color:#ff0000; font-weight:bold; font-style:italic; } </style>
+<style> .green {color:#00b200; font-weight:bold; font-style:italic; } </style>
+<style> .magenta {color:#FF33F3; font-weight:bold; font-style:italic; } </style>
+<style> .orange {color:#FE8E02; font-weight:bold; font-style:italic; } </style><section id="quspin-tools-measurements-diag-ensemble">
+<h1>quspin.tools.measurements.diag_ensemble<a class="headerlink" href="#quspin-tools-measurements-diag-ensemble" title="Link to this heading"></a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="quspin.tools.measurements.diag_ensemble">
+<span class="sig-prename descclassname"><span class="pre">quspin.tools.measurements.</span></span><span class="sig-name descname"><span class="pre">diag_ensemble</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">N</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">system_state</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">E2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">V2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">density</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rho_d</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Obs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delta_t_Obs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delta_q_Obs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Sd_Renyi</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Srdm_Renyi</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Srdm_args</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../modules/quspin/tools/measurements.html#diag_ensemble"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#quspin.tools.measurements.diag_ensemble" title="Link to this definition"></a></dt>
+<dd><p>Calculates expectation values in the Diagonal ensemble of the initial state.</p>
+<p>Equivalently, these are also the infinite-time expectation values after a sudden quench from a
+Hamiltonian <span class="math notranslate nohighlight">\(H_1\)</span> to a Hamiltonian <span class="math notranslate nohighlight">\(H_2\)</span>. Let us label the two eigenbases by</p>
+<div class="math notranslate nohighlight">
+\[V_1=\{|n_1\rangle: H_1|n_1\rangle=E_1|n_1\rangle\} \qquad V_2=\{|n_2\rangle: H_2|n_2\rangle=E_2|n_2\rangle\}\]</div>
+<p>See eg. <a class="reference external" href="https://arxiv.org/abs/1509.06411">arXiv:1509.06411</a> for the physical definition of Diagonal Ensemble.</p>
+<p><strong>Note: All expectation values depend statistically on the symmetry block used via the available number of
+states, due to the generic system-size dependence!</strong></p>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl>
+<dt><strong>N</strong><span class="classifier">int</span></dt><dd><p>System size/dimension (e.g. number of sites).</p>
+</dd>
+<dt><strong>system_state</strong><span class="classifier">{array_like,dict}</span></dt><dd><p>State of the quantum system; can be either of:</p>
+<blockquote>
+<div><ul>
+<li><p>numpy.ndarray: pure state, shape = (Ns,) or (,Ns).</p></li>
+<li><p>numpy.ndarray: density matrix (DM), shape = (Ns,Ns).</p></li>
+<li><p>dict: mixed DM as dictionary <cite>{“V1”:V1, “E1”:E1, “f”:f, “f_args”:f_args, “V1_state”:int, “f_norm”:`False</cite>}` to define a diagonal DM in the basis <span class="math notranslate nohighlight">\(V_1\)</span> of the Hamiltonian <span class="math notranslate nohighlight">\(H_1\)</span>. The meaning of the keys (keys CANNOT be chosen arbitrarily) is as flollows:</p>
+<blockquote>
+<div><ul>
+<li><p>numpy.ndarray: <cite>V1</cite> (required) contains eigenbasis of <span class="math notranslate nohighlight">\(H_1\)</span> in the columns.</p></li>
+<li><p>numpy.ndarray: <cite>E1</cite> (required) eigenenergies of <span class="math notranslate nohighlight">\(H_1\)</span>.</p></li>
+<li><dl>
+<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">function</span></code> ‘f’ (optional) is a function which represents the distribution of the spectrum</dt><dd><p>used to define the mixed DM of the initial state (see example).</p>
+<p>Default is a thermal distribution with inverse temperature <cite>beta</cite>:
+<cite>f = lambda E,beta: numpy.exp(-beta*(E - E[0]) )</cite>.</p>
+</dd>
+</dl>
+</li>
+<li><p>list(float): <cite>f_args</cite> (required) list of arguments for function <cite>f</cite>.</p>
+<blockquote>
+<div><p>If <cite>f</cite> is not defined, by default we have <span class="math notranslate nohighlight">\(f(E)=\exp(-\beta(E - E_\mathrm{GS}))\)</span>,
+and <cite>f_args=[beta]</cite> specifies the inverse temeprature.</p>
+</div></blockquote>
+</li>
+<li><dl class="simple">
+<dt>list(int): <cite>V1_state</cite> (optional) is a list of integers to specify arbitrary states of <cite>V1</cite></dt><dd><p>whose pure expectations are also returned.</p>
+</dd>
+</dl>
+</li>
+<li><dl>
+<dt>bool: <cite>f_norm</cite> (optional). If set to <cite>False</cite> the mixed DM built from <cite>f</cite> is NOT normalised</dt><dd><p>and the norm is returned under the key <cite>f_norm</cite>.</p>
+<p>Use this option if you need to average your results over multiple symmetry blocks, which
+require a separate normalisations.</p>
+</dd>
+</dl>
+</li>
+</ul>
+<p>If this option is specified, then all Diagonal Ensemble quantities are averaged over
+the energy distribution <span class="math notranslate nohighlight">\(f(E_1,f\_args)\)</span>:</p>
+<div class="math notranslate nohighlight">
+\[\overline{\mathcal{M}_d} = \frac{1}{Z_f}\sum_{n_1} f(E_{n_1},f\_args)\mathcal{M}^{n_1}_d, \qquad \mathcal{M}^{\psi}_d = \langle\mathcal{O}\rangle_d^\psi,\ \delta_q\mathcal{O}^\psi_d,\ \delta_t\mathcal{O}^\psi_d,\ S_d^\psi,\ S_\mathrm{rdm}^\psi\]</div>
+</div></blockquote>
+</li>
+</ul>
+</div></blockquote>
+</dd>
+<dt><strong>V2</strong><span class="classifier">numpy.ndarray</span></dt><dd><p>Contains the basis of the Hamiltonian <span class="math notranslate nohighlight">\(H_2\)</span> in the columns.</p>
+</dd>
+<dt><strong>E2</strong><span class="classifier">numpy.ndarray</span></dt><dd><p>Contains the eigenenergies corresponding to the eigenstates in <cite>V2</cite>.</p>
+<p>This variable is only used to check for degeneracies, in which case the function is NOT expected to
+produce correct resultsand raises an error.</p>
+</dd>
+<dt><strong>rho_d</strong><span class="classifier">bool, optional</span></dt><dd><p>When set to <cite>True</cite>, returns the Diagonal ensemble DM. Default is <cite>False</cite>.</p>
+<p>Adds the key “rho_d” to output.</p>
+<p>For example, if <cite>system_state</cite> is the pure state <span class="math notranslate nohighlight">\(|\psi\rangle\)</span>:</p>
+<div class="math notranslate nohighlight">
+\[\rho_d^\psi = \sum_{n_2} \left|\langle\psi|n_2\rangle\right|^2\left|n_2\rangle\langle n_2\right| = \sum_{n_2} \left(\rho_d^\psi\right)_{n_2n_2}\left|n_2\rangle\langle n_2\right|\]</div>
+</dd>
+<dt><strong>Obs</strong><span class="classifier">:obj:, optional</span></dt><dd><p>Hermitian matrix of the same shape as <cite>V2</cite>, to calculate the Diagonal ensemble expectation value of.</p>
+<p>Adds the key “Obs” to output. Can be of type <cite>numpy.ndarray</cite> or an instance of the <cite>hamiltonian</cite> class.</p>
+<p>For example, if <cite>system_state</cite> is the pure state <span class="math notranslate nohighlight">\(|\psi\rangle\)</span>:</p>
+<div class="math notranslate nohighlight">
+\[\langle\mathcal{O}\rangle_d^\psi = \lim_{T\to\infty}\frac{1}{T}\int_0^T\mathrm{d}t \frac{1}{N}\langle\psi\left|\mathcal{O}(t)\right|\psi\rangle = \frac{1}{N}\sum_{n_2}\left(\rho_d^\psi\right)_{n_2n_2} \langle n_2\left|\mathcal{O}\right|n_2\rangle\]</div>
+</dd>
+<dt><strong>delta_q_Obs</strong><span class="classifier">bool, optional</span></dt><dd><p>QUANTUM fluctuations of the expectation of <cite>Obs</cite> at infinite times. Requires <cite>Obs</cite>. Calculates
+temporal fluctuations <cite>delta_t_Obs</cite> for along the way (see above).</p>
+<p>Adds keys “delta_q_Obs” and “delta_t_Obs” to output.</p>
+<p>For example, if <cite>system_state</cite> is the pure state <span class="math notranslate nohighlight">\(|\psi\rangle\)</span>:</p>
+<div class="math notranslate nohighlight">
+\[\delta_q\mathcal{O}^\psi_d = \frac{1}{N}\sqrt{\lim_{T\to\infty}\frac{1}{T}\int_0^T\mathrm{d}t \langle\psi\left| \mathcal{O}(t)\right| \psi\rangle^2 - \langle\mathcal{O}\rangle_d^2}= \frac{1}{N}\sqrt{ \sum_{n_2\neq m_2} \left(\rho_d^\psi\right)_{n_2n_2} [\mathcal{O}]^2_{n_2m_2} \left(\rho_d^\psi\right)_{m_2m_2} }\]</div>
+</dd>
+<dt><strong>delta_t_Obs</strong><span class="classifier">bool, optional</span></dt><dd><p>TEMPORAL fluctuations around infinite-time expectation of <cite>Obs</cite>. Requires <cite>Obs</cite>.</p>
+<p>Adds the key “delta_t_Obs” to output.</p>
+<p>For example, if <cite>system_state</cite> is the pure state <span class="math notranslate nohighlight">\(|\psi\rangle\)</span>:</p>
+<div class="math notranslate nohighlight">
+\[\delta_t\mathcal{O}^\psi_d = \frac{1}{N}\sqrt{ \lim_{T\to\infty}\frac{1}{T}\int_0^T\mathrm{d}t \langle\psi\left|[\mathcal{O}(t)]^2\right|\psi\rangle - \langle\psi\left|\mathcal{O}(t)\right|\psi\rangle^2} = \frac{1}{N}\sqrt{\langle\mathcal{O}^2\rangle_d - \langle\mathcal{O}\rangle_d^2 - \left(\delta_q\mathcal{O}^\psi_d\right)^2 }\]</div>
+</dd>
+<dt><strong>alpha</strong><span class="classifier">float, optional</span></dt><dd><p>Renyi <span class="math notranslate nohighlight">\(alpha\)</span> parameter. Default is <cite>alpha = 1.0</cite>.</p>
+</dd>
+<dt><strong>Sd_Renyi</strong><span class="classifier">bool, optional</span></dt><dd><p>Computes the DIAGONAL Renyi entropy in the basis of <span class="math notranslate nohighlight">\(H_2\)</span>.
+The default Renyi parameter is <cite>alpha=1.0</cite> (see below).
+Adds the key “Sd_Renyi” to output.
+For example, if <cite>system_state</cite> is the pure state <span class="math notranslate nohighlight">\(|\psi\rangle\)</span>:</p>
+<div class="math notranslate nohighlight">
+\[S_d^\psi = \frac{1}{1-\alpha}\log\mathrm{tr}\left(\rho_d^\psi\right)^\alpha\]</div>
+</dd>
+<dt><strong>Srdm_Renyi</strong><span class="classifier">bool, optional</span></dt><dd><p>Computes ENTANGLEMENT Renyi entropy of a subsystem (see <cite>Srdm_args</cite> for subsystem definition).</p>
+<p>Requires passing the (otherwise optional) argument <cite>Srdm_args</cite> (see below).</p>
+<p>The default Renyi parameter is <cite>alpha=1.0</cite> (see below).</p>
+<p>Adds the key “Srdm_Renyi” to output.</p>
+<p>For example, if <cite>system_state</cite> is the pure state <span class="math notranslate nohighlight">\(|\psi\rangle\)</span>
+(see also notation in documentation of <cite>ent_entropy</cite>):</p>
+<div class="math notranslate nohighlight">
+\[S_\mathrm{rdm}^\psi = \frac{1}{1-\alpha}\log \mathrm{tr}_{A} \left( \mathrm{tr}_{A^c} \rho_d^\psi \right)^\alpha\]</div>
+</dd>
+<dt><strong>Srdm_args</strong><span class="classifier">dict, semi-optional</span></dt><dd><p>Dictionary which contains all arguments required for the computation of the entanglement Renyi
+entropy. Required when <cite>Srdm_Renyi = True</cite>. The following keys are allowed/supported:</p>
+<blockquote>
+<div><ul>
+<li><dl class="simple">
+<dt>“basis”: obj(basis), required</dt><dd><p>Basis used to build <cite>system_state</cite> in. Must be an instance of the <cite>basis</cite> class.</p>
+</dd>
+</dl>
+</li>
+<li><dl>
+<dt>“chain_subsys”<span class="classifier">list, optional</span></dt><dd><p>Lattice sites to specify the chain subsystem of interest. Default is:</p>
+<p>– [0,1,…,N/2-1,N/2] for <cite>spin_basis_1d</cite>, <cite>fermion_basis_1d</cite>, <cite>boson_basis_1d</cite>.</p>
+<p>– [0,1,…,N-1,N] for <cite>photon_basis</cite>.</p>
+</dd>
+</dl>
+</li>
+</ul>
+</div></blockquote>
+</dd>
+<dt><strong>density</strong><span class="classifier">bool, optional</span></dt><dd><p>If set to <cite>True</cite>, all observables are normalised by the system size <cite>N</cite>, except
+for the <cite>Srdm_Renyi</cite> which is normalised by the subsystem size, i.e. by the length of <cite>chain_subsys</cite>.
+Default is ‘True’.</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl>
+<dt>dict</dt><dd><p>The following keys of the output are possible, depending on the choice of flags:</p>
+<ul class="simple">
+<li><p>“rho_d”: density matrix of Diagonal Ensemble.</p></li>
+<li><p>“Obs…”: infinite-time expectation of observable <cite>Obs</cite>.</p></li>
+<li><p>“delta_t_Obs…”: infinite-time temporal fluctuations of <cite>Obs</cite>.</p></li>
+<li><p>“delta_q_Obs…”: infinite-time quantum fluctuations of <cite>Obs</cite>.</p></li>
+<li><p>“Sd…” (“Sd_Renyi…” for <span class="math notranslate nohighlight">\(\alpha\neq1.0\)</span>): Renyi diagonal entropy of density matrix of <cite>rho_d</cite> with parameter <cite>alpha</cite>.</p></li>
+<li><p>“Srdm…” (“Srdm_Renyi…” for <span class="math notranslate nohighlight">\(\alpha\neq1.0\)</span>): Renyi entanglement entropy of reduced DM of`rho_d` (<cite>rho_d</cite> is a mixed DM itself) with parameter <cite>alpha</cite>.</p></li>
+</ul>
+<p>Replace “…” above by ‘pure’, ‘thermal’ or ‘mixed’ depending on input parameters.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<p>We prepare a quantum system in an eigenstate <span class="math notranslate nohighlight">\(\psi_1\)</span> of the Hamiltonian <span class="math notranslate nohighlight">\(H_1=\sum_j hS^x_j + g S^z_j\)</span>.
+At time <span class="math notranslate nohighlight">\(t=0\)</span> we quench to the Hamiltonian <span class="math notranslate nohighlight">\(H_2=\sum_j JS^z_{j+1}S^z_j+ hS^x_j + g S^z_j\)</span>, and evolve
+the initial state <span class="math notranslate nohighlight">\(\psi_1\)</span> with it. We compute the infinite-time (i.e. Diagonal Ensemble) expectation value of the Hamiltonian <span class="math notranslate nohighlight">\(H_1\)</span>, and
+it’s infinite-time temporal fluctuations <span class="math notranslate nohighlight">\(\delta_t\mathcal{O}^\psi_d\)</span> (see above for the definition).</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="kn">from</span><span class="w"> </span><span class="nn">quspin.basis</span><span class="w"> </span><span class="kn">import</span> <span class="n">spin_basis_1d</span>  <span class="c1"># Hilbert space spin basis</span>
+<span class="linenos"> 2</span><span class="kn">from</span><span class="w"> </span><span class="nn">quspin.tools.measurements</span><span class="w"> </span><span class="kn">import</span> <span class="n">diag_ensemble</span>
+<span class="linenos"> 3</span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>  <span class="c1"># generic math functions</span>
+<span class="linenos"> 4</span>
+<span class="linenos"> 5</span><span class="c1">#</span>
+<span class="linenos"> 6</span><span class="n">L</span> <span class="o">=</span> <span class="mi">12</span>  <span class="c1"># syste size</span>
+<span class="linenos"> 7</span><span class="c1"># coupling strenghts</span>
+<span class="linenos"> 8</span><span class="n">J</span> <span class="o">=</span> <span class="mf">1.0</span>  <span class="c1"># spin-spin coupling</span>
+<span class="linenos"> 9</span><span class="n">h</span> <span class="o">=</span> <span class="mf">0.8945</span>  <span class="c1"># x-field strength</span>
+<span class="linenos">10</span><span class="n">g</span> <span class="o">=</span> <span class="mf">0.945</span>  <span class="c1"># z-field strength</span>
+<span class="linenos">11</span><span class="c1"># create site-coupling lists</span>
+<span class="linenos">12</span><span class="n">J_zz</span> <span class="o">=</span> <span class="p">[[</span><span class="n">J</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">%</span> <span class="n">L</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">L</span><span class="p">)]</span>  <span class="c1"># PBC</span>
+<span class="linenos">13</span><span class="n">x_field</span> <span class="o">=</span> <span class="p">[[</span><span class="n">h</span><span class="p">,</span> <span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">L</span><span class="p">)]</span>
+<span class="linenos">14</span><span class="n">z_field</span> <span class="o">=</span> <span class="p">[[</span><span class="n">g</span><span class="p">,</span> <span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">L</span><span class="p">)]</span>
+<span class="linenos">15</span><span class="c1"># create static and dynamic lists</span>
+<span class="linenos">16</span><span class="n">static_1</span> <span class="o">=</span> <span class="p">[[</span><span class="s2">&quot;x&quot;</span><span class="p">,</span> <span class="n">x_field</span><span class="p">],</span> <span class="p">[</span><span class="s2">&quot;z&quot;</span><span class="p">,</span> <span class="n">z_field</span><span class="p">]]</span>
+<span class="linenos">17</span><span class="n">static_2</span> <span class="o">=</span> <span class="p">[[</span><span class="s2">&quot;zz&quot;</span><span class="p">,</span> <span class="n">J_zz</span><span class="p">],</span> <span class="p">[</span><span class="s2">&quot;x&quot;</span><span class="p">,</span> <span class="n">x_field</span><span class="p">],</span> <span class="p">[</span><span class="s2">&quot;z&quot;</span><span class="p">,</span> <span class="n">z_field</span><span class="p">]]</span>
+<span class="linenos">18</span><span class="n">dynamic</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="linenos">19</span><span class="c1"># create spin-1/2 basis</span>
+<span class="linenos">20</span><span class="n">basis</span> <span class="o">=</span> <span class="n">spin_basis_1d</span><span class="p">(</span><span class="n">L</span><span class="p">,</span> <span class="n">kblock</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">pblock</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="linenos">21</span><span class="c1"># set up Hamiltonian</span>
+<span class="linenos">22</span><span class="n">H1</span> <span class="o">=</span> <span class="n">hamiltonian</span><span class="p">(</span><span class="n">static_1</span><span class="p">,</span> <span class="n">dynamic</span><span class="p">,</span> <span class="n">basis</span><span class="o">=</span><span class="n">basis</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+<span class="linenos">23</span><span class="n">H2</span> <span class="o">=</span> <span class="n">hamiltonian</span><span class="p">(</span><span class="n">static_2</span><span class="p">,</span> <span class="n">dynamic</span><span class="p">,</span> <span class="n">basis</span><span class="o">=</span><span class="n">basis</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+<span class="linenos">24</span><span class="c1"># compute eigensystems of H1 and H2</span>
+<span class="linenos">25</span><span class="n">E1</span><span class="p">,</span> <span class="n">V1</span> <span class="o">=</span> <span class="n">H1</span><span class="o">.</span><span class="n">eigh</span><span class="p">()</span>
+<span class="linenos">26</span><span class="n">psi1</span> <span class="o">=</span> <span class="n">V1</span><span class="p">[:,</span> <span class="mi">14</span><span class="p">]</span>  <span class="c1"># pick any state as initial state</span>
+<span class="linenos">27</span><span class="n">E2</span><span class="p">,</span> <span class="n">V2</span> <span class="o">=</span> <span class="n">H2</span><span class="o">.</span><span class="n">eigh</span><span class="p">()</span>
+<span class="linenos">28</span><span class="c1">#</span>
+<span class="linenos">29</span><span class="c1"># calculate long-time (diagonal ensemble) expectations of H1 and its temporal fluctuations</span>
+<span class="linenos">30</span><span class="n">Diag_Ens</span> <span class="o">=</span> <span class="n">diag_ensemble</span><span class="p">(</span><span class="n">L</span><span class="p">,</span> <span class="n">psi1</span><span class="p">,</span> <span class="n">E2</span><span class="p">,</span> <span class="n">V2</span><span class="p">,</span> <span class="n">Obs</span><span class="o">=</span><span class="n">H1</span><span class="p">,</span> <span class="n">delta_t_Obs</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="linenos">31</span><span class="nb">print</span><span class="p">(</span><span class="n">Diag_Ens</span><span class="p">[</span><span class="s2">&quot;Obs_pure&quot;</span><span class="p">],</span> <span class="n">Diag_Ens</span><span class="p">[</span><span class="s2">&quot;delta_t_Obs_pure&quot;</span><span class="p">])</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="quspin.tools.measurements.ent_entropy.html" class="btn btn-neutral float-left" title="quspin.tools.measurements.ent_entropy" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="quspin.tools.measurements.obs_vs_time.html" class="btn btn-neutral float-right" title="quspin.tools.measurements.obs_vs_time" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Phillip Weinberg, Markus Schmitt, and Marin Bukov.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+    <!-- Theme Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-6885KZ7NH6"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-6885KZ7NH6', {
+          'anonymize_ip': false,
+      });
+    </script> 
+
+</body>
+</html>
