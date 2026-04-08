@@ -25,12 +25,12 @@ Mac OSX
 
 Quspin relies on libomp which may not be available be default in Mac OS. In this case, we recommend installing libomp through `Homebrew <https://brew.sh>`_
 ::
-	> brew install libomp
+	>brew install libomp
 
 If you install libomp by other means, ensure that LIBOMP_PREFIX environment variable is set to your libomp installation directory. 
 You can then install quspin with
 ::
-	> pip install quspin
+	>pip install quspin
 
 Developer Install (Manual)
 ++++++++++++++++++++++++++

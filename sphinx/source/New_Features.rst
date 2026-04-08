@@ -12,7 +12,7 @@ The new installation works across linux, windows, and osx platforms (including a
 Most recent changes & features 
 ==============================
 
-Added in v. 1.0.1 (2026.03.20)
+Added in v. 1.0.1 (2026.04.08)
 ------------------------------
 
 Improved Functionality
