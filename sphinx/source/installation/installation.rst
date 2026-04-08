@@ -14,14 +14,14 @@ User Install (Automatic)
 The user install is meant for deploying `quspin` on your private machine or an HPC cluster:
 
 Windows/Linux
-~~~~~~~~~~~~~~
+-------------
 ::
 
 	> pip install quspin
 
 
 Mac OSX
-~~~~~~~~~~~~~~
+-------
 
 Quspin relies on libomp which may not be available be default in Mac OS. In this case, we recommend installing libomp through `Homebrew <https://brew.sh>`_
 ::
