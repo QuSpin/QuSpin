@@ -6,11 +6,11 @@ authors = [
     {name = "Phillip Weinberg, Marin Bukov", email = "weinbe58@gmail.com"},
 ]
 dependencies = [
-    "quspin-extensions>=0.1.7",
-    "parallel-sparse-tools>=0.2.4",
+    "quspin-extensions==0.1.8",
+    "parallel-sparse-tools==0.2.5",
     "numpy>=2.0.0",
     "dill>=0.3.8",
-    "scipy>=1.13.1",
+    "scipy>=1.13.0",
     "numexpr>=2.10.1",
     "numba>=0.60.0",
     "six>=1.16.0",
