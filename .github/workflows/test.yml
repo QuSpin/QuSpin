@@ -1,6 +1,7 @@
 name: Testing
 
 on:
+  workflow_dispatch: 
   pull_request:
   push:
     branches:
@@ -15,12 +16,20 @@ jobs:
   test:
     strategy:
       matrix:
-        python-version: ["3.9", "3.10", "3.11", "3.12"]
-        os: [ubuntu-latest, windows-latest, macos-latest]
+        python-version: ["3.11", "3.12", "3.13", "3.14"]
+        os: [ubuntu-latest, windows-latest, macos-15]
+        #exclude:
+        #  - os: macos-15-intel
+        #    python-version: "3.13"
+        #  - os: macos-15-intel
+        #    python-version: "3.14"
     runs-on: ${{ matrix.os }}
 
     steps:
       - uses: actions/checkout@v4
+      - name: Install libomp on macOS
+        if: runner.os == 'macOS'
+        run: brew install libomp
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v5
         with:
@@ -33,7 +42,7 @@ jobs:
           # prerelease: true     # Allow prerelease versions to be installed
           # enable-pep582: true  # Enable PEP 582 package loading globally
       - name: Install dependencies
-        run: pdm install       # Then you can use pdm in the following steps.
+        run: pdm install -G dev      # Then you can use pdm in the following steps.
       - name: Test with pytest & generate coverage
         run: |
           pdm test

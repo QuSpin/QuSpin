@@ -7,9 +7,19 @@ New easier and simpler :ref:`installation-label` for `quspin>=1.0.0` using `pip 
 
 The new installation works across linux, windows, and osx platforms (including arm64, i.e., the Apple M chip processor series). 
 
+:red:`Note:` MacOS users will need to have libomp installed before installing quspin. See :ref:`installation-label` for details.
 
 Most recent changes & features 
 ==============================
+
+Added in v. 1.0.1 (2026.03.20)
+------------------------------
+
+Improved Functionality
+++++++++++++++++++++++
+* added python 3.11 - 3.14 support, :red:`discontinued` support for python <=3.10.
+* fixed a bug with incorrect compilation and optimization flags for installation in windows and osx.
+* matplotlib no longer installed as dependency of Quspin.  
 
 Added in v. 1.0.0 (2024.10.01)
 ------------------------------

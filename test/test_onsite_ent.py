@@ -45,7 +45,7 @@ def test():
 
         # calculate expectation in full and reduced basis
         Exct_1 = np.trace(Sx_0.dot(DM))
-        Exct_2 = float(functools.reduce(np.dot, [psi.conjugate(), Sx_full, psi]))
+        Exct_2 = float(functools.reduce(np.dot, [psi.conjugate(), Sx_full, psi])[0,0])
 
         np.testing.assert_allclose(
             Exct_1 - Exct_2,

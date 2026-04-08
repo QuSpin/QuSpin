@@ -82,6 +82,9 @@ $ pip install -e QuSpin-Extensions/ -v
 $ pip install -e QuSpin/ -v
 ```
 
+**NOTE:** you don't necessarily need to install all three extension modules: e.g., if you only want to contribute changes to the main QuSpin module which requires just `python`, you can simply run `pip install -e QuSpin/ -v` and ignore the other two.  
+
+
 Make sure you add an exhaustive test to test any code you want to add to the package. To run unit tests, you can use pytest:
 ```
 $ pip install pytest
