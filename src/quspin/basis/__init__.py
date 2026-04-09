@@ -8,11 +8,11 @@ Basis classes for quantum many-body systems.
 The following table shows the available operator strings for the different bases (`sps` is the onsite Hilbert space dimension):
 
 .. math::
-   \\begin{array}{cccc}
-      \\texttt{basis}/\\texttt{opstr}   &   \\texttt{"I"}   &   \\texttt{"+"}   &   \\texttt{"-"}  &   \\texttt{"n"}   &   \\texttt{"z"}   &   \\texttt{"x"}   &   \\texttt{"y"}  \\newline  
-      \\texttt{spin_basis_*} &   \\hat{1}        &   \\hat S^+(\\hat\\sigma^+)       &   \\hat S^-(\\hat\\sigma^-)      &         -         &   \\hat S^z(\\hat\\sigma^z)       &   \\hat S^x(\\hat\\sigma^x)     &   \\hat S^y(\\hat\\sigma^y)  \\  \\newline
-      \\texttt{boson_basis_*}&   \\hat{1}        &   \\hat b^\\dagger      &       \\hat b          & \\hat b^\\dagger \\hat b     &  \\hat b^\\dagger\\hat b - \\frac{\\mathrm{sps}-1}{2}       &   -       &   -  \\newline
-      \\texttt{*_fermion_basis_*}& \\hat{1}        &   \\hat c^\\dagger      &       \\hat c          & \\hat c^\\dagger \\hat c     &  \\hat c^\\dagger\\hat c - \\frac{1}{2}       &   \\hat c + \\hat c^\\dagger       &   -i\\left( \\hat c - \\hat c^\\dagger\\right)  \\newline
+   \\begin{array}{cccccccc}
+   \\texttt{basis}/\\texttt{opstr} & \\texttt{"I"} & \\texttt{"+"} & \\texttt{"-"} & \\texttt{"n"} & \\texttt{"z"} & \\texttt{"x"} & \\texttt{"y"} \\\\
+   \\texttt{spin\\_basis\\_*} & \\hat{1} & \\hat S^+(\\hat\\sigma^+) & \\hat S^-(\\hat\\sigma^-) & - & \\hat S^z(\\hat\\sigma^z) & \\hat S^x(\\hat\\sigma^x) & \\hat S^y(\\hat\\sigma^y) \\\\
+   \\texttt{boson\\_basis\\_*} & \\hat{1} & \\hat b^\\dagger & \\hat b & \\hat b^\\dagger \\hat b & \\hat b^\\dagger\\hat b - \\frac{\\mathrm{sps}-1}{2} & - & - \\\\
+   \\texttt{*\\_fermion\\_basis\\_*} & \\hat{1} & \\hat c^\\dagger & \\hat c & \\hat c^\\dagger \\hat c & \\hat c^\\dagger\\hat c - \\frac{1}{2} & \\hat c + \\hat c^\\dagger & -i\\left( \\hat c - \\hat c^\\dagger\\right) \\\\
    \\end{array}
 
 **Notes:** 

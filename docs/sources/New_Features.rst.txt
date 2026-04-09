@@ -7,12 +7,12 @@ New easier and simpler :ref:`installation-label` for `quspin>=1.0.0` using `pip 
 
 The new installation works across linux, windows, and osx platforms (including arm64, i.e., the Apple M chip processor series). 
 
-:red:`Note:` MacOS users will need to have libomp installed before installing quspin. See :ref:`installation-label` for details.
+:red:`Note` MacOS users will need to have libomp installed before installing quspin. See :ref:`installation-label` for details.
 
 Most recent changes & features 
 ==============================
 
-Added in v. 1.0.1 (2026.03.20)
+Added in v. 1.0.1 (2026.04.08)
 ------------------------------
 
 Improved Functionality

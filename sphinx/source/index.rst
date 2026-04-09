@@ -24,7 +24,7 @@ The source code is available on `Github <https://github.com/QuSpin/QuSpin>`_. Su
     :caption: New Features
     :maxdepth: 1
     
-    New_Features
+    new_features
 
 
 .. toctree::

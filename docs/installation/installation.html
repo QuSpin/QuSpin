@@ -22,7 +22,7 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Example scripts" href="../example_scripts.html" />
-    <link rel="prev" title="&lt;no title&gt;" href="../tools.html" /> 
+    <link rel="prev" title="quspin.tools.misc.array_to_ints" href="../generated/quspin.tools.misc.array_to_ints.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -46,8 +46,14 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">New Features</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../New_Features.html">Highlights</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../New_Features.html#most-recent-changes-features">Most recent changes &amp; features</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../new_features.html">Highlights</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../new_features.html#most-recent-changes-features">Most recent changes &amp; features</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">QuSpin (public API)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../basis.html">Basis module (<code class="xref py py-mod docutils literal notranslate"><span class="pre">quspin.basis</span></code>)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../operators.html">Operators module (<code class="xref py py-mod docutils literal notranslate"><span class="pre">quspin.operators</span></code>)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tools.html">Tools module (<code class="xref py py-mod docutils literal notranslate"><span class="pre">quspin.tools</span></code>)</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Installation &amp; Use</span></p>
 <ul class="current">
@@ -57,7 +63,16 @@
 <li class="toctree-l3"><a class="reference internal" href="#mac-osx">Mac OSX</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#developer-install-manual">Developer Install (Manual)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#developer-install-manual">Developer Install (Manual)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#developing-the-main-quspin-package-python-only">Developing the main QuSpin package (python only)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#developing-the-quspin-basis-constructor-subpackage-cpp-cython">Developing the QuSpin basis constructor subpackage (cpp, cython)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#developing-the-quspin-sparse-parallel-tools-subpackage-cpp-cython">Developing the QuSpin sparse parallel tools subpackage (cpp, cython)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#developing-all-subpackages-cpp-cython-python">Developing all subpackages (cpp, cython, python)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#installing-the-boost-headers">Installing the <cite>boost</cite> headers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#tests-and-testing">Tests and testing</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#documentation">Documentation</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="#basics-of-command-line-use">Basics of command line use</a><ul>
@@ -125,12 +140,12 @@
 </section>
 <section id="mac-osx">
 <h3>Mac OSX<a class="headerlink" href="#mac-osx" title="Link to this heading"></a></h3>
-<p>Quspin relies on libomp which may not be available be default in Mac OS. In this case, we recommend installing libomp through <a class="reference external" href="https://brew.sh">Homebrew</a></p>
+<p>Quspin relies on libomp which may not be available be default in Mac OS. In this case, we recommend installing libomp through <a class="reference external" href="https://brew.sh">Homebrew</a>:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">brew</span> <span class="n">install</span> <span class="n">libomp</span>
 </pre></div>
 </div>
 <p>If you install libomp by other means, ensure that LIBOMP_PREFIX environment variable is set to your libomp installation directory.
-You can then install quspin with</p>
+You can then install quspin with:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">pip</span> <span class="n">install</span> <span class="n">quspin</span>
 </pre></div>
 </div>
@@ -170,12 +185,17 @@ You can then install quspin with</p>
 </pre></div>
 </div>
 <p>You can decide whether you want to contribute to the <a class="reference external" href="https://github.com/QuSpin/QuSpin">QuSpin</a> main package only, to the <a class="reference external" href="https://github.com/QuSpin/QuSpin-Extensions">QuSpin extension</a> package which contains the cpp code for the basis constructors, or to the <a class="reference external" href="https://github.com/QuSpin/parallel-sparse-tools">sparse parallel tools extension</a> that contains the core of the tools package also written in cpp.</p>
+<section id="developing-the-main-quspin-package-python-only">
+<h3>Developing the main QuSpin package (python only)<a class="headerlink" href="#developing-the-main-quspin-package-python-only" title="Link to this heading"></a></h3>
 <p>To install the <a class="reference external" href="https://github.com/QuSpin/QuSpin">QuSpin</a> package, run</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">pip</span> <span class="n">install</span> <span class="o">-</span><span class="n">e</span> <span class="n">QuSpin</span><span class="o">/</span> <span class="o">-</span><span class="n">v</span>
 </pre></div>
 </div>
 <p>You may now just edit locally the <cite>python</cite> source code; all that you need is knowledge in <cite>python</cite>. Please consider making a pull request on GitHub with your custom functions to add them to the next release of <cite>QuSpin</cite>.</p>
 <p><strong>All pull requests should be directed into the most recent development branch.</strong></p>
+</section>
+<section id="developing-the-quspin-basis-constructor-subpackage-cpp-cython">
+<h3>Developing the QuSpin basis constructor subpackage (cpp, cython)<a class="headerlink" href="#developing-the-quspin-basis-constructor-subpackage-cpp-cython" title="Link to this heading"></a></h3>
 <p>To install the <a class="reference external" href="https://github.com/QuSpin/QuSpin-Extensions">QuSpin extension</a> package only, run</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">pip</span> <span class="n">install</span> <span class="o">-</span><span class="n">e</span> <span class="n">QuSpin</span><span class="o">-</span><span class="n">Extensions</span><span class="o">/</span> <span class="o">-</span><span class="n">v</span>
 </pre></div>
@@ -185,6 +205,9 @@ You can then install quspin with</p>
 </pre></div>
 </div>
 <p>Please consider making a pull request on GitHub with your custom functions to add them to the next release of <cite>QuSpin</cite>. <strong>All pull requests should be directed into the most recent development branch.</strong></p>
+</section>
+<section id="developing-the-quspin-sparse-parallel-tools-subpackage-cpp-cython">
+<h3>Developing the QuSpin sparse parallel tools subpackage (cpp, cython)<a class="headerlink" href="#developing-the-quspin-sparse-parallel-tools-subpackage-cpp-cython" title="Link to this heading"></a></h3>
 <p>To install the <a class="reference external" href="https://github.com/QuSpin/parallel-sparse-tools">sparse parallel tools extension</a> subpackage only, run</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">pip</span> <span class="n">install</span> <span class="o">-</span><span class="n">e</span> <span class="n">parallel</span><span class="o">-</span><span class="n">sparse</span><span class="o">-</span><span class="n">tools</span><span class="o">/</span> <span class="o">-</span><span class="n">v</span>
 </pre></div>
@@ -194,12 +217,18 @@ You can then install quspin with</p>
 </pre></div>
 </div>
 <p>Please consider making a pull request on GitHub with your custom functions to add them to the next release of <cite>QuSpin</cite>. <strong>All pull requests should be directed into the most recent development branch.</strong></p>
+</section>
+<section id="developing-all-subpackages-cpp-cython-python">
+<h3>Developing all subpackages (cpp, cython, python)<a class="headerlink" href="#developing-all-subpackages-cpp-cython-python" title="Link to this heading"></a></h3>
 <p>Install all extension modules (may take a bit of time to build the cpp code):</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">pip</span> <span class="n">install</span> <span class="o">-</span><span class="n">e</span> <span class="n">parallel</span><span class="o">-</span><span class="n">sparse</span><span class="o">-</span><span class="n">tools</span><span class="o">/</span> <span class="o">-</span><span class="n">v</span>
 <span class="o">&gt;</span> <span class="n">pip</span> <span class="n">install</span> <span class="o">-</span><span class="n">e</span> <span class="n">QuSpin</span><span class="o">-</span><span class="n">Extensions</span><span class="o">/</span> <span class="o">-</span><span class="n">v</span>
 <span class="o">&gt;</span> <span class="n">pip</span> <span class="n">install</span> <span class="o">-</span><span class="n">e</span> <span class="n">QuSpin</span><span class="o">/</span> <span class="o">-</span><span class="n">v</span>
 </pre></div>
 </div>
+</section>
+<section id="installing-the-boost-headers">
+<h3>Installing the <cite>boost</cite> headers<a class="headerlink" href="#installing-the-boost-headers" title="Link to this heading"></a></h3>
 <p>If you get a <code class="docutils literal notranslate"><span class="pre">FileNotFoundError(&quot;Could</span> <span class="pre">not</span> <span class="pre">find</span> <span class="pre">boost</span> <span class="pre">headers&quot;)</span></code>, then you need to ensure that the <a class="reference external" href="https://www.boost.org/">boost library</a> is installed and can be found by QuSpin:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>&gt; pip install boost
 &gt; export $BOOST_ROOT = &lt;path to C libraries&gt;  # Unix
@@ -207,6 +236,9 @@ You can then install quspin with</p>
 </pre></div>
 </div>
 <p>where <cite>&lt;path to C libaries&gt;</cite> contains <code class="docutils literal notranslate"><span class="pre">include/boost</span></code>. For a conda virtual environment, this will be <code class="docutils literal notranslate"><span class="pre">&lt;env&gt;/Library</span></code>; for a pure python venv, this will simply be the relevant <code class="docutils literal notranslate"><span class="pre">venv</span></code> folder.</p>
+</section>
+<section id="tests-and-testing">
+<h3>Tests and testing<a class="headerlink" href="#tests-and-testing" title="Link to this heading"></a></h3>
 <p>Make sure you add an exhaustive test to test any code you want to add to the package. To run unit tests, you can use <cite>pytest</cite>:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>&gt; pip install pytest
 &gt; cd QuSpin-workspace/QuSpin/tests
@@ -215,6 +247,9 @@ You can then install quspin with</p>
 </pre></div>
 </div>
 <p>Tests should be added to the <cite>/test</cite> directory of the corresponding extension.</p>
+</section>
+<section id="documentation">
+<h3>Documentation<a class="headerlink" href="#documentation" title="Link to this heading"></a></h3>
 <p>Make sure you also comment your code and add a your new public functions to the documentation. For the documentation, you need to install in addition:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">pip</span> <span class="n">install</span> <span class="o">-</span><span class="n">U</span> <span class="n">sphinx</span>
 <span class="o">&gt;</span> <span class="n">pip</span> <span class="n">install</span> <span class="n">numpydoc</span>
@@ -230,6 +265,7 @@ You can then install quspin with</p>
 &gt; open _build/html/index.html
 </pre></div>
 </div>
+</section>
 </section>
 </section>
 <section id="basics-of-command-line-use">
@@ -365,7 +401,7 @@ You can then install quspin with</p>
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="../tools.html" class="btn btn-neutral float-left" title="&lt;no title&gt;" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../generated/quspin.tools.misc.array_to_ints.html" class="btn btn-neutral float-left" title="quspin.tools.misc.array_to_ints" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="../example_scripts.html" class="btn btn-neutral float-right" title="Example scripts" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
