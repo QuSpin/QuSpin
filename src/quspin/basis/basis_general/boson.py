@@ -53,7 +53,7 @@ class boson_basis_general(hcb_basis_general, basis_general):
     .. math::
             \\begin{array}{cccc}
                     \\texttt{basis}/\\texttt{opstr}   &   \\texttt{"I"}   &   \\texttt{"+"}   &   \\texttt{"-"}  &   \\texttt{"n"}   &   \\texttt{"z"}	 \\newline
-                    \\texttt{boson_basis_general}&   \\hat{1}		&   \\hat b^\\dagger	  &	   \\hat b		  & \\hat b^\\dagger b	 &  \\hat b^\\dagger\\hat b - \\frac{\\mathrm{sps}-1}{2}  \\newline
+                    \\texttt{boson\_basis\_general}&   \\hat{1}		&   \\hat b^\\dagger	  &	   \\hat b		  & \\hat b^\\dagger b	 &  \\hat b^\\dagger\\hat b - \\frac{\\mathrm{sps}-1}{2}  \\newline
             \\end{array}
 
     Notes

@@ -18,7 +18,7 @@ class spinless_fermion_basis_1d(basis_1d):
     .. math::
                     \\begin{array}{cccc}
                             \\texttt{basis}/\\texttt{opstr}   &   \\texttt{"I"}   &   \\texttt{"+"}   &   \\texttt{"-"}  &   \\texttt{"n"}   &   \\texttt{"z"}    \\newline
-                            \\texttt{spinless_fermion_basis_1d}& \\hat{1}        &   \\hat c^\\dagger      &       \\hat c          & \\hat c^\\dagger c     &  \\hat c^\\dagger\\hat c - \\frac{1}{2}      \\newline
+                            \\texttt{spinless\_fermion\_basis\_1d}& \\hat{1}        &   \\hat c^\\dagger      &       \\hat c          & \\hat c^\\dagger c     &  \\hat c^\\dagger\\hat c - \\frac{1}{2}      \\newline
                     \\end{array}
 
     Notes
@@ -179,7 +179,7 @@ class spinful_fermion_basis_1d(spinless_fermion_basis_1d, basis_1d):
     .. math::
                     \\begin{array}{cccc}
                             \\texttt{basis}/\\texttt{opstr}   &   \\texttt{"I"}   &   \\texttt{"+"}   &   \\texttt{"-"}  &   \\texttt{"n"}   &   \\texttt{"z"}    \\newline
-                            \\texttt{spinful_fermion_basis_1d}& \\hat{1}        &   \\hat c^\\dagger      &       \\hat c          & \\hat c^\\dagger c     &  \\hat c^\\dagger\\hat c - \\frac{1}{2}      \\newline
+                            \\texttt{spinful\_fermion\_basis\_1d}& \\hat{1}        &   \\hat c^\\dagger      &       \\hat c          & \\hat c^\\dagger c     &  \\hat c^\\dagger\\hat c - \\frac{1}{2}      \\newline
                     \\end{array}
 
 

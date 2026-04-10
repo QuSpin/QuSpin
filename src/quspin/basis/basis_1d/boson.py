@@ -12,7 +12,7 @@ class boson_basis_1d(basis_1d):
     .. math::
             \\begin{array}{cccc}
                     \\texttt{basis}/\\texttt{opstr}   &   \\texttt{"I"}   &   \\texttt{"+"}   &   \\texttt{"-"}  &   \\texttt{"n"}   &   \\texttt{"z"}     \\newline
-                    \\texttt{boson_basis_1d}&   \\hat{1}        &   \\hat b^\\dagger      &       \\hat b          & \\hat b^\\dagger b     &  \\hat b^\\dagger\\hat b - \\frac{\\mathrm{sps}-1}{2}  \\newline
+                    \\texttt{boson\_basis\_1d}&   \\hat{1}        &   \\hat b^\\dagger      &       \\hat b          & \\hat b^\\dagger b     &  \\hat b^\\dagger\\hat b - \\frac{\\mathrm{sps}-1}{2}  \\newline
             \\end{array}
 
     Notes

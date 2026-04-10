@@ -23,7 +23,7 @@ class spin_basis_1d(basis_1d):
     .. math::
             \\begin{array}{cccc}
                     \\texttt{basis}/\\texttt{opstr}   &   \\texttt{"I"}   &   \\texttt{"+"}   &   \\texttt{"-"}  &     \\texttt{"z"}   &   \\texttt{"x"}   &   \\texttt{"y"}  \\newline
-                    \\texttt{spin_basis_1d} &   \\hat{1}        &   \\hat\\sigma^+       &   \\hat\\sigma^-      &     \\hat\\sigma^z       &   (\\hat\\sigma^x)     &   (\\hat\\sigma^y)  \\  \\newline
+                    \\texttt{spin\_basis\_1d} &   \\hat{1}        &   \\hat\\sigma^+       &   \\hat\\sigma^-      &     \\hat\\sigma^z       &   (\\hat\\sigma^x)     &   (\\hat\\sigma^y)  \\  \\newline
             \\end{array}
 
     **Note:**

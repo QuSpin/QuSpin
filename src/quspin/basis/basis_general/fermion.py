@@ -36,7 +36,7 @@ class spinless_fermion_basis_general(basis_general):
     .. math::
             \\begin{array}{cccc}
                     \\texttt{basis}/\\texttt{opstr}   &   \\texttt{"I"}   &   \\texttt{"+"}   &   \\texttt{"-"}  &   \\texttt{"n"}   &   \\texttt{"z"}    &   \\texttt{"x"}    &   \\texttt{"y"}    \\newline
-                    \\texttt{spinless_fermion_basis_general}& \\hat{1}        &   \\hat c^\\dagger      &       \\hat c          & \\hat c^\\dagger c     &  \\hat c^\\dagger\\hat c - \\frac{1}{2}  &   \\hat c + \\hat c^\\dagger    &   -i\\left( \\hat c - \\hat c^\\dagger\\right)   \\newline
+                    \\texttt{spinless\_fermion\_basis\_general}& \\hat{1}        &   \\hat c^\\dagger      &       \\hat c          & \\hat c^\\dagger c     &  \\hat c^\\dagger\\hat c - \\frac{1}{2}  &   \\hat c + \\hat c^\\dagger    &   -i\\left( \\hat c - \\hat c^\\dagger\\right)   \\newline
             \\end{array}
 
     Notes
@@ -308,7 +308,7 @@ class spinful_fermion_basis_general(spinless_fermion_basis_general):
     .. math::
             \\begin{array}{cccc}
                     \\texttt{basis}/\\texttt{opstr}   &   \\texttt{"I"}   &   \\texttt{"+"}   &   \\texttt{"-"}  &   \\texttt{"n"}   &   \\texttt{"z"}    &   \\texttt{"x"}    &   \\texttt{"y"}    \\newline
-                    \\texttt{spinful_fermion_basis_general}& \\hat{1}        &   \\hat c^\\dagger      &       \\hat c          & \\hat c^\\dagger c     &  \\hat c^\\dagger\\hat c - \\frac{1}{2}  &   \\hat c + \\hat c^\\dagger    &   -i\\left( \\hat c - \\hat c^\\dagger\\right)   \\newline
+                    \\texttt{spinful\_fermion\_basis\_general}& \\hat{1}        &   \\hat c^\\dagger      &       \\hat c          & \\hat c^\\dagger c     &  \\hat c^\\dagger\\hat c - \\frac{1}{2}  &   \\hat c + \\hat c^\\dagger    &   -i\\left( \\hat c - \\hat c^\\dagger\\right)   \\newline
             \\end{array}
 
     Notes
