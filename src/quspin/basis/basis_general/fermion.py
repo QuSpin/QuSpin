@@ -228,10 +228,8 @@ class spinless_fermion_basis_general(basis_general):
                         zipstr[i + 1] = temp
                         swapped = True
 
-                        if zipstr[i][0] in ["+", "-"] and zipstr[i + 1][0] in [
-                            "+",
-                            "-",
-                        ]:
+                        if zipstr[i][0] in ["+","-","x","y"] and \
+						zipstr[i + 1][0] in ["+","-","x","y"]:
                             anticommutes *= -1
 
             op1, op2 = zip(*zipstr)
