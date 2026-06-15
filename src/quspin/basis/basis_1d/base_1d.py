@@ -669,17 +669,35 @@ class basis_1d(lattice_basis):
         if bracket_notation:
             return "|" + s_str + ">"
         else:
-            return s_str.replace(" ", "")
+            # The non-bracket string is a base-sps digit string (digits 0-9,
+            # then a-z), i.e. the exact inverse of state_to_int()/index(), which
+            # parse it back via int(s, self.sps). This keeps the representation
+            # unambiguous when sps > 10 (occupations can reach two decimal
+            # digits): the previous " ".join(...).replace(" ", "") merged
+            # multi-digit occupations into an unparseable run of digits, e.g.
+            # |10 0 0 0> collapsed to "10000" (indistinguishable from a length-5
+            # state) and did not round-trip through index()/state_to_int().
+            if self.sps > 36:
+                raise ValueError(
+                    "int_to_state(..., bracket_notation=False) is only defined "
+                    "for sps <= 36 (base-sps digit string, consistent with "
+                    "index()/state_to_int()); use bracket_notation=True instead."
+                )
+            return _np.base_repr(int(state), self.sps).zfill(self.N)
 
     def _state_to_int(self, state):
         state = state.replace("|", "").replace(">", "").replace("<", "")
         return int(self._basis[self.index(state)])
 
     def _index(self, s):
-        if int(s) == s:
-            pass
-        elif type(s) is str:
+        # Check the string case first: a base-sps Fock string may contain
+        # letter digits (e.g. 'A000' for an occupation of 10 when sps > 10),
+        # and calling int(s) on such a string raises ValueError before the
+        # type check is ever reached.
+        if type(s) is str:
             s = int(s, self.sps)
+        elif int(s) == s:
+            pass
         else:
             raise ValueError("s must be integer or string")
 
