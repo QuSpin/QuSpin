@@ -16,8 +16,8 @@ from quspin.basis import boson_basis_1d, boson_basis_general
 
 
 def test_boson_1d_multidigit_roundtrip():
-    # sps = Nb + 1 = 11 > 10
-    basis = boson_basis_1d(L=4, Nb=10)
+    # sps = Nb + 1 = 12 > 10
+    basis = boson_basis_1d(L=4, Nb=11)
 
     # The non-bracket string representation must be injective ...
     strings = [basis.int_to_state(s, bracket_notation=False) for s in basis.states]
@@ -29,9 +29,9 @@ def test_boson_1d_multidigit_roundtrip():
         assert basis.state_to_int(string) == int(s)
         assert int(basis.index(string)) == i
 
-    # The all-on-one-site state |10,0,0,0> is the base-11 number 'A000'
-    # (A == 10), not the ambiguous decimal run "10000".
-    assert basis.int_to_state(basis.states[0], bracket_notation=False) == "A000"
+    # The all-on-one-site state |11,0,0,0> is the base-12 number 'B000'
+    # (A == 10, B == 11), not the ambiguous decimal run "11000".
+    assert basis.int_to_state(basis.states[0], bracket_notation=False) == "B000"
 
 
 def test_boson_1d_small_sps_unchanged():
