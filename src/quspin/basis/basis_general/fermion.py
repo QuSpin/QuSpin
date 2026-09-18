@@ -145,6 +145,7 @@ class spinless_fermion_basis_general(basis_general):
                 raise TypeError("Nf must be integer or iterable object.")
 
             Nf = list(Nf)
+            self._get_proj_pcon = True
             self._Ns = 0
 
             for _nf in Nf:
@@ -484,6 +485,7 @@ class spinful_fermion_basis_general(spinless_fermion_basis_general):
                             "Nf must be tuple of integers or iterable object of tuples."
                         )
 
+                    self._get_proj_pcon = True
                     self._Ns = 0
                     for Nup, Ndown in Nf:
                         if Nup > N or Nup < 0:
@@ -512,6 +514,7 @@ class spinful_fermion_basis_general(spinless_fermion_basis_general):
                     )
 
                 Nf = list(Nf)
+                self._get_proj_pcon = True
 
                 self._Ns = 0
                 for Nup, Ndown in Nf:
